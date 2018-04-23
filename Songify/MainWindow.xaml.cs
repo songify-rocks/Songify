@@ -180,7 +180,7 @@ namespace Songify
 
         private void btn_Discord_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://discord.gg/hB5hK");
+            System.Diagnostics.Process.Start("https://discordapp.com/invite/H8nd4T4");
         }
 
         private void MenuItem_InsertArtist_Click(object sender, RoutedEventArgs e)
