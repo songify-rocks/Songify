@@ -1,0 +1,126 @@
+﻿<Controls:MetroWindow x:Name="Sognify_MainWindow" x:Class="Songify.MainWindow"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Songify"
+        mc:Ignorable="d"
+        Title="Songify" Height="360" Width="645" Loaded="Sognify_MainWindow_Loaded" MinWidth="645" MinHeight="356" ResizeMode="CanMinimize">
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="btn_About" Click="btn_About_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_book_open_information}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="about" />
+                </StackPanel>
+            </Button>
+
+            <Button x:Name="btn_Settings" Click="btn_Settings_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="settings" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Grid>
+        <Label x:FieldModifier="public" x:Name="Lbl_Artist" Content="Artist" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="16" />
+        <Label x:FieldModifier="public" x:Name="Lbl_Song" Content="Title" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top" FontSize="16" />
+        <Label x:FieldModifier="public" x:Name="Lbl_Album" Content="Album" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top" FontSize="16" />
+        <Label Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,29,0,0" />
+        <Label Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,74,0,0" />
+        <Label Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,119,0,0" />
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="552,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
+
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="639">
+                <Grid Margin="10">
+                    <TabControl Margin="0,10,10,10" Width="582">
+                        <TabItem Header="Output">
+                            <Grid>
+                                <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
+                                <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="425" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
+                                <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="544,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" />
+                                <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" />
+                                <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="425" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
+                                    <TextBox.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem x:Name="MenuItem_InsertArtist" Header="Insert Artist" Click="MenuItem_InsertArtist_Click" />
+                                            <MenuItem x:Name="MenuItem_InsertTitle" Header="Insert Title" Click="MenuItem_InsertTitle_Click" />
+                                            <MenuItem x:Name="MenuItem_InsertAlbum" Header="Insert Album" Click="MenuItem_InsertAlbum_Click" />
+                                        </ContextMenu>
+                                    </TextBox.ContextMenu>
+                                </TextBox>
+                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,73,0,0" VerticalAlignment="Top" Height="26" Width="425" />
+                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="501,134,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Appearance">
+                            <Grid>
+                                <ComboBox x:Name="ComboBox_Color" Margin="192,11,10,0" ItemsSource="{Binding Colors}" SelectionChanged="ComboBox_SelectionChanged" Height="32" VerticalAlignment="Top" />
+                                <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="177" Height="39" />
+                                <Controls:ToggleSwitch x:Name="themeToggleSwitch" Header="Dark Mode" Margin="10,54,0,35" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" Height="80" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="639">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,0,27">
+                        <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="290" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ><Run Text="This software uses Mahapps Metro." /><LineBreak /><Run /><LineBreak /><Run Text="MIT License (MIT)" /><LineBreak /><Run /><LineBreak /><Run Text="Copyright (c) 2016 MahApps" /><LineBreak /><Run /><LineBreak /><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy" /><LineBreak /><Run Text="of this software and associated documentation files (the &quot;Software&quot;), to deal" /><LineBreak /><Run Text="in the Software without restriction, including without limitation the rights" /><LineBreak /><Run Text="to use, copy, modify, merge, publish, distribute, sublicense, and/or sell" /><LineBreak /><Run Text="copies of the Software, and to permit persons to whom the Software is" /><LineBreak /><Run Text="furnished to do so, subject to the following conditions:" /><LineBreak /><Run /><LineBreak /><Run Text="The above copyright notice and this permission notice shall be included in all" /><LineBreak /><Run Text="copies or substantial portions of the Software." /><LineBreak /><Run /><LineBreak /><Run Text="THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR" /><LineBreak /><Run Text="IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY," /><LineBreak /><Run Text="FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE" /><LineBreak /><Run Text="AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER" /><LineBreak /><Run Text="LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM," /><LineBreak /><Run Text="OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE" /><LineBreak /><Run Text="SOFTWARE." /><LineBreak /><Run /><LineBreak /><Run /><LineBreak /><Run Text="This Software uses SpotifyAPI-NET." /><LineBreak /><Run /><LineBreak /><Run Text="GNU LESSER GENERAL PUBLIC LICENSE" /><LineBreak /><Run Text="                       Version 3, 29 June 2007" /><LineBreak /><Run /><LineBreak /><Run Text=" Copyright (C) 2007 Free Software Foundation, Inc. &lt;http://fsf.org/&gt;" /><LineBreak /><Run Text=" Everyone is permitted to copy and distribute verbatim copies" /><LineBreak /><Run Text=" of this license document, but changing it is not allowed." /><LineBreak /><Run /><LineBreak /><Run /><LineBreak /><Run Text="  This version of the GNU Lesser General Public License incorporates" /><LineBreak /><Run Text="the terms and conditions of version 3 of the GNU General Public" /><LineBreak /><Run Text="License, supplemented by the additional permissions listed below." /><LineBreak /><Run /><LineBreak /><Run Text="  0. Additional Definitions." /><LineBreak /><Run /><LineBreak /><Run Text="  As used herein, &quot;this License&quot; refers to version 3 of the GNU Lesser" /><LineBreak /><Run Text="General Public License, and the &quot;GNU GPL&quot; refers to version 3 of the GNU" /><LineBreak /><Run Text="General Public License." /><LineBreak /><Run /><LineBreak /><Run Text="  &quot;The Library&quot; refers to a covered work governed by this License," /><LineBreak /><Run Text="other than an Application or a Combined Work as defined below." /><LineBreak /><Run /><LineBreak /><Run Text="  An &quot;Application&quot; is any work that makes use of an interface provided" /><LineBreak /><Run Text="by the Library, but which is not otherwise based on the Library." /><LineBreak /><Run Text="Defining a subclass of a class defined by the Library is deemed a mode" /><LineBreak /><Run Text="of using an interface provided by the Library." /><LineBreak /><Run /><LineBreak /><Run Text="  A &quot;Combined Work&quot; is a work produced by combining or linking an" /><LineBreak /><Run Text="Application with the Library.  The particular version of the Library" /><LineBreak /><Run Text="with which the Combined Work was made is also called the &quot;Linked" /><LineBreak /><Run Text="Version&quot;." /><LineBreak /><Run /><LineBreak /><Run Text="  The &quot;Minimal Corresponding Source&quot; for a Combined Work means the" /><LineBreak /><Run Text="Corresponding Source for the Combined Work, excluding any source code" /><LineBreak /><Run Text="for portions of the Combined Work that, considered in isolation, are" /><LineBreak /><Run Text="based on the Application, and not on the Linked Version." /><LineBreak /><Run /><LineBreak /><Run Text="  The &quot;Corresponding Application Code&quot; for a Combined Work means the" /><LineBreak /><Run Text="object code and/or source code for the Application, including any data" /><LineBreak /><Run Text="and utility programs needed for reproducing the Combined Work from the" /><LineBreak /><Run Text="Application, but excluding the System Libraries of the Combined Work." /><LineBreak /><Run /><LineBreak /><Run Text="  1. Exception to Section 3 of the GNU GPL." /><LineBreak /><Run /><LineBreak /><Run Text="  You may convey a covered work under sections 3 and 4 of this License" /><LineBreak /><Run Text="without being bound by section 3 of the GNU GPL." /><LineBreak /><Run /><LineBreak /><Run Text="  2. Conveying Modified Versions." /><LineBreak /><Run /><LineBreak /><Run Text="  If you modify a copy of the Library, and, in your modifications, a" /><LineBreak /><Run Text="facility refers to a function or data to be supplied by an Application" /><LineBreak /><Run Text="that uses the facility (other than as an argument passed when the" /><LineBreak /><Run Text="facility is invoked), then you may convey a copy of the modified" /><LineBreak /><Run Text="version:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) under this License, provided that you make a good faith effort to" /><LineBreak /><Run Text="   ensure that, in the event an Application does not supply the" /><LineBreak /><Run Text="   function or data, the facility still operates, and performs" /><LineBreak /><Run Text="   whatever part of its purpose remains meaningful, or" /><LineBreak /><Run /><LineBreak /><Run Text="   b) under the GNU GPL, with none of the additional permissions of" /><LineBreak /><Run Text="   this License applicable to that copy." /><LineBreak /><Run /><LineBreak /><Run Text="  3. Object Code Incorporating Material from Library Header Files." /><LineBreak /><Run /><LineBreak /><Run Text="  The object code form of an Application may incorporate material from" /><LineBreak /><Run Text="a header file that is part of the Library.  You may convey such object" /><LineBreak /><Run Text="code under terms of your choice, provided that, if the incorporated" /><LineBreak /><Run Text="material is not limited to numerical parameters, data structure" /><LineBreak /><Run Text="layouts and accessors, or small macros, inline functions and templates" /><LineBreak /><Run Text="(ten or fewer lines in length), you do both of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Give prominent notice with each copy of the object code that the" /><LineBreak /><Run Text="   Library is used in it and that the Library and its use are" /><LineBreak /><Run Text="   covered by this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Accompany the object code with a copy of the GNU GPL and this license" /><LineBreak /><Run Text="   document." /><LineBreak /><Run /><LineBreak /><Run Text="  4. Combined Works." /><LineBreak /><Run /><LineBreak /><Run Text="  You may convey a Combined Work under terms of your choice that," /><LineBreak /><Run Text="taken together, effectively do not restrict modification of the" /><LineBreak /><Run Text="portions of the Library contained in the Combined Work and reverse" /><LineBreak /><Run Text="engineering for debugging such modifications, if you also do each of" /><LineBreak /><Run Text="the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Give prominent notice with each copy of the Combined Work that" /><LineBreak /><Run Text="   the Library is used in it and that the Library and its use are" /><LineBreak /><Run Text="   covered by this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Accompany the Combined Work with a copy of the GNU GPL and this license" /><LineBreak /><Run Text="   document." /><LineBreak /><Run /><LineBreak /><Run Text="   c) For a Combined Work that displays copyright notices during" /><LineBreak /><Run Text="   execution, include the copyright notice for the Library among" /><LineBreak /><Run Text="   these notices, as well as a reference directing the user to the" /><LineBreak /><Run Text="   copies of the GNU GPL and this license document." /><LineBreak /><Run /><LineBreak /><Run Text="   d) Do one of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="       0) Convey the Minimal Corresponding Source under the terms of this" /><LineBreak /><Run Text="       License, and the Corresponding Application Code in a form" /><LineBreak /><Run Text="       suitable for, and under terms that permit, the user to" /><LineBreak /><Run Text="       recombine or relink the Application with a modified version of" /><LineBreak /><Run Text="       the Linked Version to produce a modified Combined Work, in the" /><LineBreak /><Run Text="       manner specified by section 6 of the GNU GPL for conveying" /><LineBreak /><Run Text="       Corresponding Source." /><LineBreak /><Run /><LineBreak /><Run Text="       1) Use a suitable shared library mechanism for linking with the" /><LineBreak /><Run Text="       Library.  A suitable mechanism is one that (a) uses at run time" /><LineBreak /><Run Text="       a copy of the Library already present on the user's computer" /><LineBreak /><Run Text="       system, and (b) will operate properly with a modified version" /><LineBreak /><Run Text="       of the Library that is interface-compatible with the Linked" /><LineBreak /><Run Text="       Version." /><LineBreak /><Run /><LineBreak /><Run Text="   e) Provide Installation Information, but only if you would otherwise" /><LineBreak /><Run Text="   be required to provide such information under section 6 of the" /><LineBreak /><Run Text="   GNU GPL, and only to the extent that such information is" /><LineBreak /><Run Text="   necessary to install and execute a modified version of the" /><LineBreak /><Run Text="   Combined Work produced by recombining or relinking the" /><LineBreak /><Run Text="   Application with a modified version of the Linked Version. (If" /><LineBreak /><Run Text="   you use option 4d0, the Installation Information must accompany" /><LineBreak /><Run Text="   the Minimal Corresponding Source and Corresponding Application" /><LineBreak /><Run Text="   Code. If you use option 4d1, you must provide the Installation" /><LineBreak /><Run Text="   Information in the manner specified by section 6 of the GNU GPL" /><LineBreak /><Run Text="   for conveying Corresponding Source.)" /><LineBreak /><Run /><LineBreak /><Run Text="  5. Combined Libraries." /><LineBreak /><Run /><LineBreak /><Run Text="  You may place library facilities that are a work based on the" /><LineBreak /><Run Text="Library side by side in a single library together with other library" /><LineBreak /><Run Text="facilities that are not Applications and are not covered by this" /><LineBreak /><Run Text="License, and convey such a combined library under terms of your" /><LineBreak /><Run Text="choice, if you do both of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Accompany the combined library with a copy of the same work based" /><LineBreak /><Run Text="   on the Library, uncombined with any other library facilities," /><LineBreak /><Run Text="   conveyed under the terms of this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Give prominent notice with the combined library that part of it" /><LineBreak /><Run Text="   is a work based on the Library, and explaining where to find the" /><LineBreak /><Run Text="   accompanying uncombined form of the same work." /><LineBreak /><Run /><LineBreak /><Run Text="  6. Revised Versions of the GNU Lesser General Public License." /><LineBreak /><Run /><LineBreak /><Run Text="  The Free Software Foundation may publish revised and/or new versions" /><LineBreak /><Run Text="of the GNU Lesser General Public License from time to time. Such new" /><LineBreak /><Run Text="versions will be similar in spirit to the present version, but may" /><LineBreak /><Run Text="differ in detail to address new problems or concerns." /><LineBreak /><Run /><LineBreak /><Run Text="  Each version is given a distinguishing version number. If the" /><LineBreak /><Run Text="Library as you received it specifies that a certain numbered version" /><LineBreak /><Run Text="of the GNU Lesser General Public License &quot;or any later version&quot;" /><LineBreak /><Run Text="applies to it, you have the option of following the terms and" /><LineBreak /><Run Text="conditions either of that published version or of any later version" /><LineBreak /><Run Text="published by the Free Software Foundation. If the Library as you" /><LineBreak /><Run Text="received it does not specify a version number of the GNU Lesser" /><LineBreak /><Run Text="General Public License, you may choose any version of the GNU Lesser" /><LineBreak /><Run Text="General Public License ever published by the Free Software Foundation." /><LineBreak /><Run /><LineBreak /><Run Text="  If the Library as you received it specifies that a proxy can decide" /><LineBreak /><Run Text="whether future versions of the GNU Lesser General Public License shall" /><LineBreak /><Run Text="apply, that proxy's public statement of acceptance of any version is" /><LineBreak /><Run Text="permanent authorization for you to choose that version for the" /><LineBreak /><Run Text="Library." /></TextBlock>
+                    </ScrollViewer>
+                    <TextBlock  HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run Text="Copyright © Jan Blömacher" /><LineBreak /><Run /></TextBlock>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run Text="If you want to support this project feel free to donate!" /><LineBreak /><Run /></TextBlock>
+                    <Button Grid.Column="1" x:Name="btn_Donate" Margin="10,36,10,190" Click="btn_Donate_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_paypal}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
+                        </StackPanel>
+                    </Button>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="You can also join the Songify Discord Server!" TextAlignment="Center" />
+
+                    <Button Grid.Column="1" x:Name="btn_Discord" Margin="10,143,10,83" Click="btn_Discord_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_discord}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DISCORD" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+    </Grid>
+</Controls:MetroWindow>
