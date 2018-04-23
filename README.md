@@ -15,9 +15,12 @@ You can customize the output of the song!
 {artist}, {title} and {album} are the paramteres you can use
 
 For example
-{artist} - {title}
+
+**{artist} - {title}**
+
 will produce
-Welshly Arms - Legendary
+
+**Welshly Arms - Legendary**
 
 If you plan on using this to display the song in OBS / Xsplit I recommend adding a few (5-15) spaces at the end to ensure a clean look.
 
