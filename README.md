@@ -3,7 +3,8 @@ A simple tool that gets the current track from Spotify.
 
 # Installation
 Install via the MSI installer (check for the latest .NET Framework)
-The installer will autmatically create a shortcut on your desktop
+The installer will autmatically create a shortcut on your desktop.
+### [DOWNLOAD](https://github.com/Inzaniity/Songify/releases)
 
 # Settings
 In the top right corner you'll find a settings tab.
