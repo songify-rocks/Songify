@@ -1,5 +1,5 @@
 # Songify
-A simple tool that gets the current track from Spotify.
+A simple tool that gets the current track from Spotify and saves it as a text file.
 
 # Installation
 Install via the MSI installer (check for the latest .NET Framework)
