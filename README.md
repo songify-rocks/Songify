@@ -41,4 +41,4 @@ Dark Mode
 
 Colors!
 
-![](https://i.imgur.com/IamQchR.gif)
+![](https://i.imgur.com/yNBJMN1.gif)
