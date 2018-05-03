@@ -41,25 +41,29 @@
     </Controls:MetroWindow.RightWindowCommands>
 
     <Grid>
-        <Label x:FieldModifier="public" x:Name="Lbl_Artist" Content="Artist" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" FontSize="16" />
-        <Label x:FieldModifier="public" x:Name="Lbl_Song" Content="Title" HorizontalAlignment="Left" Margin="10,89,0,0" VerticalAlignment="Top" FontSize="16" />
-        <Label x:FieldModifier="public" x:Name="Lbl_Album" Content="Album" HorizontalAlignment="Left" Margin="10,134,0,0" VerticalAlignment="Top" FontSize="16" />
-        <Label Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,29,0,0" />
-        <Label Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,74,0,0" />
-        <Label Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,119,0,0" />
-        <Button Content="Refresh" HorizontalAlignment="Left" Margin="552,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
-
+        <Grid Margin="185,80,10,81" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Left">
+                <Label Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Artist" Content="Artist" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Margin="0,0,0,10" Padding="5,0,5,5" />
+                <Label Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Song" Content="Title" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Margin="0,0,0,10" Padding="5,0,5,5" />
+                <Label Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Album" Content="Album" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Padding="5,0,5,5" />
+            </StackPanel>
+        </Grid>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="554,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
+        <Image x:Name="albumImage" Margin="10,80,459,81" />
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="639">
+            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" Padding="0" Margin="0">
                 <Grid Margin="10">
                     <TabControl Margin="0,10,10,10" Width="582">
                         <TabItem Header="Output">
                             <Grid>
                                 <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
-                                <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="425" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
-                                <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="544,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" />
+                                <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
+                                <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="534,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" />
                                 <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" />
-                                <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="425" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
+                                <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
                                     <TextBox.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem x:Name="MenuItem_InsertArtist" Header="Insert Artist" Click="MenuItem_InsertArtist_Click" />
@@ -68,23 +72,26 @@
                                         </ContextMenu>
                                     </TextBox.ContextMenu>
                                 </TextBox>
-                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,73,0,0" VerticalAlignment="Top" Height="26" Width="425" />
-                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="501,134,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
+                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,73,0,0" VerticalAlignment="Top" Height="26" Width="408" />
+                                <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,104,467,46" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="pausetextToggleSwitch_IsCheckedChanged" />
+                                <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" Controls:TextBoxHelper.Watermark="Pause Text. Off = Regular Output" />
+
+                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="491,169,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
                             </Grid>
                         </TabItem>
                         <TabItem Header="Appearance">
                             <Grid>
                                 <ComboBox x:Name="ComboBox_Color" Margin="192,11,10,0" ItemsSource="{Binding Colors}" SelectionChanged="ComboBox_SelectionChanged" Height="32" VerticalAlignment="Top" />
                                 <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="177" Height="39" />
-                                <Controls:ToggleSwitch x:Name="themeToggleSwitch" Header="Dark Mode" Margin="10,54,0,35" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" Height="80" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" />
+                                <Controls:ToggleSwitch x:Name="themeToggleSwitch" Header="Dark Mode" Margin="10,54,0,98" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" />
+                                <Controls:ToggleSwitch x:Name="albumCoverToggleSwitch" Header="Show album cover" Margin="10,113,0,39" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="Caution: This may impact the performance (Slow loading when fast switching songs)" IsCheckedChanged="albumCoverToggleSwitch_IsCheckedChanged" />
+                                <TextBlock x:Name="warningLabel" Margin="192,130,10,39" Foreground="Red" Text="Caution: This may impact the performance (Slow loading when fast switching songs)" TextWrapping="Wrap" Visibility="Hidden" />
                             </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>
             </Controls:Flyout>
-        </Controls:FlyoutsControl>
-        <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="639">
+            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -107,9 +114,9 @@
                             <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
                         </StackPanel>
                     </Button>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,117,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="You can also join the Songify Discord Server!" TextAlignment="Center" />
 
-                    <Button Grid.Column="1" x:Name="btn_Discord" Margin="10,143,10,83" Click="btn_Discord_Click">
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="You can also join the Songify Discord Server!" TextAlignment="Center" />
+                    <Button Grid.Column="1" x:Name="btn_Discord" Margin="10,126,10,100" Click="btn_Discord_Click">
                         <StackPanel Orientation="Horizontal">
                             <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                                 <Rectangle.OpacityMask>
@@ -119,8 +126,23 @@
                             <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DISCORD" />
                         </StackPanel>
                     </Button>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="Found a bug? Report it on GitHub!" TextAlignment="Center" />
+                    <Button Grid.Column="1" x:Name="btn_GitHub" Margin="10,216,10,10" Click="btn_GitHub_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_github}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="GITHUB" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
+        <StatusBar x:Name="StatusBar" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Margin="0,303,-6,0" Background="Black" Width="645" Padding="0" Panel.ZIndex="-1">
+            <Label Content="" Margin="0,0,0,5" Foreground="White" Padding="0" />
+        </StatusBar>
     </Grid>
 </Controls:MetroWindow>

@@ -8,6 +8,17 @@ namespace Songify
 {
     internal class Settings
     {
+        public static bool getCustomPauseEnabled()
+        {
+            return Properties.Settings.Default.customPauseEnabled;
+        }
+
+        public static void setCustomPauseEnabled(bool customPauseEnabled)
+        {
+            Properties.Settings.Default.customPauseEnabled = (bool)customPauseEnabled;
+            Properties.Settings.Default.Save();
+        }
+
         public static string GetDirectory()
         {
             return Properties.Settings.Default.directory;
@@ -16,6 +27,28 @@ namespace Songify
         public static void SetDirectory(string directory)
         {
             Properties.Settings.Default.directory = directory;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool getShowAlbumArt()
+        {
+            return Properties.Settings.Default.showAlbumArt;
+        }
+
+        public static void setShowAlbumArt(bool showAlbumArt)
+        {
+            Properties.Settings.Default.showAlbumArt = (bool)showAlbumArt;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetCustomPauseText()
+        {
+            return Properties.Settings.Default.customPauseText;
+        }
+
+        public static void SetCustomPauseText(string customPauseText)
+        {
+            Properties.Settings.Default.customPauseText = customPauseText;
             Properties.Settings.Default.Save();
         }
 
@@ -29,7 +62,6 @@ namespace Songify
             Properties.Settings.Default.customOutput = customOutput;
             Properties.Settings.Default.Save();
         }
-
 
         public static string GetColor()
         {

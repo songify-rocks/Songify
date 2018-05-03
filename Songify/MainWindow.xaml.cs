@@ -7,6 +7,10 @@ using System;
 using MahApps.Metro;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Songify
 {
@@ -20,11 +24,15 @@ namespace Songify
         private System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
         private string artist, title, album;
 
+        private delegate void UpdateStatusDelegate(string value);
+
         public MainWindow()
         {
             InitializeComponent();
-            _spotify = new SpotifyLocalAPI();
-            _spotify.ListenForEvents = true;
+            _spotify = new SpotifyLocalAPI
+            {
+                ListenForEvents = true
+            };
             _spotify.OnPlayStateChange += OnPlayStateChange;
             _spotify.OnTrackChange += OnTrackChange;
         }
@@ -75,6 +83,15 @@ namespace Songify
                 Settings.SetDirectory(System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
             txtbx_customoutput.Text = Settings.GetCustomOutput();
             Txtbx_outputdirectory.Text = Settings.GetDirectory();
+            albumCoverToggleSwitch.IsChecked = Settings.getShowAlbumArt();
+            if (Settings.getShowAlbumArt())
+                warningLabel.Visibility = Visibility.Visible;
+            else
+                warningLabel.Visibility = Visibility.Hidden;
+
+            pausetextToggleSwitch.IsChecked = Settings.getCustomPauseEnabled();
+
+            Txtbx_Pausetext.Text = Settings.GetCustomPauseText();
 
             #endregion Settings
 
@@ -89,7 +106,7 @@ namespace Songify
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                WriteConsole("Ooops! Something went wrong. Try again with the \"Refresh\"-Button.", ex);
             }
         }
 
@@ -115,25 +132,53 @@ namespace Songify
             catch (Exception ex)
             {
                 // Could not Connect to the webservice
-                Console.WriteLine(ex.Message);
+                WriteConsole("Couldn't connect to the Spotify Webservice. Please try again.", ex);
             }
             status = _spotify.GetStatus(); //status contains infos
 
             if (status != null)
             {
-                await Dispatcher.BeginInvoke((Action)(() =>
+                await Dispatcher.BeginInvoke((Action)(async () =>
                 {
-                    artist = status.Track.ArtistResource.Name;
-                    title = status.Track.TrackResource.Name;
-                    album = status.Track.AlbumResource.Name;
-                    txtbx_customoutput.AppendText("%TEMP%");
-                    txtbx_customoutput.Text = txtbx_customoutput.Text.Replace("%TEMP%", "");
-                    Lbl_Artist.Content = artist;
-                    Lbl_Song.Content = title;
-                    Lbl_Album.Content = album;
-                    File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomOutput().Replace("{artist}", artist).Replace("{title}", title).Replace("{album}", album));
+                    try
+                    {
+                        artist = status.Track.ArtistResource.Name;
+                        title = status.Track.TrackResource.Name;
+                        album = status.Track.AlbumResource.Name;
+                        txtbx_customoutput.AppendText("%TEMP%");
+                        txtbx_customoutput.Text = txtbx_customoutput.Text.Replace("%TEMP%", "");
+                        Lbl_Artist.Content = artist;
+                        Lbl_Song.Content = title;
+                        Lbl_Album.Content = album;
+                        File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomOutput().Replace("{artist}", artist).Replace("{title}", title).Replace("{album}", album));
+                        if (Settings.getShowAlbumArt())
+                        {
+                            albumImage.Source = (ImageSource)CreateBitmapSourceFromGdiBitmap(await status.Track.GetAlbumArtAsync(SpotifyAPI.Local.Enums.AlbumArtSize.Size160, null));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteConsole("Couldn't connect to the Spotify Webservice. Please try again.", ex);
+                    }
                 }
                 ));
+            }
+        }
+
+        public static BitmapSource CreateBitmapSourceFromGdiBitmap(Bitmap bitmap)
+        {
+            if (bitmap == null)
+                throw new ArgumentNullException(nameof(bitmap));
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            BitmapData bitmapdata = bitmap.LockBits(rect, ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            try
+            {
+                int bufferSize = rect.Width * rect.Height * 4;
+                return BitmapSource.Create(bitmap.Width, bitmap.Height, (double)bitmap.HorizontalResolution, (double)bitmap.VerticalResolution, PixelFormats.Bgra32, (BitmapPalette)null, bitmapdata.Scan0, bufferSize, bitmapdata.Stride);
+            }
+            finally
+            {
+                bitmap.UnlockBits(bitmapdata);
             }
         }
 
@@ -144,7 +189,24 @@ namespace Songify
 
         private void OnPlayStateChange(object sender, PlayStateEventArgs e)
         {
-            startSpotify();
+            try
+            {
+                if (!_spotify.GetStatus().Playing)
+                {
+                    if (Settings.getCustomPauseEnabled())
+                        File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomPauseText());
+                    else
+                        File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomOutput().Replace("{artist}", artist).Replace("{title}", title).Replace("{album}", album));
+                }
+                else
+                {
+                    startSpotify();
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteConsole("Oops! Something went wrong... maybe clicking on \"Refresh\" will help?", ex);
+            }
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -156,6 +218,7 @@ namespace Songify
         private void btn_save_Click(object sender, RoutedEventArgs e)
         {
             Settings.SetCustomOutputy(txtbx_customoutput.Text);
+            Settings.SetCustomPauseText(Txtbx_Pausetext.Text);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -205,6 +268,31 @@ namespace Songify
             tb.ContextMenu.IsOpen = false;
         }
 
+        private void albumCoverToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
+        {
+            Settings.setShowAlbumArt((bool)albumCoverToggleSwitch.IsChecked);
+            if (Settings.getShowAlbumArt())
+                warningLabel.Visibility = Visibility.Visible;
+            else
+            {
+                warningLabel.Visibility = Visibility.Hidden;
+                albumImage.Source = null;
+            }
+        }
+
+        private void pausetextToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
+        {
+            if ((bool)pausetextToggleSwitch.IsChecked)
+                Settings.setCustomPauseEnabled(true);
+            else
+                Settings.setCustomPauseEnabled(false);
+        }
+
+        private void btn_GitHub_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/Inzaniity/Songify");
+        }
+
         private void themeToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
         {
             if (themeToggleSwitch.IsChecked == true)
@@ -227,6 +315,17 @@ namespace Songify
                 return;
             Txtbx_outputdirectory.Text = fbd.SelectedPath;
             Settings.SetDirectory(fbd.SelectedPath);
+        }
+
+        public void WriteConsole(string msg, Exception ex)
+        {
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                Label lbl = (Label)StatusBar.Items[0];
+                lbl.Content = DateTime.Now.ToString("hh:mm:ss") + ": " + msg;
+                if (ex != null)
+                    File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "/Log.txt", DateTime.Now.ToString("hh:mm:ss") + ": " + ex.Message + Environment.NewLine);
+            }));
         }
     }
 }
