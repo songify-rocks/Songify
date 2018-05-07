@@ -324,7 +324,21 @@ namespace Songify
                 Label lbl = (Label)StatusBar.Items[0];
                 lbl.Content = DateTime.Now.ToString("hh:mm:ss") + ": " + msg;
                 if (ex != null)
-                    File.AppendAllText(AppDomain.CurrentDomain.BaseDirectory + "/Log.txt", DateTime.Now.ToString("hh:mm:ss") + ": " + ex.Message + Environment.NewLine);
+                {
+                    try
+                    {
+                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/Songify";
+                        if (!Directory.Exists(path))
+                            Directory.CreateDirectory(path);
+                        if (!File.Exists(path + "/log.txt"))
+                            File.Create(path + "/log.txt");
+                        File.AppendAllText(Environment.SpecialFolder.MyDocuments + "/Songify" + "/log.txt", DateTime.Now.ToString("hh:mm:ss") + ": " + ex.Message + Environment.NewLine);
+                    }
+                    catch (Exception exc)
+                    {
+                        lbl.Content = DateTime.Now.ToString("hh:mm:ss") + ": " + exc.Message;
+                    }
+                }
             }));
         }
     }
