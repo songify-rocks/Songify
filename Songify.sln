@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songify", "Songify\Songify.csproj", "{C77DDA49-F187-4CFD-A450-270F2D49B11F}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +21,6 @@ Global
 		{C77DDA49-F187-4CFD-A450-270F2D49B11F}.Release|Any CPU.Build.0 = Release|x64
 		{C77DDA49-F187-4CFD-A450-270F2D49B11F}.Release|x64.ActiveCfg = Release|x64
 		{C77DDA49-F187-4CFD-A450-270F2D49B11F}.Release|x64.Build.0 = Release|x64
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Debug|Any CPU.ActiveCfg = Debug
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Debug|Any CPU.Build.0 = Debug
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Debug|x64.ActiveCfg = Debug
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Release|Any CPU.ActiveCfg = Release
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Release|Any CPU.Build.0 = Release
-		{CD1E699D-4EE7-4479-B166-240BB7C2B2EE}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

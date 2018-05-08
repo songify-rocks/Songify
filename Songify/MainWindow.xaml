@@ -75,6 +75,7 @@
                                 <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,73,0,0" VerticalAlignment="Top" Height="26" Width="408" />
                                 <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,104,467,46" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="pausetextToggleSwitch_IsCheckedChanged" />
                                 <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" Controls:TextBoxHelper.Watermark="Pause Text. Off = Regular Output" />
+                                <Controls:ToggleSwitch x:Name="downloadAlbumArtToggleSwitch" Margin="10,156,467,0" Header="Save Album Art" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." IsCheckedChanged="downloadAlbumArtToggleSwitch_IsCheckedChanged" />
 
                                 <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="491,169,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
                             </Grid>

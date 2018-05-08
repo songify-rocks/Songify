@@ -90,6 +90,7 @@ namespace Songify
                 warningLabel.Visibility = Visibility.Hidden;
 
             pausetextToggleSwitch.IsChecked = Settings.getCustomPauseEnabled();
+            downloadAlbumArtToggleSwitch.IsChecked = Settings.getDownloadAlbumArt();
 
             Txtbx_Pausetext.Text = Settings.GetCustomPauseText();
 
@@ -121,9 +122,16 @@ namespace Songify
             StatusResponse status = null;
 
             if (!SpotifyLocalAPI.IsSpotifyRunning())
+            {
+                WriteConsole("Spotify is not running.", null);
                 return; //Make sure the spotify client is running
+            }
+
             if (!SpotifyLocalAPI.IsSpotifyWebHelperRunning())
+            {
+                WriteConsole("Spotify WebHelper Service is not running.", null);
                 return; //Make sure the WebHelper is running
+            }
             try
             {
                 if (!_spotify.Connect())
@@ -142,6 +150,7 @@ namespace Songify
                 {
                     try
                     {
+                        Bitmap bmp = null;
                         artist = status.Track.ArtistResource.Name;
                         title = status.Track.TrackResource.Name;
                         album = status.Track.AlbumResource.Name;
@@ -153,7 +162,21 @@ namespace Songify
                         File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomOutput().Replace("{artist}", artist).Replace("{title}", title).Replace("{album}", album));
                         if (Settings.getShowAlbumArt())
                         {
-                            albumImage.Source = (ImageSource)CreateBitmapSourceFromGdiBitmap(await status.Track.GetAlbumArtAsync(SpotifyAPI.Local.Enums.AlbumArtSize.Size160, null));
+                            bmp = new Bitmap(await status.Track.GetAlbumArtAsync(SpotifyAPI.Local.Enums.AlbumArtSize.Size640, null));
+                            albumImage.Source = CreateBitmapSourceFromGdiBitmap(bmp);
+                        }
+                        if (Settings.getDownloadAlbumArt())
+                        {
+                            if (bmp == null)
+                                bmp = new Bitmap(await status.Track.GetAlbumArtAsync(SpotifyAPI.Local.Enums.AlbumArtSize.Size640, null));
+                            try
+                            {
+                                SaveJPG(bmp);
+                            }
+                            catch (Exception ex)
+                            {
+                                WriteConsole(ex.Message, ex);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -163,6 +186,20 @@ namespace Songify
                 }
                 ));
             }
+        }
+
+        public void SaveJPG(Bitmap bitmap)
+        {
+            ImageCodecInfo imageCodecInfo;
+            Encoder encoder;
+            EncoderParameter encoderParameter;
+            EncoderParameters encoderParameters;
+            imageCodecInfo = GetEncoderInfo("image/jpeg");
+            encoder = Encoder.Quality;
+            encoderParameters = new EncoderParameters(1);
+            encoderParameter = new EncoderParameter(encoder, 75L);
+            encoderParameters.Param[0] = encoderParameter;
+            bitmap.Save(Settings.GetDirectory() + "/AlbumCover.jpg", imageCodecInfo, encoderParameters);
         }
 
         public static BitmapSource CreateBitmapSourceFromGdiBitmap(Bitmap bitmap)
@@ -180,6 +217,19 @@ namespace Songify
             {
                 bitmap.UnlockBits(bitmapdata);
             }
+        }
+
+        private static ImageCodecInfo GetEncoderInfo(String mimeType)
+        {
+            int j;
+            ImageCodecInfo[] encoders;
+            encoders = ImageCodecInfo.GetImageEncoders();
+            for (j = 0; j < encoders.Length; ++j)
+            {
+                if (encoders[j].MimeType == mimeType)
+                    return encoders[j];
+            }
+            return null;
         }
 
         public void OnTrackChange(object sender, TrackChangeEventArgs e)
@@ -304,6 +354,14 @@ namespace Songify
                 Settings.SetTheme("BaseLight");
             }
             ApplyTheme();
+        }
+
+        private void downloadAlbumArtToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
+        {
+            if ((bool)downloadAlbumArtToggleSwitch.IsChecked)
+                Settings.setDownloadAlbumArt(true);
+            else
+                Settings.setDownloadAlbumArt(false);
         }
 
         private void Btn_Outputdirectory_Click(object sender, RoutedEventArgs e)

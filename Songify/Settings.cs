@@ -8,6 +8,17 @@ namespace Songify
 {
     internal class Settings
     {
+        public static bool getDownloadAlbumArt()
+        {
+            return Properties.Settings.Default.downloadAlbumArt;
+        }
+
+        public static void setDownloadAlbumArt(bool downloadAlbumArt)
+        {
+            Properties.Settings.Default.downloadAlbumArt = (bool)downloadAlbumArt;
+            Properties.Settings.Default.Save();
+        }
+
         public static bool getCustomPauseEnabled()
         {
             return Properties.Settings.Default.customPauseEnabled;

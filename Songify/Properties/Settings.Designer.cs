@@ -106,5 +106,17 @@ namespace Songify.Properties {
                 this["customPauseText"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool downloadAlbumArt {
+            get {
+                return ((bool)(this["downloadAlbumArt"]));
+            }
+            set {
+                this["downloadAlbumArt"] = value;
+            }
+        }
     }
 }
