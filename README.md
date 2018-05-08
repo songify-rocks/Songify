@@ -2,8 +2,7 @@
 A simple tool that gets the current track from Spotify and saves it as a text file.
 
 # Installation
-Install via the MSI installer (check for the latest .NET Framework)
-The installer will autmatically create a shortcut on your desktop.
+Download and unzip the application to any destination.
 ### [DOWNLOAD](https://github.com/Inzaniity/Songify/releases)
 
 # Settings
@@ -23,7 +22,11 @@ will produce
 
 **Welshly Arms - Legendary**
 
-If you plan on using this to display the song in OBS / Xsplit I recommend adding a few (5-15) spaces at the end to ensure a clean look.
+If you plan on using this to display the song in OBS / XSplit I recommend adding a few (5-15) spaces at the end to ensure a clean look.
+
+The application allows you to set a custom pause text. (For Example: Just blank, or "Pause")
+
+You can also download the album cover to display it in OBS / XSplit.
 
 # Screenshots 
 
