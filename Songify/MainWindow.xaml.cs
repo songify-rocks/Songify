@@ -160,6 +160,7 @@ namespace Songify
                         Lbl_Song.Content = title;
                         Lbl_Album.Content = album;
                         File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", Settings.GetCustomOutput().Replace("{artist}", artist).Replace("{title}", title).Replace("{album}", album));
+                        Title = "Songify | " + artist + " - " + title;
                         if (Settings.getShowAlbumArt())
                         {
                             bmp = new Bitmap(await status.Track.GetAlbumArtAsync(SpotifyAPI.Local.Enums.AlbumArtSize.Size640, null));
@@ -390,7 +391,7 @@ namespace Songify
                             Directory.CreateDirectory(path);
                         if (!File.Exists(path + "/log.txt"))
                             File.Create(path + "/log.txt");
-                        File.AppendAllText(Environment.SpecialFolder.MyDocuments + "/Songify" + "/log.txt", DateTime.Now.ToString("hh:mm:ss") + ": " + ex.Message + Environment.NewLine);
+                        File.AppendAllText(path + "/log.txt", DateTime.Now.ToString("hh:mm:ss") + ": " + ex.Message + Environment.NewLine);
                     }
                     catch (Exception exc)
                     {

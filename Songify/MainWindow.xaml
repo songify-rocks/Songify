@@ -54,15 +54,15 @@
         <Button Content="Refresh" HorizontalAlignment="Left" Margin="554,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
         <Image x:Name="albumImage" Margin="10,80,459,81" />
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" Padding="0" Margin="0">
-                <Grid Margin="10">
-                    <TabControl Margin="0,10,10,10" Width="582">
+            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="true" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" Padding="0" Margin="0">
+                <Grid Margin="10,0,10,10">
+                    <TabControl Margin="10,0,10,10" Width="582">
                         <TabItem Header="Output">
                             <Grid>
-                                <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
+                                <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
                                 <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
                                 <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="534,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" />
-                                <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" />
+                                <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
                                 <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
                                     <TextBox.ContextMenu>
                                         <ContextMenu>
@@ -72,12 +72,14 @@
                                         </ContextMenu>
                                     </TextBox.ContextMenu>
                                 </TextBox>
-                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,73,0,0" VerticalAlignment="Top" Height="26" Width="408" />
-                                <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,104,467,46" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="pausetextToggleSwitch_IsCheckedChanged" />
-                                <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,125,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" Controls:TextBoxHelper.Watermark="Pause Text. Off = Regular Output" />
-                                <Controls:ToggleSwitch x:Name="downloadAlbumArtToggleSwitch" Margin="10,156,467,0" Header="Save Album Art" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." IsCheckedChanged="downloadAlbumArtToggleSwitch_IsCheckedChanged" />
+                                <Label Content="Live Preview" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
 
-                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="491,169,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
+                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,72,0,0" VerticalAlignment="Top" Height="26" Width="408" Padding="0,5,5,5" />
+                                <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,106,467,70" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="pausetextToggleSwitch_IsCheckedChanged" Height="50" />
+                                <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" Controls:TextBoxHelper.Watermark="Pause Text" ToolTip="Leave blank for empty text file." />
+                                <Controls:ToggleSwitch x:Name="downloadAlbumArtToggleSwitch" Margin="10,166,467,10" Header="Save Album Art" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." IsCheckedChanged="downloadAlbumArtToggleSwitch_IsCheckedChanged" />
+
+                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="491,189,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
                             </Grid>
                         </TabItem>
                         <TabItem Header="Appearance">
@@ -142,8 +144,8 @@
                 </Grid>
             </Controls:Flyout>
         </Controls:FlyoutsControl>
-        <StatusBar x:Name="StatusBar" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Margin="0,303,-6,0" Background="Black" Width="645" Padding="0" Panel.ZIndex="-1">
-            <Label Content="" Margin="0,0,0,5" Foreground="White" Padding="0" />
+        <StatusBar x:Name="StatusBar" Margin="0,303,-6,0" Background="Black" Padding="0" Panel.ZIndex="-1" BorderThickness="0,1,0,0" BorderBrush="#FF444444" ScrollViewer.CanContentScroll="True">
+            <Label Content="" Margin="0" Foreground="White" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" />
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>
