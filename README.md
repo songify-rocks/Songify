@@ -3,6 +3,7 @@ A simple tool that gets the current track from Spotify and saves it as a text fi
 
 # Installation
 Download and unzip the application to any destination.
+
 If you are updating from an older version just replace the Songify.exe file.
 ### [DOWNLOAD](https://github.com/Inzaniity/Songify/releases)
 
