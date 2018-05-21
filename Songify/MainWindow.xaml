@@ -7,6 +7,42 @@
         xmlns:local="clr-namespace:Songify"
         mc:Ignorable="d"
         Title="Songify" Height="360" Width="645" Loaded="Sognify_MainWindow_Loaded" MinWidth="645" MinHeight="356" ResizeMode="CanMinimize">
+    <Controls:MetroWindow.Resources>
+        <DataTemplate x:Key="headerTemplate">
+            <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
+                <Button x:Name="PART_BackButton" DockPanel.Dock="Left" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:Flyout}}, Path=InternalCloseCommand, Mode=OneWay}" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="34" IsCancel="{Binding CloseButtonIsCancel, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Margin="2,4,10,2" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" Visibility="{Binding CloseButtonVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Bottom" Width="34">
+                    <ContentControl Content="M19,34V42H43.75L33.75,52H44.25L58.25,38L44.25,24H33.75L43.75,34H19Z" FlowDirection="{Binding FlowDirection, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="20" Style="{DynamicResource PathIconContentControlStyle}" Width="20" />
+                </Button>
+                <ContentControl x:Name="PART_BackHeaderText" Content="{Binding}" Focusable="False" IsTabStop="False" Margin="15,0,0,0" Visibility="{Binding TitleVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Center" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Left">
+                    <Setter Property="DockPanel.Dock" TargetName="PART_BackButton" Value="Right" />
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="-1" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="HorizontalAlignment" TargetName="PART_BackHeaderText" Value="Right" />
+                    <Setter Property="Margin" TargetName="PART_BackHeaderText" Value="0,0,15,0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Top">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="-90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Bottom">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Controls:MetroWindow.Resources>
 
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
@@ -41,7 +77,9 @@
     </Controls:MetroWindow.RightWindowCommands>
 
     <Grid>
-        <Grid Margin="185,80,10,81" VerticalAlignment="Center">
+        <Image x:Name="albumImage"  Width="169" Margin="10,51,460,111" Stretch="Fill" />
+
+        <Grid Margin="184,50,55,111" VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
             <StackPanel HorizontalAlignment="Left">
                 <Label Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
                 <Label x:FieldModifier="public" x:Name="Lbl_Artist" Content="Artist" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Margin="0,0,0,10" Padding="5,0,5,5" />
@@ -51,19 +89,56 @@
                 <Label x:FieldModifier="public" x:Name="Lbl_Album" Content="Album" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Padding="5,0,5,5" />
             </StackPanel>
         </Grid>
+
         <Button Content="Refresh" HorizontalAlignment="Left" Margin="554,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
-        <Image x:Name="albumImage" Margin="10,80,459,81" />
+
+        <StackPanel Margin="202,242,202,50" Orientation="Horizontal">
+            <Label x:Name="lbl_currentTime" Content="3:25" Padding="0" Margin="5,0" Width="50" HorizontalContentAlignment="Right" Height="28" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+            <Button x:Name="bnt_playPrevious" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="bnt_playPrevious_Click" Margin="5,0">
+                <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_control_skip_backward}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="bnt_playPause" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="bnt_playPause_Click" Margin="5,0">
+                <Rectangle x:Name="ppRect" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush x:Name="playpauseVisualBrush" Stretch="Fill" Visual="{StaticResource appbar_control_play}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="bnt_playNext" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="bnt_playNext_Click" Margin="5,0">
+                <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_control_skip_forward}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Label x:Name="lbl_endTime" Grid.Column="4" Content="3:25" Padding="0" Margin="5,0" Width="50" Height="28" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        </StackPanel>
         <Controls:FlyoutsControl>
-            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="true" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" Padding="0" Margin="0">
+            <Controls:Flyout x:Name="flyout_Settings" Header="Settings" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" Padding="0" Margin="0" HeaderTemplate="{DynamicResource headerTemplate}">
                 <Grid Margin="10,0,10,10">
                     <TabControl Margin="10,0,10,10" Width="582">
                         <TabItem Header="Output">
                             <Grid>
                                 <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
-                                <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
-                                <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="534,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" />
+                                <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="114,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" />
+
+                                <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="501,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" Focusable="False" />
+                                <Button x:Name="Btn_CopyToClip" HorizontalAlignment="Left" Margin="538,10,0,0" VerticalAlignment="Top" Width="28" Click="Btn_CopyToClip_Click" Padding="5" Focusable="False" ToolTip="Copy to Clipboard">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="15" Height="15">
+                                            <Rectangle.OpacityMask>
+                                                <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
+                                            </Rectangle.OpacityMask>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Button>
+
                                 <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
-                                <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
+                                <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="19" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" TextChanged="txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}">
                                     <TextBox.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem x:Name="MenuItem_InsertArtist" Header="Insert Artist" Click="MenuItem_InsertArtist_Click" />
@@ -74,12 +149,12 @@
                                 </TextBox>
                                 <Label Content="Live Preview" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Padding="0,5,5,5" />
 
-                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,72,0,0" VerticalAlignment="Top" Height="26" Width="408" Padding="0,5,5,5" />
+                                <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="114,72,0,0" VerticalAlignment="Top" Height="26" Width="382" Padding="0,5,5,5" />
                                 <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,106,467,70" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="pausetextToggleSwitch_IsCheckedChanged" Height="50" />
-                                <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" Controls:TextBoxHelper.Watermark="Pause Text" ToolTip="Leave blank for empty text file." />
+                                <TextBox x:Name="Txtbx_Pausetext" HorizontalAlignment="Left" Height="23" Margin="114,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" Controls:TextBoxHelper.Watermark="Pause Text" ToolTip="Leave blank for empty text file." />
                                 <Controls:ToggleSwitch x:Name="downloadAlbumArtToggleSwitch" Margin="10,166,467,10" Header="Save Album Art" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." IsCheckedChanged="downloadAlbumArtToggleSwitch_IsCheckedChanged" />
 
-                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="491,189,0,0" VerticalAlignment="Top" Width="75" Click="btn_save_Click" />
+                                <Button x:Name="btn_save" Content="Save" HorizontalAlignment="Left" Margin="501,189,0,0" VerticalAlignment="Top" Width="65" Click="btn_save_Click" />
                             </Grid>
                         </TabItem>
                         <TabItem Header="Appearance">
@@ -88,13 +163,13 @@
                                 <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="177" Height="39" />
                                 <Controls:ToggleSwitch x:Name="themeToggleSwitch" Header="Dark Mode" Margin="10,54,0,98" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" />
                                 <Controls:ToggleSwitch x:Name="albumCoverToggleSwitch" Header="Show album cover" Margin="10,113,0,39" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="Caution: This may impact the performance (Slow loading when fast switching songs)" IsCheckedChanged="albumCoverToggleSwitch_IsCheckedChanged" />
-                                <TextBlock x:Name="warningLabel" Margin="192,130,10,39" Foreground="Red" Text="Caution: This may impact the performance (Slow loading when fast switching songs)" TextWrapping="Wrap" Visibility="Hidden" />
+                                <TextBlock x:Name="warningLabel" Margin="192,130,10,39" Foreground="Red" Text="Caution: This may impact the performance (Slow loading when fast switching songs) only works with dark mode for now." TextWrapping="Wrap" Visibility="Hidden" />
                             </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>
             </Controls:Flyout>
-            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645">
+            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" HeaderTemplate="{DynamicResource headerTemplate}">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
@@ -104,7 +179,7 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,0,0,27">
                         <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="290" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" ><Run Text="This software uses Mahapps Metro." /><LineBreak /><Run /><LineBreak /><Run Text="MIT License (MIT)" /><LineBreak /><Run /><LineBreak /><Run Text="Copyright (c) 2016 MahApps" /><LineBreak /><Run /><LineBreak /><Run Text="Permission is hereby granted, free of charge, to any person obtaining a copy" /><LineBreak /><Run Text="of this software and associated documentation files (the &quot;Software&quot;), to deal" /><LineBreak /><Run Text="in the Software without restriction, including without limitation the rights" /><LineBreak /><Run Text="to use, copy, modify, merge, publish, distribute, sublicense, and/or sell" /><LineBreak /><Run Text="copies of the Software, and to permit persons to whom the Software is" /><LineBreak /><Run Text="furnished to do so, subject to the following conditions:" /><LineBreak /><Run /><LineBreak /><Run Text="The above copyright notice and this permission notice shall be included in all" /><LineBreak /><Run Text="copies or substantial portions of the Software." /><LineBreak /><Run /><LineBreak /><Run Text="THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR" /><LineBreak /><Run Text="IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY," /><LineBreak /><Run Text="FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE" /><LineBreak /><Run Text="AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER" /><LineBreak /><Run Text="LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM," /><LineBreak /><Run Text="OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE" /><LineBreak /><Run Text="SOFTWARE." /><LineBreak /><Run /><LineBreak /><Run /><LineBreak /><Run Text="This Software uses SpotifyAPI-NET." /><LineBreak /><Run /><LineBreak /><Run Text="GNU LESSER GENERAL PUBLIC LICENSE" /><LineBreak /><Run Text="                       Version 3, 29 June 2007" /><LineBreak /><Run /><LineBreak /><Run Text=" Copyright (C) 2007 Free Software Foundation, Inc. &lt;http://fsf.org/&gt;" /><LineBreak /><Run Text=" Everyone is permitted to copy and distribute verbatim copies" /><LineBreak /><Run Text=" of this license document, but changing it is not allowed." /><LineBreak /><Run /><LineBreak /><Run /><LineBreak /><Run Text="  This version of the GNU Lesser General Public License incorporates" /><LineBreak /><Run Text="the terms and conditions of version 3 of the GNU General Public" /><LineBreak /><Run Text="License, supplemented by the additional permissions listed below." /><LineBreak /><Run /><LineBreak /><Run Text="  0. Additional Definitions." /><LineBreak /><Run /><LineBreak /><Run Text="  As used herein, &quot;this License&quot; refers to version 3 of the GNU Lesser" /><LineBreak /><Run Text="General Public License, and the &quot;GNU GPL&quot; refers to version 3 of the GNU" /><LineBreak /><Run Text="General Public License." /><LineBreak /><Run /><LineBreak /><Run Text="  &quot;The Library&quot; refers to a covered work governed by this License," /><LineBreak /><Run Text="other than an Application or a Combined Work as defined below." /><LineBreak /><Run /><LineBreak /><Run Text="  An &quot;Application&quot; is any work that makes use of an interface provided" /><LineBreak /><Run Text="by the Library, but which is not otherwise based on the Library." /><LineBreak /><Run Text="Defining a subclass of a class defined by the Library is deemed a mode" /><LineBreak /><Run Text="of using an interface provided by the Library." /><LineBreak /><Run /><LineBreak /><Run Text="  A &quot;Combined Work&quot; is a work produced by combining or linking an" /><LineBreak /><Run Text="Application with the Library.  The particular version of the Library" /><LineBreak /><Run Text="with which the Combined Work was made is also called the &quot;Linked" /><LineBreak /><Run Text="Version&quot;." /><LineBreak /><Run /><LineBreak /><Run Text="  The &quot;Minimal Corresponding Source&quot; for a Combined Work means the" /><LineBreak /><Run Text="Corresponding Source for the Combined Work, excluding any source code" /><LineBreak /><Run Text="for portions of the Combined Work that, considered in isolation, are" /><LineBreak /><Run Text="based on the Application, and not on the Linked Version." /><LineBreak /><Run /><LineBreak /><Run Text="  The &quot;Corresponding Application Code&quot; for a Combined Work means the" /><LineBreak /><Run Text="object code and/or source code for the Application, including any data" /><LineBreak /><Run Text="and utility programs needed for reproducing the Combined Work from the" /><LineBreak /><Run Text="Application, but excluding the System Libraries of the Combined Work." /><LineBreak /><Run /><LineBreak /><Run Text="  1. Exception to Section 3 of the GNU GPL." /><LineBreak /><Run /><LineBreak /><Run Text="  You may convey a covered work under sections 3 and 4 of this License" /><LineBreak /><Run Text="without being bound by section 3 of the GNU GPL." /><LineBreak /><Run /><LineBreak /><Run Text="  2. Conveying Modified Versions." /><LineBreak /><Run /><LineBreak /><Run Text="  If you modify a copy of the Library, and, in your modifications, a" /><LineBreak /><Run Text="facility refers to a function or data to be supplied by an Application" /><LineBreak /><Run Text="that uses the facility (other than as an argument passed when the" /><LineBreak /><Run Text="facility is invoked), then you may convey a copy of the modified" /><LineBreak /><Run Text="version:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) under this License, provided that you make a good faith effort to" /><LineBreak /><Run Text="   ensure that, in the event an Application does not supply the" /><LineBreak /><Run Text="   function or data, the facility still operates, and performs" /><LineBreak /><Run Text="   whatever part of its purpose remains meaningful, or" /><LineBreak /><Run /><LineBreak /><Run Text="   b) under the GNU GPL, with none of the additional permissions of" /><LineBreak /><Run Text="   this License applicable to that copy." /><LineBreak /><Run /><LineBreak /><Run Text="  3. Object Code Incorporating Material from Library Header Files." /><LineBreak /><Run /><LineBreak /><Run Text="  The object code form of an Application may incorporate material from" /><LineBreak /><Run Text="a header file that is part of the Library.  You may convey such object" /><LineBreak /><Run Text="code under terms of your choice, provided that, if the incorporated" /><LineBreak /><Run Text="material is not limited to numerical parameters, data structure" /><LineBreak /><Run Text="layouts and accessors, or small macros, inline functions and templates" /><LineBreak /><Run Text="(ten or fewer lines in length), you do both of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Give prominent notice with each copy of the object code that the" /><LineBreak /><Run Text="   Library is used in it and that the Library and its use are" /><LineBreak /><Run Text="   covered by this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Accompany the object code with a copy of the GNU GPL and this license" /><LineBreak /><Run Text="   document." /><LineBreak /><Run /><LineBreak /><Run Text="  4. Combined Works." /><LineBreak /><Run /><LineBreak /><Run Text="  You may convey a Combined Work under terms of your choice that," /><LineBreak /><Run Text="taken together, effectively do not restrict modification of the" /><LineBreak /><Run Text="portions of the Library contained in the Combined Work and reverse" /><LineBreak /><Run Text="engineering for debugging such modifications, if you also do each of" /><LineBreak /><Run Text="the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Give prominent notice with each copy of the Combined Work that" /><LineBreak /><Run Text="   the Library is used in it and that the Library and its use are" /><LineBreak /><Run Text="   covered by this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Accompany the Combined Work with a copy of the GNU GPL and this license" /><LineBreak /><Run Text="   document." /><LineBreak /><Run /><LineBreak /><Run Text="   c) For a Combined Work that displays copyright notices during" /><LineBreak /><Run Text="   execution, include the copyright notice for the Library among" /><LineBreak /><Run Text="   these notices, as well as a reference directing the user to the" /><LineBreak /><Run Text="   copies of the GNU GPL and this license document." /><LineBreak /><Run /><LineBreak /><Run Text="   d) Do one of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="       0) Convey the Minimal Corresponding Source under the terms of this" /><LineBreak /><Run Text="       License, and the Corresponding Application Code in a form" /><LineBreak /><Run Text="       suitable for, and under terms that permit, the user to" /><LineBreak /><Run Text="       recombine or relink the Application with a modified version of" /><LineBreak /><Run Text="       the Linked Version to produce a modified Combined Work, in the" /><LineBreak /><Run Text="       manner specified by section 6 of the GNU GPL for conveying" /><LineBreak /><Run Text="       Corresponding Source." /><LineBreak /><Run /><LineBreak /><Run Text="       1) Use a suitable shared library mechanism for linking with the" /><LineBreak /><Run Text="       Library.  A suitable mechanism is one that (a) uses at run time" /><LineBreak /><Run Text="       a copy of the Library already present on the user's computer" /><LineBreak /><Run Text="       system, and (b) will operate properly with a modified version" /><LineBreak /><Run Text="       of the Library that is interface-compatible with the Linked" /><LineBreak /><Run Text="       Version." /><LineBreak /><Run /><LineBreak /><Run Text="   e) Provide Installation Information, but only if you would otherwise" /><LineBreak /><Run Text="   be required to provide such information under section 6 of the" /><LineBreak /><Run Text="   GNU GPL, and only to the extent that such information is" /><LineBreak /><Run Text="   necessary to install and execute a modified version of the" /><LineBreak /><Run Text="   Combined Work produced by recombining or relinking the" /><LineBreak /><Run Text="   Application with a modified version of the Linked Version. (If" /><LineBreak /><Run Text="   you use option 4d0, the Installation Information must accompany" /><LineBreak /><Run Text="   the Minimal Corresponding Source and Corresponding Application" /><LineBreak /><Run Text="   Code. If you use option 4d1, you must provide the Installation" /><LineBreak /><Run Text="   Information in the manner specified by section 6 of the GNU GPL" /><LineBreak /><Run Text="   for conveying Corresponding Source.)" /><LineBreak /><Run /><LineBreak /><Run Text="  5. Combined Libraries." /><LineBreak /><Run /><LineBreak /><Run Text="  You may place library facilities that are a work based on the" /><LineBreak /><Run Text="Library side by side in a single library together with other library" /><LineBreak /><Run Text="facilities that are not Applications and are not covered by this" /><LineBreak /><Run Text="License, and convey such a combined library under terms of your" /><LineBreak /><Run Text="choice, if you do both of the following:" /><LineBreak /><Run /><LineBreak /><Run Text="   a) Accompany the combined library with a copy of the same work based" /><LineBreak /><Run Text="   on the Library, uncombined with any other library facilities," /><LineBreak /><Run Text="   conveyed under the terms of this License." /><LineBreak /><Run /><LineBreak /><Run Text="   b) Give prominent notice with the combined library that part of it" /><LineBreak /><Run Text="   is a work based on the Library, and explaining where to find the" /><LineBreak /><Run Text="   accompanying uncombined form of the same work." /><LineBreak /><Run /><LineBreak /><Run Text="  6. Revised Versions of the GNU Lesser General Public License." /><LineBreak /><Run /><LineBreak /><Run Text="  The Free Software Foundation may publish revised and/or new versions" /><LineBreak /><Run Text="of the GNU Lesser General Public License from time to time. Such new" /><LineBreak /><Run Text="versions will be similar in spirit to the present version, but may" /><LineBreak /><Run Text="differ in detail to address new problems or concerns." /><LineBreak /><Run /><LineBreak /><Run Text="  Each version is given a distinguishing version number. If the" /><LineBreak /><Run Text="Library as you received it specifies that a certain numbered version" /><LineBreak /><Run Text="of the GNU Lesser General Public License &quot;or any later version&quot;" /><LineBreak /><Run Text="applies to it, you have the option of following the terms and" /><LineBreak /><Run Text="conditions either of that published version or of any later version" /><LineBreak /><Run Text="published by the Free Software Foundation. If the Library as you" /><LineBreak /><Run Text="received it does not specify a version number of the GNU Lesser" /><LineBreak /><Run Text="General Public License, you may choose any version of the GNU Lesser" /><LineBreak /><Run Text="General Public License ever published by the Free Software Foundation." /><LineBreak /><Run /><LineBreak /><Run Text="  If the Library as you received it specifies that a proxy can decide" /><LineBreak /><Run Text="whether future versions of the GNU Lesser General Public License shall" /><LineBreak /><Run Text="apply, that proxy's public statement of acceptance of any version is" /><LineBreak /><Run Text="permanent authorization for you to choose that version for the" /><LineBreak /><Run Text="Library." /></TextBlock>
                     </ScrollViewer>
-                    <TextBlock  HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run Text="Songify v1.1 Copyright © Jan Blömacher" /><LineBreak /><Run /></TextBlock>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run  x:Name="tBlock_about" Text="Songify v1.1 Copyright © Jan Blömacher" /><LineBreak /><Run /></TextBlock>
 
                     <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run Text="If you want to support this project feel free to donate!" /><LineBreak /><Run /></TextBlock>
                     <Button Grid.Column="1" x:Name="btn_Donate" Margin="10,36,10,190" Click="btn_Donate_Click">

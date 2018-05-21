@@ -1,28 +1,30 @@
-﻿using MahApps.Metro.Controls;
-using System.Windows;
-using System.Windows.Controls;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls;
 using SpotifyAPI.Local; //Base Namespace
 using SpotifyAPI.Local.Models; //Models for the JSON-responses
 using System;
-using MahApps.Metro;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Songify
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
         private SpotifyLocalAPI _spotify;
         private string[] colors = new string[] { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
         private System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
         private string artist, title, album;
+
+        private System.Reflection.Assembly assembly;
+        private FileVersionInfo fvi;
+        private string version;
 
         private delegate void UpdateStatusDelegate(string value);
 
@@ -35,6 +37,16 @@ namespace Songify
             };
             _spotify.OnPlayStateChange += OnPlayStateChange;
             _spotify.OnTrackChange += OnTrackChange;
+            _spotify.OnTrackTimeChange += OnTrackTimeChange;
+        }
+
+        private void OnTrackTimeChange(object sender, TrackTimeChangeEventArgs e)
+        {
+            Dispatcher.BeginInvoke((Action)(() =>
+            {
+                lbl_endTime.Content = TimeSpan.FromSeconds(_spotify.GetStatus().Track.Length).ToString(@"mm\:ss");
+                lbl_currentTime.Content = TimeSpan.FromSeconds(e.TrackTime).ToString(@"mm\:ss");
+            }));
         }
 
         private void txtbx_customoutput_TextChanged(object sender, TextChangedEventArgs e)
@@ -43,7 +55,6 @@ namespace Songify
             txt = txt.Replace("{artist}", artist);
             txt = txt.Replace("{title}", title);
             txt = txt.Replace("{album}", album);
-
             lbl_livepreview.Content = txt;
         }
 
@@ -58,6 +69,10 @@ namespace Songify
 
         private void Sognify_MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            version = fvi.FileVersion;
+
             #region Theme
 
             foreach (string s in colors)
@@ -77,6 +92,8 @@ namespace Songify
 
             #endregion Theme
 
+            tBlock_about.Text = "Songify " + version + " © Jan Blömacher";
+
             #region Settings
 
             if (Settings.GetDirectory() == "")
@@ -88,10 +105,8 @@ namespace Songify
                 warningLabel.Visibility = Visibility.Visible;
             else
                 warningLabel.Visibility = Visibility.Hidden;
-
             pausetextToggleSwitch.IsChecked = Settings.getCustomPauseEnabled();
             downloadAlbumArtToggleSwitch.IsChecked = Settings.getDownloadAlbumArt();
-
             Txtbx_Pausetext.Text = Settings.GetCustomPauseText();
 
             #endregion Settings
@@ -179,6 +194,7 @@ namespace Songify
                                 WriteConsole(ex.Message, ex);
                             }
                         }
+                        WriteConsole(null, null);
                     }
                     catch (Exception ex)
                     {
@@ -365,6 +381,56 @@ namespace Songify
                 Settings.setDownloadAlbumArt(false);
         }
 
+        private void Btn_CopyToClip_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
+        }
+
+        private void bnt_playPrevious_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _spotify.Previous();
+            }
+            catch (Exception ex)
+            {
+                WriteConsole(ex.Message, ex);
+            }
+        }
+
+        private void bnt_playPause_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_spotify.GetStatus().Playing)
+                {
+                    _spotify.Pause();
+                    playpauseVisualBrush.Visual = (Visual)FindResource("appbar_control_play");
+                }
+                else
+                {
+                    _spotify.Play();
+                    playpauseVisualBrush.Visual = (Visual)FindResource("appbar_control_pause");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteConsole(ex.Message, ex);
+            }
+        }
+
+        private void bnt_playNext_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _spotify.Skip();
+            }
+            catch (Exception ex)
+            {
+                WriteConsole(ex.Message, ex);
+            }
+        }
+
         private void Btn_Outputdirectory_Click(object sender, RoutedEventArgs e)
         {
             fbd.Description = "Path where the text file should be";
@@ -381,12 +447,15 @@ namespace Songify
             Dispatcher.BeginInvoke((Action)(() =>
             {
                 Label lbl = (Label)StatusBar.Items[0];
-                lbl.Content = DateTime.Now.ToString("hh:mm:ss") + ": " + msg;
+                if (msg == null)
+                    lbl.Content = "";
+                else
+                    lbl.Content = DateTime.Now.ToString("hh:mm:ss") + ": " + msg;
                 if (ex != null)
                 {
                     try
                     {
-                        string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/Songify";
+                        string path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/Songify";
                         if (!Directory.Exists(path))
                             Directory.CreateDirectory(path);
                         if (!File.Exists(path + "/log.txt"))
