@@ -1,0 +1,174 @@
+﻿<Controls:MetroWindow x:Name="Sognify_MainWindow" x:Class="Songify.MainWindow"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+        Dialog:DialogParticipation.Register="{Binding}"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Songify"
+        mc:Ignorable="d"
+        Title="Songify" Height="360" Width="645" Loaded="Sognify_MainWindow_Loaded" MinWidth="645" MinHeight="356" MaxWidth="645" ResizeMode="CanMinimize">
+    <Controls:MetroWindow.Resources>
+        <DataTemplate x:Key="headerTemplate">
+            <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
+                <Button x:Name="PART_BackButton" DockPanel.Dock="Left" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:Flyout}}, Path=InternalCloseCommand, Mode=OneWay}" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="34" IsCancel="{Binding CloseButtonIsCancel, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Margin="2,4,10,2" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" Visibility="{Binding CloseButtonVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Bottom" Width="34">
+                    <ContentControl Content="M19,34V42H43.75L33.75,52H44.25L58.25,38L44.25,24H33.75L43.75,34H19Z" FlowDirection="{Binding FlowDirection, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="20" Style="{DynamicResource PathIconContentControlStyle}" Width="20" />
+                </Button>
+                <ContentControl x:Name="PART_BackHeaderText" Content="{Binding}" Focusable="False" IsTabStop="False" Margin="15,0,0,0" Visibility="{Binding TitleVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Center" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Left">
+                    <Setter Property="DockPanel.Dock" TargetName="PART_BackButton" Value="Right" />
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="-1" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="HorizontalAlignment" TargetName="PART_BackHeaderText" Value="Right" />
+                    <Setter Property="Margin" TargetName="PART_BackHeaderText" Value="0,0,15,0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Top">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="-90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Bottom">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Controls:MetroWindow.Resources>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="btn_About" Click="Btn_About_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_book_open_information}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="about" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="btn_Settings" Click="Btn_Settings_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="settings" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Grid>
+        <Image x:Name="albumImage"  Width="169" Margin="10,51,458,0" Stretch="Fill" Height="167" VerticalAlignment="Top" />
+        <Grid Margin="183,48,54,0" HorizontalAlignment="Center" Width="400" Height="170" VerticalAlignment="Top">
+            <StackPanel HorizontalAlignment="Left">
+                <Label Content="Artist" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Artist" Content="Artist" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Margin="0,0,0,10" Padding="5,0,5,5" />
+                <Label Content="Title" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Song" Content="Title" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Margin="0,0,0,10" Padding="5,0,5,5" />
+                <Label Content="Album" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="5,5,5,0" />
+                <Label x:FieldModifier="public" x:Name="Lbl_Album" Content="Album" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="18" Padding="5,0,5,5" />
+            </StackPanel>
+        </Grid>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="554,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" />
+        <StackPanel Margin="202,242,202,50" Orientation="Horizontal">
+            <Label x:Name="lbl_currentTime" Content="3:25" Padding="0" Margin="5,0" Width="50" HorizontalContentAlignment="Right" Height="28" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+            <Button x:Name="bnt_playPrevious" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="Bnt_playPrevious_Click" Margin="5,0">
+                <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_control_skip_backward}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="bnt_playPause" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="Bnt_playPause_Click" Margin="5,0">
+                <Rectangle x:Name="ppRect" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush x:Name="playpauseVisualBrush" Stretch="Fill" Visual="{StaticResource appbar_control_play}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="bnt_playNext" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Width="28" Background="{x:Null}" Height="28" Padding="0" BorderBrush="{x:Null}" Foreground="{DynamicResource AccentColorBrush}" Focusable="False" BorderThickness="0" Click="Bnt_playNext_Click" Margin="5,0">
+                <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="25" Height="25">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_control_skip_forward}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Label x:Name="lbl_endTime" Grid.Column="4" Content="3:25" Padding="0" Margin="5,0" Width="50" Height="28" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+        </StackPanel>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="645" HeaderTemplate="{DynamicResource headerTemplate}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Third Party Libraries" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,25,0,27">
+                        <TextBlock HorizontalAlignment="Left" Margin="10,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="290" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{DynamicResource license_using}" />
+                    </ScrollViewer>
+                    <TextBlock HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run  x:Name="tBlock_about" Text="Songify v1.1 Copyright © Jan Blömacher" /><LineBreak /><Run /></TextBlock>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" TextAlignment="Center"><Run Text="If you want to support this project feel free to donate!" /><LineBreak /><Run /></TextBlock>
+                    <Button Grid.Column="1" x:Name="btn_Donate" Margin="10,36,10,190" Click="Btn_Donate_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_paypal}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,100,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="You can also join the Songify Discord Server!" TextAlignment="Center" />
+                    <Button Grid.Column="1" x:Name="btn_Discord" Margin="10,126,10,100" Click="Btn_Discord_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_discord}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DISCORD" />
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="289" Text="Found a bug? Report it on GitHub!" TextAlignment="Center" />
+                    <Button Grid.Column="1" x:Name="btn_GitHub" Margin="10,216,10,10" Click="Btn_GitHub_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_github}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="GITHUB" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+        <StatusBar x:Name="StatusBar" Margin="0,0,-6,0" Background="Black" Padding="0" Panel.ZIndex="-1" BorderThickness="0,1,0,0" BorderBrush="#FF444444" ScrollViewer.CanContentScroll="True" Height="26" VerticalAlignment="Bottom">
+            <Label Content="" Margin="0" Foreground="White" Padding="0" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True" />
+        </StatusBar>
+    </Grid>
+</Controls:MetroWindow>

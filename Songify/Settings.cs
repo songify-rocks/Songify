@@ -1,30 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Songify
+﻿namespace Songify
 {
     internal class Settings
     {
-        public static bool getDownloadAlbumArt()
+        #region ProxySettings
+
+        public static void SetProxyPass(string pass)
+        {
+            Properties.Settings.Default.proxyPass = pass;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetProxyPass()
+        {
+            return Properties.Settings.Default.proxyPass;
+        }
+
+        public static void SetProxyUser(string username)
+        {
+            Properties.Settings.Default.proxyUser = username;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetProxyUser()
+        {
+            return Properties.Settings.Default.proxyUser;
+        }
+
+        public static void SetProxyPort(string port)
+        {
+            Properties.Settings.Default.proxyPort = port;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetProxyPort()
+        {
+            return Properties.Settings.Default.proxyPort;
+        }
+
+        public static void SetProxyHost(string host)
+        {
+            Properties.Settings.Default.proxyHost = host;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetProxyHost()
+        {
+            return Properties.Settings.Default.proxyHost;
+        }
+
+        #endregion
+
+        public static void SetDeleteAlbumArtOnpause(bool deleteAlbumArtOnpause)
+        {
+            Properties.Settings.Default.deleteAlbumArtOnpause = deleteAlbumArtOnpause;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool GetDeleteAlbumArtOnpause()
+        {
+            return Properties.Settings.Default.deleteAlbumArtOnpause;
+        }
+
+        public static bool GetDownloadAlbumArt()
         {
             return Properties.Settings.Default.downloadAlbumArt;
         }
 
-        public static void setDownloadAlbumArt(bool downloadAlbumArt)
+        public static void SetDownloadAlbumArt(bool downloadAlbumArt)
         {
             Properties.Settings.Default.downloadAlbumArt = (bool)downloadAlbumArt;
             Properties.Settings.Default.Save();
         }
 
-        public static bool getCustomPauseEnabled()
+        public static bool GetCustomPauseEnabled()
         {
             return Properties.Settings.Default.customPauseEnabled;
         }
 
-        public static void setCustomPauseEnabled(bool customPauseEnabled)
+        public static void SetCustomPauseEnabled(bool customPauseEnabled)
         {
             Properties.Settings.Default.customPauseEnabled = (bool)customPauseEnabled;
             Properties.Settings.Default.Save();
@@ -41,12 +94,12 @@ namespace Songify
             Properties.Settings.Default.Save();
         }
 
-        public static bool getShowAlbumArt()
+        public static bool GetShowAlbumArt()
         {
             return Properties.Settings.Default.showAlbumArt;
         }
 
-        public static void setShowAlbumArt(bool showAlbumArt)
+        public static void SetShowAlbumArt(bool showAlbumArt)
         {
             Properties.Settings.Default.showAlbumArt = (bool)showAlbumArt;
             Properties.Settings.Default.Save();

@@ -1,0 +1,79 @@
+﻿<Controls:MetroWindow x:Name="Window_Settings1" x:Class="Songify.Window_Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Songify"
+        mc:Ignorable="d"
+        Title="Settings" Height="360" Width="645" Loaded="Window_Settings1_Loaded">
+    <Grid>
+        <TabControl Margin="10,10,10,42">
+            <TabItem Header="Output">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="143*" />
+                        <ColumnDefinition Width="387*" />
+                        <ColumnDefinition Width="83*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Padding="0,5,5,5" Height="26" Width="94" />
+                    <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="26" Margin="1,11,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" IsReadOnly="True" Controls:TextBoxHelper.Watermark="Output Directory" Grid.Column="1" />
+
+                    <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="2,10,0,0" VerticalAlignment="Top" Width="32" Click="Btn_Outputdirectory_Click" Focusable="False" Grid.Column="2" Height="27" />
+                    <Button x:Name="Btn_CopyToClip" HorizontalAlignment="Left" Margin="39,10,0,0" VerticalAlignment="Top" Width="28" Click="Btn_CopyToClip_Click" Padding="5" Focusable="False" ToolTip="Copy to Clipboard" Grid.Column="2" Height="27">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Width="15" Height="15">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+
+                    <Label Content="Custom Output" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Padding="0,5,5,5" Height="26" Width="87" />
+                    <TextBox x:Name="txtbx_customoutput" HorizontalAlignment="Left" Height="26" Margin="1,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" TextChanged="Txtbx_customoutput_TextChanged" Controls:TextBoxHelper.Watermark="Custom Output Format" ToolTip="Use paramters {artist}, {title} and {album}" Grid.Column="1">
+                        <TextBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="MenuItem_InsertArtist" Header="Insert Artist" Click="MenuItem_InsertArtist_Click" />
+                                <MenuItem x:Name="MenuItem_InsertTitle" Header="Insert Title" Click="MenuItem_InsertTitle_Click" />
+                                <MenuItem x:Name="MenuItem_InsertAlbum" Header="Insert Album" Click="MenuItem_InsertAlbum_Click" />
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+                    <Label Content="Live Preview" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Padding="0,5,5,5" Height="26" Width="70" />
+
+                    <Label x:Name="lbl_livepreview" Content="" HorizontalAlignment="Left" Margin="1,72,0,0" VerticalAlignment="Top" Height="26" Width="382" Padding="0,5,5,5" Grid.Column="1" />
+                    <Controls:ToggleSwitch x:Name="pausetextToggleSwitch" Margin="10,103,0,0" Header="Pause text" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" IsCheckedChanged="PausetextToggleSwitch_IsCheckedChanged" Height="50" VerticalAlignment="Top" />
+                    <TextBox x:Name="Txtbx_Pausetext" Height="26" Margin="1,123,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Controls:TextBoxHelper.Watermark="Pause Text" ToolTip="Leave blank for empty text file." Grid.Column="1" HorizontalAlignment="Left" Width="281" />
+                    <Controls:ToggleSwitch x:Name="downloadAlbumArtToggleSwitch" Margin="10,158,0,0" Header="Save Album Art" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." IsCheckedChanged="DownloadAlbumArtToggleSwitch_IsCheckedChanged" Height="50" VerticalAlignment="Top" />
+                    <Controls:ToggleSwitch x:Name="deleteAlbumArtOnpauseToggleSwitch" Grid.Column="1" Margin="1,158,242,0" Header="Delete Album Art On Pause" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="The album art will be saved in the same directory as the Songify text file." Height="50" VerticalAlignment="Top" IsCheckedChanged="deleteAlbumArtOnpauseToggleSwitch_IsCheckedChanged" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Appearance">
+                <Grid>
+                    <ComboBox x:Name="ComboBox_Color" Margin="192,11,10,0" SelectionChanged="ComboBox_SelectionChanged" Height="32" VerticalAlignment="Top"/>
+                    <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="177" Height="39" Padding="0,5,5,5" />
+                    <Controls:ToggleSwitch x:Name="themeToggleSwitch" Header="Dark Mode" Margin="10,54,0,0" IsCheckedChanged="ThemeToggleSwitch_IsCheckedChanged" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" Height="60" VerticalAlignment="Top" />
+                    <Controls:ToggleSwitch x:Name="albumCoverToggleSwitch" Header="Show album cover" Margin="10,128,0,0" HorizontalAlignment="Left" Width="177" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0,0,-1,0" Controls:ControlsHelper.HeaderMargin="0" ToolTip="Caution: This may impact the performance (Slow loading when fast switching songs)" IsCheckedChanged="AlbumCoverToggleSwitch_IsCheckedChanged" Height="60" VerticalAlignment="Top" />
+                    <TextBlock x:Name="warningLabel" Foreground="Red" Text="Caution: This may impact the performance (Slow loading when fast switching songs)" TextWrapping="Wrap" Visibility="Hidden" Margin="192,146,0,0" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Network">
+                <Grid>
+                    <Label Content="Proxy Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                    <Label Content="Host"           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0"/>
+                    <Label Content="Port"           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="203,41,0,0"/>
+                    <Label Content="Username"       HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,72,0,0"/>
+                    <Label Content="Password"       HorizontalAlignment="Left" VerticalAlignment="Top" Margin="203,73,0,0"/>
+
+                    <TextBox Name="Txtbx_ProxyHost" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"     VerticalAlignment="Top" Width="120" Margin="78,41,0,0"/>
+                    <TextBox Name="Txtbx_ProxyPort" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"     VerticalAlignment="Top" Width="120" Margin="268,41,0,0"/>
+                    <TextBox Name="Txtbx_ProxyUsername" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Margin="78,73,0,0"/>
+                    <PasswordBox Name="Txtbx_ProxyPassword" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120" Margin="268,72,0,0"/>
+
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <Button x:Name="btn_Save" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="552,292,0,0" Click="Btn_Save_Click" />
+    </Grid>
+</Controls:MetroWindow>
