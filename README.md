@@ -1,3 +1,14 @@
+# SONGIFY NO LONGER WORKS DUE TO CHANGES THAT SPOTIFY MADE. THIS PROJECT WILL LIKELY NEVER BE WORKING AGAIN.
+# I'M SORRY BUT THERE IS NOTHING I CAN DO AT THE MOMENT
+# THANKS EVERYONE FOR USING IT.
+
+#
+#
+#
+#
+
+
+```
 # Songify
 A simple tool that gets the current track from Spotify and saves it as a text file.
 
@@ -75,3 +86,4 @@ Dark Mode
 Colors!
 
 ![](https://i.imgur.com/yNBJMN1.gif)
+```
