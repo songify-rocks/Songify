@@ -2,7 +2,7 @@
 # I'M SORRY BUT THERE IS NOTHING I CAN DO AT THE MOMENT
 # THANKS EVERYONE FOR USING IT.
 
-#
+<br/><br/><br/><br/><br/><br/><br/>
 
 # Songify
 A simple tool that gets the current track from Spotify and saves it as a text file.
