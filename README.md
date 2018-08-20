@@ -3,12 +3,7 @@
 # THANKS EVERYONE FOR USING IT.
 
 #
-#
-#
-#
 
-
-```
 # Songify
 A simple tool that gets the current track from Spotify and saves it as a text file.
 
@@ -86,4 +81,3 @@ Dark Mode
 Colors!
 
 ![](https://i.imgur.com/yNBJMN1.gif)
-```
