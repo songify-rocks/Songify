@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="Songify Slim" Height="247.881" Width="588.348" Loaded="MetroWindow_Loaded">
+        Title="Songify Slim" Height="247.881" Width="588.348" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="217" VerticalAlignment="Top" Width="580">
             <TabItem Header="Live Output">
@@ -22,7 +22,7 @@
                     <ComboBox x:Name="ComboBox_Color" Margin="108,41,167,0" Height="32" VerticalAlignment="Top" SelectionChanged="ComboBox_Color_SelectionChanged" />
                     <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="71" Height="32" Padding="5" />
                     <Controls:ToggleSwitch x:Name="themeToggleSwitch" Margin="412,42,0,0" HorizontalAlignment="Left" Width="138" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0" Controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top" Padding="5,0,0,0" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" OffLabel="Light" OnLabel="Dark" />
-                    <CheckBox x:Name="chbx_minimizeSystray" Content="minimize to system tray?" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,106,0,0" />
+                    <CheckBox x:Name="chbx_minimizeSystray" Content="minimize to system tray?" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,106,0,0" Checked="chbx_minimizeSystray_Checked" Unchecked="chbx_minimizeSystray_Checked" />
                 </Grid>
             </TabItem>
         </TabControl>

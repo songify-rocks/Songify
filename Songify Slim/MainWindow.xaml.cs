@@ -2,11 +2,13 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace Songify_Slim
@@ -17,7 +19,11 @@ namespace Songify_Slim
     public partial class MainWindow : MetroWindow
     {
         private string[] colors = new string[] { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
-        private System.Windows.Forms.FolderBrowserDialog fbd = new System.Windows.Forms.FolderBrowserDialog();
+        private FolderBrowserDialog fbd = new FolderBrowserDialog();
+        private NotifyIcon notifyIcon = new NotifyIcon();
+        private System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
+        System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
+        System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
         private string currentsong;
 
         public MainWindow()
@@ -65,7 +71,14 @@ namespace Songify_Slim
             }
             if (Settings.GetTheme() == "BaseDark") { themeToggleSwitch.IsChecked = true; } else { themeToggleSwitch.IsChecked = false; }
             ThemeHandler.ApplyTheme();
-            Txtbx_outputdirectory.Text = Settings.GetDirectory();
+            Txtbx_outputdirectory.Text = Assembly.GetEntryAssembly().Location;
+            if (!String.IsNullOrEmpty(Settings.GetDirectory()))
+                Txtbx_outputdirectory.Text = Settings.GetDirectory();
+
+            chbx_autostart.IsChecked = (bool)Settings.GetAutostart();
+            chbx_minimizeSystray.IsChecked = (bool)Settings.GetSystray();
+            
+
             startTimer(1000);
         }
 
@@ -141,6 +154,60 @@ namespace Songify_Slim
             {
                 registryKey.DeleteValue("Songify");
             }
+
+            Settings.SetAutostart(isChecked);
+        }
+
+        private void MetroWindow_StateChanged(object sender, EventArgs e)
+        {
+            switch (this.WindowState)
+            {
+                case WindowState.Normal:
+                    break;
+                case WindowState.Minimized:
+                    if (Settings.GetSystray())
+                    {
+                        menuItem1.Text = "Exit";
+                        menuItem1.Click += new EventHandler(this.menuItem1_Click);
+
+                        menuItem2.Text = "Show";
+                        menuItem2.Click += new EventHandler(this.menuItem2_Click);
+
+                        this.contextMenu.MenuItems.AddRange(
+                    new System.Windows.Forms.MenuItem[] { this.menuItem2, this.menuItem1 });
+
+                        notifyIcon.Icon = Properties.Resources.songify;
+                        notifyIcon.ContextMenu = contextMenu;
+                        notifyIcon.Visible = true;
+                        notifyIcon.BalloonTipText = "Songify is minimized to the system tray.";
+                        notifyIcon.BalloonTipTitle = "Songify";
+                        notifyIcon.ShowBalloonTip(500);
+                        notifyIcon.DoubleClick += new EventHandler(this.menuItem2_Click);
+                        this.Hide();
+                    }
+                    break;
+                case WindowState.Maximized:
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void menuItem2_Click(object sender, EventArgs e)
+        {
+            this.Show();
+            this.WindowState = WindowState.Normal;
+            notifyIcon.Visible = false;
+        }
+
+        private void menuItem1_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void chbx_minimizeSystray_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.SetSystray((bool)chbx_minimizeSystray.IsChecked);
         }
     }
 }
