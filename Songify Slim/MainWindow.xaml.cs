@@ -25,6 +25,7 @@ namespace Songify_Slim
         System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
         System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
         private string currentsong;
+        public static string version;
 
         public MainWindow()
         {
@@ -77,9 +78,26 @@ namespace Songify_Slim
 
             chbx_autostart.IsChecked = (bool)Settings.GetAutostart();
             chbx_minimizeSystray.IsChecked = (bool)Settings.GetSystray();
-            
+
+            checkForUpdates();
+
 
             startTimer(1000);
+        }
+
+        private void checkForUpdates()
+        {
+            Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            version = fvi.FileVersion;
+            try
+            {
+                Updater.checkForUpdates(new Version(version));
+            }
+            catch
+            {
+                lbl_status.Content = "Unable to check for newer version.";
+            }
         }
 
         private void startTimer(int ms)
@@ -214,6 +232,12 @@ namespace Songify_Slim
         {
             notifyIcon.Visible = false;
             notifyIcon.Dispose();
+
+        }
+
+        private void Btn_updates_Click(object sender, RoutedEventArgs e)
+        {
+            checkForUpdates();
 
         }
     }
