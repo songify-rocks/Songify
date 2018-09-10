@@ -5,15 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="Songify Slim" Height="247.881" Width="588.348" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged">
+        Title="Songify Slim" Height="247.881" Width="588.348" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" ResizeMode="CanMinimize" Closed="MetroWindow_Closed">
     <Grid>
         <TabControl HorizontalAlignment="Left" Height="217" VerticalAlignment="Top" Width="580">
-            <TabItem Header="Live Output">
+            <TabItem Header="Live Output" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.HeaderMargin="0">
                 <Grid>
-                    <TextBlock x:Name="txtblock_liveoutput" TextWrapping="Wrap" FontSize="22" Padding="10" />
+                    <TextBlock x:Name="txtblock_liveoutput" TextWrapping="Wrap" FontSize="22" Padding="10" Text="Artist - Title" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem Header="Settings" Controls:ControlsHelper.ContentCharacterCasing="Upper">
                 <Grid>
                     <CheckBox x:Name="chbx_autostart" Content="autostart with windows?" HorizontalAlignment="Left" Margin="10,129,0,0" VerticalAlignment="Top" Checked="chbx_autostart_Checked" Unchecked="chbx_autostart_Checked" />
                     <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="408" IsReadOnly="True" />

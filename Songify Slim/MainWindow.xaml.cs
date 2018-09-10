@@ -168,21 +168,21 @@ namespace Songify_Slim
                     if (Settings.GetSystray())
                     {
                         menuItem1.Text = "Exit";
-                        menuItem1.Click += new EventHandler(this.menuItem1_Click);
+                        menuItem1.Click += new EventHandler(this.MenuItem1_Click);
 
                         menuItem2.Text = "Show";
-                        menuItem2.Click += new EventHandler(this.menuItem2_Click);
+                        menuItem2.Click += new EventHandler(this.MenuItem2_Click);
 
                         this.contextMenu.MenuItems.AddRange(
                     new System.Windows.Forms.MenuItem[] { this.menuItem2, this.menuItem1 });
 
                         notifyIcon.Icon = Properties.Resources.songify;
+                        //notifyIcon.BalloonTipText = "Songify is minimized to the system tray.";
+                        //notifyIcon.BalloonTipTitle = "Songify";
                         notifyIcon.ContextMenu = contextMenu;
                         notifyIcon.Visible = true;
-                        notifyIcon.BalloonTipText = "Songify is minimized to the system tray.";
-                        notifyIcon.BalloonTipTitle = "Songify";
-                        notifyIcon.ShowBalloonTip(500);
-                        notifyIcon.DoubleClick += new EventHandler(this.menuItem2_Click);
+                        //notifyIcon.ShowBalloonTip(500);
+                        notifyIcon.DoubleClick += new EventHandler(this.MenuItem2_Click);
                         this.Hide();
                     }
                     break;
@@ -193,14 +193,14 @@ namespace Songify_Slim
             }
         }
 
-        private void menuItem2_Click(object sender, EventArgs e)
+        private void MenuItem2_Click(object sender, EventArgs e)
         {
             this.Show();
             this.WindowState = WindowState.Normal;
             notifyIcon.Visible = false;
         }
 
-        private void menuItem1_Click(object sender, EventArgs e)
+        private void MenuItem1_Click(object sender, EventArgs e)
         {
             this.Close();
         }
@@ -208,6 +208,13 @@ namespace Songify_Slim
         private void chbx_minimizeSystray_Checked(object sender, RoutedEventArgs e)
         {
             Settings.SetSystray((bool)chbx_minimizeSystray.IsChecked);
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            notifyIcon.Visible = false;
+            notifyIcon.Dispose();
+
         }
     }
 }

@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Songify Slim")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Spotify Song Fetcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Jan Blömacher")]
 [assembly: AssemblyProduct("Songify Slim")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
