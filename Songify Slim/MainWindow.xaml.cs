@@ -2,20 +2,15 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace Songify_Slim
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : MetroWindow
     {
         private string[] colors = new string[] { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
@@ -57,6 +52,21 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            menuItem1.Text = "Exit";
+            menuItem1.Click += new EventHandler(MenuItem1_Click);
+
+            menuItem2.Text = "Show";
+            menuItem2.Click += new EventHandler(MenuItem2_Click);
+
+            contextMenu.MenuItems.AddRange(
+        new System.Windows.Forms.MenuItem[] { menuItem2, menuItem1 });
+
+            notifyIcon.Icon = Properties.Resources.songify;
+            notifyIcon.ContextMenu = contextMenu;
+            notifyIcon.Visible = true;
+            notifyIcon.DoubleClick += new EventHandler(MenuItem2_Click);
+
+
             foreach (string s in colors)
             {
                 ComboBox_Color.Items.Add(s);
@@ -79,6 +89,9 @@ namespace Songify_Slim
             chbx_autostart.IsChecked = (bool)Settings.GetAutostart();
             chbx_minimizeSystray.IsChecked = (bool)Settings.GetSystray();
 
+            if (WindowState == WindowState.Minimized)
+                MinimizeToSysTray();
+
             checkForUpdates();
 
 
@@ -87,7 +100,7 @@ namespace Songify_Slim
 
         private void checkForUpdates()
         {
-            Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             version = fvi.FileVersion;
             try
@@ -103,7 +116,7 @@ namespace Songify_Slim
         private void startTimer(int ms)
         {
             System.Timers.Timer timer = new System.Timers.Timer();
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
+            timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
             timer.Interval = ms;
             timer.Enabled = true;
         }
@@ -131,7 +144,7 @@ namespace Songify_Slim
                             Console.WriteLine(wintitle);
                             if (String.IsNullOrEmpty(Settings.GetDirectory()))
                             {
-                                File.WriteAllText(System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt", currentsong + "               ");
+                                File.WriteAllText(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt", currentsong + "               ");
                             }
                             else
                             {
@@ -147,7 +160,7 @@ namespace Songify_Slim
         private void Btn_Outputdirectory_Click(object sender, RoutedEventArgs e)
         {
             fbd.Description = "Path where the text file will be located.";
-            fbd.SelectedPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
 
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
                 return;
@@ -178,31 +191,12 @@ namespace Songify_Slim
 
         private void MetroWindow_StateChanged(object sender, EventArgs e)
         {
-            switch (this.WindowState)
+            switch (WindowState)
             {
                 case WindowState.Normal:
                     break;
                 case WindowState.Minimized:
-                    if (Settings.GetSystray())
-                    {
-                        menuItem1.Text = "Exit";
-                        menuItem1.Click += new EventHandler(this.MenuItem1_Click);
-
-                        menuItem2.Text = "Show";
-                        menuItem2.Click += new EventHandler(this.MenuItem2_Click);
-
-                        this.contextMenu.MenuItems.AddRange(
-                    new System.Windows.Forms.MenuItem[] { this.menuItem2, this.menuItem1 });
-
-                        notifyIcon.Icon = Properties.Resources.songify;
-                        //notifyIcon.BalloonTipText = "Songify is minimized to the system tray.";
-                        //notifyIcon.BalloonTipTitle = "Songify";
-                        notifyIcon.ContextMenu = contextMenu;
-                        notifyIcon.Visible = true;
-                        //notifyIcon.ShowBalloonTip(500);
-                        notifyIcon.DoubleClick += new EventHandler(this.MenuItem2_Click);
-                        this.Hide();
-                    }
+                    MinimizeToSysTray();
                     break;
                 case WindowState.Maximized:
                     break;
@@ -211,16 +205,23 @@ namespace Songify_Slim
             }
         }
 
+        private void MinimizeToSysTray()
+        {
+            if (Settings.GetSystray())
+            {
+                Hide();
+            }
+        }
+
         private void MenuItem2_Click(object sender, EventArgs e)
         {
-            this.Show();
-            this.WindowState = WindowState.Normal;
-            notifyIcon.Visible = false;
+            Show();
+            WindowState = WindowState.Normal;
         }
 
         private void MenuItem1_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void chbx_minimizeSystray_Checked(object sender, RoutedEventArgs e)

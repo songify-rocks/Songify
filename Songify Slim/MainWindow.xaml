@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" ResizeMode="CanMinimize" Closed="MetroWindow_Closed">
+        Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" ResizeMode="CanMinimize" Closed="MetroWindow_Closed" WindowState="Minimized">
     <Grid>
         <TabControl Height="201" VerticalAlignment="Top" Width="580" Margin="1,0">
             <TabItem Header="Live Output" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.HeaderMargin="0">
