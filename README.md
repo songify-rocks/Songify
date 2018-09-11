@@ -17,6 +17,7 @@ It fetches the currently playing song from Spotify and saves it to a text file. 
 # Troubleshooting
 If you don't see anything happen in the Live Output try switching songs and make sure this option is turned **off**!
 <br/>
+<br/>
 ![](https://i.imgur.com/VUoPNbZ.png)
 
 # Connect with me!
