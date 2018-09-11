@@ -15,7 +15,8 @@ It fetches the currently playing song from Spotify and saves it to a text file. 
 * Oh and colors, yeah a lot of colors actually. 23 if I counted that right.
 
 # Troubleshooting
-If you don't see anything happen in the Live Output try switching songs and make sure this option is turned **off**!  
+If you don't see anything happen in the Live Output try switching songs and make sure this option is turned **off**!
+<br/>
 ![](https://i.imgur.com/VUoPNbZ.png)
 
 # Connect with me!
