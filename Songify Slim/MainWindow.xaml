@@ -1,0 +1,34 @@
+﻿<Controls:MetroWindow x:Class="Songify_Slim.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" ResizeMode="CanMinimize" Closed="MetroWindow_Closed" WindowState="Minimized">
+    <Grid>
+        <TabControl Height="201" VerticalAlignment="Top" Width="580" Margin="1,0">
+            <TabItem Header="Live Output" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.HeaderMargin="0">
+                <Grid>
+                    <TextBlock x:Name="txtblock_liveoutput" TextWrapping="Wrap" FontSize="22" Padding="10" Text="Artist - Title" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings" Controls:ControlsHelper.ContentCharacterCasing="Upper">
+                <Grid>
+                    <CheckBox x:Name="chbx_autostart" Content="autostart with windows?" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Checked="chbx_autostart_Checked" Unchecked="chbx_autostart_Checked" />
+                    <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="422" IsReadOnly="True" />
+                    <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
+                    <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="535,9,0,0" VerticalAlignment="Top" Width="29" Click="Btn_Outputdirectory_Click" />
+                    <ComboBox x:Name="ComboBox_Color" Margin="108,41,167,0" Height="32" VerticalAlignment="Top" SelectionChanged="ComboBox_Color_SelectionChanged" />
+                    <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="71" Height="32" Padding="5" />
+                    <Controls:ToggleSwitch x:Name="themeToggleSwitch" Margin="412,42,0,0" HorizontalAlignment="Left" Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0" Controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top" Padding="5,0,0,0" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" OffLabel="Light" OnLabel="Dark" />
+                    <CheckBox x:Name="chbx_minimizeSystray" Content="minimize to system tray?" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0" Checked="chbx_minimizeSystray_Checked" Unchecked="chbx_minimizeSystray_Checked" />
+                    <Button x:Name="Btn_updates" Content="Check for Updates" Margin="426,100,10,10" Click="Btn_updates_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StatusBar Height="13" VerticalAlignment="Bottom" Margin="0">
+            <Label x:Name="lbl_status" Content="This is a test" Width="572" FontSize="10" Padding="0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" Margin="0,-4,0,0" Height="13"/>
+        </StatusBar>
+    </Grid>
+</Controls:MetroWindow>
