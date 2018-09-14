@@ -1,7 +1,10 @@
-﻿using MahApps.Metro.Controls;
+﻿using MahApps.Metro;
+using MahApps.Metro.Controls;
 using Microsoft.Win32;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Timers;
@@ -15,7 +18,7 @@ namespace Songify_Slim
     {
         private string[] colors = new string[] { "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald", "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta", "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve", "Taupe", "Sienna" };
         private FolderBrowserDialog fbd = new FolderBrowserDialog();
-        private NotifyIcon notifyIcon = new NotifyIcon();
+        public NotifyIcon notifyIcon = new NotifyIcon();
         private System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
         System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
         System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
@@ -27,11 +30,7 @@ namespace Songify_Slim
             InitializeComponent();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-        }
-
-        private void themeToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
+        private void ThemeToggleSwitch_IsCheckedChanged(object sender, EventArgs e)
         {
             if (themeToggleSwitch.IsChecked == true)
             {
@@ -65,6 +64,9 @@ namespace Songify_Slim
             notifyIcon.ContextMenu = contextMenu;
             notifyIcon.Visible = true;
             notifyIcon.DoubleClick += new EventHandler(MenuItem2_Click);
+            notifyIcon.Text = "Songify";
+
+
 
 
             foreach (string s in colors)
@@ -80,6 +82,7 @@ namespace Songify_Slim
                     Settings.SetColor(s);
                 }
             }
+
             if (Settings.GetTheme() == "BaseDark") { themeToggleSwitch.IsChecked = true; } else { themeToggleSwitch.IsChecked = false; }
             ThemeHandler.ApplyTheme();
             Txtbx_outputdirectory.Text = Assembly.GetEntryAssembly().Location;
@@ -92,13 +95,13 @@ namespace Songify_Slim
             if (WindowState == WindowState.Minimized)
                 MinimizeToSysTray();
 
-            checkForUpdates();
+            CheckForUpdates();
 
 
-            startTimer(1000);
+            StartTimer(1000);
         }
 
-        private void checkForUpdates()
+        private void CheckForUpdates()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -113,7 +116,7 @@ namespace Songify_Slim
             }
         }
 
-        private void startTimer(int ms)
+        private void StartTimer(int ms)
         {
             System.Timers.Timer timer = new System.Timers.Timer();
             timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
@@ -123,10 +126,10 @@ namespace Songify_Slim
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            getCurrentSong();
+            GetCurrentSong();
         }
 
-        private void getCurrentSong()
+        private void GetCurrentSong()
         {
             var processes = Process.GetProcessesByName("Spotify");
 
@@ -168,7 +171,7 @@ namespace Songify_Slim
             Settings.SetDirectory(fbd.SelectedPath);
         }
 
-        private void chbx_autostart_Checked(object sender, RoutedEventArgs e)
+        private void Chbx_autostart_Checked(object sender, RoutedEventArgs e)
         {
             RegisterInStartup((bool)chbx_autostart.IsChecked);
         }
@@ -224,7 +227,7 @@ namespace Songify_Slim
             Close();
         }
 
-        private void chbx_minimizeSystray_Checked(object sender, RoutedEventArgs e)
+        private void Chbx_minimizeSystray_Checked(object sender, RoutedEventArgs e)
         {
             Settings.SetSystray((bool)chbx_minimizeSystray.IsChecked);
         }
@@ -238,8 +241,31 @@ namespace Songify_Slim
 
         private void Btn_updates_Click(object sender, RoutedEventArgs e)
         {
-            checkForUpdates();
+            CheckForUpdates();
 
+        }
+
+        private void Btn_Donate_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://www.paypal.me/inzaniity");
+
+        }
+
+        private void Btn_Discord_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://discordapp.com/invite/H8nd4T4");
+
+        }
+
+        private void Btn_GitHub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/Inzaniity/Songify");
+
+        }
+
+        private void Btn_About_Click(object sender, RoutedEventArgs e)
+        {
+            flyout_About.IsOpen = (flyout_About.IsOpen) ? !true : !false;
         }
     }
 }

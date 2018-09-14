@@ -6,6 +6,61 @@
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindow_Loaded" StateChanged="MetroWindow_StateChanged" ResizeMode="CanMinimize" Closed="MetroWindow_Closed" WindowState="Minimized">
+    <Controls:MetroWindow.Resources>
+        <DataTemplate x:Key="headerTemplate">
+            <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
+                <Button x:Name="PART_BackButton" DockPanel.Dock="Left" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Controls:Flyout}}, Path=InternalCloseCommand, Mode=OneWay}" Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="34" IsCancel="{Binding CloseButtonIsCancel, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Margin="2,4,10,2" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}" Visibility="{Binding CloseButtonVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Bottom" Width="34">
+                    <ContentControl Content="M19,34V42H43.75L33.75,52H44.25L58.25,38L44.25,24H33.75L43.75,34H19Z" FlowDirection="{Binding FlowDirection, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Height="20" Style="{DynamicResource PathIconContentControlStyle}" Width="20" />
+                </Button>
+                <ContentControl x:Name="PART_BackHeaderText" Content="{Binding}" Focusable="False" IsTabStop="False" Margin="15,0,0,0" Visibility="{Binding TitleVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" VerticalAlignment="Center" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Left">
+                    <Setter Property="DockPanel.Dock" TargetName="PART_BackButton" Value="Right" />
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <ScaleTransform ScaleX="-1" />
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="HorizontalAlignment" TargetName="PART_BackHeaderText" Value="Right" />
+                    <Setter Property="Margin" TargetName="PART_BackHeaderText" Value="0,0,15,0" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Top">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="-90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type Controls:Flyout}}}" Value="Bottom">
+                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
+                        <Setter.Value>
+                            <RotateTransform Angle="90" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Controls:MetroWindow.Resources>
+
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="btn_About" Click="Btn_About_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                   Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_book_open_information}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                   VerticalAlignment="Center"
+                   Text="about" />
+                </StackPanel>
+            </Button>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
     <Grid>
         <TabControl Height="201" VerticalAlignment="Top" Width="580" Margin="1,0">
             <TabItem Header="Live Output" Controls:ControlsHelper.ContentCharacterCasing="Upper" Controls:ControlsHelper.HeaderMargin="0">
@@ -15,20 +70,71 @@
             </TabItem>
             <TabItem Header="Settings" Controls:ControlsHelper.ContentCharacterCasing="Upper">
                 <Grid>
-                    <CheckBox x:Name="chbx_autostart" Content="autostart with windows?" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Checked="chbx_autostart_Checked" Unchecked="chbx_autostart_Checked" />
+                    <CheckBox x:Name="chbx_autostart" Content="autostart with windows?" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top" Checked="Chbx_autostart_Checked" Unchecked="Chbx_autostart_Checked" />
                     <TextBox x:Name="Txtbx_outputdirectory" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="422" IsReadOnly="True" />
                     <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" />
                     <Button x:Name="Btn_Outputdirectory" Content="..." HorizontalAlignment="Left" Margin="535,9,0,0" VerticalAlignment="Top" Width="29" Click="Btn_Outputdirectory_Click" />
-                    <ComboBox x:Name="ComboBox_Color" Margin="108,41,167,0" Height="32" VerticalAlignment="Top" SelectionChanged="ComboBox_Color_SelectionChanged" />
+                    <ComboBox x:Name="ComboBox_Color" Margin="108,41,167,0" Height="32" VerticalAlignment="Top" SelectionChanged="ComboBox_Color_SelectionChanged"/>
                     <Label x:Name="Label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="71" Height="32" Padding="5" />
-                    <Controls:ToggleSwitch x:Name="themeToggleSwitch" Margin="412,42,0,0" HorizontalAlignment="Left" Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0" Controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top" Padding="5,0,0,0" IsCheckedChanged="themeToggleSwitch_IsCheckedChanged" OffLabel="Light" OnLabel="Dark" />
-                    <CheckBox x:Name="chbx_minimizeSystray" Content="minimize to system tray?" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0" Checked="chbx_minimizeSystray_Checked" Unchecked="chbx_minimizeSystray_Checked" />
+                    <Controls:ToggleSwitch x:Name="themeToggleSwitch" Margin="412,42,0,0" HorizontalAlignment="Left" Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12" Controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0" Controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top" Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitch_IsCheckedChanged" OffLabel="Light" OnLabel="Dark" />
+                    <CheckBox x:Name="chbx_minimizeSystray" Content="minimize to system tray?" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0" Checked="Chbx_minimizeSystray_Checked" Unchecked="Chbx_minimizeSystray_Checked" />
                     <Button x:Name="Btn_updates" Content="Check for Updates" Margin="426,100,10,10" Click="Btn_updates_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
+        <Controls:FlyoutsControl>
+            <Controls:Flyout x:Name="flyout_About" Header="About" Position="Left" IsOpen="false" Theme="Adapt" Controls:ControlsHelper.HeaderMargin="0" Width="582" HeaderTemplate="{DynamicResource headerTemplate}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Third Party Libraries" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,25,0,0">
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" Text="{DynamicResource license_using}" Margin="5,0,0,0" />
+                    </ScrollViewer>
+                    
+                    <TextBlock HorizontalAlignment="Left" Margin="0,-38,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="21" Width="261" TextAlignment="Center"><Run  x:Name="tBlock_about" Text="Songify v1.1 Copyright © Jan Blömacher" /><LineBreak /><Run /></TextBlock>
+
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="42" Width="261" TextAlignment="Center"><Run Text="If you want to support this project feel free to"/><Run Text=" donate, join the Discord or visit my Github!"/><LineBreak/><Run/></TextBlock>
+                    <Button Grid.Column="1" x:Name="btn_Donate" Margin="9,57,10,62" Click="Btn_Donate_Click" Width="260">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_paypal}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
+                        </StackPanel>
+                    </Button>
+                    <Button Grid.Column="1" x:Name="btn_Discord" Margin="10,107,145,10" Click="Btn_Discord_Click" Width="125">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_discord}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DISCORD" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Grid.Column="1" x:Name="btn_GitHub" Margin="145,107,11,10" Click="Btn_GitHub_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle Width="25" Height="25" Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_github}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="GITHUB" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Controls:Flyout>
+        </Controls:FlyoutsControl>
+
         <StatusBar Height="13" VerticalAlignment="Bottom" Margin="0">
-            <Label x:Name="lbl_status" Content="This is a test" Width="572" FontSize="10" Padding="0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" Margin="0,-4,0,0" Height="13"/>
+            <Label x:Name="lbl_status" Content="" Width="572" FontSize="10" Padding="0" VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" Margin="0,-4,0,0" Height="13"/>
         </StatusBar>
     </Grid>
 </Controls:MetroWindow>
