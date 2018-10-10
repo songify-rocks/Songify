@@ -16,7 +16,7 @@ namespace Songify_Slim
 
     public partial class MainWindow
     {
-        private readonly string[] colors = new string[]
+        private readonly string[] _colors = new string[]
                                                {
                                                    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
                                                    "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
@@ -24,17 +24,17 @@ namespace Songify_Slim
                                                    "Taupe", "Sienna"
                                                };
 
-        private readonly FolderBrowserDialog fbd = new FolderBrowserDialog();
+        private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
 
         public NotifyIcon NotifyIcon = new NotifyIcon();
 
-        private readonly System.Windows.Forms.ContextMenu contextMenu = new System.Windows.Forms.ContextMenu();
+        private readonly System.Windows.Forms.ContextMenu _contextMenu = new System.Windows.Forms.ContextMenu();
 
-        private readonly System.Windows.Forms.MenuItem menuItem1 = new System.Windows.Forms.MenuItem();
+        private readonly System.Windows.Forms.MenuItem _menuItem1 = new System.Windows.Forms.MenuItem();
 
-        private readonly System.Windows.Forms.MenuItem menuItem2 = new System.Windows.Forms.MenuItem();
+        private readonly System.Windows.Forms.MenuItem _menuItem2 = new System.Windows.Forms.MenuItem();
 
-        private string currentsong;
+        private string _currentsong;
 
         public static string Version;
 
@@ -67,21 +67,21 @@ namespace Songify_Slim
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
-            this.menuItem1.Text = @"Exit";
-            this.menuItem1.Click += this.MenuItem1Click;
+            this._menuItem1.Text = @"Exit";
+            this._menuItem1.Click += this.MenuItem1Click;
 
-            this.menuItem2.Text = @"Show";
-            this.menuItem2.Click += this.MenuItem2Click;
+            this._menuItem2.Text = @"Show";
+            this._menuItem2.Click += this.MenuItem2Click;
 
-            this.contextMenu.MenuItems.AddRange(new[] { this.menuItem2, this.menuItem1 });
+            this._contextMenu.MenuItems.AddRange(new[] { this._menuItem2, this._menuItem1 });
 
             this.NotifyIcon.Icon = Properties.Resources.songify;
-            this.NotifyIcon.ContextMenu = this.contextMenu;
+            this.NotifyIcon.ContextMenu = this._contextMenu;
             this.NotifyIcon.Visible = true;
             this.NotifyIcon.DoubleClick += this.MenuItem2Click;
             this.NotifyIcon.Text = @"Songify";
 
-            foreach (var s in this.colors)
+            foreach (var s in this._colors)
             {
                 this.ComboBoxColor.Items.Add(s);
             }
@@ -101,10 +101,13 @@ namespace Songify_Slim
 
             this.ChbxAutostart.IsChecked = Settings.GetAutostart();
             this.ChbxMinimizeSystray.IsChecked = Settings.GetSystray();
+            this.ChbxCustomPause.IsChecked = Settings.GetCustomPauseTextEnabled();
+            this.TxtbxCustompausetext.Text = Settings.GetCustomPauseText();
 
             if (this.WindowState == WindowState.Minimized) this.MinimizeToSysTray();
 
             this.CheckForUpdates();
+            this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
 
             this.StartTimer(1000);
         }
@@ -143,38 +146,58 @@ namespace Songify_Slim
 
             foreach (var process in processes)
             {
-                if (process.ProcessName != "Spotify" || string.IsNullOrEmpty(process.MainWindowTitle)) continue;
-                var wintitle = process.MainWindowTitle;
-                if (wintitle == "Spotify") continue;
-                if (this.currentsong == wintitle) continue;
-                this.currentsong = wintitle;
-                Console.WriteLine(wintitle);
-                if (string.IsNullOrEmpty(Settings.GetDirectory()))
+                if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
-                    File.WriteAllText(
-                        Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                        this.currentsong + @"               ");
-                }
-                else
-                {
-                    File.WriteAllText(Settings.GetDirectory() + "/Songify.txt", this.currentsong + @"               ");
-                }
+                    var wintitle = process.MainWindowTitle;
+                    if (wintitle != "Spotify")
+                    {
+                        this._currentsong = wintitle;
+                        if (string.IsNullOrEmpty(Settings.GetDirectory()))
+                        {
+                            File.WriteAllText(
+                                Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
+                                this._currentsong + @"               ");
+                        }
+                        else
+                        {
+                            File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
+                                this._currentsong + @"               ");
+                        }
 
-                this.TxtblockLiveoutput.Dispatcher.Invoke(
-                    System.Windows.Threading.DispatcherPriority.Normal,
-                    new Action(() => { this.TxtblockLiveoutput.Text = this.currentsong; }));
+                        this.TxtblockLiveoutput.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { this.TxtblockLiveoutput.Text = this._currentsong; }));
+                    }
+                    else
+                    {
+                        if (Settings.GetCustomPauseTextEnabled())
+                        {
+                            if (string.IsNullOrEmpty(Settings.GetDirectory()))
+                            {
+                                File.WriteAllText(
+                                    Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
+                                    Settings.GetCustomPauseText());
+                            }
+                            else
+                            {
+                                File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
+                                    Settings.GetCustomPauseText());
+                            }
+                        }
+                    }
+                }
             }
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
         {
-            this.fbd.Description = @"Path where the text file will be located.";
-            this.fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
+            this._fbd.Description = @"Path where the text file will be located.";
+            this._fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
 
-            if (this.fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+            if (this._fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
                 return;
-            this.TxtbxOutputdirectory.Text = this.fbd.SelectedPath;
-            Settings.SetDirectory(this.fbd.SelectedPath);
+            this.TxtbxOutputdirectory.Text = this._fbd.SelectedPath;
+            Settings.SetDirectory(this._fbd.SelectedPath);
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
@@ -273,6 +296,24 @@ namespace Songify_Slim
                 Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
             }
             this.LblStatus.Content = @"Path copied to clipboard.";
+        }
+
+        private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.SetCustomPauseText(TxtbxCustompausetext.Text);
+        }
+
+        private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
+        {
+            Settings.SetCustomPauseTextEnabled((bool)ChbxCustomPause.IsChecked);
+            if (!(bool)ChbxCustomPause.IsChecked)
+            {
+                TxtbxCustompausetext.IsEnabled = false;
+            }
+            else
+            {
+                TxtbxCustompausetext.IsEnabled = true;
+            }
         }
     }
 }

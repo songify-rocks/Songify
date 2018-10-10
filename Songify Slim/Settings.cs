@@ -2,6 +2,28 @@
 {
     internal class Settings
     {
+        public static void SetCustomPauseText(string customtext)
+        {
+            Properties.Settings.Default.customPauseText = customtext;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetCustomPauseText()
+        {
+            return Properties.Settings.Default.customPauseText;
+        }
+
+        public static void SetCustomPauseTextEnabled(bool custompause)
+        {
+            Properties.Settings.Default.customPause = custompause;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool GetCustomPauseTextEnabled()
+        {
+            return Properties.Settings.Default.customPause;
+        }
+
         public static void SetSystray(bool systray)
         {
             Properties.Settings.Default.systray = systray;

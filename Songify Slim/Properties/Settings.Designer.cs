@@ -82,5 +82,29 @@ namespace Songify_Slim.Properties {
                 this["systray"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool customPause {
+            get {
+                return ((bool)(this["customPause"]));
+            }
+            set {
+                this["customPause"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string customPauseText {
+            get {
+                return ((string)(this["customPauseText"]));
+            }
+            set {
+                this["customPauseText"] = value;
+            }
+        }
     }
 }

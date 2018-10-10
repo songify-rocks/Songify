@@ -92,8 +92,12 @@
             </TabItem>
             <TabItem Header="Settings" controls:ControlsHelper.ContentCharacterCasing="Upper">
                 <Grid>
-                    <CheckBox x:Name="ChbxAutostart" Content="autostart with windows?" HorizontalAlignment="Left"
-                              Margin="10,128,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
+                    <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Margin="108,87,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
+
+                    <CheckBox x:Name="ChbxCustomPause" Content="pause text" HorizontalAlignment="Left"
+                              Margin="10,90,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
+                    <CheckBox x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left"
+                              Margin="181,128,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
                               Unchecked="ChbxAutostartChecked" Focusable="False" />
                     <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0"
                              TextWrapping="Wrap" VerticalAlignment="Top" Width="392" IsReadOnly="True" />
@@ -125,8 +129,8 @@
                                            controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
                                            Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
                                            OffLabel="Light" OnLabel="Dark" />
-                    <CheckBox x:Name="ChbxMinimizeSystray" Content="minimize to system tray?"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
+                    <CheckBox x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,128,0,0"
                               Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
                               Focusable="False" />
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="426,100,10,10"
