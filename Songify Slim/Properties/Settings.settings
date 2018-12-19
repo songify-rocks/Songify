@@ -23,5 +23,8 @@
     <Setting Name="customPauseText" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="outputString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{artist} - {title}               </Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -16,15 +16,7 @@ namespace Songify_Slim
 
     public partial class MainWindow
     {
-        private readonly string[] _colors = new string[]
-                                               {
-                                                   "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
-                                                   "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
-                                                   "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
-                                                   "Taupe", "Sienna"
-                                               };
 
-        private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
 
         public NotifyIcon NotifyIcon = new NotifyIcon();
 
@@ -43,27 +35,6 @@ namespace Songify_Slim
             this.InitializeComponent();
         }
 
-        private void ThemeToggleSwitchIsCheckedChanged(object sender, EventArgs e)
-        {
-            Settings.SetTheme(this.ThemeToggleSwitch.IsChecked == true ? "BaseDark" : "BaseLight");
-            ThemeHandler.ApplyTheme();
-        }
-
-        private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Settings.SetColor(this.ComboBoxColor.SelectedValue.ToString());
-            ThemeHandler.ApplyTheme();
-            if (Settings.GetColor() != "Yellow")
-            {
-                this.LblStatus.Foreground = Brushes.White;
-                this.LblCopyright.Foreground = Brushes.White;
-            }
-            else
-            {
-                this.LblStatus.Foreground = Brushes.Black;
-                this.LblCopyright.Foreground = Brushes.Black;
-            }
-        }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
@@ -81,38 +52,19 @@ namespace Songify_Slim
             this.NotifyIcon.DoubleClick += this.MenuItem2Click;
             this.NotifyIcon.Text = @"Songify";
 
-            foreach (var s in this._colors)
-            {
-                this.ComboBoxColor.Items.Add(s);
-            }
 
-            foreach (string s in this.ComboBoxColor.Items)
-            {
-                if (s != Settings.GetColor()) continue;
-                this.ComboBoxColor.SelectedItem = s;
-                Settings.SetColor(s);
-            }
 
-            this.ThemeToggleSwitch.IsChecked = Settings.GetTheme() == "BaseDark";
             ThemeHandler.ApplyTheme();
-            this.TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly().Location;
-            if (!string.IsNullOrEmpty(Settings.GetDirectory()))
-                this.TxtbxOutputdirectory.Text = Settings.GetDirectory();
-
-            this.ChbxAutostart.IsChecked = Settings.GetAutostart();
-            this.ChbxMinimizeSystray.IsChecked = Settings.GetSystray();
-            this.ChbxCustomPause.IsChecked = Settings.GetCustomPauseTextEnabled();
-            this.TxtbxCustompausetext.Text = Settings.GetCustomPauseText();
 
             if (this.WindowState == WindowState.Minimized) this.MinimizeToSysTray();
 
-            this.CheckForUpdates();
+            CheckForUpdates();
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
 
             this.StartTimer(1000);
         }
 
-        private void CheckForUpdates()
+        public static void CheckForUpdates()
         {
             var assembly = Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
@@ -123,7 +75,13 @@ namespace Songify_Slim
             }
             catch
             {
-                this.LblStatus.Content = "Unable to check for newer version.";
+                foreach (Window window in System.Windows.Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        (window as MainWindow).LblStatus.Content = "Unable to check for new version.";
+                    }
+                }
             }
         }
 
@@ -148,10 +106,26 @@ namespace Songify_Slim
             {
                 if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
-                    var wintitle = process.MainWindowTitle;
+                    string wintitle = process.MainWindowTitle;
+                    string artist = "", title = "", extra = "";
                     if (wintitle != "Spotify")
                     {
-                        this._currentsong = wintitle;
+                        string[] songinfo = wintitle.Split('-');
+                        try
+                        {
+                            artist = songinfo[0].Trim();
+                            title = songinfo[1].Trim();
+                            extra = songinfo[2].Trim();
+                        }
+                        catch
+                        {
+
+                        }
+                        _currentsong = Settings.GetOutputString().Replace("{artist}", artist);
+                        _currentsong = _currentsong.Replace("{title}", title);
+                        _currentsong = _currentsong.Replace("{extra}", extra);
+
+
                         if (string.IsNullOrEmpty(Settings.GetDirectory()))
                         {
                             File.WriteAllText(
@@ -189,24 +163,9 @@ namespace Songify_Slim
             }
         }
 
-        private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
-        {
-            this._fbd.Description = @"Path where the text file will be located.";
-            this._fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
 
-            if (this._fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
-                return;
-            this.TxtbxOutputdirectory.Text = this._fbd.SelectedPath;
-            Settings.SetDirectory(this._fbd.SelectedPath);
-        }
 
-        private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
-        {
-            var chbxAutostartIsChecked = this.ChbxAutostart.IsChecked;
-            RegisterInStartup(chbxAutostartIsChecked != null && (bool)chbxAutostartIsChecked);
-        }
-
-        private static void RegisterInStartup(bool isChecked)
+        public static void RegisterInStartup(bool isChecked)
         {
             var registryKey = Registry.CurrentUser.OpenSubKey(
                 "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
@@ -248,11 +207,7 @@ namespace Songify_Slim
             this.Close();
         }
 
-        private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
-        {
-            var isChecked = this.ChbxMinimizeSystray.IsChecked;
-            Settings.SetSystray(isChecked != null && (bool)isChecked);
-        }
+
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
@@ -260,10 +215,12 @@ namespace Songify_Slim
             this.NotifyIcon.Dispose();
         }
 
-        private void BtnUpdatesClick(object sender, RoutedEventArgs e)
+
+        private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
-            this.CheckForUpdates();
+            this.FlyoutAbout.IsOpen = (!this.FlyoutAbout.IsOpen);
         }
+
 
         private void BtnDonateClick(object sender, RoutedEventArgs e)
         {
@@ -280,40 +237,10 @@ namespace Songify_Slim
             Process.Start("https://github.com/Inzaniity/Songify");
         }
 
-        private void BtnAboutClick(object sender, RoutedEventArgs e)
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            this.FlyoutAbout.IsOpen = (!this.FlyoutAbout.IsOpen);
-        }
-
-        private void BtnCopyToClipClick(object sender, RoutedEventArgs e)
-        {
-            if (string.IsNullOrEmpty(Settings.GetDirectory()))
-            {
-                Clipboard.SetDataObject(Assembly.GetEntryAssembly().Location + "\\Songify.txt");
-            }
-            else
-            {
-                Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
-            }
-            this.LblStatus.Content = @"Path copied to clipboard.";
-        }
-
-        private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.SetCustomPauseText(TxtbxCustompausetext.Text);
-        }
-
-        private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
-        {
-            Settings.SetCustomPauseTextEnabled((bool)ChbxCustomPause.IsChecked);
-            if (!(bool)ChbxCustomPause.IsChecked)
-            {
-                TxtbxCustompausetext.IsEnabled = false;
-            }
-            else
-            {
-                TxtbxCustompausetext.IsEnabled = true;
-            }
+            SettingsWindow sW = new SettingsWindow();
+            sW.ShowDialog();
         }
     }
 }

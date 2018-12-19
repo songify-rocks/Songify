@@ -1,0 +1,66 @@
+﻿<controls:MetroWindow x:Class="Songify_Slim.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="Settings" Height="321" Width="474" Loaded="SettingsWindow_Loaded">
+    <Grid>
+        <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" Margin="113,112,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
+
+        <CheckBox x:Name="ChbxCustomPause" Content="pause text" HorizontalAlignment="Left"
+                              Margin="15,115,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
+        <CheckBox x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left"
+                              Margin="15,201,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
+                              Unchecked="ChbxAutostartChecked" Focusable="False" />
+        <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="113,10,0,0"
+                             TextWrapping="Wrap" VerticalAlignment="Top" Width="279" IsReadOnly="True" />
+        <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0"
+                           VerticalAlignment="Top" />
+        <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="397,9,0,0"
+                            VerticalAlignment="Top" Width="27" Click="BtnOutputdirectoryClick"
+                            RenderTransformOrigin="-1.138,0.407" />
+        <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="429,9,0,0"
+                            VerticalAlignment="Top" Width="28" Click="BtnCopyToClipClick" Padding="5"
+                            Focusable="False" ToolTip="Copy to Clipboard" Height="27">
+            <StackPanel Orientation="Horizontal">
+                <Rectangle
+                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                Width="15" Height="15">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </StackPanel>
+        </Button>
+
+
+        <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="305,139,0,0" HorizontalAlignment="Left"
+                                           Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
+                                           Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
+                                           OffLabel="Light" OnLabel="Dark" />
+        <CheckBox x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,224,0,0"
+                              Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
+                              Focusable="False" />
+        <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,247,0,0"
+                            Click="BtnUpdatesClick" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="442" />
+        <Label x:Name="LabelColor" Content="Color:" HorizontalAlignment="Left" Margin="15,143,0,0"
+                           VerticalAlignment="Top" Width="71" Padding="5" />
+        <ComboBox x:Name="ComboBoxColor" Margin="113,143,0,0" Height="23" VerticalAlignment="Top"
+                              SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="187" />
+        <Label Content="Output Format" HorizontalAlignment="Left" Margin="20,41,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="114,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="278" TextChanged="TxtbxOutputformat_TextChanged">
+            <TextBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
+                    <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
+                    <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
+                </ContextMenu>
+            </TextBox.ContextMenu>
+        </TextBox>
+    </Grid>
+</controls:MetroWindow>

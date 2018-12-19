@@ -62,7 +62,6 @@
             </DataTemplate.Triggers>
         </DataTemplate>
     </controls:MetroWindow.Resources>
-
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button x:Name="BtnAbout" Click="BtnAboutClick">
@@ -78,67 +77,24 @@
                                Text="about" />
                 </StackPanel>
             </Button>
+            <Button x:Name="BtnSettings" Click="BtnSettings_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_settings}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                               VerticalAlignment="Center"
+                               Text="settings" />
+                </StackPanel>
+            </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
-
     <Grid>
-        <TabControl Height="201" VerticalAlignment="Top" Width="580" Margin="1,0">
-            <TabItem Header="Live Output" controls:ControlsHelper.ContentCharacterCasing="Upper"
-                     controls:ControlsHelper.HeaderMargin="0">
-                <Grid>
-                    <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
+        <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" />
-                </Grid>
-            </TabItem>
-            <TabItem Header="Settings" controls:ControlsHelper.ContentCharacterCasing="Upper">
-                <Grid>
-                    <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="299" Margin="108,87,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
-
-                    <CheckBox x:Name="ChbxCustomPause" Content="pause text" HorizontalAlignment="Left"
-                              Margin="10,90,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
-                    <CheckBox x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left"
-                              Margin="181,128,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
-                              Unchecked="ChbxAutostartChecked" Focusable="False" />
-                    <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="108,10,0,0"
-                             TextWrapping="Wrap" VerticalAlignment="Top" Width="392" IsReadOnly="True" />
-                    <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0"
-                           VerticalAlignment="Top" />
-                    <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="505,9,0,0"
-                            VerticalAlignment="Top" Width="27" Click="BtnOutputdirectoryClick"
-                            RenderTransformOrigin="-1.138,0.407" />
-                    <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="536,10,0,0"
-                            VerticalAlignment="Top" Width="28" Click="BtnCopyToClipClick" Padding="5"
-                            Focusable="False" ToolTip="Copy to Clipboard" Height="27">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle
-                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                Width="15" Height="15">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button>
-                    <ComboBox x:Name="ComboBoxColor" Margin="108,41,167,0" Height="32" VerticalAlignment="Top"
-                              SelectionChanged="ComboBoxColorSelectionChanged" />
-                    <Label x:Name="LabelColor" Content="Color:" HorizontalAlignment="Left" Margin="10,41,0,0"
-                           VerticalAlignment="Top" Width="71" Height="32" Padding="5" />
-                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="412,42,0,0" HorizontalAlignment="Left"
-                                           Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
-                                           Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
-                                           OffLabel="Light" OnLabel="Dark" />
-                    <CheckBox x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,128,0,0"
-                              Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
-                              Focusable="False" />
-                    <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="426,100,10,10"
-                            Click="BtnUpdatesClick" />
-                </Grid>
-            </TabItem>
-        </TabControl>
-
         <controls:FlyoutsControl>
             <controls:Flyout x:Name="FlyoutAbout" Header="About" Position="Left" IsOpen="False" Theme="Adapt"
                              controls:ControlsHelper.HeaderMargin="0" Width="582"

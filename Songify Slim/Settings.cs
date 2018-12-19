@@ -2,6 +2,18 @@
 {
     internal class Settings
     {
+        public static void SetOutputString(string outputstring)
+        {
+            Properties.Settings.Default.outputString = outputstring;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetOutputString()
+        {
+            return Properties.Settings.Default.outputString;
+        }
+
+
         public static void SetCustomPauseText(string customtext)
         {
             Properties.Settings.Default.customPauseText = customtext;
