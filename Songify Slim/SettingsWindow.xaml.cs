@@ -31,13 +31,14 @@ namespace Songify_Slim
         {
             if (string.IsNullOrEmpty(Settings.GetDirectory()))
             {
-                System.Windows.Clipboard.SetDataObject(Assembly.GetEntryAssembly().Location + "\\Songify.txt");
+                System.Windows.Clipboard.SetDataObject(Assembly.GetEntryAssembly().Location.Replace("Songify Slim.exe", "Songify.txt"));
             }
             else
             {
                 System.Windows.Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
             }
             (mW as MainWindow).LblStatus.Content = @"Path copied to clipboard.";
+            Notification.ShowNotification("Path saved to clipboard.", "s");
         }
 
         public SettingsWindow()

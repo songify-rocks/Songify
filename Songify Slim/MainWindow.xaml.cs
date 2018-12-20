@@ -115,7 +115,8 @@ namespace Songify_Slim
                         {
                             artist = songinfo[0].Trim();
                             title = songinfo[1].Trim();
-                            extra = songinfo[2].Trim();
+                            if (songinfo.Length > 2)
+                                extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
                         }
                         catch
                         {
@@ -130,17 +131,17 @@ namespace Songify_Slim
                         {
                             File.WriteAllText(
                                 Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                                this._currentsong + @"               ");
+                                _currentsong);
                         }
                         else
                         {
                             File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                                this._currentsong + @"               ");
+                                _currentsong);
                         }
 
                         this.TxtblockLiveoutput.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { this.TxtblockLiveoutput.Text = this._currentsong; }));
+                            new Action(() => { TxtblockLiveoutput.Text = _currentsong.Trim(); }));
                     }
                     else
                     {
@@ -218,23 +219,8 @@ namespace Songify_Slim
 
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
-            this.FlyoutAbout.IsOpen = (!this.FlyoutAbout.IsOpen);
-        }
-
-
-        private void BtnDonateClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://www.paypal.me/inzaniity");
-        }
-
-        private void BtnDiscordClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://discordapp.com/invite/H8nd4T4");
-        }
-
-        private void BtnGitHubClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://github.com/Inzaniity/Songify");
+            AboutWindow aW = new AboutWindow();
+            aW.ShowDialog();
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)

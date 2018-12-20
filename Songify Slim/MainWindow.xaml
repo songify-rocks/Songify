@@ -94,66 +94,7 @@
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
-                               Text="Artist - Title" />
-        <controls:FlyoutsControl>
-            <controls:Flyout x:Name="FlyoutAbout" Header="About" Position="Left" IsOpen="False" Theme="Adapt"
-                             controls:ControlsHelper.HeaderMargin="0" Width="582"
-                             HeaderTemplate="{DynamicResource HeaderTemplate}">
-                <Grid Margin="10,0,10,15" Height="165">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Label Content="Third Party Libraries" HorizontalAlignment="Center" VerticalAlignment="Top" />
-
-                    <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,25,0,14">
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"
-                                   ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                   Text="{DynamicResource LicenseUsing}" Margin="5,0,0,0" />
-                    </ScrollViewer>
-                    <TextBlock Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"
-                               VerticalAlignment="Top" Height="42" Width="261" TextAlignment="Center">
-                        <Run Text="If you want to support this project feel free to" />
-                        <Run Text=" donate, join the Discord or visit my Github!" /><LineBreak /><Run />
-                    </TextBlock>
-                    <Button Grid.Column="1" x:Name="BtnDonate" Margin="10,52,11,67" Click="BtnDonateClick" Width="260">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="25" Height="25"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_paypal}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
-                        </StackPanel>
-                    </Button>
-                    <Button Grid.Column="1" x:Name="BtnDiscord" Margin="10,103,146,14" Click="BtnDiscordClick"
-                            Width="125">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="25" Height="25"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_discord}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DISCORD" />
-                        </StackPanel>
-                    </Button>
-
-                    <Button Grid.Column="1" x:Name="BtnGitHub" Margin="145,103,11,14" Click="BtnGitHubClick">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle Width="25" Height="25"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_github}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="GITHUB" />
-                        </StackPanel>
-                    </Button>
-                </Grid>
-            </controls:Flyout>
-        </controls:FlyoutsControl>
+                               Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StatusBar Height="15" Width="588" VerticalAlignment="Bottom">
             <Label x:Name="LblStatus" Content="" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
                    HorizontalContentAlignment="Stretch" Margin="0,0,0,-1" Height="13" Width="380"
