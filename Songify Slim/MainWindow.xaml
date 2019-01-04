@@ -7,7 +7,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
-                      WindowState="Minimized">
+                      WindowState="Minimized" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing">
     <controls:MetroWindow.Resources>
         <DataTemplate x:Key="HeaderTemplate">
             <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
@@ -61,6 +61,7 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+        
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
@@ -92,6 +93,8 @@
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
+    
+    
     <Grid>
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />

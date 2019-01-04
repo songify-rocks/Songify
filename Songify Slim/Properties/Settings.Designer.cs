@@ -118,5 +118,38 @@ namespace Songify_Slim.Properties {
                 this["outputString"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string uuid {
+            get {
+                return ((string)(this["uuid"]));
+            }
+            set {
+                this["uuid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool telemetry {
+            get {
+                return ((bool)(this["telemetry"]));
+            }
+            set {
+                this["telemetry"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Songify Data Provider")]
+        public string webua {
+            get {
+                return ((string)(this["webua"]));
+            }
+        }
     }
 }

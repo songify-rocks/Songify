@@ -2,6 +2,33 @@
 {
     internal class Settings
     {
+        public static string getWebua()
+        {
+            return Properties.Settings.Default.webua;
+        }
+
+        public static void SetTelemetry(bool telemetry)
+        {
+            Properties.Settings.Default.telemetry = telemetry;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool GetTelemetry()
+        {
+            return Properties.Settings.Default.telemetry;
+        }
+
+        public static void SetUUID(string UUID)
+        {
+            Properties.Settings.Default.uuid = UUID;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetUUID()
+        {
+            return Properties.Settings.Default.uuid;
+        }
+
         public static void SetOutputString(string outputstring)
         {
             Properties.Settings.Default.outputString = outputstring;
@@ -12,7 +39,6 @@
         {
             return Properties.Settings.Default.outputString;
         }
-
 
         public static void SetCustomPauseText(string customtext)
         {

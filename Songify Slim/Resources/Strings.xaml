@@ -201,4 +201,26 @@ apply, that proxy's public statement of acceptance of any version is
 permanent authorization for you to choose that version for the
 Library.
     </system:String>
+    <system:String x:Key="data_colletion" xml:space="preserve">Hey there!
+        
+This seems to be the first time you are running the software. I'd like to anonymously collect some data such as:
+
+● UUID (randomly generate unique identifier, nothing personalized!)
+
+● Current timestamp (to evaluate how frequent the software is used)
+
+● If the software is running or not (this is transmitted on startup / shutdown of the software, no service running in the background!)
+
+● Current software version
+
+You can always opt out by declining this dialog or uncheck the box in the settings menu.
+    </system:String>
+
+    <system:String x:Key="collectable_data" xml:space="preserve">● UUID (randomly generate identifier, nothing personalized)
+
+● Current timestamp (to evaluate how frequent the software is used)
+
+● If the software is running or not (this is transmitted on startup / shutdown of the software, no service running in the background!)
+
+● Current software version</system:String>
 </ResourceDictionary>

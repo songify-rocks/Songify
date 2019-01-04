@@ -26,5 +26,14 @@
     <Setting Name="outputString" Type="System.String" Scope="User">
       <Value Profile="(Default)">{artist} - {title}               </Value>
     </Setting>
+    <Setting Name="uuid" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="telemetry" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="webua" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Songify Data Provider</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

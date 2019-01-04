@@ -144,6 +144,7 @@ namespace Songify_Slim
             ChbxAutostart.IsChecked = Settings.GetAutostart();
             ChbxMinimizeSystray.IsChecked = Settings.GetSystray();
             ChbxCustomPause.IsChecked = Settings.GetCustomPauseTextEnabled();
+            ChbxTelemetry.IsChecked = Settings.GetTelemetry();
             TxtbxCustompausetext.Text = Settings.GetCustomPauseText();
             TxtbxOutputformat.Text = Settings.GetOutputString();
         }
@@ -174,6 +175,11 @@ namespace Songify_Slim
             tb.AppendText(text);
             tb.Select(TxtbxOutputformat.Text.Length, 0);
             tb.ContextMenu.IsOpen = false;
+        }
+
+        private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
+        {
+            Settings.SetTelemetry((bool)ChbxTelemetry.IsChecked);
         }
     }
 }

@@ -1,23 +1,22 @@
-﻿using Microsoft.Win32;
+﻿using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace Songify_Slim
 {
-    using System.Windows.Media;
-
-    using Clipboard = System.Windows.Clipboard;
-
     public partial class MainWindow
     {
-
-
+        private static readonly HttpClient client = new HttpClient();
         public NotifyIcon NotifyIcon = new NotifyIcon();
 
         private readonly System.Windows.Forms.ContextMenu _contextMenu = new System.Windows.Forms.ContextMenu();
@@ -40,7 +39,6 @@ namespace Songify_Slim
         {
             this._menuItem1.Text = @"Exit";
             this._menuItem1.Click += this.MenuItem1Click;
-
             this._menuItem2.Text = @"Show";
             this._menuItem2.Click += this.MenuItem2Click;
 
@@ -53,10 +51,29 @@ namespace Songify_Slim
             this.NotifyIcon.Text = @"Songify";
 
 
-
             ThemeHandler.ApplyTheme();
-
             if (this.WindowState == WindowState.Minimized) this.MinimizeToSysTray();
+
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Version = fvi.FileVersion;
+
+            if (Settings.GetUUID() == "")
+            {
+                this.Width = 588 + 200;
+                this.Height = 247.881 + 200;
+                Settings.SetUUID(System.Guid.NewGuid().ToString());
+
+                TelemetryDisclaimer();
+
+            }
+            else
+            {
+                if (Settings.GetTelemetry())
+                {
+                    SendTelemetry(true);
+                }
+            }
 
             CheckForUpdates();
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
@@ -64,11 +81,31 @@ namespace Songify_Slim
             this.StartTimer(1000);
         }
 
+        private async void TelemetryDisclaimer()
+        {
+            SendTelemetry(true);
+            var result = await this.ShowMessageAsync("Anonymous Data",
+                this.FindResource("data_colletion") as string
+                , MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Accept", NegativeButtonText = "Decline", DefaultButtonFocus = MessageDialogResult.Affirmative });
+            if (result == MessageDialogResult.Affirmative)
+            {
+                Settings.SetTelemetry(true);
+                this.Width = 588;
+                this.MinHeight = 247.881;
+                this.Height = 247.881;
+            }
+            else
+            {
+                Settings.SetTelemetry(false);
+                this.Width = 588;
+                this.MinHeight = 247.881;
+                this.Height = 247.881;
+            }
+        }
+
         public static void CheckForUpdates()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            Version = fvi.FileVersion;
+
             try
             {
                 Updater.CheckForUpdates(new Version(Version));
@@ -208,8 +245,6 @@ namespace Songify_Slim
             this.Close();
         }
 
-
-
         private void MetroWindowClosed(object sender, EventArgs e)
         {
             this.NotifyIcon.Visible = false;
@@ -227,6 +262,30 @@ namespace Songify_Slim
         {
             SettingsWindow sW = new SettingsWindow();
             sW.ShowDialog();
+        }
+
+        private void SendTelemetry(bool active)
+        {
+            try
+            {
+                var extras = Settings.GetUUID() + "&tst=" + DateTime.Now.ToString() + "&v=" + Version + "&a=" + active;
+                var url = "http://127.0.0.1/x/songifydata.php/?id=" + extras;
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.getWebua();
+
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SendTelemetry(false);
         }
     }
 }

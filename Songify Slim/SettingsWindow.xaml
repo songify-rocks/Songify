@@ -5,62 +5,84 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Settings" Height="255" Width="474" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
+        Title="Settings" Height="282.667" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
     <Grid>
-        <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="344" Margin="113,73,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
+        <TabControl Margin="10,10,10,8" TabStripPlacement="Left">
+            <TabItem Header="System">
+                <Grid>
+                    <controls:ToggleSwitch x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left" Header="Behavior"
+                              Margin="10,10,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
+                              Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="366" />
+                    <controls:ToggleSwitch x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,61,0,0"
+                              Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
+                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="366" />
+                    <controls:ToggleSwitch x:Name="ChbxTelemetry" Content="send anonymous data" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,101,0,0" Header="Telemetry"
+                                           Width="366" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Height="49" IsCheckedChanged="ChbxTelemetry_IsCheckedChanged"/>
 
-        <CheckBox x:Name="ChbxCustomPause" Content="Pause Text" HorizontalAlignment="Left"
-                              Margin="16,76,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
-        <CheckBox x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left"
-                              Margin="16,137,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
-                              Unchecked="ChbxAutostartChecked" Focusable="False" />
-        <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="113,10,0,0"
-                             TextWrapping="Wrap" VerticalAlignment="Top" Width="279" IsReadOnly="True" />
-        <Label Content="Output Directory" HorizontalAlignment="Left" Margin="10,10,0,0"
+                    <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,187,0,0"
+                            Click="BtnUpdatesClick" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="366" />
+                    <Label Content="?" HorizontalAlignment="Left" Margin="59,97,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Output">
+                <Grid>
+                    <Label Content="Output Directory" HorizontalAlignment="Left" Margin="9,11,0,0"
                            VerticalAlignment="Top" />
-        <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="397,9,0,0"
+                    <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="112,11,0,0"
+                             TextWrapping="Wrap" VerticalAlignment="Top" Width="195" IsReadOnly="True" />
+                    <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="312,10,0,0"
                             VerticalAlignment="Top" Width="27" Click="BtnOutputdirectoryClick"
                             RenderTransformOrigin="-1.138,0.407" />
-        <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="429,9,0,0"
+                    <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="344,10,0,0"
                             VerticalAlignment="Top" Width="28" Click="BtnCopyToClipClick" Padding="5"
                             Focusable="False" ToolTip="Copy to Clipboard" Height="27">
-            <StackPanel Orientation="Horizontal">
-                <Rectangle
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle
                                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
                                 Width="15" Height="15">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-            </StackPanel>
-        </Button>
-
-
-        <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="306,103,0,0" HorizontalAlignment="Left"
-                                           Width="152" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
+                    <Label Content="Output Format" HorizontalAlignment="Left" Margin="9,42,0,0" VerticalAlignment="Top"/>
+                    <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="112,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" TextChanged="TxtbxOutputformat_TextChanged">
+                        <TextBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
+                                <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
+                                <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+                    <CheckBox x:Name="ChbxCustomPause" Content="Pause Text" HorizontalAlignment="Left"
+                              Margin="15,77,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
+                    <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" Margin="112,74,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Appearance">
+                <Grid>
+                    <Label x:Name="LabelColor" Content="Color:" HorizontalAlignment="Left" Margin="11,13,0,0"
+                           VerticalAlignment="Top" Width="71" Padding="5" />
+                    <ComboBox x:Name="ComboBoxColor" Margin="114,13,0,0" Height="23" VerticalAlignment="Top"
+                              SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="238" />
+                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="208,44,0,0" HorizontalAlignment="Left"
+                                           Width="144" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
                                            Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
                                            OffLabel="Light Theme" OnLabel="Dark Theme" />
-        <CheckBox x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="16,160,0,0"
-                              Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
-                              Focusable="False" />
-        <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="16,183,0,0"
-                            Click="BtnUpdatesClick" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="440" />
-        <Label x:Name="LabelColor" Content="Color:" HorizontalAlignment="Left" Margin="10,106,0,0"
-                           VerticalAlignment="Top" Width="71" Padding="5" />
-        <ComboBox x:Name="ComboBoxColor" Margin="113,106,0,0" Height="23" VerticalAlignment="Top"
-                              SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="187" />
-        <Label Content="Output Format" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="113,42,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="343" TextChanged="TxtbxOutputformat_TextChanged">
-            <TextBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
-                    <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
-                    <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
-                </ContextMenu>
-            </TextBox.ContextMenu>
-        </TextBox>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
     </Grid>
 </controls:MetroWindow>
