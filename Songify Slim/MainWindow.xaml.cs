@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -17,7 +18,10 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         private static readonly HttpClient client = new HttpClient();
+
         public NotifyIcon NotifyIcon = new NotifyIcon();
+
+        private readonly BackgroundWorker worker = new BackgroundWorker();
 
         private readonly System.Windows.Forms.ContextMenu _contextMenu = new System.Windows.Forms.ContextMenu();
 
@@ -29,11 +33,37 @@ namespace Songify_Slim
 
         public static string Version;
 
+        public bool appActive = false;
+
         public MainWindow()
         {
             this.InitializeComponent();
+            worker.DoWork += worker_DoWork;
+            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
         }
 
+        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+        }
+
+        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                var extras = Settings.GetUUID() + "&tst=" + DateTime.Now.ToString() + "&v=" + Version + "&a=" + appActive;
+                var url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.getWebua();
+
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
@@ -50,7 +80,6 @@ namespace Songify_Slim
             this.NotifyIcon.DoubleClick += this.MenuItem2Click;
             this.NotifyIcon.Text = @"Songify";
 
-
             ThemeHandler.ApplyTheme();
             if (this.WindowState == WindowState.Minimized) this.MinimizeToSysTray();
 
@@ -65,7 +94,6 @@ namespace Songify_Slim
                 Settings.SetUUID(System.Guid.NewGuid().ToString());
 
                 TelemetryDisclaimer();
-
             }
             else
             {
@@ -105,7 +133,6 @@ namespace Songify_Slim
 
         public static void CheckForUpdates()
         {
-
             try
             {
                 Updater.CheckForUpdates(new Version(Version));
@@ -157,12 +184,10 @@ namespace Songify_Slim
                         }
                         catch
                         {
-
                         }
                         _currentsong = Settings.GetOutputString().Replace("{artist}", artist);
                         _currentsong = _currentsong.Replace("{title}", title);
                         _currentsong = _currentsong.Replace("{extra}", extra);
-
 
                         if (string.IsNullOrEmpty(Settings.GetDirectory()))
                         {
@@ -200,8 +225,6 @@ namespace Songify_Slim
                 }
             }
         }
-
-
 
         public static void RegisterInStartup(bool isChecked)
         {
@@ -251,7 +274,6 @@ namespace Songify_Slim
             this.NotifyIcon.Dispose();
         }
 
-
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
             AboutWindow aW = new AboutWindow();
@@ -266,21 +288,8 @@ namespace Songify_Slim
 
         private void SendTelemetry(bool active)
         {
-            try
-            {
-                var extras = Settings.GetUUID() + "&tst=" + DateTime.Now.ToString() + "&v=" + Version + "&a=" + active;
-                var url = "http://127.0.0.1/x/songifydata.php/?id=" + extras;
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.getWebua();
-
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            appActive = active;
+            worker.RunWorkerAsync();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
