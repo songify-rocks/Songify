@@ -11,6 +11,7 @@ It fetches the currently playing song from Spotify and saves it to a text file. 
 * Gets the currently playing song and saves it as following: `Artist - Title               ` (Whitespaces are for a better marquee in your streaming software of choice!)
 * Automatically start with windows (trust me, it is QoL)
 * Minimize to the system tray, feels like it isn't running at all.
+* Custom output string! If you want to be extra fancy.
 * Switch between Dark and Light theme, not that it matters since it's most of the time minimized...
 * Oh and colors, yeah a lot of colors actually. 23 if I counted that right.
 
