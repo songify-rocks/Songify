@@ -40,10 +40,10 @@ namespace Songify_Slim
             {
                 if (window.GetType() != typeof(MainWindow)) continue;
                 ((MainWindow)window).NotifyIcon.BalloonTipTitle = @"New Update!";
-                ((MainWindow)window).NotifyIcon.BalloonTipText = @"A new update is available for download.\nIt's recommended to update to the latest version.";
+                ((MainWindow)window).NotifyIcon.BalloonTipText = @"A new update is available for download. It's recommended to update to the latest version.";
                 ((MainWindow)window).NotifyIcon.ShowBalloonTip(500);
 
-                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a newer version available. Do you want to update?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available. Do you want to update?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     System.Diagnostics.Process.Start(latest.HtmlUrl);

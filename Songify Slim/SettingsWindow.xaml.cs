@@ -136,6 +136,11 @@ namespace Songify_Slim
                 Settings.SetColor(s);
             }
 
+            SetControls();
+        }
+
+        public void SetControls()
+        {
             ThemeToggleSwitch.IsChecked = Settings.GetTheme() == "BaseDark";
             TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly().Location;
             if (!string.IsNullOrEmpty(Settings.GetDirectory()))
@@ -180,6 +185,16 @@ namespace Songify_Slim
         private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
         {
             Settings.SetTelemetry((bool)ChbxTelemetry.IsChecked);
+        }
+
+        private void Btn_ExportConfig_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigHandler.SaveConfig();
+        }
+
+        private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
+        {
+            ConfigHandler.LoadConfig();
         }
     }
 }

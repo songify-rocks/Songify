@@ -35,6 +35,10 @@ namespace Songify_Slim
 
         public bool appActive = false;
 
+        TimeSpan startTimeSpan = TimeSpan.Zero;
+        TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
+        System.Threading.Timer timer;
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -50,7 +54,9 @@ namespace Songify_Slim
         {
             try
             {
-                var extras = Settings.GetUUID() + "&tst=" + DateTime.Now.ToString() + "&v=" + Version + "&a=" + appActive;
+                Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + appActive;
                 var url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -61,7 +67,9 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
+                Console.WriteLine("-----------------Telemetry-Error-----------------");
                 Console.WriteLine(ex);
+                Console.WriteLine("-------------------------------------------------");
             }
         }
 
@@ -97,16 +105,28 @@ namespace Songify_Slim
             }
             else
             {
-                if (Settings.GetTelemetry())
-                {
-                    SendTelemetry(true);
-                }
+                TimerStart();
             }
 
             CheckForUpdates();
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
 
             this.StartTimer(1000);
+        }
+
+        private void TimerStart()
+        {
+            timer = new System.Threading.Timer((e) =>
+            {
+                if (Settings.GetTelemetry())
+                {
+                    SendTelemetry(true);
+                }
+                else
+                {
+                    timer.Dispose();
+                }
+            }, null, startTimeSpan, periodTimeSpan);
         }
 
         private async void TelemetryDisclaimer()
@@ -270,6 +290,7 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
+            SendTelemetry(false);
             this.NotifyIcon.Visible = false;
             this.NotifyIcon.Dispose();
         }
