@@ -24,7 +24,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="outputString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">{artist} - {title}               </Value>
+      <Value Profile="(Default)">{artist} - {title} {extra}               </Value>
     </Setting>
     <Setting Name="uuid" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

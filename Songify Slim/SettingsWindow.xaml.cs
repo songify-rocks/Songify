@@ -48,7 +48,11 @@ namespace Songify_Slim
 
         private void BtnUpdatesClick(object sender, RoutedEventArgs e)
         {
-            MainWindow.CheckForUpdates();
+            foreach (Window window in System.Windows.Application.Current.Windows)
+            {
+                if (window.GetType() != typeof(MainWindow)) continue;
+                ((MainWindow)window).Worker_Update.RunWorkerAsync();
+            }
         }
 
         private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)

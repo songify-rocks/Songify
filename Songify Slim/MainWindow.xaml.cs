@@ -21,19 +21,22 @@ namespace Songify_Slim
 
         public NotifyIcon NotifyIcon = new NotifyIcon();
 
-        private readonly BackgroundWorker worker = new BackgroundWorker();
+        public BackgroundWorker Worker_Telemetry = new BackgroundWorker();
+        
+        public BackgroundWorker Worker_Update = new BackgroundWorker();
 
-        private readonly System.Windows.Forms.ContextMenu _contextMenu = new System.Windows.Forms.ContextMenu();
+        private readonly ContextMenu _contextMenu = new ContextMenu();
 
-        private readonly System.Windows.Forms.MenuItem _menuItem1 = new System.Windows.Forms.MenuItem();
+        private readonly MenuItem _menuItem1 = new MenuItem();
 
-        private readonly System.Windows.Forms.MenuItem _menuItem2 = new System.Windows.Forms.MenuItem();
+        private readonly MenuItem _menuItem2 = new MenuItem();
 
         private string _currentsong;
 
         public static string Version;
 
         public bool appActive = false;
+        public bool updateError = false;
 
         TimeSpan startTimeSpan = TimeSpan.Zero;
         TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
@@ -42,15 +45,43 @@ namespace Songify_Slim
         public MainWindow()
         {
             this.InitializeComponent();
-            worker.DoWork += worker_DoWork;
-            worker.RunWorkerCompleted += worker_RunWorkerCompleted;
+            Worker_Telemetry.DoWork += Worker_DoWork;
+            Worker_Telemetry.RunWorkerCompleted += Worker_RunWorkerCompleted;
+            Worker_Update.DoWork += Worker_update_DoWork;
+            Worker_Update.RunWorkerCompleted += Worker_update_RunWorkerCompleted;
         }
 
-        private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void Worker_update_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (updateError)
+                LblStatus.Content = "Unable to check for new version.";
+        }
+
+        public void Worker_update_DoWork(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                Updater.CheckForUpdates(new Version(Version));
+                updateError = false;
+            }
+            catch
+            {
+                updateError = true;
+                //foreach (Window window in System.Windows.Application.Current.Windows)
+                //{
+                //    if (window.GetType() == typeof(MainWindow))
+                //    {
+                //        (window as MainWindow).LblStatus.Content = "Unable to check for new version.";
+                //    }
+                //}
+            }
+        }
+
+        public void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
         }
 
-        private void worker_DoWork(object sender, DoWorkEventArgs e)
+        public void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -105,16 +136,17 @@ namespace Songify_Slim
             }
             else
             {
-                TimerStart();
+                TelemetryTimer();
             }
 
-            CheckForUpdates();
+            Worker_Update.RunWorkerAsync();
+            
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
 
-            this.StartTimer(1000);
+            this.FetchTimer(1000);
         }
 
-        private void TimerStart()
+        private void TelemetryTimer()
         {
             timer = new System.Threading.Timer((e) =>
             {
@@ -169,7 +201,7 @@ namespace Songify_Slim
             }
         }
 
-        private void StartTimer(int ms)
+        private void FetchTimer(int ms)
         {
             var timer = new System.Timers.Timer();
             timer.Elapsed += this.OnTimedEvent;
@@ -194,7 +226,7 @@ namespace Songify_Slim
                     string artist = "", title = "", extra = "";
                     if (wintitle != "Spotify")
                     {
-                        string[] songinfo = wintitle.Split('-');
+                        string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                         try
                         {
                             artist = songinfo[0].Trim();
@@ -290,7 +322,8 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
-            SendTelemetry(false);
+            if (!Worker_Telemetry.IsBusy)
+                Worker_Telemetry.RunWorkerAsync();
             this.NotifyIcon.Visible = false;
             this.NotifyIcon.Dispose();
         }
@@ -310,7 +343,8 @@ namespace Songify_Slim
         private void SendTelemetry(bool active)
         {
             appActive = active;
-            worker.RunWorkerAsync();
+            if(!Worker_Telemetry.IsBusy)
+                Worker_Telemetry.RunWorkerAsync();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
