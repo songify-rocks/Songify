@@ -17,36 +17,30 @@ namespace Songify_Slim
 {
     public partial class MainWindow
     {
+        #region Variables
         private static readonly HttpClient client = new HttpClient();
-
         public NotifyIcon NotifyIcon = new NotifyIcon();
-
         public BackgroundWorker Worker_Telemetry = new BackgroundWorker();
-        
         public BackgroundWorker Worker_Update = new BackgroundWorker();
-
         private readonly ContextMenu _contextMenu = new ContextMenu();
-
         private readonly MenuItem _menuItem1 = new MenuItem();
-
         private readonly MenuItem _menuItem2 = new MenuItem();
-
         private string _currentsong;
-
         public static string Version;
-
         public bool appActive = false;
         public bool updateError = false;
-
         TimeSpan startTimeSpan = TimeSpan.Zero;
         TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
         System.Threading.Timer timer;
-
+        #endregion
         public MainWindow()
         {
             this.InitializeComponent();
+            // Backgroundworker for telemetry
             Worker_Telemetry.DoWork += Worker_DoWork;
             Worker_Telemetry.RunWorkerCompleted += Worker_RunWorkerCompleted;
+
+            // Backgroundworker for updates
             Worker_Update.DoWork += Worker_update_DoWork;
             Worker_Update.RunWorkerCompleted += Worker_update_RunWorkerCompleted;
         }
@@ -67,13 +61,6 @@ namespace Songify_Slim
             catch
             {
                 updateError = true;
-                //foreach (Window window in System.Windows.Application.Current.Windows)
-                //{
-                //    if (window.GetType() == typeof(MainWindow))
-                //    {
-                //        (window as MainWindow).LblStatus.Content = "Unable to check for new version.";
-                //    }
-                //}
             }
         }
 
@@ -141,7 +128,7 @@ namespace Songify_Slim
 
             Worker_Update.RunWorkerAsync();
             
-            this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan Blömacher";
+            this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             this.FetchTimer(1000);
         }

@@ -9,10 +9,10 @@ namespace Songify_Slim
     {
         public static dynamic GetLatestRelease()
         {
-                var github = new GitHubClient(new ProductHeaderValue("Songify"));
-                var releases = github.Repository.Release.GetAll("inzaniity", "songify");
-                var latest = releases.Result[0];
-                return latest;
+            var github = new GitHubClient(new ProductHeaderValue("Songify"));
+            var releases = github.Repository.Release.GetAll("inzaniity", "songify");
+            var latest = releases.Result[0];
+            return latest;
         }
 
         public static void CheckForUpdates(Version vs)
@@ -43,11 +43,17 @@ namespace Songify_Slim
                 ((MainWindow)window).NotifyIcon.BalloonTipText = @"A new update is available for download. It's recommended to update to the latest version.";
                 ((MainWindow)window).NotifyIcon.ShowBalloonTip(500);
 
-                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available. Do you want to update?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                string changelog = latest.Body;
+                (window as MainWindow).Width = 588 + 200;
+                (window as MainWindow).Height = 247.881 + 200;
+                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available.\n\nWhats new:\n" + changelog, MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     System.Diagnostics.Process.Start(latest.HtmlUrl);
                 }
+
+                (window as MainWindow).Width = 588;
+                (window as MainWindow).Height = 247.881;
             }
         }
     }

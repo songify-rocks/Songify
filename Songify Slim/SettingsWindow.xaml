@@ -28,7 +28,7 @@
 
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,187,0,0"
                             Click="BtnUpdatesClick" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="366" />
-                    <Label Content="?" HorizontalAlignment="Left" Margin="59,97,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
+                    <Label Content="?" HorizontalAlignment="Left" Margin="56,96,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Output">
@@ -84,9 +84,8 @@
             </TabItem>
             <TabItem Header="Config">
                 <Grid>
-                    <Button x:Name="Btn_ExportConfig" Content="Export Config" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="206,10,0,0" Click="Btn_ExportConfig_Click"/>
+                    <Button x:Name="Btn_ExportConfig" Content="Export Config" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,42,0,0" Click="Btn_ExportConfig_Click"/>
                     <Button x:Name="Btn_ImportConfig" Content="Import Config" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,10,0,0" Click="Btn_ImportConfig_Click"/>
-                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Margin="10,42,0,0" Width="366" Height="178"/>
                 </Grid>
             </TabItem>
         </TabControl>
