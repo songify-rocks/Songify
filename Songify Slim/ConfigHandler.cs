@@ -1,55 +1,60 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Xml;
-using Microsoft.Win32;
 
 namespace Songify_Slim
 {
     internal class ConfigHandler
     {
-
-        public static void SaveConfig()
+        public static void SaveConfig(string Path = "")
         {
-            Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+            if (Path != "")
             {
-                Filter = "XML (*.xml)|*.xml",
-                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
-                Title = "Export Config"
-            };
-
-            if (saveFileDialog.ShowDialog() == true)
+                WriteXML(Path);
+            }
+            else
             {
-                XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
+                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
-                    Indent = true,
-                    IndentChars = "\t",
-                    NewLineOnAttributes = false
+                    Filter = "XML (*.xml)|*.xml",
+                    InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                    Title = "Export Config"
                 };
 
-                using (XmlWriter writer = XmlWriter.Create(saveFileDialog.FileName, xmlWriterSettings))
+                if (saveFileDialog.ShowDialog() == true)
                 {
-                    writer.WriteStartDocument();
-                    writer.WriteStartElement("Songify_Config");
-                    writer.WriteStartElement("Config");
-                    writer.WriteAttributeString("directory", Settings.GetDirectory());
-                    writer.WriteAttributeString("color", Settings.GetColor());
-                    writer.WriteAttributeString("tehme", Settings.GetTheme());
-                    writer.WriteAttributeString("atuostart", Settings.GetAutostart().ToString());
-                    writer.WriteAttributeString("systray", Settings.GetSystray().ToString());
-                    writer.WriteAttributeString("customPause", Settings.GetCustomPauseTextEnabled().ToString());
-                    writer.WriteAttributeString("customPauseText", Settings.GetCustomPauseText());
-                    writer.WriteAttributeString("outputString", Settings.GetOutputString());
-                    writer.WriteAttributeString("uuid", Settings.GetUUID());
-                    writer.WriteAttributeString("telemetry", Settings.GetTelemetry().ToString());
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-
+                    WriteXML(saveFileDialog.FileName);
+                    Notification.ShowNotification("Config exported to " + saveFileDialog.FileName, "s");
                 }
-                Notification.ShowNotification("Config exported to " + saveFileDialog.FileName, "s");
+            }
+        }
+
+        public static void WriteXML(string Path)
+        {
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "\t",
+                NewLineOnAttributes = false
+            };
+
+            using (XmlWriter writer = XmlWriter.Create(Path, xmlWriterSettings))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("Songify_Config");
+                writer.WriteStartElement("Config");
+                writer.WriteAttributeString("directory", Settings.GetDirectory());
+                writer.WriteAttributeString("color", Settings.GetColor());
+                writer.WriteAttributeString("tehme", Settings.GetTheme());
+                writer.WriteAttributeString("atuostart", Settings.GetAutostart().ToString());
+                writer.WriteAttributeString("systray", Settings.GetSystray().ToString());
+                writer.WriteAttributeString("customPause", Settings.GetCustomPauseTextEnabled().ToString());
+                writer.WriteAttributeString("customPauseText", Settings.GetCustomPauseText());
+                writer.WriteAttributeString("outputString", Settings.GetOutputString());
+                writer.WriteAttributeString("uuid", Settings.GetUUID());
+                writer.WriteAttributeString("telemetry", Settings.GetTelemetry().ToString());
+                writer.WriteEndElement();
+                writer.WriteEndElement();
             }
         }
 
@@ -65,9 +70,9 @@ namespace Songify_Slim
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog.FileName);
-                foreach(XmlNode node in doc.DocumentElement.ChildNodes)
+                foreach (XmlNode node in doc.DocumentElement.ChildNodes)
                 {
-                    if(node.Name == "Config")
+                    if (node.Name == "Config")
                     {
                         Settings.SetDirectory(node.Attributes["directory"]?.InnerText);
                         Settings.SetColor(node.Attributes["color"]?.InnerText);

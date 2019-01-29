@@ -50,6 +50,8 @@ namespace Songify_Slim
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     System.Diagnostics.Process.Start(latest.HtmlUrl);
+                    ConfigHandler.SaveConfig(AppDomain.CurrentDomain.BaseDirectory + "/config.xml");
+                    Notification.ShowNotification("A config backup was saved to " + AppDomain.CurrentDomain.BaseDirectory + "/config.xml", "i");
                 }
 
                 (window as MainWindow).Width = 588;
