@@ -163,6 +163,7 @@
 
 
     <Grid>
+
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StatusBar Height="15" VerticalAlignment="Bottom">
@@ -172,5 +173,46 @@
             <Label x:Name="LblCopyright" Content="Songify v1.0.4 Copyright © Jan  Inzaniity  Blömacher" FontSize="10" Padding="0"
                    VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" Height="19" FlowDirection="RightToLeft" VerticalAlignment="Top" Margin="0,-9,0,0" />
         </StatusBar>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="452,10,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="Cbx_Source_SelectionChanged">
+            <ComboBoxItem>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuTextColorKey}}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_social_spotify}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Spotify" Foreground="Black" />
+                </StackPanel>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuTextColorKey}}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_browser_chrome}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Chrome" Foreground="Black" />
+                </StackPanel>
+            </ComboBoxItem>
+            <ComboBoxItem>
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="20" Height="20">
+                        <Rectangle.Fill>
+                            <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.MenuTextColorKey}}"/>
+                        </Rectangle.Fill>
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_music_select}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Nightbot" Foreground="Black" />
+                </StackPanel>
+            </ComboBoxItem>
+        </ComboBox>
     </Grid>
 </controls:MetroWindow>

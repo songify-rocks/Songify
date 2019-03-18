@@ -35,5 +35,11 @@
     <Setting Name="webua" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Songify Data Provider</Value>
     </Setting>
+    <Setting Name="NBUserID" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="NBUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

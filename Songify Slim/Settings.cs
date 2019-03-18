@@ -2,6 +2,29 @@
 {
     internal class Settings
     {
+        public static void SetNBUserID(string nbuserID)
+        {
+            Properties.Settings.Default.NBUserID = nbuserID;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetNBUserID()
+        {
+            return Properties.Settings.Default.NBUserID;
+        }
+
+        public static void SetNBUser(string nbuser)
+        {
+            Properties.Settings.Default.NBUser = nbuser;
+            Properties.Settings.Default.Save();
+        }
+
+        public static string GetNBUser()
+        {
+            return Properties.Settings.Default.NBUser;
+        }
+
+
         public static string getWebua()
         {
             return Properties.Settings.Default.webua;

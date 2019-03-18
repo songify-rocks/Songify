@@ -1,5 +1,7 @@
 ﻿using MahApps.Metro.Controls;
+using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -154,6 +156,11 @@ namespace Songify_Slim
             ChbxTelemetry.IsChecked = Settings.GetTelemetry();
             TxtbxCustompausetext.Text = Settings.GetCustomPauseText();
             TxtbxOutputformat.Text = Settings.GetOutputString();
+            txtbx_nbuser.Text = Settings.GetNBUser();
+            if (Settings.GetNBUserID() != null)
+            {
+                lbl_nightbot.Content = "Nightbot (ID: " + Settings.GetNBUserID() + ")";
+            }
         }
 
         private void TxtbxOutputformat_TextChanged(object sender, TextChangedEventArgs e)
@@ -197,6 +204,38 @@ namespace Songify_Slim
         private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
             ConfigHandler.LoadConfig();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://api.nightbot.tv/oauth2/authorize?response_type=code&client_id=f212248f12f5ca01838dcdc009578906&redirect_uri=https://bloemacher.com&scope=song_requests_queue");
+        }
+
+        private void txtbx_nbuser_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.SetNBUser(txtbx_nbuser.Text);
+        }
+
+        private void btn_nblink_Click(object sender, RoutedEventArgs e)
+        {
+            string js = "";
+            using (WebClient wc = new WebClient())
+            {
+                js = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.GetNBUser());
+            }
+            var serializer = new JsonSerializer();
+            NBObj json = JsonConvert.DeserializeObject<NBObj>(js);
+            string temp = json.channel._id;
+            temp = temp.Replace("{", "").Replace("}", "");
+            Settings.SetNBUserID(temp);
+            Notification.ShowNotification("Nightbot account linked", "s");
+            SetControls();
+        }
+
+        public class NBObj
+        {
+            public dynamic channel { get; set; }
+            public string status { get; set; }
         }
     }
 }

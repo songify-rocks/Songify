@@ -10,6 +10,12 @@ using System.Reflection;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Automation;
+using System.Text;
+using System.Linq;
+using RestSharp;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Songify_Slim
 {
@@ -30,6 +36,9 @@ namespace Songify_Slim
         TimeSpan startTimeSpan = TimeSpan.Zero;
         TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
         System.Threading.Timer timer;
+        int selectedSource = 0;
+        string data = "";
+        string temp = "";
         #endregion
         public MainWindow()
         {
@@ -125,7 +134,7 @@ namespace Songify_Slim
             }
 
             Worker_Update.RunWorkerAsync();
-            
+
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             this.FetchTimer(1000);
@@ -201,68 +210,180 @@ namespace Songify_Slim
 
         private void GetCurrentSong()
         {
-            var processes = Process.GetProcessesByName("Spotify");
-
-            foreach (var process in processes)
+            switch (selectedSource)
             {
-                if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
-                {
-                    string wintitle = process.MainWindowTitle;
-                    string artist = "", title = "", extra = "";
-                    if (wintitle != "Spotify")
-                    {
-                        string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-                        try
-                        {
-                            artist = songinfo[0].Trim();
-                            title = songinfo[1].Trim();
-                            if (songinfo.Length > 2)
-                                extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
-                        }
-                        catch
-                        {
-                        }
-                        _currentsong = Settings.GetOutputString().Replace("{artist}", artist);
-                        _currentsong = _currentsong.Replace("{title}", title);
-                        _currentsong = _currentsong.Replace("{extra}", extra);
+                case 0:
+                    var processes = Process.GetProcessesByName("Spotify");
 
-                        if (string.IsNullOrEmpty(Settings.GetDirectory()))
-                        {
-                            File.WriteAllText(
-                                Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                                _currentsong);
-                        }
-                        else
-                        {
-                            File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                                _currentsong);
-                        }
-
-                        this.TxtblockLiveoutput.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { TxtblockLiveoutput.Text = _currentsong.Trim(); }));
-                    }
-                    else
+                    foreach (var process in processes)
                     {
-                        if (Settings.GetCustomPauseTextEnabled())
+                        if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
                         {
-                            if (string.IsNullOrEmpty(Settings.GetDirectory()))
+                            string wintitle = process.MainWindowTitle;
+                            string artist = "", title = "", extra = "";
+                            if (wintitle != "Spotify")
                             {
-                                File.WriteAllText(
-                                    Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                                    Settings.GetCustomPauseText());
+                                string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                                try
+                                {
+                                    artist = songinfo[0].Trim();
+                                    title = songinfo[1].Trim();
+                                    if (songinfo.Length > 2)
+                                        extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                                }
+                                catch
+                                {
+                                }
+                                WriteSong(artist, title, extra);
                             }
                             else
                             {
-                                File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                                    Settings.GetCustomPauseText());
+                                if (Settings.GetCustomPauseTextEnabled())
+                                {
+                                    if (string.IsNullOrEmpty(Settings.GetDirectory()))
+                                    {
+                                        File.WriteAllText(
+                                            Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
+                                            Settings.GetCustomPauseText());
+                                    }
+                                    else
+                                    {
+                                        File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
+                                            Settings.GetCustomPauseText());
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    break;
+
+                case 1:
+
+                    Process[] procsChrome = Process.GetProcessesByName("chrome");
+                    if (procsChrome.Length <= 0)
+                    {
+                        Console.WriteLine("Chrome is not running");
+                    }
+                    else
+                    {
+                        foreach (Process proc in procsChrome)
+                        {
+                            // the chrome process must have a window 
+                            if (proc.MainWindowHandle == IntPtr.Zero)
+                            {
+                                continue;
+                            }
+                            // to find the tabs we first need to locate something reliable - the 'New Tab' button 
+                            AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
+                            System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.NameProperty, "Neuer Tab");
+                            AutomationElement elmNewTab = root.FindFirst(TreeScope.Descendants, condNewTab);
+                            // get the tabstrip by getting the parent of the 'new tab' button 
+                            TreeWalker treewalker = TreeWalker.ControlViewWalker;
+                            AutomationElement elmTabStrip = treewalker.GetParent(elmNewTab);
+                            // loop through all the tabs and get the names which is the page title 
+                            System.Windows.Automation.Condition condTabItem = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
+                            foreach (AutomationElement tabitem in elmTabStrip.FindAll(TreeScope.Children, condTabItem))
+                            {
+                                if (tabitem.Current.Name.Contains("YouTube"))
+                                {
+                                    temp = Regex.Replace(tabitem.Current.Name, "^.*?\\([^\\d]*(\\d+)[^\\d]*\\)", "");
+                                    int index = temp.LastIndexOf(" - ");
+                                    if (index > 0)
+                                        temp = temp.Substring(0, index);
+                                    temp = temp.Trim();
+                                    WriteSong(temp, "", "");
+                                }
+                            }
+                        }
+                    }
+                    break;
+
+                case 2:
+                    if (Settings.GetNBUserID() != null || Settings.GetNBUserID() != "")
+                    {
+                        string js = "";
+                        using (WebClient wc = new WebClient())
+                        {
+                            js = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" + Settings.GetNBUserID());
+                        }
+                        var serializer = new JsonSerializer();
+                        NBObj json = JsonConvert.DeserializeObject<NBObj>(js);
+                        temp = json._currentsong.track.title;
+                        WriteSong(temp, "", "");
+                    }
+                    break;
             }
         }
+        public class NBObj
+        {
+            public dynamic _currentsong { get; set; }
+        }
 
+        private void WriteSong(string artist, string title, string extra)
+        {
+            _currentsong = Settings.GetOutputString();
+            if(title != "" && extra != "")
+            {
+                _currentsong = _currentsong.Replace("{artist}", artist);
+                _currentsong = _currentsong.Replace("{title}", title);
+                _currentsong = _currentsong.Replace("{extra}", extra);
+            } else
+            {
+                int pFrom = _currentsong.IndexOf("}");
+                String result = _currentsong.Substring(pFrom + 2 , 1);
+                _currentsong = _currentsong.Replace(result, "");
+                _currentsong = _currentsong.Replace("{artist}", artist);
+                _currentsong = _currentsong.Replace("{title}", title);
+                _currentsong = _currentsong.Replace("{extra}", extra);
+            }
+
+
+            if (string.IsNullOrEmpty(Settings.GetDirectory()))
+            {
+                File.WriteAllText(
+                    Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
+                    _currentsong);
+            }
+            else
+            {
+                File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
+                    _currentsong);
+            }
+
+            this.TxtblockLiveoutput.Dispatcher.Invoke(
+                System.Windows.Threading.DispatcherPriority.Normal,
+                new Action(() => { TxtblockLiveoutput.Text = _currentsong.Trim(); }));
+
+        }
+
+        public static string GetHTML(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Stream receiveStream = response.GetResponseStream();
+                StreamReader readStream = null;
+
+                if (response.CharacterSet == null)
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.ASCII);
+                }
+                else
+                {
+                    readStream = new StreamReader(receiveStream, Encoding.ASCII);
+                }
+
+                string temp = readStream.ReadToEnd().ToString();
+
+                response.Close();
+                readStream.Close();
+
+                return temp;
+
+            }
+            return null;
+        }
         public static void RegisterInStartup(bool isChecked)
         {
             var registryKey = Registry.CurrentUser.OpenSubKey(
@@ -328,13 +449,18 @@ namespace Songify_Slim
         private void SendTelemetry(bool active)
         {
             appActive = active;
-            if(!Worker_Telemetry.IsBusy)
+            if (!Worker_Telemetry.IsBusy)
                 Worker_Telemetry.RunWorkerAsync();
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             SendTelemetry(false);
+        }
+
+        private void Cbx_Source_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            selectedSource = cbx_Source.SelectedIndex;
         }
     }
 }
