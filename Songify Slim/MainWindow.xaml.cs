@@ -286,8 +286,8 @@ namespace Songify_Slim
                             {
                                 if (tabitem.Current.Name.Contains("YouTube"))
                                 {
-                                    temp = Regex.Replace(tabitem.Current.Name, "^.*?\\([^\\d]*(\\d+)[^\\d]*\\)", "");
-                                    int index = temp.LastIndexOf(" - ");
+                                    temp = Regex.Replace(tabitem.Current.Name, @"^.?(\([^\d]*(\d+).\))", "");
+                                    int index = temp.LastIndexOf("-");
                                     if (index > 0)
                                         temp = temp.Substring(0, index);
                                     temp = temp.Trim();
@@ -299,7 +299,7 @@ namespace Songify_Slim
                     break;
 
                 case 2:
-                    if (Settings.GetNBUserID() != null || Settings.GetNBUserID() != "")
+                    if (!String.IsNullOrEmpty(Settings.GetNBUserID()))
                     {
                         string js = "";
                         using (WebClient wc = new WebClient())
@@ -322,7 +322,7 @@ namespace Songify_Slim
         private void WriteSong(string artist, string title, string extra)
         {
             _currentsong = Settings.GetOutputString();
-            if(title != "" && extra != "")
+            if(!String.IsNullOrEmpty(title))
             {
                 _currentsong = _currentsong.Replace("{artist}", artist);
                 _currentsong = _currentsong.Replace("{title}", title);

@@ -218,17 +218,26 @@ namespace Songify_Slim
 
         private void btn_nblink_Click(object sender, RoutedEventArgs e)
         {
-            string js = "";
-            using (WebClient wc = new WebClient())
+            try
             {
-                js = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.GetNBUser());
+                string js = "";
+                using (WebClient wc = new WebClient())
+                {
+                    js = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.GetNBUser());
+                }
+                var serializer = new JsonSerializer();
+                NBObj json = JsonConvert.DeserializeObject<NBObj>(js);
+                string temp = json.channel._id;
+                temp = temp.Replace("{", "").Replace("}", "");
+                Settings.SetNBUserID(temp);
+                Notification.ShowNotification("Nightbot account linked", "s");
+
             }
-            var serializer = new JsonSerializer();
-            NBObj json = JsonConvert.DeserializeObject<NBObj>(js);
-            string temp = json.channel._id;
-            temp = temp.Replace("{", "").Replace("}", "");
-            Settings.SetNBUserID(temp);
-            Notification.ShowNotification("Nightbot account linked", "s");
+            catch
+            {
+                Notification.ShowNotification("Unable to link account", "e");
+            }
+
             SetControls();
         }
 
