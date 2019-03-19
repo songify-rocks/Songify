@@ -21,5 +21,13 @@ If you don't see anything happen in the Live Output try switching songs and make
 <br/>
 ![](https://i.imgur.com/VUoPNbZ.png)
 
+# Screenshots
+![](http://songify.bloemacher.com/img/Songify_Slim_1.png)  
+![](http://songify.bloemacher.com/img/Songify_Slim_2.png)  
+![](http://songify.bloemacher.com/img/Songify_Slim_3.png)  
+![](http://songify.bloemacher.com/img/Songify_Slim_4.png)  
+![](http://songify.bloemacher.com/img/Songify_Slim_5.png)  
+![](http://songify.bloemacher.com/img/Songify_Slim_6.png)  
+
 # Connect with me!
 [<img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png"  target="_blank">](https://discordapp.com/invite/H8nd4T4)
