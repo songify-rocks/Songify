@@ -75,7 +75,19 @@ namespace Songify_Slim
 
         private void ThemeToggleSwitchIsCheckedChanged(object sender, EventArgs e)
         {
-            Settings.SetTheme(this.ThemeToggleSwitch.IsChecked == true ? "BaseDark" : "BaseLight");
+            //Settings.SetTheme(ThemeToggleSwitch.IsChecked == true ? "BaseDark" : "BaseLight");
+            if ((bool)ThemeToggleSwitch.IsChecked)
+            {
+                Settings.SetTheme("BaseDark");
+                //(mW as MainWindow).cbx_Source.Foreground = Brushes.White;
+            }
+            else
+            {
+                Settings.SetTheme("BaseLight");
+                //(mW as MainWindow).cbx_Source.Foreground = Brushes.Black;
+
+            }
+
             ThemeHandler.ApplyTheme();
         }
 

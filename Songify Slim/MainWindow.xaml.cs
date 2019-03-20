@@ -29,7 +29,7 @@ namespace Songify_Slim
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
-        private string _currentsong;
+        private string _currSong;
         public static string Version;
         public bool appActive = false;
         public bool updateError = false;
@@ -221,7 +221,7 @@ namespace Songify_Slim
                         {
                             string wintitle = process.MainWindowTitle;
                             string artist = "", title = "", extra = "";
-                            if (wintitle != "Spotify")
+                            if (wintitle != "Spotify" && wintitle != "Spotify Premium")
                             {
                                 string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
@@ -273,26 +273,33 @@ namespace Songify_Slim
                             {
                                 continue;
                             }
-                            // to find the tabs we first need to locate something reliable - the 'New Tab' button 
-                            AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
-                            System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.NameProperty, "Neuer Tab");
-                            AutomationElement elmNewTab = root.FindFirst(TreeScope.Descendants, condNewTab);
-                            // get the tabstrip by getting the parent of the 'new tab' button 
-                            TreeWalker treewalker = TreeWalker.ControlViewWalker;
-                            AutomationElement elmTabStrip = treewalker.GetParent(elmNewTab);
-                            // loop through all the tabs and get the names which is the page title 
-                            System.Windows.Automation.Condition condTabItem = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
-                            foreach (AutomationElement tabitem in elmTabStrip.FindAll(TreeScope.Children, condTabItem))
+                            try
                             {
-                                if (tabitem.Current.Name.Contains("YouTube"))
+                                // to find the tabs we first need to locate something reliable - the 'New Tab' button 
+                                AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
+                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.NameProperty, "Neuer Tab");
+                                AutomationElement elmNewTab = root.FindFirst(TreeScope.Descendants, condNewTab);
+                                // get the tabstrip by getting the parent of the 'new tab' button 
+                                TreeWalker treewalker = TreeWalker.ControlViewWalker;
+                                AutomationElement elmTabStrip = treewalker.GetParent(elmNewTab);
+                                // loop through all the tabs and get the names which is the page title 
+                                System.Windows.Automation.Condition condTabItem = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
+                                foreach (AutomationElement tabitem in elmTabStrip.FindAll(TreeScope.Children, condTabItem))
                                 {
-                                    temp = Regex.Replace(tabitem.Current.Name, @"^.?(\([^\d]*(\d+).\))", "");
-                                    int index = temp.LastIndexOf("-");
-                                    if (index > 0)
-                                        temp = temp.Substring(0, index);
-                                    temp = temp.Trim();
-                                    WriteSong(temp, "", "");
+                                    if (tabitem.Current.Name.Contains("YouTube"))
+                                    {
+                                        temp = Regex.Replace(tabitem.Current.Name, @"^.?(\([^\d]*(\d+).\))", "");
+                                        int index = temp.LastIndexOf("-");
+                                        if (index > 0)
+                                            temp = temp.Substring(0, index);
+                                        temp = temp.Trim();
+                                        WriteSong(temp, "", "");
+                                    }
                                 }
+                            }
+                            catch (Exception)
+                            {
+
                             }
                         }
                     }
@@ -302,13 +309,19 @@ namespace Songify_Slim
                     if (!String.IsNullOrEmpty(Settings.GetNBUserID()))
                     {
                         string js = "";
-                        using (WebClient wc = new WebClient())
+                        using (WebClient wc = new WebClient()
+                        {
+                            Encoding = Encoding.UTF8
+                        })
                         {
                             js = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" + Settings.GetNBUserID());
                         }
                         var serializer = new JsonSerializer();
                         NBObj json = JsonConvert.DeserializeObject<NBObj>(js);
+                        if (json._currentsong == null)
+                            return;
                         temp = json._currentsong.track.title;
+                        Console.WriteLine(temp);
                         WriteSong(temp, "", "");
                     }
                     break;
@@ -319,22 +332,36 @@ namespace Songify_Slim
             public dynamic _currentsong { get; set; }
         }
 
+        public static string DecodeFromUtf8(string utf8String)
+        {
+            // copy the string as UTF-8 bytes.
+            byte[] utf8Bytes = new byte[utf8String.Length];
+            for (int i = 0; i < utf8String.Length; ++i)
+            {
+                //Debug.Assert( 0 <= utf8String[i] && utf8String[i] <= 255, "the char must be in byte's range");
+                utf8Bytes[i] = (byte)utf8String[i];
+            }
+
+            return Encoding.UTF8.GetString(utf8Bytes, 0, utf8Bytes.Length);
+        }
+
         private void WriteSong(string artist, string title, string extra)
         {
-            _currentsong = Settings.GetOutputString();
-            if(!String.IsNullOrEmpty(title))
+            _currSong = Settings.GetOutputString();
+            if (!String.IsNullOrEmpty(title))
             {
-                _currentsong = _currentsong.Replace("{artist}", artist);
-                _currentsong = _currentsong.Replace("{title}", title);
-                _currentsong = _currentsong.Replace("{extra}", extra);
-            } else
+                _currSong = _currSong.Replace("{artist}", artist);
+                _currSong = _currSong.Replace("{title}", title);
+                _currSong = _currSong.Replace("{extra}", extra);
+            }
+            else
             {
-                int pFrom = _currentsong.IndexOf("}");
-                String result = _currentsong.Substring(pFrom + 2 , 1);
-                _currentsong = _currentsong.Replace(result, "");
-                _currentsong = _currentsong.Replace("{artist}", artist);
-                _currentsong = _currentsong.Replace("{title}", title);
-                _currentsong = _currentsong.Replace("{extra}", extra);
+                int pFrom = _currSong.IndexOf("}");
+                String result = _currSong.Substring(pFrom + 2, 1);
+                _currSong = _currSong.Replace(result, "");
+                _currSong = _currSong.Replace("{artist}", artist);
+                _currSong = _currSong.Replace("{title}", title);
+                _currSong = _currSong.Replace("{extra}", extra);
             }
 
 
@@ -342,17 +369,17 @@ namespace Songify_Slim
             {
                 File.WriteAllText(
                     Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                    _currentsong);
+                    _currSong);
             }
             else
             {
                 File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                    _currentsong);
+                    _currSong);
             }
 
             this.TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
-                new Action(() => { TxtblockLiveoutput.Text = _currentsong.Trim(); }));
+                new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
 
         }
 
