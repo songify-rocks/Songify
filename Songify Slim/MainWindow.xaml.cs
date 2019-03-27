@@ -12,8 +12,6 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Automation;
 using System.Text;
-using System.Linq;
-using RestSharp;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 
@@ -22,6 +20,7 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
+
         private static readonly HttpClient client = new HttpClient();
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public BackgroundWorker Worker_Telemetry = new BackgroundWorker();
@@ -33,13 +32,15 @@ namespace Songify_Slim
         public static string Version;
         public bool appActive = false;
         public bool updateError = false;
-        TimeSpan startTimeSpan = TimeSpan.Zero;
-        TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
-        System.Threading.Timer timer;
-        int selectedSource = 0;
-        string data = "";
-        string temp = "";
-        #endregion
+        private TimeSpan startTimeSpan = TimeSpan.Zero;
+        private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
+        private System.Threading.Timer timer;
+        private int selectedSource = 0;
+        private string data = "";
+        private string temp = "";
+
+        #endregion Variables
+
         public MainWindow()
         {
             this.InitializeComponent();
@@ -233,6 +234,7 @@ namespace Songify_Slim
                                 }
                                 catch
                                 {
+                                    //err
                                 }
                                 WriteSong(artist, title, extra);
                             }
@@ -268,27 +270,27 @@ namespace Songify_Slim
                     {
                         foreach (Process proc in procsChrome)
                         {
-                            // the chrome process must have a window 
+                            // the chrome process must have a window
                             if (proc.MainWindowHandle == IntPtr.Zero)
                             {
                                 continue;
                             }
                             try
                             {
-                                // to find the tabs we first need to locate something reliable - the 'New Tab' button 
+                                // to find the tabs we first need to locate something reliable - the 'New Tab' button
                                 AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
                                 System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.NameProperty, "Neuer Tab");
                                 AutomationElement elmNewTab = root.FindFirst(TreeScope.Descendants, condNewTab);
-                                // get the tabstrip by getting the parent of the 'new tab' button 
+                                // get the tabstrip by getting the parent of the 'new tab' button
                                 TreeWalker treewalker = TreeWalker.ControlViewWalker;
                                 AutomationElement elmTabStrip = treewalker.GetParent(elmNewTab);
-                                // loop through all the tabs and get the names which is the page title 
+                                // loop through all the tabs and get the names which is the page title
                                 System.Windows.Automation.Condition condTabItem = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
                                 foreach (AutomationElement tabitem in elmTabStrip.FindAll(TreeScope.Children, condTabItem))
                                 {
                                     if (tabitem.Current.Name.Contains("YouTube"))
                                     {
-                                        temp = Regex.Replace(tabitem.Current.Name, @"^.?(\([^\d]*(\d+).\))", "");
+                                        temp = Regex.Replace(tabitem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
                                         int index = temp.LastIndexOf("-");
                                         if (index > 0)
                                             temp = temp.Substring(0, index);
@@ -299,7 +301,6 @@ namespace Songify_Slim
                             }
                             catch (Exception)
                             {
-
                             }
                         }
                     }
@@ -321,30 +322,17 @@ namespace Songify_Slim
                         if (json._currentsong == null)
                             return;
                         temp = json._currentsong.track.title;
-                        Console.WriteLine(temp);
                         WriteSong(temp, "", "");
                     }
                     break;
             }
         }
+
         public class NBObj
         {
             public dynamic _currentsong { get; set; }
         }
-
-        public static string DecodeFromUtf8(string utf8String)
-        {
-            // copy the string as UTF-8 bytes.
-            byte[] utf8Bytes = new byte[utf8String.Length];
-            for (int i = 0; i < utf8String.Length; ++i)
-            {
-                //Debug.Assert( 0 <= utf8String[i] && utf8String[i] <= 255, "the char must be in byte's range");
-                utf8Bytes[i] = (byte)utf8String[i];
-            }
-
-            return Encoding.UTF8.GetString(utf8Bytes, 0, utf8Bytes.Length);
-        }
-
+        
         private void WriteSong(string artist, string title, string extra)
         {
             _currSong = Settings.GetOutputString();
@@ -364,7 +352,6 @@ namespace Songify_Slim
                 _currSong = _currSong.Replace("{extra}", extra);
             }
 
-
             if (string.IsNullOrEmpty(Settings.GetDirectory()))
             {
                 File.WriteAllText(
@@ -380,37 +367,8 @@ namespace Songify_Slim
             this.TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
-
         }
 
-        public static string GetHTML(string url)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                Stream receiveStream = response.GetResponseStream();
-                StreamReader readStream = null;
-
-                if (response.CharacterSet == null)
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.ASCII);
-                }
-                else
-                {
-                    readStream = new StreamReader(receiveStream, Encoding.ASCII);
-                }
-
-                string temp = readStream.ReadToEnd().ToString();
-
-                response.Close();
-                readStream.Close();
-
-                return temp;
-
-            }
-            return null;
-        }
         public static void RegisterInStartup(bool isChecked)
         {
             var registryKey = Registry.CurrentUser.OpenSubKey(
