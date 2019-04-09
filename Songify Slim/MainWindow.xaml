@@ -132,6 +132,16 @@
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
+            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_discord}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
             <Button x:Name="BtnAbout" Click="BtnAboutClick">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="15" Height="15"
@@ -166,14 +176,13 @@
 
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
-        <StatusBar Height="15" VerticalAlignment="Bottom">
+        <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <Label x:Name="LblStatus" Content="" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
-                   HorizontalContentAlignment="Stretch" Height="13" Width="340"
-                   VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                   HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" />
             <Label x:Name="LblCopyright" Content="Songify v1.0.4 Copyright © Jan  Inzaniity  Blömacher" FontSize="10" Padding="0"
-                   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" Height="19" FlowDirection="RightToLeft" VerticalAlignment="Top" Margin="0,-9,0,0" />
+                   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
         </StatusBar>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="452,10,0,0" VerticalAlignment="Top" Width="120" SelectedIndex="0" SelectionChanged="Cbx_Source_SelectionChanged">
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="461,10,0,0" VerticalAlignment="Top" Width="111" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem x:Name="comboBoxItem">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20" Fill="{Binding Foreground, ElementName=cbx_Source}">
@@ -188,10 +197,10 @@
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="20" Height="20" Fill="{Binding Foreground, ElementName=cbx_Source}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_browser_chrome}" />
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_youtube_play}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Chrome" Foreground="{Binding Foreground, ElementName=cbx_Source}" />
+                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="YouTube (Chrome)" Foreground="{Binding Foreground, ElementName=cbx_Source}" />
                 </StackPanel>
             </ComboBoxItem>
             <ComboBoxItem>

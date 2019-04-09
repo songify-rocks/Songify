@@ -17,10 +17,10 @@ using System.Text.RegularExpressions;
 
 namespace Songify_Slim
 {
+
     public partial class MainWindow
     {
         #region Variables
-
         private static readonly HttpClient client = new HttpClient();
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public BackgroundWorker Worker_Telemetry = new BackgroundWorker();
@@ -35,14 +35,15 @@ namespace Songify_Slim
         private TimeSpan startTimeSpan = TimeSpan.Zero;
         private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
         private System.Threading.Timer timer;
-        private int selectedSource = 0;
-        private string data = "";
+        private int selectedSource = Settings.GetSource();
         private string temp = "";
+        System.Timers.Timer timerFetcher = new System.Timers.Timer();
 
         #endregion Variables
 
         public MainWindow()
         {
+            
             this.InitializeComponent();
             // Backgroundworker for telemetry
             Worker_Telemetry.DoWork += Worker_DoWork;
@@ -136,9 +137,9 @@ namespace Songify_Slim
 
             Worker_Update.RunWorkerAsync();
 
+            cbx_Source.SelectedIndex = selectedSource;
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
-            this.FetchTimer(1000);
         }
 
         private void TelemetryTimer()
@@ -198,10 +199,17 @@ namespace Songify_Slim
 
         private void FetchTimer(int ms)
         {
-            var timer = new System.Timers.Timer();
-            timer.Elapsed += this.OnTimedEvent;
-            timer.Interval = ms;
-            timer.Enabled = true;
+            try
+            {
+                timerFetcher.Dispose();
+            }
+            catch (Exception)
+            {
+            }
+            timerFetcher = new System.Timers.Timer();
+            timerFetcher.Elapsed += this.OnTimedEvent;
+            timerFetcher.Interval = ms;
+            timerFetcher.Enabled = true;
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -214,6 +222,7 @@ namespace Songify_Slim
             switch (selectedSource)
             {
                 case 0:
+                    #region Spotify
                     var processes = Process.GetProcessesByName("Spotify");
 
                     foreach (var process in processes)
@@ -222,7 +231,7 @@ namespace Songify_Slim
                         {
                             string wintitle = process.MainWindowTitle;
                             string artist = "", title = "", extra = "";
-                            if (wintitle != "Spotify" && wintitle != "Spotify Premium")
+                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free")
                             {
                                 string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
@@ -259,9 +268,11 @@ namespace Songify_Slim
                     }
                     break;
 
+                #endregion
                 case 1:
 
-                    Process[] procsChrome = Process.GetProcessesByName("chrome");
+                    #region Chrome
+                    var procsChrome = Process.GetProcessesByName("chrome");
                     if (procsChrome.Length <= 0)
                     {
                         Console.WriteLine("Chrome is not running");
@@ -279,21 +290,13 @@ namespace Songify_Slim
                             {
                                 // to find the tabs we first need to locate something reliable - the 'New Tab' button
                                 AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
-                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.NameProperty, "Neuer Tab");
-                                AutomationElement elmNewTab = root.FindFirst(TreeScope.Descendants, condNewTab);
-                                // get the tabstrip by getting the parent of the 'new tab' button
-                                TreeWalker treewalker = TreeWalker.ControlViewWalker;
-                                AutomationElement elmTabStrip = treewalker.GetParent(elmNewTab);
-                                // loop through all the tabs and get the names which is the page title
-                                System.Windows.Automation.Condition condTabItem = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
-                                foreach (AutomationElement tabitem in elmTabStrip.FindAll(TreeScope.Children, condTabItem))
+                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TitleBar);
+                                foreach (AutomationElement aEleme in root.FindAll(TreeScope.Descendants, condNewTab))
                                 {
-                                    if (tabitem.Current.Name.Contains("YouTube"))
+                                    if (aEleme.Current.Name.Contains("YouTube"))
                                     {
-                                        temp = Regex.Replace(tabitem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                        int index = temp.LastIndexOf("-");
-                                        if (index > 0)
-                                            temp = temp.Substring(0, index);
+                                        temp = Regex.Replace(aEleme.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                                        temp = temp.Replace(" - YouTube - Google Chrome", "");
                                         temp = temp.Trim();
                                         WriteSong(temp, "", "");
                                     }
@@ -305,8 +308,9 @@ namespace Songify_Slim
                         }
                     }
                     break;
-
+                #endregion
                 case 2:
+                    #region Nightbot
                     if (!String.IsNullOrEmpty(Settings.GetNBUserID()))
                     {
                         string js = "";
@@ -325,6 +329,7 @@ namespace Songify_Slim
                         WriteSong(temp, "", "");
                     }
                     break;
+                    #endregion
             }
         }
 
@@ -332,7 +337,7 @@ namespace Songify_Slim
         {
             public dynamic _currentsong { get; set; }
         }
-        
+
         private void WriteSong(string artist, string title, string extra)
         {
             _currSong = Settings.GetOutputString();
@@ -445,7 +450,31 @@ namespace Songify_Slim
 
         private void Cbx_Source_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            if (!IsLoaded)
+            {
+                return;
+            }
             selectedSource = cbx_Source.SelectedIndex;
+
+            Settings.SetSource(selectedSource);
+
+            switch (selectedSource)
+            {
+                case 0:
+                    FetchTimer(1000);
+                    break;
+                case 1:
+                    FetchTimer(3000);
+                    break;
+                case 2:
+                    FetchTimer(3000);
+                    break;
+            }
+        }
+
+        private void BtnDiscord_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://discordapp.com/invite/H8nd4T4");
         }
     }
 }

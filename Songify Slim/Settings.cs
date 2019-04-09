@@ -2,6 +2,18 @@
 {
     internal class Settings
     {
+        public static void SetSource(int source)
+        {
+            Properties.Settings.Default.Source = source;
+            Properties.Settings.Default.Save();
+        }
+
+        public static int GetSource()
+        {
+            return Properties.Settings.Default.Source;
+        }
+
+
         public static void SetNBUserID(string nbuserID)
         {
             Properties.Settings.Default.NBUserID = nbuserID;
