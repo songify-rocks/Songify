@@ -290,14 +290,18 @@ namespace Songify_Slim
                             {
                                 // to find the tabs we first need to locate something reliable - the 'New Tab' button
                                 AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
-                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TitleBar);
+                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
                                 foreach (AutomationElement aEleme in root.FindAll(TreeScope.Descendants, condNewTab))
                                 {
                                     if (aEleme.Current.Name.Contains("YouTube"))
                                     {
+                                        Console.WriteLine(aEleme.Current.Name);
                                         temp = Regex.Replace(aEleme.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                        temp = temp.Replace(" - YouTube - Google Chrome", "");
+                                        int index = temp.LastIndexOf("-");
+                                        if (index > 0)
+                                            temp = temp.Substring(0, index);
                                         temp = temp.Trim();
+                                        Console.WriteLine(temp);
                                         WriteSong(temp, "", "");
                                     }
                                 }

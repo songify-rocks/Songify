@@ -54,6 +54,8 @@ namespace Songify_Slim
                 writer.WriteAttributeString("outputString", Settings.GetOutputString());
                 writer.WriteAttributeString("uuid", Settings.GetUUID());
                 writer.WriteAttributeString("telemetry", Settings.GetTelemetry().ToString());
+                writer.WriteAttributeString("nbuser", Settings.GetNBUser().ToString());
+                writer.WriteAttributeString("nbuserid", Settings.GetNBUserID().ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -85,6 +87,8 @@ namespace Songify_Slim
                         Settings.SetOutputString(node.Attributes["outputString"]?.InnerText);
                         Settings.SetUUID(node.Attributes["uuid"]?.InnerText);
                         Settings.SetTelemetry(Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText));
+                        Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
+                        Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
                     }
                 }
             }
