@@ -4,7 +4,7 @@ Songify Slim is a slimmed down version of my original software Songify. Songify 
 
 # What does it do?
 
-It fetches the currently playing song from Spotify and saves it to a text file. Just like magic. 
+It fetches the currently playing song from Spotify, YouTube (Chrome) and Nightbot and saves it to a text file. Just like magic. 
 
 # Features?
 
