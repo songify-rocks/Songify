@@ -140,6 +140,19 @@ namespace Songify_Slim
             cbx_Source.SelectedIndex = selectedSource;
             this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
+
+            switch (selectedSource)
+            {
+                case 0:
+                    FetchTimer(1000);
+                    break;
+                case 1:
+                    FetchTimer(3000);
+                    break;
+                case 2:
+                    FetchTimer(3000);
+                    break;
+            }
         }
 
         private void TelemetryTimer()
