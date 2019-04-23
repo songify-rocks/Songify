@@ -43,7 +43,7 @@ namespace Songify_Slim
 
         public MainWindow()
         {
-            
+
             this.InitializeComponent();
             // Backgroundworker for telemetry
             Worker_Telemetry.DoWork += Worker_DoWork;
@@ -374,21 +374,48 @@ namespace Songify_Slim
                 _currSong = _currSong.Replace("{extra}", extra);
             }
 
+            string songPath;
+
             if (string.IsNullOrEmpty(Settings.GetDirectory()))
             {
-                File.WriteAllText(
-                    Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                    _currSong);
+                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt";
             }
             else
             {
-                File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                    _currSong);
+                songPath = Settings.GetDirectory() + "/Songify.txt";
+            }
+
+            var temp = File.ReadAllLines(songPath);
+
+            if (temp[0].Trim() != _currSong.Trim())
+            {
+                File.WriteAllText(songPath, _currSong);
+
+
+                if (Settings.GetUpload())
+                {
+                    try
+                    {
+                        var extras = Settings.GetUUID() + "&song=" + _currSong.Trim();
+                        var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
+                        // Create a new 'HttpWebRequest' object to the mentioned URL.
+                        var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                        myHttpWebRequest.UserAgent = Settings.getWebua();
+
+                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                        var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+
             }
 
             this.TxtblockLiveoutput.Dispatcher.Invoke(
-                System.Windows.Threading.DispatcherPriority.Normal,
-                new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
+System.Windows.Threading.DispatcherPriority.Normal,
+new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
         }
 
         public static void RegisterInStartup(bool isChecked)

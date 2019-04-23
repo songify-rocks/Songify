@@ -2,6 +2,17 @@
 {
     internal class Settings
     {
+        public static void SetUpload(bool uploadsong)
+        {
+            Properties.Settings.Default.uploadSonginfo = uploadsong;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool GetUpload()
+        {
+            return Properties.Settings.Default.uploadSonginfo;
+        }
+                     
         public static void SetSource(int source)
         {
             Properties.Settings.Default.Source = source;
@@ -12,7 +23,6 @@
         {
             return Properties.Settings.Default.Source;
         }
-
 
         public static void SetNBUserID(string nbuserID)
         {
