@@ -90,7 +90,8 @@ namespace Songify_Slim
                         Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
                         Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
                     }
-                }
+                }                
+
             }
 
             foreach (Window window in System.Windows.Application.Current.Windows)

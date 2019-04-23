@@ -161,7 +161,6 @@ namespace Songify_Slim
             TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly().Location;
             if (!string.IsNullOrEmpty(Settings.GetDirectory()))
                 TxtbxOutputdirectory.Text = Settings.GetDirectory();
-
             ChbxAutostart.IsChecked = Settings.GetAutostart();
             ChbxMinimizeSystray.IsChecked = Settings.GetSystray();
             ChbxCustomPause.IsChecked = Settings.GetCustomPauseTextEnabled();
@@ -169,10 +168,12 @@ namespace Songify_Slim
             TxtbxCustompausetext.Text = Settings.GetCustomPauseText();
             TxtbxOutputformat.Text = Settings.GetOutputString();
             txtbx_nbuser.Text = Settings.GetNBUser();
+            ChbxUpload.IsChecked = Settings.GetUpload();
             if (Settings.GetNBUserID() != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.GetNBUserID() + ")";
             }
+            ThemeHandler.ApplyTheme();
         }
 
         private void TxtbxOutputformat_TextChanged(object sender, TextChangedEventArgs e)
@@ -257,6 +258,17 @@ namespace Songify_Slim
         {
             public dynamic channel { get; set; }
             public string status { get; set; }
+        }
+
+        private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetDataObject("http://songify.bloemacher.com/getsong.php?id="+Settings.GetUUID());
+            Notification.ShowNotification("Link copied to clipboard", "s");
+        }
+
+        private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.SetUpload((bool)ChbxUpload.IsChecked);
         }
     }
 }

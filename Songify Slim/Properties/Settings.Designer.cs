@@ -187,5 +187,17 @@ namespace Songify_Slim.Properties {
                 this["Source"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool uploadSonginfo {
+            get {
+                return ((bool)(this["uploadSonginfo"]));
+            }
+            set {
+                this["uploadSonginfo"] = value;
+            }
+        }
     }
 }
