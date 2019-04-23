@@ -46,7 +46,7 @@ namespace Songify_Slim
                 string changelog = latest.Body;
                 (window as MainWindow).Width = 588 + 200;
                 (window as MainWindow).Height = 247.881 + 200;
-                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available.\n\nWhats new:\n" + changelog, MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available. Do you wish to update?\n\nWhats new:\n" + changelog, MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     System.Diagnostics.Process.Start(latest.HtmlUrl);

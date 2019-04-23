@@ -56,6 +56,7 @@ namespace Songify_Slim
                 writer.WriteAttributeString("telemetry", Settings.GetTelemetry().ToString());
                 writer.WriteAttributeString("nbuser", Settings.GetNBUser().ToString());
                 writer.WriteAttributeString("nbuserid", Settings.GetNBUserID().ToString());
+                writer.WriteAttributeString("uploadSonginfo", Settings.GetUpload().ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -89,6 +90,7 @@ namespace Songify_Slim
                         Settings.SetTelemetry(Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText));
                         Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
                         Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
+                        Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
                     }
                 }                
 

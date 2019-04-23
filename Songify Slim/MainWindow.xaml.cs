@@ -408,14 +408,18 @@ namespace Songify_Slim
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
+                        this.LblStatus.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+
                     }
                 }
 
             }
 
             this.TxtblockLiveoutput.Dispatcher.Invoke(
-System.Windows.Threading.DispatcherPriority.Normal,
-new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
+            System.Windows.Threading.DispatcherPriority.Normal,
+            new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
         }
 
         public static void RegisterInStartup(bool isChecked)

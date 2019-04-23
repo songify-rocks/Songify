@@ -51,7 +51,10 @@ namespace Songify_Slim
             foreach (Window window in System.Windows.Application.Current.Windows)
             {
                 if (window.GetType() != typeof(MainWindow)) continue;
-                ((MainWindow)window).Worker_Update.RunWorkerAsync();
+                if (!((MainWindow)window).Worker_Update.IsBusy)
+                {
+                    ((MainWindow)window).Worker_Update.RunWorkerAsync();
+                }
             }
         }
 
