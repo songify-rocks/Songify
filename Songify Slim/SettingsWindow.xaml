@@ -102,8 +102,8 @@
             <TabItem Header="Integration">
                 <Grid>
                     <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
-                    <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="txtbx_nbuser_TextChanged" />
-                    <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="btn_nblink_Click" />
+                    <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
+                    <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="Btn_nblink_Click" />
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

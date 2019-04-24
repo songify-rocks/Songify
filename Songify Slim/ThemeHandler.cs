@@ -8,6 +8,7 @@ namespace Songify_Slim
     {
         public static void ApplyTheme()
         {
+            //changes the theme 
             var theme = Settings.GetTheme();
             var color = Settings.GetColor();
 

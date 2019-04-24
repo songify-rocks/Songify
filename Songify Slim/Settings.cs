@@ -1,5 +1,10 @@
 ﻿namespace Songify_Slim
 {
+
+    /// <summary>
+    /// This class is a getter and setter for Settings
+    /// </summary>
+   
     internal class Settings
     {
         public static void SetUpload(bool uploadsong)
@@ -12,7 +17,7 @@
         {
             return Properties.Settings.Default.uploadSonginfo;
         }
-                     
+
         public static void SetSource(int source)
         {
             Properties.Settings.Default.Source = source;

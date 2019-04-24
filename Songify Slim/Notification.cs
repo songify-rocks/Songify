@@ -11,13 +11,13 @@ namespace Songify_Slim
 {
     internal class Notification
     {
+        // Notification Options
         public static MessageOptions CreateOptions()
         {
             return new MessageOptions
             {
                 FontSize = 12, // set notification font size
                 ShowCloseButton = true, // set the option to show or hide notification close button
-                Tag = "Any object or value which might matter in callbacks",
                 FreezeOnMouseEnter = true, // set the option to prevent notification dissapear automatically if user move cursor on it
                 UnfreezeOnMouseLeave = true
             };
@@ -40,6 +40,7 @@ namespace Songify_Slim
 
         public static void ShowNotification(string msg, string type)
         {
+            // Types: i = Information, s = Success, w = Warning, e = Error
             switch (type)
             {
                 case "i":

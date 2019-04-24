@@ -5,16 +5,24 @@ using System.Xml;
 
 namespace Songify_Slim
 {
+    /// <summary>
+    /// This class is for writing, exporting and importing the config file
+    /// The config file is XML and has a single config tag with attributes
+    /// </summary>
+
     internal class ConfigHandler
     {
+
         public static void SaveConfig(string Path = "")
         {
+            // Saving the Config file
             if (Path != "")
             {
                 WriteXML(Path);
             }
             else
             {
+                // Importing the SaveFileDialog and giving it filter, directory and window title
                 Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
                 {
                     Filter = "XML (*.xml)|*.xml",
@@ -22,6 +30,7 @@ namespace Songify_Slim
                     Title = "Export Config"
                 };
 
+                // Opneing the dialog and if the user clicked on "save" this code gets executed
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     WriteXML(saveFileDialog.FileName);
@@ -32,13 +41,15 @@ namespace Songify_Slim
 
         public static void WriteXML(string Path)
         {
+            // XML-Writer settings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
             {
                 Indent = true,
                 IndentChars = "\t",
-                NewLineOnAttributes = false
+                NewLineOnAttributes = true
             };
 
+            // Writing the XML, Attributnames are somewhat equal to Settings.
             using (XmlWriter writer = XmlWriter.Create(Path, xmlWriterSettings))
             {
                 writer.WriteStartDocument();
@@ -64,14 +75,17 @@ namespace Songify_Slim
 
         public static void LoadConfig()
         {
-            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog
+            // OpenfileDialog with settings initialdirectory is the path were the exe is located
+            OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                InitialDirectory = System.AppDomain.CurrentDomain.BaseDirectory,
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
                 Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
             };
 
+            // Opening the dialog and when the user hits "OK" the following code gets executed
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
+                // reading the XML file, attributes get saved in Settings
                 XmlDocument doc = new XmlDocument();
                 doc.Load(openFileDialog.FileName);
                 foreach (XmlNode node in doc.DocumentElement.ChildNodes)
@@ -92,10 +106,12 @@ namespace Songify_Slim
                         Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
                         Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
                     }
-                }                
+                }
 
             }
 
+            // This will iterate through all windows of the software, if the window is typeof 
+            // Settingswindow (from there this class is called) it calls the method SetControls
             foreach (Window window in System.Windows.Application.Current.Windows)
             {
                 if (window.GetType() == typeof(SettingsWindow))
