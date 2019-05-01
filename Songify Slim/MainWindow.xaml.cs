@@ -40,7 +40,7 @@ namespace Songify_Slim
         private System.Threading.Timer timer;
         private System.Timers.Timer timerFetcher = new System.Timers.Timer();
 
-        #endregion Variables
+        #endregion 
 
         public MainWindow()
         {
@@ -383,7 +383,7 @@ namespace Songify_Slim
             var assembly = Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             Version = fvi.FileVersion;
-            
+
             // generate UUID if not exists, expand the window and show the telemetrydisclaimer
             if (Settings.GetUUID() == "")
             {
@@ -510,7 +510,7 @@ namespace Songify_Slim
                 // get the first occurance of "}" to get the seperator from the custom output ({artist} - {title})
                 // and replace it
                 int pFrom = _currSong.IndexOf("}");
-                String result = _currSong.Substring(pFrom + 2, 1);                
+                String result = _currSong.Substring(pFrom + 2, 1);
                 _currSong = _currSong.Replace(result, "");
 
                 // artist is set to be artist and title in this case, {title} and {extra} are empty strings
