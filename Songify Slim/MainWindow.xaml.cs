@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -39,7 +40,7 @@ namespace Songify_Slim
         private string temp = "";
         private System.Threading.Timer timer;
         private System.Timers.Timer timerFetcher = new System.Timers.Timer();
-
+        private AutomationElement parent = null;
         #endregion 
 
         public MainWindow()
@@ -88,8 +89,9 @@ namespace Songify_Slim
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                WriteLog(ex);
                 // TODO: Writing to the label could be its own method.
                 // Writing to the statusstrip label
                 this.LblStatus.Dispatcher.Invoke(
@@ -106,8 +108,9 @@ namespace Songify_Slim
                 Updater.CheckForUpdates(new Version(Version));
                 updateError = false;
             }
-            catch
+            catch(Exception ex)
             {
+                WriteLog(ex);
                 updateError = true;
             }
         }
@@ -178,13 +181,23 @@ namespace Songify_Slim
             {
                 timerFetcher.Dispose();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                WriteLog(ex);
             }
             timerFetcher = new System.Timers.Timer();
             timerFetcher.Elapsed += this.OnTimedEvent;
             timerFetcher.Interval = ms;
             timerFetcher.Enabled = true;
+        }
+
+        private void WriteLog(Exception exception)
+        {
+            var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/log.txt";
+            if (!File.Exists(logPath)) return;
+            File.AppendAllText(logPath, exception.Message + Environment.NewLine);
+            File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
+            File.AppendAllText(logPath, exception.Source + Environment.NewLine);
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -222,9 +235,9 @@ namespace Songify_Slim
                                     if (songinfo.Length > 2)
                                         extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-                                    //err
+                                    WriteLog(ex);
                                 }
                                 WriteSong(artist, title, extra);
                             }
@@ -234,17 +247,7 @@ namespace Songify_Slim
                             {
                                 if (Settings.GetCustomPauseTextEnabled())
                                 {
-                                    if (string.IsNullOrEmpty(Settings.GetDirectory()))
-                                    {
-                                        File.WriteAllText(
-                                            Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt",
-                                            Settings.GetCustomPauseText());
-                                    }
-                                    else
-                                    {
-                                        File.WriteAllText(Settings.GetDirectory() + "/Songify.txt",
-                                            Settings.GetCustomPauseText());
-                                    }
+                                    WriteSong(Settings.GetCustomPauseText(), "", "");
                                 }
                             }
                         }
@@ -255,49 +258,99 @@ namespace Songify_Slim
 
                 case 1:
 
-                    #region Chrome
-                    // Find all processes named "Chrome"
-                    var procsChrome = Process.GetProcessesByName("chrome");
-                    if (procsChrome.Length > 0)
+                    Process[] procsChrome = Process.GetProcessesByName("chrome");
+                    foreach (Process chrome in procsChrome)
                     {
-                        foreach (Process proc in procsChrome)
+                        // the chrome process must have a window
+                        if (chrome.MainWindowHandle == IntPtr.Zero)
                         {
-                            // the chrome process must have a window
-                            if (proc.MainWindowHandle == IntPtr.Zero)
+                            continue;
+                        }
+
+                        AutomationElement elm;
+
+                        elm = parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : parent;
+                        // find the automation element
+
+                        try
+                        {
+                            AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
+                                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
+                            foreach (AutomationElement elem in elementCollection)
                             {
-                                continue;
-                            }
-                            try
-                            {
-                                // to find the tab I'm iterating through each element in chrome with the condition that it is Typeof Tabitem
-                                AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
-                                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
-                                foreach (AutomationElement aEleme in root.FindAll(TreeScope.Descendants, condNewTab))
+                                // if the Tabitem Name contains Youtube
+                                if (elem.Current.Name.Contains("YouTube"))
                                 {
-                                    // if the Tabitem Name contains Youtube
-                                    if (aEleme.Current.Name.Contains("YouTube"))
-                                    {
-                                        // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                        temp = Regex.Replace(aEleme.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                        int index = temp.LastIndexOf("-");
-                                        // Remove everything after the last "-" int the string 
-                                        // which is "- Youtube" and info that music is playing on this tab
-                                        if (index > 0)
-                                            temp = temp.Substring(0, index);
-                                        temp = temp.Trim();
-                                        // Method that writes the song to the text file and uploads it
-                                        WriteSong(temp, "", "");
-                                    }
+                                    parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                    temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                                    int index = temp.LastIndexOf("-", StringComparison.Ordinal);
+                                    // Remove everything after the last "-" int the string 
+                                    // which is "- Youtube" and info that music is playing on this tab
+                                    if (index > 0)
+                                        temp = temp.Substring(0, index);
+                                    temp = temp.Trim();
+                                    Console.WriteLine(temp);
+                                    // Method that writes the song to the text file and uploads it
+                                    WriteSong(temp, "", "");
                                 }
                             }
-                            catch (Exception)
-                            {
-                            }
                         }
+                        catch(Exception ex)
+                        {
+                            WriteLog(ex);
+                            // Chrome has probably changed something, and above walking needs to be modified. :(
+                            // put an assertion here or something to make sure you don't miss it
+                            continue;
+                        }
+
                     }
                     break;
 
-                #endregion Chrome
+                // Original Code
+                //    #region Chrome
+                //    // Find all processes named "Chrome"
+                //    var procsChrome = Process.GetProcessesByName("chrome");
+                //    if (procsChrome.Length > 0)
+                //    {
+                //        foreach (Process proc in procsChrome)
+                //        {
+                //            // the chrome process must have a window
+                //            if (proc.MainWindowHandle == IntPtr.Zero)
+                //            {
+                //                continue;
+                //            }
+                //            try
+                //            {
+                //                // to find the tab I'm iterating through each element in chrome with the condition that it is Typeof Tabitem
+                //                AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
+                //                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
+                //                foreach (AutomationElement aEleme in root.FindAll(TreeScope.Descendants, condNewTab))
+                //                {
+                //                    // if the Tabitem Name contains Youtube
+                //                    if (aEleme.Current.Name.Contains("YouTube"))
+                //                    {
+                //                        // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                //                        temp = Regex.Replace(aEleme.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                //                        int index = temp.LastIndexOf("-");
+                //                        // Remove everything after the last "-" int the string 
+                //                        // which is "- Youtube" and info that music is playing on this tab
+                //                        if (index > 0)
+                //                            temp = temp.Substring(0, index);
+                //                        temp = temp.Trim();
+                //                        // Method that writes the song to the text file and uploads it
+                //                        WriteSong(temp, "", "");
+                //                    }
+                //                }
+                //            }
+                //            catch (Exception)
+                //            {
+                //            }
+                //        }
+                //    }
+                //    break;
+
+                //#endregion Chrome
 
                 case 2:
 
@@ -533,6 +586,15 @@ namespace Songify_Slim
             }
 
             // read the text file
+            if (!File.Exists(songPath))
+            {
+                File.Create(songPath).Close();
+                File.WriteAllText(songPath, _currSong);
+            }
+            if (new FileInfo(songPath).Length == 0)
+            {
+                File.WriteAllText(songPath, _currSong);
+            }
             var temp = File.ReadAllLines(songPath);
             // if the text file is different to _currSong (fetched song) 
             if (temp[0].Trim() != _currSong.Trim())
@@ -559,6 +621,7 @@ namespace Songify_Slim
                     }
                     catch (Exception ex)
                     {
+                        WriteLog(ex);
                         // if error occurs write text to the status asynchronous
                         Console.WriteLine(ex.Message);
                         this.LblStatus.Dispatcher.Invoke(

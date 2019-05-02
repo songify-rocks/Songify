@@ -68,8 +68,8 @@
                               Margin="15,77,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
                     <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" Margin="112,74,0,0" controls:TextBoxHelper.Watermark="Custom pause text (blank for empty text file)" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
                     <controls:ToggleSwitch x:Name="ChbxUpload" Content="Upload song info" HorizontalAlignment="Left"
-                              Margin="15,105,0,0" VerticalAlignment="Top" Checked="ChbxUpload_Checked"
-                              Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                              Margin="15,105,0,0" VerticalAlignment="Top" Checked="ChbxUpload_Checked" Unchecked="ChbxUpload_Checked"
+                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" />
                     <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="344,109,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyURL_Click">
