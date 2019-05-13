@@ -291,9 +291,10 @@ namespace Songify_Slim
                                 if (elem.Current.Name.Contains("YouTube"))
                                 {
                                     parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                    Console.WriteLine(elem.Current.Name);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
                                     temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                    int index = temp.LastIndexOf("-", StringComparison.Ordinal);
+                                    int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
                                     // Remove everything after the last "-" int the string 
                                     // which is "- Youtube" and info that music is playing on this tab
                                     if (index > 0)
@@ -451,7 +452,7 @@ namespace Songify_Slim
                     break;
 
                 case 1:
-                    FetchTimer(Settings.GetChromeFetchRate()*1000);
+                    FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
