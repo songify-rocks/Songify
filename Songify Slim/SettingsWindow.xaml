@@ -9,7 +9,7 @@
     <Grid>
         <TabControl Margin="10,10,10,8" TabStripPlacement="Left">
             <TabItem Header="System">
-                <Grid>
+                <Grid x:Name="NUD_ChromePoll">
                     <controls:ToggleSwitch x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left" Header="Behavior"
                               Margin="10,10,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
                               Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
@@ -26,9 +26,13 @@
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Height="49" IsCheckedChanged="ChbxTelemetry_IsCheckedChanged"/>
 
-                    <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,187,0,0"
-                            Click="BtnUpdatesClick" Height="33" VerticalAlignment="Top" HorizontalAlignment="Left" Width="366" />
+                    <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,193,0,0"
+                            Click="BtnUpdatesClick" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="116" />
                     <Label Content="?" HorizontalAlignment="Left" Margin="56,96,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
+                    <Label Content="Chrome fetch rate (seconds)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="9,155,0,0" Padding="0,5,5,5"/>
+                    <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="250,155,15,46" ValueChanged="NudChrome_ValueChanged"/>
+
+
                 </Grid>
             </TabItem>
             <TabItem Header="Output">

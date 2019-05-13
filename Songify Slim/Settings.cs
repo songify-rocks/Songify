@@ -7,6 +7,19 @@
    
     internal class Settings
     {
+        public static void SetChromeFetchRate(int rate)
+        {
+            Properties.Settings.Default.ChromeFetchRate = rate;
+            Properties.Settings.Default.Save();
+        }
+
+        public static int GetChromeFetchRate()
+        {
+            return Properties.Settings.Default.ChromeFetchRate;
+        }
+
+
+
         public static void SetUpload(bool uploadsong)
         {
             Properties.Settings.Default.uploadSonginfo = uploadsong;

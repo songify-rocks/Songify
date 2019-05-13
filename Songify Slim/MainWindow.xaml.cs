@@ -41,6 +41,7 @@ namespace Songify_Slim
         private System.Threading.Timer timer;
         private System.Timers.Timer timerFetcher = new System.Timers.Timer();
         private AutomationElement parent = null;
+        private bool forceClose = false;
         #endregion 
 
         public MainWindow()
@@ -92,7 +93,6 @@ namespace Songify_Slim
             catch (Exception ex)
             {
                 WriteLog(ex);
-                // TODO: Writing to the label could be its own method.
                 // Writing to the statusstrip label
                 this.LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
@@ -108,7 +108,7 @@ namespace Songify_Slim
                 Updater.CheckForUpdates(new Version(Version));
                 updateError = false;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 WriteLog(ex);
                 updateError = true;
@@ -164,7 +164,7 @@ namespace Songify_Slim
 
                 case 1:
                     // Youtube
-                    FetchTimer(3000);
+                    FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
@@ -191,19 +191,29 @@ namespace Songify_Slim
             timerFetcher.Enabled = true;
         }
 
-        private void WriteLog(Exception exception)
+        private static void WriteLog(Exception exception)
         {
-            var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/log.txt";
-            if (!File.Exists(logPath)) return;
+            // Writes a log file with exceptions in it
+            var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
+            if (!File.Exists(logPath)) File.Create(logPath).Close();
+            File.AppendAllText(logPath, @"----------------- " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + @" -----------------" + Environment.NewLine);
             File.AppendAllText(logPath, exception.Message + Environment.NewLine);
             File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
             File.AppendAllText(logPath, exception.Source + Environment.NewLine);
+            File.AppendAllText(logPath, @"----------------------------------------------------" + Environment.NewLine);
+
         }
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             // when the timer 'ticks' this code gets executed
             this.GetCurrentSong();
+            if (selectedSource == 1)
+            {
+                this.LblStatus.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(() => { LblStatus.Content = "Fetched Youtube: " + DateTime.Now.ToLocalTime(); }));
+            }
         }
 
         private void GetCurrentSong()
@@ -258,6 +268,7 @@ namespace Songify_Slim
 
                 case 1:
 
+                    #region Chrome
                     Process[] procsChrome = Process.GetProcessesByName("chrome");
                     foreach (Process chrome in procsChrome)
                     {
@@ -267,11 +278,9 @@ namespace Songify_Slim
                             continue;
                         }
 
-                        AutomationElement elm;
+                        var elm = parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : parent;
 
-                        elm = parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : parent;
                         // find the automation element
-
                         try
                         {
                             AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
@@ -296,61 +305,16 @@ namespace Songify_Slim
                                 }
                             }
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             WriteLog(ex);
                             // Chrome has probably changed something, and above walking needs to be modified. :(
                             // put an assertion here or something to make sure you don't miss it
-                            continue;
                         }
-
                     }
                     break;
 
-                // Original Code
-                //    #region Chrome
-                //    // Find all processes named "Chrome"
-                //    var procsChrome = Process.GetProcessesByName("chrome");
-                //    if (procsChrome.Length > 0)
-                //    {
-                //        foreach (Process proc in procsChrome)
-                //        {
-                //            // the chrome process must have a window
-                //            if (proc.MainWindowHandle == IntPtr.Zero)
-                //            {
-                //                continue;
-                //            }
-                //            try
-                //            {
-                //                // to find the tab I'm iterating through each element in chrome with the condition that it is Typeof Tabitem
-                //                AutomationElement root = AutomationElement.FromHandle(proc.MainWindowHandle);
-                //                System.Windows.Automation.Condition condNewTab = new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem);
-                //                foreach (AutomationElement aEleme in root.FindAll(TreeScope.Descendants, condNewTab))
-                //                {
-                //                    // if the Tabitem Name contains Youtube
-                //                    if (aEleme.Current.Name.Contains("YouTube"))
-                //                    {
-                //                        // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                //                        temp = Regex.Replace(aEleme.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                //                        int index = temp.LastIndexOf("-");
-                //                        // Remove everything after the last "-" int the string 
-                //                        // which is "- Youtube" and info that music is playing on this tab
-                //                        if (index > 0)
-                //                            temp = temp.Substring(0, index);
-                //                        temp = temp.Trim();
-                //                        // Method that writes the song to the text file and uploads it
-                //                        WriteSong(temp, "", "");
-                //                    }
-                //                }
-                //            }
-                //            catch (Exception)
-                //            {
-                //            }
-                //        }
-                //    }
-                //    break;
-
-                //#endregion Chrome
+                #endregion
 
                 case 2:
 
@@ -385,6 +349,7 @@ namespace Songify_Slim
         private void MenuItem1Click(object sender, EventArgs e)
         {
             // Click on "Exit" in the Systray
+            forceClose = true;
             this.Close();
         }
 
@@ -397,8 +362,20 @@ namespace Songify_Slim
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            // send telemetry with appactive = false
-            SendTelemetry(false);
+            if (!Settings.GetSystray())
+            {
+                e.Cancel = false;
+            }
+            else
+            {
+                if (!forceClose)
+                {
+                    ConfigHandler.WriteXML(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+                    SendTelemetry(false);
+                }
+                e.Cancel = !forceClose;
+                this.MinimizeToSysTray();
+            }
         }
 
         private void MetroWindowClosed(object sender, EventArgs e)
@@ -412,6 +389,11 @@ namespace Songify_Slim
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
+            {
+                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+            }
+
             // Create systray menu and icon and show it
             this._menuItem1.Text = @"Exit";
             this._menuItem1.Click += this.MenuItem1Click;
@@ -469,7 +451,7 @@ namespace Songify_Slim
                     break;
 
                 case 1:
-                    FetchTimer(3000);
+                    FetchTimer(Settings.GetChromeFetchRate()*1000);
                     break;
 
                 case 2:

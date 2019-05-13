@@ -43,6 +43,8 @@ namespace Songify_Slim
             TxtbxOutputformat.Text = Settings.GetOutputString();
             txtbx_nbuser.Text = Settings.GetNBUser();
             ChbxUpload.IsChecked = Settings.GetUpload();
+         
+            NudChrome.Value = Settings.GetChromeFetchRate();
             if (Settings.GetNBUserID() != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.GetNBUserID() + ")";
@@ -286,6 +288,18 @@ namespace Songify_Slim
         {
             public dynamic channel { get; set; }
             public string status { get; set; }
+        }
+
+        private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            // Sets the source (Spotify, Youtube, Nightbot)
+            if (!IsLoaded)
+            {
+                // This prevents that the selected is always 0 (initialize components)
+                return;
+            }
+
+            if (NudChrome.Value != null) Settings.SetChromeFetchRate((int) NudChrome.Value);
         }
     }
 }

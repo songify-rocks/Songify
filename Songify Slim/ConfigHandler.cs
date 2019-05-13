@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
@@ -18,7 +19,7 @@ namespace Songify_Slim
             // Saving the Config file
             if (Path != "")
             {
-                WriteXML(Path);
+                WriteXML(Path, false);
             }
             else
             {
@@ -39,8 +40,13 @@ namespace Songify_Slim
             }
         }
 
-        public static void WriteXML(string Path)
+        public static void WriteXML(string Path, bool hidden = false)
         {
+            FileInfo myFile = new FileInfo(Path);
+            // Remove the hidden attribute of the file
+            myFile.Attributes &= ~FileAttributes.Hidden;
+
+
             // XML-Writer settings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
             {
@@ -48,6 +54,8 @@ namespace Songify_Slim
                 IndentChars = "\t",
                 NewLineOnAttributes = true
             };
+
+
 
             // Writing the XML, Attributnames are somewhat equal to Settings.
             using (XmlWriter writer = XmlWriter.Create(Path, xmlWriterSettings))
@@ -71,52 +79,75 @@ namespace Songify_Slim
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
+
+            if (hidden)
+            {
+                // Get file info
+                // Put it back as hidden
+                myFile.Attributes |= FileAttributes.Hidden;
+            }
+            else
+            {
+                // Remove the hidden attribute of the file
+                myFile.Attributes &= ~FileAttributes.Hidden;
+            }
         }
 
-        public static void LoadConfig()
+        public static void readXML(string path)
         {
-            // OpenfileDialog with settings initialdirectory is the path were the exe is located
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            // reading the XML file, attributes get saved in Settings
+            XmlDocument doc = new XmlDocument();
+            doc.Load(path);
+            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
-                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
-                Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
-            };
-
-            // Opening the dialog and when the user hits "OK" the following code gets executed
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                // reading the XML file, attributes get saved in Settings
-                XmlDocument doc = new XmlDocument();
-                doc.Load(openFileDialog.FileName);
-                foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                if (node.Name == "Config")
                 {
-                    if (node.Name == "Config")
-                    {
-                        Settings.SetDirectory(node.Attributes["directory"]?.InnerText);
-                        Settings.SetColor(node.Attributes["color"]?.InnerText);
-                        Settings.SetTheme(node.Attributes["tehme"]?.InnerText);
-                        Settings.SetAutostart(Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText));
-                        Settings.SetSystray(Convert.ToBoolean(node.Attributes["systray"]?.InnerText));
-                        Settings.SetCustomPauseTextEnabled(Convert.ToBoolean(node.Attributes["customPause"]?.InnerText));
-                        Settings.SetCustomPauseText(node.Attributes["customPauseText"]?.InnerText);
-                        Settings.SetOutputString(node.Attributes["outputString"]?.InnerText);
-                        Settings.SetUUID(node.Attributes["uuid"]?.InnerText);
-                        Settings.SetTelemetry(Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText));
-                        Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
-                        Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
-                        Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
-                    }
+                    Settings.SetDirectory(node.Attributes["directory"]?.InnerText);
+                    Settings.SetColor(node.Attributes["color"]?.InnerText);
+                    Settings.SetTheme(node.Attributes["tehme"]?.InnerText);
+                    Settings.SetAutostart(Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText));
+                    Settings.SetSystray(Convert.ToBoolean(node.Attributes["systray"]?.InnerText));
+                    Settings.SetCustomPauseTextEnabled(Convert.ToBoolean(node.Attributes["customPause"]?.InnerText));
+                    Settings.SetCustomPauseText(node.Attributes["customPauseText"]?.InnerText);
+                    Settings.SetOutputString(node.Attributes["outputString"]?.InnerText);
+                    Settings.SetUUID(node.Attributes["uuid"]?.InnerText);
+                    Settings.SetTelemetry(Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText));
+                    Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
+                    Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
+                    Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
+                }
+            }
+        }
+
+        public static void LoadConfig(string Path = "")
+        {
+            if (Path != "")
+            {
+                readXML(Path);
+            }
+            else
+            {
+                // OpenfileDialog with settings initialdirectory is the path were the exe is located
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
+                    Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
+                };
+
+                // Opening the dialog and when the user hits "OK" the following code gets executed
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    readXML(openFileDialog.FileName);
                 }
 
-            }
-
-            // This will iterate through all windows of the software, if the window is typeof 
-            // Settingswindow (from there this class is called) it calls the method SetControls
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
-                if (window.GetType() == typeof(SettingsWindow))
+                // This will iterate through all windows of the software, if the window is typeof 
+                // Settingswindow (from there this class is called) it calls the method SetControls
+                foreach (Window window in System.Windows.Application.Current.Windows)
                 {
-                    (window as SettingsWindow).SetControls();
+                    if (window.GetType() == typeof(SettingsWindow))
+                    {
+                        (window as SettingsWindow).SetControls();
+                    }
                 }
             }
         }
