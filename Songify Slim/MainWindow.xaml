@@ -173,7 +173,6 @@
 
 
     <Grid>
-
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
