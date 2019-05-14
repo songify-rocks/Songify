@@ -184,6 +184,7 @@ namespace Songify_Slim
         {
             // enables / disables upload
             Settings.SetUpload((bool)ChbxUpload.IsChecked);
+            (mW as MainWindow).UploadSong((mW as MainWindow)._currSong);
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)

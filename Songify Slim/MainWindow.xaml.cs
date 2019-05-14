@@ -5,7 +5,6 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -32,7 +31,7 @@ namespace Songify_Slim
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
-        private string _currSong;
+        public  string _currSong;
         private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
         private int selectedSource = Settings.GetSource();
         private TimeSpan startTimeSpan = TimeSpan.Zero;
@@ -88,6 +87,7 @@ namespace Songify_Slim
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                myHttpWebResponse.Close();
             }
             catch (Exception ex)
             {
@@ -593,29 +593,7 @@ namespace Songify_Slim
                 // if upload is enabled
                 if (Settings.GetUpload())
                 {
-                    try
-                    {
-                        // extras are UUID and Songinfo
-                        // TODO: Fix encoding errors
-                        var extras = Settings.GetUUID() + "&song=" + HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
-                        var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
-                        Console.WriteLine(url);
-                        // Create a new 'HttpWebRequest' object to the mentioned URL.
-                        var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        myHttpWebRequest.UserAgent = Settings.getWebua();
-                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                        var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                        myHttpWebResponse.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        WriteLog(ex);
-                        // if error occurs write text to the status asynchronous
-                        Console.WriteLine(ex.Message);
-                        this.LblStatus.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
-                    }
+                    UploadSong(_currSong);
                 }
             }
 
@@ -623,6 +601,33 @@ namespace Songify_Slim
             this.TxtblockLiveoutput.Dispatcher.Invoke(
             System.Windows.Threading.DispatcherPriority.Normal,
             new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
+        }
+
+        public void UploadSong(string currSong)
+        {
+            try
+            {
+                // extras are UUID and Songinfo
+                // TODO: Fix encoding errors
+                var extras = Settings.GetUUID() + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
+                var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
+                Console.WriteLine(url);
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.getWebua();
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                myHttpWebResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                WriteLog(ex);
+                // if error occurs write text to the status asynchronous
+                Console.WriteLine(ex.Message);
+                this.LblStatus.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+            }
         }
 
         // Nightbot JSON Object
