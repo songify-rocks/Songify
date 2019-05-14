@@ -22,7 +22,6 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
-
         public static string Version;
         public bool appActive = false;
         public NotifyIcon NotifyIcon = new NotifyIcon();
@@ -159,16 +158,20 @@ namespace Songify_Slim
             {
                 case 0:
                     // Spotify
+                    this.GetCurrentSong();
+
                     FetchTimer(1000);
                     break;
 
                 case 1:
-                    // Youtube
+                    // Youtube User-Set Poll Rate (seconds) * 1000 for milliseconds
+                    this.GetCurrentSong();
                     FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
                     // Nightbot
+                    this.GetCurrentSong();
                     FetchTimer(3000);
                     break;
             }
@@ -363,17 +366,13 @@ namespace Songify_Slim
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
+            // If Systray is enabled [X] minimizes to systray
             if (!Settings.GetSystray())
             {
                 e.Cancel = false;
             }
             else
             {
-                if (!forceClose)
-                {
-                    ConfigHandler.WriteXML(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-                    SendTelemetry(false);
-                }
                 e.Cancel = !forceClose;
                 this.MinimizeToSysTray();
             }
@@ -381,15 +380,18 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
+            // write config file on closing
+            ConfigHandler.WriteXML(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            // send inactive
+            SendTelemetry(false);
             // remove systray icon
-            if (!Worker_Telemetry.IsBusy)
-                Worker_Telemetry.RunWorkerAsync();
             this.NotifyIcon.Visible = false;
             this.NotifyIcon.Dispose();
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            // Load Config file if one exists
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
             {
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
@@ -448,14 +450,17 @@ namespace Songify_Slim
             switch (selectedSource)
             {
                 case 0:
+                    this.GetCurrentSong();
                     FetchTimer(1000);
                     break;
 
                 case 1:
+                    this.GetCurrentSong();
                     FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
+                    this.GetCurrentSong();
                     FetchTimer(3000);
                     break;
             }
@@ -598,9 +603,9 @@ namespace Songify_Slim
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                         myHttpWebRequest.UserAgent = Settings.getWebua();
-
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        myHttpWebResponse.Close();
                     }
                     catch (Exception ex)
                     {

@@ -42,6 +42,8 @@ namespace Songify_Slim
 
         public static void WriteXML(string Path, bool hidden = false)
         {
+            if (!File.Exists(Path))
+                File.Create(Path).Close();
             FileInfo myFile = new FileInfo(Path);
             // Remove the hidden attribute of the file
             myFile.Attributes &= ~FileAttributes.Hidden;
