@@ -31,7 +31,7 @@ namespace Songify_Slim
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
-        public  string _currSong;
+        public string _currSong;
         private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
         private int selectedSource = Settings.GetSource();
         private TimeSpan startTimeSpan = TimeSpan.Zero;
@@ -158,20 +158,16 @@ namespace Songify_Slim
             {
                 case 0:
                     // Spotify
-                    this.GetCurrentSong();
-
                     FetchTimer(1000);
                     break;
 
                 case 1:
                     // Youtube User-Set Poll Rate (seconds) * 1000 for milliseconds
-                    this.GetCurrentSong();
                     FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
                     // Nightbot
-                    this.GetCurrentSong();
                     FetchTimer(3000);
                     break;
             }
@@ -211,12 +207,6 @@ namespace Songify_Slim
         {
             // when the timer 'ticks' this code gets executed
             this.GetCurrentSong();
-            if (selectedSource == 1)
-            {
-                this.LblStatus.Dispatcher.Invoke(
-                    System.Windows.Threading.DispatcherPriority.Normal,
-                    new Action(() => { LblStatus.Content = "Fetched Youtube: " + DateTime.Now.ToLocalTime(); }));
-            }
         }
 
         private void GetCurrentSong()
@@ -450,17 +440,14 @@ namespace Songify_Slim
             switch (selectedSource)
             {
                 case 0:
-                    this.GetCurrentSong();
                     FetchTimer(1000);
                     break;
 
                 case 1:
-                    this.GetCurrentSong();
                     FetchTimer(Settings.GetChromeFetchRate() * 1000);
                     break;
 
                 case 2:
-                    this.GetCurrentSong();
                     FetchTimer(3000);
                     break;
             }
