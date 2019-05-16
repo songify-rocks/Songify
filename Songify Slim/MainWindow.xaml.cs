@@ -91,7 +91,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                WriteLog(ex);
+                Logger.Log(ex);
                 // Writing to the statusstrip label
                 this.LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
@@ -109,7 +109,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                WriteLog(ex);
+                Logger.Log(ex);
                 updateError = true;
             }
         }
@@ -182,7 +182,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                WriteLog(ex);
+                Logger.Log(ex);
             }
             timerFetcher = new System.Timers.Timer();
             timerFetcher.Elapsed += this.OnTimedEvent;
@@ -190,18 +190,18 @@ namespace Songify_Slim
             timerFetcher.Enabled = true;
         }
 
-        private static void WriteLog(Exception exception)
-        {
-            // Writes a log file with exceptions in it
-            var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
-            if (!File.Exists(logPath)) File.Create(logPath).Close();
-            File.AppendAllText(logPath, @"----------------- " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + @" -----------------" + Environment.NewLine);
-            File.AppendAllText(logPath, exception.Message + Environment.NewLine);
-            File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
-            File.AppendAllText(logPath, exception.Source + Environment.NewLine);
-            File.AppendAllText(logPath, @"----------------------------------------------------" + Environment.NewLine);
+        //private static void WriteLog(Exception exception)
+        //{
+        //    // Writes a log file with exceptions in it
+        //    var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
+        //    if (!File.Exists(logPath)) File.Create(logPath).Close();
+        //    File.AppendAllText(logPath, @"----------------- " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + @" -----------------" + Environment.NewLine);
+        //    File.AppendAllText(logPath, exception.Message + Environment.NewLine);
+        //    File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
+        //    File.AppendAllText(logPath, exception.Source + Environment.NewLine);
+        //    File.AppendAllText(logPath, @"----------------------------------------------------" + Environment.NewLine);
 
-        }
+        //}
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
@@ -240,7 +240,7 @@ namespace Songify_Slim
                                 }
                                 catch (Exception ex)
                                 {
-                                    WriteLog(ex);
+                                    Logger.Log(ex);
                                 }
                                 WriteSong(artist, title, extra);
                             }
@@ -301,7 +301,7 @@ namespace Songify_Slim
                         }
                         catch (Exception ex)
                         {
-                            WriteLog(ex);
+                            Logger.Log(ex);
                             // Chrome has probably changed something, and above walking needs to be modified. :(
                             // put an assertion here or something to make sure you don't miss it
                         }
@@ -608,7 +608,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                WriteLog(ex);
+                Logger.Log(ex);
                 // if error occurs write text to the status asynchronous
                 Console.WriteLine(ex.Message);
                 this.LblStatus.Dispatcher.Invoke(

@@ -43,7 +43,7 @@ namespace Songify_Slim
             TxtbxOutputformat.Text = Settings.GetOutputString();
             txtbx_nbuser.Text = Settings.GetNBUser();
             ChbxUpload.IsChecked = Settings.GetUpload();
-         
+
             NudChrome.Value = Settings.GetChromeFetchRate();
             if (Settings.GetNBUserID() != null)
             {
@@ -88,12 +88,11 @@ namespace Songify_Slim
                 string temp = json.channel._id;
                 temp = temp.Replace("{", "").Replace("}", "");
                 Settings.SetNBUserID(temp);
-                Notification.ShowNotification("Nightbot account linked", "s");
 
             }
-            catch
+            catch (Exception ex)
             {
-                Notification.ShowNotification("Unable to link account", "e");
+                Logger.Log(ex);
             }
 
             SetControls();
@@ -111,14 +110,13 @@ namespace Songify_Slim
                 System.Windows.Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
             }
             (mW as MainWindow).LblStatus.Content = @"Path copied to clipboard.";
-            Notification.ShowNotification("Path saved to clipboard.", "s");
         }
 
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
             System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/getsong.php?id=" + Settings.GetUUID());
-            Notification.ShowNotification("Link copied to clipboard", "s");
+            (mW as MainWindow).LblStatus.Content = @"URL copied to clipboard.";
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
@@ -247,6 +245,7 @@ namespace Songify_Slim
                 Settings.SetColor(s);
             }
 
+
             SetControls();
         }
 
@@ -300,7 +299,7 @@ namespace Songify_Slim
                 return;
             }
 
-            if (NudChrome.Value != null) Settings.SetChromeFetchRate((int) NudChrome.Value);
+            if (NudChrome.Value != null) Settings.SetChromeFetchRate((int)NudChrome.Value);
         }
     }
 }

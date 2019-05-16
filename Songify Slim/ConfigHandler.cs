@@ -35,7 +35,6 @@ namespace Songify_Slim
                 if (saveFileDialog.ShowDialog() == true)
                 {
                     WriteXML(saveFileDialog.FileName);
-                    Notification.ShowNotification("Config exported to " + saveFileDialog.FileName, "s");
                 }
             }
         }

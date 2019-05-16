@@ -41,7 +41,6 @@ namespace Songify_Slim
             foreach (Window window in System.Windows.Application.Current.Windows)
             {
                 if (window.GetType() != typeof(MainWindow)) continue;
-                // Show a toast notification that there is a new version
                 ((MainWindow)window).NotifyIcon.BalloonTipTitle = @"New Update!";
                 ((MainWindow)window).NotifyIcon.BalloonTipText = @"A new update is available for download. It's recommended to update to the latest version.";
                 ((MainWindow)window).NotifyIcon.ShowBalloonTip(500);
@@ -56,7 +55,6 @@ namespace Songify_Slim
                     // if the user wants to update, export config and open url in browser
                     System.Diagnostics.Process.Start(latest.HtmlUrl);
                     ConfigHandler.SaveConfig(AppDomain.CurrentDomain.BaseDirectory + "/config.xml");
-                    Notification.ShowNotification("A config backup was saved to " + AppDomain.CurrentDomain.BaseDirectory + "/config.xml", "i");
                 }
                 (window as MainWindow).Width = 588;
                 (window as MainWindow).Height = 247.881;
