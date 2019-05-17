@@ -15,7 +15,7 @@ namespace Songify_Slim
             File.AppendAllText(logPath, exception.Message + Environment.NewLine);
             File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
             File.AppendAllText(logPath, exception.Source + Environment.NewLine);
-            File.AppendAllText(logPath, @"----------------------------------------------------" + Environment.NewLine);
+            File.AppendAllText(logPath, Environment.NewLine);
 
         }
     }

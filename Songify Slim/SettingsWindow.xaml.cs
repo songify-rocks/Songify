@@ -109,14 +109,14 @@ namespace Songify_Slim
             {
                 System.Windows.Clipboard.SetDataObject(Settings.GetDirectory() + "\\Songify.txt");
             }
-            (mW as MainWindow).LblStatus.Content = @"Path copied to clipboard.";
+            Lbl_Status.Content = @"Path copied to clipboard.";
         }
 
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
             System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/getsong.php?id=" + Settings.GetUUID());
-            (mW as MainWindow).LblStatus.Content = @"URL copied to clipboard.";
+            Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
