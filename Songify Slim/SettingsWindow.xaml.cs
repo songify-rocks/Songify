@@ -301,5 +301,11 @@ namespace Songify_Slim
 
             if (NudChrome.Value != null) Settings.SetChromeFetchRate((int)NudChrome.Value);
         }
+
+        private void ChbxHistory_Checked(object sender, RoutedEventArgs e)
+        {
+            // enables / disables upload
+            Settings.SetHistory((bool)ChbxHistory.IsChecked);
+        }
     }
 }

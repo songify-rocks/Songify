@@ -76,6 +76,11 @@
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" />
+                    <controls:ToggleSwitch x:Name="ChbxHistory" Content="Upload History" HorizontalAlignment="Left"
+                                           Margin="15,141,0,0" VerticalAlignment="Top"
+                                           Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxHistory_Checked" Unloaded="ChbxHistory_Checked" />
                     <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="344,109,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyURL_Click">
                         <StackPanel Orientation="Horizontal">
                             <Rectangle

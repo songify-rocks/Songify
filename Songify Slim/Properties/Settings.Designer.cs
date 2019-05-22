@@ -211,5 +211,17 @@ namespace Songify_Slim.Properties {
                 this["ChromeFetchRate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool history {
+            get {
+                return ((bool)(this["history"]));
+            }
+            set {
+                this["history"] = value;
+            }
+        }
     }
 }

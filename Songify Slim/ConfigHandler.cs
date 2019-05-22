@@ -47,7 +47,6 @@ namespace Songify_Slim
             // Remove the hidden attribute of the file
             myFile.Attributes &= ~FileAttributes.Hidden;
 
-
             // XML-Writer settings
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
             {
@@ -55,8 +54,6 @@ namespace Songify_Slim
                 IndentChars = "\t",
                 NewLineOnAttributes = true
             };
-
-
 
             // Writing the XML, Attributnames are somewhat equal to Settings.
             using (XmlWriter writer = XmlWriter.Create(Path, xmlWriterSettings))

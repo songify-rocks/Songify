@@ -155,6 +155,19 @@
                                Text="about" />
                 </StackPanel>
             </Button>
+            <Button x:Name="BtnHistory" Click="BtnHistory_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_timer}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Margin="4 0 0 0"
+                               VerticalAlignment="Center"
+                               Text="history" />
+                </StackPanel>
+            </Button>
             <Button x:Name="BtnSettings" Click="BtnSettings_Click">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="15" Height="15"

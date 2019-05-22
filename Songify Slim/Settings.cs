@@ -7,6 +7,18 @@
    
     internal class Settings
     {
+
+        public static void SetHistory(bool history)
+        {
+            Properties.Settings.Default.history = history;
+            Properties.Settings.Default.Save();
+        }
+
+        public static bool GetHistory()
+        {
+            return Properties.Settings.Default.history;
+        }
+
         public static void SetChromeFetchRate(int rate)
         {
             Properties.Settings.Default.ChromeFetchRate = rate;
@@ -17,7 +29,6 @@
         {
             return Properties.Settings.Default.ChromeFetchRate;
         }
-
 
 
         public static void SetUpload(bool uploadsong)

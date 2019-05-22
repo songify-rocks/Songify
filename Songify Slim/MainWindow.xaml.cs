@@ -15,6 +15,8 @@ using System.Web;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Songify_Slim
 {
@@ -582,6 +584,55 @@ namespace Songify_Slim
                 {
                     UploadSong(_currSong);
                 }
+
+                //TODO History Upload
+                if (Settings.GetHistory())
+                {
+                    int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                    // Upload Song
+                    try
+                    {
+                        var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&song=" + HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
+                        var url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
+                        Console.WriteLine(url);
+                        // Create a new 'HttpWebRequest' object to the mentioned URL.
+                        var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                        myHttpWebRequest.UserAgent = Settings.getWebua();
+
+                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                        var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        myHttpWebResponse.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(ex);
+                        // Writing to the statusstrip label
+                        this.LblStatus.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+                    }
+
+                    //save the history file
+                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".shr";
+                    if (!File.Exists(historyPath))
+                    {
+                        File.Create(historyPath).Close();
+                        using (XmlWriter writer = XmlWriter.Create(historyPath))
+                        {
+                            writer.WriteStartDocument();
+                            writer.WriteStartElement("Song_History");
+                            writer.WriteEndElement();
+                            writer.WriteEndDocument();
+                        }
+                    }
+
+                    XElement elem = new XElement("Song", _currSong.Trim());
+                    elem.Add(new XAttribute("Time", unixTimestamp));
+                    XDocument doc = XDocument.Load(historyPath);
+                    doc.Element("Song_History").Add(elem);
+                    doc.Save(historyPath);
+                }
             }
 
             // write song to the output label 
@@ -621,6 +672,13 @@ namespace Songify_Slim
         public class NBObj
         {
             public dynamic _currentsong { get; set; }
+        }
+
+        private void BtnHistory_Click(object sender, RoutedEventArgs e)
+        {
+            // Opens the 'Settings'-Window
+            HistoryWindow hW = new HistoryWindow();
+            hW.ShowDialog();
         }
     }
 }
