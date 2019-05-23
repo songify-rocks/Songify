@@ -43,6 +43,7 @@ namespace Songify_Slim
             TxtbxOutputformat.Text = Settings.GetOutputString();
             txtbx_nbuser.Text = Settings.GetNBUser();
             ChbxUpload.IsChecked = Settings.GetUpload();
+            ChbxHistory.IsChecked = Settings.GetHistory();
 
             NudChrome.Value = Settings.GetChromeFetchRate();
             if (Settings.GetNBUserID() != null)
@@ -306,6 +307,12 @@ namespace Songify_Slim
         {
             // enables / disables upload
             Settings.SetHistory((bool)ChbxHistory.IsChecked);
+        }
+
+        private void BtnCopyHistory_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/history.php?id=" + Settings.GetUUID());
+            Lbl_Status.Content = @"URL copied to clipboard.";
         }
     }
 }

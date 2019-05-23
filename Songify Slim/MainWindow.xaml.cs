@@ -42,6 +42,8 @@ namespace Songify_Slim
         private System.Timers.Timer timerFetcher = new System.Timers.Timer();
         private AutomationElement parent = null;
         private bool forceClose = false;
+        bool firstRun = true;
+        string prevSong;
         #endregion 
 
         public MainWindow()
@@ -582,12 +584,26 @@ namespace Songify_Slim
                 // if upload is enabled
                 if (Settings.GetUpload())
                 {
-                    UploadSong(_currSong);
+                    UploadSong(_currSong.Trim());
                 }
 
                 //TODO History Upload
-                if (Settings.GetHistory())
+                if (Settings.GetHistory() && !string.IsNullOrEmpty(_currSong.Trim()) && _currSong.Trim() != Settings.GetCustomPauseText())
                 {
+                    if (firstRun)
+                    {
+                        prevSong = _currSong.Trim();
+                        firstRun = false;
+                    }
+                    else
+                    {
+                        if (prevSong == _currSong.Trim())
+                            return;
+                    }
+
+                    prevSong = _currSong.Trim();
+
+
                     int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                     // Upload Song

@@ -74,6 +74,7 @@ namespace Songify_Slim
                 writer.WriteAttributeString("nbuser", Settings.GetNBUser().ToString());
                 writer.WriteAttributeString("nbuserid", Settings.GetNBUserID().ToString());
                 writer.WriteAttributeString("uploadSonginfo", Settings.GetUpload().ToString());
+                writer.WriteAttributeString("uploadhistory", Settings.GetHistory().ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -113,6 +114,7 @@ namespace Songify_Slim
                     Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
                     Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
                     Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
+                    Settings.SetHistory(Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText));
                 }
             }
         }

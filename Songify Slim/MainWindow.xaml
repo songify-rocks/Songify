@@ -160,7 +160,7 @@
                     <Rectangle Width="15" Height="15"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_timer}" />
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_timer_1}" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Margin="4 0 0 0"

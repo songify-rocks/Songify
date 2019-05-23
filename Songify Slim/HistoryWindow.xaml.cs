@@ -44,6 +44,11 @@ namespace Songify_Slim
                 temp = temp.Trim().Replace(".shr", "");
                 LbxHistory.Items.Add(temp);
             }
+            if(LbxHistory.Items.Count > 0)
+            {
+                LbxHistory.SelectedIndex = LbxHistory.Items.Count - 1;
+
+            }
         }
 
         private void LbxHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)

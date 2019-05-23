@@ -92,6 +92,17 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
+                    <Button x:Name="BtnCopyHistory" HorizontalAlignment="Left" Margin="344,143,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyHistory_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Rectangle
+                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                Width="15" Height="15">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_link}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Appearance">
