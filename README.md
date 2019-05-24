@@ -12,8 +12,20 @@ It fetches the currently playing song from Spotify, YouTube (Chrome) and Nightbo
 * Automatically start with windows (trust me, it is QoL)
 * Minimize to the system tray, feels like it isn't running at all.
 * Custom output string! If you want to be extra fancy.
+* Upload Song info to use with most common chat bots
+  * Examples (replace **URL** with the URL provided by the software):
+    * Nightbot: 
+      * $(urlfetch **URL**)
+    * Streamlabs: 
+      * {readapi.**URL**}  
+    * Streamelements:  
+      * ${customapi.**URL**}
+    * Moobot:  
+      * Response -> URL fetch - Full (plain) response, URL to Fetch -> **URL**
 * Switch between Dark and Light theme, not that it matters since it's most of the time minimized...
 * Oh and colors, yeah a lot of colors actually. 23 if I counted that right.
+
+
 
 # Troubleshooting
 If you don't see anything happen in the Live Output try switching songs and make sure this option is turned **off**!
