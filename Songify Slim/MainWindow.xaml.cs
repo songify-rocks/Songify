@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -15,14 +16,15 @@ using System.Web;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Linq;
+using Application = System.Windows.Application;
 
 namespace Songify_Slim
 {
     public partial class MainWindow
     {
         #region Variables
+
         public static string Version;
         public bool appActive = false;
         public NotifyIcon NotifyIcon = new NotifyIcon();
@@ -44,7 +46,8 @@ namespace Songify_Slim
         private bool forceClose = false;
         bool firstRun = true;
         string prevSong;
-        #endregion 
+
+        #endregion
 
         public MainWindow()
         {
@@ -153,6 +156,7 @@ namespace Songify_Slim
                 // This prevents that the selected is always 0 (initialize components)
                 return;
             }
+
             selectedSource = cbx_Source.SelectedIndex;
 
             Settings.SetSource(selectedSource);
@@ -188,6 +192,7 @@ namespace Songify_Slim
             {
                 Logger.Log(ex);
             }
+
             timerFetcher = new System.Timers.Timer();
             timerFetcher.Elapsed += this.OnTimedEvent;
             timerFetcher.Interval = ms;
@@ -220,6 +225,7 @@ namespace Songify_Slim
                 case 0:
 
                     #region Spotify
+
                     // Get all processes that are called "Spotify"
                     var processes = Process.GetProcessesByName("Spotify");
                     foreach (var process in processes)
@@ -230,7 +236,7 @@ namespace Songify_Slim
                             string wintitle = process.MainWindowTitle;
                             string artist = "", title = "", extra = "";
                             // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
-                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free")
+                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
                             {
                                 // Splitting the wintitle which is always Artist - Title
                                 string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
@@ -246,6 +252,7 @@ namespace Songify_Slim
                                 {
                                     Logger.Log(ex);
                                 }
+
                                 WriteSong(artist, title, extra);
                             }
                             // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
@@ -259,6 +266,7 @@ namespace Songify_Slim
                             }
                         }
                     }
+
                     break;
 
                 #endregion Spotify
@@ -266,6 +274,7 @@ namespace Songify_Slim
                 case 1:
 
                     #region Chrome
+
                     Process[] procsChrome = Process.GetProcessesByName("chrome");
                     foreach (Process chrome in procsChrome)
                     {
@@ -310,6 +319,7 @@ namespace Songify_Slim
                             // put an assertion here or something to make sure you don't miss it
                         }
                     }
+
                     break;
 
                 #endregion
@@ -317,6 +327,7 @@ namespace Songify_Slim
                 case 2:
 
                     #region Nightbot
+
                     // Checking if the user has set the setting for Nightbot
                     if (!String.IsNullOrEmpty(Settings.GetNBUserID()))
                     {
@@ -327,7 +338,8 @@ namespace Songify_Slim
                             Encoding = Encoding.UTF8
                         })
                         {
-                            jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" + Settings.GetNBUserID());
+                            jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
+                                                    Settings.GetNBUserID());
                         }
 
                         // Deserialize JSON and get the current song 
@@ -338,6 +350,7 @@ namespace Songify_Slim
                         temp = json._currentsong.track.title;
                         WriteSong(temp, "", "");
                     }
+
                     break;
 
                     #endregion Nightbot
@@ -438,7 +451,8 @@ namespace Songify_Slim
             cbx_Source.SelectedIndex = selectedSource;
 
             // text in the bottom right
-            this.LblCopyright.Content = "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
+            this.LblCopyright.Content =
+                "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             // automatically start fetching songs
             switch (selectedSource)
@@ -487,7 +501,13 @@ namespace Songify_Slim
             // show messagebox with the Telemetry disclaimer
             var result = await this.ShowMessageAsync("Anonymous Data",
                 this.FindResource("data_colletion") as string
-                , MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Accept", NegativeButtonText = "Decline", DefaultButtonFocus = MessageDialogResult.Affirmative });
+                , MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings
+                {
+                    AffirmativeButtonText = "Accept",
+                    NegativeButtonText = "Decline",
+                    DefaultButtonFocus = MessageDialogResult.Affirmative
+                });
             if (result == MessageDialogResult.Affirmative)
             {
                 // if accepted save to settings, restore window size
@@ -570,10 +590,12 @@ namespace Songify_Slim
                 File.Create(songPath).Close();
                 File.WriteAllText(songPath, _currSong);
             }
+
             if (new FileInfo(songPath).Length == 0)
             {
                 File.WriteAllText(songPath, _currSong);
             }
+
             var temp = File.ReadAllLines(songPath);
             // if the text file is different to _currSong (fetched song) 
             if (temp[0].Trim() != _currSong.Trim())
@@ -588,7 +610,8 @@ namespace Songify_Slim
                 }
 
                 //TODO History Upload
-                if (Settings.GetHistory() && !string.IsNullOrEmpty(_currSong.Trim()) && _currSong.Trim() != Settings.GetCustomPauseText())
+                if (Settings.GetHistory() && !string.IsNullOrEmpty(_currSong.Trim()) &&
+                    _currSong.Trim() != Settings.GetCustomPauseText())
                 {
                     if (firstRun)
                     {
@@ -609,7 +632,8 @@ namespace Songify_Slim
                     // Upload Song
                     try
                     {
-                        var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&song=" + HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
+                        var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&song=" +
+                                     HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
                         var url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
                         Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
@@ -630,31 +654,32 @@ namespace Songify_Slim
                     }
 
                     //save the history file
-                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".shr";
+                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
+                    XDocument doc;
                     if (!File.Exists(historyPath))
                     {
-                        File.Create(historyPath).Close();
-                        using (XmlWriter writer = XmlWriter.Create(historyPath))
-                        {
-                            writer.WriteStartDocument();
-                            writer.WriteStartElement("Song_History");
-                            writer.WriteEndElement();
-                            writer.WriteEndDocument();
-                        }
+                        doc =
+                            new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
+                        doc.Save(historyPath);
                     }
+                    doc = XDocument.Load(historyPath);
+                    if (!doc.Descendants("d_" + DateTime.Now.ToShortDateString()).Any())
+                    {
 
+                        doc.Descendants("History").FirstOrDefault().Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
+                    }
                     XElement elem = new XElement("Song", _currSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
-                    XDocument doc = XDocument.Load(historyPath);
-                    doc.Element("Song_History").Add(elem);
+                    var x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
+                    x.Add(elem);
                     doc.Save(historyPath);
                 }
             }
 
             // write song to the output label 
             this.TxtblockLiveoutput.Dispatcher.Invoke(
-            System.Windows.Threading.DispatcherPriority.Normal,
-            new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
+                System.Windows.Threading.DispatcherPriority.Normal,
+                new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
         }
 
         public void UploadSong(string currSong)

@@ -12,8 +12,7 @@ namespace Songify_Slim
 {
     public partial class SettingsWindow : MetroWindow
     {
-        private readonly string[] _colors = new string[]
-                                       {
+        private readonly string[] _colors = {
                                                    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
                                                    "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
                                                    "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
@@ -21,7 +20,7 @@ namespace Songify_Slim
                                        };
 
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
-        private Window mW;
+        private Window _mW;
 
         public SettingsWindow()
         {
@@ -58,7 +57,7 @@ namespace Songify_Slim
             // Appends Rightclick-Text from the output text box (parameters)
             tb.AppendText(text);
             tb.Select(TxtbxOutputformat.Text.Length, 0);
-            tb.ContextMenu.IsOpen = false;
+            if (tb.ContextMenu != null) tb.ContextMenu.IsOpen = false;
         }
 
         private void Btn_ExportConfig_Click(object sender, RoutedEventArgs e)
@@ -183,7 +182,7 @@ namespace Songify_Slim
         {
             // enables / disables upload
             Settings.SetUpload((bool)ChbxUpload.IsChecked);
-            (mW as MainWindow).UploadSong((mW as MainWindow)._currSong);
+            (_mW as MainWindow).UploadSong((_mW as MainWindow)._currSong);
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -193,13 +192,13 @@ namespace Songify_Slim
             ThemeHandler.ApplyTheme();
             if (Settings.GetColor() != "Yellow")
             {
-                (mW as MainWindow).LblStatus.Foreground = Brushes.White;
-                (mW as MainWindow).LblCopyright.Foreground = Brushes.White;
+                (_mW as MainWindow).LblStatus.Foreground = Brushes.White;
+                (_mW as MainWindow).LblCopyright.Foreground = Brushes.White;
             }
             else
             {
-                (mW as MainWindow).LblStatus.Foreground = Brushes.Black;
-                (mW as MainWindow).LblCopyright.Foreground = Brushes.Black;
+                (_mW as MainWindow).LblStatus.Foreground = Brushes.Black;
+                (_mW as MainWindow).LblCopyright.Foreground = Brushes.Black;
             }
         }
 
@@ -228,7 +227,7 @@ namespace Songify_Slim
             {
                 if (window.GetType() == typeof(MainWindow))
                 {
-                    mW = window;
+                    _mW = window;
                 }
             }
 

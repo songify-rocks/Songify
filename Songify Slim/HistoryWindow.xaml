@@ -8,8 +8,29 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
         Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded">
+
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button x:Name="BtnRefresh" Click="BtnRefresh_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Rectangle Width="15" Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_refresh}" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
+
     <Grid>
-        <DataGrid x:Name="dgvHistorySongs" Margin="148,10,10,10">
+        <DataGrid x:Name="dgvHistorySongs" Margin="148,10,10,10" SelectionMode="Single">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Click="DgvItemDelete_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="time"  IsReadOnly="True" Binding="{Binding Path=Time}"/>
                 <DataGridTextColumn Header="name"  IsReadOnly="True" Binding="{Binding Path=Name}" Width="*"/>
@@ -17,6 +38,12 @@
         </DataGrid>
 
         <ListBox x:Name="LbxHistory" HorizontalAlignment="Left" Width="133" Margin="10,10,0,10" SelectionChanged="LbxHistory_SelectionChanged">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+
             <ListBoxItem Content="Item 1"/>
             <ListBoxItem Content="Item 1"/>
             <ListBoxItem Content="Item 1"/>
