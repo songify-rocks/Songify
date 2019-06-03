@@ -1,6 +1,5 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,14 +9,11 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Timers;
 using System.Web;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using Application = System.Windows.Application;
 
 namespace Songify_Slim
 {
@@ -37,12 +33,11 @@ namespace Songify_Slim
         private readonly MenuItem _menuItem2 = new MenuItem();
         public string _currSong;
         private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
-        private int selectedSource = Settings.GetSource();
+        private int selectedSource = Settings.Source;
         private TimeSpan startTimeSpan = TimeSpan.Zero;
         private string temp = "";
         private System.Threading.Timer timer;
         private System.Timers.Timer timerFetcher = new System.Timers.Timer();
-        private AutomationElement parent = null;
         private bool forceClose = false;
         bool firstRun = true;
         string prevSong;
@@ -75,7 +70,7 @@ namespace Songify_Slim
                 registryKey?.DeleteValue("Songify");
             }
 
-            Settings.SetAutostart(isChecked);
+            Settings.Autostart = isChecked;
         }
 
         public void Worker_Telemetry_DoWork(object sender, DoWorkEventArgs e)
@@ -86,11 +81,11 @@ namespace Songify_Slim
             try
             {
                 Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + appActive;
+                var extras = Settings.UUID + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + appActive;
                 var url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.getWebua();
+                myHttpWebRequest.UserAgent = Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
@@ -159,7 +154,7 @@ namespace Songify_Slim
 
             selectedSource = cbx_Source.SelectedIndex;
 
-            Settings.SetSource(selectedSource);
+            Settings.Source = selectedSource;
 
             // Dpending on which source is chosen, it starts the timer that fetches the song info
             switch (selectedSource)
@@ -171,7 +166,7 @@ namespace Songify_Slim
 
                 case 1:
                     // Youtube User-Set Poll Rate (seconds) * 1000 for milliseconds
-                    FetchTimer(Settings.GetChromeFetchRate() * 1000);
+                    FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
                 case 2:
@@ -220,53 +215,19 @@ namespace Songify_Slim
 
         private void GetCurrentSong()
         {
+            SongFetcher sf = new SongFetcher();
             switch (selectedSource)
             {
                 case 0:
 
                     #region Spotify
-
-                    // Get all processes that are called "Spotify"
-                    var processes = Process.GetProcessesByName("Spotify");
-                    foreach (var process in processes)
+                    // Fetching the song thats currently playing on spotify
+                    // and updating the output on success
+                    string[] currentlyPlaying = sf.FetchSpotify();
+                    if (currentlyPlaying != null)
                     {
-                        if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
-                        {
-                            // If the process name is "Spotify" and the window title is not empty
-                            string wintitle = process.MainWindowTitle;
-                            string artist = "", title = "", extra = "";
-                            // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
-                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
-                            {
-                                // Splitting the wintitle which is always Artist - Title
-                                string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-                                try
-                                {
-                                    artist = songinfo[0].Trim();
-                                    title = songinfo[1].Trim();
-                                    // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                    if (songinfo.Length > 2)
-                                        extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.Log(ex);
-                                }
-
-                                WriteSong(artist, title, extra);
-                            }
-                            // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
-                            //if custom pause text is enabled and if so spit out custom text
-                            else
-                            {
-                                if (Settings.GetCustomPauseTextEnabled())
-                                {
-                                    WriteSong(Settings.GetCustomPauseText(), "", "");
-                                }
-                            }
-                        }
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
                     }
-
                     break;
 
                 #endregion Spotify
@@ -274,51 +235,18 @@ namespace Songify_Slim
                 case 1:
 
                     #region Chrome
-
-                    Process[] procsChrome = Process.GetProcessesByName("chrome");
-                    foreach (Process chrome in procsChrome)
+                    // Fetching the song thats currently playing on youtube
+                    // and updating the output on success
+                    temp = sf.FetchYoutube("chrome");
+                    if (String.IsNullOrWhiteSpace(temp))
                     {
-                        // the chrome process must have a window
-                        if (chrome.MainWindowHandle == IntPtr.Zero)
+                        if (!String.IsNullOrWhiteSpace(prevSong))
                         {
-                            continue;
+                            WriteSong(prevSong, "", "");
                         }
-
-                        var elm = parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : parent;
-
-                        // find the automation element
-                        try
-                        {
-                            AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
-                                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
-                            foreach (AutomationElement elem in elementCollection)
-                            {
-                                // if the Tabitem Name contains Youtube
-                                if (elem.Current.Name.Contains("YouTube"))
-                                {
-                                    parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                    Console.WriteLine(elem.Current.Name);
-                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                    temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                    int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
-                                    // Remove everything after the last "-" int the string 
-                                    // which is "- Youtube" and info that music is playing on this tab
-                                    if (index > 0)
-                                        temp = temp.Substring(0, index);
-                                    temp = temp.Trim();
-                                    Console.WriteLine(temp);
-                                    // Method that writes the song to the text file and uploads it
-                                    WriteSong(temp, "", "");
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log(ex);
-                            // Chrome has probably changed something, and above walking needs to be modified. :(
-                            // put an assertion here or something to make sure you don't miss it
-                        }
+                        break;
                     }
+                    WriteSong(temp, "", "");
 
                     break;
 
@@ -327,29 +255,18 @@ namespace Songify_Slim
                 case 2:
 
                     #region Nightbot
-
-                    // Checking if the user has set the setting for Nightbot
-                    if (!String.IsNullOrEmpty(Settings.GetNBUserID()))
+                    // Fetching the currently playing song on NB Song Request
+                    // and updating the output on success
+                    temp = sf.FetchNightBot();
+                    if (String.IsNullOrWhiteSpace(temp))
                     {
-                        // Getting JSON from the nightbot API
-                        string jsn = "";
-                        using (WebClient wc = new WebClient()
+                        if (!String.IsNullOrWhiteSpace(prevSong))
                         {
-                            Encoding = Encoding.UTF8
-                        })
-                        {
-                            jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-                                                    Settings.GetNBUserID());
+                            WriteSong(prevSong, "", "");
                         }
-
-                        // Deserialize JSON and get the current song 
-                        var serializer = new JsonSerializer();
-                        NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-                        if (json._currentsong == null)
-                            return;
-                        temp = json._currentsong.track.title;
-                        WriteSong(temp, "", "");
+                        break;
                     }
+                    WriteSong(temp, "", "");
 
                     break;
 
@@ -374,7 +291,7 @@ namespace Songify_Slim
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             // If Systray is enabled [X] minimizes to systray
-            if (!Settings.GetSystray())
+            if (!Settings.Systray)
             {
                 e.Cancel = false;
             }
@@ -430,11 +347,11 @@ namespace Songify_Slim
             Version = fvi.FileVersion;
 
             // generate UUID if not exists, expand the window and show the telemetrydisclaimer
-            if (Settings.GetUUID() == "")
+            if (Settings.UUID == "")
             {
                 this.Width = 588 + 200;
                 this.Height = 247.881 + 200;
-                Settings.SetUUID(System.Guid.NewGuid().ToString());
+                Settings.UUID = Guid.NewGuid().ToString();
 
                 TelemetryDisclaimer();
             }
@@ -462,7 +379,7 @@ namespace Songify_Slim
                     break;
 
                 case 1:
-                    FetchTimer(Settings.GetChromeFetchRate() * 1000);
+                    FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
                 case 2:
@@ -481,7 +398,7 @@ namespace Songify_Slim
         private void MinimizeToSysTray()
         {
             // if the setting is set, hide window
-            if (Settings.GetSystray())
+            if (Settings.Systray)
             {
                 this.Hide();
             }
@@ -511,7 +428,7 @@ namespace Songify_Slim
             if (result == MessageDialogResult.Affirmative)
             {
                 // if accepted save to settings, restore window size
-                Settings.SetTelemetry(true);
+                Settings.Telemetry = true;
                 this.Width = 588;
                 this.MinHeight = 247.881;
                 this.Height = 247.881;
@@ -519,7 +436,7 @@ namespace Songify_Slim
             else
             {
                 // if accepted save to settings, restore window size
-                Settings.SetTelemetry(false);
+                Settings.Telemetry = false;
                 this.Width = 588;
                 this.MinHeight = 247.881;
                 this.Height = 247.881;
@@ -531,7 +448,7 @@ namespace Songify_Slim
             // call SendTelemetry every 5 minutes
             timer = new System.Threading.Timer((e) =>
             {
-                if (Settings.GetTelemetry())
+                if (Settings.Telemetry)
                 {
                     SendTelemetry(true);
                 }
@@ -545,7 +462,7 @@ namespace Songify_Slim
         private void WriteSong(string artist, string title, string extra)
         {
             // get the output string
-            _currSong = Settings.GetOutputString();
+            _currSong = Settings.OutputString;
             if (!String.IsNullOrEmpty(title))
             {
                 // this only is used for spotify because here the artist and title are split
@@ -575,13 +492,13 @@ namespace Songify_Slim
             string songPath;
 
             // get the songPath which is default the directory where the exe is, else get the user set directory
-            if (string.IsNullOrEmpty(Settings.GetDirectory()))
+            if (string.IsNullOrEmpty(Settings.Directory))
             {
                 songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt";
             }
             else
             {
-                songPath = Settings.GetDirectory() + "/Songify.txt";
+                songPath = Settings.Directory + "/Songify.txt";
             }
 
             // read the text file
@@ -604,14 +521,14 @@ namespace Songify_Slim
                 File.WriteAllText(songPath, _currSong);
 
                 // if upload is enabled
-                if (Settings.GetUpload())
+                if (Settings.Upload)
                 {
                     UploadSong(_currSong.Trim());
                 }
 
                 //TODO History Upload
-                if (Settings.GetHistory() && !string.IsNullOrEmpty(_currSong.Trim()) &&
-                    _currSong.Trim() != Settings.GetCustomPauseText())
+                if (Settings.History && !string.IsNullOrEmpty(_currSong.Trim()) &&
+                    _currSong.Trim() != Settings.CustomPauseText)
                 {
                     if (firstRun)
                     {
@@ -632,13 +549,13 @@ namespace Songify_Slim
                     // Upload Song
                     try
                     {
-                        var extras = Settings.GetUUID() + "&tst=" + unixTimestamp + "&song=" +
+                        var extras = Settings.UUID + "&tst=" + unixTimestamp + "&song=" +
                                      HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
                         var url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
                         Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        myHttpWebRequest.UserAgent = Settings.getWebua();
+                        myHttpWebRequest.UserAgent = Settings.Webua;
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
@@ -688,12 +605,12 @@ namespace Songify_Slim
             {
                 // extras are UUID and Songinfo
                 // TODO: Fix encoding errors
-                var extras = Settings.GetUUID() + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
+                var extras = Settings.UUID + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
                 var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.getWebua();
+                myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 myHttpWebResponse.Close();
@@ -707,12 +624,6 @@ namespace Songify_Slim
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }
-        }
-
-        // Nightbot JSON Object
-        public class NBObj
-        {
-            public dynamic _currentsong { get; set; }
         }
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)

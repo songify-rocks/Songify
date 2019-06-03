@@ -61,20 +61,20 @@ namespace Songify_Slim
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Songify_Config");
                 writer.WriteStartElement("Config");
-                writer.WriteAttributeString("directory", Settings.GetDirectory());
-                writer.WriteAttributeString("color", Settings.GetColor());
-                writer.WriteAttributeString("tehme", Settings.GetTheme());
-                writer.WriteAttributeString("atuostart", Settings.GetAutostart().ToString());
-                writer.WriteAttributeString("systray", Settings.GetSystray().ToString());
-                writer.WriteAttributeString("customPause", Settings.GetCustomPauseTextEnabled().ToString());
-                writer.WriteAttributeString("customPauseText", Settings.GetCustomPauseText());
-                writer.WriteAttributeString("outputString", Settings.GetOutputString());
-                writer.WriteAttributeString("uuid", Settings.GetUUID());
-                writer.WriteAttributeString("telemetry", Settings.GetTelemetry().ToString());
-                writer.WriteAttributeString("nbuser", Settings.GetNBUser().ToString());
-                writer.WriteAttributeString("nbuserid", Settings.GetNBUserID().ToString());
-                writer.WriteAttributeString("uploadSonginfo", Settings.GetUpload().ToString());
-                writer.WriteAttributeString("uploadhistory", Settings.GetHistory().ToString());
+                writer.WriteAttributeString("directory", Settings.Directory);
+                writer.WriteAttributeString("color", Settings.Color);
+                writer.WriteAttributeString("tehme", Settings.Theme);
+                writer.WriteAttributeString("atuostart", Settings.Autostart.ToString());
+                writer.WriteAttributeString("systray", Settings.Systray.ToString());
+                writer.WriteAttributeString("customPause", Settings.CustomPauseTextEnabled.ToString());
+                writer.WriteAttributeString("customPauseText", Settings.CustomPauseText);
+                writer.WriteAttributeString("outputString", Settings.OutputString);
+                writer.WriteAttributeString("uuid", Settings.UUID);
+                writer.WriteAttributeString("telemetry", Settings.Telemetry.ToString());
+                writer.WriteAttributeString("nbuser", Settings.NBUser.ToString());
+                writer.WriteAttributeString("nbuserid", Settings.NBUserID.ToString());
+                writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
+                writer.WriteAttributeString("uploadhistory", Settings.History.ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -101,20 +101,20 @@ namespace Songify_Slim
             {
                 if (node.Name == "Config")
                 {
-                    Settings.SetDirectory(node.Attributes["directory"]?.InnerText);
-                    Settings.SetColor(node.Attributes["color"]?.InnerText);
-                    Settings.SetTheme(node.Attributes["tehme"]?.InnerText);
-                    Settings.SetAutostart(Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText));
-                    Settings.SetSystray(Convert.ToBoolean(node.Attributes["systray"]?.InnerText));
-                    Settings.SetCustomPauseTextEnabled(Convert.ToBoolean(node.Attributes["customPause"]?.InnerText));
-                    Settings.SetCustomPauseText(node.Attributes["customPauseText"]?.InnerText);
-                    Settings.SetOutputString(node.Attributes["outputString"]?.InnerText);
-                    Settings.SetUUID(node.Attributes["uuid"]?.InnerText);
-                    Settings.SetTelemetry(Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText));
-                    Settings.SetNBUser(node.Attributes["nbuser"]?.InnerText);
-                    Settings.SetNBUserID(node.Attributes["nbuserid"]?.InnerText);
-                    Settings.SetUpload(Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText));
-                    Settings.SetHistory(Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText));
+                    Settings.Directory = node.Attributes["directory"]?.InnerText;
+                    Settings.Color = node.Attributes["color"]?.InnerText;
+                    Settings.Theme = node.Attributes["tehme"]?.InnerText;
+                    Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
+                    Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
+                    Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
+                    Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;
+                    Settings.OutputString = node.Attributes["outputString"]?.InnerText;
+                    Settings.UUID = node.Attributes["uuid"]?.InnerText;
+                    Settings.Telemetry = Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText);
+                    Settings.NBUser = node.Attributes["nbuser"]?.InnerText;
+                    Settings.NBUserID = node.Attributes["nbuserid"]?.InnerText;
+                    Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
+                    Settings.History = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
                 }
             }
         }

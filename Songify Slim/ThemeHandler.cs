@@ -9,8 +9,8 @@ namespace Songify_Slim
         public static void ApplyTheme()
         {
             //changes the theme 
-            var theme = Settings.GetTheme();
-            var color = Settings.GetColor();
+            var theme = Settings.Theme;
+            var color = Settings.Color;
 
             Tuple<AppTheme, Accent> appStyle = ThemeManager.DetectAppStyle(Application.Current);
             ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(color), ThemeManager.GetAppTheme(theme));
