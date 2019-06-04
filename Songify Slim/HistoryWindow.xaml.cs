@@ -34,6 +34,7 @@ namespace Songify_Slim
 
             if (!File.Exists(_path))
                 return;
+
             LbxHistory.Items.Clear();
 
             doc = XDocument.Load(_path);

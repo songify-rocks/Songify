@@ -223,5 +223,17 @@ namespace Songify_Slim.Properties {
                 this["history"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SaveHistory {
+            get {
+                return ((bool)(this["SaveHistory"]));
+            }
+            set {
+                this["SaveHistory"] = value;
+            }
+        }
     }
 }

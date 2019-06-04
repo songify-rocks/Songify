@@ -526,23 +526,50 @@ namespace Songify_Slim
                     UploadSong(_currSong.Trim());
                 }
 
-                //TODO History Upload
-                if (Settings.History && !string.IsNullOrEmpty(_currSong.Trim()) &&
+                if (firstRun)
+                {
+                    prevSong = _currSong.Trim();
+                    firstRun = false;
+                }
+                else
+                {
+                    if (prevSong == _currSong.Trim())
+                        return;
+                }
+
+                //Write History
+                if (Settings.SaveHistory && !string.IsNullOrEmpty(_currSong.Trim()) &&
                     _currSong.Trim() != Settings.CustomPauseText)
                 {
-                    if (firstRun)
-                    {
-                        prevSong = _currSong.Trim();
-                        firstRun = false;
-                    }
-                    else
-                    {
-                        if (prevSong == _currSong.Trim())
-                            return;
-                    }
-
                     prevSong = _currSong.Trim();
 
+                    int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+
+                    //save the history file
+                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
+                    XDocument doc;
+                    if (!File.Exists(historyPath))
+                    {
+                        doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
+                        doc.Save(historyPath);
+                    }
+                    doc = XDocument.Load(historyPath);
+                    if (!doc.Descendants("d_" + DateTime.Now.ToShortDateString()).Any())
+                    {
+                        doc.Descendants("History").FirstOrDefault().Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
+                    }
+                    XElement elem = new XElement("Song", _currSong.Trim());
+                    elem.Add(new XAttribute("Time", unixTimestamp));
+                    var x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
+                    x.Add(elem);
+                    doc.Save(historyPath);
+                }
+
+                //Upload History
+                if (Settings.History && !string.IsNullOrEmpty(_currSong.Trim()) &&
+                _currSong.Trim() != Settings.CustomPauseText)
+                {
+                    prevSong = _currSong.Trim();
 
                     int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
@@ -570,26 +597,6 @@ namespace Songify_Slim
                             new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
                     }
 
-                    //save the history file
-                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
-                    XDocument doc;
-                    if (!File.Exists(historyPath))
-                    {
-                        doc =
-                            new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
-                        doc.Save(historyPath);
-                    }
-                    doc = XDocument.Load(historyPath);
-                    if (!doc.Descendants("d_" + DateTime.Now.ToShortDateString()).Any())
-                    {
-
-                        doc.Descendants("History").FirstOrDefault().Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
-                    }
-                    XElement elem = new XElement("Song", _currSong.Trim());
-                    elem.Add(new XAttribute("Time", unixTimestamp));
-                    var x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
-                    x.Add(elem);
-                    doc.Save(historyPath);
                 }
             }
 

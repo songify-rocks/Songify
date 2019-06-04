@@ -72,11 +72,11 @@ namespace Songify_Slim
         /// returns empty string if unsuccessful and custom pause text is not set.
         /// Currently supported browsers: Google Chrome
         /// </summary>
-        /// <param name="Browser"></param>
+        /// <param name="browser"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
-        public string FetchYoutube(string browser)
+        public string FetchYoutube(string browser = "chrome")
         {
-            Process[] procsChrome = Process.GetProcessesByName("chrome");
+            Process[] procsChrome = Process.GetProcessesByName(browser);
             foreach (Process chrome in procsChrome)
             {
                 // the chrome process must have a window
@@ -114,17 +114,7 @@ namespace Songify_Slim
                             if (!String.IsNullOrWhiteSpace(temp))
                             {
                                 return temp;
-                            } else if (Settings.CustomPauseTextEnabled)
-                            {
-                                return Settings.CustomPauseText;
-                            } else
-                            {
-                                return "";
                             }
-                        }
-                        else
-                        {
-                            return Settings.CustomPauseTextEnabled ? Settings.CustomPauseText : "";
                         }
                     }
                 }
@@ -152,7 +142,7 @@ namespace Songify_Slim
             {
                 // Getting JSON from the nightbot API
                 string jsn = "";
-                using (System.Net.WebClient wc = new WebClient()
+                using (WebClient wc = new WebClient()
                 {
                     Encoding = Encoding.UTF8
                 })

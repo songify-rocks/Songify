@@ -43,8 +43,9 @@ namespace Songify_Slim
             txtbx_nbuser.Text = Settings.NBUser;
             ChbxUpload.IsChecked = Settings.Upload;
             ChbxHistory.IsChecked = Settings.History;
-
+            ChbxSaveHistory.IsChecked = Settings.SaveHistory;
             NudChrome.Value = Settings.ChromeFetchRate;
+
             if (Settings.NBUserID != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NBUserID + ")";
@@ -312,6 +313,11 @@ namespace Songify_Slim
         {
             System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/history.php?id=" + Settings.UUID);
             Lbl_Status.Content = @"URL copied to clipboard.";
+        }
+
+        private void ChbxSaveHistory_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.SaveHistory = (bool)ChbxSaveHistory.IsChecked;
         }
     }
 }

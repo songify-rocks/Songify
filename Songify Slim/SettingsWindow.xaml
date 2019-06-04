@@ -76,8 +76,9 @@
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" />
+
                     <controls:ToggleSwitch x:Name="ChbxHistory" Content="Upload History" HorizontalAlignment="Left"
-                                           Margin="15,141,0,0" VerticalAlignment="Top"
+                                           Margin="15,173,0,0" VerticalAlignment="Top"
                                            Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxHistory_Checked" Unloaded="ChbxHistory_Checked" />
@@ -92,7 +93,7 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
-                    <Button x:Name="BtnCopyHistory" HorizontalAlignment="Left" Margin="344,143,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyHistory_Click">
+                    <Button x:Name="BtnCopyHistory" HorizontalAlignment="Left" Margin="344,178,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyHistory_Click">
                         <StackPanel Orientation="Horizontal">
                             <Rectangle
                                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
@@ -103,6 +104,11 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
+                    <controls:ToggleSwitch x:Name="ChbxSaveHistory" Content="Save History" HorizontalAlignment="Left"
+                        Margin="15,137,0,0" VerticalAlignment="Top"
+                        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                        controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                        controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxSaveHistory_Checked" Unloaded="ChbxSaveHistory_Checked" />
                 </Grid>
             </TabItem>
             <TabItem Header="Appearance">

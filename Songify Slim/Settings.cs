@@ -7,6 +7,11 @@
    
     internal class Settings
     {
+        public static bool SaveHistory
+        {
+            get => GetSaveHistory();
+            set => SetSaveHistory(value);
+        }
 
         public static bool Autostart
         {
@@ -109,11 +114,19 @@
             get { return getWebua(); }
         }
 
-        
 
 
+        private static void SetSaveHistory(bool savehistory)
+        {
+            Properties.Settings.Default.SaveHistory = savehistory;
+            Properties.Settings.Default.Save();
+        }
 
+        private static bool GetSaveHistory()
+        {
+            return Properties.Settings.Default.SaveHistory;
 
+        }
 
         private static void SetHistory(bool history)
         {
