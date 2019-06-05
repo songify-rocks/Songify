@@ -3,6 +3,9 @@ using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using Application = System.Windows.Application;
+using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace Songify_Slim
 {
@@ -14,17 +17,17 @@ namespace Songify_Slim
     internal class ConfigHandler
     {
 
-        public static void SaveConfig(string Path = "")
+        public static void SaveConfig(string path = "")
         {
             // Saving the Config file
-            if (Path != "")
+            if (path != "")
             {
-                WriteXML(Path, false);
+                WriteXml(path);
             }
             else
             {
                 // Importing the SaveFileDialog and giving it filter, directory and window title
-                Microsoft.Win32.SaveFileDialog saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
                     Filter = "XML (*.xml)|*.xml",
                     InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
@@ -34,16 +37,16 @@ namespace Songify_Slim
                 // Opneing the dialog and if the user clicked on "save" this code gets executed
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    WriteXML(saveFileDialog.FileName);
+                    WriteXml(saveFileDialog.FileName);
                 }
             }
         }
 
-        public static void WriteXML(string Path, bool hidden = false)
+        public static void WriteXml(string path, bool hidden = false)
         {
-            if (!File.Exists(Path))
-                File.Create(Path).Close();
-            FileInfo myFile = new FileInfo(Path);
+            if (!File.Exists(path))
+                File.Create(path).Close();
+            FileInfo myFile = new FileInfo(path);
             // Remove the hidden attribute of the file
             myFile.Attributes &= ~FileAttributes.Hidden;
 
@@ -56,7 +59,7 @@ namespace Songify_Slim
             };
 
             // Writing the XML, Attributnames are somewhat equal to Settings.
-            using (XmlWriter writer = XmlWriter.Create(Path, xmlWriterSettings))
+            using (XmlWriter writer = XmlWriter.Create(path, xmlWriterSettings))
             {
                 writer.WriteStartDocument();
                 writer.WriteStartElement("Songify_Config");
@@ -69,10 +72,10 @@ namespace Songify_Slim
                 writer.WriteAttributeString("customPause", Settings.CustomPauseTextEnabled.ToString());
                 writer.WriteAttributeString("customPauseText", Settings.CustomPauseText);
                 writer.WriteAttributeString("outputString", Settings.OutputString);
-                writer.WriteAttributeString("uuid", Settings.UUID);
+                writer.WriteAttributeString("uuid", Settings.Uuid);
                 writer.WriteAttributeString("telemetry", Settings.Telemetry.ToString());
-                writer.WriteAttributeString("nbuser", Settings.NBUser.ToString());
-                writer.WriteAttributeString("nbuserid", Settings.NBUserID.ToString());
+                writer.WriteAttributeString("nbuser", Settings.NbUser);
+                writer.WriteAttributeString("nbuserid", Settings.NbUserId);
                 writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
                 writer.WriteAttributeString("uploadhistory", Settings.History.ToString());
                 writer.WriteAttributeString("savehistory", Settings.SaveHistory.ToString());
@@ -93,39 +96,38 @@ namespace Songify_Slim
             }
         }
 
-        public static void readXML(string path)
+        public static void ReadXml(string path)
         {
             // reading the XML file, attributes get saved in Settings
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
+            if (doc.DocumentElement == null) return;
             foreach (XmlNode node in doc.DocumentElement.ChildNodes)
             {
-                if (node.Name == "Config")
-                {
-                    Settings.Directory = node.Attributes["directory"]?.InnerText;
-                    Settings.Color = node.Attributes["color"]?.InnerText;
-                    Settings.Theme = node.Attributes["tehme"]?.InnerText;
-                    Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
-                    Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
-                    Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
-                    Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;
-                    Settings.OutputString = node.Attributes["outputString"]?.InnerText;
-                    Settings.UUID = node.Attributes["uuid"]?.InnerText;
-                    Settings.Telemetry = Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText);
-                    Settings.NBUser = node.Attributes["nbuser"]?.InnerText;
-                    Settings.NBUserID = node.Attributes["nbuserid"]?.InnerText;
-                    Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
-                    Settings.History = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
-                    Settings.SaveHistory = Convert.ToBoolean(node.Attributes["savehistory"]?.InnerText);
-                }
+                if (node.Name != "Config") continue;
+                Settings.Directory = node.Attributes["directory"]?.InnerText;
+                Settings.Color = node.Attributes["color"]?.InnerText;
+                Settings.Theme = node.Attributes["tehme"]?.InnerText;
+                Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
+                Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
+                Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
+                Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;
+                Settings.OutputString = node.Attributes["outputString"]?.InnerText;
+                Settings.Uuid = node.Attributes["uuid"]?.InnerText;
+                Settings.Telemetry = Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText);
+                Settings.NbUser = node.Attributes["nbuser"]?.InnerText;
+                Settings.NbUserId = node.Attributes["nbuserid"]?.InnerText;
+                Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
+                Settings.History = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
+                Settings.SaveHistory = Convert.ToBoolean(node.Attributes["savehistory"]?.InnerText);
             }
         }
 
-        public static void LoadConfig(string Path = "")
+        public static void LoadConfig(string path = "")
         {
-            if (Path != "")
+            if (path != "")
             {
-                readXML(Path);
+                ReadXml(path);
             }
             else
             {
@@ -133,22 +135,22 @@ namespace Songify_Slim
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
                     InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
-                    Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*"
+                    Filter = @"XML files (*.xml)|*.xml|All files (*.*)|*.*"
                 };
 
                 // Opening the dialog and when the user hits "OK" the following code gets executed
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    readXML(openFileDialog.FileName);
+                    ReadXml(openFileDialog.FileName);
                 }
 
                 // This will iterate through all windows of the software, if the window is typeof 
                 // Settingswindow (from there this class is called) it calls the method SetControls
-                foreach (Window window in System.Windows.Application.Current.Windows)
+                foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() == typeof(SettingsWindow))
                     {
-                        (window as SettingsWindow).SetControls();
+                        ((SettingsWindow) window).SetControls();
                     }
                 }
             }

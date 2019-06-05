@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Net;
 using System.Reflection;
@@ -10,7 +9,7 @@ using System.Windows.Media;
 
 namespace Songify_Slim
 {
-    public partial class SettingsWindow : MetroWindow
+    public partial class SettingsWindow
     {
         private readonly string[] _colors = {
                                                    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
@@ -31,7 +30,7 @@ namespace Songify_Slim
         {
             // Sets all the controls from settings
             ThemeToggleSwitch.IsChecked = Settings.Theme == "BaseDark";
-            TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly().Location;
+            TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
             ChbxAutostart.IsChecked = Settings.Autostart;
@@ -40,15 +39,15 @@ namespace Songify_Slim
             ChbxTelemetry.IsChecked = Settings.Telemetry;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
-            txtbx_nbuser.Text = Settings.NBUser;
+            txtbx_nbuser.Text = Settings.NbUser;
             ChbxUpload.IsChecked = Settings.Upload;
             ChbxHistory.IsChecked = Settings.History;
             ChbxSaveHistory.IsChecked = Settings.SaveHistory;
             NudChrome.Value = Settings.ChromeFetchRate;
 
-            if (Settings.NBUserID != null)
+            if (Settings.NbUserId != null)
             {
-                lbl_nightbot.Content = "Nightbot (ID: " + Settings.NBUserID + ")";
+                lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             }
             ThemeHandler.ApplyTheme();
         }
@@ -79,17 +78,17 @@ namespace Songify_Slim
             try
             {
                 // accessing nightbot API with username to get user id
-                string jsn = "";
+                string jsn;
                 using (WebClient wc = new WebClient())
                 {
-                    jsn = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.NBUser);
+                    jsn = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.NbUser);
                 }
-                var serializer = new JsonSerializer();
-                NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-                string temp = json.channel._id;
-                temp = temp.Replace("{", "").Replace("}", "");
-                Settings.NBUserID = temp;
 
+                NbObj json = JsonConvert.DeserializeObject<NbObj>(jsn);
+                string temp = json.Channel._id;
+                temp = temp.Replace("{", "").Replace("}", "");
+                Settings.NbUserId = temp;
+                Lbl_Status.Content = @"Account " + Settings.NbUser + " linked.";
             }
             catch (Exception ex)
             {
@@ -104,7 +103,7 @@ namespace Songify_Slim
             // Copies the txt path to the clipboard and shows a notification
             if (string.IsNullOrEmpty(Settings.Directory))
             {
-                System.Windows.Clipboard.SetDataObject(Assembly.GetEntryAssembly().Location.Replace("Songify Slim.exe", "Songify.txt"));
+                System.Windows.Clipboard.SetDataObject(Assembly.GetEntryAssembly()?.Location.Replace("Songify Slim.exe", "Songify.txt") ?? throw new InvalidOperationException());
             }
             else
             {
@@ -116,20 +115,20 @@ namespace Songify_Slim
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/getsong.php?id=" + Settings.UUID);
+            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/getsong.php?id=" + Settings.Uuid);
             Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
         {
             // Where the user wants the text file to be saved in
-            this._fbd.Description = @"Path where the text file will be located.";
-            this._fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
+            _fbd.Description = @"Path where the text file will be located.";
+            _fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
 
-            if (this._fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+            if (_fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
                 return;
-            this.TxtbxOutputdirectory.Text = this._fbd.SelectedPath;
-            Settings.Directory = this._fbd.SelectedPath;
+            TxtbxOutputdirectory.Text = _fbd.SelectedPath;
+            Settings.Directory = _fbd.SelectedPath;
         }
 
         private void BtnUpdatesClick(object sender, RoutedEventArgs e)
@@ -138,9 +137,9 @@ namespace Songify_Slim
             foreach (Window window in System.Windows.Application.Current.Windows)
             {
                 if (window.GetType() != typeof(MainWindow)) continue;
-                if (!((MainWindow)window).Worker_Update.IsBusy)
+                if (!((MainWindow)window).WorkerUpdate.IsBusy)
                 {
-                    ((MainWindow)window).Worker_Update.RunWorkerAsync();
+                    ((MainWindow)window).WorkerUpdate.RunWorkerAsync();
                 }
             }
         }
@@ -148,15 +147,16 @@ namespace Songify_Slim
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
         {
             // checkbox for autostart
-            var chbxAutostartIsChecked = this.ChbxAutostart.IsChecked;
+            var chbxAutostartIsChecked = ChbxAutostart.IsChecked;
             MainWindow.RegisterInStartup(chbxAutostartIsChecked != null && (bool)chbxAutostartIsChecked);
         }
 
         private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
         {
             // enables / disables custom pause
-            Settings.CustomPauseTextEnabled = (bool)ChbxCustomPause.IsChecked;
-            if (!(bool)ChbxCustomPause.IsChecked)
+            if (ChbxCustomPause.IsChecked == null) return;
+            Settings.CustomPauseTextEnabled = (bool) ChbxCustomPause.IsChecked;
+            if (!(bool) ChbxCustomPause.IsChecked)
             {
                 TxtbxCustompausetext.IsEnabled = false;
             }
@@ -169,37 +169,39 @@ namespace Songify_Slim
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
             // enables / disbales minimize to systray
-            var isChecked = this.ChbxMinimizeSystray.IsChecked;
+            var isChecked = ChbxMinimizeSystray.IsChecked;
             Settings.Systray = isChecked != null && (bool)isChecked;
         }
 
         private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
         {
             // enables / disables telemetry
-            Settings.Telemetry = (bool)ChbxTelemetry.IsChecked;
+            if (ChbxTelemetry.IsChecked == null) return;
+            Settings.Telemetry = (bool) ChbxTelemetry.IsChecked;
         }
 
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables upload
-            Settings.Upload = (bool)ChbxUpload.IsChecked;
-            (_mW as MainWindow).UploadSong((_mW as MainWindow)._currSong);
+            if (ChbxUpload.IsChecked != null)
+                Settings.Upload = (bool) ChbxUpload.IsChecked;
+            ((MainWindow) _mW).UploadSong(((MainWindow) _mW).CurrSong);
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // sets the color, when selecting yellow it changes foreground color because else its hard to read
-            Settings.Color = this.ComboBoxColor.SelectedValue.ToString();
+            Settings.Color = ComboBoxColor.SelectedValue.ToString();
             ThemeHandler.ApplyTheme();
             if (Settings.Color != "Yellow")
             {
-                (_mW as MainWindow).LblStatus.Foreground = Brushes.White;
-                (_mW as MainWindow).LblCopyright.Foreground = Brushes.White;
+                ((MainWindow) _mW).LblStatus.Foreground = Brushes.White;
+                ((MainWindow) _mW).LblCopyright.Foreground = Brushes.White;
             }
             else
             {
-                (_mW as MainWindow).LblStatus.Foreground = Brushes.Black;
-                (_mW as MainWindow).LblCopyright.Foreground = Brushes.Black;
+                ((MainWindow) _mW).LblStatus.Foreground = Brushes.Black;
+                ((MainWindow) _mW).LblCopyright.Foreground = Brushes.Black;
             }
         }
 
@@ -253,7 +255,7 @@ namespace Songify_Slim
         private void ThemeToggleSwitchIsCheckedChanged(object sender, EventArgs e)
         {
             // set the theme (BaseLight / BaseDark)
-            if ((bool)ThemeToggleSwitch.IsChecked)
+            if (ThemeToggleSwitch.IsChecked != null && (bool)ThemeToggleSwitch.IsChecked)
             {
                 Settings.Theme = "BaseDark";
             }
@@ -269,7 +271,7 @@ namespace Songify_Slim
         private void Txtbx_nbuser_TextChanged(object sender, TextChangedEventArgs e)
         {
             // write Nightbot username to settings
-            Settings.NBUser = txtbx_nbuser.Text;
+            Settings.NbUser = txtbx_nbuser.Text;
         }
 
         private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
@@ -285,10 +287,9 @@ namespace Songify_Slim
         }
 
         // nightbot JSON object
-        public class NBObj
+        public class NbObj
         {
-            public dynamic channel { get; set; }
-            public string status { get; set; }
+            public dynamic Channel { get; set; }
         }
 
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -306,18 +307,18 @@ namespace Songify_Slim
         private void ChbxHistory_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables upload
-            Settings.History = (bool)ChbxHistory.IsChecked;
+            if (ChbxHistory.IsChecked != null) Settings.History = (bool) ChbxHistory.IsChecked;
         }
 
         private void BtnCopyHistory_Click(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/history.php?id=" + Settings.UUID);
+            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/history.php?id=" + Settings.Uuid);
             Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
         private void ChbxSaveHistory_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.SaveHistory = (bool)ChbxSaveHistory.IsChecked;
+            if (ChbxSaveHistory.IsChecked != null) Settings.SaveHistory = (bool) ChbxSaveHistory.IsChecked;
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Timers;
@@ -22,37 +21,36 @@ namespace Songify_Slim
         #region Variables
 
         public static string Version;
-        public bool appActive = false;
+        public bool AppActive;
         public NotifyIcon NotifyIcon = new NotifyIcon();
-        public bool updateError = false;
-        public BackgroundWorker Worker_Telemetry = new BackgroundWorker();
-        public BackgroundWorker Worker_Update = new BackgroundWorker();
-        private static readonly HttpClient client = new HttpClient();
+        public bool UpdateError;
+        public BackgroundWorker WorkerTelemetry = new BackgroundWorker();
+        public BackgroundWorker WorkerUpdate = new BackgroundWorker();
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
-        public string _currSong;
-        private TimeSpan periodTimeSpan = TimeSpan.FromMinutes(5);
-        private int selectedSource = Settings.Source;
-        private TimeSpan startTimeSpan = TimeSpan.Zero;
-        private string temp = "";
-        private System.Threading.Timer timer;
-        private System.Timers.Timer timerFetcher = new System.Timers.Timer();
-        private bool forceClose = false;
-        bool firstRun = true;
-        string prevSong;
+        public string CurrSong;
+        private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
+        private int _selectedSource = Settings.Source;
+        private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
+        private string _temp = "";
+        private System.Threading.Timer _timer;
+        private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private bool _forceClose;
+        bool _firstRun = true;
+        string _prevSong;
 
         #endregion
 
         public MainWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
             // Backgroundworker for telemetry, and methods
-            Worker_Telemetry.DoWork += Worker_Telemetry_DoWork;
+            WorkerTelemetry.DoWork += Worker_Telemetry_DoWork;
 
             // Backgroundworker for updates, and methods
-            Worker_Update.DoWork += Worker_Update_DoWork;
-            Worker_Update.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
+            WorkerUpdate.DoWork += Worker_Update_DoWork;
+            WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -63,7 +61,7 @@ namespace Songify_Slim
                 true);
             if (isChecked)
             {
-                registryKey?.SetValue("Songify", Assembly.GetEntryAssembly().Location);
+                registryKey?.SetValue("Songify", Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException());
             }
             else
             {
@@ -81,7 +79,7 @@ namespace Songify_Slim
             try
             {
                 Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                var extras = Settings.UUID + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + appActive;
+                var extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + AppActive;
                 var url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -95,7 +93,7 @@ namespace Songify_Slim
             {
                 Logger.Log(ex);
                 // Writing to the statusstrip label
-                this.LblStatus.Dispatcher.Invoke(
+                LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }
@@ -107,19 +105,19 @@ namespace Songify_Slim
             try
             {
                 Updater.CheckForUpdates(new Version(Version));
-                updateError = false;
+                UpdateError = false;
             }
             catch (Exception ex)
             {
                 Logger.Log(ex);
-                updateError = true;
+                UpdateError = true;
             }
         }
 
         public void Worker_Update_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             // Writing to the statusstrip label when the updater encountered an error
-            if (updateError)
+            if (UpdateError)
                 LblStatus.Content = "Unable to check for new version.";
         }
 
@@ -152,12 +150,12 @@ namespace Songify_Slim
                 return;
             }
 
-            selectedSource = cbx_Source.SelectedIndex;
+            _selectedSource = cbx_Source.SelectedIndex;
 
-            Settings.Source = selectedSource;
+            Settings.Source = _selectedSource;
 
             // Dpending on which source is chosen, it starts the timer that fetches the song info
-            switch (selectedSource)
+            switch (_selectedSource)
             {
                 case 0:
                     // Spotify
@@ -181,17 +179,17 @@ namespace Songify_Slim
             // Check if the timer is running, if yes stop it and start new with the ms givin in the parameter
             try
             {
-                timerFetcher.Dispose();
+                _timerFetcher.Dispose();
             }
             catch (Exception ex)
             {
                 Logger.Log(ex);
             }
 
-            timerFetcher = new System.Timers.Timer();
-            timerFetcher.Elapsed += this.OnTimedEvent;
-            timerFetcher.Interval = ms;
-            timerFetcher.Enabled = true;
+            _timerFetcher = new System.Timers.Timer();
+            _timerFetcher.Elapsed += OnTimedEvent;
+            _timerFetcher.Interval = ms;
+            _timerFetcher.Enabled = true;
         }
 
         //private static void WriteLog(Exception exception)
@@ -210,20 +208,20 @@ namespace Songify_Slim
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             // when the timer 'ticks' this code gets executed
-            this.GetCurrentSong();
+            GetCurrentSong();
         }
 
         private void GetCurrentSong()
         {
             SongFetcher sf = new SongFetcher();
-            switch (selectedSource)
+            switch (_selectedSource)
             {
                 case 0:
 
                     #region Spotify
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    string[] currentlyPlaying = sf.FetchSpotify();
+                    var currentlyPlaying = sf.FetchSpotify();
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
@@ -237,16 +235,16 @@ namespace Songify_Slim
                     #region Chrome
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
-                    temp = sf.FetchYoutube("chrome");
-                    if (String.IsNullOrWhiteSpace(temp))
+                    _temp = sf.FetchYoutube();
+                    if (string.IsNullOrWhiteSpace(_temp))
                     {
-                        if (!String.IsNullOrWhiteSpace(prevSong))
+                        if (!string.IsNullOrWhiteSpace(_prevSong))
                         {
-                            WriteSong(prevSong, "", "");
+                            WriteSong(_prevSong, "", "");
                         }
                         break;
                     }
-                    WriteSong(temp, "", "");
+                    WriteSong(_temp, "", "");
 
                     break;
 
@@ -257,16 +255,16 @@ namespace Songify_Slim
                     #region Nightbot
                     // Fetching the currently playing song on NB Song Request
                     // and updating the output on success
-                    temp = sf.FetchNightBot();
-                    if (String.IsNullOrWhiteSpace(temp))
+                    _temp = sf.FetchNightBot();
+                    if (String.IsNullOrWhiteSpace(_temp))
                     {
-                        if (!String.IsNullOrWhiteSpace(prevSong))
+                        if (!String.IsNullOrWhiteSpace(_prevSong))
                         {
-                            WriteSong(prevSong, "", "");
+                            WriteSong(_prevSong, "", "");
                         }
                         break;
                     }
-                    WriteSong(temp, "", "");
+                    WriteSong(_temp, "", "");
 
                     break;
 
@@ -277,15 +275,15 @@ namespace Songify_Slim
         private void MenuItem1Click(object sender, EventArgs e)
         {
             // Click on "Exit" in the Systray
-            forceClose = true;
-            this.Close();
+            _forceClose = true;
+            Close();
         }
 
         private void MenuItem2Click(object sender, EventArgs e)
         {
             // Click on "Show" in the Systray
-            this.Show();
-            this.WindowState = WindowState.Normal;
+            Show();
+            WindowState = WindowState.Normal;
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
@@ -297,20 +295,20 @@ namespace Songify_Slim
             }
             else
             {
-                e.Cancel = !forceClose;
-                this.MinimizeToSysTray();
+                e.Cancel = !_forceClose;
+                MinimizeToSysTray();
             }
         }
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
             // write config file on closing
-            ConfigHandler.WriteXML(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             // send inactive
             SendTelemetry(false);
             // remove systray icon
-            this.NotifyIcon.Visible = false;
-            this.NotifyIcon.Dispose();
+            NotifyIcon.Visible = false;
+            NotifyIcon.Dispose();
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
@@ -322,24 +320,24 @@ namespace Songify_Slim
             }
 
             // Create systray menu and icon and show it
-            this._menuItem1.Text = @"Exit";
-            this._menuItem1.Click += this.MenuItem1Click;
-            this._menuItem2.Text = @"Show";
-            this._menuItem2.Click += this.MenuItem2Click;
+            _menuItem1.Text = @"Exit";
+            _menuItem1.Click += MenuItem1Click;
+            _menuItem2.Text = @"Show";
+            _menuItem2.Click += MenuItem2Click;
 
-            this._contextMenu.MenuItems.AddRange(new[] { this._menuItem2, this._menuItem1 });
+            _contextMenu.MenuItems.AddRange(new[] { _menuItem2, _menuItem1 });
 
-            this.NotifyIcon.Icon = Properties.Resources.songify;
-            this.NotifyIcon.ContextMenu = this._contextMenu;
-            this.NotifyIcon.Visible = true;
-            this.NotifyIcon.DoubleClick += this.MenuItem2Click;
-            this.NotifyIcon.Text = @"Songify";
+            NotifyIcon.Icon = Properties.Resources.songify;
+            NotifyIcon.ContextMenu = _contextMenu;
+            NotifyIcon.Visible = true;
+            NotifyIcon.DoubleClick += MenuItem2Click;
+            NotifyIcon.Text = @"Songify";
 
             // set the current theme
             ThemeHandler.ApplyTheme();
 
             // start minimized in systray (hide)
-            if (this.WindowState == WindowState.Minimized) this.MinimizeToSysTray();
+            if (WindowState == WindowState.Minimized) MinimizeToSysTray();
 
             // get the software version from assembly
             var assembly = Assembly.GetExecutingAssembly();
@@ -347,11 +345,11 @@ namespace Songify_Slim
             Version = fvi.FileVersion;
 
             // generate UUID if not exists, expand the window and show the telemetrydisclaimer
-            if (Settings.UUID == "")
+            if (Settings.Uuid == "")
             {
-                this.Width = 588 + 200;
-                this.Height = 247.881 + 200;
-                Settings.UUID = Guid.NewGuid().ToString();
+                Width = 588 + 200;
+                Height = 247.881 + 200;
+                Settings.Uuid = Guid.NewGuid().ToString();
 
                 TelemetryDisclaimer();
             }
@@ -362,17 +360,17 @@ namespace Songify_Slim
             }
 
             // check for update 
-            Worker_Update.RunWorkerAsync();
+            WorkerUpdate.RunWorkerAsync();
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedIndex = selectedSource;
+            cbx_Source.SelectedIndex = _selectedSource;
 
             // text in the bottom right
-            this.LblCopyright.Content =
+            LblCopyright.Content =
                 "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             // automatically start fetching songs
-            switch (selectedSource)
+            switch (_selectedSource)
             {
                 case 0:
                     FetchTimer(1000);
@@ -391,8 +389,8 @@ namespace Songify_Slim
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
-            if (this.WindowState != WindowState.Minimized) return;
-            this.MinimizeToSysTray();
+            if (WindowState != WindowState.Minimized) return;
+            MinimizeToSysTray();
         }
 
         private void MinimizeToSysTray()
@@ -400,16 +398,16 @@ namespace Songify_Slim
             // if the setting is set, hide window
             if (Settings.Systray)
             {
-                this.Hide();
+                Hide();
             }
         }
 
         private void SendTelemetry(bool active)
         {
             // send telemetry data once
-            appActive = active;
-            if (!Worker_Telemetry.IsBusy)
-                Worker_Telemetry.RunWorkerAsync();
+            AppActive = active;
+            if (!WorkerTelemetry.IsBusy)
+                WorkerTelemetry.RunWorkerAsync();
         }
 
         private async void TelemetryDisclaimer()
@@ -417,7 +415,7 @@ namespace Songify_Slim
             SendTelemetry(true);
             // show messagebox with the Telemetry disclaimer
             var result = await this.ShowMessageAsync("Anonymous Data",
-                this.FindResource("data_colletion") as string
+                FindResource("data_colletion") as string
                 , MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings
                 {
@@ -429,24 +427,24 @@ namespace Songify_Slim
             {
                 // if accepted save to settings, restore window size
                 Settings.Telemetry = true;
-                this.Width = 588;
-                this.MinHeight = 247.881;
-                this.Height = 247.881;
+                Width = 588;
+                MinHeight = 247.881;
+                Height = 247.881;
             }
             else
             {
                 // if accepted save to settings, restore window size
                 Settings.Telemetry = false;
-                this.Width = 588;
-                this.MinHeight = 247.881;
-                this.Height = 247.881;
+                Width = 588;
+                MinHeight = 247.881;
+                Height = 247.881;
             }
         }
 
         private void TelemetryTimer()
         {
             // call SendTelemetry every 5 minutes
-            timer = new System.Threading.Timer((e) =>
+            _timer = new System.Threading.Timer((e) =>
             {
                 if (Settings.Telemetry)
                 {
@@ -454,22 +452,22 @@ namespace Songify_Slim
                 }
                 else
                 {
-                    timer.Dispose();
+                    _timer.Dispose();
                 }
-            }, null, startTimeSpan, periodTimeSpan);
+            }, null, _startTimeSpan, _periodTimeSpan);
         }
 
         private void WriteSong(string artist, string title, string extra)
         {
             // get the output string
-            _currSong = Settings.OutputString;
+            CurrSong = Settings.OutputString;
             if (!String.IsNullOrEmpty(title))
             {
                 // this only is used for spotify because here the artist and title are split
                 // replace parameters with actual info
-                _currSong = _currSong.Replace("{artist}", artist);
-                _currSong = _currSong.Replace("{title}", title);
-                _currSong = _currSong.Replace("{extra}", extra);
+                CurrSong = CurrSong.Replace("{artist}", artist);
+                CurrSong = CurrSong.Replace("{title}", title);
+                CurrSong = CurrSong.Replace("{extra}", extra);
             }
             else
             {
@@ -478,14 +476,14 @@ namespace Songify_Slim
 
                 // get the first occurance of "}" to get the seperator from the custom output ({artist} - {title})
                 // and replace it
-                int pFrom = _currSong.IndexOf("}");
-                String result = _currSong.Substring(pFrom + 2, 1);
-                _currSong = _currSong.Replace(result, "");
+                var pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
+                string result = CurrSong.Substring(pFrom + 2, 1);
+                CurrSong = CurrSong.Replace(result, "");
 
                 // artist is set to be artist and title in this case, {title} and {extra} are empty strings
-                _currSong = _currSong.Replace("{artist}", artist);
-                _currSong = _currSong.Replace("{title}", title);
-                _currSong = _currSong.Replace("{extra}", extra);
+                CurrSong = CurrSong.Replace("{artist}", artist);
+                CurrSong = CurrSong.Replace("{title}", title);
+                CurrSong = CurrSong.Replace("{extra}", extra);
             }
 
 
@@ -494,7 +492,7 @@ namespace Songify_Slim
             // get the songPath which is default the directory where the exe is, else get the user set directory
             if (string.IsNullOrEmpty(Settings.Directory))
             {
-                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Songify.txt";
+                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
             }
             else
             {
@@ -505,45 +503,45 @@ namespace Songify_Slim
             if (!File.Exists(songPath))
             {
                 File.Create(songPath).Close();
-                File.WriteAllText(songPath, _currSong);
+                File.WriteAllText(songPath, CurrSong);
             }
 
             if (new FileInfo(songPath).Length == 0)
             {
-                File.WriteAllText(songPath, _currSong);
+                File.WriteAllText(songPath, CurrSong);
             }
 
             var temp = File.ReadAllLines(songPath);
             // if the text file is different to _currSong (fetched song) 
-            if (temp[0].Trim() != _currSong.Trim())
+            if (temp[0].Trim() != CurrSong.Trim())
             {
                 // write song to the text file
-                File.WriteAllText(songPath, _currSong);
+                File.WriteAllText(songPath, CurrSong);
 
                 // if upload is enabled
                 if (Settings.Upload)
                 {
-                    UploadSong(_currSong.Trim());
+                    UploadSong(CurrSong.Trim());
                 }
 
-                if (firstRun)
+                if (_firstRun)
                 {
-                    prevSong = _currSong.Trim();
-                    firstRun = false;
+                    _prevSong = CurrSong.Trim();
+                    _firstRun = false;
                 }
                 else
                 {
-                    if (prevSong == _currSong.Trim())
+                    if (_prevSong == CurrSong.Trim())
                         return;
                 }
 
                 //Write History
-                if (Settings.SaveHistory && !string.IsNullOrEmpty(_currSong.Trim()) &&
-                    _currSong.Trim() != Settings.CustomPauseText)
+                if (Settings.SaveHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
+                    CurrSong.Trim() != Settings.CustomPauseText)
                 {
-                    prevSong = _currSong.Trim();
+                    _prevSong = CurrSong.Trim();
 
-                    int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    var unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                     //save the history file
                     var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
@@ -556,28 +554,28 @@ namespace Songify_Slim
                     doc = XDocument.Load(historyPath);
                     if (!doc.Descendants("d_" + DateTime.Now.ToShortDateString()).Any())
                     {
-                        doc.Descendants("History").FirstOrDefault().Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
+                        doc.Descendants("History").FirstOrDefault()?.Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
                     }
-                    XElement elem = new XElement("Song", _currSong.Trim());
+                    var elem = new XElement("Song", CurrSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
                     var x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
-                    x.Add(elem);
+                    x?.Add(elem);
                     doc.Save(historyPath);
                 }
 
                 //Upload History
-                if (Settings.History && !string.IsNullOrEmpty(_currSong.Trim()) &&
-                _currSong.Trim() != Settings.CustomPauseText)
+                if (Settings.History && !string.IsNullOrEmpty(CurrSong.Trim()) &&
+                CurrSong.Trim() != Settings.CustomPauseText)
                 {
-                    prevSong = _currSong.Trim();
+                    _prevSong = CurrSong.Trim();
 
                     int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                     // Upload Song
                     try
                     {
-                        var extras = Settings.UUID + "&tst=" + unixTimestamp + "&song=" +
-                                     HttpUtility.UrlEncode(_currSong.Trim(), Encoding.UTF8);
+                        var extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
+                                     HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
                         var url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
                         Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
@@ -592,7 +590,7 @@ namespace Songify_Slim
                     {
                         Logger.Log(ex);
                         // Writing to the statusstrip label
-                        this.LblStatus.Dispatcher.Invoke(
+                        LblStatus.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
                     }
@@ -601,9 +599,9 @@ namespace Songify_Slim
             }
 
             // write song to the output label 
-            this.TxtblockLiveoutput.Dispatcher.Invoke(
+            TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
-                new Action(() => { TxtblockLiveoutput.Text = _currSong.Trim(); }));
+                new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
         }
 
         public void UploadSong(string currSong)
@@ -611,8 +609,7 @@ namespace Songify_Slim
             try
             {
                 // extras are UUID and Songinfo
-                // TODO: Fix encoding errors
-                var extras = Settings.UUID + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
+                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
                 var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
@@ -627,7 +624,7 @@ namespace Songify_Slim
                 Logger.Log(ex);
                 // if error occurs write text to the status asynchronous
                 Console.WriteLine(ex.Message);
-                this.LblStatus.Dispatcher.Invoke(
+                LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }

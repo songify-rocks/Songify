@@ -16,7 +16,7 @@ namespace Songify_Slim
     public partial class HistoryWindow
     {
         private readonly string _path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "\\history.shr";
-        private XDocument doc;
+        private XDocument _doc;
         public HistoryWindow()
         {
             InitializeComponent();
@@ -37,18 +37,27 @@ namespace Songify_Slim
 
             LbxHistory.Items.Clear();
 
-            doc = XDocument.Load(_path);
+            _doc = XDocument.Load(_path);
+            List<DateTime> list = new List<DateTime>();
+            List<string> dateList = new List<string>();
 
-            foreach (XElement elem in doc.Root.Elements())
+            if (_doc.Root != null)
+                foreach (XElement elem in _doc.Root.Elements())
+                {
+                    dateList.AddRange(elem.Name.ToString().Replace("d_", "").Split('.'));
+                    list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
+                    dateList.Clear();
+                    //LbxHistory.Items.Add(elem.Name.ToString().Replace("d_", ""));
+                }
+
+            var orderedList = list.OrderByDescending(time => time.Date);
+            foreach (var time in orderedList)
             {
-                LbxHistory.Items.Add(elem.Name.ToString().Replace("d_", ""));
+                LbxHistory.Items.Add(time.ToString("dd.MM.yyyy"));
             }
 
             if (LbxHistory.Items.Count > 0)
             {
-                LbxHistory.Items.SortDescriptions.Add(
-                    new System.ComponentModel.SortDescription("",
-                        System.ComponentModel.ListSortDirection.Descending));
                 LbxHistory.SelectedIndex = 0;
             }
         }
@@ -60,15 +69,12 @@ namespace Songify_Slim
             if (LbxHistory.SelectedIndex < 0)
                 return;
             dgvHistorySongs.Items.Clear();
-            doc = XDocument.Load(_path);
-            XElement root = doc.Descendants("d_" + LbxHistory.SelectedItem.ToString()).FirstOrDefault();
+            _doc = XDocument.Load(_path);
+            XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
 
             List<XElement> nodes = new List<XElement>();
 
-            foreach (XElement child in root.Elements())
-            {
-                nodes.Add(child);
-            }
+            if (root != null) nodes.AddRange(root.Elements());
 
             nodes.Reverse();
 
@@ -78,9 +84,9 @@ namespace Songify_Slim
                 {
                     var data = new Song
                     {
-                        Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time").Value)).ToLongTimeString(),
+                        Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())).ToLongTimeString(),
                         Name = node.Value,
-                        UnixTimeStamp = long.Parse(node.Attribute("Time").Value)
+                        UnixTimeStamp = long.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())
                     };
 
                     dgvHistorySongs.Items.Add(data);
@@ -106,8 +112,7 @@ namespace Songify_Slim
             }
             finally
             {
-                if (stream != null)
-                    stream.Close();
+                stream?.Close();
             }
 
             //file is not locked
@@ -117,13 +122,9 @@ namespace Songify_Slim
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc);
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
-        }
-        public static long ToUnixTime(DateTime dateTime)
-        {
-            return (long)(dateTime - new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
@@ -149,8 +150,8 @@ namespace Songify_Slim
 
             XDocument xdoc = XDocument.Load(_path);
             xdoc.Element("History")
-                .Element("d_" + LbxHistory.SelectedItem)
-                .Elements("Song")
+                ?.Element("d_" + LbxHistory.SelectedItem)
+                ?.Elements("Song")
                 .Where(x => (string)x.Attribute("Time") == key.ToString())
                 .Remove();
             xdoc.Save(_path);

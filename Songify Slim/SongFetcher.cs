@@ -15,7 +15,7 @@ namespace Songify_Slim
     class SongFetcher
     {
 
-        private AutomationElement parent = null;
+        private AutomationElement _parent;
 
         /// <summary>
         /// A method to fetch the song that's currently playing on Spotify.
@@ -50,7 +50,7 @@ namespace Songify_Slim
                             Logger.Log(ex);
                         }
 
-                        return new string[] { artist, title, extra };
+                        return new[] { artist, title, extra };
                     }
                     // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
                     //if custom pause text is enabled and if so spit out custom text
@@ -58,7 +58,7 @@ namespace Songify_Slim
                     {
                         if (Settings.CustomPauseTextEnabled)
                         {
-                            return new string[] { Settings.CustomPauseText, title, extra }; // (Settings.GetCustomPauseText(), "", "");
+                            return new[] { Settings.CustomPauseText, title, extra }; // (Settings.GetCustomPauseText(), "", "");
                         }
                     }
                 }
@@ -85,7 +85,7 @@ namespace Songify_Slim
                     continue;
                 }
 
-                var elm = parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : parent;
+                var elm = _parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : _parent;
 
                 // find the automation element
                 try
@@ -97,7 +97,7 @@ namespace Songify_Slim
                         // if the Tabitem Name contains Youtube
                         if (elem.Current.Name.Contains("YouTube"))
                         {
-                            parent = TreeWalker.RawViewWalker.GetParent(elem);
+                            _parent = TreeWalker.RawViewWalker.GetParent(elem);
                             Console.WriteLine(elem.Current.Name);
                             // Regex pattern to replace the notification in front of the tab (1) - (99+) 
                             string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
@@ -138,25 +138,22 @@ namespace Songify_Slim
         public string FetchNightBot()
         {
             // Checking if the user has set the setting for Nightbot
-            if (!String.IsNullOrEmpty(Settings.NBUserID))
+            if (!String.IsNullOrEmpty(Settings.NbUserId))
             {
                 // Getting JSON from the nightbot API
-                string jsn = "";
+                string jsn;
                 using (WebClient wc = new WebClient()
                 {
                     Encoding = Encoding.UTF8
                 })
                 {
                     jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-                                            Settings.NBUserID);
+                                            Settings.NbUserId);
                 }
 
                 // Deserialize JSON and get the current song 
-                var serializer = new JsonSerializer();
-                NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-                if (json._currentsong == null)
-                    return null;
-                return json._currentsong.track.title;
+                var json = JsonConvert.DeserializeObject<NBObj>(jsn);
+                return json._currentsong == null ? null : (string) json._currentsong.track.title;
             }
 
             return "No NightBot ID set.";

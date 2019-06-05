@@ -1,10 +1,8 @@
 ﻿namespace Songify_Slim
 {
-
     /// <summary>
-    /// This class is a getter and setter for Settings
+    ///     This class is a getter and setter for Settings
     /// </summary>
-   
     internal class Settings
     {
         public static bool SaveHistory
@@ -55,16 +53,16 @@
             set => SetHistory(value);
         }
 
-        public static string NBUser
+        public static string NbUser
         {
-            get => GetNBUser();
-            set => SetNBUser(value);
+            get => GetNbUser();
+            set => SetNbUser(value);
         }
 
-        public static string NBUserID
+        public static string NbUserId
         {
-            get => GetNBUserID();
-            set => SetNBUserID(value);
+            get => GetNbUserId();
+            set => SetNbUserId(value);
         }
 
         public static string OutputString
@@ -87,33 +85,29 @@
 
         public static bool Telemetry
         {
-            get { return GetTelemetry(); }
-            set { SetTelemetry(value); }
+            get => GetTelemetry();
+            set => SetTelemetry(value);
         }
 
         public static string Theme
         {
-            get { return GetTheme(); }
-            set { SetTheme(value); }
+            get => GetTheme();
+            set => SetTheme(value);
         }
 
         public static bool Upload
         {
-            get { return GetUpload(); }
-            set { SetUpload(value); }
+            get => GetUpload();
+            set => SetUpload(value);
         }
 
-        public static string UUID
+        public static string Uuid
         {
-            get { return GetUUID(); }
-            set { SetUUID(value); }
+            get => GetUuid();
+            set => SetUuid(value);
         }
 
-        public static string Webua
-        {
-            get { return getWebua(); }
-        }
-
+        public static string Webua => GetWebua();
 
 
         private static void SetSaveHistory(bool savehistory)
@@ -125,7 +119,6 @@
         private static bool GetSaveHistory()
         {
             return Properties.Settings.Default.SaveHistory;
-
         }
 
         private static void SetHistory(bool history)
@@ -172,29 +165,29 @@
             return Properties.Settings.Default.Source;
         }
 
-        private static void SetNBUserID(string nbuserID)
+        private static void SetNbUserId(string nbuserId)
         {
-            Properties.Settings.Default.NBUserID = nbuserID;
+            Properties.Settings.Default.NBUserID = nbuserId;
             Properties.Settings.Default.Save();
         }
 
-        private static string GetNBUserID()
+        private static string GetNbUserId()
         {
             return Properties.Settings.Default.NBUserID;
         }
 
-        private static void SetNBUser(string nbuser)
+        private static void SetNbUser(string nbuser)
         {
             Properties.Settings.Default.NBUser = nbuser;
             Properties.Settings.Default.Save();
         }
 
-        private static string GetNBUser()
+        private static string GetNbUser()
         {
             return Properties.Settings.Default.NBUser;
         }
 
-        private static string getWebua()
+        private static string GetWebua()
         {
             return Properties.Settings.Default.webua;
         }
@@ -210,13 +203,13 @@
             return Properties.Settings.Default.telemetry;
         }
 
-        private static void SetUUID(string UUID)
+        private static void SetUuid(string uuid)
         {
-            Properties.Settings.Default.uuid = UUID;
+            Properties.Settings.Default.uuid = uuid;
             Properties.Settings.Default.Save();
         }
 
-        private static string GetUUID()
+        private static string GetUuid()
         {
             return Properties.Settings.Default.uuid;
         }
