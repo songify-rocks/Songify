@@ -14,7 +14,7 @@ namespace Songify_Slim
     /// </summary>
     class SongFetcher
     {
-
+        private string[] songinfo;
         private AutomationElement _parent;
 
         /// <summary>
@@ -22,45 +22,109 @@ namespace Songify_Slim
         /// returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
-        public string[] FetchSpotify()
+        public string[] FetchSpotify(string player)
         {
-            var processes = Process.GetProcessesByName("Spotify");
+            var processes = Process.GetProcessesByName(player);
             foreach (var process in processes)
             {
-                if (process.ProcessName == "Spotify" && !string.IsNullOrEmpty(process.MainWindowTitle))
+                if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
                     string artist = "", title = "", extra = "";
-                    // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
-                    if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
-                    {
-                        // Splitting the wintitle which is always Artist - Title
-                        string[] songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-                        try
-                        {
-                            artist = songinfo[0].Trim();
-                            title = songinfo[1].Trim();
-                            // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                            if (songinfo.Length > 2)
-                                extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log(ex);
-                        }
 
-                        return new[] { artist, title, extra };
-                    }
-                    // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
-                    //if custom pause text is enabled and if so spit out custom text
-                    else
+                    switch (player)
                     {
-                        if (Settings.CustomPauseTextEnabled)
-                        {
-                            return new[] { Settings.CustomPauseText, title, extra }; // (Settings.GetCustomPauseText(), "", "");
-                        }
+                        case "Spotify":
+                            // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
+                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
+                            {
+                                // Splitting the wintitle which is always Artist - Title
+                                songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                                try
+                                {
+                                    artist = songinfo[0].Trim();
+                                    title = songinfo[1].Trim();
+                                    // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
+                                    if (songinfo.Length > 2)
+                                        extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.Log(ex);
+                                }
+
+                                return new[] { artist, title, extra };
+                            }
+                            // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
+                            //if custom pause text is enabled and if so spit out custom text
+
+                            if (Settings.CustomPauseTextEnabled)
+                            {
+                                return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                            }
+                            break;
+
+                        case "vlc":
+                            // Splitting the wintitle which is always Artist - Title
+                            if (!wintitle.Contains(" - VLC media player"))
+                            {
+                                if (Settings.CustomPauseTextEnabled)
+                                {
+                                    return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                                }
+
+                                return new[] { "", "", "" };
+
+                            }
+
+                            wintitle = wintitle.Replace(" - VLC media player", "");
+                            songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                            try
+                            {
+                                artist = songinfo[0].Trim();
+                                title = songinfo[1].Trim();
+                                // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
+                                if (songinfo.Length > 2)
+                                    extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex);
+                            }
+                            return new[] { artist, title, extra };
+
+                        case "foobar2000":
+                            // Splitting the wintitle which is always Artist - Title
+                            if (wintitle.StartsWith("foobar2000"))
+                            {
+                                if (Settings.CustomPauseTextEnabled)
+                                {
+                                    return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                                }
+
+                                return new[] { "", "", "" };
+
+                            }
+
+                            wintitle = wintitle.Replace(" [foobar2000]", "");
+                            songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                            try
+                            {
+                                artist = songinfo[0].Trim();
+                                title = songinfo[1].Trim();
+                                // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
+                                if (songinfo.Length > 2)
+                                    extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Log(ex);
+                            }
+                            return new[] { artist, title, extra };
                     }
+
+
                 }
             }
             return null;
@@ -108,7 +172,7 @@ namespace Songify_Slim
                                 temp = temp.Substring(0, index);
                             temp = temp.Trim();
                             Console.WriteLine(temp);
-                            
+
                             // Making sure that temp is not empty
                             // this makes sure that the output is not empty
                             if (!String.IsNullOrWhiteSpace(temp))
@@ -153,7 +217,7 @@ namespace Songify_Slim
 
                 // Deserialize JSON and get the current song 
                 var json = JsonConvert.DeserializeObject<NBObj>(jsn);
-                return json._currentsong == null ? null : (string) json._currentsong.track.title;
+                return json._currentsong == null ? null : (string)json._currentsong.track.title;
             }
 
             return "No NightBot ID set.";

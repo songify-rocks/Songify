@@ -158,6 +158,8 @@ namespace Songify_Slim
             switch (_selectedSource)
             {
                 case 0:
+                case 3:
+                case 4:
                     // Spotify
                     FetchTimer(1000);
                     break;
@@ -214,6 +216,7 @@ namespace Songify_Slim
         private void GetCurrentSong()
         {
             SongFetcher sf = new SongFetcher();
+            string[] currentlyPlaying;
             switch (_selectedSource)
             {
                 case 0:
@@ -221,7 +224,7 @@ namespace Songify_Slim
                     #region Spotify
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    var currentlyPlaying = sf.FetchSpotify();
+                    currentlyPlaying = sf.FetchSpotify("Spotify");
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
@@ -268,7 +271,24 @@ namespace Songify_Slim
 
                     break;
 
-                    #endregion Nightbot
+                #endregion Nightbot
+
+                case 3:
+                    currentlyPlaying = sf.FetchSpotify("vlc");
+                    if (currentlyPlaying != null)
+                    {
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
+                    }
+                    break;
+
+                case 4:
+                    currentlyPlaying = sf.FetchSpotify("foobar2000");
+                    if (currentlyPlaying != null)
+                    {
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
+                    }
+                    break;
+
             }
         }
 

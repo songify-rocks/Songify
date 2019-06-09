@@ -195,36 +195,11 @@
                    VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
         </StatusBar>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="461,10,0,0" VerticalAlignment="Top" Width="111" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
-            <ComboBoxItem x:Name="comboBoxItem">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" Fill="{Binding Foreground, ElementName=cbx_Source}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_social_spotify}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Spotify" Foreground="{Binding Foreground, ElementName=cbx_Source}" />
-                </StackPanel>
-            </ComboBoxItem>
-            <ComboBoxItem>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" Fill="{Binding Foreground, ElementName=cbx_Source}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_youtube_play}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="YouTube (Chrome)" Foreground="{Binding Foreground, ElementName=cbx_Source}" />
-                </StackPanel>
-            </ComboBoxItem>
-            <ComboBoxItem>
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="20" Height="20" Fill="{Binding Foreground, ElementName=cbx_Source}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_music_select}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Nightbot" Foreground="{Binding Foreground, ElementName=cbx_Source}" />
-                </StackPanel>
-            </ComboBoxItem>
+            <ComboBoxItem Content = "Spotify"/>
+            <ComboBoxItem Content = "Youtube (Chrome)"/>
+            <ComboBoxItem Content = "Nightbot"/>
+            <ComboBoxItem Content="VLC"/>
+            <ComboBoxItem Content="foobar2000"/>
         </ComboBox>
     </Grid>
 </controls:MetroWindow>
