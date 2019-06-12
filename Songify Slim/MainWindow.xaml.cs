@@ -194,19 +194,6 @@ namespace Songify_Slim
             _timerFetcher.Enabled = true;
         }
 
-        //private static void WriteLog(Exception exception)
-        //{
-        //    // Writes a log file with exceptions in it
-        //    var logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
-        //    if (!File.Exists(logPath)) File.Create(logPath).Close();
-        //    File.AppendAllText(logPath, @"----------------- " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + @" -----------------" + Environment.NewLine);
-        //    File.AppendAllText(logPath, exception.Message + Environment.NewLine);
-        //    File.AppendAllText(logPath, exception.StackTrace + Environment.NewLine);
-        //    File.AppendAllText(logPath, exception.Source + Environment.NewLine);
-        //    File.AppendAllText(logPath, @"----------------------------------------------------" + Environment.NewLine);
-
-        //}
-
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             // when the timer 'ticks' this code gets executed
@@ -224,7 +211,7 @@ namespace Songify_Slim
                     #region Spotify
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    currentlyPlaying = sf.FetchSpotify("Spotify");
+                    currentlyPlaying = sf.FetchDesktopPlayer("Spotify");
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
@@ -274,7 +261,7 @@ namespace Songify_Slim
                 #endregion Nightbot
 
                 case 3:
-                    currentlyPlaying = sf.FetchSpotify("vlc");
+                    currentlyPlaying = sf.FetchDesktopPlayer("vlc");
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
@@ -282,7 +269,7 @@ namespace Songify_Slim
                     break;
 
                 case 4:
-                    currentlyPlaying = sf.FetchSpotify("foobar2000");
+                    currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
@@ -386,8 +373,8 @@ namespace Songify_Slim
             cbx_Source.SelectedIndex = _selectedSource;
 
             // text in the bottom right
-            LblCopyright.Content =
-                "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
+            //LblCopyright.Content =
+            //    "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             // automatically start fetching songs
             switch (_selectedSource)
@@ -584,7 +571,7 @@ namespace Songify_Slim
                 }
 
                 //Upload History
-                if (Settings.History && !string.IsNullOrEmpty(CurrSong.Trim()) &&
+                if (Settings.UploadHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
                 CurrSong.Trim() != Settings.CustomPauseText)
                 {
                     _prevSong = CurrSong.Trim();
@@ -655,6 +642,11 @@ namespace Songify_Slim
             // Opens the 'Settings'-Window
             HistoryWindow hW = new HistoryWindow();
             hW.ShowDialog();
+        }
+
+        private void BtnPaypal_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://www.paypal.me/inzaniity");
         }
     }
 }

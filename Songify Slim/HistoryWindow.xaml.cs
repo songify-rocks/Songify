@@ -24,18 +24,49 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            Tglbtn_Save.IsChecked = Settings.SaveHistory;
+            Tglbtn_Upload.IsChecked = Settings.UploadHistory;
+            if (Settings.SaveHistory)
+                Tglbtn_Save.Content = "Save ✔️";
+            else
+                Tglbtn_Save.Content = "Save ❌";
+
+            if (Settings.UploadHistory)
+                Tglbtn_Upload.Content = "Upload ✔️";
+            else
+                Tglbtn_Upload.Content = "Upload ❌";
+
+            LoadFile();
+
+
+            FileSystemWatcher watcher = new FileSystemWatcher
+            {
+                Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                Filter = "history.shr",
+                EnableRaisingEvents = true
+            };
+
+            watcher.Changed += new FileSystemEventHandler(OnChanged);
+
+        }
+
+        private void OnChanged(object sender, FileSystemEventArgs e)
+        {
             LoadFile();
         }
 
         public void LoadFile()
         {
-            dgvHistorySongs.Items.Clear();
-            LbxHistory.Items.Clear();
+            dgvHistorySongs.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { dgvHistorySongs.Items.Clear(); }));
+            LbxHistory.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { LbxHistory.Items.Clear(); }));
 
             if (!File.Exists(_path))
                 return;
-
-            LbxHistory.Items.Clear();
 
             _doc = XDocument.Load(_path);
             List<DateTime> list = new List<DateTime>();
@@ -53,12 +84,16 @@ namespace Songify_Slim
             var orderedList = list.OrderByDescending(time => time.Date);
             foreach (var time in orderedList)
             {
-                LbxHistory.Items.Add(time.ToString("dd.MM.yyyy"));
+                LbxHistory.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));               
             }
 
             if (LbxHistory.Items.Count > 0)
             {
-                LbxHistory.SelectedIndex = 0;
+                LbxHistory.Dispatcher.Invoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() => { LbxHistory.SelectedIndex = 0; }));
             }
         }
 
@@ -144,7 +179,7 @@ namespace Songify_Slim
 
         private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
         {
-            Song sng = (Song) dgvHistorySongs.SelectedItem;
+            Song sng = (Song)dgvHistorySongs.SelectedItem;
 
             var key = sng.UnixTimeStamp;
 
@@ -156,6 +191,49 @@ namespace Songify_Slim
                 .Remove();
             xdoc.Save(_path);
             LoadFile();
+        }
+
+        private void Tglbtn_Save_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.SaveHistory = (bool)Tglbtn_Save.IsChecked;
+
+            if ((bool)Tglbtn_Save.IsChecked)
+            {
+                Tglbtn_Save.Content = "Save ✔️";
+                Lbl_Status.Content = "History Save Enabled ✔️";
+
+            }
+            else
+            {
+                Tglbtn_Save.Content = "Save ❌";
+                Lbl_Status.Content = "History Save Disabled ❌";
+
+            }
+        }
+
+        private void Tglbtn_Upload_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.UploadHistory = (bool)Tglbtn_Upload.IsChecked;
+
+            if ((bool)Tglbtn_Upload.IsChecked)
+            {
+                Tglbtn_Upload.Content = "Upload ✔️";
+                Lbl_Status.Content = "History Upload Enabled ✔️";
+
+            }
+            else
+            {
+                Tglbtn_Upload.Content = "Upload ❌";
+                Lbl_Status.Content = "History Upload Disabled ❌";
+
+
+            }
+        }
+
+        private void Btn_CpyHistoryURL_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetDataObject("https://songify.bloemacher.com/history.php?id=" + Settings.Uuid);
+            Lbl_Status.Content = "History URL copied to Clipboard";
         }
     }
     public class Song

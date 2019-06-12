@@ -50,7 +50,7 @@
     <Setting Name="ChromeFetchRate" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
-    <Setting Name="history" Type="System.Boolean" Scope="User">
+    <Setting Name="UploadHistory" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SaveHistory" Type="System.Boolean" Scope="User">

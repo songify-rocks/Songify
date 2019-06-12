@@ -22,7 +22,7 @@ namespace Songify_Slim
         /// returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
-        public string[] FetchSpotify(string player)
+        public string[] FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
             foreach (var process in processes)
@@ -104,7 +104,6 @@ namespace Songify_Slim
                                 }
 
                                 return new[] { "", "", "" };
-
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -123,8 +122,6 @@ namespace Songify_Slim
                             }
                             return new[] { artist, title, extra };
                     }
-
-
                 }
             }
             return null;

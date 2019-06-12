@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Songify_Slim"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"                      
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
@@ -11,6 +12,13 @@
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
+            <ToggleButton x:Name="Tglbtn_Save" Checked="Tglbtn_Save_Checked" Unchecked="Tglbtn_Save_Checked"/>
+            <ToggleButton x:Name="Tglbtn_Upload" Checked="Tglbtn_Upload_Checked" Unchecked="Tglbtn_Upload_Checked"/>
+            <Button x:Name="Btn_CpyHistoryURL" Click="Btn_CpyHistoryURL_Click" ToolTip="Copy the history URL.">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="Link" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
             <Button x:Name="BtnRefresh" Click="BtnRefresh_Click">
                 <StackPanel Orientation="Horizontal">
                     <Rectangle Width="15" Height="15"
@@ -25,7 +33,7 @@
     </controls:MetroWindow.RightWindowCommands>
 
     <Grid>
-        <DataGrid x:Name="dgvHistorySongs" Margin="148,10,10,10" SelectionMode="Single">
+        <DataGrid x:Name="dgvHistorySongs" Margin="148,10,10,19" SelectionMode="Single" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Delete" Click="DgvItemDelete_Click"/>
@@ -37,7 +45,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <ListBox x:Name="LbxHistory" HorizontalAlignment="Left" Width="133" Margin="10,10,0,10" SelectionChanged="LbxHistory_SelectionChanged">
+        <ListBox x:Name="LbxHistory" HorizontalAlignment="Left" Width="133" Margin="10,10,0,19" SelectionChanged="LbxHistory_SelectionChanged">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
@@ -48,5 +56,9 @@
             <ListBoxItem Content="Item 1"/>
             <ListBoxItem Content="Item 1"/>
         </ListBox>
+        <StatusBar Height="14" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
+            <Label x:Name="Lbl_Status" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
+                   HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,-4" VerticalAlignment="Top" />
+        </StatusBar>
     </Grid>
 </controls:MetroWindow>

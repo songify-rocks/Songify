@@ -4,6 +4,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindowLoaded"
@@ -132,53 +133,29 @@
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click">
+            <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="15" Height="15"
-                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_discord}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
+                    <iconPacks:PackIconMaterial Kind="Paypal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnAbout" Click="BtnAboutClick">
+            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="15" Height="15"
-                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_book_open_information}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0"
-                               VerticalAlignment="Center"
-                               Text="about" />
+                    <iconPacks:PackIconMaterial Kind="Discord" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnHistory" Click="BtnHistory_Click">
+            <Button x:Name="BtnHistory" Click="BtnHistory_Click" ToolTip="Song History">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="15" Height="15"
-                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_timer_1}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0"
-                               VerticalAlignment="Center"
-                               Text="history" />
+                    <iconPacks:PackIconMaterial Kind="History" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnSettings" Click="BtnSettings_Click">
+            <Button x:Name="BtnAbout" Click="BtnAboutClick" ToolTip="About">
                 <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="15" Height="15"
-                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_settings}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Margin="4 0 0 0"
-                               VerticalAlignment="Center"
-                               Text="settings" />
+                    <iconPacks:PackIconMaterial Kind="Information" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="BtnSettings" Click="BtnSettings_Click" ToolTip="Settings">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial Kind="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
         </controls:WindowCommands>
@@ -189,10 +166,13 @@
         <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
-            <Label x:Name="LblStatus" Content="" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
-                   HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" />
+            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
+            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.0.10pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
+
+            <!--<Label x:Name="LblStatus" Content="" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
+                   HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" />
             <Label x:Name="LblCopyright" Content="Songify v1.0.4 Copyright © Jan  Inzaniity  Blömacher" FontSize="10" Padding="0"
-                   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
         </StatusBar>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="461,10,0,0" VerticalAlignment="Top" Width="111" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem Content = "Spotify"/>

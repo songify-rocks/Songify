@@ -47,10 +47,10 @@
             set => SetDirectory(value);
         }
 
-        public static bool History
+        public static bool UploadHistory
         {
-            get => GetHistory();
-            set => SetHistory(value);
+            get => GetUploadHistory();
+            set => SetUploadHistory(value);
         }
 
         public static string NbUser
@@ -121,15 +121,15 @@
             return Properties.Settings.Default.SaveHistory;
         }
 
-        private static void SetHistory(bool history)
+        private static void SetUploadHistory(bool history)
         {
-            Properties.Settings.Default.history = history;
+            Properties.Settings.Default.UploadHistory = history;
             Properties.Settings.Default.Save();
         }
 
-        private static bool GetHistory()
+        private static bool GetUploadHistory()
         {
-            return Properties.Settings.Default.history;
+            return Properties.Settings.Default.UploadHistory;
         }
 
         private static void SetChromeFetchRate(int rate)

@@ -2,8 +2,9 @@
     <system:String x:Key="LicenseUsing" xml:space="preserve">The MIT License (MIT)
 applies to:
 - Mahapps Metro, Copyright (c) 2016 MahApps
+- MahApps Metro IconPacks, Copyright (c) 2016 MahApps        
 - Costura.Fody, Copyright (c) 2012 Simon Cropp and contributors
-- OctoKit.net, Copyright (c) 2017 GitHub, Inc.
+- OctoKit.net, Copyright (c) 2017 GitHub, Inc.        
         
 GNU LESSER GENERAL PUBLIC LICENSE (GNU GPLv3)
 applies to:
