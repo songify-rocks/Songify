@@ -616,7 +616,7 @@ namespace Songify_Slim
             try
             {
                 // extras are UUID and Songinfo
-                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim(), Encoding.UTF8);
+                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"",""), Encoding.UTF8);
                 var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
