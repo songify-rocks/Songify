@@ -222,10 +222,10 @@ namespace Songify_Slim
 
                 case 1:
 
-                    #region Chrome
+                    #region YouTube
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
-                    _temp = sf.FetchYoutube();
+                    _temp = sf.FetchBrowser("YouTube");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong))
@@ -261,6 +261,8 @@ namespace Songify_Slim
                 #endregion Nightbot
 
                 case 3:
+
+                    #region VLC
                     currentlyPlaying = sf.FetchDesktopPlayer("vlc");
                     if (currentlyPlaying != null)
                     {
@@ -268,7 +270,11 @@ namespace Songify_Slim
                     }
                     break;
 
+                    #endregion VLC
+
                 case 4:
+
+                    #region foobar2000
                     currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
                     if (currentlyPlaying != null)
                     {
@@ -276,6 +282,24 @@ namespace Songify_Slim
                     }
                     break;
 
+                #endregion foobar2000
+
+                case 5:
+
+                    #region Deezer
+                    _temp = sf.FetchBrowser("Deezer");
+                    if (string.IsNullOrWhiteSpace(_temp))
+                    {
+                        if (!string.IsNullOrWhiteSpace(_prevSong))
+                        {
+                            WriteSong(_prevSong, "", "");
+                        }
+                        break;
+                    }
+                    WriteSong(_temp, "", "");
+                    break;
+
+                    #endregion Deezer
             }
         }
 
