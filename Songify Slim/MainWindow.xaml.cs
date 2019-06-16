@@ -160,12 +160,13 @@ namespace Songify_Slim
                 case 0:
                 case 3:
                 case 4:
-                    // Spotify
+                    // Spotify, VLC or foobar2000
                     FetchTimer(1000);
                     break;
 
                 case 1:
-                    // Youtube User-Set Poll Rate (seconds) * 1000 for milliseconds
+                case 5:
+                    // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
@@ -404,10 +405,13 @@ namespace Songify_Slim
             switch (_selectedSource)
             {
                 case 0:
+                case 3:
+                case 4:
                     FetchTimer(1000);
                     break;
 
                 case 1:
+                case 5:
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 

@@ -188,7 +188,8 @@ namespace Songify_Slim
                                     _parent = TreeWalker.RawViewWalker.GetParent(elem);
                                     Console.WriteLine(elem.Current.Name);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                    string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                                    string temp = elem.Current.Name;
+                                    //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
                                     int index = temp.LastIndexOf("- Deezer", StringComparison.Ordinal);
                                     // Remove everything after the last "-" int the string 
                                     // which is "- Youtube" and info that music is playing on this tab
