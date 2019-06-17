@@ -160,12 +160,13 @@ namespace Songify_Slim
                 case 0:
                 case 3:
                 case 4:
-                    // Spotify
+                    // Spotify, VLC or foobar2000
                     FetchTimer(1000);
                     break;
 
                 case 1:
-                    // Youtube User-Set Poll Rate (seconds) * 1000 for milliseconds
+                case 5:
+                    // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
@@ -222,10 +223,10 @@ namespace Songify_Slim
 
                 case 1:
 
-                    #region Chrome
+                    #region YouTube
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
-                    _temp = sf.FetchYoutube();
+                    _temp = sf.FetchBrowser("YouTube");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong))
@@ -261,6 +262,8 @@ namespace Songify_Slim
                 #endregion Nightbot
 
                 case 3:
+
+                    #region VLC
                     currentlyPlaying = sf.FetchDesktopPlayer("vlc");
                     if (currentlyPlaying != null)
                     {
@@ -268,7 +271,11 @@ namespace Songify_Slim
                     }
                     break;
 
+                    #endregion VLC
+
                 case 4:
+
+                    #region foobar2000
                     currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
                     if (currentlyPlaying != null)
                     {
@@ -276,6 +283,24 @@ namespace Songify_Slim
                     }
                     break;
 
+                #endregion foobar2000
+
+                case 5:
+
+                    #region Deezer
+                    _temp = sf.FetchBrowser("Deezer");
+                    if (string.IsNullOrWhiteSpace(_temp))
+                    {
+                        if (!string.IsNullOrWhiteSpace(_prevSong))
+                        {
+                            WriteSong(_prevSong, "", "");
+                        }
+                        break;
+                    }
+                    WriteSong(_temp, "", "");
+                    break;
+
+                    #endregion Deezer
             }
         }
 
@@ -380,10 +405,13 @@ namespace Songify_Slim
             switch (_selectedSource)
             {
                 case 0:
+                case 3:
+                case 4:
                     FetchTimer(1000);
                     break;
 
                 case 1:
+                case 5:
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 

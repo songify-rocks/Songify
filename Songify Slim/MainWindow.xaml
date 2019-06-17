@@ -180,6 +180,7 @@
             <ComboBoxItem Content = "Nightbot"/>
             <ComboBoxItem Content="VLC"/>
             <ComboBoxItem Content="foobar2000"/>
+            <ComboBoxItem Content="Deezer (Chrome)" />
         </ComboBox>
     </Grid>
 </controls:MetroWindow>

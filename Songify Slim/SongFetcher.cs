@@ -135,7 +135,7 @@ namespace Songify_Slim
         /// </summary>
         /// <param name="browser"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
-        public string FetchYoutube(string browser = "chrome")
+        public string FetchBrowser(string website, string browser = "chrome")
         {
             Process[] procsChrome = Process.GetProcessesByName(browser);
             foreach (Process chrome in procsChrome)
@@ -156,26 +156,56 @@ namespace Songify_Slim
                     foreach (AutomationElement elem in elementCollection)
                     {
                         // if the Tabitem Name contains Youtube
-                        if (elem.Current.Name.Contains("YouTube"))
+                        switch (website)
                         {
-                            _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                            Console.WriteLine(elem.Current.Name);
-                            // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                            string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                            int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
-                            // Remove everything after the last "-" int the string 
-                            // which is "- Youtube" and info that music is playing on this tab
-                            if (index > 0)
-                                temp = temp.Substring(0, index);
-                            temp = temp.Trim();
-                            Console.WriteLine(temp);
+                            case "YouTube":
+                                if (elem.Current.Name.Contains("YouTube"))
+                                {
+                                    _parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                    Console.WriteLine(elem.Current.Name);
+                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                    string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                                    int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
+                                    // Remove everything after the last "-" int the string 
+                                    // which is "- Youtube" and info that music is playing on this tab
+                                    if (index > 0)
+                                        temp = temp.Substring(0, index);
+                                    temp = temp.Trim();
+                                    Console.WriteLine(temp);
 
-                            // Making sure that temp is not empty
-                            // this makes sure that the output is not empty
-                            if (!String.IsNullOrWhiteSpace(temp))
-                            {
-                                return temp;
-                            }
+                                    // Making sure that temp is not empty
+                                    // this makes sure that the output is not empty
+                                    if (!String.IsNullOrWhiteSpace(temp))
+                                    {
+                                        return temp;
+                                    }
+                                }
+                                break;
+
+                            case "Deezer":
+                                if (elem.Current.Name.Contains("Deezer"))
+                                {
+                                    _parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                    Console.WriteLine(elem.Current.Name);
+                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                    string temp = elem.Current.Name;
+                                    //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                                    int index = temp.LastIndexOf("- Deezer", StringComparison.Ordinal);
+                                    // Remove everything after the last "-" int the string 
+                                    // which is "- Youtube" and info that music is playing on this tab
+                                    if (index > 0)
+                                        temp = temp.Substring(0, index);
+                                    temp = temp.Trim();
+                                    Console.WriteLine(temp);
+
+                                    // Making sure that temp is not empty
+                                    // this makes sure that the output is not empty
+                                    if (!String.IsNullOrWhiteSpace(temp))
+                                    {
+                                        return temp;
+                                    }
+                                }
+                                break;
                         }
                     }
                 }
