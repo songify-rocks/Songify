@@ -398,8 +398,8 @@ namespace Songify_Slim
             cbx_Source.SelectedIndex = _selectedSource;
 
             // text in the bottom right
-            //LblCopyright.Content =
-            //    "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
+            LblCopyright.Content =
+                "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             // automatically start fetching songs
             switch (_selectedSource)
