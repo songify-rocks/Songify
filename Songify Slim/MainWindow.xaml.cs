@@ -12,6 +12,7 @@ using System.Timers;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 
 namespace Songify_Slim
@@ -160,6 +161,8 @@ namespace Songify_Slim
                 case 0:
                 case 3:
                 case 4:
+                case 6:
+
                     // Spotify, VLC or foobar2000
                     FetchTimer(1000);
                     break;
@@ -271,7 +274,7 @@ namespace Songify_Slim
                     }
                     break;
 
-                    #endregion VLC
+                #endregion VLC
 
                 case 4:
 
@@ -300,7 +303,22 @@ namespace Songify_Slim
                     WriteSong(_temp, "", "");
                     break;
 
-                    #endregion Deezer
+                #endregion Deezer
+
+                case 6:
+                    currentlyPlaying = sf.FetchSpotifyWeb();
+                    if (currentlyPlaying != null)
+                    {
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3]);
+                    }
+                    break;
+                case 7:
+                    currentlyPlaying = sf.FetchDesktopPlayer("amazon music");
+                    if (currentlyPlaying != null)
+                    {
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3]);
+                    }
+                    break;
             }
         }
 
@@ -407,6 +425,7 @@ namespace Songify_Slim
                 case 0:
                 case 3:
                 case 4:
+                case 6:
                     FetchTimer(1000);
                     break;
 
@@ -419,6 +438,9 @@ namespace Songify_Slim
                     FetchTimer(3000);
                     break;
             }
+
+            APIHandler.DoAuthAsync();
+
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -492,7 +514,7 @@ namespace Songify_Slim
             }, null, _startTimeSpan, _periodTimeSpan);
         }
 
-        private void WriteSong(string artist, string title, string extra)
+        private void WriteSong(string artist, string title, string extra, string cover = null)
         {
             // get the output string
             CurrSong = Settings.OutputString;
@@ -631,6 +653,15 @@ namespace Songify_Slim
                     }
 
                 }
+
+                //Save Album Cover
+                if (Settings.DownloadCover && !String.IsNullOrEmpty(cover))
+                {
+                    WebClient webClient = new WebClient();
+                    webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
+                    webClient.Dispose();
+                    string path = Settings.Directory + "cover.jpg";                    
+                }
             }
 
             // write song to the output label 
@@ -644,7 +675,7 @@ namespace Songify_Slim
             try
             {
                 // extras are UUID and Songinfo
-                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"",""), Encoding.UTF8);
+                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
                 var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.

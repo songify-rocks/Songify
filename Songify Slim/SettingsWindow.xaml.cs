@@ -42,7 +42,7 @@ namespace Songify_Slim
             txtbx_nbuser.Text = Settings.NbUser;
             ChbxUpload.IsChecked = Settings.Upload;
             NudChrome.Value = Settings.ChromeFetchRate;
-
+            ChbxCover.IsChecked = Settings.DownloadCover;
             if (Settings.NbUserId != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
@@ -153,8 +153,8 @@ namespace Songify_Slim
         {
             // enables / disables custom pause
             if (ChbxCustomPause.IsChecked == null) return;
-            Settings.CustomPauseTextEnabled = (bool) ChbxCustomPause.IsChecked;
-            if (!(bool) ChbxCustomPause.IsChecked)
+            Settings.CustomPauseTextEnabled = (bool)ChbxCustomPause.IsChecked;
+            if (!(bool)ChbxCustomPause.IsChecked)
             {
                 TxtbxCustompausetext.IsEnabled = false;
             }
@@ -175,15 +175,15 @@ namespace Songify_Slim
         {
             // enables / disables telemetry
             if (ChbxTelemetry.IsChecked == null) return;
-            Settings.Telemetry = (bool) ChbxTelemetry.IsChecked;
+            Settings.Telemetry = (bool)ChbxTelemetry.IsChecked;
         }
 
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables upload
             if (ChbxUpload.IsChecked != null)
-                Settings.Upload = (bool) ChbxUpload.IsChecked;
-            ((MainWindow) _mW).UploadSong(((MainWindow) _mW).CurrSong);
+                Settings.Upload = (bool)ChbxUpload.IsChecked;
+            ((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -193,13 +193,13 @@ namespace Songify_Slim
             ThemeHandler.ApplyTheme();
             if (Settings.Color != "Yellow")
             {
-                ((MainWindow) _mW).LblStatus.Foreground = Brushes.White;
-                ((MainWindow) _mW).LblCopyright.Foreground = Brushes.White;
+                ((MainWindow)_mW).LblStatus.Foreground = Brushes.White;
+                ((MainWindow)_mW).LblCopyright.Foreground = Brushes.White;
             }
             else
             {
-                ((MainWindow) _mW).LblStatus.Foreground = Brushes.Black;
-                ((MainWindow) _mW).LblCopyright.Foreground = Brushes.Black;
+                ((MainWindow)_mW).LblStatus.Foreground = Brushes.Black;
+                ((MainWindow)_mW).LblCopyright.Foreground = Brushes.Black;
             }
         }
 
@@ -300,6 +300,13 @@ namespace Songify_Slim
             }
 
             if (NudChrome.Value != null) Settings.ChromeFetchRate = (int)NudChrome.Value;
+        }
+
+        private void ChbxCover_Checked(object sender, RoutedEventArgs e)
+        {
+            // enables / disables telemetry
+            if (ChbxCover.IsChecked == null) return;
+            Settings.DownloadCover = (bool)ChbxCover.IsChecked;
         }
     }
 }

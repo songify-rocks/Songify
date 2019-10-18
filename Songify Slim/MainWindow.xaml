@@ -175,12 +175,14 @@
                    VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
         </StatusBar>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="461,10,0,0" VerticalAlignment="Top" Width="111" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
-            <ComboBoxItem Content = "Spotify"/>
+            <ComboBoxItem Content = "Spotify Legacy"/>
             <ComboBoxItem Content = "Youtube (Chrome)"/>
             <ComboBoxItem Content = "Nightbot"/>
             <ComboBoxItem Content="VLC"/>
             <ComboBoxItem Content="foobar2000"/>
             <ComboBoxItem Content="Deezer (Chrome)" />
+            <ComboBoxItem Content="Spotify WebAPI" />
         </ComboBox>
+        <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,10,0,0"/>
     </Grid>
 </controls:MetroWindow>

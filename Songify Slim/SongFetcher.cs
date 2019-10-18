@@ -249,5 +249,18 @@ namespace Songify_Slim
 
             return "No NightBot ID set.";
         }
+
+        public string[] FetchSpotifyWeb()
+        {
+            if (APIHandler.spotify == null) return new[] { "", "", "", "" };
+
+            var songInfo = APIHandler.GetSongInfo();
+
+            if (songInfo.albums != null)
+                return new[] { songInfo.Artists, songInfo.Title, "", songInfo.albums[0].Url };
+
+            return new[] { songInfo.Artists, songInfo.Title, "", null };
+
+        }
     }
 }

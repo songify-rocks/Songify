@@ -5,6 +5,18 @@
     /// </summary>
     internal class Settings
     {
+        public static string RefreshToken
+        {
+            get => GetRefreshToken();
+            set => SetRefreshToken(value);
+        }
+
+        public static bool DownloadCover
+        {
+            get => GetDownloadCover();
+            set => SetDownloadCover(value);
+        }
+
         public static bool SaveHistory
         {
             get => GetSaveHistory();
@@ -109,6 +121,27 @@
 
         public static string Webua => GetWebua();
 
+        private static void SetRefreshToken(string value)
+        {
+            Properties.Settings.Default.RefreshToken = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetRefreshToken()
+        {
+            return Properties.Settings.Default.RefreshToken;
+        }
+
+        private static void SetDownloadCover(bool value)
+        {
+            Properties.Settings.Default.SaveAlbumCover = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetDownloadCover()
+        {
+            return Properties.Settings.Default.SaveAlbumCover;
+        }
 
         private static void SetSaveHistory(bool savehistory)
         {
