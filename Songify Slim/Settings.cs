@@ -5,6 +5,13 @@
     /// </summary>
     internal class Settings
     {
+
+        public static bool SplitOutput
+        {
+            get => GetSplitOutput();
+            set => SetSplitOutput(value);
+        }
+
         public static string RefreshToken
         {
             get => GetRefreshToken();
@@ -120,6 +127,17 @@
         }
 
         public static string Webua => GetWebua();
+
+        private static bool GetSplitOutput()
+        {
+            return Properties.Settings.Default.SplitString;
+        }
+
+        private static void SetSplitOutput(bool value)
+        {
+            Properties.Settings.Default.SplitString = value;
+            Properties.Settings.Default.Save();
+        }
 
         private static void SetRefreshToken(string value)
         {

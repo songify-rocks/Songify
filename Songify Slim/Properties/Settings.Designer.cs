@@ -259,5 +259,17 @@ namespace Songify_Slim.Properties {
                 this["RefreshToken"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SplitString {
+            get {
+                return ((bool)(this["SplitString"]));
+            }
+            set {
+                this["SplitString"] = value;
+            }
+        }
     }
 }

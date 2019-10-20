@@ -20,7 +20,7 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
-
+        public string songPath, coverPath, root;
         public static string Version;
         public bool AppActive;
         public NotifyIcon NotifyIcon = new NotifyIcon();
@@ -53,6 +53,7 @@ namespace Songify_Slim
             WorkerUpdate.DoWork += Worker_Update_DoWork;
             WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
+
 
         public static void RegisterInStartup(bool isChecked)
         {
@@ -162,7 +163,6 @@ namespace Songify_Slim
                 case 3:
                 case 4:
                 case 6:
-
                     // Spotify, VLC or foobar2000
                     FetchTimer(1000);
                     break;
@@ -177,6 +177,16 @@ namespace Songify_Slim
                     // Nightbot
                     FetchTimer(3000);
                     break;
+            }
+
+            if (_selectedSource == 6)
+            {
+                img_cover.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                img_cover.Visibility = Visibility.Collapsed;
+                File.Delete(coverPath);
             }
         }
 
@@ -306,19 +316,27 @@ namespace Songify_Slim
                 #endregion Deezer
 
                 case 6:
+
+                    #region Spotify API
+                    if (string.IsNullOrEmpty(Settings.RefreshToken))
+                    {
+                        TxtblockLiveoutput.Dispatcher.BeginInvoke(
+                            System.Windows.Threading.DispatcherPriority.Normal,
+                            new Action(() =>
+                            {
+                                TxtblockLiveoutput.Text = "Connect your Spotify Account in the Settings Menu.\nSettings -> Integration";
+                            }));
+                        return;
+                    }
+
                     currentlyPlaying = sf.FetchSpotifyWeb();
                     if (currentlyPlaying != null)
                     {
                         WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3]);
                     }
                     break;
-                case 7:
-                    currentlyPlaying = sf.FetchDesktopPlayer("amazon music");
-                    if (currentlyPlaying != null)
-                    {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3]);
-                    }
-                    break;
+
+                    #endregion
             }
         }
 
@@ -425,6 +443,8 @@ namespace Songify_Slim
                 case 0:
                 case 3:
                 case 4:
+                    FetchTimer(1000);
+                    break;
                 case 6:
                     FetchTimer(1000);
                     break;
@@ -438,9 +458,19 @@ namespace Songify_Slim
                     FetchTimer(3000);
                     break;
             }
+            if (_selectedSource == 6)
+            {
+                img_cover.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                img_cover.Visibility = Visibility.Hidden;
+            }
 
-            APIHandler.DoAuthAsync();
-
+            if (!string.IsNullOrEmpty(Settings.RefreshToken))
+            {
+                APIHandler.DoAuthAsync();
+            }
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -544,16 +574,19 @@ namespace Songify_Slim
             }
 
 
-            string songPath;
-
             // get the songPath which is default the directory where the exe is, else get the user set directory
             if (string.IsNullOrEmpty(Settings.Directory))
             {
+                root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
                 songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
+                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.jpg";
+
             }
             else
             {
+                root = Settings.Directory;
                 songPath = Settings.Directory + "/Songify.txt";
+                coverPath = Settings.Directory + "cover.jpg";
             }
 
             // read the text file
@@ -574,6 +607,29 @@ namespace Songify_Slim
             {
                 // write song to the text file
                 File.WriteAllText(songPath, CurrSong);
+
+                if (Settings.SplitOutput)
+                {
+                    if (!File.Exists(root + "/Artist.txt"))
+                    {
+                        File.Create(root + "/Artist.txt").Close();
+                        File.WriteAllText(root + "/Artist.txt", artist);
+                    }
+                    else
+                    {
+                        File.WriteAllText(root + "/Artist.txt", artist);
+                    }
+
+                    if (!File.Exists(root + "/Title.txt"))
+                    {
+                        File.Create(root + "/Title.txt").Close();
+                        File.WriteAllText(root + "/Title.txt", title + extra);
+                    }
+                    else
+                    {
+                        File.WriteAllText(root + "/Title.txt", title + extra);
+                    }
+                }
 
                 // if upload is enabled
                 if (Settings.Upload)
@@ -660,7 +716,17 @@ namespace Songify_Slim
                     WebClient webClient = new WebClient();
                     webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
                     webClient.Dispose();
-                    string path = Settings.Directory + "cover.jpg";                    
+                    img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                        new Action(() =>
+                        {
+                            BitmapImage image = new BitmapImage();
+                            image.BeginInit();
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                            image.UriSource = new Uri(coverPath);
+                            image.EndInit();
+                            img_cover.Source = image;
+                        }));
                 }
             }
 
@@ -668,6 +734,22 @@ namespace Songify_Slim
             TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
+
+            if (File.Exists(coverPath) && new FileInfo(coverPath).Length > 0)
+            {
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                                       new Action(() =>
+                                       {
+                                           BitmapImage image = new BitmapImage();
+                                           image.BeginInit();
+                                           image.CacheOption = BitmapCacheOption.OnLoad;
+                                           image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                                           image.UriSource = new Uri(coverPath);
+                                           image.EndInit();
+                                           img_cover.Source = image;
+                                       }));
+            }
+
         }
 
         public void UploadSong(string currSong)

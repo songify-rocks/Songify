@@ -92,6 +92,11 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
+                    <controls:ToggleSwitch x:Name="ChbxSplit" Content="Split Artist and Title (creates 2 text files (API))" HorizontalAlignment="Left"
+                        Margin="15,187,0,-6" VerticalAlignment="Top" 
+                        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                        controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                        controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxSplit_Checked" Unchecked="ChbxSplit_Checked" />
                 </Grid>
             </TabItem>
             <TabItem Header="Appearance">
@@ -113,6 +118,10 @@
                     <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="Btn_nblink_Click" />
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,82,0,0" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,108,0,0" />
+                    <Button x:Name="btn_spotifyLink" Content="(RE)LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
+
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

@@ -19,12 +19,12 @@ namespace Songify_Slim
         private static TokenSwapAuth auth = new TokenSwapAuth(
             exchangeServerUri: "https://songify.bloemacher.com/auth/index.php",
             serverUri: "http://localhost:4002/auth",
-            scope: Scope.UserReadPlaybackState
+            scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate
         );
 
         public static async System.Threading.Tasks.Task DoAuthAsync()
         {
-               if (!string.IsNullOrEmpty(Settings.RefreshToken))
+            if (!string.IsNullOrEmpty(Settings.RefreshToken))
             {
                 authed = true;
                 spotify = new SpotifyWebAPI()
@@ -32,6 +32,10 @@ namespace Songify_Slim
                     TokenType = (await auth.RefreshAuthAsync(Settings.RefreshToken)).TokenType,
                     AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken
                 };
+            }
+            else
+            {
+                authed = false; 
             }
 
             auth.AuthReceived += async (sender, response) =>
@@ -59,8 +63,6 @@ namespace Songify_Slim
             if (authed)
                 return;
             auth.OpenBrowser();
-
-            #endregion
         }
 
         public static TrackInfo GetSongInfo()

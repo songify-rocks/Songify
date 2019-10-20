@@ -43,10 +43,14 @@ namespace Songify_Slim
             ChbxUpload.IsChecked = Settings.Upload;
             NudChrome.Value = Settings.ChromeFetchRate;
             ChbxCover.IsChecked = Settings.DownloadCover;
+            ChbxSplit.IsChecked = Settings.SplitOutput;
             if (Settings.NbUserId != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             }
+            if(APIHandler.spotify != null)
+                lbl_SpotifyAcc.Content = "Linked account: " + APIHandler.spotify.GetPrivateProfile().DisplayName;
+
             ThemeHandler.ApplyTheme();
         }
 
@@ -307,6 +311,19 @@ namespace Songify_Slim
             // enables / disables telemetry
             if (ChbxCover.IsChecked == null) return;
             Settings.DownloadCover = (bool)ChbxCover.IsChecked;
+        }
+
+        private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.RefreshToken = "";
+            APIHandler.DoAuthAsync();
+        }
+
+        private void ChbxSplit_Checked(object sender, RoutedEventArgs e)
+        {
+            // enables / disables telemetry
+            if (ChbxSplit.IsChecked == null) return;
+            Settings.SplitOutput = (bool)ChbxCover.IsChecked;
         }
     }
 }

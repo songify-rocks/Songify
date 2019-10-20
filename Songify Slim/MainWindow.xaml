@@ -163,18 +163,16 @@
 
 
     <Grid>
-        <TextBlock x:Name="TxtblockLiveoutput" TextWrapping="Wrap" FontSize="22" Padding="10"
-                               Text="Artist - Title" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <StackPanel Orientation="Horizontal">
+            <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
+            <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
+                               Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" />
+        </StackPanel>
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
             <StatusBarItem x:Name="LblCopyright" Content="Songify v1.0.10pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
-
-            <!--<Label x:Name="LblStatus" Content="" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
-                   HorizontalContentAlignment="Stretch" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" />
-            <Label x:Name="LblCopyright" Content="Songify v1.0.4 Copyright © Jan  Inzaniity  Blömacher" FontSize="10" Padding="0"
-                   VerticalContentAlignment="Bottom" HorizontalContentAlignment="Stretch" FlowDirection="RightToLeft" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
         </StatusBar>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="461,10,0,0" VerticalAlignment="Top" Width="111" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="437,10,0,0" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem Content = "Spotify Legacy"/>
             <ComboBoxItem Content = "Youtube (Chrome)"/>
             <ComboBoxItem Content = "Nightbot"/>
@@ -183,6 +181,5 @@
             <ComboBoxItem Content="Deezer (Chrome)" />
             <ComboBoxItem Content="Spotify WebAPI" />
         </ComboBox>
-        <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,10,0,0"/>
     </Grid>
 </controls:MetroWindow>
