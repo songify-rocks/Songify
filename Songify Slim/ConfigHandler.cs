@@ -98,28 +98,35 @@ namespace Songify_Slim
 
         public static void ReadXml(string path)
         {
-            // reading the XML file, attributes get saved in Settings
-            XmlDocument doc = new XmlDocument();
-            doc.Load(path);
-            if (doc.DocumentElement == null) return;
-            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+            try
             {
-                if (node.Name != "Config") continue;
-                Settings.Directory = node.Attributes["directory"]?.InnerText;
-                Settings.Color = node.Attributes["color"]?.InnerText;
-                Settings.Theme = node.Attributes["tehme"]?.InnerText;
-                Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
-                Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
-                Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
-                Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;
-                Settings.OutputString = node.Attributes["outputString"]?.InnerText;
-                Settings.Uuid = node.Attributes["uuid"]?.InnerText;
-                Settings.Telemetry = Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText);
-                Settings.NbUser = node.Attributes["nbuser"]?.InnerText;
-                Settings.NbUserId = node.Attributes["nbuserid"]?.InnerText;
-                Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
-                Settings.UploadHistory = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
-                Settings.SaveHistory = Convert.ToBoolean(node.Attributes["savehistory"]?.InnerText);
+                // reading the XML file, attributes get saved in Settings
+                XmlDocument doc = new XmlDocument();
+                doc.Load(path);
+                if (doc.DocumentElement == null) return;
+                foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+                {
+                    if (node.Name != "Config") continue;
+                    Settings.Directory = node.Attributes["directory"]?.InnerText;
+                    Settings.Color = node.Attributes["color"]?.InnerText;
+                    Settings.Theme = node.Attributes["tehme"]?.InnerText;
+                    Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
+                    Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
+                    Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
+                    Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;
+                    Settings.OutputString = node.Attributes["outputString"]?.InnerText;
+                    Settings.Uuid = node.Attributes["uuid"]?.InnerText;
+                    Settings.Telemetry = Convert.ToBoolean(node.Attributes["telemetry"]?.InnerText);
+                    Settings.NbUser = node.Attributes["nbuser"]?.InnerText;
+                    Settings.NbUserId = node.Attributes["nbuserid"]?.InnerText;
+                    Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
+                    Settings.UploadHistory = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
+                    Settings.SaveHistory = Convert.ToBoolean(node.Attributes["savehistory"]?.InnerText);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex);
             }
         }
 
@@ -150,7 +157,7 @@ namespace Songify_Slim
                 {
                     if (window.GetType() == typeof(SettingsWindow))
                     {
-                        ((SettingsWindow) window).SetControls();
+                        ((SettingsWindow)window).SetControls();
                     }
                 }
             }
