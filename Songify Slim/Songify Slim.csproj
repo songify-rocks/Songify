@@ -236,9 +236,6 @@
   <ItemGroup>
     <Compile Include="NBObj.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Image1.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.6.0.2\build\Fody.targets" Condition="Exists('..\packages\Fody.6.0.2\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

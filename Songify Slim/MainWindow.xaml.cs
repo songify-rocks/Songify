@@ -428,7 +428,7 @@ namespace Songify_Slim
             }
 
             // check for update 
-            WorkerUpdate.RunWorkerAsync();
+            // WorkerUpdate.RunWorkerAsync();
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = _selectedSource;

@@ -92,7 +92,7 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
-                    <controls:ToggleSwitch x:Name="ChbxSplit" Content="Split Artist and Title (creates 2 text files (API))" HorizontalAlignment="Left"
+                    <controls:ToggleSwitch x:Name="ChbxSplit" Content="Split Artist and Title" HorizontalAlignment="Left"
                         Margin="15,187,0,-6" VerticalAlignment="Top" 
                         Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                         controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
