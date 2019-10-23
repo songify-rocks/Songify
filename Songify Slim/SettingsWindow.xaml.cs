@@ -316,7 +316,16 @@ namespace Songify_Slim
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
             Settings.RefreshToken = "";
-            APIHandler.DoAuthAsync();
+            try
+            {
+                APIHandler.DoAuthAsync();
+                SetControls();
+
+            } catch(Exception ex)
+            {
+                Logger.Log(ex);
+            }
+
         }
 
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)

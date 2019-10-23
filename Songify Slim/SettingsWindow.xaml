@@ -76,7 +76,7 @@
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" />
-                    <controls:ToggleSwitch x:Name="ChbxCover" Content="Download album cover (only wokrs with API)" HorizontalAlignment="Left"
+                    <controls:ToggleSwitch x:Name="ChbxCover" Content="Download album cover (only works with API)" HorizontalAlignment="Left"
                                            Margin="15,146,0,0" VerticalAlignment="Top" 
                                            Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"

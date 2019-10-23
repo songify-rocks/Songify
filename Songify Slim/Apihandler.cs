@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web.Enums;
@@ -35,7 +36,7 @@ namespace Songify_Slim
             }
             else
             {
-                authed = false; 
+                authed = false;
             }
 
             auth.AuthReceived += async (sender, response) =>
@@ -55,6 +56,17 @@ namespace Songify_Slim
 
                 authenticated = true;
                 auth.Stop();
+
+                await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+                 {
+                     foreach (Window window in System.Windows.Application.Current.Windows)
+                     {
+                         if (window.GetType() != typeof(SettingsWindow)) continue;
+                         ((SettingsWindow)window).SetControls();
+
+                     }
+                 }));
+
 
             };
 

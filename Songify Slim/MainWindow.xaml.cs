@@ -179,14 +179,13 @@ namespace Songify_Slim
                     break;
             }
 
-            if (_selectedSource == 6)
+            if (_selectedSource == 6 && Settings.DownloadCover)
             {
                 img_cover.Visibility = Visibility.Visible;
             }
             else
             {
                 img_cover.Visibility = Visibility.Collapsed;
-                File.Delete(coverPath);
             }
         }
 
@@ -580,13 +579,12 @@ namespace Songify_Slim
                 root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
                 songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
                 coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.jpg";
-
             }
             else
             {
                 root = Settings.Directory;
                 songPath = Settings.Directory + "/Songify.txt";
-                coverPath = Settings.Directory + "cover.jpg";
+                coverPath = Settings.Directory + "/cover.jpg";
             }
 
             // read the text file
