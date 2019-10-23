@@ -178,15 +178,6 @@ namespace Songify_Slim
                     FetchTimer(3000);
                     break;
             }
-
-            if (_selectedSource == 6 && Settings.DownloadCover)
-            {
-                img_cover.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                img_cover.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void FetchTimer(int ms)
@@ -209,6 +200,19 @@ namespace Songify_Slim
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
+            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            {
+                if (_selectedSource == 6 && Settings.DownloadCover)
+                {
+                    img_cover.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    img_cover.Visibility = Visibility.Collapsed;
+                }
+            }));
+
+
             // when the timer 'ticks' this code gets executed
             GetCurrentSong();
         }

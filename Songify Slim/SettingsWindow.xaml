@@ -12,7 +12,7 @@
                 <Grid x:Name="NUD_ChromePoll">
                     <controls:ToggleSwitch x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left" Header="Behavior"
                               Margin="10,10,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
-                              Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                              Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI Semibold" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="366" />
                     <controls:ToggleSwitch x:Name="ChbxMinimizeSystray" Content="minimize to system tray"
@@ -22,12 +22,12 @@
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="366" />
                     <controls:ToggleSwitch x:Name="ChbxTelemetry" Content="send anonymous data" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,101,0,0" Header="Telemetry"
-                                           Width="366" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           Width="366" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI Semibold" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Height="49" IsCheckedChanged="ChbxTelemetry_IsCheckedChanged"/>
 
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,186,0,0"
-                            Click="BtnUpdatesClick" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="154" />
+                            Click="BtnUpdatesClick" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="154" IsEnabled="False" />
                     <Label Content="?" HorizontalAlignment="Left" Margin="56,96,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
                     <Label Content="Chrome fetch rate (seconds)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="9,155,0,0" Padding="0,5,5,5"/>
                     <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="255,155,0,0" ValueChanged="NudChrome_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" />
