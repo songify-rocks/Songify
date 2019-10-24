@@ -1,3 +1,5 @@
+![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg) ![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg) ![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)
+
 # What is Songify Slim?
 
 Songify Slim is a slimmed down version of my original software Songify. Songify Slim was brought to life because Spotify decided to shut down the local API which Songify was originally built on. 
