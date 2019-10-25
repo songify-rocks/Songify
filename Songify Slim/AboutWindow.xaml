@@ -7,7 +7,7 @@
         
         xmlns:local="clr-namespace:Songify_Slim"
         mc:Ignorable="d"
-        Title="AboutWindow" Height="378.496" Width="590" ResizeMode="NoResize">
+        Title="About" Height="378.496" Width="590" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
