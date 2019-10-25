@@ -549,6 +549,12 @@ namespace Songify_Slim
 
         private void WriteSong(string artist, string title, string extra, string cover = null)
         {
+            if (artist.Contains("Various Artists, "))
+            {
+                artist = artist.Replace("Various Artists, ", "");
+                artist.Trim();
+            }
+
             // get the output string
             CurrSong = Settings.OutputString;
             if (!String.IsNullOrEmpty(title))
