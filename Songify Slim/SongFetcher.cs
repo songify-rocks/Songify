@@ -24,8 +24,8 @@ namespace Songify_Slim
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
         public string[] FetchDesktopPlayer(string player)
         {
-            var processes = Process.GetProcessesByName(player);
-            foreach (var process in processes)
+            Process[] processes = Process.GetProcessesByName(player);
+            foreach (Process process in processes)
             {
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
@@ -146,7 +146,7 @@ namespace Songify_Slim
                     continue;
                 }
 
-                var elm = _parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : _parent;
+                AutomationElement elm = _parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : _parent;
 
                 // find the automation element
                 try
@@ -243,7 +243,7 @@ namespace Songify_Slim
                 }
 
                 // Deserialize JSON and get the current song 
-                var json = JsonConvert.DeserializeObject<NBObj>(jsn);
+                NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
                 return json._currentsong == null ? null : (string)json._currentsong.track.title;
             }
 
@@ -256,7 +256,9 @@ namespace Songify_Slim
             {
                 return null;
             }
-            var songInfo = APIHandler.GetSongInfo();
+            TrackInfo songInfo = APIHandler.GetSongInfo();
+
+            if (songInfo == null) return null;
 
             if (songInfo.albums != null)
                 return new[] { songInfo.Artists, songInfo.Title, "", songInfo.albums[0].Url };

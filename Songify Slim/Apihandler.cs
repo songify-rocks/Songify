@@ -115,7 +115,7 @@ namespace Songify_Slim
             {
                 string artists = "";
 
-                for (var i = 0; i < context.Item.Artists.Count; i++)
+                for (int i = 0; i < context.Item.Artists.Count; i++)
                 {
                     if (i != context.Item.Artists.Count - 1)
                         artists += context.Item.Artists[i].Name + ", ";

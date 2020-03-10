@@ -81,8 +81,8 @@ namespace Songify_Slim
                     //LbxHistory.Items.Add(elem.Name.ToString().Replace("d_", ""));
                 }
 
-            var orderedList = list.OrderByDescending(time => time.Date);
-            foreach (var time in orderedList)
+            IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
+            foreach (DateTime time in orderedList)
             {
                 LbxHistory.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
@@ -117,7 +117,7 @@ namespace Songify_Slim
             {
                 if (node.Name == "Song")
                 {
-                    var data = new Song
+                    Song data = new Song
                     {
                         Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())).ToLongTimeString(),
                         Name = node.Value,
@@ -181,7 +181,7 @@ namespace Songify_Slim
         {
             Song sng = (Song)dgvHistorySongs.SelectedItem;
 
-            var key = sng.UnixTimeStamp;
+            long key = sng.UnixTimeStamp;
 
             XDocument xdoc = XDocument.Load(_path);
             xdoc.Element("History")

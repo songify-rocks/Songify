@@ -95,7 +95,7 @@
             set => SetOutputString(value);
         }
 
-        public static int Source
+        public static string Source
         {
             get => GetSource();
             set => SetSource(value);
@@ -221,13 +221,13 @@
             return Properties.Settings.Default.uploadSonginfo;
         }
 
-        private static void SetSource(int source)
+        private static void SetSource(string source)
         {
             Properties.Settings.Default.Source = source;
             Properties.Settings.Default.Save();
         }
 
-        private static int GetSource()
+        private static string GetSource()
         {
             return Properties.Settings.Default.Source;
         }

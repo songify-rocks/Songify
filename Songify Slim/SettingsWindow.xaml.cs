@@ -149,7 +149,7 @@ namespace Songify_Slim
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
         {
             // checkbox for autostart
-            var chbxAutostartIsChecked = ChbxAutostart.IsChecked;
+            bool? chbxAutostartIsChecked = ChbxAutostart.IsChecked;
             MainWindow.RegisterInStartup(chbxAutostartIsChecked != null && (bool)chbxAutostartIsChecked);
         }
 
@@ -171,7 +171,7 @@ namespace Songify_Slim
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
             // enables / disbales minimize to systray
-            var isChecked = ChbxMinimizeSystray.IsChecked;
+            bool? isChecked = ChbxMinimizeSystray.IsChecked;
             Settings.Systray = isChecked != null && (bool)isChecked;
         }
 
@@ -237,7 +237,7 @@ namespace Songify_Slim
             }
 
             // add colors to the combobox
-            foreach (var s in _colors)
+            foreach (string s in _colors)
             {
                 ComboBoxColor.Items.Add(s);
             }

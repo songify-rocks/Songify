@@ -133,27 +133,27 @@
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
-            <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate">
+            <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Paypal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord">
+            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Discord" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnHistory" Click="BtnHistory_Click" ToolTip="Song History">
+            <Button x:Name="BtnHistory" Click="BtnHistory_Click" ToolTip="Song History" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="History" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnAbout" Click="BtnAboutClick" ToolTip="About">
+            <Button x:Name="BtnAbout" Click="BtnAboutClick" ToolTip="About" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Information" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
             </Button>
-            <Button x:Name="BtnSettings" Click="BtnSettings_Click" ToolTip="Settings">
+            <Button x:Name="BtnSettings" Click="BtnSettings_Click" ToolTip="Settings" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" />
                 </StackPanel>
@@ -171,14 +171,14 @@
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
             <StatusBarItem x:Name="LblCopyright" Content="Songify v1.0.10pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
         </StatusBar>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="437,10,0,0" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0">
-            <ComboBoxItem Content = "Spotify Legacy"/>
-            <ComboBoxItem Content = "Youtube (Chrome)"/>
-            <ComboBoxItem Content = "Nightbot"/>
-            <ComboBoxItem Content="VLC"/>
-            <ComboBoxItem Content="foobar2000"/>
-            <ComboBoxItem Content="Deezer (Chrome)" />
-            <ComboBoxItem Content="Spotify WebAPI" />
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="437,10,0,0" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0" IsTabStop="False">
+            <!--<ComboBoxItem Content = "Spotify Legacy" IsTabStop="False"/>
+            <ComboBoxItem Content = "Youtube (Chrome)" IsTabStop="False"/>
+            <ComboBoxItem Content = "Nightbot" IsTabStop="False"/>
+            <ComboBoxItem Content="VLC" IsTabStop="False"/>
+            <ComboBoxItem Content="foobar2000" IsTabStop="False"/>
+            <ComboBoxItem Content="Deezer (Chrome)" IsTabStop="False"/>
+            <ComboBoxItem Content="Spotify WebAPI" IsTabStop="False"/>-->
         </ComboBox>
     </Grid>
 </controls:MetroWindow>

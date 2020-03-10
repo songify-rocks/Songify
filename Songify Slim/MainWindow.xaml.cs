@@ -17,6 +17,17 @@ using System.Xml.Linq;
 
 namespace Songify_Slim
 {
+    public static class PlayerType
+    {
+        public const string SpotifyLegacy = "Spotify Legacy";
+        public const string Youtube = "Youtube (Chrome)";
+        public const string Nightbot = "Nightbot";
+        public const string VLC = "VLC";
+        public const string FooBar2000 = "foobar2000";
+        public const string Deezer = "Deezer (Chrome)";
+        public const string SpotifyWeb = "Spotify API";
+    }
+
     public partial class MainWindow
     {
         #region Variables
@@ -32,7 +43,7 @@ namespace Songify_Slim
         private readonly MenuItem _menuItem2 = new MenuItem();
         public string CurrSong;
         private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
-        private int _selectedSource = Settings.Source;
+        private string _selectedSource = Settings.Source;
         private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
         private string _temp = "";
         private System.Threading.Timer _timer;
@@ -58,7 +69,7 @@ namespace Songify_Slim
         public static void RegisterInStartup(bool isChecked)
         {
             // Adding the RegKey for Songify in startup (autostart with windows)
-            var registryKey = Registry.CurrentUser.OpenSubKey(
+            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(
                 "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
                 true);
             if (isChecked)
@@ -81,14 +92,14 @@ namespace Songify_Slim
             try
             {
                 Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                var extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + AppActive;
-                var url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
+                string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + AppActive;
+                string url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)
@@ -152,28 +163,44 @@ namespace Songify_Slim
                 return;
             }
 
-            _selectedSource = cbx_Source.SelectedIndex;
+            _selectedSource = cbx_Source.SelectedValue.ToString();
 
             Settings.Source = _selectedSource;
 
             // Dpending on which source is chosen, it starts the timer that fetches the song info
+            SetFetchTimer();
+
+            if (_selectedSource == PlayerType.SpotifyWeb)
+            
+            {
+                SongFetcher sf = new SongFetcher();
+                string[] currentlyPlaying = sf.FetchSpotifyWeb();
+                if (currentlyPlaying != null)
+                {
+                    WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true);
+                }
+            }
+        }
+
+        private void SetFetchTimer()
+        {
             switch (_selectedSource)
             {
-                case 0:
-                case 3:
-                case 4:
-                case 6:
+                case PlayerType.SpotifyLegacy:
+                case PlayerType.VLC:
+                case PlayerType.FooBar2000:
+                case PlayerType.SpotifyWeb:
                     // Spotify, VLC or foobar2000
                     FetchTimer(1000);
                     break;
 
-                case 1:
-                case 5:
+                case PlayerType.Youtube:
+                case PlayerType.Deezer:
                     // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
-                case 2:
+                case PlayerType.Nightbot:
                     // Nightbot
                     FetchTimer(3000);
                     break;
@@ -202,7 +229,7 @@ namespace Songify_Slim
         {
             img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
             {
-                if (_selectedSource == 6 && Settings.DownloadCover)
+                if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
                 {
                     img_cover.Visibility = Visibility.Visible;
                 }
@@ -223,7 +250,7 @@ namespace Songify_Slim
             string[] currentlyPlaying;
             switch (_selectedSource)
             {
-                case 0:
+                case PlayerType.SpotifyLegacy:
 
                     #region Spotify
                     // Fetching the song thats currently playing on spotify
@@ -237,7 +264,7 @@ namespace Songify_Slim
 
                 #endregion Spotify
 
-                case 1:
+                case PlayerType.Youtube:
 
                     #region YouTube
                     // Fetching the song thats currently playing on youtube
@@ -257,7 +284,7 @@ namespace Songify_Slim
 
                 #endregion
 
-                case 2:
+                case PlayerType.Nightbot:
 
                     #region Nightbot
                     // Fetching the currently playing song on NB Song Request
@@ -277,7 +304,7 @@ namespace Songify_Slim
 
                 #endregion Nightbot
 
-                case 3:
+                case PlayerType.VLC:
 
                     #region VLC
                     currentlyPlaying = sf.FetchDesktopPlayer("vlc");
@@ -289,7 +316,7 @@ namespace Songify_Slim
 
                 #endregion VLC
 
-                case 4:
+                case PlayerType.FooBar2000:
 
                     #region foobar2000
                     currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
@@ -301,7 +328,7 @@ namespace Songify_Slim
 
                 #endregion foobar2000
 
-                case 5:
+                case PlayerType.Deezer:
 
                     #region Deezer
                     _temp = sf.FetchBrowser("Deezer");
@@ -318,20 +345,9 @@ namespace Songify_Slim
 
                 #endregion Deezer
 
-                case 6:
+                case PlayerType.SpotifyWeb:
 
                     #region Spotify API
-                    //if (string.IsNullOrEmpty(Settings.RefreshToken))
-                    //{
-                    //    TxtblockLiveoutput.Dispatcher.BeginInvoke(
-                    //        System.Windows.Threading.DispatcherPriority.Normal,
-                    //        new Action(() =>
-                    //        {
-                    //            TxtblockLiveoutput.Text = "Connect your Spotify Account in the Settings Menu.\nSettings -> Integration";
-                    //        }));
-                    //    return;
-                    //}
-
                     currentlyPlaying = sf.FetchSpotifyWeb();
                     if (currentlyPlaying != null)
                     {
@@ -390,6 +406,9 @@ namespace Songify_Slim
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
             }
 
+            // Add sources to combobox
+            AddSourcesToSourceBox();
+
             // Create systray menu and icon and show it
             _menuItem1.Text = @"Exit";
             _menuItem1.Click += MenuItem1Click;
@@ -411,8 +430,8 @@ namespace Songify_Slim
             if (WindowState == WindowState.Minimized) MinimizeToSysTray();
 
             // get the software version from assembly
-            var assembly = Assembly.GetExecutingAssembly();
-            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             Version = fvi.FileVersion;
 
             // generate UUID if not exists, expand the window and show the telemetrydisclaimer
@@ -434,34 +453,16 @@ namespace Songify_Slim
             // WorkerUpdate.RunWorkerAsync();
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedIndex = _selectedSource;
+            cbx_Source.SelectedValue = _selectedSource;
 
             // text in the bottom right
             LblCopyright.Content =
                 "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
             // automatically start fetching songs
-            switch (_selectedSource)
-            {
-                case 0:
-                case 3:
-                case 4:
-                    FetchTimer(1000);
-                    break;
-                case 6:
-                    FetchTimer(1000);
-                    break;
+            SetFetchTimer();
 
-                case 1:
-                case 5:
-                    FetchTimer(Settings.ChromeFetchRate * 1000);
-                    break;
-
-                case 2:
-                    FetchTimer(3000);
-                    break;
-            }
-            if (_selectedSource == 6)
+            if (_selectedSource == PlayerType.SpotifyWeb)
             {
                 APIHandler.DoAuthAsync();
                 img_cover.Visibility = Visibility.Visible;
@@ -471,10 +472,14 @@ namespace Songify_Slim
                 img_cover.Visibility = Visibility.Hidden;
             }
 
-            //if (!string.IsNullOrEmpty(Settings.RefreshToken))
-            //{
-            //    APIHandler.DoAuthAsync();
-            //}
+            
+        }
+
+        private void AddSourcesToSourceBox()
+        {
+            string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy, 
+                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
+            cbx_Source.ItemsSource = sourceBoxItems;            
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -505,7 +510,7 @@ namespace Songify_Slim
         {
             SendTelemetry(true);
             // show messagebox with the Telemetry disclaimer
-            var result = await this.ShowMessageAsync("Anonymous Data",
+            MessageDialogResult result = await this.ShowMessageAsync("Anonymous Data",
                 FindResource("data_colletion") as string
                 , MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings
@@ -548,7 +553,7 @@ namespace Songify_Slim
             }, null, _startTimeSpan, _periodTimeSpan);
         }
 
-        private void WriteSong(string artist, string title, string extra, string cover = null)
+        private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false)
         {
             if (artist.Contains("Various Artists, "))
             {
@@ -573,7 +578,7 @@ namespace Songify_Slim
 
                 // get the first occurance of "}" to get the seperator from the custom output ({artist} - {title})
                 // and replace it
-                var pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
+                int pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
                 string result = CurrSong.Substring(pFrom + 2, 1);
                 CurrSong = CurrSong.Replace(result, "");
 
@@ -610,9 +615,9 @@ namespace Songify_Slim
                 File.WriteAllText(songPath, CurrSong);
             }
 
-            var temp = File.ReadAllLines(songPath);
-            // if the text file is different to _currSong (fetched song) 
-            if (temp[0].Trim() != CurrSong.Trim())
+            string[] temp = File.ReadAllLines(songPath);
+            // if the text file is different to _currSong (fetched song) or update is forced
+            if (temp[0].Trim() != CurrSong.Trim() || forceUpdate)
             {
                 // write song to the text file
                 File.WriteAllText(songPath, CurrSong);
@@ -663,10 +668,10 @@ namespace Songify_Slim
                 {
                     _prevSong = CurrSong.Trim();
 
-                    var unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    int unixTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
                     //save the history file
-                    var historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
+                    string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + "history.shr";
                     XDocument doc;
                     if (!File.Exists(historyPath))
                     {
@@ -678,9 +683,9 @@ namespace Songify_Slim
                     {
                         doc.Descendants("History").FirstOrDefault()?.Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
                     }
-                    var elem = new XElement("Song", CurrSong.Trim());
+                    XElement elem = new XElement("Song", CurrSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
-                    var x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
+                    XElement x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
                     x?.Add(elem);
                     doc.Save(historyPath);
                 }
@@ -696,16 +701,16 @@ namespace Songify_Slim
                     // Upload Song
                     try
                     {
-                        var extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
+                        string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
                                      HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
-                        var url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
+                        string url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
                         Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
-                        var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                         myHttpWebRequest.UserAgent = Settings.Webua;
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                        var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                         myHttpWebResponse.Close();
                     }
                     catch (Exception ex)
@@ -766,14 +771,14 @@ namespace Songify_Slim
             try
             {
                 // extras are UUID and Songinfo
-                var extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
-                var url = "http://songify.bloemacher.com/song.php/?id=" + extras;
+                string extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
+                string url = "http://songify.bloemacher.com/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                var myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                var myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)

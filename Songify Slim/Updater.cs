@@ -1,6 +1,8 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using Octokit;
 using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace Songify_Slim
@@ -10,11 +12,11 @@ namespace Songify_Slim
         public static void CheckForUpdates(Version vs)
         {
             // gets the latest release using OctoKit and compares the version strings (1.0.4 < 1.0.5)
-            var latest = GetLatestRelease();
-            var currentVersion = vs.ToString().Remove(vs.ToString().Length - 1);
-            var onlineVersion = latest.TagName.Replace("v", "");
+            dynamic latest = GetLatestRelease();
+            string currentVersion = vs.ToString().Remove(vs.ToString().Length - 1);
+            dynamic onlineVersion = latest.TagName.Replace("v", "");
 
-            var result = onlineVersion.CompareTo(currentVersion);
+            dynamic result = onlineVersion.CompareTo(currentVersion);
             if (result > 0)
             {
                 VersionCheck(latest);
@@ -24,9 +26,9 @@ namespace Songify_Slim
         public static dynamic GetLatestRelease()
         {
             // access github and get the repository releases
-            var github = new GitHubClient(new ProductHeaderValue("Songify"));
-            var releases = github.Repository.Release.GetAll("inzaniity", "songify");
-            var latest = releases.Result[0]; // Result[0] is always the newest release
+            GitHubClient github = new GitHubClient(new ProductHeaderValue("Songify"));
+            Task<IReadOnlyList<Release>> releases = github.Repository.Release.GetAll("inzaniity", "songify");
+            Release latest = releases.Result[0]; // Result[0] is always the newest release
             return latest;
         }
 
@@ -49,7 +51,7 @@ namespace Songify_Slim
                 string changelog = latest.Body;
                 (window as MainWindow).Width = 588 + 200;
                 (window as MainWindow).Height = 247.881 + 200;
-                var msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available. Do you wish to update?\n\nWhats new:\n" + changelog, MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                MessageDialogResult msgResult = await (window as MainWindow).ShowMessageAsync("Notification", "There is a new version available. Do you wish to update?\n\nWhats new:\n" + changelog, MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     // if the user wants to update, export config and open url in browser
