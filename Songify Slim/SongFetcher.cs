@@ -252,8 +252,10 @@ namespace Songify_Slim
 
         public string[] FetchSpotifyWeb()
         {
-            if (APIHandler.spotify == null) return new[] { "", "", "", "" };
-
+            if (APIHandler.spotify == null)
+            {
+                return null;
+            }
             var songInfo = APIHandler.GetSongInfo();
 
             if (songInfo.albums != null)

@@ -321,16 +321,16 @@ namespace Songify_Slim
                 case 6:
 
                     #region Spotify API
-                    if (string.IsNullOrEmpty(Settings.RefreshToken))
-                    {
-                        TxtblockLiveoutput.Dispatcher.BeginInvoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() =>
-                            {
-                                TxtblockLiveoutput.Text = "Connect your Spotify Account in the Settings Menu.\nSettings -> Integration";
-                            }));
-                        return;
-                    }
+                    //if (string.IsNullOrEmpty(Settings.RefreshToken))
+                    //{
+                    //    TxtblockLiveoutput.Dispatcher.BeginInvoke(
+                    //        System.Windows.Threading.DispatcherPriority.Normal,
+                    //        new Action(() =>
+                    //        {
+                    //            TxtblockLiveoutput.Text = "Connect your Spotify Account in the Settings Menu.\nSettings -> Integration";
+                    //        }));
+                    //    return;
+                    //}
 
                     currentlyPlaying = sf.FetchSpotifyWeb();
                     if (currentlyPlaying != null)
@@ -463,6 +463,7 @@ namespace Songify_Slim
             }
             if (_selectedSource == 6)
             {
+                APIHandler.DoAuthAsync();
                 img_cover.Visibility = Visibility.Visible;
             }
             else
@@ -470,10 +471,10 @@ namespace Songify_Slim
                 img_cover.Visibility = Visibility.Hidden;
             }
 
-            if (!string.IsNullOrEmpty(Settings.RefreshToken))
-            {
-                APIHandler.DoAuthAsync();
-            }
+            //if (!string.IsNullOrEmpty(Settings.RefreshToken))
+            //{
+            //    APIHandler.DoAuthAsync();
+            //}
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)

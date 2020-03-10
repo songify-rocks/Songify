@@ -86,7 +86,7 @@ namespace Songify_Slim
             {
                 LbxHistory.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));               
+                            new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));
             }
 
             if (LbxHistory.Items.Count > 0)

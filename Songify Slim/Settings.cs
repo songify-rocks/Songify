@@ -5,7 +5,6 @@
     /// </summary>
     internal class Settings
     {
-
         public static bool SplitOutput
         {
             get => GetSplitOutput();
@@ -16,6 +15,12 @@
         {
             get => GetRefreshToken();
             set => SetRefreshToken(value);
+        }
+
+        public static string AccessToken
+        {
+            get => GetAccessToken();
+            set => SetAccessToken(value);
         }
 
         public static bool DownloadCover
@@ -137,6 +142,17 @@
         {
             Properties.Settings.Default.SplitString = value;
             Properties.Settings.Default.Save();
+        }
+
+        private static void SetAccessToken(string value)
+        {
+            Properties.Settings.Default.AccessToken = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetAccessToken()
+        {
+            return Properties.Settings.Default.AccessToken;
         }
 
         private static void SetRefreshToken(string value)

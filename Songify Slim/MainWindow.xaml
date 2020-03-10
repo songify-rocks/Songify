@@ -161,7 +161,6 @@
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
 
-
     <Grid>
         <StackPanel Orientation="Horizontal">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>

@@ -48,7 +48,7 @@ namespace Songify_Slim
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             }
-            if(APIHandler.spotify != null)
+            if (APIHandler.spotify != null)
                 lbl_SpotifyAcc.Content = "Linked account: " + APIHandler.spotify.GetPrivateProfile().DisplayName;
 
             ThemeHandler.ApplyTheme();
@@ -321,7 +321,8 @@ namespace Songify_Slim
                 APIHandler.DoAuthAsync();
                 SetControls();
 
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Logger.Log(ex);
             }
