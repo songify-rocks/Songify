@@ -44,6 +44,18 @@ namespace Songify_Slim
             NudChrome.Value = Settings.ChromeFetchRate;
             ChbxCover.IsChecked = Settings.DownloadCover;
             ChbxSplit.IsChecked = Settings.SplitOutput;
+            txtbx_twChannel.Text = Settings.TwChannel;
+            txtbx_twOAuth.Password = Settings.TwOAuth;
+            txtbx_twUser.Text = Settings.TwAcc;
+            txtbx_RewardID.Text = Settings.TwRewardID;
+            Chbx_TwReward.IsChecked = Settings.TwSRReward;
+            Chbx_TwCommand.IsChecked = Settings.TwSRCommand;
+            NudMaxReq.Value = Settings.TwSRMaxReq;
+            NudCooldown.Value = Settings.TwSRCooldown;
+            Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
+            Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
+
+
             if (Settings.NbUserId != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
@@ -334,6 +346,69 @@ namespace Songify_Slim
             // enables / disables telemetry
             if (ChbxSplit.IsChecked == null) return;
             Settings.SplitOutput = (bool)ChbxCover.IsChecked;
+        }
+
+        private void btn_twConnTest_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.TwAcc = txtbx_twUser.Text;
+            Settings.TwOAuth = txtbx_twOAuth.Password;
+            Settings.TwChannel = txtbx_twChannel.Text;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://twitchapps.com/tmi/");
+        }
+
+        private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.TwRewardID = txtbx_RewardID.Text;
+        }
+
+        private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
+        {
+            // enables / disables telemetry
+            if (Chbx_TwReward.IsChecked == null) return;
+            Settings.TwSRReward = (bool)Chbx_TwReward.IsChecked;
+        }
+
+        private void Chbx_TwCommand_Checked(object sender, RoutedEventArgs e)
+        {
+            // enables / disables telemetry
+            if (Chbx_TwCommand.IsChecked == null) return;
+            Settings.TwSRCommand = (bool)Chbx_TwCommand.IsChecked;
+        }
+
+        private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            Settings.TwSRMaxReq = (int)NudMaxReq.Value;
+
+        }
+
+        private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            Settings.TwSRCooldown = (int)NudCooldown.Value;
+        }
+
+        private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.TwAutoConnect = (bool)Chbx_TwAutoconnect.IsChecked;
+        }
+
+        private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
+        }
+
+        private void btn_SRClear_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (Window window in System.Windows.Application.Current.Windows)
+            {
+                if(window.GetType() == typeof(MainWindow))
+                {
+                    (window as MainWindow).ReqList.Clear();
+                }
+            }
         }
     }
 }

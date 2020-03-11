@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Settings" Height="282.667" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
+        Title="Settings" Height="310.135" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
     <Grid>
         <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="System">
-                <Grid x:Name="NUD_ChromePoll">
+                <Grid>
                     <controls:ToggleSwitch x:Name="ChbxAutostart" Content="autostart with windows" HorizontalAlignment="Left" Header="Behavior"
                               Margin="10,10,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
                               Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI Semibold" FontSize="12"
@@ -118,9 +118,41 @@
                     <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,82,0,0" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,108,0,0" />
-                    <Button x:Name="btn_spotifyLink" Content="(RE)LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,72,0,0" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,98,0,0" />
+                    <Button x:Name="btn_spotifyLink" Content="(RE)LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,98,0,0" Click="btn_spotifyLink_Click" />
+                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,129,0,0"/>
+                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,155,0,0" controls:TextBoxHelper.Watermark="Account"/>
+                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,155,0,0"/>
+                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="191" Margin="10,186,0,0"/>
+                    <Button x:Name="btn_twConnTest" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,185,0,0" Click="btn_twConnTest_Click"/>
+                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,154,0,0" Click="Button_Click"/>
+                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="206,190,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Spotify SR">
+                <Grid>
+
+                    <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text="" VerticalAlignment="Top" Width="225" Margin="151,1,0,0" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged"/>
+                    <Label Content="Channel Points Reward ID" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <CheckBox x:Name="Chbx_MessageLogging" Content="Enable Message Logging" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="151,32,0,0" Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked"/>
+                    <controls:ToggleSwitch x:Name="Chbx_TwReward" Content="Enable SR (Chennlrewards)" HorizontalAlignment="Left"
+                              Margin="5,60,0,0" VerticalAlignment="Top" Checked="Chbx_TwReward_Checked" Unchecked="Chbx_TwReward_Checked"
+                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
+                    <controls:ToggleSwitch x:Name="Chbx_TwCommand" Content="Enable SR (Command (!ssr SpotifyURI))" HorizontalAlignment="Left"
+                              Margin="5,96,0,0" VerticalAlignment="Top" Checked="Chbx_TwCommand_Checked" Unchecked="Chbx_TwCommand_Checked"
+                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
+                    <Label Content="Max Requests per User" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,139,0,0"/>
+                    <Label Content="Command Cooldown (seconds)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,172,0,0"/>
+                    <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
+
+                    <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
+                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" Margin="267,206,0,0" Click="btn_SRClear_Click"/>
 
                 </Grid>
             </TabItem>

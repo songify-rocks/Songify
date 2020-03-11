@@ -25,7 +25,7 @@ namespace Songify_Slim
         private static TokenSwapAuth auth = new TokenSwapAuth(
             exchangeServerUri: "https://songify.bloemacher.com/auth/index.php",
             serverUri: "http://localhost:4002/auth",
-            scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate
+            scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
         );
 
         public static async void DoAuthAsync()
@@ -125,10 +125,22 @@ namespace Songify_Slim
 
                 List<Image> albums = context.Item.Album.Images;
 
-                return new TrackInfo() { Artists = artists, Title = context.Item.Name, albums = albums };
+                return new TrackInfo() { Artists = artists, Title = context.Item.Name, albums = albums, SongID = context.Item.Id };
             }
 
             return new TrackInfo() { Artists = "", Title = "" };
+        }
+
+        public static ErrorResponse AddToQ(string SongURI)
+        {
+            ErrorResponse error = spotify.AddToQueue(SongURI);
+            Console.WriteLine(error);
+            return error;
+        }
+
+        public static FullTrack GetTrack(string id)
+        {
+            return spotify.GetTrack(id);
         }
     }
 
@@ -139,5 +151,7 @@ namespace Songify_Slim
         public string Title { get; set; }
 
         public List<Image> albums { get; set; }
+
+        public string SongID { get; set; }
     }
 }

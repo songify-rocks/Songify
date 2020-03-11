@@ -24,13 +24,7 @@
                                VerticalAlignment="Top" TextAlignment="Center" Height="133"><Run Text="This Project is a free time project and licensed under the GNU General Public License v3.0."/><LineBreak/><Run/><LineBreak/><Run/><LineBreak/><Run Text="If you want to support this project feel free to"/><Run Text=" "/><Run Text=" donate, join the Discord or visit my Github!"/></TextBlock>
         <Button Grid.Column="1" x:Name="BtnDonate" Margin="69,210,70,0" Click="BtnDonateClick" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal">
-                <Rectangle Width="25" Height="25"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                    <Rectangle.OpacityMask>
-                        <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_paypal}" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="DONATE" />
+                <TextBlock Margin="4 0 0 0" VerticalAlignment="Center" Text="Become a PATREON" />
             </StackPanel>
         </Button>
         <Button Grid.Column="1" x:Name="BtnDiscord" Margin="10,254,152,0" Click="BtnDiscordClick" VerticalAlignment="Top" Width="130">

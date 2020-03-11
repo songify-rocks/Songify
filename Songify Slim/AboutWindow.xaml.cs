@@ -14,10 +14,9 @@ namespace Songify_Slim
             InitializeComponent();
         }
 
-
         private void BtnDonateClick(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.paypal.me/inzaniity");
+            Process.Start("https://www.patreon.com/Songify");
         }
 
         private void BtnDiscordClick(object sender, RoutedEventArgs e)

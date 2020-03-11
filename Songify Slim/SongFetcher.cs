@@ -261,9 +261,9 @@ namespace Songify_Slim
             if (songInfo == null) return null;
 
             if (songInfo.albums != null)
-                return new[] { songInfo.Artists, songInfo.Title, "", songInfo.albums[0].Url };
+                return new[] { songInfo.Artists, songInfo.Title, "", songInfo.albums[0].Url, songInfo.SongID };
 
-            return new[] { songInfo.Artists, songInfo.Title, "", null };
+            return new[] { songInfo.Artists, songInfo.Title, "", null, songInfo.SongID };
 
         }
     }

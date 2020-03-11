@@ -1,10 +1,182 @@
-﻿namespace Songify_Slim
+﻿using System;
+
+namespace Songify_Slim
 {
     /// <summary>
     ///     This class is a getter and setter for Settings
     /// </summary>
     internal class Settings
     {
+        public static bool TwAutoConnect
+        {
+            get => GetTwAutoConnect();
+            set => SetTwAutoConnect(value);
+        }
+
+        private static void SetTwAutoConnect(bool value)
+        {
+            Properties.Settings.Default.TwAutoConnect = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetTwAutoConnect()
+        {
+            return Properties.Settings.Default.TwAutoConnect;
+        }
+
+        public static bool MsgLoggingEnabled
+        {
+            get => GetMsgLoggingEnabled();
+            set => SetMsgLoggingEnabled(value);
+        }
+
+        private static void SetMsgLoggingEnabled(bool value)
+        {
+            Properties.Settings.Default.MsgLoggingEnabled = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetMsgLoggingEnabled()
+        {
+            return Properties.Settings.Default.MsgLoggingEnabled;
+        }
+
+        public static int TwSRCooldown
+        {
+            get => GetTwSRCooldown();
+            set => SetTwSRCooldown(value);
+        }
+
+        private static void SetTwSRCooldown(int value)
+        {
+            Properties.Settings.Default.TwSRCooldown = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSRCooldown()
+        {
+            return Properties.Settings.Default.TwSRCooldown;
+        }
+
+        public static int TwSRMaxReq
+        {
+            get => GetTwSRMaxReq();
+            set => SetTwSRMaxReq(value);
+        }
+
+        private static void SetTwSRMaxReq(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReq = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSRMaxReq()
+        {
+            return Properties.Settings.Default.TwSRMaxReq;
+        }
+
+        public static bool TwSRCommand
+        {
+            get => GetTwSRCommand();
+            set => SetTwSRCommand(value);
+        }
+
+        private static void SetTwSRCommand(bool value)
+        {
+            Properties.Settings.Default.TwSRCommand = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetTwSRCommand()
+        {
+            return Properties.Settings.Default.TwSRCommand;
+        }
+
+        public static bool TwSRReward
+        {
+            get => GetTwSRReward();
+            set => SetTwSRReward(value);
+        }
+
+        private static void SetTwSRReward(bool value)
+        {
+            Properties.Settings.Default.TwSRReward = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetTwSRReward()
+        {
+            return Properties.Settings.Default.TwSRReward;
+        }
+
+        public static string TwRewardID
+        {
+            get => GetTwRewardID();
+            set => SetTwRewardID(value);
+        }
+
+        private static void SetTwRewardID(string value)
+        {
+            Properties.Settings.Default.TwRewardID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetTwRewardID()
+        {
+            return Properties.Settings.Default.TwRewardID;
+        }
+
+        public static string TwChannel
+        {
+            get => GetTwChannel();
+            set => SetTwChannel(value);
+        }
+
+        private static void SetTwChannel(string value)
+        {
+            Properties.Settings.Default.TwChannel = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetTwChannel()
+        {
+            return Properties.Settings.Default.TwChannel;
+        }
+
+        public static string TwOAuth
+        {
+            get => GetTwOAuth();
+            set => SetTwOAuth(value);
+        }
+
+        private static void SetTwOAuth(string value)
+        {
+            Properties.Settings.Default.TwOauth = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetTwOAuth()
+        {
+            return Properties.Settings.Default.TwOauth;
+        }
+
+        public static string TwAcc
+        {
+            get => GetTwAcc();
+            set => SetTwAcc(value);
+        }
+
+        private static void SetTwAcc(string value)
+        {
+            Properties.Settings.Default.TwAcc = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetTwAcc()
+        {
+            return Properties.Settings.Default.TwAcc;
+        }
+
         public static bool SplitOutput
         {
             get => GetSplitOutput();

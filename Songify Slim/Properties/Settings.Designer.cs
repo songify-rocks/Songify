@@ -283,5 +283,125 @@ namespace Songify_Slim.Properties {
                 this["AccessToken"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwAcc {
+            get {
+                return ((string)(this["TwAcc"]));
+            }
+            set {
+                this["TwAcc"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwOauth {
+            get {
+                return ((string)(this["TwOauth"]));
+            }
+            set {
+                this["TwOauth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwChannel {
+            get {
+                return ((string)(this["TwChannel"]));
+            }
+            set {
+                this["TwChannel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwRewardID {
+            get {
+                return ((string)(this["TwRewardID"]));
+            }
+            set {
+                this["TwRewardID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TwSRReward {
+            get {
+                return ((bool)(this["TwSRReward"]));
+            }
+            set {
+                this["TwSRReward"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TwSRCommand {
+            get {
+                return ((bool)(this["TwSRCommand"]));
+            }
+            set {
+                this["TwSRCommand"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReq {
+            get {
+                return ((int)(this["TwSRMaxReq"]));
+            }
+            set {
+                this["TwSRMaxReq"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int TwSRCooldown {
+            get {
+                return ((int)(this["TwSRCooldown"]));
+            }
+            set {
+                this["TwSRCooldown"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MsgLoggingEnabled {
+            get {
+                return ((bool)(this["MsgLoggingEnabled"]));
+            }
+            set {
+                this["MsgLoggingEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TwAutoConnect {
+            get {
+                return ((bool)(this["TwAutoConnect"]));
+            }
+            set {
+                this["TwAutoConnect"] = value;
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,7 @@ using System.Timers;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 
@@ -26,6 +28,13 @@ namespace Songify_Slim
         public const string FooBar2000 = "foobar2000";
         public const string Deezer = "Deezer (Chrome)";
         public const string SpotifyWeb = "Spotify API";
+    }
+
+    public class RequestObject
+    {
+        public string TrackID { get; set; }
+        public string Requester { get; set; }
+
     }
 
     public partial class MainWindow
@@ -51,6 +60,7 @@ namespace Songify_Slim
         private bool _forceClose;
         bool _firstRun = true;
         string _prevSong;
+        public List<RequestObject> ReqList = new List<RequestObject>();
 
         #endregion
 
@@ -171,13 +181,21 @@ namespace Songify_Slim
             SetFetchTimer();
 
             if (_selectedSource == PlayerType.SpotifyWeb)
-            
+
             {
                 SongFetcher sf = new SongFetcher();
                 string[] currentlyPlaying = sf.FetchSpotifyWeb();
                 if (currentlyPlaying != null)
                 {
                     WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true);
+                    try
+                    {
+                        ReqList.Remove(ReqList.Find(x => x.TrackID == currentlyPlaying[4]));
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
             }
         }
@@ -351,7 +369,7 @@ namespace Songify_Slim
                     currentlyPlaying = sf.FetchSpotifyWeb();
                     if (currentlyPlaying != null)
                     {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3]);
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], false, currentlyPlaying[4]);
                     }
                     break;
 
@@ -400,6 +418,7 @@ namespace Songify_Slim
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            Settings.MsgLoggingEnabled = false;
             // Load Config file if one exists
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
             {
@@ -472,14 +491,18 @@ namespace Songify_Slim
                 img_cover.Visibility = Visibility.Hidden;
             }
 
-            
+            if (Settings.TwAutoConnect)
+            {
+                TwitchHandler.BotConnect();
+            }
+
         }
 
         private void AddSourcesToSourceBox()
         {
-            string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy, 
+            string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
                 PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
-            cbx_Source.ItemsSource = sourceBoxItems;            
+            cbx_Source.ItemsSource = sourceBoxItems;
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -553,7 +576,7 @@ namespace Songify_Slim
             }, null, _startTimeSpan, _periodTimeSpan);
         }
 
-        private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false)
+        private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false, string trackID = null)
         {
             if (artist.Contains("Various Artists, "))
             {
@@ -621,6 +644,15 @@ namespace Songify_Slim
             {
                 // write song to the text file
                 File.WriteAllText(songPath, CurrSong);
+
+                try
+                {
+                    ReqList.Remove(ReqList.Find(x => x.TrackID == trackID));
+                }
+                catch (Exception)
+                {
+
+                }
 
                 if (Settings.SplitOutput)
                 {
@@ -792,6 +824,18 @@ namespace Songify_Slim
             }
         }
 
+        private void BtnTwitch_Click(object sender, RoutedEventArgs e)
+        {
+            if (TwitchHandler._client.IsConnected)
+            {
+                TwitchHandler._client.Disconnect();
+            }
+            else
+            {
+                TwitchHandler.BotConnect();
+            }
+        }
+
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
@@ -801,7 +845,7 @@ namespace Songify_Slim
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://www.paypal.me/inzaniity");
+            Process.Start("https://www.patreon.com/Songify");
         }
     }
 }

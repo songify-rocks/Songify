@@ -135,8 +135,13 @@
         <controls:WindowCommands>
             <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Paypal" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    <iconPacks:PackIconMaterial Kind="Patreon" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
+            </Button>
+            <Button x:Name="BtnTwitch" ToolTip="Connect to Twitch" IsTabStop="False" Click="BtnTwitch_Click">
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconMaterial x:Name="icon_Twitch" Kind="Twitch" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red"/>
+                </StackPanel>                
             </Button>
             <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
