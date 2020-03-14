@@ -120,10 +120,16 @@ namespace Songify_Slim
                 }
                 else
                 {
-                    SpotifyAPI.Web.Models.SearchItem searchItem = APIHandler.FindTrack(e.ChatMessage.Message);
-                    SpotifyAPI.Web.Models.FullTrack fullTrack = searchItem.Tracks.Items[0];
-
-                    AddSong(fullTrack.Id, e);
+                    SearchItem searchItem = APIHandler.FindTrack(e.ChatMessage.Message);
+                    if (searchItem.Tracks.Items.Count > 0)
+                    {
+                        FullTrack fullTrack = searchItem.Tracks.Items[0];
+                        AddSong(fullTrack.Id, e);
+                    }
+                    else
+                    {
+                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Couldn't find a song matching your request.");
+                    }
                 }
                 return;
             }
