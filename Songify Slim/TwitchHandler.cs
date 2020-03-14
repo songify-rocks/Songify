@@ -1,6 +1,9 @@
-﻿using System;
+﻿using SpotifyAPI.Web.Models;
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Timers;
+using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using TwitchLib.Client;
@@ -17,7 +20,7 @@ namespace Songify_Slim
         public static bool onCooldown = false;
         public static Timer cooldownTimer = new Timer
         {
-           Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds,           
+            Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds,
         };
 
         public static void BotConnect()
@@ -55,8 +58,9 @@ namespace Songify_Slim
                         (window as MainWindow).LblStatus.Content = "Disconnected from Twitch";
                     }
                 }
-
             }));
+
+            Logger.LogStr("Disconnected from Twitch");
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -79,6 +83,7 @@ namespace Songify_Slim
                             }
 
                         }));
+            Logger.LogStr("Connected to Twitch");
         }
 
         private static void _client_OnWhisperReceived(object sender, OnWhisperReceivedArgs e)
@@ -101,7 +106,6 @@ namespace Songify_Slim
                                 (window as SettingsWindow).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
                             }
                         }
-
                     }));
                 }
             }
@@ -110,44 +114,16 @@ namespace Songify_Slim
             {
                 if (e.ChatMessage.Message.StartsWith("spotify:track:"))
                 {
+                    string TrackID = e.ChatMessage.Message.Replace("spotify:track:", "");
 
-                    SpotifyAPI.Web.Models.FullTrack track = APIHandler.GetTrack(e.ChatMessage.Message.Replace("spotify:track:", ""));
-                    if (isInQueue(track.Id))
-                    {
-                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " this song is already in the queue.");
-                        return;
-                    }
+                    AddSong(TrackID, e);
+                }
+                else
+                {
+                    SpotifyAPI.Web.Models.SearchItem searchItem = APIHandler.FindTrack(e.ChatMessage.Message);
+                    SpotifyAPI.Web.Models.FullTrack fullTrack = searchItem.Tracks.Items[0];
 
-                    if (MaxQueueItems(e.ChatMessage.DisplayName))
-                    {
-                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " maximum number of songs in queue reached (" + Settings.TwSRMaxReq + ").");
-                        return;
-                    }
-
-                    SpotifyAPI.Web.Models.ErrorResponse error = APIHandler.AddToQ(e.ChatMessage.Message);
-                    if (error.Error != null)
-                    {
-                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Error message: " + error.Error.Message);
-                        return;
-                    }
-
-                    _client.SendMessage(e.ChatMessage.Channel, track.Artists[0].Name + " - " + track.Name + " requested by @" + e.ChatMessage.DisplayName + " has been added to the queue");
-
-                    Application.Current.Dispatcher.Invoke(new Action(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() == typeof(MainWindow))
-                            {
-                                (window as MainWindow).ReqList.Add(new RequestObject
-                                {
-                                    Requester = e.ChatMessage.DisplayName,
-                                    TrackID = e.ChatMessage.Message.Replace("spotify:track:", "")
-                                });
-                            }
-                        }
-
-                    }));
+                    AddSong(fullTrack.Id, e);
                 }
                 return;
             }
@@ -162,42 +138,8 @@ namespace Songify_Slim
                 string[] msgSplit = e.ChatMessage.Message.Split(' ');
                 string trackID = msgSplit[1].Replace("spotify:track:", "");
 
-                SpotifyAPI.Web.Models.FullTrack track = APIHandler.GetTrack(trackID);
-                if (isInQueue(track.Id))
-                {
-                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " this song is already in the queue.");
-                    return;
-                }
+                AddSong(trackID, e);
 
-                if (MaxQueueItems(e.ChatMessage.DisplayName))
-                {
-                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " maximum number of songs in queue reached (" + Settings.TwSRMaxReq + ").");
-                    return;
-                }
-
-                SpotifyAPI.Web.Models.ErrorResponse error = APIHandler.AddToQ(msgSplit[1]);
-                if (error.Error != null)
-                {
-                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Error message: " + error.Error.Message);
-                    return;
-                }
-
-                _client.SendMessage(e.ChatMessage.Channel, track.Artists[0].Name + " - " + track.Name + " requested by @" + e.ChatMessage.DisplayName + " has been added to the queue");
-
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window.GetType() == typeof(MainWindow))
-                        {
-                            (window as MainWindow).ReqList.Add(new RequestObject
-                            {
-                                Requester = e.ChatMessage.DisplayName,
-                                TrackID = trackID
-                            });
-                        }
-                    }
-                }));
                 onCooldown = true;
                 cooldownTimer.Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds;
                 cooldownTimer.Start();
@@ -205,6 +147,125 @@ namespace Songify_Slim
             }
 
             Console.WriteLine(e.ChatMessage.RawIrcMessage);
+        }
+
+        private static void AddSong(string trackID, OnMessageReceivedArgs e)
+        {
+            SpotifyAPI.Web.Models.FullTrack track = APIHandler.GetTrack(trackID);
+
+            if (track.DurationMs >= TimeSpan.FromMinutes(10).TotalMilliseconds)
+            {
+                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " the song you requested exceeded the maximum song length (10 minutes)");
+                return;
+            }
+
+            if (isInQueue(track.Id))
+            {
+                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " this song is already in the queue.");
+                return;
+            }
+
+            if (MaxQueueItems(e.ChatMessage.DisplayName))
+            {
+                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " maximum number of songs in queue reached (" + Settings.TwSRMaxReq + ").");
+                return;
+            }
+
+            string SpotifyURI = "spotify:track:" + trackID;
+
+            SpotifyAPI.Web.Models.ErrorResponse error = APIHandler.AddToQ(SpotifyURI);
+            if (error.Error != null)
+            {
+                Logger.LogStr(error.Error.Message + "\n" + error.Error.Status);
+                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Error message: " + error.Error.Message);
+                return;
+            }
+
+            _client.SendMessage(e.ChatMessage.Channel, track.Artists[0].Name + " - " + track.Name + " requested by @" + e.ChatMessage.DisplayName + " has been added to the queue");
+
+            UploadToQueue(track, e.ChatMessage.DisplayName);
+
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        (window as MainWindow).ReqList.Add(new RequestObject
+                        {
+                            Requester = e.ChatMessage.DisplayName,
+                            TrackID = trackID
+                        });
+                    }
+                }
+            }));
+        }
+
+        private static void UploadToQueue(FullTrack track, string displayName)
+        {
+            try
+            {
+                string artists = "";
+
+                for (int i = 0; i < track.Artists.Count; i++)
+                {
+                    if (i != track.Artists.Count - 1)
+                        artists += track.Artists[i].Name + ", ";
+                    else
+                        artists += track.Artists[i].Name;
+                }
+                string minutes, seconds;
+
+                TimeSpan t = TimeSpan.FromMilliseconds(track.DurationMs);
+                minutes = t.Minutes.ToString();
+
+                if (t.Seconds < 10)
+                {
+                    seconds = "0" + t.Seconds;
+                }
+                else
+                {
+                    seconds = t.Seconds.ToString();
+                }
+
+                string length = minutes + seconds;
+
+
+                string extras = Settings.Uuid +
+                    "&trackid=" + HttpUtility.UrlEncode(track.Id) +
+                    "&artist=" + HttpUtility.UrlEncode(artists) +
+                    "&title=" + HttpUtility.UrlEncode(track.Name) +
+                    "&length=" + HttpUtility.UrlEncode(length) +
+                    "&requester=" + displayName +
+                    "&played=" + "0" +
+                    "&o=" + "i";
+
+                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
+
+
+                Console.WriteLine(url);
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.Webua;
+
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                myHttpWebResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window.GetType() == typeof(MainWindow))
+                        {
+                            (window as MainWindow).LblStatus.Content = "Error Uploading Queue";
+                        }
+                    }
+                }));
+                Logger.LogExc(ex);
+            }
         }
 
         private static bool isInQueue(string id)

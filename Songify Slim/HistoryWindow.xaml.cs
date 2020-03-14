@@ -26,6 +26,7 @@ namespace Songify_Slim
         {
             Tglbtn_Save.IsChecked = Settings.SaveHistory;
             Tglbtn_Upload.IsChecked = Settings.UploadHistory;
+
             if (Settings.SaveHistory)
                 Tglbtn_Save.Content = "Save ✔️";
             else

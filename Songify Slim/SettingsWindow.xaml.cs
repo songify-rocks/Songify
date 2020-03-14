@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Reflection;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -106,7 +107,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
             }
 
             SetControls();
@@ -336,7 +337,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
             }
 
         }
@@ -409,6 +410,41 @@ namespace Songify_Slim
                     (window as MainWindow).ReqList.Clear();
                 }
             }
+
+            try
+            {
+                string extras = Settings.Uuid +
+                "&trackid=" + HttpUtility.UrlEncode("") +
+                "&artist=" + HttpUtility.UrlEncode("") +
+                "&title=" + HttpUtility.UrlEncode("") +
+                "&length=" + HttpUtility.UrlEncode("") +
+                "&requester=" + "" +
+                "&played=" + "1" +
+                "&o=" + "c";
+
+
+                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
+
+
+                Console.WriteLine(url);
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.Webua;
+
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                myHttpWebResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+
+        }
+
+        private void btn_QueueLink_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/queue.php?id=" + Settings.Uuid);
         }
     }
 }

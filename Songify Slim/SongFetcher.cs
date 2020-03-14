@@ -51,7 +51,7 @@ namespace Songify_Slim
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.Log(ex);
+                                    Logger.LogExc(ex);
                                 }
 
                                 return new[] { artist, title, extra };
@@ -90,7 +90,7 @@ namespace Songify_Slim
                             }
                             catch (Exception ex)
                             {
-                                Logger.Log(ex);
+                                Logger.LogExc(ex);
                             }
                             return new[] { artist, title, extra };
 
@@ -118,7 +118,7 @@ namespace Songify_Slim
                             }
                             catch (Exception ex)
                             {
-                                Logger.Log(ex);
+                                Logger.LogExc(ex);
                             }
                             return new[] { artist, title, extra };
                     }
@@ -211,7 +211,7 @@ namespace Songify_Slim
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(ex);
+                    Logger.LogExc(ex);
                     // Chrome has probably changed something, and above walking needs to be modified. :(
                     // put an assertion here or something to make sure you don't miss it
                 }

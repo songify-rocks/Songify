@@ -79,6 +79,21 @@ namespace Songify_Slim
                 writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
                 writer.WriteAttributeString("uploadhistory", Settings.UploadHistory.ToString());
                 writer.WriteAttributeString("savehistory", Settings.SaveHistory.ToString());
+
+                writer.WriteAttributeString("downloadcover", Settings.DownloadCover.ToString());
+                writer.WriteAttributeString("refreshtoken", Settings.RefreshToken);
+                writer.WriteAttributeString("splitoutput", Settings.SplitOutput.ToString());
+                writer.WriteAttributeString("accesstoken", Settings.AccessToken);
+                writer.WriteAttributeString("twacc", Settings.TwAcc);
+                writer.WriteAttributeString("twoauth", Settings.TwOAuth);
+                writer.WriteAttributeString("twchannel", Settings.TwChannel);
+                writer.WriteAttributeString("twrewardid", Settings.TwRewardID);
+                writer.WriteAttributeString("twsrreward", Settings.TwSRReward.ToString());
+                writer.WriteAttributeString("twsrcommand", Settings.TwSRCommand.ToString());
+                writer.WriteAttributeString("twsrmaxreq", Settings.TwSRMaxReq.ToString());
+                writer.WriteAttributeString("twsrcooldown", Settings.TwSRCooldown.ToString());
+                writer.WriteAttributeString("msglogging", Settings.MsgLoggingEnabled.ToString());
+                writer.WriteAttributeString("twautoconnect", Settings.TwAutoConnect.ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -122,11 +137,25 @@ namespace Songify_Slim
                     Settings.Upload = Convert.ToBoolean(node.Attributes["uploadSonginfo"]?.InnerText);
                     Settings.UploadHistory = Convert.ToBoolean(node.Attributes["uploadhistory"]?.InnerText);
                     Settings.SaveHistory = Convert.ToBoolean(node.Attributes["savehistory"]?.InnerText);
+                    Settings.DownloadCover = Convert.ToBoolean(node.Attributes["downloadcover"]?.InnerText);
+                    Settings.RefreshToken = node.Attributes["refreshtoken"].InnerText;
+                    Settings.SplitOutput = Convert.ToBoolean(node.Attributes["splitoutput"]?.InnerText);
+                    Settings.AccessToken = node.Attributes["accesstoken"]?.InnerText;
+                    Settings.TwAcc = node.Attributes["twacc"]?.InnerText;
+                    Settings.TwOAuth = node.Attributes["twoauth"]?.InnerText;
+                    Settings.TwChannel = node.Attributes["twchannel"]?.InnerText;
+                    Settings.TwRewardID = node.Attributes["twrewardid"]?.InnerText;
+                    Settings.TwSRReward = Convert.ToBoolean(node.Attributes["twsrreward"]?.InnerText);
+                    Settings.TwSRCommand = Convert.ToBoolean(node.Attributes["twsrcommand"]?.InnerText);
+                    Settings.TwSRMaxReq = int.Parse(node.Attributes["twsrmaxreq"]?.InnerText);
+                    Settings.TwSRCooldown = int.Parse(node.Attributes["twsrcooldown"]?.InnerText);
+                    Settings.MsgLoggingEnabled = Convert.ToBoolean(node.Attributes["msglogging"]?.InnerText);
+                    Settings.TwAutoConnect = Convert.ToBoolean(node.Attributes["twautoconnect"]?.InnerText);
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
             }
         }
 

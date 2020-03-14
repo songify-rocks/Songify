@@ -114,7 +114,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
                 // Writing to the statusstrip label
                 LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
@@ -132,7 +132,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
                 UpdateError = true;
             }
         }
@@ -187,7 +187,7 @@ namespace Songify_Slim
                 string[] currentlyPlaying = sf.FetchSpotifyWeb();
                 if (currentlyPlaying != null)
                 {
-                    WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true);
+                    WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true, currentlyPlaying[4]);
                     try
                     {
                         ReqList.Remove(ReqList.Find(x => x.TrackID == currentlyPlaying[4]));
@@ -234,7 +234,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
             }
 
             _timerFetcher = new System.Timers.Timer();
@@ -593,6 +593,7 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace("{artist}", artist);
                 CurrSong = CurrSong.Replace("{title}", title);
                 CurrSong = CurrSong.Replace("{extra}", extra);
+                CurrSong = CurrSong.Replace("{uri}", trackID);
             }
             else
             {
@@ -609,8 +610,9 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace("{artist}", artist);
                 CurrSong = CurrSong.Replace("{title}", title);
                 CurrSong = CurrSong.Replace("{extra}", extra);
-            }
+                CurrSong = CurrSong.Replace("{uri}", trackID);
 
+            }
 
             // get the songPath which is default the directory where the exe is, else get the user set directory
             if (string.IsNullOrEmpty(Settings.Directory))
@@ -747,11 +749,45 @@ namespace Songify_Slim
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log(ex);
+                        Logger.LogExc(ex);
                         // Writing to the statusstrip label
                         LblStatus.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+                    }
+
+                }
+
+                // Update Song Queue
+                if (trackID != null)
+                {
+                    try
+                    {
+                        string extras = Settings.Uuid +
+                        "&trackid=" + HttpUtility.UrlEncode(trackID) +
+                        "&artist=" + HttpUtility.UrlEncode("") +
+                        "&title=" + HttpUtility.UrlEncode("") +
+                        "&length=" + HttpUtility.UrlEncode("") +
+                        "&requester=" + "" +
+                        "&played=" + "1" +
+                        "&o=" + "u";
+
+
+                        string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
+
+
+                        Console.WriteLine(url);
+                        // Create a new 'HttpWebRequest' object to the mentioned URL.
+                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                        myHttpWebRequest.UserAgent = Settings.Webua;
+
+                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        myHttpWebResponse.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
                     }
 
                 }
@@ -815,7 +851,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.Log(ex);
+                Logger.LogExc(ex);
                 // if error occurs write text to the status asynchronous
                 Console.WriteLine(ex.Message);
                 LblStatus.Dispatcher.Invoke(

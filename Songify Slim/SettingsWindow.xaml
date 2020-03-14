@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Settings" Height="310.135" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
+        Title="Settings" Height="310.884" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
     <Grid>
         <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="System">
@@ -152,8 +152,19 @@
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
 
                     <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
-                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" Margin="267,206,0,0" Click="btn_SRClear_Click"/>
-
+                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="166" Margin="10,213,0,0" Click="btn_SRClear_Click" Height="29"/>
+                    <Button x:Name="btn_QueueLink" HorizontalAlignment="Left" Margin="181,213,0,0" VerticalAlignment="Top" Width="195" Click="btn_QueueLink_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock TextWrapping="Wrap" Text="Queue Link" Margin="0,0,5,0"/>
+                            <Rectangle
+                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                Width="15" Height="15">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_link}" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

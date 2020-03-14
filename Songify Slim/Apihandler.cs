@@ -17,10 +17,11 @@ namespace Songify_Slim
         public static Token lastToken;
         public static bool authenticated;
         public static bool authed = false;
-        public static Timer authRefresh = new Timer {
+        public static Timer authRefresh = new Timer
+        {
             Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
         };
-        
+
 
         private static TokenSwapAuth auth = new TokenSwapAuth(
             exchangeServerUri: "https://songify.bloemacher.com/auth/index.php",
@@ -141,6 +142,11 @@ namespace Songify_Slim
         public static FullTrack GetTrack(string id)
         {
             return spotify.GetTrack(id);
+        }
+
+        public static SearchItem FindTrack(string searchQuery)
+        {
+            return spotify.SearchItems(searchQuery, SearchType.Track, 1);
         }
     }
 
