@@ -1,4 +1,4 @@
-![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg) ![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg) ![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)
+![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg) ![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg) ![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg) 
 
 # What is Songify Slim?
 
@@ -80,6 +80,8 @@ Then, from the Template drop down menu, select "Load Text from Local File" and p
 
 After that, you should be good to go.
 
+# Consider supporting 
+[<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png"  target="_blank">](https://www.patreon.com/bePatron?u=31732074)
 
 # Connect with me!
 [<img src="https://discordapp.com/assets/fc0b01fe10a0b8c602fb0106d8189d9b.png"  target="_blank">](https://discordapp.com/invite/H8nd4T4)
