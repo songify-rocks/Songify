@@ -100,8 +100,8 @@ namespace Songify_Slim
 
         private void LbxHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsFileLocked(new FileInfo(_path)))
-                return;
+            //if (IsFileLocked(new FileInfo(_path)))
+            //    return;
             if (LbxHistory.SelectedIndex < 0)
                 return;
             dgvHistorySongs.Items.Clear();
@@ -226,8 +226,6 @@ namespace Songify_Slim
             {
                 Tglbtn_Upload.Content = "Upload ❌";
                 Lbl_Status.Content = "History Upload Disabled ❌";
-
-
             }
         }
 

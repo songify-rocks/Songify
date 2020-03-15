@@ -142,9 +142,25 @@ namespace Songify_Slim
                 }
 
                 string[] msgSplit = e.ChatMessage.Message.Split(' ');
-                string trackID = msgSplit[1].Replace("spotify:track:", "");
-
-                AddSong(trackID, e);
+                if (msgSplit[1].StartsWith("spotify:track:"))
+                {
+                    string trackID = msgSplit[1].Replace("spotify:track:", "");
+                    AddSong(trackID, e);
+                }
+                else
+                {
+                    string searchString = e.ChatMessage.Message.Replace("!ssr ", "");
+                    SearchItem searchItem = APIHandler.FindTrack(searchString);
+                    if (searchItem.Tracks.Items.Count > 0)
+                    {
+                        FullTrack fullTrack = searchItem.Tracks.Items[0];
+                        AddSong(fullTrack.Id, e);
+                    }
+                    else
+                    {
+                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Couldn't find a song matching your request.");
+                    }
+                }
 
                 onCooldown = true;
                 cooldownTimer.Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds;
