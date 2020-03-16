@@ -97,6 +97,8 @@ namespace Songify_Slim
             {
                 if (e.ChatMessage.CustomRewardId != null)
                 {
+                    Settings.TwRewardID = e.ChatMessage.CustomRewardId;
+
                     Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         foreach (Window window in Application.Current.Windows)
@@ -142,7 +144,7 @@ namespace Songify_Slim
                 }
 
                 string[] msgSplit = e.ChatMessage.Message.Split(' ');
-                
+
                 // Prevent crash on command without args
                 if (msgSplit.Length <= 1)
                 {
@@ -170,7 +172,7 @@ namespace Songify_Slim
                     }
                 }
 
-                StartCooldown();                
+                StartCooldown();
                 return;
             }
 
@@ -263,7 +265,7 @@ namespace Songify_Slim
                     seconds = t.Seconds.ToString();
                 }
 
-                string length = minutes + seconds;
+                string length = minutes + ":" + seconds;
 
 
                 string extras = Settings.Uuid +
