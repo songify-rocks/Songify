@@ -142,6 +142,14 @@ namespace Songify_Slim
                 }
 
                 string[] msgSplit = e.ChatMessage.Message.Split(' ');
+                
+                // Prevent crash on command without args
+                if (msgSplit.Length <= 1)
+                {
+                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " please specify a song to add to the queue.");
+                    StartCooldown();
+                    return;
+                }
                 if (msgSplit[1].StartsWith("spotify:track:"))
                 {
                     string trackID = msgSplit[1].Replace("spotify:track:", "");
@@ -162,13 +170,18 @@ namespace Songify_Slim
                     }
                 }
 
-                onCooldown = true;
-                cooldownTimer.Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds;
-                cooldownTimer.Start();
+                StartCooldown();                
                 return;
             }
 
             Console.WriteLine(e.ChatMessage.RawIrcMessage);
+        }
+
+        private static void StartCooldown()
+        {
+            onCooldown = true;
+            cooldownTimer.Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds;
+            cooldownTimer.Start();
         }
 
         private static void AddSong(string trackID, OnMessageReceivedArgs e)
