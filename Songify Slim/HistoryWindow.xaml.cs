@@ -59,6 +59,8 @@ namespace Songify_Slim
 
         public void LoadFile()
         {
+            if (IsFileLocked(new FileInfo(_path)))
+                return;
             dgvHistorySongs.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { dgvHistorySongs.Items.Clear(); }));
@@ -100,8 +102,8 @@ namespace Songify_Slim
 
         private void LbxHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //if (IsFileLocked(new FileInfo(_path)))
-            //    return;
+            if (IsFileLocked(new FileInfo(_path)))
+                return;
             if (LbxHistory.SelectedIndex < 0)
                 return;
             dgvHistorySongs.Items.Clear();
@@ -138,7 +140,7 @@ namespace Songify_Slim
             {
                 stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
             }
-            catch (IOException)
+            catch (Exception)
             {
                 //the file is unavailable because it is:
                 //still being written to
@@ -196,6 +198,9 @@ namespace Songify_Slim
 
         private void Tglbtn_Save_Checked(object sender, RoutedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             Settings.SaveHistory = (bool)Tglbtn_Save.IsChecked;
 
             if ((bool)Tglbtn_Save.IsChecked)
@@ -214,6 +219,9 @@ namespace Songify_Slim
 
         private void Tglbtn_Upload_Checked(object sender, RoutedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             Settings.UploadHistory = (bool)Tglbtn_Upload.IsChecked;
 
             if ((bool)Tglbtn_Upload.IsChecked)

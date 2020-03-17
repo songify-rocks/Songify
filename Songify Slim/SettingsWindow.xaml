@@ -137,7 +137,7 @@
                     <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text="" VerticalAlignment="Top" Width="225" Margin="151,1,0,0" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged"/>
                     <Label Content="Channel Points Reward ID" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <CheckBox x:Name="Chbx_MessageLogging" Content="Enable Message Logging" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="151,32,0,0" Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked"/>
-                    <controls:ToggleSwitch x:Name="Chbx_TwReward" Content="Enable SR (Chennlrewards)" HorizontalAlignment="Left"
+                    <controls:ToggleSwitch x:Name="Chbx_TwReward" Content="Enable SR (Channel Rewards)" HorizontalAlignment="Left"
                               Margin="5,60,0,0" VerticalAlignment="Top" Checked="Chbx_TwReward_Checked" Unchecked="Chbx_TwReward_Checked"
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"

@@ -114,6 +114,12 @@ namespace Songify_Slim
 
             if (Settings.TwSRReward && e.ChatMessage.CustomRewardId == Settings.TwRewardID)
             {
+                if(APIHandler.spotify == null)
+                {
+                    _client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
+                    return;
+                }
+
                 if (e.ChatMessage.Message.StartsWith("spotify:track:"))
                 {
                     string TrackID = e.ChatMessage.Message.Replace("spotify:track:", "");
@@ -140,6 +146,12 @@ namespace Songify_Slim
             {
                 if (onCooldown)
                 {
+                    return;
+                }
+
+                if (APIHandler.spotify == null)
+                {
+                    _client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
                 }
 

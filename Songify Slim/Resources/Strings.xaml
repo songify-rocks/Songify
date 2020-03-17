@@ -216,7 +216,6 @@ This seems to be the first time you are running the software. I'd like to anonym
 
 You can always opt out by declining this dialog or uncheck the box in the settings menu.
     </system:String>
-
     <system:String x:Key="collectable_data" xml:space="preserve">● UUID (randomly generate identifier, nothing personalized)
 
 ● Current timestamp (to evaluate how frequent the software is used)
