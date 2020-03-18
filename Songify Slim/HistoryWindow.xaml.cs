@@ -140,12 +140,13 @@ namespace Songify_Slim
             {
                 stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //the file is unavailable because it is:
                 //still being written to
                 //or being processed by another thread
                 //or does not exist (has already been processed)
+                Logger.LogExc(ex);
                 return true;
             }
             finally

@@ -115,20 +115,19 @@
             </TabItem>
             <TabItem Header="Integration">
                 <Grid>
-                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
+                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,5,5,5" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,72,0,0" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,98,0,0" />
-                    <Button x:Name="btn_spotifyLink" Content="(RE)LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,98,0,0" Click="btn_spotifyLink_Click" />
-                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,129,0,0"/>
-                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,155,0,0" controls:TextBoxHelper.Watermark="Account"/>
-                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,155,0,0"/>
-                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="191" Margin="10,186,0,0"/>
-                    <Button x:Name="btn_twConnTest" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,185,0,0" Click="btn_twConnTest_Click"/>
-                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,154,0,0" Click="Button_Click"/>
-                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="206,190,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
-
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,81,0,0" Padding="0,5,5,5" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,107,0,0" Width="286" />
+                    <Button x:Name="btn_spotifyLink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
+                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,148,0,0" Padding="0,5,5,5"/>
+                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,174,0,0" controls:TextBoxHelper.Watermark="Account"/>
+                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,174,0,0"/>
+                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="191" Margin="10,205,0,0"/>
+                    <Button x:Name="btn_twConnTest" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,204,0,0" Click="btn_twConnTest_Click"/>
+                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,173,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
+                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="206,209,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
@@ -152,7 +151,7 @@
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
 
                     <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
-                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="166" Margin="10,213,0,0" Click="btn_SRClear_Click" Height="29"/>
+                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="171" Margin="5,213,0,0" Click="btn_SRClear_Click" Height="29"/>
                     <Button x:Name="btn_QueueLink" HorizontalAlignment="Left" Margin="181,213,0,0" VerticalAlignment="Top" Width="195" Click="btn_QueueLink_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock TextWrapping="Wrap" Text="Queue Link" Margin="0,0,5,0"/>

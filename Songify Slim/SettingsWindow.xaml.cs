@@ -55,7 +55,7 @@ namespace Songify_Slim
             NudCooldown.Value = Settings.TwSRCooldown;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
-
+            ChbxSplit.IsChecked = Settings.SplitOutput;
 
             if (Settings.NbUserId != null)
             {
@@ -339,7 +339,6 @@ namespace Songify_Slim
             {
                 Logger.LogExc(ex);
             }
-
         }
 
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)

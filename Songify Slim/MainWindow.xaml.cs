@@ -483,7 +483,15 @@ namespace Songify_Slim
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
-                APIHandler.DoAuthAsync();
+                if (string.IsNullOrEmpty(Settings.AccessToken) && string.IsNullOrEmpty(Settings.RefreshToken))
+                {
+                    TxtblockLiveoutput.Text = "Please link your Spotify account\nSettings -> Integration";
+                }
+                else
+                {
+                    APIHandler.DoAuthAsync();
+                }
+
                 img_cover.Visibility = Visibility.Visible;
             }
             else

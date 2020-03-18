@@ -25,6 +25,22 @@ namespace Songify_Slim
 
         public static void BotConnect()
         {
+            if (string.IsNullOrEmpty(Settings.TwAcc) || string.IsNullOrEmpty(Settings.TwOAuth) || string.IsNullOrEmpty(Settings.TwChannel))
+            {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window.GetType() == typeof(MainWindow))
+                        {
+                            (window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                            (window as MainWindow).LblStatus.Content = "Please fill in Twitch credentials.";
+                        }
+                    }
+                }));
+                return;
+            }
+
             ConnectionCredentials credentials = new ConnectionCredentials(Settings.TwAcc, Settings.TwOAuth);
             ClientOptions clientOptions = new ClientOptions
             {
@@ -41,6 +57,7 @@ namespace Songify_Slim
             _client.OnWhisperReceived += _client_OnWhisperReceived;
             _client.OnConnected += _client_OnConnected;
             _client.OnDisconnected += _client_OnDisconnected;
+
             _client.Connect();
 
             cooldownTimer.Elapsed += CooldownTimer_Elapsed;
