@@ -174,16 +174,9 @@
         </StackPanel>
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
-            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.0.10pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
+            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1 pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
         </StatusBar>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="437,10,0,0" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0" IsTabStop="False">
-            <!--<ComboBoxItem Content = "Spotify Legacy" IsTabStop="False"/>
-            <ComboBoxItem Content = "Youtube (Chrome)" IsTabStop="False"/>
-            <ComboBoxItem Content = "Nightbot" IsTabStop="False"/>
-            <ComboBoxItem Content="VLC" IsTabStop="False"/>
-            <ComboBoxItem Content="foobar2000" IsTabStop="False"/>
-            <ComboBoxItem Content="Deezer (Chrome)" IsTabStop="False"/>
-            <ComboBoxItem Content="Spotify WebAPI" IsTabStop="False"/>-->
         </ComboBox>
     </Grid>
 </controls:MetroWindow>

@@ -445,5 +445,18 @@ namespace Songify_Slim
         {
             System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/queue.php?id=" + Settings.Uuid);
         }
+
+        private void btn_ArtistBlacklist_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO: Open Blacklist Window
+            Window_Blacklist wB = new Window_Blacklist();
+            wB.ShowDialog();
+        }
+
+        private void btn_Queue_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Queue wQ = new Window_Queue();
+            wQ.Show();
+        }
     }
 }

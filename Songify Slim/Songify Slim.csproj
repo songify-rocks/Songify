@@ -295,6 +295,12 @@
     <Compile Include="ThemeHandler.cs" />
     <Compile Include="TwitchHandler.cs" />
     <Compile Include="Updater.cs" />
+    <Compile Include="Window_Blacklist.xaml.cs">
+      <DependentUpon>Window_Blacklist.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Window_Queue.xaml.cs">
+      <DependentUpon>Window_Queue.xaml</DependentUpon>
+    </Compile>
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -328,6 +334,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_Blacklist.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_Queue.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

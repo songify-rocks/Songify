@@ -1,0 +1,16 @@
+﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Blacklist"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"        
+        xmlns:local="clr-namespace:Songify_Slim"
+        mc:Ignorable="d"
+        Title="Artist Blacklist" Height="450" Width="445.182" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded">
+    <Grid>
+        <TextBox x:Name="tb_Blacklist" Height="27" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,170,0" controls:TextBoxHelper.Watermark="Artist"/>
+        <Button x:Name="btn_Add" Content="Add" VerticalAlignment="Top" Margin="0,9,89,0" HorizontalAlignment="Right" Width="74" Click="btn_Add_Click"/>
+        <ListBox x:Name="ListView_Blacklist" Margin="10,48,10,9" BorderThickness="1"/>
+        <Button x:Name="btn_Clear" Content="Clear" Margin="0,9,8,383" HorizontalAlignment="Right" Width="76" Click="btn_Clear_Click"/>        
+    </Grid>
+</controls:MetroWindow>

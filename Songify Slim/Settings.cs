@@ -7,6 +7,23 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static string ArtistBlacklist
+        {
+            get => GetArtistBlacklist();
+            set => SetArtistBlacklist(value);
+        }
+
+        private static void SetArtistBlacklist(string value)
+        {
+            Properties.Settings.Default.ArtistBlacklist = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetArtistBlacklist()
+        {
+            return Properties.Settings.Default.ArtistBlacklist;
+        }
+
         public static bool TwAutoConnect
         {
             get => GetTwAutoConnect();

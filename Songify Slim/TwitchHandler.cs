@@ -11,6 +11,7 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using System.Linq;
 
 namespace Songify_Slim
 {
@@ -131,7 +132,7 @@ namespace Songify_Slim
 
             if (Settings.TwSRReward && e.ChatMessage.CustomRewardId == Settings.TwRewardID)
             {
-                if(APIHandler.spotify == null)
+                if (APIHandler.spotify == null)
                 {
                     _client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
@@ -217,7 +218,18 @@ namespace Songify_Slim
 
         private static void AddSong(string trackID, OnMessageReceivedArgs e)
         {
-            SpotifyAPI.Web.Models.FullTrack track = APIHandler.GetTrack(trackID);
+            string[] Blacklist = Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
+
+            FullTrack track = APIHandler.GetTrack(trackID);
+
+            foreach (string s in Blacklist)
+            {
+                if (Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1)
+                {
+                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " the Artist: " + s + " has been blacklisted by the broadcaster.");
+                    return;
+                }
+            }
 
             if (track.DurationMs >= TimeSpan.FromMinutes(10).TotalMilliseconds)
             {
@@ -253,16 +265,28 @@ namespace Songify_Slim
 
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
+                Window mw = null, qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() == typeof(MainWindow))
+                        mw = window;
+                    if (window.GetType() == typeof(Window_Queue))
+                        qw = window;
+                }
+                if (mw != null)
+                    (mw as MainWindow).ReqList.Add(new RequestObject
                     {
-                        (window as MainWindow).ReqList.Add(new RequestObject
-                        {
-                            Requester = e.ChatMessage.DisplayName,
-                            TrackID = trackID
-                        });
-                    }
+                        Requester = e.ChatMessage.DisplayName,
+                        TrackID = track.Id,
+                        Title = track.Name,
+                        Artists = track.Artists[0].Name,
+                        Length = TimeSpan.FromMilliseconds(track.DurationMs).Minutes.ToString() + ":" + TimeSpan.FromMilliseconds(track.DurationMs).Seconds.ToString()
+                    });
+
+                if (qw != null)
+                {
+                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                    (qw as Window_Queue).dgv_Queue.Items.Refresh();
                 }
             }));
         }
@@ -316,6 +340,8 @@ namespace Songify_Slim
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                Logger.LogStr("Add Queue:" + myHttpWebResponse.StatusDescription);
+                Logger.LogStr("Add Queue:" + myHttpWebResponse.StatusCode.ToString());
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)

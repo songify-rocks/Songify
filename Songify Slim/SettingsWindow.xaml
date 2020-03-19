@@ -132,7 +132,6 @@
             </TabItem>
             <TabItem Header="Spotify SR">
                 <Grid>
-
                     <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text="" VerticalAlignment="Top" Width="225" Margin="151,1,0,0" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged"/>
                     <Label Content="Channel Points Reward ID" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <CheckBox x:Name="Chbx_MessageLogging" Content="Enable Message Logging" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="151,32,0,0" Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked"/>
@@ -151,8 +150,8 @@
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
 
                     <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
-                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="171" Margin="5,213,0,0" Click="btn_SRClear_Click" Height="29"/>
-                    <Button x:Name="btn_QueueLink" HorizontalAlignment="Left" Margin="181,213,0,0" VerticalAlignment="Top" Width="195" Click="btn_QueueLink_Click">
+                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="187,213,0,0" Click="btn_SRClear_Click" Height="29"/>
+                    <Button x:Name="btn_QueueLink" HorizontalAlignment="Left" Margin="267,213,0,0" VerticalAlignment="Top" Width="109" Click="btn_QueueLink_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock TextWrapping="Wrap" Text="Queue Link" Margin="0,0,5,0"/>
                             <Rectangle
@@ -164,6 +163,8 @@
                             </Rectangle>
                         </StackPanel>
                     </Button>
+                    <Button x:Name="btn_ArtistBlacklist" Content="Blacklist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="5,213,0,0" Height="29" Click="btn_ArtistBlacklist_Click"/>
+                    <Button x:Name="btn_Queue" Content="Queue" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="107,213,0,0" Click="btn_Queue_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

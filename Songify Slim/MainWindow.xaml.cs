@@ -33,6 +33,9 @@ namespace Songify_Slim
     public class RequestObject
     {
         public string TrackID { get; set; }
+        public string Artists { get; set; }
+        public string Title { get; set; }
+        public string Length { get; set; }
         public string Requester { get; set; }
 
     }
@@ -74,7 +77,6 @@ namespace Songify_Slim
             WorkerUpdate.DoWork += Worker_Update_DoWork;
             WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
-
 
         public static void RegisterInStartup(bool isChecked)
         {
@@ -191,6 +193,18 @@ namespace Songify_Slim
                     try
                     {
                         ReqList.Remove(ReqList.Find(x => x.TrackID == currentlyPlaying[4]));
+
+                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            foreach (Window window in System.Windows.Application.Current.Windows)
+                            {
+                                if (window.GetType() != typeof(Window_Queue))
+                                    continue;
+                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                                (window as Window_Queue).dgv_Queue.Items.Refresh();
+                            }
+                        }));
+
                     }
                     catch (Exception)
                     {
@@ -418,6 +432,13 @@ namespace Songify_Slim
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
+            {
+                File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
+            }
+
+
+
             Settings.MsgLoggingEnabled = false;
             // Load Config file if one exists
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
@@ -658,6 +679,16 @@ namespace Songify_Slim
                 try
                 {
                     ReqList.Remove(ReqList.Find(x => x.TrackID == trackID));
+                    System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        foreach (Window window in System.Windows.Application.Current.Windows)
+                        {
+                            if (window.GetType() != typeof(Window_Queue))
+                                continue;
+                            //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                            (window as Window_Queue).dgv_Queue.Items.Refresh();
+                        }
+                    }));
                 }
                 catch (Exception)
                 {
@@ -666,25 +697,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    if (!File.Exists(root + "/Artist.txt"))
-                    {
-                        File.Create(root + "/Artist.txt").Close();
-                        File.WriteAllText(root + "/Artist.txt", artist);
-                    }
-                    else
-                    {
-                        File.WriteAllText(root + "/Artist.txt", artist);
-                    }
-
-                    if (!File.Exists(root + "/Title.txt"))
-                    {
-                        File.Create(root + "/Title.txt").Close();
-                        File.WriteAllText(root + "/Title.txt", title + extra);
-                    }
-                    else
-                    {
-                        File.WriteAllText(root + "/Title.txt", title + extra);
-                    }
+                    WriteSplitOutput(artist, title, extra);
                 }
 
                 // if upload is enabled
@@ -753,6 +766,8 @@ namespace Songify_Slim
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                        Logger.LogStr("Upload History:" + myHttpWebResponse.StatusDescription);
+                        Logger.LogStr("Upload History:" + myHttpWebResponse.StatusCode.ToString());
                         myHttpWebResponse.Close();
                     }
                     catch (Exception ex)
@@ -769,54 +784,13 @@ namespace Songify_Slim
                 // Update Song Queue
                 if (trackID != null)
                 {
-                    try
-                    {
-                        string extras = Settings.Uuid +
-                        "&trackid=" + HttpUtility.UrlEncode(trackID) +
-                        "&artist=" + HttpUtility.UrlEncode("") +
-                        "&title=" + HttpUtility.UrlEncode("") +
-                        "&length=" + HttpUtility.UrlEncode("") +
-                        "&requester=" + "" +
-                        "&played=" + "1" +
-                        "&o=" + "u";
-
-
-                        string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
-
-
-                        Console.WriteLine(url);
-                        // Create a new 'HttpWebRequest' object to the mentioned URL.
-                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        myHttpWebRequest.UserAgent = Settings.Webua;
-
-                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                        myHttpWebResponse.Close();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                    }
-
+                    UpdateWebQueue(trackID);
                 }
 
                 //Save Album Cover
                 if (Settings.DownloadCover && !String.IsNullOrEmpty(cover))
                 {
-                    WebClient webClient = new WebClient();
-                    webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
-                    webClient.Dispose();
-                    img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                        new Action(() =>
-                        {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            image.UriSource = new Uri(coverPath);
-                            image.EndInit();
-                            img_cover.Source = image;
-                        }));
+                    DownloadCover(cover);
                 }
             }
 
@@ -842,6 +816,80 @@ namespace Songify_Slim
 
         }
 
+        private void UpdateWebQueue(string trackID)
+        {
+            try
+            {
+                string extras = Settings.Uuid +
+                "&trackid=" + HttpUtility.UrlEncode(trackID) +
+                "&artist=" + HttpUtility.UrlEncode("") +
+                "&title=" + HttpUtility.UrlEncode("") +
+                "&length=" + HttpUtility.UrlEncode("") +
+                "&requester=" + "" +
+                "&played=" + "1" +
+                "&o=" + "u";
+
+                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
+
+
+                Console.WriteLine(url);
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.Webua;
+
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                Logger.LogStr("Del Queue:" + myHttpWebResponse.StatusDescription);
+                Logger.LogStr("Del Queue:" + myHttpWebResponse.StatusCode.ToString());
+                myHttpWebResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        private void DownloadCover(string cover)
+        {
+            WebClient webClient = new WebClient();
+            webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
+            webClient.Dispose();
+            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    image.UriSource = new Uri(coverPath);
+                    image.EndInit();
+                    img_cover.Source = image;
+                }));
+        }
+
+        private void WriteSplitOutput(string artist, string title, string extra)
+        {
+            if (!File.Exists(root + "/Artist.txt"))
+            {
+                File.Create(root + "/Artist.txt").Close();
+                File.WriteAllText(root + "/Artist.txt", artist);
+            }
+            else
+            {
+                File.WriteAllText(root + "/Artist.txt", artist);
+            }
+
+            if (!File.Exists(root + "/Title.txt"))
+            {
+                File.Create(root + "/Title.txt").Close();
+                File.WriteAllText(root + "/Title.txt", title + extra);
+            }
+            else
+            {
+                File.WriteAllText(root + "/Title.txt", title + extra);
+            }
+        }
+
         public void UploadSong(string currSong)
         {
             try
@@ -855,6 +903,8 @@ namespace Songify_Slim
                 myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusDescription);
+                Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode.ToString());
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)
@@ -870,7 +920,7 @@ namespace Songify_Slim
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (TwitchHandler._client.IsConnected)
+            if (TwitchHandler._client != null && TwitchHandler._client.IsConnected)
             {
                 TwitchHandler._client.Disconnect();
             }

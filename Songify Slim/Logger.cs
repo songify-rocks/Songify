@@ -9,7 +9,7 @@ namespace Songify_Slim
         public static void LogExc(Exception exception)
         {
             // Writes a log file with exceptions in it
-            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
+            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
             if (!File.Exists(logPath)) CreateLogFile(logPath);
             File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
             File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
@@ -19,7 +19,10 @@ namespace Songify_Slim
         public static void LogStr(string s)
         {
             // Writes a log file with exceptions in it
-            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" + DateTime.Now.ToString("MM-dd-yyyy") + ".log";
+            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
+
+            if (!File.Exists(logPath)) CreateLogFile(logPath);
+
             if (!File.Exists(logPath)) File.Create(logPath).Close();
             File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
         }

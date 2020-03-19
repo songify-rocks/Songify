@@ -29,6 +29,8 @@ namespace Songify_Slim
             scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
         );
 
+
+
         public static async void DoAuthAsync()
         {
             authRefresh.Elapsed += AuthRefresh_Elapsed;
@@ -130,6 +132,11 @@ namespace Songify_Slim
             }
 
             return new TrackInfo() { Artists = "", Title = "" };
+        }
+
+        public static SearchItem GetArtist(string text)
+        {
+           return spotify.SearchItems(text, SearchType.Artist, 1);
         }
 
         public static ErrorResponse AddToQ(string SongURI)
