@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
-        Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded">
+        Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
@@ -51,10 +51,6 @@
                     <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
-
-            <ListBoxItem Content="Item 1"/>
-            <ListBoxItem Content="Item 1"/>
-            <ListBoxItem Content="Item 1"/>
         </ListBox>
         <StatusBar Height="14" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <Label x:Name="Lbl_Status" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"

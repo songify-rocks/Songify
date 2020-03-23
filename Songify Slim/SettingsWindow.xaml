@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Settings" Height="310.884" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize">
+        Title="Settings" Height="310.884" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="System">
@@ -122,12 +122,11 @@
                     <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,107,0,0" Width="286" />
                     <Button x:Name="btn_spotifyLink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
                     <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,148,0,0" Padding="0,5,5,5"/>
-                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,174,0,0" controls:TextBoxHelper.Watermark="Account"/>
-                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,174,0,0"/>
-                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="191" Margin="10,205,0,0"/>
-                    <Button x:Name="btn_twConnTest" Content="Link" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,204,0,0" Click="btn_twConnTest_Click"/>
+                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,174,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
+                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,174,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
+                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="271" Margin="10,205,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
                     <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,173,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
-                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="206,209,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
+                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="286,208,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
@@ -150,21 +149,6 @@
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
 
                     <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
-                    <Button x:Name="btn_SRClear" Content="Clear List" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="187,213,0,0" Click="btn_SRClear_Click" Height="29"/>
-                    <Button x:Name="btn_QueueLink" HorizontalAlignment="Left" Margin="267,213,0,0" VerticalAlignment="Top" Width="109" Click="btn_QueueLink_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock TextWrapping="Wrap" Text="Queue Link" Margin="0,0,5,0"/>
-                            <Rectangle
-                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                Width="15" Height="15">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_link}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="btn_ArtistBlacklist" Content="Blacklist" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="5,213,0,0" Height="29" Click="btn_ArtistBlacklist_Click"/>
-                    <Button x:Name="btn_Queue" Content="Queue" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="107,213,0,0" Click="btn_Queue_Click"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

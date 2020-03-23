@@ -70,6 +70,8 @@ namespace Songify_Slim
         public MainWindow()
         {
             InitializeComponent();
+            this.Left = Settings.PosX;
+            this.Top = Settings.PosY;
             // Backgroundworker for telemetry, and methods
             WorkerTelemetry.DoWork += Worker_Telemetry_DoWork;
 
@@ -149,7 +151,7 @@ namespace Songify_Slim
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
             // Opens the 'About'-Window
-            AboutWindow aW = new AboutWindow();
+            AboutWindow aW = new AboutWindow { Top = this.Top, Left = this.Left };
             aW.ShowDialog();
         }
 
@@ -162,7 +164,7 @@ namespace Songify_Slim
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
-            SettingsWindow sW = new SettingsWindow();
+            SettingsWindow sW = new SettingsWindow { Top = this.Top, Left = this.Left };
             sW.ShowDialog();
         }
 
@@ -421,6 +423,9 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
+            Settings.PosX = Left;
+            Settings.PosY = Top;
+
             // write config file on closing
             ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             // send inactive
@@ -781,10 +786,10 @@ namespace Songify_Slim
 
                 }
 
-                // Update Song Queue
+                // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
                 if (trackID != null)
                 {
-                    UpdateWebQueue(trackID);
+                    WebHelper.UpdateWebQueue(trackID, "", "", "", "", "1", "u");
                 }
 
                 //Save Album Cover
@@ -812,40 +817,6 @@ namespace Songify_Slim
                                            image.EndInit();
                                            img_cover.Source = image;
                                        }));
-            }
-
-        }
-
-        private void UpdateWebQueue(string trackID)
-        {
-            try
-            {
-                string extras = Settings.Uuid +
-                "&trackid=" + HttpUtility.UrlEncode(trackID) +
-                "&artist=" + HttpUtility.UrlEncode("") +
-                "&title=" + HttpUtility.UrlEncode("") +
-                "&length=" + HttpUtility.UrlEncode("") +
-                "&requester=" + "" +
-                "&played=" + "1" +
-                "&o=" + "u";
-
-                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
-
-
-                Console.WriteLine(url);
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
-
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                Logger.LogStr("Del Queue:" + myHttpWebResponse.StatusDescription);
-                Logger.LogStr("Del Queue:" + myHttpWebResponse.StatusCode.ToString());
-                myHttpWebResponse.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
             }
         }
 
@@ -920,26 +891,67 @@ namespace Songify_Slim
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (TwitchHandler._client != null && TwitchHandler._client.IsConnected)
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Equals("Connect"))
+            {
+                TwitchHandler.BotConnect();
+            }
+            else if (item.Header.ToString().Equals("Disconnect"))
             {
                 TwitchHandler._client.Disconnect();
             }
-            else
+        }
+
+        private void mi_Queue_Click(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Contains("Window"))
             {
-                TwitchHandler.BotConnect();
+                if (!IsWindowOpen<Window_Queue>())
+                {
+                    Window_Queue wQ = new Window_Queue { Top = this.Top, Left = this.Left };
+                    wQ.Show();
+                }
+
+            }
+            else if (item.Header.ToString().Contains("Browser"))
+            {
+                Process.Start("https://songify.bloemacher.com/queue.php?id=" + Settings.Uuid);
+            }
+        }
+
+        private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsWindowOpen<Window_Blacklist>())
+            {
+                Window_Blacklist wB = new Window_Blacklist { Top = this.Top, Left = this.Left };
+                wB.Show();
             }
         }
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
-            HistoryWindow hW = new HistoryWindow();
+            HistoryWindow hW = new HistoryWindow { Top = this.Top, Left = this.Left };
             hW.ShowDialog();
+        }
+
+        private void mi_QueueClear_Click(object sender, RoutedEventArgs e)
+        {
+            ReqList.Clear();
+            WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
         }
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://www.patreon.com/Songify");
+        }
+
+        public static bool IsWindowOpen<T>(string name = "") where T : Window
+        {
+            return string.IsNullOrEmpty(name)
+               ? System.Windows.Application.Current.Windows.OfType<T>().Any()
+               : System.Windows.Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
     }
 }

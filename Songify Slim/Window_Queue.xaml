@@ -7,9 +7,14 @@
                 xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
         mc:Ignorable="d"
-        Title="Song Queue" Height="444.318" Width="726.136" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded">
+        Title="Song Queue" Height="444.318" Width="489.772" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
     <Grid>
         <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Click="DgvItemDelete_Click"/>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
         </DataGrid>
 
     </Grid>

@@ -7,6 +7,41 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static double PosY
+        {
+            get => GetPosY();
+            set => SetPosY(value);
+        }
+
+        private static void SetPosY(double value)
+        {
+            Properties.Settings.Default.PosY = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static double GetPosY()
+        {
+            return Properties.Settings.Default.PosY;
+        }
+
+
+        public static double PosX
+        {
+            get => GetPosX();
+            set => SetPosX(value);
+        }
+
+        private static void SetPosX(double value)
+        {
+            Properties.Settings.Default.PosX = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static double GetPosX()
+        {
+            return Properties.Settings.Default.PosX;
+        }
+
         public static string ArtistBlacklist
         {
             get => GetArtistBlacklist();

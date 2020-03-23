@@ -11,9 +11,16 @@ namespace Songify_Slim
             // Writes a log file with exceptions in it
             string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
             if (!File.Exists(logPath)) CreateLogFile(logPath);
-            File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
-            File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
-            File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
+            try
+            {
+                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
+                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
+                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void LogStr(string s)
@@ -24,7 +31,14 @@ namespace Songify_Slim
             if (!File.Exists(logPath)) CreateLogFile(logPath);
 
             if (!File.Exists(logPath)) File.Create(logPath).Close();
-            File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
+            try
+            {
+                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         public static void CreateLogFile(string path)

@@ -350,9 +350,6 @@ namespace Songify_Slim
 
         private void btn_twConnTest_Click(object sender, RoutedEventArgs e)
         {
-            Settings.TwAcc = txtbx_twUser.Text;
-            Settings.TwOAuth = txtbx_twOAuth.Password;
-            Settings.TwChannel = txtbx_twChannel.Text;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -400,63 +397,19 @@ namespace Songify_Slim
             Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
         }
 
-        private void btn_SRClear_Click(object sender, RoutedEventArgs e)
+        private void txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
         {
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
-                if(window.GetType() == typeof(MainWindow))
-                {
-                    (window as MainWindow).ReqList.Clear();
-                }
-            }
-
-            try
-            {
-                string extras = Settings.Uuid +
-                "&trackid=" + HttpUtility.UrlEncode("") +
-                "&artist=" + HttpUtility.UrlEncode("") +
-                "&title=" + HttpUtility.UrlEncode("") +
-                "&length=" + HttpUtility.UrlEncode("") +
-                "&requester=" + "" +
-                "&played=" + "1" +
-                "&o=" + "c";
-
-
-                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
-
-
-                Console.WriteLine(url);
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
-
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                myHttpWebResponse.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-            }
-
+            Settings.TwAcc = txtbx_twUser.Text;
         }
 
-        private void btn_QueueLink_Click(object sender, RoutedEventArgs e)
+        private void txtbx_twOAuth_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/queue.php?id=" + Settings.Uuid);
+            Settings.TwOAuth = txtbx_twOAuth.Password;
         }
 
-        private void btn_ArtistBlacklist_Click(object sender, RoutedEventArgs e)
+        private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //TODO: Open Blacklist Window
-            Window_Blacklist wB = new Window_Blacklist();
-            wB.ShowDialog();
-        }
-
-        private void btn_Queue_Click(object sender, RoutedEventArgs e)
-        {
-            Window_Queue wQ = new Window_Queue();
-            wQ.Show();
+            Settings.TwChannel = txtbx_twChannel.Text;
         }
     }
 }

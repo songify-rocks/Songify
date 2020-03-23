@@ -24,8 +24,10 @@ namespace Songify_Slim
             InitializeComponent();
         }
 
+        // This window shows the current Queue in a DataGrid
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // This loads in all the requestobjects
             foreach (Window window in Application.Current.Windows)
             {
                 if (window.GetType() != typeof(MainWindow))
@@ -34,6 +36,25 @@ namespace Songify_Slim
                 dgv_Queue.ItemsSource = (window as MainWindow).ReqList;
                 dgv_Queue.Columns[0].Visibility = Visibility.Hidden;
             }
+        }
+
+        private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
+        {
+            // This deletes the selected requestobject
+            if (dgv_Queue.SelectedItem == null)
+                return;
+
+            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.GetType() != typeof(MainWindow))
+                    continue;
+                (window as MainWindow).ReqList.Remove(req);
+
+            }
+            WebHelper.UpdateWebQueue(req.TrackID, "", "", "", "", "1", "u");
+            dgv_Queue.Items.Refresh();
         }
     }
 }

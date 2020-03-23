@@ -295,6 +295,7 @@
     <Compile Include="ThemeHandler.cs" />
     <Compile Include="TwitchHandler.cs" />
     <Compile Include="Updater.cs" />
+    <Compile Include="WebHelper.cs" />
     <Compile Include="Window_Blacklist.xaml.cs">
       <DependentUpon>Window_Blacklist.xaml</DependentUpon>
     </Compile>

@@ -7,9 +7,8 @@
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      Title="Songify Slim" Height="247.881" Width="588" Loaded="MetroWindowLoaded"
-                      StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
-                      WindowState="Minimized" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing">
+                      Title="Songify Slim" Height="285" Width="588" Loaded="MetroWindowLoaded"
+                      StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="Manual">
     <controls:MetroWindow.Resources>
         <DataTemplate x:Key="HeaderTemplate">
             <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
@@ -131,17 +130,12 @@
         <Style TargetType="{x:Type Dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
 
-    <controls:MetroWindow.RightWindowCommands>
+    <!--<controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
             <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial Kind="Patreon" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </StackPanel>
-            </Button>
-            <Button x:Name="BtnTwitch" ToolTip="Connect to Twitch" IsTabStop="False" Click="BtnTwitch_Click">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial x:Name="icon_Twitch" Kind="Twitch" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Red"/>
-                </StackPanel>                
             </Button>
             <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord" IsTabStop="False">
                 <StackPanel Orientation="Horizontal">
@@ -164,19 +158,44 @@
                 </StackPanel>
             </Button>
         </controls:WindowCommands>
-    </controls:MetroWindow.RightWindowCommands>
+    </controls:MetroWindow.RightWindowCommands>-->
 
     <Grid>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" />
         </StackPanel>
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
-            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1 pre Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
+            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
         </StatusBar>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" Margin="437,10,0,0" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0" IsTabStop="False">
-        </ComboBox>
+        <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,222,0">
+            <MenuItem Header="File">
+                <MenuItem Header="Settings" Click="BtnSettings_Click"/>
+                <MenuItem x:Name="mi_Exit" Header="Exit" Click="MenuItem1Click"/>
+            </MenuItem>
+            <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
+                <MenuItem x:Name="mi_TwitchConnect" Header="Connect" Click="BtnTwitch_Click"/>
+                <MenuItem x:Name="mi_TwitchDisconnect" Header="Disconnect" Click="BtnTwitch_Click" IsEnabled="False"/>
+            </MenuItem>
+            <MenuItem Header="Songrequests">
+                <MenuItem Header="Queue">
+                    <MenuItem x:Name="mi_Queue" Header="Queue Window" Click="mi_Queue_Click"/>
+                    <MenuItem Header="Queue Browser" Click="mi_Queue_Click"/>
+                    <MenuItem x:Name="mi_QueueClear" Header="Clear Queue" Click="mi_QueueClear_Click"/>
+                </MenuItem>
+                <MenuItem x:Name="mi_Blacklist" Header="Blacklist" Click="mi_Blacklist_Click"/>
+            </MenuItem>
+            <MenuItem Header="History" Click="BtnHistory_Click"/>
+            <MenuItem Header="Support">
+                <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
+                <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Click="BtnAboutClick"/>
+            </MenuItem>
+        </Menu>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="437,3,0,0"/>
     </Grid>
 </controls:MetroWindow>

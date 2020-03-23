@@ -415,5 +415,29 @@ namespace Songify_Slim.Properties {
                 this["ArtistBlacklist"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double PosX {
+            get {
+                return ((double)(this["PosX"]));
+            }
+            set {
+                this["PosX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double PosY {
+            get {
+                return ((double)(this["PosY"]));
+            }
+            set {
+                this["PosY"] = value;
+            }
+        }
     }
 }

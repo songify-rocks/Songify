@@ -6,11 +6,17 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"        
         xmlns:local="clr-namespace:Songify_Slim"
         mc:Ignorable="d"
-        Title="Artist Blacklist" Height="450" Width="445.182" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded">
+        Title="Artist Blacklist" Height="450" Width="445.182" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
     <Grid>
-        <TextBox x:Name="tb_Blacklist" Height="27" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,170,0" controls:TextBoxHelper.Watermark="Artist"/>
+        <TextBox x:Name="tb_Blacklist" Height="27" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,10,170,0" controls:TextBoxHelper.Watermark="Artist" KeyDown="tb_Blacklist_KeyDown"/>
         <Button x:Name="btn_Add" Content="Add" VerticalAlignment="Top" Margin="0,9,89,0" HorizontalAlignment="Right" Width="74" Click="btn_Add_Click"/>
-        <ListBox x:Name="ListView_Blacklist" Margin="10,48,10,9" BorderThickness="1"/>
+        <ListBox x:Name="ListView_Blacklist" Margin="10,48,10,9" BorderThickness="1">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete" Click="MenuItem_Click"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
         <Button x:Name="btn_Clear" Content="Clear" Margin="0,9,8,383" HorizontalAlignment="Right" Width="76" Click="btn_Clear_Click"/>        
     </Grid>
 </controls:MetroWindow>

@@ -34,7 +34,7 @@ namespace Songify_Slim
                     {
                         if (window.GetType() == typeof(MainWindow))
                         {
-                            (window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                            //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
                             (window as MainWindow).LblStatus.Content = "Please fill in Twitch credentials.";
                         }
                     }
@@ -70,11 +70,14 @@ namespace Songify_Slim
             {
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(MainWindow))
-                    {
-                        (window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                        (window as MainWindow).LblStatus.Content = "Disconnected from Twitch";
-                    }
+                    if (window.GetType() != typeof(MainWindow))
+                        continue;
+
+                    //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                    (window as MainWindow).LblStatus.Content = "Disconnected from Twitch";
+                    (window as MainWindow).mi_TwitchConnect.IsEnabled = true;
+                    (window as MainWindow).mi_TwitchDisconnect.IsEnabled = false;
+
                 }
             }));
 
@@ -93,11 +96,13 @@ namespace Songify_Slim
                         {
                             foreach (Window window in Application.Current.Windows)
                             {
-                                if (window.GetType() == typeof(MainWindow))
-                                {
-                                    (window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Green);
-                                    (window as MainWindow).LblStatus.Content = "Connected to Twitch";
-                                }
+                                if (window.GetType() != typeof(MainWindow))
+                                    continue;
+
+                                //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Green);
+                                (window as MainWindow).LblStatus.Content = "Connected to Twitch";
+                                (window as MainWindow).mi_TwitchConnect.IsEnabled = false;
+                                (window as MainWindow).mi_TwitchDisconnect.IsEnabled = true;
                             }
 
                         }));
@@ -110,7 +115,6 @@ namespace Songify_Slim
 
         private static void _client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-
             if (Settings.MsgLoggingEnabled)
             {
                 if (e.ChatMessage.CustomRewardId != null)
@@ -280,7 +284,7 @@ namespace Songify_Slim
                         TrackID = track.Id,
                         Title = track.Name,
                         Artists = track.Artists[0].Name,
-                        Length = TimeSpan.FromMilliseconds(track.DurationMs).Minutes.ToString() + ":" + TimeSpan.FromMilliseconds(track.DurationMs).Seconds.ToString()
+                        Length = FormattedTime(track.DurationMs)
                     });
 
                 if (qw != null)
@@ -291,73 +295,46 @@ namespace Songify_Slim
             }));
         }
 
+        public static string FormattedTime(int duration)
+        {
+            string minutes, seconds;
+
+            TimeSpan t = TimeSpan.FromMilliseconds(duration);
+            minutes = t.Minutes.ToString();
+
+            if (t.Seconds < 10)
+            {
+                seconds = "0" + t.Seconds;
+            }
+            else
+            {
+                seconds = t.Seconds.ToString();
+            }
+
+            return minutes + ":" + seconds;
+        }
+
         private static void UploadToQueue(FullTrack track, string displayName)
         {
-            try
+            string artists = "";
+            int counter = 0;
+            foreach (SimpleArtist artist in track.Artists)
             {
-                string artists = "";
-
-                for (int i = 0; i < track.Artists.Count; i++)
+                if (counter <= 3)
                 {
-                    if (i != track.Artists.Count - 1)
-                        artists += track.Artists[i].Name + ", ";
-                    else
-                        artists += track.Artists[i].Name;
-                }
-                string minutes, seconds;
-
-                TimeSpan t = TimeSpan.FromMilliseconds(track.DurationMs);
-                minutes = t.Minutes.ToString();
-
-                if (t.Seconds < 10)
-                {
-                    seconds = "0" + t.Seconds;
+                    artists += artist.Name + ", ";
+                    counter++;
                 }
                 else
                 {
-                    seconds = t.Seconds.ToString();
+                    continue;
                 }
-
-                string length = minutes + ":" + seconds;
-
-
-                string extras = Settings.Uuid +
-                    "&trackid=" + HttpUtility.UrlEncode(track.Id) +
-                    "&artist=" + HttpUtility.UrlEncode(artists) +
-                    "&title=" + HttpUtility.UrlEncode(track.Name) +
-                    "&length=" + HttpUtility.UrlEncode(length) +
-                    "&requester=" + displayName +
-                    "&played=" + "0" +
-                    "&o=" + "i";
-
-                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
-
-
-                Console.WriteLine(url);
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
-
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                Logger.LogStr("Add Queue:" + myHttpWebResponse.StatusDescription);
-                Logger.LogStr("Add Queue:" + myHttpWebResponse.StatusCode.ToString());
-                myHttpWebResponse.Close();
             }
-            catch (Exception ex)
-            {
-                Application.Current.Dispatcher.Invoke(new Action(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window.GetType() == typeof(MainWindow))
-                        {
-                            (window as MainWindow).LblStatus.Content = "Error Uploading Queue";
-                        }
-                    }
-                }));
-                Logger.LogExc(ex);
-            }
+            artists = artists.Remove(artists.Length - 2, 2);
+
+            string length = FormattedTime(track.DurationMs);
+
+            WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
         }
 
         private static bool isInQueue(string id)
