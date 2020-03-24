@@ -144,6 +144,11 @@
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
+                    <controls:ToggleSwitch x:Name="Chbx_AutoClear" Content="Clear Queue on Startup" HorizontalAlignment="Left"
+                              Margin="5,203,0,0" VerticalAlignment="Top" Checked="Chbx_AutoClear_Checked" Unchecked="Chbx_AutoClear_Checked"
+                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
                     <Label Content="Max Requests per User" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,139,0,0"/>
                     <Label Content="Command Cooldown (seconds)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,172,0,0"/>
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />

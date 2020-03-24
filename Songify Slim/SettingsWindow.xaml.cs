@@ -56,6 +56,7 @@ namespace Songify_Slim
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxSplit.IsChecked = Settings.SplitOutput;
+            Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
 
             if (Settings.NbUserId != null)
             {
@@ -410,6 +411,11 @@ namespace Songify_Slim
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.TwChannel = txtbx_twChannel.Text;
+        }
+
+        private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
         }
     }
 }

@@ -442,7 +442,11 @@ namespace Songify_Slim
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
             }
 
-
+            if (Settings.AutoClearQueue)
+            {
+                ReqList.Clear();
+                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+            }
 
             Settings.MsgLoggingEnabled = false;
             // Load Config file if one exists

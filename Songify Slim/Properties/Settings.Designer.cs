@@ -439,5 +439,17 @@ namespace Songify_Slim.Properties {
                 this["PosY"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoClearQueue {
+            get {
+                return ((bool)(this["AutoClearQueue"]));
+            }
+            set {
+                this["AutoClearQueue"] = value;
+            }
+        }
     }
 }

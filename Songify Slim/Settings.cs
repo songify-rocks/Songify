@@ -7,6 +7,25 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static bool AutoClearQueue
+        {
+            get => GetAutoClearQueue();
+            set => SetAutoClearQueue(value);
+        }
+
+        private static void SetAutoClearQueue(bool value)
+        {
+            Properties.Settings.Default.AutoClearQueue = value;
+            Properties.Settings.Default.Save();
+
+        }
+
+        private static bool GetAutoClearQueue()
+        {
+            return Properties.Settings.Default.AutoClearQueue;
+
+        }
+
         public static double PosY
         {
             get => GetPosY();
