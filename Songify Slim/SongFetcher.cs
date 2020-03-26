@@ -61,7 +61,7 @@ namespace Songify_Slim
 
                             if (Settings.CustomPauseTextEnabled)
                             {
-                                return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                                return new[] { "", "", "" }; // (Settings.GetCustomPauseText(), "", "");
                             }
                             break;
 
@@ -256,7 +256,11 @@ namespace Songify_Slim
             {
                 return null;
             }
+            bool isPlayling = APIHandler.GetPlaybackState();
             TrackInfo songInfo = APIHandler.GetSongInfo();
+
+            if (!isPlayling && Settings.CustomPauseTextEnabled)
+                return new[] { "", "", "", null, "" };
 
             if (songInfo == null) return null;
 

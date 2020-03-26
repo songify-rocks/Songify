@@ -136,7 +136,7 @@ namespace Songify_Slim
 
         public static SearchItem GetArtist(string text)
         {
-           return spotify.SearchItems(text, SearchType.Artist, 1);
+            return spotify.SearchItems(text, SearchType.Artist, 1);
         }
 
         public static ErrorResponse AddToQ(string SongURI)
@@ -154,6 +154,11 @@ namespace Songify_Slim
         public static SearchItem FindTrack(string searchQuery)
         {
             return spotify.SearchItems(searchQuery, SearchType.Track, 1);
+        }
+
+        public static bool GetPlaybackState()
+        {
+            return spotify.GetPlayback().IsPlaying;
         }
     }
 

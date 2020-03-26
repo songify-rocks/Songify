@@ -183,6 +183,9 @@ namespace Songify_Slim
 
         private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (dgvHistorySongs.SelectedItem == null)
+                return;
+
             Song sng = (Song)dgvHistorySongs.SelectedItem;
 
             long key = sng.UnixTimeStamp;

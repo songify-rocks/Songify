@@ -622,6 +622,42 @@ namespace Songify_Slim
                 artist.Trim();
             }
 
+            // get the songPath which is default the directory where the exe is, else get the user set directory
+            if (string.IsNullOrEmpty(Settings.Directory))
+            {
+                root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
+                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.jpg";
+            }
+            else
+            {
+                root = Settings.Directory;
+                songPath = Settings.Directory + "/Songify.txt";
+                coverPath = Settings.Directory + "/cover.jpg";
+            }
+
+            // if all those are empty we expect the player to be paused
+            if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(title) && string.IsNullOrEmpty(extra))
+            {
+                // read the text file
+                if (!File.Exists(songPath))
+                {
+                    File.Create(songPath).Close();
+                }
+
+                File.WriteAllText(songPath, Settings.CustomPauseText);
+
+                if (Settings.SplitOutput)
+                {
+                    WriteSplitOutput(Settings.CustomPauseText, title, extra, root);
+                }
+
+                TxtblockLiveoutput.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(() => { TxtblockLiveoutput.Text = Settings.CustomPauseText; }));
+                return;
+            }
+
             // get the output string
             CurrSong = Settings.OutputString;
             if (!String.IsNullOrEmpty(title))
@@ -652,19 +688,6 @@ namespace Songify_Slim
 
             }
 
-            // get the songPath which is default the directory where the exe is, else get the user set directory
-            if (string.IsNullOrEmpty(Settings.Directory))
-            {
-                root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
-                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.jpg";
-            }
-            else
-            {
-                root = Settings.Directory;
-                songPath = Settings.Directory + "/Songify.txt";
-                coverPath = Settings.Directory + "/cover.jpg";
-            }
 
             // read the text file
             if (!File.Exists(songPath))
@@ -706,7 +729,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    WriteSplitOutput(artist, title, extra);
+                    WriteSplitOutput(artist, title, extra, root);
                 }
 
                 // if upload is enabled
@@ -842,7 +865,7 @@ namespace Songify_Slim
                 }));
         }
 
-        private void WriteSplitOutput(string artist, string title, string extra)
+        private void WriteSplitOutput(string artist, string title, string extra, string path)
         {
             if (!File.Exists(root + "/Artist.txt"))
             {
@@ -940,10 +963,14 @@ namespace Songify_Slim
             hW.ShowDialog();
         }
 
-        private void mi_QueueClear_Click(object sender, RoutedEventArgs e)
+        private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
-            ReqList.Clear();
-            WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                ReqList.Clear();
+                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+            }
         }
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)

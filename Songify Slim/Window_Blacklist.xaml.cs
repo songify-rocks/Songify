@@ -1,4 +1,5 @@
 ﻿
+using MahApps.Metro.Controls.Dialogs;
 using System;
 
 namespace Songify_Slim
@@ -87,15 +88,26 @@ namespace Songify_Slim
             LoadBlacklist();
         }
 
-        private void btn_Clear_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void btn_Clear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            Settings.ArtistBlacklist = "";
-            ListView_Blacklist.Items.Clear();
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the blacklist?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                Settings.ArtistBlacklist = "";
+                ListView_Blacklist.Items.Clear();
+            }
         }
 
-        private void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            ListView_Blacklist.Items.Remove(ListView_Blacklist.SelectedItem);
+            if (ListView_Blacklist.SelectedItem == null)
+                return;
+
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Delete " + ListView_Blacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                ListView_Blacklist.Items.Remove(ListView_Blacklist.SelectedItem);
+            }
         }
 
         private void tb_Blacklist_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
