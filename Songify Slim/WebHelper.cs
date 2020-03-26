@@ -39,7 +39,7 @@ namespace Songify_Slim
                 "&requester=" + WebUtility.UrlEncode(requester) +
                 "&played=" + WebUtility.UrlEncode(played) +
                 "&o=" + WebUtility.UrlEncode(o);
-                string url = "http://songify.bloemacher.com/add_queue.php/?id=" + extras;
+                string url = "http://songify.rocks/add_queue.php/?id=" + extras;
                 string escapeurl = WebUtility.UrlEncode(url);
 
 

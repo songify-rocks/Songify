@@ -24,7 +24,7 @@ namespace Songify_Slim
 
 
         private static TokenSwapAuth auth = new TokenSwapAuth(
-            exchangeServerUri: "https://songify.bloemacher.com/auth/index.php",
+            exchangeServerUri: "https://songify.rocks/auth/index.php",
             serverUri: "http://localhost:4002/auth",
             scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
         );

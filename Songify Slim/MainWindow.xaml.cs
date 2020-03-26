@@ -107,7 +107,7 @@ namespace Songify_Slim
             {
                 Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + Version + "&a=" + AppActive;
-                string url = "http://songify.bloemacher.com/songifydata.php/?id=" + extras;
+                string url = "http://songify.rocks/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
@@ -790,7 +790,7 @@ namespace Songify_Slim
                     {
                         string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
                                      HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
-                        string url = "http://songify.bloemacher.com/song_history.php/?id=" + extras;
+                        string url = "http://songify.rocks/song_history.php/?id=" + extras;
                         Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -894,7 +894,7 @@ namespace Songify_Slim
             {
                 // extras are UUID and Songinfo
                 string extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
-                string url = "http://songify.bloemacher.com/song.php/?id=" + extras;
+                string url = "http://songify.rocks/song.php/?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -943,7 +943,7 @@ namespace Songify_Slim
             }
             else if (item.Header.ToString().Contains("Browser"))
             {
-                Process.Start("https://songify.bloemacher.com/queue.php?id=" + Settings.Uuid);
+                Process.Start("https://songify.rocks/queue.php?id=" + Settings.Uuid);
             }
         }
 

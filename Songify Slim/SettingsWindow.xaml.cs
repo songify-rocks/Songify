@@ -131,7 +131,7 @@ namespace Songify_Slim
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            System.Windows.Clipboard.SetDataObject("https://songify.bloemacher.com/getsong.php?id=" + Settings.Uuid);
+            System.Windows.Clipboard.SetDataObject("https://songify.rocks/getsong.php?id=" + Settings.Uuid);
             Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
