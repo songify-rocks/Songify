@@ -27,7 +27,7 @@
                                            controls:ControlsHelper.HeaderMargin="0" Height="49" IsCheckedChanged="ChbxTelemetry_IsCheckedChanged"/>
 
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="10,186,0,0"
-                            Click="BtnUpdatesClick" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="154" IsEnabled="False" />
+                            Click="BtnUpdatesClick" Height="27" VerticalAlignment="Top" HorizontalAlignment="Left" Width="154" />
                     <Label Content="?" HorizontalAlignment="Left" Margin="56,96,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
                     <Label Content="Chrome fetch rate (seconds)" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="9,155,0,0" Padding="0,5,5,5"/>
                     <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="255,155,0,0" ValueChanged="NudChrome_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" />
