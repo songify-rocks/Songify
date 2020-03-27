@@ -5,11 +5,10 @@ using System;
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaktionslogik für Window_Blacklist.xaml
+    /// This window dispalys and manages the blacklist
     /// </summary>
     public partial class Window_Blacklist
     {
-
         public static string[] Blacklist;
         public string splitter = "|||";
 
@@ -71,6 +70,7 @@ namespace Songify_Slim
 
         private void SaveBlacklist()
         {
+            // Save the blacklist as a string with seperators in settings
             string s = "";
             if (ListView_Blacklist.Items.Count > 0)
             {
@@ -90,6 +90,7 @@ namespace Songify_Slim
 
         private async void btn_Clear_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // after user confirmation clear the list
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the blacklist?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
             {
@@ -100,6 +101,7 @@ namespace Songify_Slim
 
         private async void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // right-click context menu to delete single blacklist entries
             if (ListView_Blacklist.SelectedItem == null)
                 return;
 
@@ -112,6 +114,7 @@ namespace Songify_Slim
 
         private void tb_Blacklist_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            // on enter key save to the blacklist
             if (e.Key == System.Windows.Input.Key.Enter)
             {
                 addToBlacklist(tb_Blacklist.Text);

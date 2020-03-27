@@ -45,6 +45,7 @@ namespace Songify_Slim
 
                 Console.WriteLine(url);
                 Console.WriteLine(escapeurl);
+
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;

@@ -24,6 +24,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // Set the buttons to match the settings
             Tglbtn_Save.IsChecked = Settings.SaveHistory;
             Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
@@ -39,7 +40,7 @@ namespace Songify_Slim
 
             LoadFile();
 
-
+            // listen to changes made to the history.shr file
             FileSystemWatcher watcher = new FileSystemWatcher
             {
                 Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
@@ -59,6 +60,7 @@ namespace Songify_Slim
 
         public void LoadFile()
         {
+            // Checks if the file is locked, if not the datagrids gets cleared and the file is read
             if (IsFileLocked(new FileInfo(_path)))
                 return;
             dgvHistorySongs.Dispatcher.Invoke(
@@ -81,7 +83,6 @@ namespace Songify_Slim
                     dateList.AddRange(elem.Name.ToString().Replace("d_", "").Split('.'));
                     list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
                     dateList.Clear();
-                    //LbxHistory.Items.Add(elem.Name.ToString().Replace("d_", ""));
                 }
 
             IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);

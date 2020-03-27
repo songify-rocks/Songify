@@ -21,6 +21,20 @@ namespace Songify_Slim
             {
                 VersionCheck(latest);
             }
+            else
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    foreach (Window window in System.Windows.Application.Current.Windows)
+                    {
+                        if (window.GetType() != typeof(MainWindow))
+                            continue;
+
+                        //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Green);
+                        (window as MainWindow).LblStatus.Content = "No new update found.";
+                    }
+                }));
+            }
         }
 
         public static dynamic GetLatestRelease()

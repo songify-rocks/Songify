@@ -252,18 +252,21 @@ namespace Songify_Slim
 
         public string[] FetchSpotifyWeb()
         {
+            // If the spotify object hast been created (successfully authed)
             if (APIHandler.spotify == null)
             {
                 return null;
             }
+            // geths wether a track is playing or not
             bool isPlayling = APIHandler.GetPlaybackState();
+            // gets the current playing songinfo
             TrackInfo songInfo = APIHandler.GetSongInfo();
-
+            // if no song is playing and custompausetext is enabled
             if (!isPlayling && Settings.CustomPauseTextEnabled)
                 return new[] { "", "", "", null, "" };
-
+            
             if (songInfo == null) return null;
-
+            // return a new stringarray containing artist, title and so on
             if (songInfo.albums != null)
                 return new[] { songInfo.Artists, songInfo.Title, "", songInfo.albums[0].Url, songInfo.SongID };
 

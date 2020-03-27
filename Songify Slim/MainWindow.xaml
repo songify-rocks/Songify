@@ -187,7 +187,10 @@
                 </MenuItem>
                 <MenuItem x:Name="mi_Blacklist" Header="Blacklist" Click="mi_Blacklist_Click"/>
             </MenuItem>
-            <MenuItem Header="History" Click="BtnHistory_Click"/>
+            <MenuItem Header="History">
+                <MenuItem Header="History Window" Click="BtnHistory_Click"/>
+                <MenuItem Header="History Browser" Click="BtnHistory_Click"/>
+            </MenuItem>
             <MenuItem Header="Support">
                 <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
                 <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>

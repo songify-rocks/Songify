@@ -15,7 +15,7 @@ using System.Windows.Shapes;
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaktionslogik für Window_Queue.xaml
+    /// Queue Window to display the current song queue
     /// </summary>
     public partial class Window_Queue
     {

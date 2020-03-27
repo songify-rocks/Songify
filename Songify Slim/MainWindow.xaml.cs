@@ -499,7 +499,7 @@ namespace Songify_Slim
             }
 
             // check for update 
-            // WorkerUpdate.RunWorkerAsync();
+            WorkerUpdate.RunWorkerAsync();
 
             // set the cbx index to the correct source
             cbx_Source.SelectedValue = _selectedSource;
@@ -688,7 +688,6 @@ namespace Songify_Slim
 
             }
 
-
             // read the text file
             if (!File.Exists(songPath))
             {
@@ -849,6 +848,7 @@ namespace Songify_Slim
 
         private void DownloadCover(string cover)
         {
+            // Downloads the album cover to the filesystem
             WebClient webClient = new WebClient();
             webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
             webClient.Dispose();
@@ -867,6 +867,8 @@ namespace Songify_Slim
 
         private void WriteSplitOutput(string artist, string title, string extra, string path)
         {
+            // Writes the output to 2 different text files
+
             if (!File.Exists(root + "/Artist.txt"))
             {
                 File.Create(root + "/Artist.txt").Close();
@@ -918,19 +920,23 @@ namespace Songify_Slim
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
+            // Tries to connect to the twitch service given the credentials in the settings or disconnects
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Header.ToString().Equals("Connect"))
             {
+                // Connects
                 TwitchHandler.BotConnect();
             }
             else if (item.Header.ToString().Equals("Disconnect"))
             {
+                // Disconnects
                 TwitchHandler._client.Disconnect();
             }
         }
 
         private void mi_Queue_Click(object sender, RoutedEventArgs e)
         {
+            // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Header.ToString().Contains("Window"))
             {
@@ -939,8 +945,8 @@ namespace Songify_Slim
                     Window_Queue wQ = new Window_Queue { Top = this.Top, Left = this.Left };
                     wQ.Show();
                 }
-
             }
+            // Opens the Queue in the Browser
             else if (item.Header.ToString().Contains("Browser"))
             {
                 Process.Start("https://songify.rocks/queue.php?id=" + Settings.Uuid);
@@ -949,6 +955,7 @@ namespace Songify_Slim
 
         private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
         {
+            // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
             {
                 Window_Blacklist wB = new Window_Blacklist { Top = this.Top, Left = this.Left };
@@ -958,13 +965,28 @@ namespace Songify_Slim
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
-            // Opens the 'Settings'-Window
-            HistoryWindow hW = new HistoryWindow { Top = this.Top, Left = this.Left };
-            hW.ShowDialog();
+            // Opens the History in either Window or Browser
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Contains("Window"))
+            {
+                if (!IsWindowOpen<HistoryWindow>())
+                {
+                    // Opens the 'History'-Window
+                    HistoryWindow hW = new HistoryWindow { Top = this.Top, Left = this.Left };
+                    hW.ShowDialog();
+                }
+            }
+            // Opens the Queue in the Browser
+            else if (item.Header.ToString().Contains("Browser"))
+            {
+                Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
+            }
+
         }
 
         private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
+            // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
             {
@@ -975,11 +997,13 @@ namespace Songify_Slim
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
+            // links to the projects patreon page (the button name is old because I used to use paypal)
             Process.Start("https://www.patreon.com/Songify");
         }
 
         public static bool IsWindowOpen<T>(string name = "") where T : Window
         {
+         // This method checks if a window of type <T> is already opened in the current application context and returns true or false
             return string.IsNullOrEmpty(name)
                ? System.Windows.Application.Current.Windows.OfType<T>().Any()
                : System.Windows.Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));

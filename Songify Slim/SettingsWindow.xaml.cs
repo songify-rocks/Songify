@@ -329,6 +329,7 @@ namespace Songify_Slim
 
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
+            // Links Spotify
             Settings.RefreshToken = "";
             try
             {
@@ -349,17 +350,15 @@ namespace Songify_Slim
             Settings.SplitOutput = (bool)ChbxCover.IsChecked;
         }
 
-        private void btn_twConnTest_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            // Opens twitchapps to generate a TMI oAuth Token
             System.Diagnostics.Process.Start("https://twitchapps.com/tmi/");
         }
 
         private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
         {
+            // Saves the RewardID
             Settings.TwRewardID = txtbx_RewardID.Text;
         }
 
@@ -379,42 +378,49 @@ namespace Songify_Slim
 
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            // Sets max requests per user value
             Settings.TwSRMaxReq = (int)NudMaxReq.Value;
-
         }
 
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            // Sets command cooldown
             Settings.TwSRCooldown = (int)NudCooldown.Value;
         }
 
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
+            // Sets wether to autoconnect or not
             Settings.TwAutoConnect = (bool)Chbx_TwAutoconnect.IsChecked;
         }
 
         private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
         {
+            // Sets message loggint enabled or not
             Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
         }
 
         private void txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
         {
+            // Sets the twitch acc
             Settings.TwAcc = txtbx_twUser.Text;
         }
 
         private void txtbx_twOAuth_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            // Sets the twitch oauth token
             Settings.TwOAuth = txtbx_twOAuth.Password;
         }
 
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
+            // Sets the twitch channel
             Settings.TwChannel = txtbx_twChannel.Text;
         }
 
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
+            // Sets wether to clear the queue on startup or not
             Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
         }
     }
