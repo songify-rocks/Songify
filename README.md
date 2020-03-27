@@ -80,6 +80,28 @@ Then, from the Template drop down menu, select "Load Text from Local File" and p
 
 After that, you should be good to go.
 
+# How to get Twitch Reward ID
+
+Fill out the Twitch credentials inside the Integration tab (hit the "?" Button to open a website that generates the oAuth Token for you).
+
+![](http://songify.bloemacher.com/img/songify_reward_1.png)
+
+Connect to Twitch by clicking the Twitch Icon on the main window of Songify, if the icon turns green you successfully connected to Twitch.
+
+![](http://songify.bloemacher.com/img/songify_reward_2.png)
+
+Enable message logging (Spotify SR tab in Settings)
+
+![](http://songify.bloemacher.com/img/songify_reward_4.png)
+
+Trigger the reward you want to have as your songrequest reward. The reward ID will automatically be filled in the textbox.
+
+![](http://songify.bloemacher.com/img/songify_reward_3.png)
+
+![](http://songify.bloemacher.com/img/songify_reward_5.png)
+
+You can now turn off message logging.
+
 # Consider supporting 
 [<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png"  target="_blank">](https://www.patreon.com/bePatron?u=31732074)
 
