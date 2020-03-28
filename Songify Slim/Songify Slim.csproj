@@ -281,21 +281,23 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Apihandler.cs" />
-    <Compile Include="ConfigHandler.cs" />
+    <Compile Include="Models\PlayerType.cs" />
+    <Compile Include="Models\TrackInfo.cs" />
+    <Compile Include="Util\Songify\Apihandler.cs" />
+    <Compile Include="Util\Settings\ConfigHandler.cs" />
     <Compile Include="HistoryWindow.xaml.cs">
       <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Util\General\Logger.cs" />
+    <Compile Include="Util\Settings\Settings.cs" />
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SongFetcher.cs" />
-    <Compile Include="ThemeHandler.cs" />
-    <Compile Include="TwitchHandler.cs" />
-    <Compile Include="Updater.cs" />
-    <Compile Include="WebHelper.cs" />
+    <Compile Include="Util\Songify\SongFetcher.cs" />
+    <Compile Include="Util\General\ThemeHandler.cs" />
+    <Compile Include="Util\Songify\TwitchHandler.cs" />
+    <Compile Include="Util\General\Updater.cs" />
+    <Compile Include="Util\Songify\WebHelper.cs" />
     <Compile Include="Window_Blacklist.xaml.cs">
       <DependentUpon>Window_Blacklist.xaml</DependentUpon>
     </Compile>
@@ -396,7 +398,7 @@
     <Resource Include="Resources\WindowsIcons-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NBObj.cs" />
+    <Compile Include="Models\NBObj.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
