@@ -163,7 +163,6 @@ namespace Songify_Slim
                                 if (elem.Current.Name.Contains("YouTube"))
                                 {
                                     _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                    Console.WriteLine(elem.Current.Name);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
                                     string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
                                     int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
@@ -172,7 +171,6 @@ namespace Songify_Slim
                                     if (index > 0)
                                         temp = temp.Substring(0, index);
                                     temp = temp.Trim();
-                                    Console.WriteLine(temp);
 
                                     // Making sure that temp is not empty
                                     // this makes sure that the output is not empty
@@ -187,7 +185,6 @@ namespace Songify_Slim
                                 if (elem.Current.Name.Contains("Deezer"))
                                 {
                                     _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                    Console.WriteLine(elem.Current.Name);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
                                     string temp = elem.Current.Name;
                                     //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
@@ -197,7 +194,6 @@ namespace Songify_Slim
                                     if (index > 0)
                                         temp = temp.Substring(0, index);
                                     temp = temp.Trim();
-                                    Console.WriteLine(temp);
 
                                     // Making sure that temp is not empty
                                     // this makes sure that the output is not empty
@@ -269,7 +265,6 @@ namespace Songify_Slim
                 if (pauseCounter < 10)
                     pauseCounter += 1;
             }
-            Console.WriteLine(pauseCounter + " " + isPlayling);
             // if no song is playing and custompausetext is enabled
             if (!isPlayling && Settings.CustomPauseTextEnabled && pauseCounter >= 10)
                 return new[] { "", "", "", null, "" };

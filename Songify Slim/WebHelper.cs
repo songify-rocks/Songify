@@ -33,7 +33,7 @@ namespace Songify_Slim
             {
                 string extras = Settings.Uuid +
                 "&trackid=" + WebUtility.UrlEncode(trackID) +
-                "&artist=" + WebUtility.UrlEncode(artist.Replace("\"","\\\"")) +
+                "&artist=" + WebUtility.UrlEncode(artist.Replace("\"", "\\\"")) +
                 "&title=" + WebUtility.UrlEncode(title.Replace("\"", "\\\"")) +
                 "&length=" + WebUtility.UrlEncode(length) +
                 "&requester=" + WebUtility.UrlEncode(requester) +
@@ -43,8 +43,6 @@ namespace Songify_Slim
                 string escapeurl = WebUtility.UrlEncode(url);
 
 
-                Console.WriteLine(url);
-                Console.WriteLine(escapeurl);
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);

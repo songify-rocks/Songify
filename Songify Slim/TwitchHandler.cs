@@ -229,7 +229,6 @@ namespace Songify_Slim
                 return;
             }
 
-            Console.WriteLine(e.ChatMessage.RawIrcMessage);
         }
 
         private static void StartCooldown()

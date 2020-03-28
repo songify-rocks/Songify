@@ -795,7 +795,6 @@ namespace Songify_Slim
                         string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
                                      HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
                         string url = "http://songify.rocks/song_history.php/?id=" + extras;
-                        Console.WriteLine(url);
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                         myHttpWebRequest.UserAgent = Settings.Webua;
@@ -911,7 +910,6 @@ namespace Songify_Slim
                 // extras are UUID and Songinfo
                 string extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
                 string url = "http://songify.rocks/song.php/?id=" + extras;
-                Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
@@ -925,7 +923,6 @@ namespace Songify_Slim
             {
                 Logger.LogExc(ex);
                 // if error occurs write text to the status asynchronous
-                Console.WriteLine(ex.Message);
                 LblStatus.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));

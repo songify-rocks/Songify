@@ -57,7 +57,6 @@ namespace Songify_Slim
                 // if the auth was successfull save the new tokens and 
                 auth.AuthReceived += async (sender, response) =>
                 {
-                    Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Received");
 
                     if (authed)
                         return;
@@ -91,7 +90,6 @@ namespace Songify_Slim
                     spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
                     Settings.RefreshToken = lastToken.RefreshToken;
                     Settings.AccessToken = spotify.AccessToken;
-                    Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed");
                 };
 
                 auth.Start();
@@ -117,7 +115,6 @@ namespace Songify_Slim
                 // When the timer elapses the tokens will get refreshed
                 spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
                 Settings.AccessToken = spotify.AccessToken;
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed (timer)");
             }
             catch (Exception ex)
             {
@@ -164,7 +161,6 @@ namespace Songify_Slim
         {
             // Tries to add a song to the current playback queue
             ErrorResponse error = spotify.AddToQueue(SongURI);
-            Console.WriteLine(error);
             return error;
         }
 
