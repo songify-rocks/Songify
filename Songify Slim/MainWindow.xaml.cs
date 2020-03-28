@@ -64,6 +64,7 @@ namespace Songify_Slim
         bool _firstRun = true;
         string _prevSong;
         public List<RequestObject> ReqList = new List<RequestObject>();
+        string prevID, currentID;
 
         #endregion
 
@@ -192,26 +193,6 @@ namespace Songify_Slim
                 if (currentlyPlaying != null)
                 {
                     WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true, currentlyPlaying[4]);
-                    try
-                    {
-                        ReqList.Remove(ReqList.Find(x => x.TrackID == currentlyPlaying[4]));
-
-                        System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
-                        {
-                            foreach (Window window in System.Windows.Application.Current.Windows)
-                            {
-                                if (window.GetType() != typeof(Window_Queue))
-                                    continue;
-                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                                (window as Window_Queue).dgv_Queue.Items.Refresh();
-                            }
-                        }));
-
-                    }
-                    catch (Exception)
-                    {
-
-                    }
                 }
             }
         }
@@ -275,10 +256,10 @@ namespace Songify_Slim
 
 
             // when the timer 'ticks' this code gets executed
-            GetCurrentSong();
+            GetCurrentSongAsync();
         }
 
-        private void GetCurrentSong()
+        private async System.Threading.Tasks.Task GetCurrentSongAsync()
         {
             SongFetcher sf = new SongFetcher();
             string[] currentlyPlaying;
@@ -616,6 +597,8 @@ namespace Songify_Slim
 
         private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false, string trackID = null)
         {
+            currentID = trackID;
+
             if (artist.Contains("Various Artists, "))
             {
                 artist = artist.Replace("Various Artists, ", "");
@@ -668,6 +651,29 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace("{title}", title);
                 CurrSong = CurrSong.Replace("{extra}", extra);
                 CurrSong = CurrSong.Replace("{uri}", trackID);
+
+                if (ReqList.Count > 0)
+                {
+                    RequestObject rq = ReqList.Find(x => x.TrackID == currentID);
+                    if (rq != null)
+                    {
+                        CurrSong = CurrSong.Replace("{{", "");
+                        CurrSong = CurrSong.Replace("}}", "");
+                        CurrSong = CurrSong.Replace("{req}", rq.Requester);
+                    }
+                    else
+                    {
+                        int start = CurrSong.IndexOf("{{");
+                        int end = CurrSong.LastIndexOf("}}") + 2;
+                        CurrSong = CurrSong.Remove(start, end - start);
+                    }
+                }
+                else
+                {
+                    int start = CurrSong.IndexOf("{{");
+                    int end = CurrSong.LastIndexOf("}}") + 2;
+                    CurrSong = CurrSong.Remove(start, end - start);
+                }
             }
             else
             {
@@ -685,7 +691,6 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace("{title}", title);
                 CurrSong = CurrSong.Replace("{extra}", extra);
                 CurrSong = CurrSong.Replace("{uri}", trackID);
-
             }
 
             // read the text file
@@ -709,7 +714,7 @@ namespace Songify_Slim
 
                 try
                 {
-                    ReqList.Remove(ReqList.Find(x => x.TrackID == trackID));
+                    ReqList.Remove(ReqList.Find(x => x.TrackID == prevID));
                     System.Windows.Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
                         foreach (Window window in System.Windows.Application.Current.Windows)
@@ -823,6 +828,8 @@ namespace Songify_Slim
                 {
                     DownloadCover(cover);
                 }
+
+                prevID = currentID;
             }
 
             // write song to the output label 
