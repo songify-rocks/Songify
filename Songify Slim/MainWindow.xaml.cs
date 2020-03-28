@@ -16,20 +16,10 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using Songify_Slim.Models;
 
 namespace Songify_Slim
 {
-    public static class PlayerType
-    {
-        public const string SpotifyLegacy = "Spotify Legacy";
-        public const string Youtube = "Youtube (Chrome)";
-        public const string Nightbot = "Nightbot";
-        public const string VLC = "VLC";
-        public const string FooBar2000 = "foobar2000";
-        public const string Deezer = "Deezer (Chrome)";
-        public const string SpotifyWeb = "Spotify API";
-    }
-
     public class RequestObject
     {
         public string TrackID { get; set; }
@@ -60,11 +50,13 @@ namespace Songify_Slim
         private string _temp = "";
         private System.Threading.Timer _timer;
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private System.Timers.Timer songTimer = new System.Timers.Timer();
         private bool _forceClose;
         bool _firstRun = true;
         string _prevSong;
         public List<RequestObject> ReqList = new List<RequestObject>();
         string prevID, currentID;
+        TrackInfo currentSpotifySong;
 
         #endregion
 
@@ -73,12 +65,20 @@ namespace Songify_Slim
             InitializeComponent();
             this.Left = Settings.PosX;
             this.Top = Settings.PosY;
+
+            songTimer.Elapsed += SongTimer_Elapsed;
+
             // Backgroundworker for telemetry, and methods
             WorkerTelemetry.DoWork += Worker_Telemetry_DoWork;
 
             // Backgroundworker for updates, and methods
             WorkerUpdate.DoWork += Worker_Update_DoWork;
             WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
+        }
+
+        private async void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            FetchSpotifyWeb();
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -186,13 +186,25 @@ namespace Songify_Slim
             SetFetchTimer();
 
             if (_selectedSource == PlayerType.SpotifyWeb)
-
             {
-                SongFetcher sf = new SongFetcher();
-                string[] currentlyPlaying = sf.FetchSpotifyWeb();
-                if (currentlyPlaying != null)
+                FetchSpotifyWeb();
+            }
+        }
+
+        private void FetchSpotifyWeb()
+        {
+            SongFetcher sf = new SongFetcher();
+            TrackInfo info = sf.FetchSpotifyWeb();
+            if (info != null)
+            {
+                WriteSong(info.Artists, info.Title, "", info.albums[0].Url, false, info.SongID);
+                if (info.SongID != currentSpotifySong.SongID)
                 {
-                    WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], true, currentlyPlaying[4]);
+                    if (songTimer.Enabled)
+                        songTimer.Stop();
+                    currentSpotifySong = info;
+                    songTimer.Interval = info.DurationMS;
+                    songTimer.Start();
                 }
             }
         }
@@ -204,9 +216,7 @@ namespace Songify_Slim
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.VLC:
                 case PlayerType.FooBar2000:
-                case PlayerType.SpotifyWeb:
-                    // Spotify, VLC or foobar2000
-                    FetchTimer(5000);
+                    FetchTimer(1000);
                     break;
 
                 case PlayerType.Youtube:
@@ -218,6 +228,10 @@ namespace Songify_Slim
                 case PlayerType.Nightbot:
                     // Nightbot
                     FetchTimer(3000);
+                    break;
+                case PlayerType.SpotifyWeb:
+                    // Prevent Rate Limiting
+                    FetchTimer(20000);
                     break;
             }
         }
@@ -363,11 +377,7 @@ namespace Songify_Slim
                 case PlayerType.SpotifyWeb:
 
                     #region Spotify API
-                    currentlyPlaying = sf.FetchSpotifyWeb();
-                    if (currentlyPlaying != null)
-                    {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], currentlyPlaying[3], false, currentlyPlaying[4]);
-                    }
+                    FetchSpotifyWeb();
                     break;
 
                     #endregion
