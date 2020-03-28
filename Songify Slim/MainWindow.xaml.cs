@@ -848,21 +848,28 @@ namespace Songify_Slim
 
         private void DownloadCover(string cover)
         {
-            // Downloads the album cover to the filesystem
-            WebClient webClient = new WebClient();
-            webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
-            webClient.Dispose();
-            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                new Action(() =>
-                {
-                    BitmapImage image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                    image.UriSource = new Uri(coverPath);
-                    image.EndInit();
-                    img_cover.Source = image;
-                }));
+            try
+            {
+                // Downloads the album cover to the filesystem
+                WebClient webClient = new WebClient();
+                webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
+                webClient.Dispose();
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(() =>
+                    {
+                        BitmapImage image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                        image.UriSource = new Uri(coverPath);
+                        image.EndInit();
+                        img_cover.Source = image;
+                    }));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private void WriteSplitOutput(string artist, string title, string extra, string path)
@@ -1003,7 +1010,7 @@ namespace Songify_Slim
 
         public static bool IsWindowOpen<T>(string name = "") where T : Window
         {
-         // This method checks if a window of type <T> is already opened in the current application context and returns true or false
+            // This method checks if a window of type <T> is already opened in the current application context and returns true or false
             return string.IsNullOrEmpty(name)
                ? System.Windows.Application.Current.Windows.OfType<T>().Any()
                : System.Windows.Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));

@@ -33,81 +33,96 @@ namespace Songify_Slim
 
         public static async void DoAuthAsync()
         {
-            // Execute the authentication flow and subscribe the timer elapsed event
-            authRefresh.Elapsed += AuthRefresh_Elapsed;
-
-            // If Refresh and Accesstoken are present, just refresh the auth
-            if (!string.IsNullOrEmpty(Settings.RefreshToken) && !string.IsNullOrEmpty(Settings.AccessToken))
+            try
             {
-                authed = true;
-                spotify = new SpotifyWebAPI()
+                // Execute the authentication flow and subscribe the timer elapsed event
+                authRefresh.Elapsed += AuthRefresh_Elapsed;
+
+                // If Refresh and Accesstoken are present, just refresh the auth
+                if (!string.IsNullOrEmpty(Settings.RefreshToken) && !string.IsNullOrEmpty(Settings.AccessToken))
                 {
-                    TokenType = (await auth.RefreshAuthAsync(Settings.RefreshToken)).TokenType,
-                    AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken
-                };
-                spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
-            }
-            else
-            {
-                authed = false;
-            }
+                    authed = true;
+                    spotify = new SpotifyWebAPI()
+                    {
+                        TokenType = (await auth.RefreshAuthAsync(Settings.RefreshToken)).TokenType,
+                        AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken
+                    };
+                    spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
+                }
+                else
+                {
+                    authed = false;
+                }
 
-            // if the auth was successfull save the new tokens and 
-            auth.AuthReceived += async (sender, response) =>
-            {
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Received");
+                // if the auth was successfull save the new tokens and 
+                auth.AuthReceived += async (sender, response) =>
+                {
+                    Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Received");
+
+                    if (authed)
+                        return;
+
+                    lastToken = await auth.ExchangeCodeAsync(response.Code);
+                    // Save tokens
+                    Settings.RefreshToken = lastToken.RefreshToken;
+                    Settings.AccessToken = lastToken.AccessToken;
+                    // create ne Spotify object
+                    spotify = new SpotifyWebAPI()
+                    {
+                        TokenType = lastToken.TokenType,
+                        AccessToken = lastToken.AccessToken
+                    };
+
+                    authenticated = true;
+                    auth.Stop();
+                    authRefresh.Start();
+                    await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+                     {
+                         foreach (Window window in System.Windows.Application.Current.Windows)
+                         {
+                             if (window.GetType() != typeof(SettingsWindow)) continue;
+                             ((SettingsWindow)window).SetControls();
+                         }
+                     }));
+                };
+                // autmatically refreshes the token after it expires
+                auth.OnAccessTokenExpired += async (sender, e) =>
+                {
+                    spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
+                    Settings.RefreshToken = lastToken.RefreshToken;
+                    Settings.AccessToken = spotify.AccessToken;
+                    Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed");
+                };
+
+                auth.Start();
 
                 if (authed)
-                    return;
-
-                lastToken = await auth.ExchangeCodeAsync(response.Code);
-                // Save tokens
-                Settings.RefreshToken = lastToken.RefreshToken;
-                Settings.AccessToken = lastToken.AccessToken;
-                // create ne Spotify object
-                spotify = new SpotifyWebAPI()
                 {
-                    TokenType = lastToken.TokenType,
-                    AccessToken = lastToken.AccessToken
-                };
-
-                authenticated = true;
-                auth.Stop();
-                authRefresh.Start();
-                await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
-                 {
-                     foreach (Window window in System.Windows.Application.Current.Windows)
-                     {
-                         if (window.GetType() != typeof(SettingsWindow)) continue;
-                         ((SettingsWindow)window).SetControls();
-                     }
-                 }));
-            };
-            // autmatically refreshes the token after it expires
-            auth.OnAccessTokenExpired += async (sender, e) =>
-            {
-                spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
-                Settings.RefreshToken = lastToken.RefreshToken;
-                Settings.AccessToken = spotify.AccessToken;
-                Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed");
-            };
-
-            auth.Start();
-
-            if (authed)
-            {
-                authRefresh.Start();
-                return;
+                    authRefresh.Start();
+                    return;
+                }
+                auth.OpenBrowser();
             }
-            auth.OpenBrowser();
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+
         }
 
         private static async void AuthRefresh_Elapsed(object sender, ElapsedEventArgs e)
         {
-            // When the timer elapses the tokens will get refreshed
-            spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
-            Settings.AccessToken = spotify.AccessToken;
-            Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed (timer)");
+            try
+            {
+                // When the timer elapses the tokens will get refreshed
+                spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
+                Settings.AccessToken = spotify.AccessToken;
+                Console.WriteLine(DateTime.Now.ToShortTimeString() + " Auth Refreshed (timer)");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         public static TrackInfo GetSongInfo()
