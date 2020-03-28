@@ -16,7 +16,6 @@ namespace Songify_Slim
     {
         private string[] songinfo;
         private AutomationElement _parent;
-        private static int pauseCounter;
 
         /// <summary>
         /// A method to fetch the song that's currently playing on Spotify.
@@ -254,20 +253,10 @@ namespace Songify_Slim
             {
                 return null;
             }
-            // geths wether a track is playing or not
-            bool isPlayling = APIHandler.GetPlaybackState();
+
             // gets the current playing songinfo
             TrackInfo songInfo = APIHandler.GetSongInfo();
-            if (isPlayling)
-                pauseCounter = 0;
-            else
-            {
-                if (pauseCounter < 10)
-                    pauseCounter += 1;
-            }
             // if no song is playing and custompausetext is enabled
-            if (!isPlayling && Settings.CustomPauseTextEnabled && pauseCounter >= 10)
-                return new[] { "", "", "", null, "" };
 
             if (songInfo == null) return null;
             // return a new stringarray containing artist, title and so on

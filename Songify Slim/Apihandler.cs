@@ -71,7 +71,6 @@ namespace Songify_Slim
                         TokenType = lastToken.TokenType,
                         AccessToken = lastToken.AccessToken
                     };
-
                     authenticated = true;
                     auth.Stop();
                     authRefresh.Start();
@@ -84,6 +83,7 @@ namespace Songify_Slim
                          }
                      }));
                 };
+
                 // autmatically refreshes the token after it expires
                 auth.OnAccessTokenExpired += async (sender, e) =>
                 {

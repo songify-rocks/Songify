@@ -206,7 +206,7 @@ namespace Songify_Slim
                 case PlayerType.FooBar2000:
                 case PlayerType.SpotifyWeb:
                     // Spotify, VLC or foobar2000
-                    FetchTimer(1000);
+                    FetchTimer(5000);
                     break;
 
                 case PlayerType.Youtube:
