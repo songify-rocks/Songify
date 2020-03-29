@@ -73,7 +73,7 @@ namespace Songify_Slim
                     ConfigHandler.SaveConfig(AppDomain.CurrentDomain.BaseDirectory + "/config.xml");
                 }
                 (window as MainWindow).Width = 588;
-                (window as MainWindow).Height = 247.881;
+                (window as MainWindow).Height = 285;
             }
         }
     }

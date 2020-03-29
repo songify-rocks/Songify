@@ -603,16 +603,16 @@ namespace Songify_Slim
                 // if accepted save to settings, restore window size
                 Settings.Telemetry = true;
                 Width = 588;
-                MinHeight = 247.881;
-                Height = 247.881;
+                MinHeight = 285;
+                Height = 285;
             }
             else
             {
                 // if accepted save to settings, restore window size
                 Settings.Telemetry = false;
                 Width = 588;
-                MinHeight = 247.881;
-                Height = 247.881;
+                MinHeight = 285;
+                Height = 285;
             }
         }
 
