@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
-using Songify_Slim.Models; 
+using Songify_Slim.Models;
 
 namespace Songify_Slim
 {
@@ -258,9 +258,9 @@ namespace Songify_Slim
             // gets the current playing songinfo
             TrackInfo songInfo = APIHandler.GetSongInfo();
             // if no song is playing and custompausetext is enabled
-        
 
-            if (songInfo == null) return null;
+
+            if (songInfo == null) return new TrackInfo { isPLaying = false};
             // return a new stringarray containing artist, title and so on
             return songInfo;
 

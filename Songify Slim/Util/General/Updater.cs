@@ -13,7 +13,7 @@ namespace Songify_Slim
         {
             // gets the latest release using OctoKit and compares the version strings (1.0.4 < 1.0.5)
             dynamic latest = GetLatestRelease();
-            string currentVersion = vs.ToString().Remove(vs.ToString().Length - 1);
+            string currentVersion = vs.ToString();
             dynamic onlineVersion = latest.TagName.Replace("v", "");
 
             dynamic result = onlineVersion.CompareTo(currentVersion);

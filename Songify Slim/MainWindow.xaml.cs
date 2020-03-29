@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Songify_Slim.Models;
+using System.Drawing;
 
 namespace Songify_Slim
 {
@@ -187,6 +188,17 @@ namespace Songify_Slim
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+                {
+                    if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
+                    {
+                        img_cover.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        img_cover.Visibility = Visibility.Collapsed;
+                    }
+                }));
                 FetchSpotifyWeb();
             }
         }
@@ -197,7 +209,20 @@ namespace Songify_Slim
             TrackInfo info = sf.FetchSpotifyWeb();
             if (info != null)
             {
-                WriteSong(info.Artists, info.Title, "", info.albums[0].Url, false, info.SongID);
+                if (!info.isPLaying)
+                {
+                    WriteSong("", "", "", "", false, "");
+                    return;
+                }
+
+                string albumURL = null;
+
+                if (info.albums.Count != 0)
+                {
+                    albumURL = info.albums[0].Url;
+                }
+
+                WriteSong(info.Artists, info.Title, "", albumURL, false, info.SongID);
                 if (currentSpotifySong == null || info.SongID != currentSpotifySong.SongID)
                 {
                     if (songTimer.Enabled)
@@ -206,6 +231,13 @@ namespace Songify_Slim
                     songTimer.Interval = info.DurationMS;
                     songTimer.Start();
                 }
+            }
+            else
+            {
+                if (songTimer.Enabled)
+                    songTimer.Stop();
+                songTimer.Interval = 1000;
+                songTimer.Start();
             }
         }
 
@@ -216,21 +248,25 @@ namespace Songify_Slim
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.VLC:
                 case PlayerType.FooBar2000:
+                    GetCurrentSongAsync();
                     FetchTimer(1000);
                     break;
 
                 case PlayerType.Youtube:
                 case PlayerType.Deezer:
                     // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
+                    GetCurrentSongAsync();
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
                 case PlayerType.Nightbot:
                     // Nightbot
+                    GetCurrentSongAsync();
                     FetchTimer(3000);
                     break;
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
+                    GetCurrentSongAsync();
                     FetchTimer(20000);
                     break;
             }
@@ -499,8 +535,7 @@ namespace Songify_Slim
             LblCopyright.Content =
                 "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
 
-            // automatically start fetching songs
-            SetFetchTimer();
+
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -525,6 +560,8 @@ namespace Songify_Slim
                 TwitchHandler.BotConnect();
             }
 
+            // automatically start fetching songs
+            SetFetchTimer();
         }
 
         private void AddSourcesToSourceBox()
@@ -620,13 +657,13 @@ namespace Songify_Slim
             {
                 root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
                 songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
-                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.jpg";
+                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.png";
             }
             else
             {
                 root = Settings.Directory;
                 songPath = Settings.Directory + "/Songify.txt";
-                coverPath = Settings.Directory + "/cover.jpg";
+                coverPath = Settings.Directory + "/cover.png";
             }
 
             // if all those are empty we expect the player to be paused
@@ -644,6 +681,8 @@ namespace Songify_Slim
                 {
                     WriteSplitOutput(Settings.CustomPauseText, title, extra, root);
                 }
+
+                DownloadCover(null);
 
                 TxtblockLiveoutput.Dispatcher.Invoke(
                     System.Windows.Threading.DispatcherPriority.Normal,
@@ -680,11 +719,18 @@ namespace Songify_Slim
                 }
                 else
                 {
-                    int start = CurrSong.IndexOf("{{");
-                    int end = CurrSong.LastIndexOf("}}") + 2;
-                    if (start >= 0)
+                    try
                     {
-                        CurrSong = CurrSong.Remove(start, end - start);
+                        int start = CurrSong.IndexOf("{{");
+                        int end = CurrSong.LastIndexOf("}}") + 2;
+                        if (start >= 0)
+                        {
+                            CurrSong = CurrSong.Remove(start, end - start);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
                     }
                 }
             }
@@ -835,15 +881,15 @@ namespace Songify_Slim
                     WebHelper.UpdateWebQueue(trackID, "", "", "", "", "1", "u");
                 }
 
-                //Save Album Cover
-                if (Settings.DownloadCover && !String.IsNullOrEmpty(cover))
-                {
-                    DownloadCover(cover);
-                }
+
 
                 prevID = currentID;
             }
-
+            //Save Album Cover
+            if (Settings.DownloadCover)
+            {
+                DownloadCover(cover);
+            }
             // write song to the output label 
             TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
@@ -867,27 +913,40 @@ namespace Songify_Slim
 
         private void DownloadCover(string cover)
         {
-            try
+            if (cover == null)
             {
-                // Downloads the album cover to the filesystem
-                WebClient webClient = new WebClient();
-                webClient.DownloadFile(cover, Settings.Directory + "cover.jpg");
-                webClient.Dispose();
-                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                    new Action(() =>
-                    {
-                        BitmapImage image = new BitmapImage();
-                        image.BeginInit();
-                        image.CacheOption = BitmapCacheOption.OnLoad;
-                        image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                        image.UriSource = new Uri(coverPath);
-                        image.EndInit();
-                        img_cover.Source = image;
-                    }));
+                // create Empty png file
+                Bitmap bmp = new Bitmap(640, 640);
+                Graphics g = Graphics.FromImage(bmp);
+
+                g.Clear(System.Drawing.Color.Transparent);
+                g.Flush();
+                bmp.Save(coverPath, System.Drawing.Imaging.ImageFormat.Png);
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogExc(ex);
+                try
+                {
+                    // Downloads the album cover to the filesystem
+                    WebClient webClient = new WebClient();
+                    webClient.DownloadFile(cover, Settings.Directory + "cover.png");
+                    webClient.Dispose();
+                    img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                        new Action(() =>
+                        {
+                            BitmapImage image = new BitmapImage();
+                            image.BeginInit();
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                            image.UriSource = new Uri(coverPath);
+                            image.EndInit();
+                            img_cover.Source = image;
+                        }));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
             }
         }
 

@@ -127,10 +127,6 @@ namespace Songify_Slim
         {
             // returns the trackinfo of the current playback (used in the fetch timer) 
             PlaybackContext context = spotify.GetPlayingTrack();
-            if (!context.IsPlaying)
-            {
-                return null;
-            }
 
             if (context.Item != null)
             {
@@ -146,8 +142,15 @@ namespace Songify_Slim
 
                 List<Image> albums = context.Item.Album.Images;
 
-                return new TrackInfo() { Artists = artists, Title = context.Item.Name, 
-                    albums = albums, SongID = context.Item.Id, DurationMS = context.Item.DurationMs - context.ProgressMs };
+                return new TrackInfo()
+                {
+                    Artists = artists,
+                    Title = context.Item.Name,
+                    albums = albums,
+                    SongID = context.Item.Id,
+                    DurationMS = context.Item.DurationMs - context.ProgressMs,
+                    isPLaying = context.IsPlaying
+                };
             }
 
             return new TrackInfo() { Artists = "", Title = "" };
