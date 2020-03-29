@@ -2,11 +2,7 @@
 
 # What is Songify?
 
-Songify Slim is a slimmed down version of my original software Songify. Songify Slim was brought to life because Spotify decided to shut down the local API which Songify was originally built on. 
-
-# What does it do?
-
-It fetches the currently playing song from Spotify, YouTube (Chrome) and Nightbot and saves it to a text file. Just like magic. 
+Songify fetches the currently playing song from Spotify, YouTube (Chrome), Nightbot and many more players and saves it to a text file. Just like magic. 
 
 # Features?
 
@@ -26,6 +22,10 @@ It fetches the currently playing song from Spotify, YouTube (Chrome) and Nightbo
       * Response -> URL fetch - Full (plain) response, URL to Fetch -> **URL**
 * Switch between Dark and Light theme, not that it matters since it's most of the time minimized...
 * Oh and colors, yeah a lot of colors actually. 23 if I counted that right.
+* Spotify Songrequests
+* Download the album cover
+* Custom pause text
+* and more
 
 # FAQ
 The FAQ can be found here https://songify.rocks/faq.html
