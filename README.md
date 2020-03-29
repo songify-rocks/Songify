@@ -1,6 +1,6 @@
 ![forthebadge](https://forthebadge.com/images/badges/made-with-c-sharp.svg) ![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg) ![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg) 
 
-# What is Songify Slim?
+# What is Songify?
 
 Songify Slim is a slimmed down version of my original software Songify. Songify Slim was brought to life because Spotify decided to shut down the local API which Songify was originally built on. 
 
@@ -27,7 +27,8 @@ It fetches the currently playing song from Spotify, YouTube (Chrome) and Nightbo
 * Switch between Dark and Light theme, not that it matters since it's most of the time minimized...
 * Oh and colors, yeah a lot of colors actually. 23 if I counted that right.
 
-
+# FAQ
+The FAQ can be found here https://songify.rocks/faq.html
 
 # Troubleshooting
 If you don't see anything happen in the Live Output try switching songs and make sure this option is turned **off**!
