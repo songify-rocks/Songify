@@ -12,6 +12,7 @@ using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using System.Linq;
+using Songify_Slim.Models;
 
 namespace Songify_Slim
 {

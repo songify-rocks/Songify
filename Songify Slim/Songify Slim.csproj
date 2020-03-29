@@ -282,6 +282,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\PlayerType.cs" />
+    <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Models\TrackInfo.cs" />
     <Compile Include="Util\Songify\Apihandler.cs" />
     <Compile Include="Util\Settings\ConfigHandler.cs" />

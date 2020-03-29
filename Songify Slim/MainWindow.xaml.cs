@@ -21,16 +21,6 @@ using System.Drawing;
 
 namespace Songify_Slim
 {
-    public class RequestObject
-    {
-        public string TrackID { get; set; }
-        public string Artists { get; set; }
-        public string Title { get; set; }
-        public string Length { get; set; }
-        public string Requester { get; set; }
-
-    }
-
     public partial class MainWindow
     {
         #region Variables
@@ -714,7 +704,10 @@ namespace Songify_Slim
                     {
                         int start = CurrSong.IndexOf("{{");
                         int end = CurrSong.LastIndexOf("}}") + 2;
-                        CurrSong = CurrSong.Remove(start, end - start);
+                        if (start >= 0)
+                        {
+                            CurrSong = CurrSong.Remove(start, end - start);
+                        }
                     }
                 }
                 else
