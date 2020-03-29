@@ -76,7 +76,7 @@ namespace Songify_Slim
             WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
 
-        private async void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             FetchSpotifyWeb();
         }
@@ -198,7 +198,7 @@ namespace Songify_Slim
             if (info != null)
             {
                 WriteSong(info.Artists, info.Title, "", info.albums[0].Url, false, info.SongID);
-                if (info.SongID != currentSpotifySong.SongID)
+                if (currentSpotifySong == null || info.SongID != currentSpotifySong.SongID)
                 {
                     if (songTimer.Enabled)
                         songTimer.Stop();
@@ -682,7 +682,10 @@ namespace Songify_Slim
                 {
                     int start = CurrSong.IndexOf("{{");
                     int end = CurrSong.LastIndexOf("}}") + 2;
-                    CurrSong = CurrSong.Remove(start, end - start);
+                    if (start >= 0)
+                    {
+                        CurrSong = CurrSong.Remove(start, end - start);
+                    }
                 }
             }
             else

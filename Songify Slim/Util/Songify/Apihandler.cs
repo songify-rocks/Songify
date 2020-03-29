@@ -27,7 +27,7 @@ namespace Songify_Slim
 
         // Spotify Authentication flow with the webserver
         private static TokenSwapAuth auth = new TokenSwapAuth(
-            exchangeServerUri: "https://songify.rocks/auth/index.php",
+            exchangeServerUri: "https://songify.rocks/auth/_index.php",
             serverUri: "http://localhost:4002/auth",
             scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
         );
@@ -134,20 +134,20 @@ namespace Songify_Slim
 
             if (context.Item != null)
             {
-                string artists = string.Join(", ", context.Item.Artists);
+                string artists = "";
 
-                //for (int i = 0; i < context.Item.Artists.Count; i++)
-                //{
-                //    if (i != context.Item.Artists.Count - 1)
-                //        artists += context.Item.Artists[i].Name + ", ";
-                //    else
-                //        artists += context.Item.Artists[i].Name;
-                //}
+                for (int i = 0; i < context.Item.Artists.Count; i++)
+                {
+                    if (i != context.Item.Artists.Count - 1)
+                        artists += context.Item.Artists[i].Name + ", ";
+                    else
+                        artists += context.Item.Artists[i].Name;
+                }
 
                 List<Image> albums = context.Item.Album.Images;
 
                 return new TrackInfo() { Artists = artists, Title = context.Item.Name, 
-                    albums = albums, SongID = context.Item.Id, DurationMS = context.Item.DurationMs };
+                    albums = albums, SongID = context.Item.Id, DurationMS = context.Item.DurationMs - context.ProgressMs };
             }
 
             return new TrackInfo() { Artists = "", Title = "" };
