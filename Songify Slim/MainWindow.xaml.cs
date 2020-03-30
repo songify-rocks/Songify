@@ -169,6 +169,7 @@ namespace Songify_Slim
                 return;
             }
 
+
             _selectedSource = cbx_Source.SelectedValue.ToString();
 
             Settings.Source = _selectedSource;
@@ -518,8 +519,10 @@ namespace Songify_Slim
             // check for update 
             WorkerUpdate.RunWorkerAsync();
 
+            _selectedSource = Settings.Source;
             // set the cbx index to the correct source
             cbx_Source.SelectedValue = _selectedSource;
+            cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
             LblCopyright.Content =
@@ -653,7 +656,7 @@ namespace Songify_Slim
             }
 
             songPath = root + "/Songify.txt";
-            coverPath = root + "/cover.png"; 
+            coverPath = root + "/cover.png";
 
             // if all those are empty we expect the player to be paused
             if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(title) && string.IsNullOrEmpty(extra))

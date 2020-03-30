@@ -199,6 +199,6 @@
                 <MenuItem Header="About" Click="BtnAboutClick"/>
             </MenuItem>
         </Menu>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" SelectionChanged="Cbx_Source_SelectionChanged" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="437,3,0,0"/>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="437,3,0,0"/>
     </Grid>
 </controls:MetroWindow>
