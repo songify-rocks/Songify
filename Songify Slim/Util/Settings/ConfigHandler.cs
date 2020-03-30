@@ -16,7 +16,6 @@ namespace Songify_Slim
 
     internal class ConfigHandler
     {
-
         public static void SaveConfig(string path = "")
         {
             // Saving the Config file
@@ -79,7 +78,6 @@ namespace Songify_Slim
                 writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
                 writer.WriteAttributeString("uploadhistory", Settings.UploadHistory.ToString());
                 writer.WriteAttributeString("savehistory", Settings.SaveHistory.ToString());
-
                 writer.WriteAttributeString("downloadcover", Settings.DownloadCover.ToString());
                 writer.WriteAttributeString("refreshtoken", Settings.RefreshToken);
                 writer.WriteAttributeString("splitoutput", Settings.SplitOutput.ToString());
@@ -94,6 +92,10 @@ namespace Songify_Slim
                 writer.WriteAttributeString("twsrcooldown", Settings.TwSRCooldown.ToString());
                 writer.WriteAttributeString("msglogging", Settings.MsgLoggingEnabled.ToString());
                 writer.WriteAttributeString("twautoconnect", Settings.TwAutoConnect.ToString());
+                writer.WriteAttributeString("artistblacklist", Settings.ArtistBlacklist);
+                writer.WriteAttributeString("posx", Settings.PosX.ToString());
+                writer.WriteAttributeString("posy", Settings.PosY.ToString());
+                writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -151,6 +153,10 @@ namespace Songify_Slim
                     Settings.TwSRCooldown = int.Parse(node.Attributes["twsrcooldown"]?.InnerText);
                     Settings.MsgLoggingEnabled = Convert.ToBoolean(node.Attributes["msglogging"]?.InnerText);
                     Settings.TwAutoConnect = Convert.ToBoolean(node.Attributes["twautoconnect"]?.InnerText);
+                    Settings.ArtistBlacklist = node.Attributes["artistblacklist"]?.InnerText;
+                    Settings.PosX = int.Parse(node.Attributes["posx"]?.InnerText);
+                    Settings.PosY = int.Parse(node.Attributes["posy"]?.InnerText);
+                    Settings.AutoClearQueue = Convert.ToBoolean(node.Attributes["autoclearqueue"]?.InnerText);
                 }
             }
             catch (Exception ex)

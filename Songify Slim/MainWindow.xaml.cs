@@ -646,15 +646,14 @@ namespace Songify_Slim
             if (string.IsNullOrEmpty(Settings.Directory))
             {
                 root = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-                songPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Songify.txt";
-                coverPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/cover.png";
             }
             else
             {
                 root = Settings.Directory;
-                songPath = Settings.Directory + "/Songify.txt";
-                coverPath = Settings.Directory + "/cover.png";
             }
+
+            songPath = root + "/Songify.txt";
+            coverPath = root + "/cover.png"; 
 
             // if all those are empty we expect the player to be paused
             if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(title) && string.IsNullOrEmpty(extra))

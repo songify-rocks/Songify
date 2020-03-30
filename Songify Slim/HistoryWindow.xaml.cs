@@ -60,6 +60,12 @@ namespace Songify_Slim
 
         public void LoadFile()
         {
+            if (!File.Exists(_path))
+            {
+                _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
+                _doc.Save(_path);
+            }
+
             // Checks if the file is locked, if not the datagrids gets cleared and the file is read
             if (IsFileLocked(new FileInfo(_path)))
                 return;
@@ -69,9 +75,6 @@ namespace Songify_Slim
             LbxHistory.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LbxHistory.Items.Clear(); }));
-
-            if (!File.Exists(_path))
-                return;
 
             _doc = XDocument.Load(_path);
             List<DateTime> list = new List<DateTime>();

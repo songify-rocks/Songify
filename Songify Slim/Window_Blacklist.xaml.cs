@@ -43,11 +43,19 @@ namespace Songify_Slim
             tb_Blacklist.Text = "";
         }
 
-        private void addToBlacklist(string search)
+        private async void addToBlacklist(string search)
         {
             //Check if the string is empty
             if (string.IsNullOrEmpty(search))
                 return;
+
+            // If the API is not connected just don't do anything?
+            if (APIHandler.spotify == null)
+            {
+                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Spotify is not connected. You need to connect to Spotify in order to fill the blacklist.", MessageDialogStyle.Affirmative);
+                return;
+            }
+
 
             // Perform a search via the spotify API
             SpotifyAPI.Web.Models.SearchItem searchItem = APIHandler.GetArtist(search);
@@ -81,7 +89,7 @@ namespace Songify_Slim
                         s += item + splitter;
                     }
                 }
-                s = s.Remove(s.Length - 3);
+                s = s.Remove(s.Length - splitter.Length);
             }
 
             Settings.ArtistBlacklist = s;
