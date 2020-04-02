@@ -671,7 +671,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    WriteSplitOutput(Settings.CustomPauseText, title, extra, root);
+                    WriteSplitOutput(Settings.CustomPauseText, title, extra);
                 }
 
                 DownloadCover(null);
@@ -787,7 +787,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    WriteSplitOutput(artist, title, extra, root);
+                    WriteSplitOutput(artist, title, extra);
                 }
 
                 // if upload is enabled
@@ -855,8 +855,10 @@ namespace Songify_Slim
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                        Logger.LogStr("Upload History:" + myHttpWebResponse.StatusDescription);
-                        Logger.LogStr("Upload History:" + myHttpWebResponse.StatusCode.ToString());
+                        if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
+                        {
+                            Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
+                        }
                         myHttpWebResponse.Close();
                     }
                     catch (Exception ex)
@@ -945,29 +947,19 @@ namespace Songify_Slim
             }
         }
 
-        private void WriteSplitOutput(string artist, string title, string extra, string path)
+        private void WriteSplitOutput(string artist, string title, string extra)
         {
             // Writes the output to 2 different text files
 
             if (!File.Exists(root + "/Artist.txt"))
-            {
                 File.Create(root + "/Artist.txt").Close();
-                File.WriteAllText(root + "/Artist.txt", artist);
-            }
-            else
-            {
-                File.WriteAllText(root + "/Artist.txt", artist);
-            }
 
             if (!File.Exists(root + "/Title.txt"))
-            {
                 File.Create(root + "/Title.txt").Close();
-                File.WriteAllText(root + "/Title.txt", title + extra);
-            }
-            else
-            {
-                File.WriteAllText(root + "/Title.txt", title + extra);
-            }
+
+            File.WriteAllText(root + "/Artist.txt", artist);
+            File.WriteAllText(root + "/Title.txt", title + extra);
+
         }
 
         public void UploadSong(string currSong)
@@ -982,8 +974,10 @@ namespace Songify_Slim
                 myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusDescription);
-                Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode.ToString());
+                if(myHttpWebResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
+                }
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)

@@ -17,6 +17,8 @@ namespace Songify_Slim
     {
         private readonly string _path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "\\history.shr";
         private XDocument _doc;
+        FileSystemWatcher watcher;
+
         public HistoryWindow()
         {
             InitializeComponent();
@@ -38,18 +40,18 @@ namespace Songify_Slim
             else
                 Tglbtn_Upload.Content = "Upload ❌";
 
-            LoadFile();
-
             // listen to changes made to the history.shr file
-            FileSystemWatcher watcher = new FileSystemWatcher
+            watcher = new FileSystemWatcher
             {
                 Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
-                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                NotifyFilter = NotifyFilters.LastWrite,
                 Filter = "history.shr",
                 EnableRaisingEvents = true
-            };
+            };           
 
             watcher.Changed += new FileSystemEventHandler(OnChanged);
+
+            LoadFile();
 
         }
 
@@ -60,15 +62,17 @@ namespace Songify_Slim
 
         public void LoadFile()
         {
+            watcher.EnableRaisingEvents = false;
+
             if (!File.Exists(_path))
             {
                 _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
                 _doc.Save(_path);
             }
 
-            // Checks if the file is locked, if not the datagrids gets cleared and the file is read
-            if (IsFileLocked(new FileInfo(_path)))
-                return;
+            //// Checks if the file is locked, if not the datagrids gets cleared and the file is read
+            //if (IsFileLocked(new FileInfo(_path)))
+            //    return;
             dgvHistorySongs.Dispatcher.Invoke(
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { dgvHistorySongs.Items.Clear(); }));
@@ -102,14 +106,27 @@ namespace Songify_Slim
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LbxHistory.SelectedIndex = 0; }));
             }
+
+            watcher.EnableRaisingEvents = true;
+
         }
 
         private void LbxHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsFileLocked(new FileInfo(_path)))
-                return;
+            watcher.EnableRaisingEvents = false;
+
+            //if (IsFileLocked(new FileInfo(_path)))
+            //{
+            //    watcher.EnableRaisingEvents = true;
+            //    return;
+            //}
+
             if (LbxHistory.SelectedIndex < 0)
+            {
+                watcher.EnableRaisingEvents = true;
                 return;
+            }
+
             dgvHistorySongs.Items.Clear();
             _doc = XDocument.Load(_path);
             XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
@@ -134,10 +151,13 @@ namespace Songify_Slim
                     dgvHistorySongs.Items.Add(data);
                 }
             }
+            watcher.EnableRaisingEvents = true;
+
         }
 
         protected virtual bool IsFileLocked(FileInfo file)
         {
+            watcher.EnableRaisingEvents = false;
             FileStream stream = null;
 
             try
@@ -249,6 +269,11 @@ namespace Songify_Slim
         {
             Clipboard.SetDataObject("https://songify.rocks/history.php?id=" + Settings.Uuid);
             Lbl_Status.Content = "History URL copied to Clipboard";
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            watcher.Dispose();
         }
     }
     public class Song

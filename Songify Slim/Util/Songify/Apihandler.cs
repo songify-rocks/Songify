@@ -106,7 +106,6 @@ namespace Songify_Slim
             {
                 Logger.LogExc(ex);
             }
-
         }
 
         private static async void AuthRefresh_Elapsed(object sender, ElapsedEventArgs e)
@@ -127,6 +126,10 @@ namespace Songify_Slim
         {
             // returns the trackinfo of the current playback (used in the fetch timer) 
             PlaybackContext context = spotify.GetPlayingTrack();
+            if (context.Error != null)
+            {
+                Logger.LogStr(context.Error.Status + " | " + context.Error.Message);
+            }
 
             if (context.Item != null)
             {

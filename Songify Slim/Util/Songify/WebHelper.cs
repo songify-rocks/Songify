@@ -50,7 +50,10 @@ namespace Songify_Slim
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                Logger.LogStr(operation + " Queue:" + myHttpWebResponse.StatusDescription);
+                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    Logger.LogStr(operation + " Queue:" + myHttpWebResponse.StatusDescription);
+                }
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)

@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
-        Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
+        Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner" Closed="MetroWindow_Closed">
 
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands>
