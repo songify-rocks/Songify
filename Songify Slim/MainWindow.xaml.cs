@@ -202,7 +202,6 @@ namespace Songify_Slim
             {
                 if (!info.isPLaying)
                 {
-                    WriteSong("", "", "", "", false, "");
                     return;
                 }
 
@@ -213,20 +212,22 @@ namespace Songify_Slim
                     albumURL = info.albums[0].Url;
                 }
 
-                WriteSong(info.Artists, info.Title, "", albumURL, false, info.SongID);
-                if (currentSpotifySong == null || info.SongID != currentSpotifySong.SongID)
+                if (info.DurationMS > 2000)
                 {
-                    if (songTimer.Enabled)
-                        songTimer.Stop();
+                    if (!songTimer.Enabled)
+                        songTimer.Enabled = true;
                     currentSpotifySong = info;
-                    songTimer.Interval = info.DurationMS;
+                    songTimer.Stop();
+                    songTimer.Interval = info.DurationMS + 400;
                     songTimer.Start();
                 }
+                WriteSong(info.Artists, info.Title, "", albumURL, false, info.SongID);
             }
             else
             {
-                if (songTimer.Enabled)
-                    songTimer.Stop();
+                if (!songTimer.Enabled)
+                    songTimer.Enabled = true;
+                songTimer.Stop();
                 songTimer.Interval = 1000;
                 songTimer.Start();
             }
