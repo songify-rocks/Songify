@@ -27,33 +27,40 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Set the buttons to match the settings
-            Tglbtn_Save.IsChecked = Settings.SaveHistory;
-            Tglbtn_Upload.IsChecked = Settings.UploadHistory;
-
-            if (Settings.SaveHistory)
-                Tglbtn_Save.Content = "Save ✔️";
-            else
-                Tglbtn_Save.Content = "Save ❌";
-
-            if (Settings.UploadHistory)
-                Tglbtn_Upload.Content = "Upload ✔️";
-            else
-                Tglbtn_Upload.Content = "Upload ❌";
-
-            // listen to changes made to the history.shr file
-            watcher = new FileSystemWatcher
+            try
             {
-                Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = "history.shr",
-                EnableRaisingEvents = true
-            };
+                // Set the buttons to match the settings
+                Tglbtn_Save.IsChecked = Settings.SaveHistory;
+                Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
-            watcher.Changed += new FileSystemEventHandler(OnChanged);
+                if (Settings.SaveHistory)
+                    Tglbtn_Save.Content = "Save ✔️";
+                else
+                    Tglbtn_Save.Content = "Save ❌";
 
-            LoadFile();
+                if (Settings.UploadHistory)
+                    Tglbtn_Upload.Content = "Upload ✔️";
+                else
+                    Tglbtn_Upload.Content = "Upload ❌";
 
+                // listen to changes made to the history.shr file
+                watcher = new FileSystemWatcher
+                {
+                    Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
+                    NotifyFilter = NotifyFilters.LastWrite,
+                    Filter = "history.shr",
+                    EnableRaisingEvents = true
+                };
+
+                watcher.Changed += new FileSystemEventHandler(OnChanged);
+
+                LoadFile();
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
@@ -64,47 +71,56 @@ namespace Songify_Slim
 
         public void LoadFile()
         {
-            if (!File.Exists(_path))
+            try
             {
-                _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
-                _doc.Save(_path);
-            }
-
-            //// Checks if the file is locked, if not the datagrids gets cleared and the file is read
-            //if (IsFileLocked(new FileInfo(_path)))
-            //    return;
-            dgvHistorySongs.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { dgvHistorySongs.Items.Clear(); }));
-            LbxHistory.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { LbxHistory.Items.Clear(); }));
-
-            _doc = XDocument.Load(_path);
-            List<DateTime> list = new List<DateTime>();
-            List<string> dateList = new List<string>();
-
-            if (_doc.Root != null)
-                foreach (XElement elem in _doc.Root.Elements())
+                if (!File.Exists(_path))
                 {
-                    dateList.AddRange(elem.Name.ToString().Replace("d_", "").Split('.'));
-                    list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
-                    dateList.Clear();
+                    _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
+                    _doc.Save(_path);
                 }
-            
-            IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
-            foreach (DateTime time in orderedList)
-            {
-                LbxHistory.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));
-            }
 
-            if (LbxHistory.Items.Count > 0)
-            {
+                //// Checks if the file is locked, if not the datagrids gets cleared and the file is read
+                //if (IsFileLocked(new FileInfo(_path)))
+                //    return;
+
+
+                dgvHistorySongs.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(() => { dgvHistorySongs.Items.Clear(); }));
                 LbxHistory.Dispatcher.Invoke(
-                            System.Windows.Threading.DispatcherPriority.Normal,
-                            new Action(() => { LbxHistory.SelectedIndex = 0; }));
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(() => { LbxHistory.Items.Clear(); }));
+
+                _doc = XDocument.Load(_path);
+                List<DateTime> list = new List<DateTime>();
+                List<string> dateList = new List<string>();
+
+                if (_doc.Root != null)
+                    foreach (XElement elem in _doc.Root.Elements())
+                    {
+                        dateList.AddRange(elem.Name.ToString().Replace("d_", "").Split('.'));
+                        list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
+                        dateList.Clear();
+                    }
+
+                IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
+                foreach (DateTime time in orderedList)
+                {
+                    LbxHistory.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));
+                }
+
+                if (LbxHistory.Items.Count > 0)
+                {
+                    LbxHistory.Dispatcher.Invoke(
+                                System.Windows.Threading.DispatcherPriority.Normal,
+                                new Action(() => { LbxHistory.SelectedIndex = 0; }));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
 

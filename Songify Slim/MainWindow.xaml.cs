@@ -822,7 +822,7 @@ namespace Songify_Slim
                     XDocument doc;
                     if (!File.Exists(historyPath))
                     {
-                        doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
+                        doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
                         doc.Save(historyPath);
                     }
                     doc = XDocument.Load(historyPath);
