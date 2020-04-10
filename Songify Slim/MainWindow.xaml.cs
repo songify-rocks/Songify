@@ -826,13 +826,13 @@ namespace Songify_Slim
                         doc.Save(historyPath);
                     }
                     doc = XDocument.Load(historyPath);
-                    if (!doc.Descendants("d_" + DateTime.Now.ToShortDateString()).Any())
+                    if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
                     {
-                        doc.Descendants("History").FirstOrDefault()?.Add(new XElement("d_" + DateTime.Now.ToShortDateString()));
+                        doc.Descendants("History").FirstOrDefault()?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
                     }
                     XElement elem = new XElement("Song", CurrSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
-                    XElement x = doc.Descendants("d_" + DateTime.Now.ToShortDateString()).FirstOrDefault();
+                    XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
                     x?.Add(elem);
                     doc.Save(historyPath);
                 }
