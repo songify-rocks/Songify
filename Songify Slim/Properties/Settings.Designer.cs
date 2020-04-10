@@ -451,5 +451,17 @@ namespace Songify_Slim.Properties {
                 this["AutoClearQueue"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SpotifyDeviceID {
+            get {
+                return ((string)(this["SpotifyDeviceID"]));
+            }
+            set {
+                this["SpotifyDeviceID"] = value;
+            }
+        }
     }
 }

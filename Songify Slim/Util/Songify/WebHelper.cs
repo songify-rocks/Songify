@@ -42,8 +42,6 @@ namespace Songify_Slim
                 string url = "http://songify.rocks/add_queue.php/?id=" + extras;
                 string escapeurl = WebUtility.UrlEncode(url);
 
-
-
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;

@@ -260,7 +260,7 @@ namespace Songify_Slim
             // if no song is playing and custompausetext is enabled
 
 
-            if (songInfo == null) return new TrackInfo { isPLaying = false};
+            if (songInfo == null) return new TrackInfo { isPlaying = false};
             // return a new stringarray containing artist, title and so on
             return songInfo;
 

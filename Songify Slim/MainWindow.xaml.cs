@@ -200,8 +200,9 @@ namespace Songify_Slim
             TrackInfo info = sf.FetchSpotifyWeb();
             if (info != null)
             {
-                if (!info.isPLaying)
+                if (!info.isPlaying)
                 {
+                    WriteSong("", "", "", null);
                     return;
                 }
 
@@ -927,24 +928,32 @@ namespace Songify_Slim
                 {
                     // Downloads the album cover to the filesystem
                     WebClient webClient = new WebClient();
-                    webClient.DownloadFile(cover, Settings.Directory + "cover.png");
+                    webClient.DownloadFile(cover, coverPath);
                     webClient.Dispose();
-                    img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                        new Action(() =>
-                        {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            image.UriSource = new Uri(coverPath);
-                            image.EndInit();
-                            img_cover.Source = image;
-                        }));
                 }
                 catch (Exception ex)
                 {
                     Logger.LogExc(ex);
                 }
+            }
+
+            try
+            {
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    image.UriSource = new Uri(coverPath);
+                    image.EndInit();
+                    img_cover.Source = image;
+                }));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
 
@@ -975,7 +984,7 @@ namespace Songify_Slim
                 myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                if(myHttpWebResponse.StatusCode != HttpStatusCode.OK)
+                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
                 {
                     Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
                 }

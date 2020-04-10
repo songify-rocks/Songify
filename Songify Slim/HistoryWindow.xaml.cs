@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
@@ -47,7 +48,7 @@ namespace Songify_Slim
                 NotifyFilter = NotifyFilters.LastWrite,
                 Filter = "history.shr",
                 EnableRaisingEvents = true
-            };           
+            };
 
             watcher.Changed += new FileSystemEventHandler(OnChanged);
 
@@ -57,13 +58,12 @@ namespace Songify_Slim
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
+            Thread.Sleep(1000);
             LoadFile();
         }
 
         public void LoadFile()
         {
-            watcher.EnableRaisingEvents = false;
-
             if (!File.Exists(_path))
             {
                 _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd/MM/yyyy"))));
@@ -91,7 +91,7 @@ namespace Songify_Slim
                     list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
                     dateList.Clear();
                 }
-
+            
             IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
             foreach (DateTime time in orderedList)
             {
@@ -106,15 +106,10 @@ namespace Songify_Slim
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LbxHistory.SelectedIndex = 0; }));
             }
-
-            watcher.EnableRaisingEvents = true;
-
         }
 
         private void LbxHistory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            watcher.EnableRaisingEvents = false;
-
             //if (IsFileLocked(new FileInfo(_path)))
             //{
             //    watcher.EnableRaisingEvents = true;
@@ -123,12 +118,12 @@ namespace Songify_Slim
 
             if (LbxHistory.SelectedIndex < 0)
             {
-                watcher.EnableRaisingEvents = true;
                 return;
             }
+            if (_doc == null)
+                return;
 
             dgvHistorySongs.Items.Clear();
-            _doc = XDocument.Load(_path);
             XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
 
             List<XElement> nodes = new List<XElement>();
@@ -151,8 +146,6 @@ namespace Songify_Slim
                     dgvHistorySongs.Items.Add(data);
                 }
             }
-            watcher.EnableRaisingEvents = true;
-
         }
 
         protected virtual bool IsFileLocked(FileInfo file)

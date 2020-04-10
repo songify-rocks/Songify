@@ -125,7 +125,7 @@ namespace Songify_Slim
         public static TrackInfo GetSongInfo()
         {
             // returns the trackinfo of the current playback (used in the fetch timer) 
-            PlaybackContext context = spotify.GetPlayingTrack();
+            PlaybackContext context = spotify.GetPlayback();
             if (context.Error != null)
             {
                 Logger.LogStr(context.Error.Status + " | " + context.Error.Message);
@@ -143,6 +143,11 @@ namespace Songify_Slim
                         artists += context.Item.Artists[i].Name;
                 }
 
+                if (context.Device != null)
+                    Settings.SpotifyDeviceID = context.Device.Id;
+
+                Console.WriteLine(context.Device.Id);
+
                 List<Image> albums = context.Item.Album.Images;
 
                 return new TrackInfo()
@@ -152,7 +157,7 @@ namespace Songify_Slim
                     albums = albums,
                     SongID = context.Item.Id,
                     DurationMS = context.Item.DurationMs - context.ProgressMs,
-                    isPLaying = context.IsPlaying
+                    isPlaying = context.IsPlaying
                 };
             }
 
@@ -168,7 +173,7 @@ namespace Songify_Slim
         public static ErrorResponse AddToQ(string SongURI)
         {
             // Tries to add a song to the current playback queue
-            ErrorResponse error = spotify.AddToQueue(SongURI);
+            ErrorResponse error = spotify.AddToQueue(SongURI, Settings.SpotifyDeviceID);
             return error;
         }
 

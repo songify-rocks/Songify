@@ -7,6 +7,23 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static string SpotifyDeviceID
+        {
+            get => GetSpotifyDeviceID();
+            set => SetSpotifyDeviceID(value);
+        }
+
+        private static void SetSpotifyDeviceID(string value)
+        {
+            Properties.Settings.Default.SpotifyDeviceID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetSpotifyDeviceID()
+        {
+            return Properties.Settings.Default.SpotifyDeviceID;
+        }
+
         public static string AccessToken
         {
             get => GetAccessToken();

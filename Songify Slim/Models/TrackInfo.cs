@@ -14,6 +14,6 @@ namespace Songify_Slim.Models
         public List<Image> albums { get; set; }
         public string SongID { get; set; }
         public int DurationMS { get; set; }
-        public bool isPLaying { get; set; }
+        public bool isPlaying { get; set; }
     }
 }
