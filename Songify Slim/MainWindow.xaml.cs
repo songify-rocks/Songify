@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using Songify_Slim.Models;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace Songify_Slim
 {
@@ -749,6 +750,9 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace("{uri}", trackID);
             }
 
+            // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
+            CurrSong = CleanFormatString(CurrSong);
+
             // read the text file
             if (!File.Exists(songPath))
             {
@@ -908,6 +912,18 @@ namespace Songify_Slim
                                            img_cover.Source = image;
                                        }));
             }
+        }
+
+        private string CleanFormatString(string currSong)
+        {
+
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new Regex("[ ]{2,}", options);
+            currSong = regex.Replace(currSong, " ");
+            currSong = currSong.Trim();
+            // Add trailing spaces for better scroll
+            currSong += "          ";
+            return currSong;
         }
 
         private void DownloadCover(string cover)

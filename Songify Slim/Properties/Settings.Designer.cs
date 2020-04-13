@@ -109,7 +109,7 @@ namespace Songify_Slim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{artist} - {title} {extra}               ")]
+        [global::System.Configuration.DefaultSettingValueAttribute("{artist} - {title} {extra}")]
         public string outputString {
             get {
                 return ((string)(this["outputString"]));

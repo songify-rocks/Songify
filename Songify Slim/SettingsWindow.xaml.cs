@@ -423,5 +423,11 @@ namespace Songify_Slim
             // Sets wether to clear the queue on startup or not
             Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
         }
+
+        private void MenuBtnReq_Click(object sender, RoutedEventArgs e)
+        {
+            // appends text
+            AppendText(TxtbxOutputformat, "{{requested by {req}}}");
+        }
     }
 }

@@ -64,6 +64,7 @@
                                 <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
                                 <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
                                 <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
+                                <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click"/>
                             </ContextMenu>
                         </TextBox.ContextMenu>
                     </TextBox>
