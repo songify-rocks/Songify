@@ -202,7 +202,8 @@ namespace Songify_Slim
             {
                 if (!info.isPlaying)
                 {
-                    WriteSong("", "", "", null);
+                    if (Settings.CustomPauseTextEnabled)
+                        WriteSong("", "", "", null);
                     return;
                 }
 
