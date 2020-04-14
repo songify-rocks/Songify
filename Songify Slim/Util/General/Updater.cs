@@ -39,9 +39,9 @@ namespace Songify_Slim
 
         public static dynamic GetLatestRelease()
         {
-            // access github and get the repository releases
+            // access github and get the repository releases songify-rocks/Songify
             GitHubClient github = new GitHubClient(new ProductHeaderValue("Songify"));
-            Task<IReadOnlyList<Release>> releases = github.Repository.Release.GetAll("inzaniity", "songify");
+            Task<IReadOnlyList<Release>> releases = github.Repository.Release.GetAll("songify-rocks", "songify");
             Release latest = releases.Result[0]; // Result[0] is always the newest release
             return latest;
         }
