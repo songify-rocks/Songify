@@ -304,7 +304,7 @@ namespace Songify_Slim
             GetCurrentSongAsync();
         }
 
-        private async System.Threading.Tasks.Task GetCurrentSongAsync()
+        private void GetCurrentSongAsync()
         {
             SongFetcher sf = new SongFetcher();
             string[] currentlyPlaying;

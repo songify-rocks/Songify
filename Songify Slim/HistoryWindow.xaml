@@ -20,14 +20,7 @@
                 </StackPanel>
             </Button>
             <Button x:Name="BtnRefresh" Click="BtnRefresh_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Rectangle Width="15" Height="15"
-                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_refresh}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </StackPanel>
+                <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="SyncAltSolid" />
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
