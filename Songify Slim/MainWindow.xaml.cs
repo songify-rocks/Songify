@@ -1094,6 +1094,11 @@ namespace Songify_Slim
             Process.Start("https://github.com/songify-rocks/Songify/issues");
         }
 
+        private void BtnWidget_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+        }
+
         private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue

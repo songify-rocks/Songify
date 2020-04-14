@@ -173,6 +173,7 @@
         <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,222,0">
             <MenuItem Header="File">
                 <MenuItem Header="Settings" Click="BtnSettings_Click"/>
+                <MenuItem Header="Widget"  Click="BtnWidget_Click"/>
                 <MenuItem x:Name="mi_Exit" Header="Exit" Click="MenuItem1Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
