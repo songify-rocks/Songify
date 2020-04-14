@@ -800,7 +800,7 @@ namespace Songify_Slim
                 // if upload is enabled
                 if (Settings.Upload)
                 {
-                    UploadSong(CurrSong.Trim());
+                    UploadSong(CurrSong.Trim(), cover);
                 }
 
                 if (_firstRun)
@@ -917,7 +917,6 @@ namespace Songify_Slim
 
         private string CleanFormatString(string currSong)
         {
-
             RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
@@ -989,13 +988,15 @@ namespace Songify_Slim
 
         }
 
-        public void UploadSong(string currSong)
+        public void UploadSong(string currSong, string coverURL = null)
         {
             try
             {
                 // extras are UUID and Songinfo
-                string extras = Settings.Uuid + "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8);
-                string url = "http://songify.rocks/song.php/?id=" + extras;
+                string extras = Settings.Uuid + 
+                    "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8)+
+                    "&cover=" + HttpUtility.UrlEncode(coverURL, Encoding.UTF8);
+                string url = "http://songify.rocks/song.php?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
