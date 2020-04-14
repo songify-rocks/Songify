@@ -7,7 +7,7 @@
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      Title="Songify Slim" Height="285" Width="588" Loaded="MetroWindowLoaded"
+                      Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="Manual">
     <controls:MetroWindow.Resources>
         <DataTemplate x:Key="HeaderTemplate">
@@ -192,10 +192,12 @@
                 <MenuItem Header="History Browser" Click="BtnHistory_Click"/>
             </MenuItem>
             <MenuItem Header="Support">
-                <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
                 <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
+                <MenuItem Header="FAQ" Click="BtnFAQ_Click"/>
+                <MenuItem Header="GitHub" Click="BtnGitHub_Click"/>
+                <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
                 <MenuItem Header="About" Click="BtnAboutClick"/>
             </MenuItem>
         </Menu>

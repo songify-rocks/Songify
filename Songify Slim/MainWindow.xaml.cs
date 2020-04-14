@@ -525,7 +525,7 @@ namespace Songify_Slim
 
             _selectedSource = Settings.Source;
             // set the cbx index to the correct source
-            cbx_Source.SelectedValue = _selectedSource;
+            cbx_Source.SelectedItem = _selectedSource;
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
@@ -993,8 +993,8 @@ namespace Songify_Slim
             try
             {
                 // extras are UUID and Songinfo
-                string extras = Settings.Uuid + 
-                    "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8)+
+                string extras = Settings.Uuid +
+                    "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
                     "&cover=" + HttpUtility.UrlEncode(coverURL, Encoding.UTF8);
                 string url = "http://songify.rocks/song.php?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
@@ -1082,6 +1082,16 @@ namespace Songify_Slim
                 Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
             }
 
+        }
+
+        private void BtnFAQ_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://songify.rocks/faq.html");
+        }
+
+        private void BtnGitHub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/songify-rocks/Songify/issues");
         }
 
         private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)

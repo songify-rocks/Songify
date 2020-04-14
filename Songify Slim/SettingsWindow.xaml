@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         Title="Settings" Height="310.884" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
@@ -47,15 +48,9 @@
                     <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="344,10,0,0"
                             VerticalAlignment="Top" Width="28" Click="BtnCopyToClipClick" Padding="5"
                             Focusable="False" ToolTip="Copy to Clipboard" Height="27">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle
-                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                Width="15" Height="15">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Fill" Visual="{StaticResource appbar_clipboard_paste}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
+
+                        <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
+
                     </Button>
                     <Label Content="Output Format" HorizontalAlignment="Left" Margin="9,42,0,0" VerticalAlignment="Top"/>
                     <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="112,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" TextChanged="TxtbxOutputformat_TextChanged">
@@ -83,15 +78,7 @@
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxCover_Checked" Unchecked="ChbxCover_Checked" />
                     <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="344,109,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyURL_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <Rectangle
-                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
-                                Width="15" Height="15">
-                                <Rectangle.OpacityMask>
-                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_link}" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                        </StackPanel>
+                        <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
                     </Button>
                     <controls:ToggleSwitch x:Name="ChbxSplit" Content="Split Artist and Title" HorizontalAlignment="Left"
                         Margin="15,187,0,-6" VerticalAlignment="Top" 
