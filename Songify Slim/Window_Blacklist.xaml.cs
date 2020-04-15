@@ -28,11 +28,12 @@ namespace Songify_Slim
 
             ListView_Blacklist.Items.Clear();
 
-            Blacklist = Settings.ArtistBlacklist.Split(new[] { splitter }, StringSplitOptions.None);
+            Blacklist = Settings.ArtistBlacklist.Split(new[] { splitter }, StringSplitOptions.None);            
 
             foreach (string s in Blacklist)
             {
-                ListView_Blacklist.Items.Add(s);
+                if (!string.IsNullOrEmpty(s))
+                    ListView_Blacklist.Items.Add(s);
             }
         }
 
@@ -117,6 +118,7 @@ namespace Songify_Slim
             if (msgResult == MessageDialogResult.Affirmative)
             {
                 ListView_Blacklist.Items.Remove(ListView_Blacklist.SelectedItem);
+                SaveBlacklist();
             }
         }
 

@@ -132,7 +132,7 @@ namespace Songify_Slim
             set => SetSaveHistory(value);
         }
 
-        public static string Source
+        public static int Source
         {
             get => GetSource();
             set => SetSource(value);
@@ -326,7 +326,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.SaveHistory;
         }
 
-        private static string GetSource()
+        private static int GetSource()
         {
             return Properties.Settings.Default.Source;
         }
@@ -523,7 +523,7 @@ namespace Songify_Slim
             Properties.Settings.Default.Save();
         }
 
-        private static void SetSource(string source)
+        private static void SetSource(int source)
         {
             Properties.Settings.Default.Source = source;
             Properties.Settings.Default.Save();

@@ -1,56 +1,55 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Songify_Slim.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Timers;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using Songify_Slim.Models;
-using System.Drawing;
-using System.Text.RegularExpressions;
 
 namespace Songify_Slim
 {
     public partial class MainWindow
     {
         #region Variables
-        public string songPath, coverPath, root;
+
         public static string Version;
         public bool AppActive;
+        public string CurrSong;
         public NotifyIcon NotifyIcon = new NotifyIcon();
+        public List<RequestObject> ReqList = new List<RequestObject>();
+        public string songPath, coverPath, root;
         public bool UpdateError;
         public BackgroundWorker WorkerTelemetry = new BackgroundWorker();
         public BackgroundWorker WorkerUpdate = new BackgroundWorker();
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
-        public string CurrSong;
         private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
-        private string _selectedSource = Settings.Source;
         private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
+        private bool _firstRun = true;
+        private bool _forceClose;
+        private string _prevSong;
+        private string _selectedSource;
         private string _temp = "";
         private System.Threading.Timer _timer;
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private TrackInfo currentSpotifySong;
+        private string prevID, currentID;
         private System.Timers.Timer songTimer = new System.Timers.Timer();
-        private bool _forceClose;
-        bool _firstRun = true;
-        string _prevSong;
-        public List<RequestObject> ReqList = new List<RequestObject>();
-        string prevID, currentID;
-        TrackInfo currentSpotifySong;
-
-        #endregion
+        #endregion Variables
 
         public MainWindow()
         {
@@ -68,9 +67,12 @@ namespace Songify_Slim
             WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
 
-        private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
+        public static bool IsWindowOpen<T>(string name = "") where T : Window
         {
-            FetchSpotifyWeb();
+            // This method checks if a window of type <T> is already opened in the current application context and returns true or false
+            return string.IsNullOrEmpty(name)
+               ? System.Windows.Application.Current.Windows.OfType<T>().Any()
+               : System.Windows.Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -89,6 +91,36 @@ namespace Songify_Slim
             }
 
             Settings.Autostart = isChecked;
+        }
+
+        public void UploadSong(string currSong, string coverURL = null)
+        {
+            try
+            {
+                // extras are UUID and Songinfo
+                string extras = Settings.Uuid +
+                    "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
+                    "&cover=" + HttpUtility.UrlEncode(coverURL, Encoding.UTF8);
+                string url = "http://songify.rocks/song.php?id=" + extras;
+                // Create a new 'HttpWebRequest' object to the mentioned URL.
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                myHttpWebRequest.UserAgent = Settings.Webua;
+                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
+                }
+                myHttpWebResponse.Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                // if error occurs write text to the status asynchronous
+                LblStatus.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal,
+                    new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+            }
         }
 
         public void Worker_Telemetry_DoWork(object sender, DoWorkEventArgs e)
@@ -141,6 +173,13 @@ namespace Songify_Slim
                 LblStatus.Content = "Unable to check for new version.";
         }
 
+        private void AddSourcesToSourceBox()
+        {
+            string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
+                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
+            cbx_Source.ItemsSource = sourceBoxItems;
+        }
+
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
             // Opens the 'About'-Window
@@ -154,11 +193,68 @@ namespace Songify_Slim
             Process.Start("https://discordapp.com/invite/H8nd4T4");
         }
 
+        private void BtnFAQ_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://songify.rocks/faq.html");
+        }
+
+        private void BtnGitHub_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/songify-rocks/Songify/issues");
+        }
+
+        private void BtnHistory_Click(object sender, RoutedEventArgs e)
+        {
+            // Opens the History in either Window or Browser
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Contains("Window"))
+            {
+                if (!IsWindowOpen<HistoryWindow>())
+                {
+                    // Opens the 'History'-Window
+                    HistoryWindow hW = new HistoryWindow { Top = this.Top, Left = this.Left };
+                    hW.ShowDialog();
+                }
+            }
+            // Opens the Queue in the Browser
+            else if (item.Header.ToString().Contains("Browser"))
+            {
+                Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
+            }
+        }
+
+        private void BtnPaypal_Click(object sender, RoutedEventArgs e)
+        {
+            // links to the projects patreon page (the button name is old because I used to use paypal)
+            Process.Start("https://www.patreon.com/Songify");
+        }
+
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
             SettingsWindow sW = new SettingsWindow { Top = this.Top, Left = this.Left };
             sW.ShowDialog();
+        }
+
+        private void BtnTwitch_Click(object sender, RoutedEventArgs e)
+        {
+            // Tries to connect to the twitch service given the credentials in the settings or disconnects
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Equals("Connect"))
+            {
+                // Connects
+                TwitchHandler.BotConnect();
+            }
+            else if (item.Header.ToString().Equals("Disconnect"))
+            {
+                // Disconnects
+                TwitchHandler._client.Disconnect();
+            }
+        }
+
+        private void BtnWidget_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
         private void Cbx_Source_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -170,10 +266,9 @@ namespace Songify_Slim
                 return;
             }
 
-
             _selectedSource = cbx_Source.SelectedValue.ToString();
 
-            Settings.Source = _selectedSource;
+            Settings.Source = cbx_Source.SelectedIndex;
 
             // Dpending on which source is chosen, it starts the timer that fetches the song info
             SetFetchTimer();
@@ -192,6 +287,64 @@ namespace Songify_Slim
                     }
                 }));
                 FetchSpotifyWeb();
+            }
+        }
+
+        private string CleanFormatString(string currSong)
+        {
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new Regex("[ ]{2,}", options);
+            currSong = regex.Replace(currSong, " ");
+            currSong = currSong.Trim();
+            // Add trailing spaces for better scroll
+            currSong += "          ";
+            return currSong;
+        }
+
+        private void DownloadCover(string cover)
+        {
+            if (cover == null)
+            {
+                // create Empty png file
+                Bitmap bmp = new Bitmap(640, 640);
+                Graphics g = Graphics.FromImage(bmp);
+
+                g.Clear(System.Drawing.Color.Transparent);
+                g.Flush();
+                bmp.Save(coverPath, System.Drawing.Imaging.ImageFormat.Png);
+            }
+            else
+            {
+                try
+                {
+                    // Downloads the album cover to the filesystem
+                    WebClient webClient = new WebClient();
+                    webClient.DownloadFile(cover, coverPath);
+                    webClient.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+            }
+
+            try
+            {
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    BitmapImage image = new BitmapImage();
+                    image.BeginInit();
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                    image.UriSource = new Uri(coverPath);
+                    image.EndInit();
+                    img_cover.Source = image;
+                }));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
 
@@ -236,37 +389,6 @@ namespace Songify_Slim
             }
         }
 
-        private void SetFetchTimer()
-        {
-            switch (_selectedSource)
-            {
-                case PlayerType.SpotifyLegacy:
-                case PlayerType.VLC:
-                case PlayerType.FooBar2000:
-                    GetCurrentSongAsync();
-                    FetchTimer(1000);
-                    break;
-
-                case PlayerType.Youtube:
-                case PlayerType.Deezer:
-                    // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
-                    GetCurrentSongAsync();
-                    FetchTimer(Settings.ChromeFetchRate * 1000);
-                    break;
-
-                case PlayerType.Nightbot:
-                    // Nightbot
-                    GetCurrentSongAsync();
-                    FetchTimer(3000);
-                    break;
-                case PlayerType.SpotifyWeb:
-                    // Prevent Rate Limiting
-                    GetCurrentSongAsync();
-                    FetchTimer(20000);
-                    break;
-            }
-        }
-
         private void FetchTimer(int ms)
         {
             // Check if the timer is running, if yes stop it and start new with the ms givin in the parameter
@@ -285,25 +407,6 @@ namespace Songify_Slim
             _timerFetcher.Enabled = true;
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
-            {
-                if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
-                {
-                    img_cover.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    img_cover.Visibility = Visibility.Collapsed;
-                }
-            }));
-
-
-            // when the timer 'ticks' this code gets executed
-            GetCurrentSongAsync();
-        }
-
         private void GetCurrentSongAsync()
         {
             SongFetcher sf = new SongFetcher();
@@ -313,6 +416,7 @@ namespace Songify_Slim
                 case PlayerType.SpotifyLegacy:
 
                     #region Spotify
+
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
                     currentlyPlaying = sf.FetchDesktopPlayer("Spotify");
@@ -327,6 +431,7 @@ namespace Songify_Slim
                 case PlayerType.Youtube:
 
                     #region YouTube
+
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
                     _temp = sf.FetchBrowser("YouTube");
@@ -342,11 +447,12 @@ namespace Songify_Slim
 
                     break;
 
-                #endregion
+                #endregion YouTube
 
                 case PlayerType.Nightbot:
 
                     #region Nightbot
+
                     // Fetching the currently playing song on NB Song Request
                     // and updating the output on success
                     _temp = sf.FetchNightBot();
@@ -367,6 +473,7 @@ namespace Songify_Slim
                 case PlayerType.VLC:
 
                     #region VLC
+
                     currentlyPlaying = sf.FetchDesktopPlayer("vlc");
                     if (currentlyPlaying != null)
                     {
@@ -379,6 +486,7 @@ namespace Songify_Slim
                 case PlayerType.FooBar2000:
 
                     #region foobar2000
+
                     currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
                     if (currentlyPlaying != null)
                     {
@@ -391,6 +499,7 @@ namespace Songify_Slim
                 case PlayerType.Deezer:
 
                     #region Deezer
+
                     _temp = sf.FetchBrowser("Deezer");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
@@ -408,10 +517,11 @@ namespace Songify_Slim
                 case PlayerType.SpotifyWeb:
 
                     #region Spotify API
+
                     FetchSpotifyWeb();
                     break;
 
-                    #endregion
+                    #endregion Spotify API
             }
         }
 
@@ -457,8 +567,19 @@ namespace Songify_Slim
             NotifyIcon.Dispose();
         }
 
+        static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            Logger.LogExc(e);
+            Console.WriteLine("MyHandler caught : " + e.Message);
+            Console.WriteLine("Runtime terminating: {0}", args.IsTerminating);
+        }
+
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
+
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
             {
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
@@ -520,19 +641,17 @@ namespace Songify_Slim
                 TelemetryTimer();
             }
 
-            // check for update 
+            // check for update
             WorkerUpdate.RunWorkerAsync();
 
-            _selectedSource = Settings.Source;
             // set the cbx index to the correct source
-            cbx_Source.SelectedItem = _selectedSource;
+            cbx_Source.SelectedIndex = Settings.Source;
+            _selectedSource = cbx_Source.SelectedValue.ToString();
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
             LblCopyright.Content =
                 "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
-
-
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -561,18 +680,51 @@ namespace Songify_Slim
             SetFetchTimer();
         }
 
-        private void AddSourcesToSourceBox()
-        {
-            string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
-            cbx_Source.ItemsSource = sourceBoxItems;
-        }
-
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
             if (WindowState != WindowState.Minimized) return;
             MinimizeToSysTray();
+        }
+
+        private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
+        {
+            // Opens the Blacklist Window
+            if (!IsWindowOpen<Window_Blacklist>())
+            {
+                Window_Blacklist wB = new Window_Blacklist { Top = this.Top, Left = this.Left };
+                wB.Show();
+            }
+        }
+
+        private void mi_Queue_Click(object sender, RoutedEventArgs e)
+        {
+            // Opens the Queue Window
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            if (item.Header.ToString().Contains("Window"))
+            {
+                if (!IsWindowOpen<Window_Queue>())
+                {
+                    Window_Queue wQ = new Window_Queue { Top = this.Top, Left = this.Left };
+                    wQ.Show();
+                }
+            }
+            // Opens the Queue in the Browser
+            else if (item.Header.ToString().Contains("Browser"))
+            {
+                Process.Start("https://songify.rocks/queue.php?id=" + Settings.Uuid);
+            }
+        }
+
+        private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
+        {
+            // After user confirmation sends a command to the webserver which clears the queue
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                ReqList.Clear();
+                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+            }
         }
 
         private void MinimizeToSysTray()
@@ -584,6 +736,24 @@ namespace Songify_Slim
             }
         }
 
+        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            {
+                if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
+                {
+                    img_cover.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    img_cover.Visibility = Visibility.Collapsed;
+                }
+            }));
+
+            // when the timer 'ticks' this code gets executed
+            GetCurrentSongAsync();
+        }
+
         private void SendTelemetry(bool active)
         {
             // send telemetry data once
@@ -592,6 +762,42 @@ namespace Songify_Slim
                 WorkerTelemetry.RunWorkerAsync();
         }
 
+        private void SetFetchTimer()
+        {
+            switch (_selectedSource)
+            {
+                case PlayerType.SpotifyLegacy:
+                case PlayerType.VLC:
+                case PlayerType.FooBar2000:
+                    GetCurrentSongAsync();
+                    FetchTimer(1000);
+                    break;
+
+                case PlayerType.Youtube:
+                case PlayerType.Deezer:
+                    // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
+                    GetCurrentSongAsync();
+                    FetchTimer(Settings.ChromeFetchRate * 1000);
+                    break;
+
+                case PlayerType.Nightbot:
+                    // Nightbot
+                    GetCurrentSongAsync();
+                    FetchTimer(3000);
+                    break;
+
+                case PlayerType.SpotifyWeb:
+                    // Prevent Rate Limiting
+                    GetCurrentSongAsync();
+                    FetchTimer(20000);
+                    break;
+            }
+        }
+
+        private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            FetchSpotifyWeb();
+        }
         private async void TelemetryDisclaimer()
         {
             SendTelemetry(true);
@@ -789,7 +995,6 @@ namespace Songify_Slim
                 }
                 catch (Exception)
                 {
-
                 }
 
                 if (Settings.SplitOutput)
@@ -876,7 +1081,6 @@ namespace Songify_Slim
                             System.Windows.Threading.DispatcherPriority.Normal,
                             new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
                     }
-
                 }
 
                 // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
@@ -885,8 +1089,6 @@ namespace Songify_Slim
                     WebHelper.UpdateWebQueue(trackID, "", "", "", "", "1", "u");
                 }
 
-
-
                 prevID = currentID;
             }
             //Save Album Cover
@@ -894,7 +1096,7 @@ namespace Songify_Slim
             {
                 DownloadCover(cover);
             }
-            // write song to the output label 
+            // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(
                 System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
@@ -915,64 +1117,6 @@ namespace Songify_Slim
             }
         }
 
-        private string CleanFormatString(string currSong)
-        {
-            RegexOptions options = RegexOptions.None;
-            Regex regex = new Regex("[ ]{2,}", options);
-            currSong = regex.Replace(currSong, " ");
-            currSong = currSong.Trim();
-            // Add trailing spaces for better scroll
-            currSong += "          ";
-            return currSong;
-        }
-
-        private void DownloadCover(string cover)
-        {
-            if (cover == null)
-            {
-                // create Empty png file
-                Bitmap bmp = new Bitmap(640, 640);
-                Graphics g = Graphics.FromImage(bmp);
-
-                g.Clear(System.Drawing.Color.Transparent);
-                g.Flush();
-                bmp.Save(coverPath, System.Drawing.Imaging.ImageFormat.Png);
-            }
-            else
-            {
-                try
-                {
-                    // Downloads the album cover to the filesystem
-                    WebClient webClient = new WebClient();
-                    webClient.DownloadFile(cover, coverPath);
-                    webClient.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                }
-            }
-
-            try
-            {
-                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                new Action(() =>
-                {
-                    BitmapImage image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                    image.UriSource = new Uri(coverPath);
-                    image.EndInit();
-                    img_cover.Source = image;
-                }));
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-            }
-        }
-
         private void WriteSplitOutput(string artist, string title, string extra)
         {
             // Writes the output to 2 different text files
@@ -985,143 +1129,6 @@ namespace Songify_Slim
 
             File.WriteAllText(root + "/Artist.txt", artist);
             File.WriteAllText(root + "/Title.txt", title + extra);
-
-        }
-
-        public void UploadSong(string currSong, string coverURL = null)
-        {
-            try
-            {
-                // extras are UUID and Songinfo
-                string extras = Settings.Uuid +
-                    "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
-                    "&cover=" + HttpUtility.UrlEncode(coverURL, Encoding.UTF8);
-                string url = "http://songify.rocks/song.php?id=" + extras;
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                {
-                    Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
-                }
-                myHttpWebResponse.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                // if error occurs write text to the status asynchronous
-                LblStatus.Dispatcher.Invoke(
-                    System.Windows.Threading.DispatcherPriority.Normal,
-                    new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
-            }
-        }
-
-        private void BtnTwitch_Click(object sender, RoutedEventArgs e)
-        {
-            // Tries to connect to the twitch service given the credentials in the settings or disconnects
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Equals("Connect"))
-            {
-                // Connects
-                TwitchHandler.BotConnect();
-            }
-            else if (item.Header.ToString().Equals("Disconnect"))
-            {
-                // Disconnects
-                TwitchHandler._client.Disconnect();
-            }
-        }
-
-        private void mi_Queue_Click(object sender, RoutedEventArgs e)
-        {
-            // Opens the Queue Window
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Contains("Window"))
-            {
-                if (!IsWindowOpen<Window_Queue>())
-                {
-                    Window_Queue wQ = new Window_Queue { Top = this.Top, Left = this.Left };
-                    wQ.Show();
-                }
-            }
-            // Opens the Queue in the Browser
-            else if (item.Header.ToString().Contains("Browser"))
-            {
-                Process.Start("https://songify.rocks/queue.php?id=" + Settings.Uuid);
-            }
-        }
-
-        private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
-        {
-            // Opens the Blacklist Window
-            if (!IsWindowOpen<Window_Blacklist>())
-            {
-                Window_Blacklist wB = new Window_Blacklist { Top = this.Top, Left = this.Left };
-                wB.Show();
-            }
-        }
-
-        private void BtnHistory_Click(object sender, RoutedEventArgs e)
-        {
-            // Opens the History in either Window or Browser
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Contains("Window"))
-            {
-                if (!IsWindowOpen<HistoryWindow>())
-                {
-                    // Opens the 'History'-Window
-                    HistoryWindow hW = new HistoryWindow { Top = this.Top, Left = this.Left };
-                    hW.ShowDialog();
-                }
-            }
-            // Opens the Queue in the Browser
-            else if (item.Header.ToString().Contains("Browser"))
-            {
-                Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
-            }
-
-        }
-
-        private void BtnFAQ_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://songify.rocks/faq.html");
-        }
-
-        private void BtnGitHub_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://github.com/songify-rocks/Songify/issues");
-        }
-
-        private void BtnWidget_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
-        }
-
-        private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
-        {
-            // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
-            if (msgResult == MessageDialogResult.Affirmative)
-            {
-                ReqList.Clear();
-                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
-            }
-        }
-
-        private void BtnPaypal_Click(object sender, RoutedEventArgs e)
-        {
-            // links to the projects patreon page (the button name is old because I used to use paypal)
-            Process.Start("https://www.patreon.com/Songify");
-        }
-
-        public static bool IsWindowOpen<T>(string name = "") where T : Window
-        {
-            // This method checks if a window of type <T> is already opened in the current application context and returns true or false
-            return string.IsNullOrEmpty(name)
-               ? System.Windows.Application.Current.Windows.OfType<T>().Any()
-               : System.Windows.Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
     }
 }

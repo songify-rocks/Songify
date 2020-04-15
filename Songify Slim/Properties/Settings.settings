@@ -41,8 +41,8 @@
     <Setting Name="NBUser" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Source" Type="System.String" Scope="User">
-      <Value Profile="(Default)">"Spotify API"</Value>
+    <Setting Name="Source" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="uploadSonginfo" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

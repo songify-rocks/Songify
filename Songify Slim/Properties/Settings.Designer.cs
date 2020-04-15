@@ -178,10 +178,10 @@ namespace Songify_Slim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"Spotify API\"")]
-        public string Source {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Source {
             get {
-                return ((string)(this["Source"]));
+                return ((int)(this["Source"]));
             }
             set {
                 this["Source"] = value;
