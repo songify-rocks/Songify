@@ -164,7 +164,7 @@
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
-                               Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" />
+                               Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" MaxHeight="185" />
         </StackPanel>
         <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>

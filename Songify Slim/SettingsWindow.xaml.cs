@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
+using AutoUpdaterDotNET;
 
 namespace Songify_Slim
 {
@@ -150,14 +151,11 @@ namespace Songify_Slim
         private void BtnUpdatesClick(object sender, RoutedEventArgs e)
         {
             // checks for updates
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
-                if (window.GetType() != typeof(MainWindow)) continue;
-                if (!((MainWindow)window).WorkerUpdate.IsBusy)
-                {
-                    ((MainWindow)window).WorkerUpdate.RunWorkerAsync();
-                }
-            }
+            AutoUpdater.Mandatory = true;
+            AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            AutoUpdater.RunUpdateAsAdmin = false;
+
+            AutoUpdater.Start("https://songify.rocks/update.xml");
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)

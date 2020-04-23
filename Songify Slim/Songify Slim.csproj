@@ -74,6 +74,9 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoUpdater.NET, Version=1.6.0.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autoupdater.NET.Official.1.6.0\lib\net40\AutoUpdater.NET.dll</HintPath>
+    </Reference>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
     </Reference>
@@ -297,7 +300,6 @@
     <Compile Include="Util\Songify\SongFetcher.cs" />
     <Compile Include="Util\General\ThemeHandler.cs" />
     <Compile Include="Util\Songify\TwitchHandler.cs" />
-    <Compile Include="Util\General\Updater.cs" />
     <Compile Include="Util\Songify\WebHelper.cs" />
     <Compile Include="Window_Blacklist.xaml.cs">
       <DependentUpon>Window_Blacklist.xaml</DependentUpon>

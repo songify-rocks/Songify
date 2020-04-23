@@ -117,6 +117,7 @@ namespace Songify_Slim
         {
             try
             {
+                int value;
                 // reading the XML file, attributes get saved in Settings
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);
@@ -149,13 +150,17 @@ namespace Songify_Slim
                     Settings.TwRewardID = node.Attributes["twrewardid"]?.InnerText;
                     Settings.TwSRReward = Convert.ToBoolean(node.Attributes["twsrreward"]?.InnerText);
                     Settings.TwSRCommand = Convert.ToBoolean(node.Attributes["twsrcommand"]?.InnerText);
-                    Settings.TwSRMaxReq = int.Parse(node.Attributes["twsrmaxreq"]?.InnerText);
-                    Settings.TwSRCooldown = int.Parse(node.Attributes["twsrcooldown"]?.InnerText);
+                    if (int.TryParse(node.Attributes["twsrmaxreq"]?.InnerText, out value))
+                        Settings.TwSRMaxReq = value;
+                    if (int.TryParse(node.Attributes["twsrcooldown"]?.InnerText, out value))
+                        Settings.TwSRCooldown = value;
                     Settings.MsgLoggingEnabled = Convert.ToBoolean(node.Attributes["msglogging"]?.InnerText);
                     Settings.TwAutoConnect = Convert.ToBoolean(node.Attributes["twautoconnect"]?.InnerText);
                     Settings.ArtistBlacklist = node.Attributes["artistblacklist"]?.InnerText;
-                    Settings.PosX = int.Parse(node.Attributes["posx"]?.InnerText);
-                    Settings.PosY = int.Parse(node.Attributes["posy"]?.InnerText);
+                    if (int.TryParse(node.Attributes["posx"]?.InnerText, out value))
+                        Settings.PosX = value;
+                    if (int.TryParse(node.Attributes["posy"]?.InnerText, out value))
+                        Settings.PosY = value;
                     Settings.AutoClearQueue = Convert.ToBoolean(node.Attributes["autoclearqueue"]?.InnerText);
                 }
             }

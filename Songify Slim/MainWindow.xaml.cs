@@ -18,13 +18,13 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using AutoUpdaterDotNET;
 
 namespace Songify_Slim
 {
     public partial class MainWindow
     {
         #region Variables
-
         public static string Version;
         public bool AppActive;
         public string CurrSong;
@@ -61,10 +61,6 @@ namespace Songify_Slim
 
             // Backgroundworker for telemetry, and methods
             WorkerTelemetry.DoWork += Worker_Telemetry_DoWork;
-
-            // Backgroundworker for updates, and methods
-            WorkerUpdate.DoWork += Worker_Update_DoWork;
-            WorkerUpdate.RunWorkerCompleted += Worker_Update_RunWorkerCompleted;
         }
 
         public static bool IsWindowOpen<T>(string name = "") where T : Window
@@ -149,28 +145,6 @@ namespace Songify_Slim
                     System.Windows.Threading.DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }
-        }
-
-        public void Worker_Update_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Checking for updates, calling the Updater class with the current version
-            try
-            {
-                Updater.CheckForUpdates(new Version(Version));
-                UpdateError = false;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                UpdateError = true;
-            }
-        }
-
-        public void Worker_Update_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // Writing to the statusstrip label when the updater encountered an error
-            if (UpdateError)
-                LblStatus.Content = "Unable to check for new version.";
         }
 
         private void AddSourcesToSourceBox()
@@ -642,7 +616,12 @@ namespace Songify_Slim
             }
 
             // check for update
-            WorkerUpdate.RunWorkerAsync();
+            AutoUpdater.Mandatory = true;
+            AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            AutoUpdater.AppTitle = "Songify";
+            AutoUpdater.RunUpdateAsAdmin = false;
+
+            AutoUpdater.Start("https://songify.rocks/update.xml");
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Source;
