@@ -593,7 +593,7 @@ namespace Songify_Slim
             ThemeHandler.ApplyTheme();
 
             // start minimized in systray (hide)
-            if (WindowState == WindowState.Minimized) MinimizeToSysTray();
+            if (Settings.Systray) MinimizeToSysTray();
 
             // get the software version from assembly
             Assembly assembly = Assembly.GetExecutingAssembly();
