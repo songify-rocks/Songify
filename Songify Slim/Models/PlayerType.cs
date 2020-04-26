@@ -15,5 +15,6 @@ namespace Songify_Slim.Models
         public const string FooBar2000 = "foobar2000";
         public const string Deezer = "Deezer (Chrome)";
         public const string SpotifyWeb = "Spotify API";
+        public const string Subsonic = "Subsonic";
     }
 }

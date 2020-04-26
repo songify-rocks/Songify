@@ -102,20 +102,43 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Integration">
-                <Grid>
-                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,5,5,5" />
-                    <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
-                    <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,81,0,0" Padding="0,5,5,5" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,107,0,0" Width="286" />
-                    <Button x:Name="btn_spotifyLink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
-                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,148,0,0" Padding="0,5,5,5"/>
-                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,174,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
-                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,174,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
-                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join" VerticalAlignment="Top" Width="271" Margin="10,205,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
-                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,173,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
-                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="286,208,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
-                </Grid>
+                <ScrollViewer>
+                    <StackPanel>
+                        <!-- NIGHTBOT -->
+                        <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="0,0,5,5" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Margin="0,0,5,5" VerticalAlignment="Top" Width="286"  controls:TextBoxHelper.Watermark="NB Username (Twitch Username)" TextChanged="Txtbx_nbuser_TextChanged" />
+                            <Button x:Name="btn_nblink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="0,0,5,5" Click="Btn_nblink_Click" />
+                        </StackPanel>
+
+                        <!-- SPOTIFY -->
+                        <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,5,5" />
+                        <StackPanel Orientation="Horizontal">
+                            <Label x:Name="lbl_SpotifyAcc" Content="Linked account: " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,5,5" Width="286" />
+                            <Button x:Name="btn_spotifyLink" Content="LINK" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="0,0,5,5" Click="btn_spotifyLink_Click" />
+                        </StackPanel>
+
+                        <!-- TWITCH -->
+                        <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top"  Padding="0,5,5,5"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96"  Margin="0,0,5,5" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
+                            <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top"  Margin="0,0,5,5" Width="242"  PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
+                            <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18"  Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="Channel to join"  Margin="0,0,5,5" VerticalAlignment="Top" Width="271"  TextChanged="txtbx_twChannel_TextChanged"/>
+                            <CheckBox x:Name="Chbx_TwAutoconnect" Content="autoconnect" HorizontalAlignment="Left" VerticalAlignment="Center" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked"/>
+                        </StackPanel>
+                        
+                        <!-- SUBSONIC -->
+                        <Label x:Name="lbl_subsonic" Content="Subsonic" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5"/>
+                        <TextBox x:Name="txtbx_subsonicServerAddress" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="370"  Margin="0,0,5,5" controls:TextBoxHelper.Watermark="Server address (https://myserver.com)" TextChanged="txtbx_subsonicServerAddress_TextChanged"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox x:Name="txtbx_subsonicUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"  Margin="0,0,5,5" controls:TextBoxHelper.Watermark="User" TextChanged="txtbx_subsonicUser_TextChanged"/>
+                            <PasswordBox x:Name="txtbx_subsonicPassword" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="120"  Margin="0,0,5,5" controls:TextBoxHelper.Watermark="Password" PasswordChanged="txtbx_subsonicPassword_PasswordChanged"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
             </TabItem>
             <TabItem Header="Spotify SR">
                 <Grid>

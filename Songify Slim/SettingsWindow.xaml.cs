@@ -58,6 +58,9 @@ namespace Songify_Slim
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxSplit.IsChecked = Settings.SplitOutput;
             Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
+            txtbx_subsonicUser.Text = Settings.SubsonicUser;
+            txtbx_subsonicPassword.Password = Settings.SubsonicPassword;
+            txtbx_subsonicServerAddress.Text = Settings.SubsonicServerAddress;
 
             if (Settings.NbUserId != null)
             {
@@ -426,6 +429,24 @@ namespace Songify_Slim
         {
             // appends text
             AppendText(TxtbxOutputformat, "{{requested by {req}}}");
+        }
+
+        private void txtbx_subsonicUser_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Saves the Subsonic User
+            Settings.SubsonicUser = txtbx_subsonicUser.Text;
+        }
+
+        private void txtbx_subsonicPassword_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            // Saves the Subsonic Password
+            Settings.SubsonicPassword = txtbx_subsonicPassword.Password;
+        }
+
+        private void txtbx_subsonicServerAddress_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Saves the Subsonic Server Address
+            Settings.SubsonicServerAddress = txtbx_subsonicServerAddress.Text;
         }
     }
 }

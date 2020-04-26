@@ -96,6 +96,11 @@ namespace Songify_Slim
                 writer.WriteAttributeString("posx", Settings.PosX.ToString());
                 writer.WriteAttributeString("posy", Settings.PosY.ToString());
                 writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
+                writer.WriteAttributeString("subsonicserveraddress", Settings.SubsonicServerAddress);
+                writer.WriteAttributeString("subsonicuser", Settings.SubsonicUser);
+                // Using encrypted password for security reasons, 
+                writer.WriteAttributeString("subsonicpassword", Settings.GetSubsonicEncryptedPassword());
+
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -162,6 +167,11 @@ namespace Songify_Slim
                     if (int.TryParse(node.Attributes["posy"]?.InnerText, out value))
                         Settings.PosY = value;
                     Settings.AutoClearQueue = Convert.ToBoolean(node.Attributes["autoclearqueue"]?.InnerText);
+
+                    Settings.SubsonicServerAddress = node.Attributes["subsonicserveraddress"]?.InnerText;
+                    Settings.SubsonicUser = node.Attributes["subsonicuser"]?.InnerText;
+                    // Using encrypted password for security reasons, 
+                    Settings.SetSubsonicEncryptedPassword(node.Attributes["subsonicpassword"]?.InnerText);
                 }
             }
             catch (Exception ex)

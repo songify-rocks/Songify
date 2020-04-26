@@ -1,6 +1,9 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+﻿using AutoUpdaterDotNET;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,13 +21,13 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using AutoUpdaterDotNET;
 
 namespace Songify_Slim
 {
     public partial class MainWindow
     {
         #region Variables
+
         public static string Version;
         public bool AppActive;
         public string CurrSong;
@@ -49,6 +52,7 @@ namespace Songify_Slim
         private TrackInfo currentSpotifySong;
         private string prevID, currentID;
         private System.Timers.Timer songTimer = new System.Timers.Timer();
+
         #endregion Variables
 
         public MainWindow()
@@ -150,7 +154,7 @@ namespace Songify_Slim
         private void AddSourcesToSourceBox()
         {
             string[] sourceBoxItems = new string[] { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
+                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube, PlayerType.Subsonic };
             cbx_Source.ItemsSource = sourceBoxItems;
         }
 
@@ -247,11 +251,11 @@ namespace Songify_Slim
             // Dpending on which source is chosen, it starts the timer that fetches the song info
             SetFetchTimer();
 
-            if (_selectedSource == PlayerType.SpotifyWeb)
+            if (_selectedSource == PlayerType.SpotifyWeb || _selectedSource == PlayerType.Subsonic)
             {
                 img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                 {
-                    if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
+                    if ((_selectedSource == PlayerType.SpotifyWeb || _selectedSource == PlayerType.Subsonic) && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;
                     }
@@ -319,6 +323,43 @@ namespace Songify_Slim
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        string lastSubsonicTrackId = null;
+        public void FetchSubsonicApi()
+        {
+            if (Settings.SubsonicUser != null && Settings.SubsonicServerAddress != null && Settings.SubsonicPassword != null)
+            {
+                string salt = "c19b2d";
+                try
+                {
+                    string currentlyPlayingUrl = $"{Settings.SubsonicServerAddress}/rest/getNowPlaying?v=1.12.0&f=json&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}";
+                    var client = new WebClient();
+                    var data = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(client.DownloadData(currentlyPlayingUrl)));
+                    var trackid = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].id") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
+
+                    if (trackid != null)
+                    {
+                        if (lastSubsonicTrackId != trackid)
+                        {
+                            lastSubsonicTrackId = trackid;
+                            string title = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].title") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
+                            string artist = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].artist") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
+                            string coverUrl = $"{Settings.SubsonicServerAddress}/rest/getCoverArt?v=1.12.0&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}&id={trackid}";
+                            WriteSong(artist, title, "", coverUrl, false, "");
+                        }
+                    }
+                    else
+                    {
+                        lastSubsonicTrackId = null;
+                        WriteSong("", "", "", null, false, "");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
             }
         }
 
@@ -495,7 +536,16 @@ namespace Songify_Slim
                     FetchSpotifyWeb();
                     break;
 
-                    #endregion Spotify API
+                #endregion Spotify API
+
+                case PlayerType.Subsonic:
+
+                    #region Subsonic API
+
+                    FetchSubsonicApi();
+                    break;
+
+                    #endregion Subsonic API
             }
         }
 
@@ -541,7 +591,7 @@ namespace Songify_Slim
             NotifyIcon.Dispose();
         }
 
-        static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
             Logger.LogExc(e);
@@ -645,6 +695,10 @@ namespace Songify_Slim
 
                 img_cover.Visibility = Visibility.Visible;
             }
+            else if (_selectedSource == PlayerType.Subsonic)
+            {
+                img_cover.Visibility = Visibility.Visible;
+            }
             else
             {
                 img_cover.Visibility = Visibility.Hidden;
@@ -715,22 +769,29 @@ namespace Songify_Slim
             }
         }
 
+        // Lock object
+        private object OnTimedEventLockObject = new object();
+
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            // Prevent multiple updates at the same time if update is too slow.
+            lock (OnTimedEventLockObject)
             {
-                if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
+                img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                 {
-                    img_cover.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    img_cover.Visibility = Visibility.Collapsed;
-                }
-            }));
+                    if ((_selectedSource == PlayerType.SpotifyWeb || _selectedSource == PlayerType.Subsonic) && Settings.DownloadCover)
+                    {
+                        img_cover.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        img_cover.Visibility = Visibility.Collapsed;
+                    }
+                }));
 
-            // when the timer 'ticks' this code gets executed
-            GetCurrentSongAsync();
+                // when the timer 'ticks' this code gets executed
+                GetCurrentSongAsync();
+            }
         }
 
         private void SendTelemetry(bool active)
@@ -770,6 +831,12 @@ namespace Songify_Slim
                     GetCurrentSongAsync();
                     FetchTimer(20000);
                     break;
+
+                case PlayerType.Subsonic:
+                    // Prevent Rate Limiting
+                    GetCurrentSongAsync();
+                    FetchTimer(1000);
+                    break;
             }
         }
 
@@ -777,6 +844,7 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
+
         private async void TelemetryDisclaimer()
         {
             SendTelemetry(true);

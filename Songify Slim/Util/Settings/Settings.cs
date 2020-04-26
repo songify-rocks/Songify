@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Songify_Slim
+﻿namespace Songify_Slim
 {
     /// <summary>
     ///     This class is a getter and setter for Settings
@@ -234,6 +232,24 @@ namespace Songify_Slim
             set => SetUuid(value);
         }
 
+        public static string SubsonicServerAddress
+        {
+            get => GetSubsonicServerAddress();
+            set => SetSubsonicServerAddress(value);
+        }
+
+        public static string SubsonicPassword
+        {
+            get => GetSubsonicPassword();
+            set => SetSubsonicPassword(value);
+        }
+
+        public static string SubsonicUser
+        {
+            get => GetSubsonicUser();
+            set => SetSubsonicUser(value);
+        }
+
         public static string Webua => GetWebua();
 
         private static string GetAccessToken()
@@ -432,8 +448,8 @@ namespace Songify_Slim
         {
             Properties.Settings.Default.AutoClearQueue = value;
             Properties.Settings.Default.Save();
-
         }
+
         private static void SetAutostart(bool autostart)
         {
             Properties.Settings.Default.autostart = autostart;
@@ -511,6 +527,7 @@ namespace Songify_Slim
             Properties.Settings.Default.PosY = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetRefreshToken(string value)
         {
             Properties.Settings.Default.RefreshToken = value;
@@ -564,6 +581,7 @@ namespace Songify_Slim
             Properties.Settings.Default.TwAutoConnect = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwChannel(string value)
         {
             Properties.Settings.Default.TwChannel = value;
@@ -593,16 +611,19 @@ namespace Songify_Slim
             Properties.Settings.Default.TwSRCooldown = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSRMaxReq(int value)
         {
             Properties.Settings.Default.TwSRMaxReq = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSRReward(bool value)
         {
             Properties.Settings.Default.TwSRReward = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetUpload(bool uploadsong)
         {
             Properties.Settings.Default.uploadSonginfo = uploadsong;
@@ -614,10 +635,54 @@ namespace Songify_Slim
             Properties.Settings.Default.UploadHistory = history;
             Properties.Settings.Default.Save();
         }
+
         private static void SetUuid(string uuid)
         {
             Properties.Settings.Default.uuid = uuid;
             Properties.Settings.Default.Save();
+        }
+
+        private static void SetSubsonicServerAddress(string serverAddress)
+        {
+            Properties.Settings.Default.SubsonicServerAddress = serverAddress;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetSubsonicPassword(string password)
+        {
+            Properties.Settings.Default.SubsonicPassword = Util.General.Security.EncryptString(Util.General.Security.ToSecureString(password));
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetSubsonicUser(string user)
+        {
+            Properties.Settings.Default.SubsonicUser = user;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetSubsonicServerAddress()
+        {
+            return Properties.Settings.Default.SubsonicServerAddress;
+        }
+
+        private static string GetSubsonicPassword()
+        {
+            return Util.General.Security.ToInsecureString(Util.General.Security.DecryptString(Properties.Settings.Default.SubsonicPassword)); ;
+        }
+
+        public static string GetSubsonicEncryptedPassword()
+        {
+            return Properties.Settings.Default.SubsonicPassword;
+        }
+
+        public static string SetSubsonicEncryptedPassword(string value)
+        {
+            return Properties.Settings.Default.SubsonicPassword = value;
+        }
+
+        private static string GetSubsonicUser()
+        {
+            return Properties.Settings.Default.SubsonicUser;
         }
     }
 }
