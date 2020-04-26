@@ -334,7 +334,12 @@ namespace Songify_Slim
                 string salt = "c19b2d";
                 try
                 {
-                    string currentlyPlayingUrl = $"{Settings.SubsonicServerAddress}/rest/getNowPlaying?v=1.12.0&f=json&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}";
+                    var serverAddress = Settings.SubsonicServerAddress;
+                    if (!serverAddress.EndsWith("/"))
+                    {
+                        serverAddress += "/";
+                    }
+                    string currentlyPlayingUrl = $"{serverAddress}rest/getNowPlaying?v=1.12.0&f=json&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}";
                     var client = new WebClient();
                     var data = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(client.DownloadData(currentlyPlayingUrl)));
                     var trackid = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].id") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
@@ -346,7 +351,7 @@ namespace Songify_Slim
                             lastSubsonicTrackId = trackid;
                             string title = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].title") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
                             string artist = ((data as Newtonsoft.Json.Linq.JObject).SelectToken("subsonic-response.nowPlaying.entry[0].artist") as Newtonsoft.Json.Linq.JValue)?.Value?.ToString();
-                            string coverUrl = $"{Settings.SubsonicServerAddress}/rest/getCoverArt?v=1.12.0&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}&id={trackid}";
+                            string coverUrl = $"{serverAddress}rest/getCoverArt?v=1.12.0&c=songify&u={Settings.SubsonicUser}&t={Security.CreateMD5(Settings.SubsonicPassword + salt).ToLower()}&s={salt}&id={trackid}";
                             WriteSong(artist, title, "", coverUrl, false, "");
                         }
                     }
