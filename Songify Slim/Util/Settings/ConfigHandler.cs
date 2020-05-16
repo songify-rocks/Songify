@@ -93,6 +93,7 @@ namespace Songify_Slim
                 writer.WriteAttributeString("msglogging", Settings.MsgLoggingEnabled.ToString());
                 writer.WriteAttributeString("twautoconnect", Settings.TwAutoConnect.ToString());
                 writer.WriteAttributeString("artistblacklist", Settings.ArtistBlacklist);
+                writer.WriteAttributeString("userblacklist", Settings.UserBlacklist);
                 writer.WriteAttributeString("posx", Settings.PosX.ToString());
                 writer.WriteAttributeString("posy", Settings.PosY.ToString());
                 writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
@@ -157,6 +158,7 @@ namespace Songify_Slim
                     Settings.MsgLoggingEnabled = Convert.ToBoolean(node.Attributes["msglogging"]?.InnerText);
                     Settings.TwAutoConnect = Convert.ToBoolean(node.Attributes["twautoconnect"]?.InnerText);
                     Settings.ArtistBlacklist = node.Attributes["artistblacklist"]?.InnerText;
+                    Settings.UserBlacklist = node.Attributes["userblacklist"]?.InnerText;
                     if (int.TryParse(node.Attributes["posx"]?.InnerText, out value))
                         Settings.PosX = value;
                     if (int.TryParse(node.Attributes["posy"]?.InnerText, out value))

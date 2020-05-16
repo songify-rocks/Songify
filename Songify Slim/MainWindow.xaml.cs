@@ -619,7 +619,7 @@ namespace Songify_Slim
             AutoUpdater.Mandatory = true;
             AutoUpdater.UpdateMode = Mode.ForcedDownload;
             AutoUpdater.AppTitle = "Songify";
-            AutoUpdater.RunUpdateAsAdmin = false;
+            AutoUpdater.RunUpdateAsAdmin = true;
 
             AutoUpdater.Start("https://songify.rocks/update.xml");
 

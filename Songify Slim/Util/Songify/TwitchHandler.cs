@@ -139,6 +139,12 @@ namespace Songify_Slim
             // if the reward is the same with the desired reward for the requests 
             if (Settings.TwSRReward && e.ChatMessage.CustomRewardId == Settings.TwRewardID)
             {
+                if (IsUserBlocked(e.ChatMessage.DisplayName))
+                {
+                    _client.SendWhisper(e.ChatMessage.Username, "You are blocked from making Songrequests");
+                    return;
+                }
+
                 if (APIHandler.spotify == null)
                 {
                     _client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
@@ -178,6 +184,13 @@ namespace Songify_Slim
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.TwSRCommand && e.ChatMessage.Message.StartsWith("!ssr"))
             {
+                // Do nothing if the user is blocked, don't even reply
+                if (IsUserBlocked(e.ChatMessage.DisplayName))
+                {
+                    _client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
+                    return;
+                }
+
                 // if onCooldown skip
                 if (onCooldown)
                 {
@@ -230,6 +243,19 @@ namespace Songify_Slim
                 return;
             }
 
+        }
+
+        private static bool IsUserBlocked(string displayName)
+        {
+            string[] UserBlacklist = Settings.UserBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
+
+            // checks if one of the artist in the requested song is on the blacklist
+            foreach (string s in UserBlacklist)
+            {
+                if (s == displayName)
+                    return true;
+            }
+            return false;
         }
 
         private static void StartCooldown()

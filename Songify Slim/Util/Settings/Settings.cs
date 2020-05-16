@@ -7,6 +7,23 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static string UserBlacklist
+        {
+            get => GetUserBlacklist();
+            set => SetUserBlacklist(value);
+        }
+
+        private static void SetUserBlacklist(string value)
+        {
+            Properties.Settings.Default.UserBlacklist = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetUserBlacklist()
+        {
+            return Properties.Settings.Default.UserBlacklist;
+        }
+
         public static string SpotifyDeviceID
         {
             get => GetSpotifyDeviceID();

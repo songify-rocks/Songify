@@ -463,5 +463,17 @@ namespace Songify_Slim.Properties {
                 this["SpotifyDeviceID"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string UserBlacklist {
+            get {
+                return ((string)(this["UserBlacklist"]));
+            }
+            set {
+                this["UserBlacklist"] = value;
+            }
+        }
     }
 }
