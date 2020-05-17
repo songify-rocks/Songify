@@ -461,6 +461,9 @@ namespace Songify_Slim
                 default:
                     break;
             }
+
+            System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }
