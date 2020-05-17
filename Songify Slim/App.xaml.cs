@@ -8,6 +8,12 @@ namespace Songify_Slim
     /// </summary>
     public partial class App : Application
     {
+        App()
+        {
+            Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(Settings.Language);
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en"); 
+        }
+
         private static Mutex _mutex = null;
 
         protected override void OnStartup(StartupEventArgs e)

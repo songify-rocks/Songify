@@ -26,6 +26,7 @@ namespace Songify_Slim
         public SettingsWindow()
         {
             InitializeComponent();
+            this.Title = Properties.Resources.mw_menu_Settings;
         }
 
         public void SetControls()
@@ -64,9 +65,24 @@ namespace Songify_Slim
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             }
             if (APIHandler.spotify != null)
-                lbl_SpotifyAcc.Content = "Linked account: " + APIHandler.spotify.GetPrivateProfile().DisplayName;
+                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " + APIHandler.spotify.GetPrivateProfile().DisplayName;
 
             ThemeHandler.ApplyTheme();
+
+            cbx_Language.SelectionChanged -= ComboBox_SelectionChanged;
+            switch (Settings.Language)
+            {
+                case "en":
+                    cbx_Language.SelectedIndex = 0;
+                    break;
+                case "de-DE":
+                    cbx_Language.SelectedIndex = 1;
+                    break;
+                default:
+                    break;
+            }
+
+            cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
         }
 
         private void AppendText(System.Windows.Controls.TextBox tb, string text)
@@ -426,6 +442,25 @@ namespace Songify_Slim
         {
             // appends text
             AppendText(TxtbxOutputformat, "{{requested by {req}}}");
+        }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (cbx_Language.SelectedIndex)
+            {
+                case 0:
+                    // English
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+                    Settings.Language = "en";
+                    break;
+                case 1:
+                    // German
+                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-DE");
+                    Settings.Language = "de-DE";
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

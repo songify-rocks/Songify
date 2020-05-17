@@ -7,6 +7,25 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+
+        public static string Language
+        {
+            get => GetLanguage();
+
+            set => SetLangauge(value);
+        }
+
+        private static void SetLangauge(string value)
+        {
+            Properties.Settings.Default.language = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetLanguage()
+        {
+            return Properties.Settings.Default.language;
+        }
+
         public static string UserBlacklist
         {
             get => GetUserBlacklist();

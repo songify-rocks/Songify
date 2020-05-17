@@ -2,6 +2,7 @@
 using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Songify_Slim
 {
@@ -203,6 +204,32 @@ namespace Songify_Slim
             {
                 addToBlacklist(tb_Blacklist.Text);
                 tb_Blacklist.Text = "";
+            }
+        }
+
+        private async void ListView_Blacklist_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Delete " + ListView_Blacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    ListView_Blacklist.Items.Remove(ListView_Blacklist.SelectedItem);
+                    SaveBlacklist();
+                }
+            }
+        }
+
+        private async void ListView_UserBlacklist_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Delete " + ListView_UserBlacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    ListView_UserBlacklist.Items.Remove(ListView_UserBlacklist.SelectedItem);
+                    SaveBlacklist();
+                }
             }
         }
     }

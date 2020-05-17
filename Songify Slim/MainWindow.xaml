@@ -4,7 +4,7 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
@@ -130,36 +130,6 @@
         <Style TargetType="{x:Type Dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
 
-    <!--<controls:MetroWindow.RightWindowCommands>
-        <controls:WindowCommands>
-            <Button x:Name="BtnPaypal" Click="BtnPaypal_Click" ToolTip="Donate" IsTabStop="False">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Patreon" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Button>
-            <Button x:Name="BtnDiscord" Click="BtnDiscord_Click" ToolTip="Discord" IsTabStop="False">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Discord" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
-            <Button x:Name="BtnHistory" Click="BtnHistory_Click" ToolTip="Song History" IsTabStop="False">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="History" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
-            <Button x:Name="BtnAbout" Click="BtnAboutClick" ToolTip="About" IsTabStop="False">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Information" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
-            <Button x:Name="BtnSettings" Click="BtnSettings_Click" ToolTip="Settings" IsTabStop="False">
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconMaterial Kind="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                </StackPanel>
-            </Button>
-        </controls:WindowCommands>
-    </controls:MetroWindow.RightWindowCommands>-->
-
     <Grid>
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
@@ -170,38 +140,38 @@
             <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
             <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
         </StatusBar>
-        <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,222,0">
-            <MenuItem Header="File">
-                <MenuItem Header="Settings" Click="BtnSettings_Click"/>
-                <MenuItem Header="Widget"  Click="BtnWidget_Click"/>
-                <MenuItem x:Name="mi_Exit" Header="Exit" Click="MenuItem1Click"/>
+        <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,139,0">
+            <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}"  Click="BtnWidget_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit"  Click="MenuItem1Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
-                <MenuItem x:Name="mi_TwitchConnect" Header="Connect" Click="BtnTwitch_Click"/>
-                <MenuItem x:Name="mi_TwitchDisconnect" Header="Disconnect" Click="BtnTwitch_Click" IsEnabled="False"/>
+                <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Click="BtnTwitch_Click"/>
+                <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Click="BtnTwitch_Click" IsEnabled="False"/>
             </MenuItem>
             <MenuItem Header="Songrequests">
-                <MenuItem Header="Queue">
-                    <MenuItem x:Name="mi_Queue" Header="Queue Window" Click="mi_Queue_Click"/>
-                    <MenuItem Header="Queue Browser" Click="mi_Queue_Click"/>
-                    <MenuItem x:Name="mi_QueueClear" Header="Clear Queue" Click="mi_QueueClear_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Queue}">
+                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}" Click="mi_Queue_Click"/>
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="mi_Queue_Click"/>
+                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}" Click="mi_QueueClear_Click"/>
                 </MenuItem>
-                <MenuItem x:Name="mi_Blacklist" Header="Blacklist" Click="mi_Blacklist_Click"/>
+                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}" Click="mi_Blacklist_Click"/>
             </MenuItem>
-            <MenuItem Header="History">
-                <MenuItem Header="History Window" Click="BtnHistory_Click"/>
-                <MenuItem Header="History Browser" Click="BtnHistory_Click"/>
+            <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Click="BtnHistory_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Histoy_Browser}" Click="BtnHistory_Click"/>
             </MenuItem>
-            <MenuItem Header="Support">
+            <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
                 <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>
             </MenuItem>
-            <MenuItem Header="Help">
+            <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
                 <MenuItem Header="FAQ" Click="BtnFAQ_Click"/>
                 <MenuItem Header="GitHub" Click="BtnGitHub_Click"/>
                 <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
-                <MenuItem Header="About" Click="BtnAboutClick"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick"/>
             </MenuItem>
         </Menu>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="437,3,0,0"/>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="448,3,0,0"/>
     </Grid>
 </controls:MetroWindow>
