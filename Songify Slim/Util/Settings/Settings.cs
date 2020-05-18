@@ -7,6 +7,107 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static string Bot_Resp_Success
+        {
+            get => GetBot_Resp_Success();
+            set => SetBot_Resp_Success(value);
+        }
+
+        private static void SetBot_Resp_Success(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Success = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Success()
+        {
+            return Properties.Settings.Default.bot_Resp_Success;
+        }
+
+        public static string Bot_Resp_Error
+        {
+            get => GetBot_Resp_Error();
+            set => SetBot_Resp_Error(value);
+        }
+
+        private static void SetBot_Resp_Error(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Error = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Error()
+        {
+            return Properties.Settings.Default.bot_Resp_Error;
+        }
+
+        public static string Bot_Resp_MaxReq
+        {
+            get => GetBot_Resp_MaxReq();
+            set => SetBot_Resp_MaxReq(value);
+        }
+
+        private static void SetBot_Resp_MaxReq(string value)
+        {
+            Properties.Settings.Default.bot_Resp_MaxReq = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_MaxReq()
+        {
+            return Properties.Settings.Default.bot_Resp_MaxReq;
+        }
+
+        public static string Bot_Resp_IsInQueue
+        {
+            get => GetBot_Resp_IsInQueue();
+            set => SetBot_Resp_IsInQueue(value);
+        }
+
+        private static void SetBot_Resp_IsInQueue(string value)
+        {
+            Properties.Settings.Default.bot_Resp_IsInQueue = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_IsInQueue()
+        {
+            return Properties.Settings.Default.bot_Resp_IsInQueue;
+        }
+
+        public static string Bot_Resp_Length
+        {
+            get => GetBot_Resp_Length();
+            set => SetBot_Resp_Length(value);
+        }
+
+        private static void SetBot_Resp_Length(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Length = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Length()
+        {
+            return Properties.Settings.Default.bot_Resp_Length;
+        }
+
+        public static string Bot_Resp_Blacklist
+        {
+            get => Getbot_Resp_Blacklist();
+            set => Setbot_Resp_Blacklist(value);
+        }
+
+        private static void Setbot_Resp_Blacklist(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Blacklist = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string Getbot_Resp_Blacklist()
+        {
+            return Properties.Settings.Default.bot_Resp_Blacklist;
+        }
 
         public static string Language
         {

@@ -487,5 +487,78 @@ namespace Songify_Slim.Properties {
                 this["language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} the Artist: {artist} has been blacklisted by the broadcaster.")]
+        public string bot_Resp_Blacklist {
+            get {
+                return ((string)(this["bot_Resp_Blacklist"]));
+            }
+            set {
+                this["bot_Resp_Blacklist"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} the song you requested exceeded the maximum song length (10 minutes).")]
+        public string bot_Resp_Length {
+            get {
+                return ((string)(this["bot_Resp_Length"]));
+            }
+            set {
+                this["bot_Resp_Length"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} this song is already in the queue.")]
+        public string bot_Resp_IsInQueue {
+            get {
+                return ((string)(this["bot_Resp_IsInQueue"]));
+            }
+            set {
+                this["bot_Resp_IsInQueue"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} maximum number of songs in queue reached ({maxreq}).")]
+        public string bot_Resp_MaxReq {
+            get {
+                return ((string)(this["bot_Resp_MaxReq"]));
+            }
+            set {
+                this["bot_Resp_MaxReq"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} there was an error adding your Song to the queue. Error message: {errorms" +
+            "g}")]
+        public string bot_Resp_Error {
+            get {
+                return ((string)(this["bot_Resp_Error"]));
+            }
+            set {
+                this["bot_Resp_Error"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{artist} - {title} requested by @{user} has been added to the queue.")]
+        public string bot_Resp_Success {
+            get {
+                return ((string)(this["bot_Resp_Success"]));
+            }
+            set {
+                this["bot_Resp_Success"] = value;
+            }
+        }
     }
 }

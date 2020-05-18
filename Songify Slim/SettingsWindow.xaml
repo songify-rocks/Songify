@@ -100,8 +100,8 @@
                            VerticalAlignment="Top" Width="71" Padding="5" />
                     <ComboBox x:Name="ComboBoxColor" Margin="114,13,0,0" Height="23" VerticalAlignment="Top"
                               SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="238" />
-                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="202,44,0,0" HorizontalAlignment="Left"
-                                           Width="150" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="193,44,0,0" HorizontalAlignment="Left"
+                                           Width="159" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
                                            Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
@@ -113,15 +113,17 @@
                     <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,5,5,5" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_NBWatermark}" TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,81,0,0" Padding="0,5,5,5" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,107,0,0" Width="286" />
-                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,107,0,0" Click="btn_spotifyLink_Click" />
-                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,148,0,0" Padding="0,5,5,5"/>
-                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,174,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
-                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="242" Margin="111,174,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
-                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}" VerticalAlignment="Top" Width="222" Margin="10,205,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
-                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="358,173,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
-                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="{x:Static local:Resources.sw_Integration_Autoconnect}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,208,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137"/>
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,68,0,0" Padding="0,5,5,5" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,94,0,0" Width="286" />
+                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,94,0,0" Click="btn_spotifyLink_Click" />
+                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,125,0,0" Padding="0,5,5,5"/>
+                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,151,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
+                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="252" Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
+                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}" VerticalAlignment="Top" Width="222" Margin="10,182,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
+                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="368,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
+                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="{x:Static local:Resources.sw_Integration_Autoconnect}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,185,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137"/>
+                    <Button x:Name="btn_Botresponse" Content="Configure Bot Responses" Margin="10,213,10,5" Height="27" Click="btn_Botresponse_Click"/>
+
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">

@@ -224,4 +224,9 @@ You can always opt out by declining this dialog or uncheck the box in the settin
 ● If the software is running or not (this is transmitted on startup / shutdown of the software, no service running in the background!)
 
 ● Current software version</system:String>
+    <system:String x:Key="ParamTooltip" xml:space="preserve">{user} = Twitchusername
+{artist} = Artist
+{title} = Title
+{maxreq} = Number of requests / User
+{errormsg} = Error Message</system:String>
 </ResourceDictionary>

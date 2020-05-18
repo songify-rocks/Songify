@@ -1,0 +1,27 @@
+﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Botresponse"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Songify_Slim"
+        mc:Ignorable="d"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"        
+        Title="Bot Responses" Height="312.333" Width="629" Loaded="MetroWindow_Loaded">
+    <Grid>
+        <Label Content="Configure the bot responses for the following scenarios:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <Label Content="Artist is blocked" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0"/>
+        <Label Content="Song already in queue" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,72,0,0"/>
+        <Label Content="Max songs in queue" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,103,0,0"/>
+        <Label Content="Max songs in queue" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,103,0,0"/>
+        <Label Content="Song longer than X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,134,0,0"/>
+        <Label Content="Error fetching songdata" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,165,0,0"/>
+        <Label Content="Song added successfully" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,196,0,0"/>
+        <TextBox x:Name="tb_ArtistBlocked" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,41,0,0" TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_SongInQueue" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,72,0,0" TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_MaxSongs" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,103,0,0" TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_MaxLength" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,134,0,0" TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_Error" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,165,0,0" TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_Success" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,196,0,0" TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+
+    </Grid>
+</controls:MetroWindow>

@@ -13,6 +13,7 @@ using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
 using System.Linq;
 using Songify_Slim.Models;
+using System.Text.RegularExpressions;
 
 namespace Songify_Slim
 {
@@ -265,12 +266,20 @@ namespace Songify_Slim
             cooldownTimer.Interval = TimeSpan.FromSeconds(Settings.TwSRCooldown).TotalMilliseconds;
             cooldownTimer.Start();
         }
-
+        private static string CleanFormatString(string currSong)
+        {
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new Regex("[ ]{2,}", options);
+            currSong = regex.Replace(currSong, " ");
+            currSong = currSong.Trim();
+            // Add trailing spaces for better scroll
+            return currSong;
+        }
         private static void AddSong(string trackID, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings
             string[] Blacklist = Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
-
+            string response; 
             // gets the track information using spotify api
             FullTrack track = APIHandler.GetTrack(trackID);
 
@@ -280,7 +289,15 @@ namespace Songify_Slim
                 if (Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1)
                 {
                     // if artist is on blacklist, skip and inform requester
-                    _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " the Artist: " + s + " has been blacklisted by the broadcaster.");
+                    response = Settings.Bot_Resp_Blacklist;
+                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                    response = response.Replace("{artist}", s);
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}", "");
+                    response = response.Replace("{errormsg}", "");
+                    response = CleanFormatString(response);
+
+                    _client.SendMessage(e.ChatMessage.Channel, response);
                     return;
                 }
             }
@@ -289,7 +306,15 @@ namespace Songify_Slim
             if (track.DurationMs >= TimeSpan.FromMinutes(10).TotalMilliseconds)
             {
                 // if track length exceeds 10 minutes skip and inform requster
-                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " the song you requested exceeded the maximum song length (10 minutes)");
+                response = Settings.Bot_Resp_Length;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
+
+                _client.SendMessage(e.ChatMessage.Channel, response);
                 return;
             }
 
@@ -297,7 +322,15 @@ namespace Songify_Slim
             if (isInQueue(track.Id))
             {
                 // if the song is already in the queue skip and inform requester
-                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " this song is already in the queue.");
+                response = Settings.Bot_Resp_IsInQueue;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
+
+                _client.SendMessage(e.ChatMessage.Channel, response);
                 return;
             }
 
@@ -305,7 +338,14 @@ namespace Songify_Slim
             if (MaxQueueItems(e.ChatMessage.DisplayName))
             {
                 // if the user reached max requests in the queue skip and inform requester
-                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " maximum number of songs in queue reached (" + Settings.TwSRMaxReq + ").");
+                response = Settings.Bot_Resp_MaxReq;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", Settings.TwSRMaxReq.ToString());
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
+                _client.SendMessage(e.ChatMessage.Channel, response);
                 return;
             }
 
@@ -318,12 +358,25 @@ namespace Songify_Slim
             {
                 // if an error has been encountered, log it, inform the requester and skip 
                 Logger.LogStr(error.Error.Message + "\n" + error.Error.Status);
-                _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Error message: " + error.Error.Message);
+                response = Settings.Bot_Resp_Error;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", error.Error.Message);
+
+                _client.SendMessage(e.ChatMessage.Channel, response);
                 return;
             }
 
             // if everything workes so far, inform the user that the song has been added to the queue
-            _client.SendMessage(e.ChatMessage.Channel, track.Artists[0].Name + " - " + track.Name + " requested by @" + e.ChatMessage.DisplayName + " has been added to the queue");
+            response = Settings.Bot_Resp_Success;
+            response = response.Replace("{user}", e.ChatMessage.DisplayName);
+            response = response.Replace("{artist}", track.Artists[0].Name);
+            response = response.Replace("{title}", track.Name);
+            response = response.Replace("{maxreq}", "");
+            response = response.Replace("{errormsg}", "");
+            _client.SendMessage(e.ChatMessage.Channel, response);
 
             // Upload the track and who requested it to the queue on the server
             UploadToQueue(track, e.ChatMessage.DisplayName);

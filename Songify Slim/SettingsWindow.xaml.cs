@@ -465,5 +465,11 @@ namespace Songify_Slim
             System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
             System.Windows.Application.Current.Shutdown();
         }
+
+        private void btn_Botresponse_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Botresponse wBR = new Window_Botresponse();
+            wBR.Show();
+        }
     }
 }
