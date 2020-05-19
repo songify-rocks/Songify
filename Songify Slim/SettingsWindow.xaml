@@ -7,7 +7,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:Songify_Slim.Properties"
         mc:Ignorable="d"
-        Title="Settings" Height="310.884" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="Settings" Height="321.372" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">

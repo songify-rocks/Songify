@@ -14,6 +14,8 @@ using TwitchLib.Communication.Models;
 using System.Linq;
 using Songify_Slim.Models;
 using System.Text.RegularExpressions;
+using TwitchLib.Api.V5;
+using System.Windows.Controls.Primitives;
 
 namespace Songify_Slim
 {
@@ -161,6 +163,14 @@ namespace Songify_Slim
                     // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
                     AddSong(TrackID, e);
                 }
+
+                else if (e.ChatMessage.Message.StartsWith("https://open.spotify.com/track/"))
+                {
+                    string trackid = e.ChatMessage.Message.Replace("https://open.spotify.com/track/", "");
+                    trackid = trackid.Split('?')[0];
+                    AddSong(trackid, e);
+                }
+
                 else
                 {
                     // search for a track with a search string from chat
@@ -175,8 +185,17 @@ namespace Songify_Slim
                     }
                     else
                     {
+                        string response;
                         // if no track has been found inform the requester
-                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Couldn't find a song matching your request.");
+                        response = Settings.Bot_Resp_Error;
+                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                        response = response.Replace("{artist}", "");
+                        response = response.Replace("{title}", "");
+                        response = response.Replace("{maxreq}", "");
+                        response = response.Replace("{errormsg}", "");
+
+                        _client.SendMessage(e.ChatMessage.Channel, response);
+                        return;
                     }
                 }
                 return;
@@ -221,6 +240,13 @@ namespace Songify_Slim
                     // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
                     AddSong(trackID, e);
                 }
+
+                else if (msgSplit[1].StartsWith("https://open.spotify.com/track/"))
+                {
+                    string trackid = msgSplit[1].Replace("https://open.spotify.com/track/", "");
+                    trackid = trackid.Split('?')[0];
+                    AddSong(trackid, e);
+                }
                 else
                 {
                     string searchString = e.ChatMessage.Message.Replace("!ssr ", "");
@@ -235,8 +261,17 @@ namespace Songify_Slim
                     }
                     else
                     {
+                        string response;
                         // if no track has been found inform the requester
-                        _client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " there was an error adding your Song to the queue. Couldn't find a song matching your request.");
+                        response = Settings.Bot_Resp_Error;
+                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                        response = response.Replace("{artist}", "");
+                        response = response.Replace("{title}", "");
+                        response = response.Replace("{maxreq}", "");
+                        response = response.Replace("{errormsg}", "");
+
+                        _client.SendMessage(e.ChatMessage.Channel, response);
+                        return;
                     }
                 }
                 // start the command cooldown
@@ -279,7 +314,7 @@ namespace Songify_Slim
         {
             // loads the blacklist from settings
             string[] Blacklist = Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
-            string response; 
+            string response;
             // gets the track information using spotify api
             FullTrack track = APIHandler.GetTrack(trackID);
 

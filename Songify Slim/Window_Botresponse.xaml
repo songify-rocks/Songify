@@ -16,12 +16,13 @@
         <Label Content="Song longer than X" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,134,0,0"/>
         <Label Content="Error fetching songdata" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,165,0,0"/>
         <Label Content="Song added successfully" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,196,0,0"/>
-        <TextBox x:Name="tb_ArtistBlocked" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,41,0,0" TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
-        <TextBox x:Name="tb_SongInQueue" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,72,0,0" TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
-        <TextBox x:Name="tb_MaxSongs" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,103,0,0" TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
-        <TextBox x:Name="tb_MaxLength" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,134,0,0" TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
-        <TextBox x:Name="tb_Error" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,165,0,0" TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
-        <TextBox x:Name="tb_Success" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="415" Margin="191,196,0,0" TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}"/>
+        <TextBox x:Name="tb_ArtistBlocked" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,41,0,0" TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBox x:Name="tb_SongInQueue" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,72,0,0" TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBox x:Name="tb_MaxSongs" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,103,0,0" TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBox x:Name="tb_MaxLength" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,134,0,0" TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBox x:Name="tb_Error" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,165,0,0" TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBox x:Name="tb_Success" HorizontalAlignment="Left" Height="23" VerticalAlignment="Top" Width="452" Margin="154,196,0,0" TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus"/>
+        <TextBlock x:Name="lbl_Preview" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,237,0,0" Height="34" Width="596" TextWrapping="Wrap"/>
 
     </Grid>
 </controls:MetroWindow>
