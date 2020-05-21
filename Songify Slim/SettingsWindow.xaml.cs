@@ -8,10 +8,11 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using AutoUpdaterDotNET;
+using Unosquare.Swan;
 
 namespace Songify_Slim
 {
-    public partial class SettingsWindow
+    public partial class Window_Settings
     {
         private readonly string[] _colors = {
                                                    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
@@ -23,7 +24,7 @@ namespace Songify_Slim
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
 
-        public SettingsWindow()
+        public Window_Settings()
         {
             InitializeComponent();
             this.Title = Properties.Resources.mw_menu_Settings;
@@ -59,6 +60,8 @@ namespace Songify_Slim
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxSplit.IsChecked = Settings.SplitOutput;
             Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
+            ChbxSpaces.IsChecked = Settings.AppendSpaces;
+            nud_Spaces.Value = Settings.SpaceCount;
 
             if (Settings.NbUserId != null)
             {
@@ -470,6 +473,16 @@ namespace Songify_Slim
         {
             Window_Botresponse wBR = new Window_Botresponse();
             wBR.Show();
+        }
+
+        private void nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            Settings.SpaceCount = (int)nud_Spaces.Value;
+        }
+
+        private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
         }
     }
 }

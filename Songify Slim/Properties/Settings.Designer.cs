@@ -560,5 +560,29 @@ namespace Songify_Slim.Properties {
                 this["bot_Resp_Success"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool spacesEnabled {
+            get {
+                return ((bool)(this["spacesEnabled"]));
+            }
+            set {
+                this["spacesEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int spaces {
+            get {
+                return ((int)(this["spaces"]));
+            }
+            set {
+                this["spaces"] = value;
+            }
+        }
     }
 }

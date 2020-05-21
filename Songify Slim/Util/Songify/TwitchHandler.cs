@@ -130,9 +130,9 @@ namespace Songify_Slim
                     {
                         foreach (Window window in Application.Current.Windows)
                         {
-                            if (window.GetType() == typeof(SettingsWindow))
+                            if (window.GetType() == typeof(Window_Settings))
                             {
-                                (window as SettingsWindow).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
+                                (window as Window_Settings).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
                             }
                         }
                     }));

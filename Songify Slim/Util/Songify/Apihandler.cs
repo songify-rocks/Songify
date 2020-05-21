@@ -79,8 +79,8 @@ namespace Songify_Slim
                      {
                          foreach (Window window in System.Windows.Application.Current.Windows)
                          {
-                             if (window.GetType() != typeof(SettingsWindow)) continue;
-                             ((SettingsWindow)window).SetControls();
+                             if (window.GetType() != typeof(Window_Settings)) continue;
+                             ((Window_Settings)window).SetControls();
                          }
                      }));
                 };

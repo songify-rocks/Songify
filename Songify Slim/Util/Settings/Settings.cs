@@ -7,6 +7,40 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+        public static int SpaceCount
+        {
+            get => GetSpaceCount();
+            set => SetSpaceCount(value);
+        }
+
+        private static void SetSpaceCount(int value)
+        {
+            Properties.Settings.Default.spaces = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetSpaceCount()
+        {
+            return Properties.Settings.Default.spaces;
+        }
+
+        public static bool AppendSpaces
+        {
+            get => GetAppendSpaces();
+            set => SetAppendSpaces(value);
+        }
+
+        private static void SetAppendSpaces(bool value)
+        {
+            Properties.Settings.Default.spacesEnabled = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetAppendSpaces()
+        {
+            return Properties.Settings.Default.spacesEnabled;
+        }
+
         public static string Bot_Resp_Success
         {
             get => GetBot_Resp_Success();

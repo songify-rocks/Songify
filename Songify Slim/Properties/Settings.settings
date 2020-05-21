@@ -137,5 +137,11 @@
     <Setting Name="bot_Resp_Success" Type="System.String" Scope="User">
       <Value Profile="(Default)">{artist} - {title} requested by @{user} has been added to the queue.</Value>
     </Setting>
+    <Setting Name="spacesEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="spaces" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

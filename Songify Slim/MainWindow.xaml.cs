@@ -206,7 +206,7 @@ namespace Songify_Slim
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
-            SettingsWindow sW = new SettingsWindow { Top = this.Top, Left = this.Left };
+            Window_Settings sW = new Window_Settings { Top = this.Top, Left = this.Left };
             sW.ShowDialog();
         }
 
@@ -270,8 +270,16 @@ namespace Songify_Slim
             Regex regex = new Regex("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
             currSong = currSong.Trim();
+
             // Add trailing spaces for better scroll
-            currSong += "          ";
+            if (Settings.AppendSpaces)
+            {
+                for (int i = 0; i < Settings.SpaceCount; i++)
+                {
+                    currSong += " ";
+                }
+            }
+
             return currSong;
         }
 
@@ -777,6 +785,7 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
+
         private async void TelemetryDisclaimer()
         {
             SendTelemetry(true);

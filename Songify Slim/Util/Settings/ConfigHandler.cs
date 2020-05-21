@@ -197,9 +197,9 @@ namespace Songify_Slim
                 // Settingswindow (from there this class is called) it calls the method SetControls
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(SettingsWindow))
+                    if (window.GetType() == typeof(Window_Settings))
                     {
-                        ((SettingsWindow)window).SetControls();
+                        ((Window_Settings)window).SetControls();
                     }
                 }
             }
