@@ -136,9 +136,16 @@
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
                                Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" MaxHeight="185" />
         </StackPanel>
-        <StatusBar Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
-            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0"/>
-            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright © Jan  Inzaniity  Blömacher" HorizontalAlignment="Right" Padding="0" Foreground="Black" Margin="0,0,5,0"/>
+        <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
+            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0" Width="55"/>
+            <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,0">
+                <StackPanel Orientation="Horizontal">
+                    <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©" Foreground="Black" />
+                    <StatusBarItem x:Name="LblCopyrightLink" Foreground="Black" FontStyle="Italic">
+                        <Hyperlink NavigateUri="https://songify.rocks" RequestNavigate="Hyperlink_RequestNavigate" FontStyle="Normal" Foreground="Black">Songify.Rocks</Hyperlink>
+                    </StatusBarItem>
+                </StackPanel>
+            </StatusBarItem>
         </StatusBar>
         <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,139,0">
             <MenuItem Header="{x:Static local:Resources.mw_menu_File}">

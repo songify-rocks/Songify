@@ -638,7 +638,7 @@ namespace Songify_Slim
 
             // text in the bottom right
             LblCopyright.Content =
-                "Songify v" + Version.Substring(0, 5) + " Copyright © Jan \"Inzaniity\" Blömacher";
+                "Songify v" + Version.Substring(0, 5) + " Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -815,6 +815,12 @@ namespace Songify_Slim
                 MinHeight = 285;
                 Height = 285;
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         private void TelemetryTimer()

@@ -65,6 +65,16 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            if(Settings.Language == "de-DE")
+            {
+                tb_ArtistBlocked.Margin = new Thickness(230, tb_ArtistBlocked.Margin.Top, tb_ArtistBlocked.Margin.Right, tb_ArtistBlocked.Margin.Bottom);
+                tb_SongInQueue.Margin = new Thickness(230, tb_SongInQueue.Margin.Top, tb_SongInQueue.Margin.Right, tb_SongInQueue.Margin.Bottom);
+                tb_MaxSongs.Margin = new Thickness(230, tb_MaxSongs.Margin.Top, tb_MaxSongs.Margin.Right, tb_MaxSongs.Margin.Bottom);
+                tb_MaxLength.Margin = new Thickness(230, tb_MaxLength.Margin.Top, tb_MaxLength.Margin.Right, tb_MaxLength.Margin.Bottom);
+                tb_Error.Margin = new Thickness(230, tb_Error.Margin.Top, tb_Error.Margin.Right, tb_Error.Margin.Bottom);
+                tb_Success.Margin = new Thickness(230, tb_Success.Margin.Top, tb_Success.Margin.Right, tb_Success.Margin.Bottom);
+            }
+
             tb_ArtistBlocked.Text = Settings.Bot_Resp_Blacklist;
             tb_SongInQueue.Text = Settings.Bot_Resp_IsInQueue;
             tb_MaxSongs.Text = Settings.Bot_Resp_MaxReq;
