@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="brw_ArtistBlocked" xml:space="preserve">
+    <value>Artist is blocked</value>
+  </data>
+  <data name="brw_FetchError" xml:space="preserve">
+    <value>Error fetching songdata</value>
+  </data>
+  <data name="brw_Header" xml:space="preserve">
+    <value>Configure the bot responses for the following scenarios:</value>
+  </data>
+  <data name="brw_MaxSongs" xml:space="preserve">
+    <value>Max songs in queue</value>
+  </data>
+  <data name="brw_SongInQueue" xml:space="preserve">
+    <value>Song already in queue</value>
+  </data>
+  <data name="brw_SongTooLong" xml:space="preserve">
+    <value>Song longer than X</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Song added successfully</value>
+  </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Add</value>
   </data>
@@ -220,6 +241,9 @@
   <data name="sw_Integration_btnLink" xml:space="preserve">
     <value>LINK</value>
   </data>
+  <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
+    <value>Configure Bot Responses</value>
+  </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>NB Username (Twitch Username)</value>
   </data>
@@ -249,6 +273,9 @@
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Enable SR (Channel Rewards)</value>
+  </data>
+  <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
+    <value>append spaces</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
     <value>Output Directory</value>

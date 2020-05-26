@@ -92,7 +92,7 @@
                         Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                         controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                         controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxSplit_Checked" Unchecked="ChbxSplit_Checked" />
-                    <CheckBox x:Name="ChbxSpaces" Content="append spaces" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,78,0,0" Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked"/>
+                    <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,78,0,0" Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked"/>
                     <controls:NumericUpDown x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="251,74,0,0" ValueChanged="nud_Spaces_ValueChanged" HasDecimals="False" Height="23" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" UpDownButtonsWidth="16" />
                 </Grid>
             </TabItem>
@@ -124,7 +124,7 @@
                     <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}" VerticalAlignment="Top" Width="222" Margin="10,182,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
                     <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="368,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
                     <CheckBox x:Name="Chbx_TwAutoconnect" Content="{x:Static local:Resources.sw_Integration_Autoconnect}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,185,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137"/>
-                    <Button x:Name="btn_Botresponse" Content="Configure Bot Responses" Margin="10,213,10,5" Height="27" Click="btn_Botresponse_Click"/>
+                    <Button x:Name="btn_Botresponse" Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,213,10,5" Height="27" Click="btn_Botresponse_Click"/>
 
                 </Grid>
             </TabItem>

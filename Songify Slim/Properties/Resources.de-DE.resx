@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="brw_ArtistBlocked" xml:space="preserve">
+    <value>Künstler Blockiert</value>
+  </data>
+  <data name="brw_FetchError" xml:space="preserve">
+    <value>Fehler beim holen der Songinformation</value>
+  </data>
+  <data name="brw_Header" xml:space="preserve">
+    <value>Konfiguriere die Antworten des Chatbots:</value>
+  </data>
+  <data name="brw_MaxSongs" xml:space="preserve">
+    <value>Maximale Anzahl an Songs erreicht</value>
+  </data>
+  <data name="brw_SongInQueue" xml:space="preserve">
+    <value>Song bereits in der Warteschlange</value>
+  </data>
+  <data name="brw_SongTooLong" xml:space="preserve">
+    <value>Lied ist zu lang</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Erfolgreich Song hinzugefügt</value>
+  </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Hinzufügen</value>
   </data>
@@ -220,6 +241,9 @@
   <data name="sw_Integration_btnLink" xml:space="preserve">
     <value>Verknüpfen</value>
   </data>
+  <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
+    <value>Konfiguriere Bot-Antworten</value>
+  </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>NB Benutzernamen (Twitch Benutzername)</value>
   </data>
@@ -249,6 +273,9 @@
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Aktiviere SR (Kanalpunkte)</value>
+  </data>
+  <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
+    <value>Leerzeichen anfügen</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
     <value>Ausgabeordner</value>

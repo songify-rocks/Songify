@@ -627,7 +627,7 @@ namespace Songify_Slim
             AutoUpdater.Mandatory = true;
             AutoUpdater.UpdateMode = Mode.ForcedDownload;
             AutoUpdater.AppTitle = "Songify";
-            AutoUpdater.RunUpdateAsAdmin = false;
+            AutoUpdater.RunUpdateAsAdmin = true;
 
             AutoUpdater.Start("https://songify.rocks/update.xml");
 
@@ -638,7 +638,7 @@ namespace Songify_Slim
 
             // text in the bottom right
             LblCopyright.Content =
-                "Songify v" + Version.Substring(0, 5) + " Copyright © Songify.Rocks";
+                "Songify v" + Version.Substring(0, 5) + " Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -674,7 +674,7 @@ namespace Songify_Slim
             MinimizeToSysTray();
         }
 
-        private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
+        private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
@@ -684,7 +684,7 @@ namespace Songify_Slim
             }
         }
 
-        private void Mi_Queue_Click(object sender, RoutedEventArgs e)
+        private void mi_Queue_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
@@ -703,7 +703,7 @@ namespace Songify_Slim
             }
         }
 
-        private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
+        private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
@@ -815,6 +815,12 @@ namespace Songify_Slim
                 MinHeight = 285;
                 Height = 285;
             }
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         private void TelemetryTimer()
