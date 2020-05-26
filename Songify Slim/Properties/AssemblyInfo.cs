@@ -9,7 +9,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Songify")]
 [assembly: AssemblyDescription("Spotify Song Fetcher")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Jan Blömacher")]
+[assembly: AssemblyCompany("Songify.Rocks")]
 [assembly: AssemblyProduct("Songify")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

@@ -152,11 +152,11 @@
             </MenuItem>
             <MenuItem Header="Songrequests">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Queue}">
-                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}" Click="mi_Queue_Click"/>
-                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="mi_Queue_Click"/>
-                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}" Click="mi_QueueClear_Click"/>
+                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}" Click="Mi_Queue_Click"/>
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click"/>
+                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}" Click="Mi_QueueClear_Click"/>
                 </MenuItem>
-                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}" Click="mi_Blacklist_Click"/>
+                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}" Click="Mi_Blacklist_Click"/>
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Click="BtnHistory_Click"/>

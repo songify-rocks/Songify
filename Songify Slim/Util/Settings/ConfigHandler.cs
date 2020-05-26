@@ -97,6 +97,10 @@ namespace Songify_Slim
                 writer.WriteAttributeString("posx", Settings.PosX.ToString());
                 writer.WriteAttributeString("posy", Settings.PosY.ToString());
                 writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
+                writer.WriteAttributeString("spotifydeviceid", Settings.SpotifyDeviceID);
+                writer.WriteAttributeString("lang", Settings.Language);
+                writer.WriteAttributeString("spacesenabled", Settings.AppendSpaces.ToString());
+                writer.WriteAttributeString("Spacecount", Settings.SpaceCount.ToString());
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -164,6 +168,12 @@ namespace Songify_Slim
                     if (int.TryParse(node.Attributes["posy"]?.InnerText, out value))
                         Settings.PosY = value;
                     Settings.AutoClearQueue = Convert.ToBoolean(node.Attributes["autoclearqueue"]?.InnerText);
+                    Settings.SpotifyDeviceID = node.Attributes["spotifydeviceid"]?.InnerText;
+                    Settings.UserBlacklist = node.Attributes["userblacklist"]?.InnerText;
+                    Settings.Language = node.Attributes["lang"]?.InnerText;
+                    Settings.AppendSpaces = Convert.ToBoolean(node.Attributes["spacesenabled"]?.InnerText);
+                    if (int.TryParse(node.Attributes["Spacecount"]?.InnerText, out value))
+                        Settings.SpaceCount = value;
                 }
             }
             catch (Exception ex)
