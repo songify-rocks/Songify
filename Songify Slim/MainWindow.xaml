@@ -137,7 +137,7 @@
                                Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" MaxHeight="185" />
         </StackPanel>
         <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
-            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Margin="5,0,0,0" Width="55"/>
+            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Width="315"/>
             <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,0">
                 <StackPanel Orientation="Horizontal">
                     <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©" Foreground="Black" />
