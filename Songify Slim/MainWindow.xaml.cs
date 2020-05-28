@@ -674,7 +674,7 @@ namespace Songify_Slim
             MinimizeToSysTray();
         }
 
-        private void mi_Blacklist_Click(object sender, RoutedEventArgs e)
+        private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
@@ -684,7 +684,7 @@ namespace Songify_Slim
             }
         }
 
-        private void mi_Queue_Click(object sender, RoutedEventArgs e)
+        private void Mi_Queue_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
@@ -703,7 +703,7 @@ namespace Songify_Slim
             }
         }
 
-        private async void mi_QueueClear_Click(object sender, RoutedEventArgs e)
+        private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
