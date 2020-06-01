@@ -79,13 +79,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Classes\Converter.cs" />
+    <Compile Include="Classes\Log.cs" />
+    <Compile Include="Classes\PathManager.cs" />
+    <Compile Include="Classes\PluginLoader.cs" />
     <Compile Include="Forms\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\InterfaceLoader.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />
+    <Compile Include="Models\LogMessage.cs" />
     <Compile Include="Models\SongInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -114,7 +120,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\" />
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
