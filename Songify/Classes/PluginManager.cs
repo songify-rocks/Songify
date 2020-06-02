@@ -6,15 +6,23 @@ namespace Songify.Classes
     /// <summary>
     /// Load Songify Plugins
     /// </summary>
-    class PluginLoader
+    class PluginManager
     {
+
+        public List<ISongifyPlugin> Plugins { get; set; }
+
+        public PluginManager()
+        {
+            Plugins = LoadPlugins();
+        }
+
         /// <summary>
         /// Get list of all available plugins
         /// </summary>
         /// <returns></returns>
-        public List<IPlugin> GetPlugins()
+        private List<ISongifyPlugin> LoadPlugins()
         {
-            List<IPlugin> plugins = InterfaceLoader.GetAll<IPlugin>();
+            List<ISongifyPlugin> plugins = InterfaceLoader.GetAll<ISongifyPlugin>();
             return plugins;
         }
     }

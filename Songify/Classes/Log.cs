@@ -65,7 +65,7 @@ namespace Songify.Classes
                         try
                         {
                             LogMessage message = logQueue.Dequeue();
-                            File.AppendAllText(pathManager.LogDirectory, message + Environment.NewLine);
+                            File.AppendAllText(pathManager.LogFilePath, message + Environment.NewLine);
                         }
                         catch
                         {

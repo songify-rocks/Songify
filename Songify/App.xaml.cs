@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Songify.Classes;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Songify
 {
@@ -13,5 +9,16 @@ namespace Songify
     /// </summary>
     public partial class App : Application
     {
+        readonly Log logger = new Log();
+        public App()
+        {
+            logger.Start();
+        }
+
+        private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
+            logger.Add(e.Exception.Message, Models.MessageType.Error);
+        }
     }
 }

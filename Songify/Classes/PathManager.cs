@@ -23,7 +23,7 @@ namespace Songify.Classes
 
         public string LogFilePath
         {
-            get => Path.Combine(LogDirectory, $"{DateTime.Now.ToString("dd.MM.yyyy")} - Log.txt");
+            get => Path.Combine(LogDirectory, $"{DateTime.Now:dd.MM.yyyy} - Log.txt");
         }
 
         public string PluginDirectory
