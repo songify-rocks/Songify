@@ -62,6 +62,10 @@ namespace Songify_Slim
             Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
+            tb_ClientID.Text = Settings.ClientID;
+            tb_ClientSecret.Password = Settings.ClientSecret;
+            Tglsw_Spotify.IsChecked = Settings.UseOwnApp;
+
 
             if (Settings.NbUserId != null)
             {
@@ -483,6 +487,30 @@ namespace Songify_Slim
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
         {
             Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
+        }
+
+        private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
+        {
+            Settings.UseOwnApp = (bool)Tglsw_Spotify.IsChecked;
+        }
+
+        private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.ClientID = tb_ClientID.Text;
+        }
+
+        private void tb_ClientSecret_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            Settings.ClientSecret = tb_ClientSecret.Password;
+        }
+
+        private void btn_save_Click(object sender, RoutedEventArgs e)
+        {
+            Settings.AccessToken = "";
+            Settings.RefreshToken = ""; 
+
+            System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

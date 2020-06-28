@@ -311,7 +311,7 @@
     <value>Chrome fetch rate (seconds)</value>
   </data>
   <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
-    <value>Langauge</value>
+    <value>Language</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>minimize to system tray</value>

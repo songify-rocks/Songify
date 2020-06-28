@@ -7,7 +7,7 @@
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         xmlns:local="clr-namespace:Songify_Slim.Properties"
         mc:Ignorable="d"
-        Title="Settings" Height="321.372" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="Settings" Height="334.856" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">
@@ -115,9 +115,6 @@
                     <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,5,5,5" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_NBWatermark}" TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,68,0,0" Padding="0,5,5,5" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,94,0,0" Width="286" />
-                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,94,0,0" Click="btn_spotifyLink_Click" />
                     <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,125,0,0" Padding="0,5,5,5"/>
                     <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,151,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
                     <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="252" Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
@@ -125,6 +122,26 @@
                     <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="368,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
                     <CheckBox x:Name="Chbx_TwAutoconnect" Content="{x:Static local:Resources.sw_Integration_Autoconnect}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,185,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137"/>
                     <Button x:Name="btn_Botresponse" Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,213,10,5" Height="27" Click="btn_Botresponse_Click"/>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Spotify">
+                <Grid>
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0" Padding="0,5,5,5" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" Width="286" />
+                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,35,0,0" Click="btn_spotifyLink_Click" />
+                    <controls:ToggleSwitch x:Name="Tglsw_Spotify" Margin="10,77,0,0" HorizontalAlignment="Left"
+                        Width="376" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                        controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+                        controls:ControlsHelper.HeaderMargin="0" Height="43" VerticalAlignment="Top"
+                        Padding="5,0,0,0" IsCheckedChanged="Tglsw_Spotify_IsCheckedChanged"
+                        OffLabel="Use Songify appID" OnLabel="Use own Spotify appID"/>
+                    <TextBox x:Name="tb_ClientID" HorizontalAlignment="Left" Height="23" Margin="116,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="270" TextChanged="tb_ClientID_TextChanged"/>
+                    <PasswordBox x:Name="tb_ClientSecret" HorizontalAlignment="Left" Height="23" Margin="116,157,0,0" VerticalAlignment="Top" Width="270" PasswordChanged="tb_ClientSecret_PasswordChanged"/>
+                    <Label Content="Client ID" HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top"/>
+                    <Label Content="Client Secret" HorizontalAlignment="Left" Margin="14,157,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="btn_save" Content="save" Margin="301,225,10,10" Click="btn_save_Click"/>
+                    <Label Content="saving will restart Songify!" HorizontalAlignment="Left" Margin="135,229,0,0" VerticalAlignment="Top"/>
 
                 </Grid>
             </TabItem>

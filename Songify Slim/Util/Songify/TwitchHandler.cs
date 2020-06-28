@@ -31,42 +31,50 @@ namespace Songify_Slim
 
         public static void BotConnect()
         {
-            // Checks if twitch credentials are present
-            if (string.IsNullOrEmpty(Settings.TwAcc) || string.IsNullOrEmpty(Settings.TwOAuth) || string.IsNullOrEmpty(Settings.TwChannel))
+            try
             {
-                Application.Current.Dispatcher.Invoke(new Action(() =>
+                // Checks if twitch credentials are present
+                if (string.IsNullOrEmpty(Settings.TwAcc) || string.IsNullOrEmpty(Settings.TwOAuth) || string.IsNullOrEmpty(Settings.TwChannel))
                 {
-                    foreach (Window window in Application.Current.Windows)
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
                     {
-                        if (window.GetType() == typeof(MainWindow))
+                        foreach (Window window in Application.Current.Windows)
                         {
-                            //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                            (window as MainWindow).LblStatus.Content = "Please fill in Twitch credentials.";
+                            if (window.GetType() == typeof(MainWindow))
+                            {
+                                //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                                (window as MainWindow).LblStatus.Content = "Please fill in Twitch credentials.";
+                            }
                         }
-                    }
-                }));
-                return;
+                    }));
+                    return;
+                }
+
+                // creates new connection based on the credentials in settings
+                ConnectionCredentials credentials = new ConnectionCredentials(Settings.TwAcc, Settings.TwOAuth);
+                ClientOptions clientOptions = new ClientOptions
+                {
+                    MessagesAllowedInPeriod = 750,
+                    ThrottlingPeriod = TimeSpan.FromSeconds(30)
+                };
+                WebSocketClient customClient = new WebSocketClient(clientOptions);
+                _client = new TwitchClient(customClient);
+                _client.Initialize(credentials, Settings.TwChannel);
+
+                _client.OnMessageReceived += _client_OnMessageReceived;
+                _client.OnConnected += _client_OnConnected;
+                _client.OnDisconnected += _client_OnDisconnected;
+
+                _client.Connect();
+
+                // subscirbes to the cooldowntimer elapsed event for the command cooldown
+                cooldownTimer.Elapsed += CooldownTimer_Elapsed;
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("Couldn't connect to Twitch, mabe credentials are wrong?");
             }
 
-            // creates new connection based on the credentials in settings
-            ConnectionCredentials credentials = new ConnectionCredentials(Settings.TwAcc, Settings.TwOAuth);
-            ClientOptions clientOptions = new ClientOptions
-            {
-                MessagesAllowedInPeriod = 750,
-                ThrottlingPeriod = TimeSpan.FromSeconds(30)
-            };
-            WebSocketClient customClient = new WebSocketClient(clientOptions);
-            _client = new TwitchClient(customClient);
-            _client.Initialize(credentials, Settings.TwChannel);
-
-            _client.OnMessageReceived += _client_OnMessageReceived;
-            _client.OnConnected += _client_OnConnected;
-            _client.OnDisconnected += _client_OnDisconnected;
-
-            _client.Connect();
-
-            // subscirbes to the cooldowntimer elapsed event for the command cooldown
-            cooldownTimer.Elapsed += CooldownTimer_Elapsed;
         }
 
         private static void _client_OnDisconnected(object sender, TwitchLib.Communication.Events.OnDisconnectedEventArgs e)

@@ -19,6 +19,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
 using AutoUpdaterDotNET;
+using System.Threading;
 
 namespace Songify_Slim
 {
@@ -287,13 +288,21 @@ namespace Songify_Slim
         {
             if (cover == null)
             {
-                // create Empty png file
-                Bitmap bmp = new Bitmap(640, 640);
-                Graphics g = Graphics.FromImage(bmp);
+                try
+                {
+                    // create Empty png file
+                    Bitmap bmp = new Bitmap(640, 640);
+                    Graphics g = Graphics.FromImage(bmp);
 
-                g.Clear(System.Drawing.Color.Transparent);
-                g.Flush();
-                bmp.Save(coverPath, System.Drawing.Imaging.ImageFormat.Png);
+                    g.Clear(System.Drawing.Color.Transparent);
+                    g.Flush();
+                    bmp.Save(coverPath, System.Drawing.Imaging.ImageFormat.Png);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+
             }
             else
             {
@@ -312,6 +321,7 @@ namespace Songify_Slim
 
             try
             {
+                Thread.Sleep(250);
                 img_cover.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
                 new Action(() =>
                 {
@@ -627,7 +637,7 @@ namespace Songify_Slim
             AutoUpdater.Mandatory = true;
             AutoUpdater.UpdateMode = Mode.ForcedDownload;
             AutoUpdater.AppTitle = "Songify";
-            AutoUpdater.RunUpdateAsAdmin = true;
+            AutoUpdater.RunUpdateAsAdmin = false;
 
             AutoUpdater.Start("https://songify.rocks/update.xml");
 
@@ -644,7 +654,7 @@ namespace Songify_Slim
             {
                 if (string.IsNullOrEmpty(Settings.AccessToken) && string.IsNullOrEmpty(Settings.RefreshToken))
                 {
-                    TxtblockLiveoutput.Text = "Please link your Spotify account\nSettings -> Integration";
+                    TxtblockLiveoutput.Text = "Please link your Spotify account\nSettings -> Spotify";
                 }
                 else
                 {
@@ -688,7 +698,7 @@ namespace Songify_Slim
         {
             // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Contains("Window"))
+            if (item.Tag.ToString().Contains("Window"))
             {
                 if (!IsWindowOpen<Window_Queue>())
                 {
@@ -776,7 +786,10 @@ namespace Songify_Slim
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
                     GetCurrentSongAsync();
-                    FetchTimer(20000);
+                    if (Settings.UseOwnApp)
+                        FetchTimer(2000);
+                    else
+                        FetchTimer(20000);
                     break;
             }
         }

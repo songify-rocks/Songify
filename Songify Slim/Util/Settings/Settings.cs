@@ -7,6 +7,59 @@ namespace Songify_Slim
     /// </summary>
     internal class Settings
     {
+
+        public static string ClientSecret
+        {
+            get => GetClientSecret();
+            set => SetClientSecret(value);
+        }
+
+        private static void SetClientSecret(string value)
+        {
+            Properties.Settings.Default.ClientSecret = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetClientSecret()
+        {
+            return Properties.Settings.Default.ClientSecret;
+        }
+
+        public static string ClientID
+        {
+            get => GetClientID();
+            set => SetClientID(value);
+        }
+
+        private static void SetClientID(string value)
+        {
+            Properties.Settings.Default.ClientID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetClientID()
+        {
+            return Properties.Settings.Default.ClientID;
+        }
+
+
+        public static bool UseOwnApp
+        {
+            get => GetUseOwnApp();
+            set => SetUseOwnApp(value);
+        }
+
+        private static void SetUseOwnApp(bool value)
+        {
+            Properties.Settings.Default.UseOwnAppID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetUseOwnApp()
+        {
+            return Properties.Settings.Default.UseOwnAppID;
+        }
+
         public static int SpaceCount
         {
             get => GetSpaceCount();

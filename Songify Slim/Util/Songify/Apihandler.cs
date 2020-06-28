@@ -25,17 +25,35 @@ namespace Songify_Slim
             Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
         };
 
+
+
         // Spotify Authentication flow with the webserver
-        private static TokenSwapAuth auth = new TokenSwapAuth(
-            exchangeServerUri: "https://songify.rocks/auth/_index.php",
-            serverUri: "http://localhost:4002/auth",
-            scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
-        );
+        private static TokenSwapAuth auth;
 
         public static async void DoAuthAsync()
         {
+            if (Settings.UseOwnApp)
+            {
+                auth = new TokenSwapAuth(
+                    exchangeServerUri: "https://songify.rocks/auth/auth.php?id=" + Settings.ClientID + "&secret=" + Settings.ClientSecret,
+                    serverUri: "http://localhost:4002/auth",
+                    scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
+                );
+                Console.WriteLine("Own ID");
+            }
+            else
+            {
+                auth = new TokenSwapAuth(
+                    exchangeServerUri: "https://songify.rocks/auth/_index.php",
+                    serverUri: "http://localhost:4002/auth",
+                    scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
+                );
+                Console.WriteLine("Songify ID");
+            }
+
             try
             {
+
                 // Execute the authentication flow and subscribe the timer elapsed event
                 authRefresh.Elapsed += AuthRefresh_Elapsed;
 
@@ -101,6 +119,7 @@ namespace Songify_Slim
                     return;
                 }
                 auth.OpenBrowser();
+
             }
             catch (Exception ex)
             {
@@ -146,7 +165,7 @@ namespace Songify_Slim
                 if (context.Device != null)
                     Settings.SpotifyDeviceID = context.Device.Id;
 
-                Console.WriteLine(context.Device.Id);
+                Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
 
                 List<Image> albums = context.Item.Album.Images;
 
