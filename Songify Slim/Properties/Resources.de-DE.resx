@@ -121,7 +121,7 @@
     <value>Künstler Blockiert</value>
   </data>
   <data name="brw_FetchError" xml:space="preserve">
-    <value>Fehler beim holen der Songinformation</value>
+    <value>Fehler beim Holen der Songinformation</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
     <value>Konfiguriere die Antworten des Chatbots:</value>
@@ -189,23 +189,23 @@
   <data name="mw_menu_History" xml:space="preserve">
     <value>Historie</value>
   </data>
+  <data name="mw_menu_History_Browser" xml:space="preserve">
+    <value>Historie Browser</value>
+  </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
     <value>Historiefenster</value>
-  </data>
-  <data name="mw_menu_Histoy_Browser" xml:space="preserve">
-    <value>Historie Browser</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Warteschlange</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>Browser</value>
+    <value>Warteschlange - Browser</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
-    <value>Leeren</value>
+    <value>Warteschlange leeren</value>
   </data>
   <data name="mw_menu_Queue_Window" xml:space="preserve">
-    <value>Fenster</value>
+    <value>Warteschlange - Fenster</value>
   </data>
   <data name="mw_menu_Settings" xml:space="preserve">
     <value>Einstellungen</value>
@@ -248,7 +248,7 @@
     <value>NB Benutzernamen (Twitch Benutzername)</value>
   </data>
   <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
-    <value>Verbundener Account:</value>
+    <value>Verknüpfter Account:</value>
   </data>
   <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
     <value>Channel</value>
@@ -297,6 +297,15 @@
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Songinfo hochladen</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
+    <value>Speichern startet automatisch neu!</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Eigene Spotify AppID nutzen</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>Mit Windows starten</value>

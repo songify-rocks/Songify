@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using AutoUpdaterDotNET;
 using Unosquare.Swan;
+using System.Diagnostics;
 
 namespace Songify_Slim
 {
@@ -511,6 +512,11 @@ namespace Songify_Slim
 
             System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
             System.Windows.Application.Current.Shutdown();
+        }
+
+        private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://songify.rocks/faq.html#appid");
         }
     }
 }

@@ -166,8 +166,8 @@
                 <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}" Click="Mi_Blacklist_Click"/>
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
-                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Click="BtnHistory_Click"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Histoy_Browser}" Click="BtnHistory_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Tag="Window" Click="BtnHistory_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser" Click="BtnHistory_Click"/>
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
                 <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>

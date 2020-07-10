@@ -133,7 +133,7 @@
     <value>Song already in queue</value>
   </data>
   <data name="brw_SongTooLong" xml:space="preserve">
-    <value>Song longer than X</value>
+    <value>Song too long</value>
   </data>
   <data name="brw_Success" xml:space="preserve">
     <value>Song added successfully</value>
@@ -189,11 +189,11 @@
   <data name="mw_menu_History" xml:space="preserve">
     <value>History</value>
   </data>
+  <data name="mw_menu_History_Browser" xml:space="preserve">
+    <value>History Browser</value>
+  </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
     <value>History Window</value>
-  </data>
-  <data name="mw_menu_Histoy_Browser" xml:space="preserve">
-    <value>History Browser</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Queue</value>
@@ -211,7 +211,7 @@
     <value>Settings</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
-    <value>Support</value>
+    <value>Support Us</value>
   </data>
   <data name="mw_menu_Widget" xml:space="preserve">
     <value>Widget</value>
@@ -297,6 +297,15 @@
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Upload song info</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
+    <value>Saving will restart Songify!</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Use own Songify AppID</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>autostart with windows</value>

@@ -106,7 +106,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Song longer than X ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Song too long ähnelt.
         /// </summary>
         public static string brw_SongTooLong {
             get {
@@ -277,20 +277,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die History Browser ähnelt.
+        /// </summary>
+        public static string mw_menu_History_Browser {
+            get {
+                return ResourceManager.GetString("mw_menu_History_Browser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die History Window ähnelt.
         /// </summary>
         public static string mw_menu_History_Window {
             get {
                 return ResourceManager.GetString("mw_menu_History_Window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die History Browser ähnelt.
-        /// </summary>
-        public static string mw_menu_Histoy_Browser {
-            get {
-                return ResourceManager.GetString("mw_menu_Histoy_Browser", resourceCulture);
             }
         }
         
@@ -340,7 +340,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Support ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Support Us ähnelt.
         /// </summary>
         public static string mw_menu_Support {
             get {
@@ -643,6 +643,33 @@ namespace Songify_Slim.Properties {
         public static string sw_tcOutput_UploadSongInfo {
             get {
                 return ResourceManager.GetString("sw_tcOutput_UploadSongInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Save ähnelt.
+        /// </summary>
+        public static string sw_tcSpotify_SaveButton {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Saving will restart Songify! ähnelt.
+        /// </summary>
+        public static string sw_tcSpotify_SavingWillRestart {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_SavingWillRestart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use own Songify AppID ähnelt.
+        /// </summary>
+        public static string sw_tcSpotify_UseOwnApp {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_UseOwnApp", resourceCulture);
             }
         }
         

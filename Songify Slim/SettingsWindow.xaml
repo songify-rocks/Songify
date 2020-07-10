@@ -129,19 +129,20 @@
                 <Grid>
                     <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0" Padding="0,5,5,5" />
                     <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" Width="286" />
-                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,35,0,0" Click="btn_spotifyLink_Click" />
+                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="296,35,0,0" Click="btn_spotifyLink_Click" />
                     <controls:ToggleSwitch x:Name="Tglsw_Spotify" Margin="10,77,0,0" HorizontalAlignment="Left"
-                        Width="376" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
+                        Width="350" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                         controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                         controls:ControlsHelper.HeaderMargin="0" Height="43" VerticalAlignment="Top"
                         Padding="5,0,0,0" IsCheckedChanged="Tglsw_Spotify_IsCheckedChanged"
-                        OffLabel="Use Songify appID" OnLabel="Use own Spotify appID"/>
+                        OffLabel="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}" OnLabel="Use own Spotify appID"/>
                     <TextBox x:Name="tb_ClientID" HorizontalAlignment="Left" Height="23" Margin="116,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="270" TextChanged="tb_ClientID_TextChanged"/>
                     <PasswordBox x:Name="tb_ClientSecret" HorizontalAlignment="Left" Height="23" Margin="116,157,0,0" VerticalAlignment="Top" Width="270" PasswordChanged="tb_ClientSecret_PasswordChanged"/>
                     <Label Content="Client ID" HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top"/>
                     <Label Content="Client Secret" HorizontalAlignment="Left" Margin="14,157,0,0" VerticalAlignment="Top"/>
-                    <Button x:Name="btn_save" Content="save" Margin="301,225,10,10" Click="btn_save_Click"/>
-                    <Label Content="saving will restart Songify!" HorizontalAlignment="Left" Margin="135,229,0,0" VerticalAlignment="Top"/>
+                    <Button x:Name="btn_save" Content="{x:Static local:Resources.sw_tcSpotify_SaveButton}" Margin="286,225,10,10" Click="btn_save_Click"/>
+                    <Label Content="{x:Static local:Resources.sw_tcSpotify_SavingWillRestart}" Margin="192,194,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" HorizontalAlignment="Right"/>
+                    <Button x:Name="btn_OwnAppHelp" Content="?" HorizontalAlignment="Left" Margin="365,83,0,0" VerticalAlignment="Top" Width="21" Click="btn_OwnAppHelp_Click" Height="21"/>
 
                 </Grid>
             </TabItem>

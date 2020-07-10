@@ -182,7 +182,7 @@ namespace Songify_Slim
         {
             // Opens the History in either Window or Browser
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Contains("Window"))
+            if (item.Tag.ToString().Contains("Window"))
             {
                 if (!IsWindowOpen<HistoryWindow>())
                 {
@@ -192,7 +192,7 @@ namespace Songify_Slim
                 }
             }
             // Opens the Queue in the Browser
-            else if (item.Header.ToString().Contains("Browser"))
+            else if (item.Tag.ToString().Contains("Browser"))
             {
                 Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
             }

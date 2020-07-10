@@ -101,6 +101,9 @@ namespace Songify_Slim
                 writer.WriteAttributeString("lang", Settings.Language);
                 writer.WriteAttributeString("spacesenabled", Settings.AppendSpaces.ToString());
                 writer.WriteAttributeString("Spacecount", Settings.SpaceCount.ToString());
+                writer.WriteAttributeString("ownApp", Settings.UseOwnApp.ToString());
+                writer.WriteAttributeString("clientid", Settings.ClientID);
+                writer.WriteAttributeString("clientsecret", Settings.ClientSecret);
                 writer.WriteEndElement();
                 writer.WriteEndElement();
             }
@@ -174,6 +177,9 @@ namespace Songify_Slim
                     Settings.AppendSpaces = Convert.ToBoolean(node.Attributes["spacesenabled"]?.InnerText);
                     if (int.TryParse(node.Attributes["Spacecount"]?.InnerText, out value))
                         Settings.SpaceCount = value;
+                    Settings.UseOwnApp = Convert.ToBoolean(node.Attributes["ownApp"]?.InnerText);
+                    Settings.ClientID = node.Attributes["clientid"]?.InnerText;
+                    Settings.ClientSecret = node.Attributes["clientsecret"]?.InnerText;
                 }
             }
             catch (Exception ex)
