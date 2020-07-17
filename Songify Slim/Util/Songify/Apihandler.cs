@@ -165,7 +165,7 @@ namespace Songify_Slim
                 if (context.Device != null)
                     Settings.SpotifyDeviceID = context.Device.Id;
 
-                Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
+                //Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
 
                 List<Image> albums = context.Item.Album.Images;
 
