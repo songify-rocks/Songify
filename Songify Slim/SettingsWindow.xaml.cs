@@ -2,17 +2,18 @@
 using System;
 using System.Net;
 using System.Reflection;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using AutoUpdaterDotNET;
-using Unosquare.Swan;
 using System.Diagnostics;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim
 {
+    // ReSharper disable once InconsistentNaming
     public partial class Window_Settings
     {
         private readonly string[] _colors = {
@@ -52,28 +53,28 @@ namespace Songify_Slim
             txtbx_twChannel.Text = Settings.TwChannel;
             txtbx_twOAuth.Password = Settings.TwOAuth;
             txtbx_twUser.Text = Settings.TwAcc;
-            txtbx_RewardID.Text = Settings.TwRewardID;
-            Chbx_TwReward.IsChecked = Settings.TwSRReward;
-            Chbx_TwCommand.IsChecked = Settings.TwSRCommand;
-            NudMaxReq.Value = Settings.TwSRMaxReq;
-            NudCooldown.Value = Settings.TwSRCooldown;
+            txtbx_RewardID.Text = Settings.TwRewardId;
+            Chbx_TwReward.IsChecked = Settings.TwSrReward;
+            Chbx_TwCommand.IsChecked = Settings.TwSrCommand;
+            NudMaxReq.Value = Settings.TwSrMaxReq;
+            NudCooldown.Value = Settings.TwSrCooldown;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxSplit.IsChecked = Settings.SplitOutput;
             Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
-            tb_ClientID.Text = Settings.ClientID;
+            tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
             Tglsw_Spotify.IsChecked = Settings.UseOwnApp;
-
+            NudMaxlength.Value = Settings.MaxSongLength;
 
             if (Settings.NbUserId != null)
             {
                 lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             }
-            if (APIHandler.spotify != null)
-                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " + APIHandler.spotify.GetPrivateProfile().DisplayName;
+            if (ApiHandler.Spotify != null)
+                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " + ApiHandler.Spotify.GetPrivateProfile().DisplayName;
 
             ThemeHandler.ApplyTheme();
 
@@ -85,8 +86,6 @@ namespace Songify_Slim
                     break;
                 case "de-DE":
                     cbx_Language.SelectedIndex = 1;
-                    break;
-                default:
                     break;
             }
 
@@ -355,7 +354,7 @@ namespace Songify_Slim
             Settings.RefreshToken = "";
             try
             {
-                APIHandler.DoAuthAsync();
+                ApiHandler.DoAuthAsync();
                 SetControls();
 
             }
@@ -369,57 +368,58 @@ namespace Songify_Slim
         {
             // enables / disables telemetry
             if (ChbxSplit.IsChecked == null) return;
-            Settings.SplitOutput = (bool)ChbxCover.IsChecked;
+            if (ChbxCover.IsChecked != null) Settings.SplitOutput = (bool) ChbxCover.IsChecked;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Opens twitchapps to generate a TMI oAuth Token
-            System.Diagnostics.Process.Start("https://twitchapps.com/tmi/");
+            Process.Start("https://twitchapps.com/tmi/");
         }
 
         private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Saves the RewardID
-            Settings.TwRewardID = txtbx_RewardID.Text;
+            Settings.TwRewardId = txtbx_RewardID.Text;
         }
 
         private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
             if (Chbx_TwReward.IsChecked == null) return;
-            Settings.TwSRReward = (bool)Chbx_TwReward.IsChecked;
+            Settings.TwSrReward = (bool)Chbx_TwReward.IsChecked;
         }
 
         private void Chbx_TwCommand_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
             if (Chbx_TwCommand.IsChecked == null) return;
-            Settings.TwSRCommand = (bool)Chbx_TwCommand.IsChecked;
+            Settings.TwSrCommand = (bool)Chbx_TwCommand.IsChecked;
         }
 
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets max requests per user value
-            Settings.TwSRMaxReq = (int)NudMaxReq.Value;
+            if (NudMaxReq.Value != null) Settings.TwSrMaxReq = (int) NudMaxReq.Value;
         }
 
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets command cooldown
-            Settings.TwSRCooldown = (int)NudCooldown.Value;
+            if (NudCooldown.Value != null) Settings.TwSrCooldown = (int) NudCooldown.Value;
         }
 
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to autoconnect or not
-            Settings.TwAutoConnect = (bool)Chbx_TwAutoconnect.IsChecked;
+            if (Chbx_TwAutoconnect.IsChecked != null) Settings.TwAutoConnect = (bool) Chbx_TwAutoconnect.IsChecked;
         }
 
         private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
         {
             // Sets message loggint enabled or not
-            Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
+            if (Chbx_MessageLogging.IsChecked != null)
+                Settings.MsgLoggingEnabled = (bool) Chbx_MessageLogging.IsChecked;
         }
 
         private void txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
@@ -443,7 +443,7 @@ namespace Songify_Slim
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to clear the queue on startup or not
-            Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
+            if (Chbx_AutoClear.IsChecked != null) Settings.AutoClearQueue = (bool) Chbx_AutoClear.IsChecked;
         }
 
         private void MenuBtnReq_Click(object sender, RoutedEventArgs e)
@@ -466,38 +466,36 @@ namespace Songify_Slim
                     System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-DE");
                     Settings.Language = "de-DE";
                     break;
-                default:
-                    break;
             }
 
-            System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
+            Process.Start(System.Windows.Application.ResourceAssembly.Location);
             System.Windows.Application.Current.Shutdown();
         }
 
         private void btn_Botresponse_Click(object sender, RoutedEventArgs e)
         {
-            Window_Botresponse wBR = new Window_Botresponse();
-            wBR.Show();
+            Window_Botresponse wBr = new Window_Botresponse();
+            wBr.Show();
         }
 
         private void nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            Settings.SpaceCount = (int)nud_Spaces.Value;
+            if (nud_Spaces.Value != null) Settings.SpaceCount = (int) nud_Spaces.Value;
         }
 
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
+            if (ChbxSpaces.IsChecked != null) Settings.AppendSpaces = (bool) ChbxSpaces.IsChecked;
         }
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
-            Settings.UseOwnApp = (bool)Tglsw_Spotify.IsChecked;
+            if (Tglsw_Spotify.IsChecked != null) Settings.UseOwnApp = (bool) Tglsw_Spotify.IsChecked;
         }
 
         private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.ClientID = tb_ClientID.Text;
+            Settings.ClientId = tb_ClientID.Text;
         }
 
         private void tb_ClientSecret_PasswordChanged(object sender, RoutedEventArgs e)
@@ -510,13 +508,18 @@ namespace Songify_Slim
             Settings.AccessToken = "";
             Settings.RefreshToken = ""; 
 
-            System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
+            Process.Start(System.Windows.Application.ResourceAssembly.Location);
             System.Windows.Application.Current.Shutdown();
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
         {
             Process.Start("https://songify.rocks/faq.html#appid");
+        }
+
+        private void NudMaxlength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (NudMaxlength.Value != null) Settings.MaxSongLength = (int) NudMaxlength.Value;
         }
     }
 }

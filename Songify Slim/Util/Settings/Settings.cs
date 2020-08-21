@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Songify_Slim
+﻿namespace Songify_Slim.Util.Settings
 {
     /// <summary>
     ///     This class is a getter and setter for Settings
@@ -8,6 +6,23 @@ namespace Songify_Slim
     internal class Settings
     {
 
+        public static int MaxSongLength
+        {
+            get => GetMaxSongLength();
+            set => SetMaxSongLength(value);
+        }
+
+        private static void SetMaxSongLength(int value)
+        {
+            Properties.Settings.Default.MaxSongLength = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetMaxSongLength()
+        {
+            return Properties.Settings.Default.MaxSongLength;
+        }
+        
         public static string ClientSecret
         {
             get => GetClientSecret();
@@ -25,19 +40,19 @@ namespace Songify_Slim
             return Properties.Settings.Default.ClientSecret;
         }
 
-        public static string ClientID
+        public static string ClientId
         {
-            get => GetClientID();
-            set => SetClientID(value);
+            get => GetClientId();
+            set => SetClientId(value);
         }
 
-        private static void SetClientID(string value)
+        private static void SetClientId(string value)
         {
             Properties.Settings.Default.ClientID = value;
             Properties.Settings.Default.Save();
         }
 
-        private static string GetClientID()
+        private static string GetClientId()
         {
             return Properties.Settings.Default.ClientID;
         }
@@ -94,7 +109,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.spacesEnabled;
         }
 
-        public static string Bot_Resp_Success
+        public static string BotRespSuccess
         {
             get => GetBot_Resp_Success();
             set => SetBot_Resp_Success(value);
@@ -111,7 +126,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.bot_Resp_Success;
         }
 
-        public static string Bot_Resp_Error
+        public static string BotRespError
         {
             get => GetBot_Resp_Error();
             set => SetBot_Resp_Error(value);
@@ -128,7 +143,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.bot_Resp_Error;
         }
 
-        public static string Bot_Resp_MaxReq
+        public static string BotRespMaxReq
         {
             get => GetBot_Resp_MaxReq();
             set => SetBot_Resp_MaxReq(value);
@@ -145,7 +160,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.bot_Resp_MaxReq;
         }
 
-        public static string Bot_Resp_IsInQueue
+        public static string BotRespIsInQueue
         {
             get => GetBot_Resp_IsInQueue();
             set => SetBot_Resp_IsInQueue(value);
@@ -162,7 +177,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.bot_Resp_IsInQueue;
         }
 
-        public static string Bot_Resp_Length
+        public static string BotRespLength
         {
             get => GetBot_Resp_Length();
             set => SetBot_Resp_Length(value);
@@ -179,7 +194,7 @@ namespace Songify_Slim
             return Properties.Settings.Default.bot_Resp_Length;
         }
 
-        public static string Bot_Resp_Blacklist
+        public static string BotRespBlacklist
         {
             get => Getbot_Resp_Blacklist();
             set => Setbot_Resp_Blacklist(value);
@@ -231,19 +246,19 @@ namespace Songify_Slim
             return Properties.Settings.Default.UserBlacklist;
         }
 
-        public static string SpotifyDeviceID
+        public static string SpotifyDeviceId
         {
-            get => GetSpotifyDeviceID();
-            set => SetSpotifyDeviceID(value);
+            get => GetSpotifyDeviceId();
+            set => SetSpotifyDeviceId(value);
         }
 
-        private static void SetSpotifyDeviceID(string value)
+        private static void SetSpotifyDeviceId(string value)
         {
             Properties.Settings.Default.SpotifyDeviceID = value;
             Properties.Settings.Default.Save();
         }
 
-        private static string GetSpotifyDeviceID()
+        private static string GetSpotifyDeviceId()
         {
             return Properties.Settings.Default.SpotifyDeviceID;
         }
@@ -410,34 +425,34 @@ namespace Songify_Slim
             set => SetTwOAuth(value);
         }
 
-        public static string TwRewardID
+        public static string TwRewardId
         {
-            get => GetTwRewardID();
-            set => SetTwRewardID(value);
+            get => GetTwRewardId();
+            set => SetTwRewardId(value);
         }
 
-        public static bool TwSRCommand
+        public static bool TwSrCommand
         {
-            get => GetTwSRCommand();
-            set => SetTwSRCommand(value);
+            get => GetTwSrCommand();
+            set => SetTwSrCommand(value);
         }
 
-        public static int TwSRCooldown
+        public static int TwSrCooldown
         {
-            get => GetTwSRCooldown();
-            set => SetTwSRCooldown(value);
+            get => GetTwSrCooldown();
+            set => SetTwSrCooldown(value);
         }
 
-        public static int TwSRMaxReq
+        public static int TwSrMaxReq
         {
-            get => GetTwSRMaxReq();
-            set => SetTwSRMaxReq(value);
+            get => GetTwSrMaxReq();
+            set => SetTwSrMaxReq(value);
         }
 
-        public static bool TwSRReward
+        public static bool TwSrReward
         {
-            get => GetTwSRReward();
-            set => SetTwSRReward(value);
+            get => GetTwSrReward();
+            set => SetTwSrReward(value);
         }
 
         public static bool Upload
@@ -595,27 +610,27 @@ namespace Songify_Slim
             return Properties.Settings.Default.TwOauth;
         }
 
-        private static string GetTwRewardID()
+        private static string GetTwRewardId()
         {
             return Properties.Settings.Default.TwRewardID;
         }
 
-        private static bool GetTwSRCommand()
+        private static bool GetTwSrCommand()
         {
             return Properties.Settings.Default.TwSRCommand;
         }
 
-        private static int GetTwSRCooldown()
+        private static int GetTwSrCooldown()
         {
             return Properties.Settings.Default.TwSRCooldown;
         }
 
-        private static int GetTwSRMaxReq()
+        private static int GetTwSrMaxReq()
         {
             return Properties.Settings.Default.TwSRMaxReq;
         }
 
-        private static bool GetTwSRReward()
+        private static bool GetTwSrReward()
         {
             return Properties.Settings.Default.TwSRReward;
         }
@@ -800,29 +815,29 @@ namespace Songify_Slim
             Properties.Settings.Default.Save();
         }
 
-        private static void SetTwRewardID(string value)
+        private static void SetTwRewardId(string value)
         {
             Properties.Settings.Default.TwRewardID = value;
             Properties.Settings.Default.Save();
         }
 
-        private static void SetTwSRCommand(bool value)
+        private static void SetTwSrCommand(bool value)
         {
             Properties.Settings.Default.TwSRCommand = value;
             Properties.Settings.Default.Save();
         }
 
-        private static void SetTwSRCooldown(int value)
+        private static void SetTwSrCooldown(int value)
         {
             Properties.Settings.Default.TwSRCooldown = value;
             Properties.Settings.Default.Save();
         }
-        private static void SetTwSRMaxReq(int value)
+        private static void SetTwSrMaxReq(int value)
         {
             Properties.Settings.Default.TwSRMaxReq = value;
             Properties.Settings.Default.Save();
         }
-        private static void SetTwSRReward(bool value)
+        private static void SetTwSrReward(bool value)
         {
             Properties.Settings.Default.TwSRReward = value;
             Properties.Settings.Default.Save();

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using Songify_Slim.Util.Settings;
 using Application = System.Windows.Application;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -60,52 +62,56 @@ namespace Songify_Slim
             // Writing the XML, Attributnames are somewhat equal to Settings.
             using (XmlWriter writer = XmlWriter.Create(path, xmlWriterSettings))
             {
-                writer.WriteStartDocument();
-                writer.WriteStartElement("Songify_Config");
-                writer.WriteStartElement("Config");
-                writer.WriteAttributeString("directory", Settings.Directory);
-                writer.WriteAttributeString("color", Settings.Color);
-                writer.WriteAttributeString("tehme", Settings.Theme);
-                writer.WriteAttributeString("atuostart", Settings.Autostart.ToString());
-                writer.WriteAttributeString("systray", Settings.Systray.ToString());
-                writer.WriteAttributeString("customPause", Settings.CustomPauseTextEnabled.ToString());
-                writer.WriteAttributeString("customPauseText", Settings.CustomPauseText);
-                writer.WriteAttributeString("outputString", Settings.OutputString);
-                writer.WriteAttributeString("uuid", Settings.Uuid);
-                writer.WriteAttributeString("telemetry", Settings.Telemetry.ToString());
-                writer.WriteAttributeString("nbuser", Settings.NbUser);
-                writer.WriteAttributeString("nbuserid", Settings.NbUserId);
-                writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
-                writer.WriteAttributeString("uploadhistory", Settings.UploadHistory.ToString());
-                writer.WriteAttributeString("savehistory", Settings.SaveHistory.ToString());
-                writer.WriteAttributeString("downloadcover", Settings.DownloadCover.ToString());
-                writer.WriteAttributeString("refreshtoken", Settings.RefreshToken);
-                writer.WriteAttributeString("splitoutput", Settings.SplitOutput.ToString());
-                writer.WriteAttributeString("accesstoken", Settings.AccessToken);
-                writer.WriteAttributeString("twacc", Settings.TwAcc);
-                writer.WriteAttributeString("twoauth", Settings.TwOAuth);
-                writer.WriteAttributeString("twchannel", Settings.TwChannel);
-                writer.WriteAttributeString("twrewardid", Settings.TwRewardID);
-                writer.WriteAttributeString("twsrreward", Settings.TwSRReward.ToString());
-                writer.WriteAttributeString("twsrcommand", Settings.TwSRCommand.ToString());
-                writer.WriteAttributeString("twsrmaxreq", Settings.TwSRMaxReq.ToString());
-                writer.WriteAttributeString("twsrcooldown", Settings.TwSRCooldown.ToString());
-                writer.WriteAttributeString("msglogging", Settings.MsgLoggingEnabled.ToString());
-                writer.WriteAttributeString("twautoconnect", Settings.TwAutoConnect.ToString());
-                writer.WriteAttributeString("artistblacklist", Settings.ArtistBlacklist);
-                writer.WriteAttributeString("userblacklist", Settings.UserBlacklist);
-                writer.WriteAttributeString("posx", Settings.PosX.ToString());
-                writer.WriteAttributeString("posy", Settings.PosY.ToString());
-                writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
-                writer.WriteAttributeString("spotifydeviceid", Settings.SpotifyDeviceID);
-                writer.WriteAttributeString("lang", Settings.Language);
-                writer.WriteAttributeString("spacesenabled", Settings.AppendSpaces.ToString());
-                writer.WriteAttributeString("Spacecount", Settings.SpaceCount.ToString());
-                writer.WriteAttributeString("ownApp", Settings.UseOwnApp.ToString());
-                writer.WriteAttributeString("clientid", Settings.ClientID);
-                writer.WriteAttributeString("clientsecret", Settings.ClientSecret);
-                writer.WriteEndElement();
-                writer.WriteEndElement();
+                if (writer != null)
+                {
+                    writer.WriteStartDocument();
+                    writer.WriteStartElement("Songify_Config");
+                    writer.WriteStartElement("Config");
+                    writer.WriteAttributeString("directory", Settings.Directory);
+                    writer.WriteAttributeString("color", Settings.Color);
+                    writer.WriteAttributeString("tehme", Settings.Theme);
+                    writer.WriteAttributeString("atuostart", Settings.Autostart.ToString());
+                    writer.WriteAttributeString("systray", Settings.Systray.ToString());
+                    writer.WriteAttributeString("customPause", Settings.CustomPauseTextEnabled.ToString());
+                    writer.WriteAttributeString("customPauseText", Settings.CustomPauseText);
+                    writer.WriteAttributeString("outputString", Settings.OutputString);
+                    writer.WriteAttributeString("uuid", Settings.Uuid);
+                    writer.WriteAttributeString("telemetry", Settings.Telemetry.ToString());
+                    writer.WriteAttributeString("nbuser", Settings.NbUser);
+                    writer.WriteAttributeString("nbuserid", Settings.NbUserId);
+                    writer.WriteAttributeString("uploadSonginfo", Settings.Upload.ToString());
+                    writer.WriteAttributeString("uploadhistory", Settings.UploadHistory.ToString());
+                    writer.WriteAttributeString("savehistory", Settings.SaveHistory.ToString());
+                    writer.WriteAttributeString("downloadcover", Settings.DownloadCover.ToString());
+                    writer.WriteAttributeString("refreshtoken", Settings.RefreshToken);
+                    writer.WriteAttributeString("splitoutput", Settings.SplitOutput.ToString());
+                    writer.WriteAttributeString("accesstoken", Settings.AccessToken);
+                    writer.WriteAttributeString("twacc", Settings.TwAcc);
+                    writer.WriteAttributeString("twoauth", Settings.TwOAuth);
+                    writer.WriteAttributeString("twchannel", Settings.TwChannel);
+                    writer.WriteAttributeString("twrewardid", Settings.TwRewardId);
+                    writer.WriteAttributeString("twsrreward", Settings.TwSrReward.ToString());
+                    writer.WriteAttributeString("twsrcommand", Settings.TwSrCommand.ToString());
+                    writer.WriteAttributeString("twsrmaxreq", Settings.TwSrMaxReq.ToString());
+                    writer.WriteAttributeString("twsrcooldown", Settings.TwSrCooldown.ToString());
+                    writer.WriteAttributeString("msglogging", Settings.MsgLoggingEnabled.ToString());
+                    writer.WriteAttributeString("twautoconnect", Settings.TwAutoConnect.ToString());
+                    writer.WriteAttributeString("artistblacklist", Settings.ArtistBlacklist);
+                    writer.WriteAttributeString("userblacklist", Settings.UserBlacklist);
+                    writer.WriteAttributeString("posx", Settings.PosX.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteAttributeString("posy", Settings.PosY.ToString(CultureInfo.InvariantCulture));
+                    writer.WriteAttributeString("autoclearqueue", Settings.AutoClearQueue.ToString());
+                    writer.WriteAttributeString("spotifydeviceid", Settings.SpotifyDeviceId);
+                    writer.WriteAttributeString("lang", Settings.Language);
+                    writer.WriteAttributeString("spacesenabled", Settings.AppendSpaces.ToString());
+                    writer.WriteAttributeString("Spacecount", Settings.SpaceCount.ToString());
+                    writer.WriteAttributeString("ownApp", Settings.UseOwnApp.ToString());
+                    writer.WriteAttributeString("clientid", Settings.ClientId);
+                    writer.WriteAttributeString("clientsecret", Settings.ClientSecret);
+                    writer.WriteAttributeString("maxsonglength", Settings.MaxSongLength.ToString());
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                }
             }
 
             if (hidden)
@@ -155,13 +161,13 @@ namespace Songify_Slim
                     Settings.TwAcc = node.Attributes["twacc"]?.InnerText;
                     Settings.TwOAuth = node.Attributes["twoauth"]?.InnerText;
                     Settings.TwChannel = node.Attributes["twchannel"]?.InnerText;
-                    Settings.TwRewardID = node.Attributes["twrewardid"]?.InnerText;
-                    Settings.TwSRReward = Convert.ToBoolean(node.Attributes["twsrreward"]?.InnerText);
-                    Settings.TwSRCommand = Convert.ToBoolean(node.Attributes["twsrcommand"]?.InnerText);
+                    Settings.TwRewardId = node.Attributes["twrewardid"]?.InnerText;
+                    Settings.TwSrReward = Convert.ToBoolean(node.Attributes["twsrreward"]?.InnerText);
+                    Settings.TwSrCommand = Convert.ToBoolean(node.Attributes["twsrcommand"]?.InnerText);
                     if (int.TryParse(node.Attributes["twsrmaxreq"]?.InnerText, out value))
-                        Settings.TwSRMaxReq = value;
+                        Settings.TwSrMaxReq = value;
                     if (int.TryParse(node.Attributes["twsrcooldown"]?.InnerText, out value))
-                        Settings.TwSRCooldown = value;
+                        Settings.TwSrCooldown = value;
                     Settings.MsgLoggingEnabled = Convert.ToBoolean(node.Attributes["msglogging"]?.InnerText);
                     Settings.TwAutoConnect = Convert.ToBoolean(node.Attributes["twautoconnect"]?.InnerText);
                     Settings.ArtistBlacklist = node.Attributes["artistblacklist"]?.InnerText;
@@ -171,15 +177,17 @@ namespace Songify_Slim
                     if (int.TryParse(node.Attributes["posy"]?.InnerText, out value))
                         Settings.PosY = value;
                     Settings.AutoClearQueue = Convert.ToBoolean(node.Attributes["autoclearqueue"]?.InnerText);
-                    Settings.SpotifyDeviceID = node.Attributes["spotifydeviceid"]?.InnerText;
+                    Settings.SpotifyDeviceId = node.Attributes["spotifydeviceid"]?.InnerText;
                     Settings.UserBlacklist = node.Attributes["userblacklist"]?.InnerText;
                     Settings.Language = node.Attributes["lang"]?.InnerText;
                     Settings.AppendSpaces = Convert.ToBoolean(node.Attributes["spacesenabled"]?.InnerText);
                     if (int.TryParse(node.Attributes["Spacecount"]?.InnerText, out value))
                         Settings.SpaceCount = value;
                     Settings.UseOwnApp = Convert.ToBoolean(node.Attributes["ownApp"]?.InnerText);
-                    Settings.ClientID = node.Attributes["clientid"]?.InnerText;
+                    Settings.ClientId = node.Attributes["clientid"]?.InnerText;
                     Settings.ClientSecret = node.Attributes["clientsecret"]?.InnerText;
+                    if (int.TryParse(node.Attributes["maxsonglength"]?.InnerText, out value))
+                        Settings.MaxSongLength = value;
                 }
             }
             catch (Exception ex)

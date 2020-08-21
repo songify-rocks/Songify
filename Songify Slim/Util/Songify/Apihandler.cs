@@ -1,25 +1,23 @@
-using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
-using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Timers;
 using System.Windows;
 using Songify_Slim.Models;
+using SpotifyAPI.Web;
+using SpotifyAPI.Web.Auth;
+using SpotifyAPI.Web.Enums;
+using SpotifyAPI.Web.Models;
 
-
-namespace Songify_Slim
+namespace Songify_Slim.Util.Songify
 {
     // This class handles everything regarding Spotify-API integration
-    public static class APIHandler
+    public static class ApiHandler
     {
-        public static TokenSwapWebAPIFactory webApiFactory = null;
-        public static SpotifyWebAPI spotify;
-        public static Token lastToken;
-        public static bool authenticated;
-        public static bool authed = false;
-        public static Timer authRefresh = new Timer
+        public static SpotifyWebAPI Spotify;
+        public static Token LastToken;
+        public static bool Authenticated;
+        public static bool Authed;
+        public static Timer AuthRefresh = new Timer
         {
             // Interval for refreshing Spotify-Auth
             Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
@@ -28,74 +26,74 @@ namespace Songify_Slim
 
 
         // Spotify Authentication flow with the webserver
-        private static TokenSwapAuth auth;
+        private static TokenSwapAuth _auth;
 
         public static async void DoAuthAsync()
         {
-            if (Settings.UseOwnApp)
+            if (Settings.Settings.UseOwnApp)
             {
-                auth = new TokenSwapAuth(
-                    exchangeServerUri: "https://songify.rocks/auth/auth.php?id=" + Settings.ClientID + "&secret=" + Settings.ClientSecret,
+                _auth = new TokenSwapAuth(
+                    exchangeServerUri: "https://songify.rocks/auth/auth.php?id=" + Settings.Settings.ClientId + "&secret=" + Settings.Settings.ClientSecret,
                     serverUri: "http://localhost:4002/auth",
                     scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
                 );
-                Console.WriteLine("Own ID");
+                Console.WriteLine(@"Own ID");
             }
             else
             {
-                auth = new TokenSwapAuth(
+                _auth = new TokenSwapAuth(
                     exchangeServerUri: "https://songify.rocks/auth/_index.php",
                     serverUri: "http://localhost:4002/auth",
                     scope: Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
                 );
-                Console.WriteLine("Songify ID");
+                Console.WriteLine(@"Songify ID");
             }
 
             try
             {
 
                 // Execute the authentication flow and subscribe the timer elapsed event
-                authRefresh.Elapsed += AuthRefresh_Elapsed;
+                AuthRefresh.Elapsed += AuthRefresh_Elapsed;
 
-                // If Refresh and Accesstoken are present, just refresh the auth
-                if (!string.IsNullOrEmpty(Settings.RefreshToken) && !string.IsNullOrEmpty(Settings.AccessToken))
+                // If Refresh and Access-token are present, just refresh the auth
+                if (!string.IsNullOrEmpty(Settings.Settings.RefreshToken) && !string.IsNullOrEmpty(Settings.Settings.AccessToken))
                 {
-                    authed = true;
-                    spotify = new SpotifyWebAPI()
+                    Authed = true;
+                    Spotify = new SpotifyWebAPI()
                     {
-                        TokenType = (await auth.RefreshAuthAsync(Settings.RefreshToken)).TokenType,
-                        AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken
+                        TokenType = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).TokenType,
+                        AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken
                     };
-                    spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
+                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
                 }
                 else
                 {
-                    authed = false;
+                    Authed = false;
                 }
 
-                // if the auth was successfull save the new tokens and 
-                auth.AuthReceived += async (sender, response) =>
+                // if the auth was successful save the new tokens and 
+                _auth.AuthReceived += async (sender, response) =>
                 {
 
-                    if (authed)
+                    if (Authed)
                         return;
 
-                    lastToken = await auth.ExchangeCodeAsync(response.Code);
+                    LastToken = await _auth.ExchangeCodeAsync(response.Code);
                     // Save tokens
-                    Settings.RefreshToken = lastToken.RefreshToken;
-                    Settings.AccessToken = lastToken.AccessToken;
+                    Settings.Settings.RefreshToken = LastToken.RefreshToken;
+                    Settings.Settings.AccessToken = LastToken.AccessToken;
                     // create ne Spotify object
-                    spotify = new SpotifyWebAPI()
+                    Spotify = new SpotifyWebAPI()
                     {
-                        TokenType = lastToken.TokenType,
-                        AccessToken = lastToken.AccessToken
+                        TokenType = LastToken.TokenType,
+                        AccessToken = LastToken.AccessToken
                     };
-                    authenticated = true;
-                    auth.Stop();
-                    authRefresh.Start();
+                    Authenticated = true;
+                    _auth.Stop();
+                    AuthRefresh.Start();
                     await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                      {
-                         foreach (Window window in System.Windows.Application.Current.Windows)
+                         foreach (Window window in Application.Current.Windows)
                          {
                              if (window.GetType() != typeof(Window_Settings)) continue;
                              ((Window_Settings)window).SetControls();
@@ -103,22 +101,22 @@ namespace Songify_Slim
                      }));
                 };
 
-                // autmatically refreshes the token after it expires
-                auth.OnAccessTokenExpired += async (sender, e) =>
+                // automatically refreshes the token after it expires
+                _auth.OnAccessTokenExpired += async (sender, e) =>
                 {
-                    spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
-                    Settings.RefreshToken = lastToken.RefreshToken;
-                    Settings.AccessToken = spotify.AccessToken;
+                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
+                    Settings.Settings.RefreshToken = LastToken.RefreshToken;
+                    Settings.Settings.AccessToken = Spotify.AccessToken;
                 };
 
-                auth.Start();
+                _auth.Start();
 
-                if (authed)
+                if (Authed)
                 {
-                    authRefresh.Start();
+                    AuthRefresh.Start();
                     return;
                 }
-                auth.OpenBrowser();
+                _auth.OpenBrowser();
 
             }
             catch (Exception ex)
@@ -132,8 +130,8 @@ namespace Songify_Slim
             try
             {
                 // When the timer elapses the tokens will get refreshed
-                spotify.AccessToken = (await auth.RefreshAuthAsync(Settings.RefreshToken)).AccessToken;
-                Settings.AccessToken = spotify.AccessToken;
+                Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
+                Settings.Settings.AccessToken = Spotify.AccessToken;
             }
             catch (Exception ex)
             {
@@ -144,7 +142,17 @@ namespace Songify_Slim
         public static TrackInfo GetSongInfo()
         {
             // returns the trackinfo of the current playback (used in the fetch timer) 
-            PlaybackContext context = spotify.GetPlayback();
+
+            PlaybackContext context;
+            try
+            {
+                context = Spotify.GetPlayback();
+            }
+            catch (Exception)
+            {
+                return new TrackInfo() { Artists = "", Title = "" };
+            }
+
             if (context.Error != null)
             {
                 Logger.LogStr(context.Error.Status + " | " + context.Error.Message);
@@ -163,7 +171,7 @@ namespace Songify_Slim
                 }
 
                 if (context.Device != null)
-                    Settings.SpotifyDeviceID = context.Device.Id;
+                    Settings.Settings.SpotifyDeviceId = context.Device.Id;
 
                 //Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
 
@@ -186,32 +194,32 @@ namespace Songify_Slim
         public static SearchItem GetArtist(string searchStr)
         {
             // returns Artist matching the search string
-            return spotify.SearchItems(searchStr, SearchType.Artist, 1);
+            return Spotify.SearchItems(searchStr, SearchType.Artist, 1);
         }
 
-        public static ErrorResponse AddToQ(string SongURI)
+        public static ErrorResponse AddToQ(string songUri)
         {
             // Tries to add a song to the current playback queue
-            ErrorResponse error = spotify.AddToQueue(SongURI, Settings.SpotifyDeviceID);
+            ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
             return error;
         }
 
         public static FullTrack GetTrack(string id)
         {
             // Returns a Track-Object matching the song id
-            return spotify.GetTrack(id);
+            return Spotify.GetTrack(id);
         }
 
         public static SearchItem FindTrack(string searchQuery)
         {
             // Returns a Track-Object matching a search query (artist - title). It only returns the first match which is found
-            return spotify.SearchItems(searchQuery, SearchType.Track, 1);
+            return Spotify.SearchItems(searchQuery, SearchType.Track, 1);
         }
 
         public static bool GetPlaybackState()
         {
             // Returns a bool wether the playbackstate is playing or not (used for custom pause text)
-            return spotify.GetPlayback().IsPlaying;
+            return Spotify.GetPlayback().IsPlaying;
         }
     }
 }

@@ -262,6 +262,9 @@
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
     <value>Command Cooldown (seconds)</value>
   </data>
+  <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
+    <value>Max song length (in minutes)</value>
+  </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
     <value>Max Requests per User</value>
   </data>

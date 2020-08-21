@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Net;
-using System.Web;
 
-namespace Songify_Slim
+namespace Songify_Slim.Util.Songify
 {
     static class WebHelper
     {
@@ -10,11 +9,11 @@ namespace Songify_Slim
         /// This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
 
-        public static void UpdateWebQueue(string trackID, string artist, string title, string length, string requester, string played, string o)
+        public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester, string played, string o)
         {
             string operation = "";
 
-            // This switch tells the php to either add or delte one entry or clear the entire queue
+            // This switch tells the php to either add or delete one entry or clear the entire queue
             switch (o)
             {
                 case "i":
@@ -31,8 +30,8 @@ namespace Songify_Slim
             // Here a URL is being created to call the website and insert the values to the db
             try
             {
-                string extras = Settings.Uuid +
-                "&trackid=" + WebUtility.UrlEncode(trackID) +
+                string extras = Settings.Settings.Uuid +
+                "&trackid=" + WebUtility.UrlEncode(trackId) +
                 "&artist=" + WebUtility.UrlEncode(artist.Replace("\"", "\\\"")) +
                 "&title=" + WebUtility.UrlEncode(title.Replace("\"", "\\\"")) +
                 "&length=" + WebUtility.UrlEncode(length) +
@@ -40,11 +39,11 @@ namespace Songify_Slim
                 "&played=" + WebUtility.UrlEncode(played) +
                 "&o=" + WebUtility.UrlEncode(o);
                 string url = "http://songify.rocks/add_queue.php/?id=" + extras;
-                string escapeurl = WebUtility.UrlEncode(url);
+                WebUtility.UrlEncode(url);
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
+                myHttpWebRequest.UserAgent = Settings.Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();

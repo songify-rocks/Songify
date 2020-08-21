@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {
@@ -26,41 +16,41 @@ namespace Songify_Slim
 
         private void tb_ArtistBlocked_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_Blacklist = tb_ArtistBlocked.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespBlacklist = tb_ArtistBlocked.Text;
+            SetPreview(sender as TextBox);
         }
 
         private void tb_SongInQueue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_IsInQueue = tb_SongInQueue.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespIsInQueue = tb_SongInQueue.Text;
+            SetPreview(sender as TextBox);
         }
 
         private void tb_MaxSongs_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_MaxReq = tb_MaxSongs.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespMaxReq = tb_MaxSongs.Text;
+            SetPreview(sender as TextBox);
 
         }
 
         private void tb_MaxLength_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_Length = tb_MaxLength.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespLength = tb_MaxLength.Text;
+            SetPreview(sender as TextBox);
 
         }
 
         private void tb_Error_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_Error = tb_Error.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespError = tb_Error.Text;
+            SetPreview(sender as TextBox);
 
         }
 
         private void tb_Success_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.Bot_Resp_Success = tb_Success.Text;
-            setPreview(sender as TextBox);
+            Settings.BotRespSuccess = tb_Success.Text;
+            SetPreview(sender as TextBox);
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -75,15 +65,15 @@ namespace Songify_Slim
                 tb_Success.Margin = new Thickness(230, tb_Success.Margin.Top, tb_Success.Margin.Right, tb_Success.Margin.Bottom);
             }
 
-            tb_ArtistBlocked.Text = Settings.Bot_Resp_Blacklist;
-            tb_SongInQueue.Text = Settings.Bot_Resp_IsInQueue;
-            tb_MaxSongs.Text = Settings.Bot_Resp_MaxReq;
-            tb_MaxLength.Text = Settings.Bot_Resp_Length;
-            tb_Error.Text = Settings.Bot_Resp_Error;
-            tb_Success.Text = Settings.Bot_Resp_Success;
+            tb_ArtistBlocked.Text = Settings.BotRespBlacklist;
+            tb_SongInQueue.Text = Settings.BotRespIsInQueue;
+            tb_MaxSongs.Text = Settings.BotRespMaxReq;
+            tb_MaxLength.Text = Settings.BotRespLength;
+            tb_Error.Text = Settings.BotRespError;
+            tb_Success.Text = Settings.BotRespSuccess;
         }
 
-        private void setPreview(TextBox tb)
+        private void SetPreview(TextBox tb)
         {
             string response;
             // if no track has been found inform the requester
@@ -91,14 +81,15 @@ namespace Songify_Slim
             response = response.Replace("{user}", Settings.TwAcc);
             response = response.Replace("{artist}", "Rick Astley");
             response = response.Replace("{title}", "Never Gonna Give You Up");
-            response = response.Replace("{maxreq}", Settings.TwSRMaxReq.ToString());
+            response = response.Replace("{maxreq}", Settings.TwSrMaxReq.ToString());
             response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
+            response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
             lbl_Preview.Text = response;
         }
 
         private void tb__GotFocus(object sender, RoutedEventArgs e)
         {
-            setPreview(sender as TextBox);
+            SetPreview(sender as TextBox);
         }
     }
 }

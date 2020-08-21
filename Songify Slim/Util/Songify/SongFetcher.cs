@@ -1,23 +1,23 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Automation;
+using Newtonsoft.Json;
 using Songify_Slim.Models;
 
-namespace Songify_Slim
+namespace Songify_Slim.Util.Songify
 {
 
     /// <summary>
     /// This class is for retrieving data of currently playing songs
     /// </summary>
-    class SongFetcher
+    internal class SongFetcher
     {
-        private string[] songinfo;
+        private string[] _songinfo;
         private AutomationElement _parent;
-
+        private static int _id;
         /// <summary>
         /// A method to fetch the song that's currently playing on Spotify.
         /// returns null if unsuccessful and custom pause text is not set.
@@ -41,14 +41,14 @@ namespace Songify_Slim
                             if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
                             {
                                 // Splitting the wintitle which is always Artist - Title
-                                songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                                _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
                                 {
-                                    artist = songinfo[0].Trim();
-                                    title = songinfo[1].Trim();
+                                    artist = _songinfo[0].Trim();
+                                    title = _songinfo[1].Trim();
                                     // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                    if (songinfo.Length > 2)
-                                        extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                                    if (_songinfo.Length > 2)
+                                        extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
                                 }
                                 catch (Exception ex)
                                 {
@@ -60,7 +60,7 @@ namespace Songify_Slim
                             // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
                             //if custom pause text is enabled and if so spit out custom text
 
-                            if (Settings.CustomPauseTextEnabled)
+                            if (Settings.Settings.CustomPauseTextEnabled)
                             {
                                 return new[] { "", "", "" }; // (Settings.GetCustomPauseText(), "", "");
                             }
@@ -70,9 +70,9 @@ namespace Songify_Slim
                             // Splitting the wintitle which is always Artist - Title
                             if (!wintitle.Contains(" - VLC media player"))
                             {
-                                if (Settings.CustomPauseTextEnabled)
+                                if (Settings.Settings.CustomPauseTextEnabled)
                                 {
-                                    return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                                    return new[] { Settings.Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
                                 }
 
                                 return new[] { "", "", "" };
@@ -80,14 +80,14 @@ namespace Songify_Slim
                             }
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
-                            songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                             try
                             {
-                                artist = songinfo[0].Trim();
-                                title = songinfo[1].Trim();
+                                artist = _songinfo[0].Trim();
+                                title = _songinfo[1].Trim();
                                 // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                if (songinfo.Length > 2)
-                                    extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                                if (_songinfo.Length > 2)
+                                    extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
                             }
                             catch (Exception ex)
                             {
@@ -99,23 +99,23 @@ namespace Songify_Slim
                             // Splitting the wintitle which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
                             {
-                                if (Settings.CustomPauseTextEnabled)
+                                if (Settings.Settings.CustomPauseTextEnabled)
                                 {
-                                    return new[] { Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
+                                    return new[] { Settings.Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
                                 }
 
                                 return new[] { "", "", "" };
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
-                            songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                             try
                             {
-                                artist = songinfo[0].Trim();
-                                title = songinfo[1].Trim();
+                                artist = _songinfo[0].Trim();
+                                title = _songinfo[1].Trim();
                                 // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                if (songinfo.Length > 2)
-                                    extra = "(" + String.Join("", songinfo, 2, songinfo.Length - 2).Trim() + ")";
+                                if (_songinfo.Length > 2)
+                                    extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
                             }
                             catch (Exception ex)
                             {
@@ -134,88 +134,136 @@ namespace Songify_Slim
         /// returns empty string if unsuccessful and custom pause text is not set.
         /// Currently supported browsers: Google Chrome
         /// </summary>
+        /// <param name="website"></param>
         /// <param name="browser"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
         public string FetchBrowser(string website, string browser = "chrome")
         {
-            Process[] procsChrome = Process.GetProcessesByName(browser);
-            foreach (Process chrome in procsChrome)
+            Process[] procsBrowser = Process.GetProcessesByName(browser);
+            if (procsBrowser.Length == 0)
+            {
+                procsBrowser = Process.GetProcessesByName("msedge");
+            }
+            foreach (Process procBrowser in procsBrowser)
             {
                 // the chrome process must have a window
-                if (chrome.MainWindowHandle == IntPtr.Zero)
+                if (procBrowser.MainWindowHandle == IntPtr.Zero)
                 {
                     continue;
                 }
 
-                AutomationElement elm = _parent == null ? AutomationElement.FromHandle(chrome.MainWindowHandle) : _parent;
+                AutomationElement elm = _parent == null ? AutomationElement.FromHandle(procBrowser.MainWindowHandle) : _parent;
 
-                // find the automation element
-                try
+                if (_id == 0)
                 {
-                    AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
-                        new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
-                    foreach (AutomationElement elem in elementCollection)
+                    // find the automation element
+                    try
                     {
+                        AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
+                            new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
+                        foreach (AutomationElement elem in elementCollection)
+                        {
+                            // if the Tabitem Name contains Youtube
+                            switch (website)
+                            {
+                                case "YouTube":
+                                    if (elem.Current.Name.Contains("YouTube"))
+                                    {
+                                        _id = elem.Current.ControlType.Id;
+                                        _parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                        // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                        return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+
+                                    }
+                                    break;
+
+                                case "Deezer":
+                                    if (elem.Current.Name.Contains("Deezer"))
+                                    {
+                                        _id = elem.Current.ControlType.Id;
+                                        _parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                        return FormattedString("Deezer", elem.Current.Name);
+
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                        // Chrome has probably changed something, and above walking needs to be modified. :(
+                        // put an assertion here or something to make sure you don't miss it
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        AutomationElement element =
+                            elm.FindFirst(TreeScope.Descendants,
+                                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.LookupById(_id)));
+
                         // if the Tabitem Name contains Youtube
                         switch (website)
                         {
                             case "YouTube":
-                                if (elem.Current.Name.Contains("YouTube"))
+                                if (element.Current.Name.Contains("YouTube"))
                                 {
-                                    _parent = TreeWalker.RawViewWalker.GetParent(elem);
+                                    _id = element.Current.ControlType.Id;
+                                    _parent = TreeWalker.RawViewWalker.GetParent(element);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                    string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                    int index = temp.LastIndexOf("- YouTube", StringComparison.Ordinal);
-                                    // Remove everything after the last "-" int the string 
-                                    // which is "- Youtube" and info that music is playing on this tab
-                                    if (index > 0)
-                                        temp = temp.Substring(0, index);
-                                    temp = temp.Trim();
+                                    return FormattedString("YouTube", Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
 
-                                    // Making sure that temp is not empty
-                                    // this makes sure that the output is not empty
-                                    if (!String.IsNullOrWhiteSpace(temp))
-                                    {
-                                        return temp;
-                                    }
                                 }
                                 break;
 
                             case "Deezer":
-                                if (elem.Current.Name.Contains("Deezer"))
+                                if (element.Current.Name.Contains("Deezer"))
                                 {
-                                    _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                    string temp = elem.Current.Name;
-                                    //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                                    int index = temp.LastIndexOf("- Deezer", StringComparison.Ordinal);
-                                    // Remove everything after the last "-" int the string 
-                                    // which is "- Youtube" and info that music is playing on this tab
-                                    if (index > 0)
-                                        temp = temp.Substring(0, index);
-                                    temp = temp.Trim();
-
-                                    // Making sure that temp is not empty
-                                    // this makes sure that the output is not empty
-                                    if (!String.IsNullOrWhiteSpace(temp))
-                                    {
-                                        return temp;
-                                    }
+                                    _id = element.Current.ControlType.Id;
+                                    _parent = TreeWalker.RawViewWalker.GetParent(element);
+                                    return FormattedString("Deezer", element.Current.Name);
                                 }
                                 break;
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // Chrome has probably changed something, and above walking needs to be modified. :(
-                    // put an assertion here or something to make sure you don't miss it
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
             }
             return "";
         }
 
+        private static string FormattedString(string player, string temp)
+        {
+            string s = temp;
+            int index;
+            switch (player)
+            {
+                case "YouTube":
+                    index = s.LastIndexOf("- YouTube", StringComparison.Ordinal);
+                    // Remove everything after the last "-" int the string 
+                    // which is "- Youtube" and info that music is playing on this tab
+                    if (index > 0)
+                        s = s.Substring(0, index);
+                    s = s.Trim();
+                    break;
+                case "Deezer":
+                    //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
+                    index = s.LastIndexOf("- Deezer", StringComparison.Ordinal);
+                    // Remove everything after the last "-" int the string 
+                    // which is "- Youtube" and info that music is playing on this tab
+                    if (index > 0)
+                        s = s.Substring(0, index);
+                    s = s.Trim();
+                    break;
+            }
+
+            return s;
+        }
 
         /// <summary>
         /// A method to fetch the song that is currently playing via NightBot Song Request.
@@ -226,7 +274,7 @@ namespace Songify_Slim
         public string FetchNightBot()
         {
             // Checking if the user has set the setting for Nightbot
-            if (!String.IsNullOrEmpty(Settings.NbUserId))
+            if (!String.IsNullOrEmpty(Settings.Settings.NbUserId))
             {
                 // Getting JSON from the nightbot API
                 string jsn;
@@ -236,7 +284,7 @@ namespace Songify_Slim
                 })
                 {
                     jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-                                            Settings.NbUserId);
+                                            Settings.Settings.NbUserId);
                 }
 
                 // Deserialize JSON and get the current song 
@@ -250,17 +298,17 @@ namespace Songify_Slim
         public TrackInfo FetchSpotifyWeb()
         {
             // If the spotify object hast been created (successfully authed)
-            if (APIHandler.spotify == null)
+            if (ApiHandler.Spotify == null)
             {
                 return null;
             }
 
             // gets the current playing songinfo
-            TrackInfo songInfo = APIHandler.GetSongInfo();
+            TrackInfo songInfo = ApiHandler.GetSongInfo();
             // if no song is playing and custompausetext is enabled
 
 
-            if (songInfo == null) return new TrackInfo { isPlaying = false};
+            if (songInfo == null) return new TrackInfo { isPlaying = false };
             // return a new stringarray containing artist, title and so on
             return songInfo;
 

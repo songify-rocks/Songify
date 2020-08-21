@@ -3,18 +3,21 @@ using MahApps.Metro.Controls.Dialogs;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim
 {
     /// <summary>
     /// This window dispalys and manages the blacklist
     /// </summary>
+    // ReSharper disable once InconsistentNaming
     public partial class Window_Blacklist
     {
         public static string[] Blacklist;
         public static string[] UserBlacklist;
 
-        public string splitter = "|||";
+        public string Splitter = "|||";
 
         public Window_Blacklist()
         {
@@ -39,7 +42,7 @@ namespace Songify_Slim
             if (string.IsNullOrEmpty(Settings.UserBlacklist))
                 return;
 
-            UserBlacklist = Settings.UserBlacklist.Split(new[] { splitter }, StringSplitOptions.None);
+            UserBlacklist = Settings.UserBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
 
             foreach (string s in UserBlacklist)
             {
@@ -55,7 +58,7 @@ namespace Songify_Slim
             if (string.IsNullOrEmpty(Settings.ArtistBlacklist))
                 return;
 
-            Blacklist = Settings.ArtistBlacklist.Split(new[] { splitter }, StringSplitOptions.None);
+            Blacklist = Settings.ArtistBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
 
             foreach (string s in Blacklist)
             {
@@ -67,11 +70,11 @@ namespace Songify_Slim
         private void btn_Add_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             //This adds to the blacklist. 
-            addToBlacklist(tb_Blacklist.Text);
+            AddToBlacklist(tb_Blacklist.Text);
             tb_Blacklist.Text = "";
         }
 
-        private async void addToBlacklist(string search)
+        private async void AddToBlacklist(string search)
         {
             //Check if the string is empty
             if (string.IsNullOrEmpty(search))
@@ -82,15 +85,15 @@ namespace Songify_Slim
                 case 0:
                     // Spotify Artist Blacklist
                     // If the API is not connected just don't do anything?
-                    if (APIHandler.spotify == null)
+                    if (ApiHandler.Spotify == null)
                     {
-                        MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Spotify is not connected. You need to connect to Spotify in order to fill the blacklist.", MessageDialogStyle.Affirmative);
+                        await this.ShowMessageAsync("Notification", "Spotify is not connected. You need to connect to Spotify in order to fill the blacklist.");
                         return;
                     }
 
 
                     // Perform a search via the spotify API
-                    SpotifyAPI.Web.Models.SearchItem searchItem = APIHandler.GetArtist(search);
+                    SpotifyAPI.Web.Models.SearchItem searchItem = ApiHandler.GetArtist(search);
                     if (searchItem.Artists.Items.Count <= 0)
                         return;
 
@@ -123,10 +126,10 @@ namespace Songify_Slim
                 {
                     if ((string)item != "")
                     {
-                        s += item + splitter;
+                        s += item + Splitter;
                     }
                 }
-                s = s.Remove(s.Length - splitter.Length);
+                s = s.Remove(s.Length - Splitter.Length);
             }
             Settings.ArtistBlacklist = s;
 
@@ -138,10 +141,10 @@ namespace Songify_Slim
                 {
                     if ((string)item != "")
                     {
-                        s += item + splitter;
+                        s += item + Splitter;
                     }
                 }
-                s = s.Remove(s.Length - splitter.Length);
+                s = s.Remove(s.Length - Splitter.Length);
             }
             Settings.UserBlacklist = s;
 
@@ -176,7 +179,7 @@ namespace Songify_Slim
         private async void MenuItem_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             MenuItem mnu = sender as MenuItem;
-            ListBox listView = null;
+            ListBox listView;
 
             if (mnu == null)
             {
@@ -186,28 +189,31 @@ namespace Songify_Slim
             listView = ((ContextMenu)mnu.Parent).PlacementTarget as ListBox;
 
             // right-click context menu to delete single blacklist entries
-            if (listView.SelectedItem == null)
+            if (listView != null && listView.SelectedItem == null)
                 return;
 
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
-            if (msgResult == MessageDialogResult.Affirmative)
+            if (listView != null)
             {
-                listView.Items.Remove(listView.SelectedItem);
-                SaveBlacklist();
+                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    listView.Items.Remove(listView.SelectedItem);
+                    SaveBlacklist();
+                }
             }
         }
 
-        private void tb_Blacklist_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void tb_Blacklist_KeyDown(object sender, KeyEventArgs e)
         {
             // on enter key save to the blacklist
-            if (e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == Key.Enter)
             {
-                addToBlacklist(tb_Blacklist.Text);
+                AddToBlacklist(tb_Blacklist.Text);
                 tb_Blacklist.Text = "";
             }
         }
 
-        private async void ListView_Blacklist_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void ListView_Blacklist_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Delete)
             {

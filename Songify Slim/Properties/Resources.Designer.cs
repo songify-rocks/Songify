@@ -494,6 +494,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Max song length (in minutes) ähnelt.
+        /// </summary>
+        public static string sw_SpotifySR_MaxLength {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_MaxLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Max Requests per User ähnelt.
         /// </summary>
         public static string sw_SpotifySR_MaxReq {

@@ -262,6 +262,9 @@
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
     <value>Befehl Abklingzeit (Sekunden)</value>
   </data>
+  <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
+    <value>Maximale Songlänge (in min)</value>
+  </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
     <value>Max Songwünsche pro Benutzer</value>
   </data>

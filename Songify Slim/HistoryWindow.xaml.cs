@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml.Linq;
+using Songify_Slim.Util.Settings;
 using Path = System.IO.Path;
 
 namespace Songify_Slim
@@ -18,7 +19,7 @@ namespace Songify_Slim
     {
         private readonly string _path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "\\history.shr";
         private XDocument _doc;
-        FileSystemWatcher watcher;
+        FileSystemWatcher _watcher;
 
         public HistoryWindow()
         {
@@ -33,18 +34,12 @@ namespace Songify_Slim
                 Tglbtn_Save.IsChecked = Settings.SaveHistory;
                 Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
-                if (Settings.SaveHistory)
-                    Tglbtn_Save.Content = "Save ✔️";
-                else
-                    Tglbtn_Save.Content = "Save ❌";
+                Tglbtn_Save.Content = Settings.SaveHistory ? "Save ✔️" : "Save ❌";
 
-                if (Settings.UploadHistory)
-                    Tglbtn_Upload.Content = "Upload ✔️";
-                else
-                    Tglbtn_Upload.Content = "Upload ❌";
+                Tglbtn_Upload.Content = Settings.UploadHistory ? "Upload ✔️" : "Upload ❌";
 
                 // listen to changes made to the history.shr file
-                watcher = new FileSystemWatcher
+                _watcher = new FileSystemWatcher
                 {
                     Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
                     NotifyFilter = NotifyFilters.LastWrite,
@@ -52,7 +47,7 @@ namespace Songify_Slim
                     EnableRaisingEvents = true
                 };
 
-                watcher.Changed += new FileSystemEventHandler(OnChanged);
+                _watcher.Changed += OnChanged;
 
                 LoadFile();
 
@@ -164,33 +159,6 @@ namespace Songify_Slim
             }
         }
 
-        protected virtual bool IsFileLocked(FileInfo file)
-        {
-            watcher.EnableRaisingEvents = false;
-            FileStream stream = null;
-
-            try
-            {
-                stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None);
-            }
-            catch (Exception ex)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                Logger.LogExc(ex);
-                return true;
-            }
-            finally
-            {
-                stream?.Close();
-            }
-
-            //file is not locked
-            return false;
-        }
-
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
@@ -238,19 +206,20 @@ namespace Songify_Slim
             if (!IsLoaded)
                 return;
 
-            Settings.SaveHistory = (bool)Tglbtn_Save.IsChecked;
-
-            if ((bool)Tglbtn_Save.IsChecked)
+            if (Tglbtn_Save.IsChecked != null)
             {
-                Tglbtn_Save.Content = "Save ✔️";
-                Lbl_Status.Content = "History Save Enabled ✔️";
+                Settings.SaveHistory = (bool) Tglbtn_Save.IsChecked;
 
-            }
-            else
-            {
-                Tglbtn_Save.Content = "Save ❌";
-                Lbl_Status.Content = "History Save Disabled ❌";
-
+                if ((bool) Tglbtn_Save.IsChecked)
+                {
+                    Tglbtn_Save.Content = "Save ✔️";
+                    Lbl_Status.Content = "History Save Enabled ✔️";
+                }
+                else
+                {
+                    Tglbtn_Save.Content = "Save ❌";
+                    Lbl_Status.Content = "History Save Disabled ❌";
+                }
             }
         }
 
@@ -259,18 +228,20 @@ namespace Songify_Slim
             if (!IsLoaded)
                 return;
 
-            Settings.UploadHistory = (bool)Tglbtn_Upload.IsChecked;
-
-            if ((bool)Tglbtn_Upload.IsChecked)
+            if (Tglbtn_Upload.IsChecked != null)
             {
-                Tglbtn_Upload.Content = "Upload ✔️";
-                Lbl_Status.Content = "History Upload Enabled ✔️";
+                Settings.UploadHistory = (bool) Tglbtn_Upload.IsChecked;
 
-            }
-            else
-            {
-                Tglbtn_Upload.Content = "Upload ❌";
-                Lbl_Status.Content = "History Upload Disabled ❌";
+                if ((bool) Tglbtn_Upload.IsChecked)
+                {
+                    Tglbtn_Upload.Content = "Upload ✔️";
+                    Lbl_Status.Content = "History Upload Enabled ✔️";
+                }
+                else
+                {
+                    Tglbtn_Upload.Content = "Upload ❌";
+                    Lbl_Status.Content = "History Upload Disabled ❌";
+                }
             }
         }
 
@@ -282,7 +253,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            watcher.Dispose();
+            _watcher.Dispose();
         }
     }
     public class Song

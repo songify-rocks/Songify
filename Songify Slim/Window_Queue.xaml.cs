@@ -1,5 +1,6 @@
 ﻿using Songify_Slim.Models;
 using System.Windows;
+using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim
 {
@@ -22,7 +23,7 @@ namespace Songify_Slim
                 if (window.GetType() != typeof(MainWindow))
                     continue;
 
-                dgv_Queue.ItemsSource = (window as MainWindow).ReqList;
+                dgv_Queue.ItemsSource = (window as MainWindow)?.ReqList;
                 dgv_Queue.Columns[0].Visibility = Visibility.Hidden;
             }
         }
@@ -39,7 +40,7 @@ namespace Songify_Slim
             {
                 if (window.GetType() != typeof(MainWindow))
                     continue;
-                (window as MainWindow).ReqList.Remove(req);
+                (window as MainWindow)?.ReqList.Remove(req);
 
             }
             WebHelper.UpdateWebQueue(req.TrackID, "", "", "", "", "1", "u");

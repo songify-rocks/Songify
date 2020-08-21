@@ -123,7 +123,7 @@
       <Value Profile="(Default)">@{user} the Artist: {artist} has been blacklisted by the broadcaster.</Value>
     </Setting>
     <Setting Name="bot_Resp_Length" Type="System.String" Scope="User">
-      <Value Profile="(Default)">@{user} the song you requested exceeded the maximum song length (10 minutes).</Value>
+      <Value Profile="(Default)">@{user} the song you requested exceeded the maximum song length ({maxlength}).</Value>
     </Setting>
     <Setting Name="bot_Resp_IsInQueue" Type="System.String" Scope="User">
       <Value Profile="(Default)">@{user} this song is already in the queue.</Value>
@@ -151,6 +151,9 @@
     </Setting>
     <Setting Name="ClientSecret" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MaxSongLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>

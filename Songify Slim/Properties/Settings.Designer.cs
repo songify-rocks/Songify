@@ -502,7 +502,7 @@ namespace Songify_Slim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("@{user} the song you requested exceeded the maximum song length (10 minutes).")]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} the song you requested exceeded the maximum song length ({maxlength}).")]
         public string bot_Resp_Length {
             get {
                 return ((string)(this["bot_Resp_Length"]));
@@ -618,6 +618,18 @@ namespace Songify_Slim.Properties {
             }
             set {
                 this["ClientSecret"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int MaxSongLength {
+            get {
+                return ((int)(this["MaxSongLength"]));
+            }
+            set {
+                this["MaxSongLength"] = value;
             }
         }
     }

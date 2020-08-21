@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Windows;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {

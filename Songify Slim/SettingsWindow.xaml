@@ -162,7 +162,7 @@
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
                     <controls:ToggleSwitch x:Name="Chbx_AutoClear" Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" HorizontalAlignment="Left"
-                              Margin="5,203,0,0" VerticalAlignment="Top" Checked="Chbx_AutoClear_Checked" Unchecked="Chbx_AutoClear_Checked"
+                              Margin="5,233,0,0" VerticalAlignment="Top" Checked="Chbx_AutoClear_Checked" Unchecked="Chbx_AutoClear_Checked"
                               Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
                                            controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
                                            controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
@@ -171,6 +171,8 @@
                     <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
 
                     <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
+                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,205,0,0"/>
+                    <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,203,0,0" ValueChanged="NudMaxlength_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
                 </Grid>
             </TabItem>
             <TabItem Header="Config">
