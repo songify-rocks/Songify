@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Songify_Slim
 {
@@ -23,19 +24,31 @@ namespace Songify_Slim
             }
         }
 
+        public static void DebugLog(string msg, [CallerMemberName] string callingMethod = "", [CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
+        {
+            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log";
+            if (!File.Exists(logPath)) CreateLogFile(logPath);
+            try
+            {
+                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
+            }
+            catch
+            {
+
+            }
+        }
+
         public static void LogStr(string s)
         {
             // Writes a log file with exceptions in it
-            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
-
+            string logPath;
+            logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
             if (!File.Exists(logPath)) CreateLogFile(logPath);
-
-            if (!File.Exists(logPath)) File.Create(logPath).Close();
             try
             {
                 File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
             }
-            catch (Exception)
+            catch
             {
 
             }

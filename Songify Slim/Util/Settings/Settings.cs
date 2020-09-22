@@ -6,6 +6,40 @@
     internal class Settings
     {
 
+        public static bool GuidedSetup
+        {
+            get => GetGuidedSetup();
+            set => SetGuidedSetup(value);
+        }
+
+        private static void SetGuidedSetup(bool value)
+        {
+            Properties.Settings.Default.GuidedSetup = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetGuidedSetup()
+        {
+            return Properties.Settings.Default.GuidedSetup;
+        }
+
+        public static bool Debug
+        {
+            get => GetDebug();
+            set => SetDebug(value);
+        }
+
+        private static void SetDebug(bool value)
+        {
+            Properties.Settings.Default.Debug = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetDebug()
+        {
+            return Properties.Settings.Default.Debug;
+        }
+
         public static int MaxSongLength
         {
             get => GetMaxSongLength();

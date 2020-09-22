@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Reflection;
+using System.Threading;
 using System.Windows;
 using Songify_Slim.Util.Settings;
 
@@ -30,6 +32,28 @@ namespace Songify_Slim
             }
 
             base.OnStartup(e);
+        }
+
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
+            {
+                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+            } 
+
+            
+
+
+            if (Settings.Uuid != "")
+            {
+                MainWindow main = new MainWindow();
+                main.Show();
+            }
+            else
+            {
+                Window_GuidedSetup guidedSetup = new Window_GuidedSetup();
+                guidedSetup.Show();
+            }
         }
     }
 }

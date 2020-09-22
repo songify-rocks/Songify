@@ -8,6 +8,9 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using AutoUpdaterDotNET;
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
+using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 
@@ -520,6 +523,18 @@ namespace Songify_Slim
         private void NudMaxlength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (NudMaxlength.Value != null) Settings.MaxSongLength = (int) NudMaxlength.Value;
+        }
+
+        private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
+        {
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Warning", "Are you sure you want to reset all settings?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+                Properties.Settings.Default.Reset();
+                Process.Start(System.Windows.Application.ResourceAssembly.Location);
+                System.Windows.Application.Current.Shutdown();
+            }
         }
     }
 }

@@ -284,6 +284,12 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GuidedSetup\UC_Setup_1.xaml.cs">
+      <DependentUpon>UC_Setup_1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GuidedSetup\UC_Setup_2.xaml.cs">
+      <DependentUpon>UC_Setup_2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\PlayerType.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Models\TrackInfo.cs" />
@@ -317,10 +323,21 @@
     <Compile Include="Window_Botresponse.xaml.cs">
       <DependentUpon>Window_Botresponse.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Window_GuidedSetup.xaml.cs">
+      <DependentUpon>Window_GuidedSetup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Window_Queue.xaml.cs">
       <DependentUpon>Window_Queue.xaml</DependentUpon>
     </Compile>
     <Page Include="AboutWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GuidedSetup\UC_Setup_1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GuidedSetup\UC_Setup_2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -357,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Window_Botresponse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window_GuidedSetup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -424,6 +445,7 @@
   <ItemGroup>
     <Compile Include="Models\NBObj.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

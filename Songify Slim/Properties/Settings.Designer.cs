@@ -632,5 +632,29 @@ namespace Songify_Slim.Properties {
                 this["MaxSongLength"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Debug {
+            get {
+                return ((bool)(this["Debug"]));
+            }
+            set {
+                this["Debug"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool GuidedSetup {
+            get {
+                return ((bool)(this["GuidedSetup"]));
+            }
+            set {
+                this["GuidedSetup"] = value;
+            }
+        }
     }
 }

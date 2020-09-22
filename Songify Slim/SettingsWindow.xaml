@@ -179,6 +179,8 @@
                 <Grid>
                     <Button x:Name="Btn_ExportConfig" Content="{x:Static local:Resources.sw_Config_Export}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,42,0,0" Click="Btn_ExportConfig_Click"/>
                     <Button x:Name="Btn_ImportConfig" Content="{x:Static local:Resources.sw_Config_Import}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,10,0,0" Click="Btn_ImportConfig_Click"/>
+                    <Button x:Name="Btn_ResetConfig" Content="Reset Config" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="216,232,0,0" Click="Btn_ResetConfig_Click"/>
+
                 </Grid>
             </TabItem>
         </TabControl>

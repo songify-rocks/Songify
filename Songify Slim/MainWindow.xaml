@@ -10,58 +10,6 @@
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="Manual">
     <controls:MetroWindow.Resources>
-        <DataTemplate x:Key="HeaderTemplate">
-            <DockPanel x:Name="dpHeader" LastChildFill="True" VerticalAlignment="Center">
-                <Button x:Name="PART_BackButton" DockPanel.Dock="Left"
-                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:Flyout}}, Path=InternalCloseCommand, Mode=OneWay}"
-                        Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                        Height="34"
-                        IsCancel="{Binding CloseButtonIsCancel, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                        Margin="2,4,10,2" Style="{DynamicResource MahApps.Metro.Styles.MetroCircleButtonStyle}"
-                        Visibility="{Binding CloseButtonVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                        VerticalAlignment="Bottom" Width="34">
-                    <ContentControl Content="M19,34V42H43.75L33.75,52H44.25L58.25,38L44.25,24H33.75L43.75,34H19Z"
-                                    FlowDirection="{Binding FlowDirection, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                                    Height="20" Style="{DynamicResource PathIconContentControlStyle}" Width="20" />
-                </Button>
-                <ContentControl x:Name="PART_BackHeaderText" Content="{Binding}" Focusable="False" IsTabStop="False"
-                                Margin="15,0,0,0"
-                                Visibility="{Binding TitleVisibility, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                                VerticalAlignment="Center" />
-            </DockPanel>
-            <DataTemplate.Triggers>
-                <DataTrigger
-                    Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                    Value="Left">
-                    <Setter Property="DockPanel.Dock" TargetName="PART_BackButton" Value="Right" />
-                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
-                        <Setter.Value>
-                            <ScaleTransform ScaleX="-1" />
-                        </Setter.Value>
-                    </Setter>
-                    <Setter Property="HorizontalAlignment" TargetName="PART_BackHeaderText" Value="Right" />
-                    <Setter Property="Margin" TargetName="PART_BackHeaderText" Value="0,0,15,0" />
-                </DataTrigger>
-                <DataTrigger
-                    Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                    Value="Top">
-                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
-                        <Setter.Value>
-                            <RotateTransform Angle="-90" />
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-                <DataTrigger
-                    Binding="{Binding Position, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type controls:Flyout}}}"
-                    Value="Bottom">
-                    <Setter Property="LayoutTransform" TargetName="PART_BackButton">
-                        <Setter.Value>
-                            <RotateTransform Angle="90" />
-                        </Setter.Value>
-                    </Setter>
-                </DataTrigger>
-            </DataTemplate.Triggers>
-        </DataTemplate>
         <Style TargetType="{x:Type Dialog:MessageDialog}"
        x:Key="NewCustomMessageDialogStyle"
        BasedOn="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
@@ -131,6 +79,16 @@
     </controls:MetroWindow.Resources>
 
     <Grid>
+        <controls:FlyoutsControl Panel.ZIndex="1" Margin="0,0,0,20">
+            <controls:Flyout x:Name="FO_Ad" IsOpen="True" Width="582" Position="Top" CloseButtonIsCancel="True" AnimateOpacity="True" Height="236" AutoCloseInterval="10000" CloseButtonVisibility="Hidden" IsAutoCloseEnabled="True" IsPinned="False" Theme="Adapt">
+                <Grid Width="499">
+                    <TextBlock Text="If you enjoy Songify, consider becoming a patron. Your support keeps Songify alive!" HorizontalAlignment="Left" TextWrapping="Wrap" Width="473" TextAlignment="Center" VerticalAlignment="Center" Margin="10,56,0,126" FontSize="20" />
+                    <Button Content="Become a Patron" Click="BtnPaypal_Click" Margin="160,128,175,59" />
+                    <Label x:Name="lbl_Ad" Content="this window will close in 10 seconds" Margin="284,202,16,10"/>
+                </Grid>
+            </controls:Flyout>
+        </controls:FlyoutsControl>
+
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
