@@ -6,10 +6,10 @@
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:Songify_Slim"
         mc:Ignorable="d"
-        Title="Window_GuidedSetup" Height="450" Width="800" Loaded="MetroWindow_Loaded">
+        Title="Setup" Height="450" Width="800" Loaded="MetroWindow_Loaded">
     <Grid>
-        <controls:TransitioningContentControl x:Name="tsControl" Margin="0,0,0,36"/>
-        <Button x:Name="btn_Next" Content="Next" HorizontalAlignment="Left" Margin="698,388,0,0" VerticalAlignment="Top" Width="84" Click="btn_Next_Click"/>
+        <controls:TransitioningContentControl x:Name="tsControl" Margin="0,0,0,36" Transition="Normal"/>
+        <Button x:Name="btn_Next" Content="Next" HorizontalAlignment="Left" Margin="698,388,0,0" VerticalAlignment="Top" Width="84" Click="btn_Next_Click" IsEnabled="False"/>
         <Button x:Name="btn_Back" Content="Back" HorizontalAlignment="Left" Margin="609,388,0,0" VerticalAlignment="Top" Width="84
                 " Click="btn_Back_Click"/>
     </Grid>

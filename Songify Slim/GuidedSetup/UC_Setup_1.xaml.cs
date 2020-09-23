@@ -25,7 +25,7 @@ namespace Songify_Slim.GuidedSetup
         {
             InitializeComponent();
         }
-        
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             // assing mw to mainwindow for calling methods and setting texts etc
@@ -36,6 +36,13 @@ namespace Songify_Slim.GuidedSetup
                     _mW = window;
                 }
             }
+        }
+
+        private void sc_EULA_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var scrollViewer = (ScrollViewer)sender;
+            if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                ((Window_GuidedSetup) _mW).btn_Next.IsEnabled = true;
         }
     }
 }

@@ -290,6 +290,9 @@
     <Compile Include="GuidedSetup\UC_Setup_2.xaml.cs">
       <DependentUpon>UC_Setup_2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GuidedSetup\UC_Setup_3.xaml.cs">
+      <DependentUpon>UC_Setup_3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\PlayerType.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Models\TrackInfo.cs" />
@@ -338,6 +341,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GuidedSetup\UC_Setup_2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GuidedSetup\UC_Setup_3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

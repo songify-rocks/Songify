@@ -1,18 +1,6 @@
 ﻿using Songify_Slim.GuidedSetup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Songify_Slim.Properties;
+using MahApps.Metro.Controls;
 using Settings = Songify_Slim.Util.Settings.Settings;
 
 namespace Songify_Slim
@@ -22,7 +10,8 @@ namespace Songify_Slim
     /// </summary>
     public partial class Window_GuidedSetup
     {
-        private int step = 0;
+        // Steps: 0 = Welcome, 1 = EULA, 2 = Setup Yes/No, 3 = General Settings
+        private int _step = 0;
         public Window_GuidedSetup()
         {
             InitializeComponent();
@@ -30,7 +19,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            GuidedSetupStep(step);
+            GuidedSetupStep(_step);
         }
 
         private void GuidedSetupStep(int i)
@@ -42,9 +31,11 @@ namespace Songify_Slim
                 case 0:
                     btn_Back.Content = "Cancel";
                     btn_Next.Content = "Accept";
+                    Title = "Songify Setup - EULA";
                     tsControl.Content = new UC_Setup_1();
                     break;
                 case 1:
+                    Title = "Songify Setup";
                     tsControl.Content = new UC_Setup_2();
                     break;
                 case 2:
@@ -54,9 +45,7 @@ namespace Songify_Slim
                         main.Show();
                         this.Close();
                     }
-
-                    //tsControl.Content = new UC_Setup_2();
-
+                    tsControl.Content = new UC_Setup_3();
                     break;
                 case 3:
                     break;
@@ -71,20 +60,22 @@ namespace Songify_Slim
 
         private void btn_Next_Click(object sender, RoutedEventArgs e)
         {
-            step++;
-            GuidedSetupStep(step);
+            tsControl.Transition = TransitionType.Left;
+            _step++;
+            GuidedSetupStep(_step);
         }
 
         private void btn_Back_Click(object sender, RoutedEventArgs e)
         {
-            if (step == 0)
+            if (_step == 0)
             {
                 Application.Current.Shutdown();
             }
             else
             {
-                step--;
-                GuidedSetupStep(step);
+                tsControl.Transition = TransitionType.Right;
+                _step--;
+                GuidedSetupStep(_step);
             }
         }
     }

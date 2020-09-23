@@ -7,10 +7,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="419" d:DesignWidth="792" Loaded="UserControl_Loaded" Height="383">
     <Grid>
-        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Hey!" VerticalAlignment="Top" FontSize="36" Margin="10,10,0,0"/>
-        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Welcome to Songify" VerticalAlignment="Top" FontSize="24" Margin="0,65,0,0"/>
-        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="First some legal stuff... please read the EULA below" VerticalAlignment="Top" FontSize="16" Margin="227,122,0,0"/>
-        <ScrollViewer x:Name="sc_EULA" Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="0,148,0,0" Background="#FFD4D4D4" VerticalAlignment="Center" Padding="50,0" HorizontalContentAlignment="Center" Height="235">
+        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Hey!" VerticalAlignment="Top" FontSize="36" Margin="110,37,609,0"/>
+        <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Welcome to Songify" VerticalAlignment="Top" FontSize="24" Margin="33,113,545,0"/>
+        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16" Margin="10,168,0,0" Width="265" Height="129" TextAlignment="Center"><Run Text="First some legal stuff... "/><LineBreak/><Run/><LineBreak/><Run Text="P"/><Run Text="lease read the EULA"/></TextBlock>
+        <ScrollViewer x:Name="sc_EULA" Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="289,0,0,0" Background="#FFD4D4D4" VerticalAlignment="Center" Padding="10" HorizontalContentAlignment="Center" Height="383" ScrollChanged="sc_EULA_ScrollChanged">
             <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Top"
                        ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
                        Text="{DynamicResource EULA}" />
