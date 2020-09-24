@@ -12,6 +12,7 @@ namespace Songify_Slim
     {
         // Steps: 0 = Welcome, 1 = EULA, 2 = Setup Yes/No, 3 = General Settings
         private int _step = 0;
+        private int _maxSteps = 3;
         public Window_GuidedSetup()
         {
             InitializeComponent();
@@ -48,6 +49,7 @@ namespace Songify_Slim
                     tsControl.Content = new UC_Setup_3();
                     break;
                 case 3:
+                    tsControl.Content = new UC_Setup_4();
                     break;
                 case 4:
                     break;
@@ -60,6 +62,8 @@ namespace Songify_Slim
 
         private void btn_Next_Click(object sender, RoutedEventArgs e)
         {
+            if(_step >= _maxSteps)
+                return;
             tsControl.Transition = TransitionType.Left;
             _step++;
             GuidedSetupStep(_step);
