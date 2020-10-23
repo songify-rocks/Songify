@@ -62,7 +62,6 @@ namespace Songify_Slim
         private string _prevId, _currentId;
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
         private int _adSec = 3;
-        private DispatcherTimer _dispatcherTimer;
         #endregion Variables
 
         public MainWindow()
@@ -753,25 +752,8 @@ namespace Songify_Slim
 
             // automatically start fetching songs
             SetFetchTimer();
-            lbl_Ad.Content = "this window will close in " + _adSec + " seconds";
-            _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal);
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
-            _dispatcherTimer.Tick += DispatcherTimerOnTick;
-            _dispatcherTimer.Start();
         }
 
-        private void DispatcherTimerOnTick(object sender, EventArgs e)
-        {
-            if (Settings.Debug) Logger.DebugLog("Called ");
-
-            _adSec -= 1;
-            lbl_Ad.Content = "this window will close in " + _adSec + " seconds";
-
-            if (_adSec > 0) return;
-            _dispatcherTimer.Stop();
-            FO_Ad.IsOpen = false;
-
-        }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {

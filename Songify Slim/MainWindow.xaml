@@ -79,16 +79,6 @@
     </controls:MetroWindow.Resources>
 
     <Grid>
-        <controls:FlyoutsControl Panel.ZIndex="1" Margin="0,0,0,20">
-            <controls:Flyout x:Name="FO_Ad" IsOpen="True" Width="582" Position="Top" CloseButtonIsCancel="True" AnimateOpacity="True" Height="236" AutoCloseInterval="10000" CloseButtonVisibility="Hidden" IsAutoCloseEnabled="True" IsPinned="False" Theme="Adapt">
-                <Grid Width="499">
-                    <TextBlock Text="If you enjoy Songify, consider becoming a patron. Your support keeps Songify alive!" HorizontalAlignment="Left" TextWrapping="Wrap" Width="473" TextAlignment="Center" VerticalAlignment="Center" Margin="10,56,0,126" FontSize="20" />
-                    <Button Content="Become a Patron" Click="BtnPaypal_Click" Margin="160,128,175,59" />
-                    <Label x:Name="lbl_Ad" Content="this window will close in 10 seconds" Margin="284,202,16,10"/>
-                </Grid>
-            </controls:Flyout>
-        </controls:FlyoutsControl>
-
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"

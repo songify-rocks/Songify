@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
@@ -18,6 +19,7 @@ namespace Songify_Slim.Util.Songify
         private string[] _songinfo;
         private AutomationElement _parent;
         private static int _id;
+        private List<string> browsers = new List<string> { "chrome", "msedge", "opera" };
         /// <summary>
         /// A method to fetch the song that's currently playing on Spotify.
         /// returns null if unsuccessful and custom pause text is not set.
@@ -67,7 +69,8 @@ namespace Songify_Slim.Util.Songify
                             break;
 
                         case "vlc":
-                            // Splitting the wintitle which is always Artist - Title
+                            //Splitting the wintitle which is always Artist - Title
+
                             if (!wintitle.Contains(" - VLC media player"))
                             {
                                 if (Settings.Settings.CustomPauseTextEnabled)
@@ -76,18 +79,19 @@ namespace Songify_Slim.Util.Songify
                                 }
 
                                 return new[] { "", "", "" };
-
                             }
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
+
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+
                             try
                             {
-                                artist = _songinfo[0].Trim();
-                                title = _songinfo[1].Trim();
-                                // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                if (_songinfo.Length > 2)
-                                    extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
+                                wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+
+                                artist = wintitle;
+                                title = "";
+                                extra = "";
                             }
                             catch (Exception ex)
                             {
@@ -108,14 +112,13 @@ namespace Songify_Slim.Util.Songify
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
-                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                             try
                             {
-                                artist = _songinfo[0].Trim();
-                                title = _songinfo[1].Trim();
-                                // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                if (_songinfo.Length > 2)
-                                    extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
+                                wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+
+                                artist = wintitle;
+                                title = "";
+                                extra = "";
                             }
                             catch (Exception ex)
                             {
@@ -135,15 +138,23 @@ namespace Songify_Slim.Util.Songify
         /// Currently supported browsers: Google Chrome
         /// </summary>
         /// <param name="website"></param>
-        /// <param name="browser"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
-        public string FetchBrowser(string website, string browser = "chrome")
+        public string FetchBrowser(string website)
         {
-            Process[] procsBrowser = Process.GetProcessesByName(browser);
-            if (procsBrowser.Length == 0)
+            string browser = "";
+
+            // chrome, opera, msedge
+            foreach (string s in browsers)
             {
-                procsBrowser = Process.GetProcessesByName("msedge");
+                if (Process.GetProcessesByName(s).Length > 0)
+                {
+                    browser = s;
+                    break;
+                }
             }
+
+            Process[] procsBrowser = Process.GetProcessesByName(browser);
+
             foreach (Process procBrowser in procsBrowser)
             {
                 // the chrome process must have a window
@@ -208,6 +219,8 @@ namespace Songify_Slim.Util.Songify
                         switch (website)
                         {
                             case "YouTube":
+                                if (element == null)
+                                    break;
                                 if (element.Current.Name.Contains("YouTube"))
                                 {
                                     _id = element.Current.ControlType.Id;

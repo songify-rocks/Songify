@@ -91,6 +91,7 @@ namespace Songify_Slim.Util.Songify
                     };
                     Authenticated = true;
                     _auth.Stop();
+                    Authed = true;
                     AuthRefresh.Start();
                     await Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
                      {

@@ -1,4 +1,6 @@
-﻿using Songify_Slim.GuidedSetup;
+﻿using System.IO;
+using System.Reflection;
+using Songify_Slim.GuidedSetup;
 using System.Windows;
 using System.Windows.Media.Animation;
 using MahApps.Metro.Controls;
@@ -59,6 +61,7 @@ namespace Songify_Slim
                     btn_Next.Content = "Finish";
                     break;
                 case 5:
+                    ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
                     new MainWindow().Show();
                     this.Close();
                     break;

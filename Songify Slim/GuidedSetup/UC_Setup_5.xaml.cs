@@ -72,18 +72,18 @@ namespace Songify_Slim.GuidedSetup
 
         private void DispatcherTimerOnTick(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(tbl_Linked.Text))
-            {
-                try
-                {
-                    tbl_Linked.Text = Properties.Resources.sw_Integration_SpotifyLinked + " " +
-                                      ApiHandler.Spotify.GetPrivateProfile().DisplayName;
-                }
-                catch (Exception exception)
-                {
-                    Console.WriteLine(exception);
-                }
-            }
+            //if (String.IsNullOrEmpty(tbl_Linked.Text) && ApiHandler.Authed)
+            //{
+            //    try
+            //    {
+            //        tbl_Linked.Text = Properties.Resources.sw_Integration_SpotifyLinked + " " +
+            //                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;
+            //    }
+            //    catch (Exception exception)
+            //    {
+            //        Console.WriteLine(exception);
+            //    }
+            //}
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
