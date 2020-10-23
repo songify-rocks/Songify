@@ -61,7 +61,6 @@ namespace Songify_Slim
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private string _prevId, _currentId;
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
-        private int _adSec = 3;
         #endregion Variables
 
         public MainWindow()
@@ -78,7 +77,7 @@ namespace Songify_Slim
 
         public static bool IsWindowOpen<T>(string name = "") where T : Window
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
 
             // This method checks if a window of type <T> is already opened in the current application context and returns true or false
             return string.IsNullOrEmpty(name)
@@ -88,7 +87,7 @@ namespace Songify_Slim
 
         public static void RegisterInStartup(bool isChecked)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
 
             // Adding the RegKey for Songify in startup (autostart with windows)
             RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(
@@ -108,7 +107,7 @@ namespace Songify_Slim
 
         public void UploadSong(string currSong, string coverUrl = null)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             try
             {
                 // extras are UUID and Songinfo
@@ -139,7 +138,7 @@ namespace Songify_Slim
 
         public void Worker_Telemetry_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Backgroundworker is asynchronous
             // sending a webrequest that parses parameters to php code
             // it sends the UUID (randomly generated on first launch), unix timestamp, version number and if the app is active
@@ -168,7 +167,7 @@ namespace Songify_Slim
 
         private void AddSourcesToSourceBox()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             string[] sourceBoxItems = { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
                 PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
             cbx_Source.ItemsSource = sourceBoxItems;
@@ -176,7 +175,7 @@ namespace Songify_Slim
 
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens the 'About'-Window
             AboutWindow aW = new AboutWindow { Top = Top, Left = Left };
             aW.ShowDialog();
@@ -184,26 +183,26 @@ namespace Songify_Slim
 
         private void BtnDiscord_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens Discord-Invite Link in Standard-Browser
             Process.Start("https://discordapp.com/invite/H8nd4T4");
         }
 
         private void BtnFAQ_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Process.Start("https://songify.rocks/faq.html");
         }
 
         private void BtnGitHub_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Process.Start("https://github.com/songify-rocks/Songify/issues");
         }
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens the History in either Window or Browser
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
@@ -224,14 +223,14 @@ namespace Songify_Slim
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // links to the projects patreon page (the button name is old because I used to use paypal)
             Process.Start("https://www.patreon.com/Songify");
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens the 'Settings'-Window
             Window_Settings sW = new Window_Settings { Top = Top, Left = Left };
             sW.ShowDialog();
@@ -239,7 +238,7 @@ namespace Songify_Slim
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Header.ToString().Equals("Connect"))
@@ -256,13 +255,13 @@ namespace Songify_Slim
 
         private void BtnWidget_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
         private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             if (!IsLoaded)
             {
                 // This prevents that the selected is always 0 (initialize components)
@@ -295,7 +294,7 @@ namespace Songify_Slim
 
         private string CleanFormatString(string currSong)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
@@ -315,7 +314,7 @@ namespace Songify_Slim
 
         private void DownloadCover(string cover)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             try
             {
                 if (cover == null)
@@ -363,7 +362,7 @@ namespace Songify_Slim
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             if (CoverPath != "" && CoverTemp != "")
             {
                 File.Delete(CoverPath);
@@ -402,7 +401,7 @@ namespace Songify_Slim
 
         private void FetchSpotifyWeb()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             SongFetcher sf = new SongFetcher();
             TrackInfo info = sf.FetchSpotifyWeb();
             if (info != null)
@@ -443,7 +442,7 @@ namespace Songify_Slim
 
         private void FetchTimer(int ms)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Check if the timer is running, if yes stop it and start new with the ms givin in the parameter
             try
             {
@@ -462,7 +461,7 @@ namespace Songify_Slim
 
         private void GetCurrentSongAsync()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             SongFetcher sf = new SongFetcher();
             string[] currentlyPlaying;
             switch (_selectedSource)
@@ -476,7 +475,7 @@ namespace Songify_Slim
                     currentlyPlaying = sf.FetchDesktopPlayer("Spotify");
                     if (currentlyPlaying != null)
                     {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
                     }
                     break;
 
@@ -493,11 +492,11 @@ namespace Songify_Slim
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong))
                         {
-                            WriteSong(_prevSong, "", "");
+                            WriteSong(_prevSong, "", "", null, _firstRun);
                         }
                         break;
                     }
-                    WriteSong(_temp, "", "");
+                    WriteSong(_temp, "", "", null, _firstRun);
 
                     break;
 
@@ -514,11 +513,11 @@ namespace Songify_Slim
                     {
                         if (!String.IsNullOrWhiteSpace(_prevSong))
                         {
-                            WriteSong(_prevSong, "", "");
+                            WriteSong(_prevSong, "", "", null, _firstRun);
                         }
                         break;
                     }
-                    WriteSong(_temp, "", "");
+                    WriteSong(_temp, "", "", null, _firstRun);
 
                     break;
 
@@ -531,7 +530,7 @@ namespace Songify_Slim
                     currentlyPlaying = sf.FetchDesktopPlayer("vlc");
                     if (currentlyPlaying != null)
                     {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
                     }
                     break;
 
@@ -544,7 +543,7 @@ namespace Songify_Slim
                     currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
                     if (currentlyPlaying != null)
                     {
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2]);
+                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
                     }
                     break;
 
@@ -559,11 +558,11 @@ namespace Songify_Slim
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong))
                         {
-                            WriteSong(_prevSong, "", "");
+                            WriteSong(_prevSong, "", "", null, _firstRun);
                         }
                         break;
                     }
-                    WriteSong(_temp, "", "");
+                    WriteSong(_temp, "", "", null, _firstRun);
                     break;
 
                 #endregion Deezer
@@ -581,7 +580,7 @@ namespace Songify_Slim
 
         private void MenuItem1Click(object sender, EventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Click on "Exit" in the Systray
             _forceClose = true;
             Close();
@@ -589,7 +588,7 @@ namespace Songify_Slim
 
         private void MenuItem2Click(object sender, EventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Click on "Show" in the Systray
             Show();
             WindowState = WindowState.Normal;
@@ -597,7 +596,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // If Systray is enabled [X] minimizes to systray
             if (!Settings.Systray)
             {
@@ -612,7 +611,7 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Settings.PosX = Left;
             Settings.PosY = Top;
 
@@ -627,7 +626,7 @@ namespace Songify_Slim
 
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Exception e = (Exception)args.ExceptionObject;
             Logger.LogExc(e);
             Logger.LogStr("##### Unhandled Exception #####");
@@ -651,7 +650,7 @@ namespace Songify_Slim
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log");
             }
 
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
 
 
             if (Settings.AutoClearQueue)
@@ -750,6 +749,8 @@ namespace Songify_Slim
                 TwitchHandler.BotConnect();
             }
 
+            
+
             // automatically start fetching songs
             SetFetchTimer();
         }
@@ -757,7 +758,7 @@ namespace Songify_Slim
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // if the window state changes to minimize check run MinimizeToSysTray()
             if (WindowState != WindowState.Minimized) return;
             MinimizeToSysTray();
@@ -765,7 +766,7 @@ namespace Songify_Slim
 
         private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
             {
@@ -776,7 +777,7 @@ namespace Songify_Slim
 
         private void Mi_Queue_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
@@ -796,7 +797,7 @@ namespace Songify_Slim
 
         private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
@@ -808,7 +809,7 @@ namespace Songify_Slim
 
         private void MinimizeToSysTray()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // if the setting is set, hide window
             if (Settings.Systray)
             {
@@ -818,7 +819,7 @@ namespace Songify_Slim
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
@@ -837,7 +838,7 @@ namespace Songify_Slim
 
         private void SendTelemetry(bool active)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // send telemetry data once
             AppActive = active;
             if (!WorkerTelemetry.IsBusy)
@@ -846,7 +847,7 @@ namespace Songify_Slim
 
         private void SetFetchTimer()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             switch (_selectedSource)
             {
                 case PlayerType.SpotifyLegacy:
@@ -882,13 +883,13 @@ namespace Songify_Slim
 
         private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             FetchSpotifyWeb();
         }
 
         private async void TelemetryDisclaimer()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             SendTelemetry(true);
             // show messagebox with the Telemetry disclaimer
             MessageDialogResult result = await this.ShowMessageAsync("Anonymous Data",
@@ -920,14 +921,14 @@ namespace Songify_Slim
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
 
         private void TelemetryTimer()
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // call SendTelemetry every 5 minutes
             _timer = new Timer(e =>
             {
@@ -944,7 +945,7 @@ namespace Songify_Slim
 
         private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false, string trackId = null)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             _currentId = trackId;
 
             if (artist.Contains("Various Artists, "))
@@ -966,6 +967,9 @@ namespace Songify_Slim
             SongPath = Root + "/Songify.txt";
             CoverTemp = Root + "/tmp.png";
             CoverPath = Root + "/cover.png";
+
+            if (_firstRun)
+                File.WriteAllText(SongPath, "");
 
             // if all those are empty we expect the player to be paused
             if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(title) && string.IsNullOrEmpty(extra))
@@ -1072,6 +1076,7 @@ namespace Songify_Slim
             }
 
             string[] temp = File.ReadAllLines(SongPath);
+            
             // if the text file is different to _currSong (fetched song) or update is forced
             if (temp[0].Trim() != CurrSong.Trim() || forceUpdate)
             {
@@ -1220,7 +1225,7 @@ namespace Songify_Slim
 
         private void WriteSplitOutput(string artist, string title, string extra)
         {
-            if (Settings.Debug) Logger.DebugLog("Called ");
+            
             // Writes the output to 2 different text files
 
             if (!File.Exists(Root + "/Artist.txt"))
