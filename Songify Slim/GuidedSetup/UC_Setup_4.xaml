@@ -6,50 +6,58 @@
              xmlns:local="clr-namespace:Songify_Slim.GuidedSetup"
              xmlns:Properties="clr-namespace:Songify_Slim.Properties" xmlns:Custom="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Songify_Slim.GuidedSetup.UC_Setup_4"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Height="383" Loaded="UserControl_Loaded">
+            d:DesignHeight="800" d:DesignWidth="800" Height="383" Loaded="UserControl_Loaded">
     <Grid Background="White">
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Now to the output settings" VerticalAlignment="Top" FontSize="36" Margin="10,10,0,0"/>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Here we set where Songify should store the text files and how the output should look like" VerticalAlignment="Top" FontSize="18" Margin="10,55,0,0"/>
 
-        <Label Content="Output direcotry: This is where Songify will store the text files" HorizontalAlignment="Left" Margin="10,104,0,0"
-            VerticalAlignment="Top" />
-        <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="398,104,0,0"
-        TextWrapping="Wrap" VerticalAlignment="Top" Width="350" IsReadOnly="True" />
-        <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="753,104,0,0"
+        <ScrollViewer HorizontalAlignment="Left" Height="280" Margin="10,93,0,0" VerticalAlignment="Top" Width="780" VerticalScrollBarVisibility="Auto" CanContentScroll="True" ScrollChanged="ScrollViewer_ScrollChanged">
+            <Grid Height="554">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="194*"/>
+                    <ColumnDefinition Width="189*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Output directory: This is where Songify will store the text files" HorizontalAlignment="Left" Margin="10,10,0,0"
+                       VerticalAlignment="Top" Grid.Column="0" FontSize="24" TextWrapping="Wrap" Height="73" Width="354"/>
+                <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="36" 
+        TextWrapping="Wrap" VerticalAlignment="Top" Width="331" IsReadOnly="True" Grid.Column="1" Margin="5,22,0,0" FontSize="20" mah:TextBoxHelper.Watermark="C:\Temp\Foldername\file.txt"/>
+                <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left"
         VerticalAlignment="Top" Width="27" Click="BtnOutputdirectoryClick"
-        RenderTransformOrigin="-1.138,0.407" />
-        <Label Content="Output Format: This describes how the output text should look like" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="398,159,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="382" TextChanged="TxtbxOutputformat_TextChanged">
-            <TextBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
-                    <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
-                    <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
-                    <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click"/>
-                </ContextMenu>
-            </TextBox.ContextMenu>
-        </TextBox>
+        RenderTransformOrigin="-1.138,0.407" Grid.Column="1" Margin="341,22,0,0" Height="36"/>
+                <TextBlock HorizontalAlignment="Left" Grid.Column="0" Margin="10,123,0,0" VerticalAlignment="Top" FontSize="24" TextWrapping="Wrap" Height="167" Width="354"><Run Text="Output Format: This describes how the output text should look like"/><Run Text=". You can also set a custom pause text and decide how many spaces are placed at the end"/></TextBlock>
+                <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="37" Margin="5,135,0,0" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="363" TextChanged="TxtbxOutputformat_TextChanged" FontSize="20" mah:TextBoxHelper.Watermark="{}{artist} - {title} {extra}">
+                    <TextBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
+                            <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
+                            <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
+                            <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click"/>
+                        </ContextMenu>
+                    </TextBox.ContextMenu>
+                </TextBox>
+                <CheckBox x:Name="ChbxCustomPause" Content="{x:Static Properties:Resources.sw_tcOutput_PauseText}" HorizontalAlignment="Left"
+                  Margin="5,203,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" Grid.Column="1" Width="117" Height="26" FontSize="20"/>
+                <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="57" TextWrapping="Wrap" VerticalAlignment="Top" Width="241" Grid.Column="1" Margin="127,190,0,0" mah:TextBoxHelper.Watermark="{x:Static Properties:Resources.sw_tcOutput_PauseWatermark}" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" FontSize="20" />
+                <mah:ToggleSwitch x:Name="ChbxUpload" Content="Upload song info: Is required for chatbots." HorizontalAlignment="Left"
+        Margin="10,332,0,0" VerticalAlignment="Top" Checked="ChbxUpload_Checked" Unchecked="ChbxUpload_Checked"
+        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="24"
+        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+        mah:ControlsHelper.HeaderMargin="0" Width="746" Height="42" Padding="5,0,0,0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <mah:ToggleSwitch x:Name="ChbxCover" Content="Download album cover (only works with Spotify API)" HorizontalAlignment="Left"
+        Margin="10,408,0,0" VerticalAlignment="Top" 
+        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="24"
+        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+        mah:ControlsHelper.HeaderMargin="0" Width="746" Height="36" Checked="ChbxCover_Checked" Unchecked="ChbxCover_Checked" Padding="5,0,0,0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <mah:ToggleSwitch x:Name="ChbxSplit" Content="Saving the Artist and the Songtitle in separate text files" HorizontalAlignment="Left"
+        Margin="10,481,0,0" VerticalAlignment="Top" 
+        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="24"
+        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
+        mah:ControlsHelper.HeaderMargin="0" Width="746" Height="36" Checked="ChbxSplit_Checked" Unchecked="ChbxSplit_Checked" Padding="5,0,0,0" Grid.Column="0" Grid.ColumnSpan="2"/>
+                <CheckBox x:Name="ChbxSpaces" Grid.Column="1" Content="{x:Static Properties:Resources.sw_tcOutput_AddSpaces}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,261,0,0" Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" Width="218" Height="29" FontSize="20"/>
+                <mah:NumericUpDown x:Name="nud_Spaces" Grid.Column="1" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="228,261,0,0" ValueChanged="nud_Spaces_ValueChanged" HasDecimals="False" Height="38" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="140" UpDownButtonsWidth="16" ToolTip="Amount of spaces which get put at the end of the text file" FontSize="20" Value="20" />
 
-        <CheckBox x:Name="ChbxCustomPause" Content="{x:Static Properties:Resources.sw_tcOutput_PauseText}" HorizontalAlignment="Left"
-        Margin="398,224,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
-        <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="252" Margin="528,221,0,0" mah:TextBoxHelper.Watermark="{x:Static Properties:Resources.sw_tcOutput_PauseWatermark}" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
-        <mah:ToggleSwitch x:Name="ChbxUpload" Content="Upload song info: Is required for chatbots like Nightbot, Streamelements and so on." HorizontalAlignment="Left"
-        Margin="10,252,0,0" VerticalAlignment="Top" Checked="ChbxUpload_Checked" Unchecked="ChbxUpload_Checked"
-        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-        mah:ControlsHelper.HeaderMargin="0" Width="770" Height="36" Padding="5,0,0,0" />
-        <mah:ToggleSwitch x:Name="ChbxCover" Content="Download the album cover (only works with Spotify API, configured in the nxt step)" HorizontalAlignment="Left"
-        Margin="10,293,0,0" VerticalAlignment="Top" 
-        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-        mah:ControlsHelper.HeaderMargin="0" Width="770" Height="36" Checked="ChbxCover_Checked" Unchecked="ChbxCover_Checked" Padding="5,0,0,0" />
-        <mah:ToggleSwitch x:Name="ChbxSplit" Content="Saving the Artist and the Songtitle in separate text files" HorizontalAlignment="Left"
-        Margin="10,334,0,0" VerticalAlignment="Top" 
-        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-        mah:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-        mah:ControlsHelper.HeaderMargin="0" Width="770" Height="36" Checked="ChbxSplit_Checked" Unchecked="ChbxSplit_Checked" Padding="5,0,0,0" />
-        <CheckBox x:Name="ChbxSpaces" Content="{x:Static Properties:Resources.sw_tcOutput_AddSpaces}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="398,194,0,0" Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked"/>
-        <mah:NumericUpDown x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="640,190,0,0" ValueChanged="nud_Spaces_ValueChanged" HasDecimals="False" Height="23" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="140" UpDownButtonsWidth="16" ToolTip="Amount of spaces which get put at the end of the text file" />
+            </Grid>
 
+        </ScrollViewer>
     </Grid>
 </UserControl>

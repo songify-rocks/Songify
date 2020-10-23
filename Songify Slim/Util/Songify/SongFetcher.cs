@@ -300,6 +300,7 @@ namespace Songify_Slim.Util.Songify
             // If the spotify object hast been created (successfully authed)
             if (ApiHandler.Spotify == null)
             {
+                Logger.LogStr("Spotify API Object is NULL");
                 return null;
             }
 

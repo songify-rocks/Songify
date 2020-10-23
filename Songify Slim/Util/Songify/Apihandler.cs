@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Timers;
+using System.Web.UI;
 using System.Windows;
 using Songify_Slim.Models;
 using SpotifyAPI.Web;
@@ -150,6 +151,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception)
             {
+                Logger.LogStr("Couldn't fetch Song info");
                 return new TrackInfo() { Artists = "", Title = "" };
             }
 
@@ -158,37 +160,36 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr(context.Error.Status + " | " + context.Error.Message);
             }
 
-            if (context.Item != null)
+            if (context.Item == null) return new TrackInfo() {Artists = "", Title = ""};
+            
+            
+            string artists = "";
+
+            for (int i = 0; i < context.Item.Artists.Count; i++)
             {
-                string artists = "";
-
-                for (int i = 0; i < context.Item.Artists.Count; i++)
-                {
-                    if (i != context.Item.Artists.Count - 1)
-                        artists += context.Item.Artists[i].Name + ", ";
-                    else
-                        artists += context.Item.Artists[i].Name;
-                }
-
-                if (context.Device != null)
-                    Settings.Settings.SpotifyDeviceId = context.Device.Id;
-
-                //Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
-
-                List<Image> albums = context.Item.Album.Images;
-
-                return new TrackInfo()
-                {
-                    Artists = artists,
-                    Title = context.Item.Name,
-                    albums = albums,
-                    SongID = context.Item.Id,
-                    DurationMS = context.Item.DurationMs - context.ProgressMs,
-                    isPlaying = context.IsPlaying
-                };
+                if (i != context.Item.Artists.Count - 1)
+                    artists += context.Item.Artists[i].Name + ", ";
+                else
+                    artists += context.Item.Artists[i].Name;
             }
 
-            return new TrackInfo() { Artists = "", Title = "" };
+            if (context.Device != null)
+                Settings.Settings.SpotifyDeviceId = context.Device.Id;
+
+            //Console.WriteLine(DateTime.Now.ToString("HH:mm:ss") + " " + context.Device.Id);
+
+            List<Image> albums = context.Item.Album.Images;
+
+            return new TrackInfo()
+            {
+                Artists = artists,
+                Title = context.Item.Name,
+                albums = albums,
+                SongID = context.Item.Id,
+                DurationMS = context.Item.DurationMs - context.ProgressMs,
+                isPlaying = context.IsPlaying
+            };
+
         }
 
         public static SearchItem GetArtist(string searchStr)

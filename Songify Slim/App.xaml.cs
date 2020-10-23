@@ -40,9 +40,7 @@ namespace Songify_Slim
             {
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
             } 
-
             
-
 
             if (Settings.Uuid != "")
             {

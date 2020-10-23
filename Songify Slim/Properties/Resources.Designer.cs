@@ -674,7 +674,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use own Songify AppID ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use Songify AppID ähnelt.
         /// </summary>
         public static string sw_tcSpotify_UseOwnApp {
             get {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,6 +26,7 @@ namespace Songify_Slim.GuidedSetup
     public partial class UC_Setup_4 : UserControl
     {
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
+        private Window _mW;
 
         public UC_Setup_4()
         {
@@ -33,6 +35,16 @@ namespace Songify_Slim.GuidedSetup
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+
+            // assing mw to mainwindow for calling methods and setting texts etc
+            foreach (Window window in System.Windows.Application.Current.Windows)
+            {
+                if (window.GetType() == typeof(Window_GuidedSetup))
+                {
+                    _mW = window;
+                }
+            }
+
             // Sets all the controls from settings
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
@@ -144,6 +156,15 @@ namespace Songify_Slim.GuidedSetup
         {
             // write CustomPausetext to settings
             Settings.CustomPauseText = TxtbxCustompausetext.Text;
+        }
+
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            var scrollViewer = (ScrollViewer) sender;
+            if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+                ((Window_GuidedSetup) _mW).btn_Next.IsEnabled = true;
         }
     }
 }

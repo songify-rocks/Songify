@@ -7,10 +7,13 @@ namespace Songify_Slim
 {
     class Logger
     {
+        private static string rootPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+        private static string logPath = rootPath + "/log.log";
+        private static string debugLogPath = rootPath + "/Debug.log";
+
         public static void LogExc(Exception exception)
         {
             // Writes a log file with exceptions in it
-            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
             if (!File.Exists(logPath)) CreateLogFile(logPath);
             try
             {
@@ -26,11 +29,10 @@ namespace Songify_Slim
 
         public static void DebugLog(string msg, [CallerMemberName] string callingMethod = "", [CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
         {
-            string logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log";
-            if (!File.Exists(logPath)) CreateLogFile(logPath);
+            if (!File.Exists(debugLogPath)) CreateLogFile(debugLogPath);
             try
             {
-                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
+                File.AppendAllText(debugLogPath, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
             }
             catch
             {
@@ -41,8 +43,6 @@ namespace Songify_Slim
         public static void LogStr(string s)
         {
             // Writes a log file with exceptions in it
-            string logPath;
-            logPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log";
             if (!File.Exists(logPath)) CreateLogFile(logPath);
             try
             {

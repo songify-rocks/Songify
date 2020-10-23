@@ -308,7 +308,7 @@
     <value>Saving will restart Songify!</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Use own Songify AppID</value>
+    <value>Use Songify AppID</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>autostart with windows</value>

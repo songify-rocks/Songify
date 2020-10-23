@@ -1,5 +1,6 @@
 ﻿using Songify_Slim.GuidedSetup;
 using System.Windows;
+using System.Windows.Media.Animation;
 using MahApps.Metro.Controls;
 using Settings = Songify_Slim.Util.Settings.Settings;
 
@@ -10,9 +11,11 @@ namespace Songify_Slim
     /// </summary>
     public partial class Window_GuidedSetup
     {
-        // Steps: 0 = Welcome, 1 = EULA, 2 = Setup Yes/No, 3 = General Settings
+        // Steps: 0 = Welcome, 1 = EULA, 2 = Setup Yes/No, 3 = General Settings, 4 = Spotify Setup, 5 = Finish
         private int _step = 0;
-        private int _maxSteps = 3;
+        private int _maxSteps = 5;
+
+
         public Window_GuidedSetup()
         {
             InitializeComponent();
@@ -42,28 +45,33 @@ namespace Songify_Slim
                 case 2:
                     if (!Settings.GuidedSetup)
                     {
-                        MainWindow main = new MainWindow();
-                        main.Show();
+                        new MainWindow().Show();
                         this.Close();
                     }
                     tsControl.Content = new UC_Setup_3();
                     break;
                 case 3:
                     tsControl.Content = new UC_Setup_4();
+                    this.btn_Next.IsEnabled = false;
                     break;
                 case 4:
+                    tsControl.Content = new UC_Setup_5();
+                    btn_Next.Content = "Finish";
                     break;
                 case 5:
-                    break;
-                case 6:
+                    new MainWindow().Show();
+                    this.Close();
                     break;
             }
         }
 
         private void btn_Next_Click(object sender, RoutedEventArgs e)
         {
-            if(_step >= _maxSteps)
+            if (_step >= _maxSteps)
+            {
                 return;
+            }
+
             tsControl.Transition = TransitionType.Left;
             _step++;
             GuidedSetupStep(_step);
