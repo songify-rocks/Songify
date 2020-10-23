@@ -7,19 +7,42 @@ namespace Songify_Slim
 {
     class Logger
     {
-        private static string rootPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-        private static string logPath = rootPath + "/log.log";
-        private static string debugLogPath = rootPath + "/Debug.log";
+        private static string logDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
+        private static string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
+
+        private static void CreateLogDirectory()
+        {
+            if (!Directory.Exists(logDirectoryPath))
+            {
+                Directory.CreateDirectory(logDirectoryPath);
+            }
+        }
+
+        private static string GetLogFilePath(bool debug = false)
+        {
+            string date = DateTime.Now.ToString("MM-dd-yyyy");
+            string fileName = Path.Combine(rootPath, (debug ? "DEBUG-" : "") + date + ".txt");
+
+            CreateLogDirectory();
+
+            if (!File.Exists(fileName))
+            {
+                File.Create(fileName);
+            }
+
+            return fileName;
+        }
 
         public static void LogExc(Exception exception)
         {
             // Writes a log file with exceptions in it
-            if (!File.Exists(logPath)) CreateLogFile(logPath);
+            CreateLogDirectory();
+            string logFile = GetLogFilePath();
             try
             {
-                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
-                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
-                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
             }
             catch (Exception)
             {
@@ -29,10 +52,10 @@ namespace Songify_Slim
 
         public static void DebugLog(string msg, [CallerMemberName] string callingMethod = "", [CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
         {
-            if (!File.Exists(debugLogPath)) CreateLogFile(debugLogPath);
+            string logFile = GetLogFilePath(true);
             try
             {
-                File.AppendAllText(debugLogPath, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
             }
             catch
             {
@@ -43,20 +66,15 @@ namespace Songify_Slim
         public static void LogStr(string s)
         {
             // Writes a log file with exceptions in it
-            if (!File.Exists(logPath)) CreateLogFile(logPath);
+            string logFile = GetLogFilePath();
             try
             {
-                File.AppendAllText(logPath, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + s + Environment.NewLine);
             }
             catch
             {
 
             }
-        }
-
-        public static void CreateLogFile(string path)
-        {
-            File.Create(path).Close();
         }
     }
 }
