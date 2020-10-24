@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Songify.Interfaces;
+using Songify.Config;
 
 namespace Songify.Classes
 {
@@ -10,10 +11,13 @@ namespace Songify.Classes
     {
 
         public List<ISongifyPlugin> Plugins { get; set; }
+        public List<PluginConfig> Config { get; set; }
 
         public PluginManager()
         {
+            Converter converter = new Converter();
             Plugins = LoadPlugins();
+            
         }
 
         /// <summary>

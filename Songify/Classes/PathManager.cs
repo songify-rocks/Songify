@@ -15,7 +15,7 @@ namespace Songify.Classes
         {
             get
             {
-                string logPath = Path.Combine(StartupDirectory, "Log");
+                string logPath = Path.Combine(StartupDirectory, "Logs");
                 if (!File.Exists(logPath)) Directory.CreateDirectory(logPath);
                 return logPath;
             }
@@ -33,6 +33,26 @@ namespace Songify.Classes
                 string pluginPath = Path.Combine(StartupDirectory, "Plugins");
                 if (!File.Exists(pluginPath)) Directory.CreateDirectory(pluginPath);
                 return pluginPath;
+            }
+        }
+
+        public string ConfigDirectory
+        {
+            get
+            {
+                string configPath = Path.Combine(StartupDirectory, "Config");
+                if (!File.Exists(configPath)) Directory.CreateDirectory(configPath);
+                return configPath;
+            }
+        }
+
+        public string PluginConfigFilePath
+        {
+            get
+            {
+                string plConfPath = Path.Combine(ConfigDirectory, "PluginConfig.json");
+                if (!File.Exists(plConfPath)) File.AppendAllText(plConfPath, "[]");
+                return plConfPath;
             }
         }
     }

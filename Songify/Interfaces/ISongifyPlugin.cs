@@ -5,7 +5,10 @@ namespace Songify.Interfaces
 {
     public interface ISongifyPlugin
     {
+        string Name { get; }
+        string Identifier { get; }
+        List<PluginSettings> Settings {get; set; }
         SongInfo Fetch();
-        List<PluginSettings> Initialize();
+        void Initialize();
     }
 }
