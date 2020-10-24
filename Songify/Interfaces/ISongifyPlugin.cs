@@ -8,7 +8,8 @@ namespace Songify.Interfaces
         string Name { get; }
         string Identifier { get; }
         List<PluginSettings> Settings {get; set; }
-        SongInfo Fetch();
+        SongInfo SongInfo { get; set; }
+        void Fetch();
         void Initialize();
     }
 }

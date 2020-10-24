@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using Songify.Interfaces;
 using Songify.Config;
+using System.Linq;
+using System.Windows;
 
 namespace Songify.Classes
 {
     /// <summary>
     /// Load Songify Plugins
     /// </summary>
-    class PluginManager
+    public class PluginManager
     {
 
         public List<ISongifyPlugin> Plugins { get; set; }
@@ -28,6 +30,28 @@ namespace Songify.Classes
         {
             List<ISongifyPlugin> plugins = InterfaceLoader.GetAll<ISongifyPlugin>();
             return plugins;
+        }
+
+        public void ExecuteEnabledPlugins()
+        {
+            Plugins.ForEach(p =>
+            {
+                if (((App)Application.Current).ConfigManager.PluginConfigs.First(cfg => p.Identifier == cfg.PluginIdentifier).Enabled)
+                {
+                    p.Fetch();
+                }
+            });
+        }
+
+        public void InitializeEnabledPlugins()
+        {
+            Plugins.ForEach(p =>
+            {
+                if (((App)Application.Current).ConfigManager.PluginConfigs.First(cfg => p.Identifier == cfg.PluginIdentifier).Enabled)
+                {
+                    p.Initialize();
+                }
+            });
         }
     }
 }

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Songify.Config
 {
-    class ConfigManager
+    public class ConfigManager
     {
         private Converter converter = new Converter();
         private PathManager pm = new PathManager();

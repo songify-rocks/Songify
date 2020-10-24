@@ -10,15 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MahApps.Metro;
+using Songify.Config;
 
-namespace Songify
+namespace Songify.Forms
 {
-    public partial class MainWindow
+    /// <summary>
+    /// Interaktionslogik für ConfigWindow.xaml
+    /// </summary>
+    public partial class ConfigWindow : Window
     {
-        public MainWindow()
+        public ConfigWindow(PluginConfig config)
         {
             InitializeComponent();
         }

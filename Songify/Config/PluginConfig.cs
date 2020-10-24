@@ -3,7 +3,7 @@ using Songify.Models;
 
 namespace Songify.Config
 {
-    class PluginConfig
+    public class PluginConfig
     {
         public string PluginName { get; set; }
         public string PluginIdentifier { get; set; }

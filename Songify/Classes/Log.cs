@@ -11,7 +11,7 @@ namespace Songify.Classes
     /// Log to a text file
     /// Runs in a seperate thread to not stop other processes
     /// </summary>
-    class Log
+    public class Log
     {
         private static Queue<LogMessage> logQueue;
         private static Thread logThread;
