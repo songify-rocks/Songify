@@ -303,6 +303,7 @@ namespace Songify_Slim.Util.Songify
             CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
             CooldownTimer.Start();
         }
+        
         private static string CleanFormatString(string currSong)
         {
             RegexOptions options = RegexOptions.None;
@@ -312,6 +313,7 @@ namespace Songify_Slim.Util.Songify
             // Add trailing spaces for better scroll
             return currSong;
         }
+        
         private static void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings

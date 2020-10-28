@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -24,6 +25,7 @@ using AutoUpdaterDotNET;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using Application = System.Windows.Application;
@@ -44,9 +46,7 @@ namespace Songify_Slim
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public List<RequestObject> ReqList = new List<RequestObject>();
         public string SongPath, CoverPath, Root, CoverTemp;
-        public bool UpdateError;
         public BackgroundWorker WorkerTelemetry = new BackgroundWorker();
-        public BackgroundWorker WorkerUpdate = new BackgroundWorker();
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly MenuItem _menuItem1 = new MenuItem();
         private readonly MenuItem _menuItem2 = new MenuItem();
@@ -77,7 +77,7 @@ namespace Songify_Slim
 
         public static bool IsWindowOpen<T>(string name = "") where T : Window
         {
-            
+
 
             // This method checks if a window of type <T> is already opened in the current application context and returns true or false
             return string.IsNullOrEmpty(name)
@@ -87,7 +87,7 @@ namespace Songify_Slim
 
         public static void RegisterInStartup(bool isChecked)
         {
-            
+
 
             // Adding the RegKey for Songify in startup (autostart with windows)
             RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(
@@ -107,7 +107,7 @@ namespace Songify_Slim
 
         public void UploadSong(string currSong, string coverUrl = null)
         {
-            
+
             try
             {
                 // extras are UUID and Songinfo
@@ -138,7 +138,7 @@ namespace Songify_Slim
 
         public void Worker_Telemetry_DoWork(object sender, DoWorkEventArgs e)
         {
-            
+
             // Backgroundworker is asynchronous
             // sending a webrequest that parses parameters to php code
             // it sends the UUID (randomly generated on first launch), unix timestamp, version number and if the app is active
@@ -167,7 +167,6 @@ namespace Songify_Slim
 
         private void AddSourcesToSourceBox()
         {
-            
             string[] sourceBoxItems = { PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
                 PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube };
             cbx_Source.ItemsSource = sourceBoxItems;
@@ -175,7 +174,7 @@ namespace Songify_Slim
 
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens the 'About'-Window
             AboutWindow aW = new AboutWindow { Top = Top, Left = Left };
             aW.ShowDialog();
@@ -183,26 +182,26 @@ namespace Songify_Slim
 
         private void BtnDiscord_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens Discord-Invite Link in Standard-Browser
             Process.Start("https://discordapp.com/invite/H8nd4T4");
         }
 
         private void BtnFAQ_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Process.Start("https://songify.rocks/faq.html");
         }
 
         private void BtnGitHub_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Process.Start("https://github.com/songify-rocks/Songify/issues");
         }
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens the History in either Window or Browser
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
@@ -223,14 +222,14 @@ namespace Songify_Slim
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // links to the projects patreon page (the button name is old because I used to use paypal)
             Process.Start("https://www.patreon.com/Songify");
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens the 'Settings'-Window
             Window_Settings sW = new Window_Settings { Top = Top, Left = Left };
             sW.ShowDialog();
@@ -238,7 +237,7 @@ namespace Songify_Slim
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Header.ToString().Equals("Connect"))
@@ -255,13 +254,13 @@ namespace Songify_Slim
 
         private void BtnWidget_Click(object sender, RoutedEventArgs e)
         {
-            
+
             Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
         private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
             if (!IsLoaded)
             {
                 // This prevents that the selected is always 0 (initialize components)
@@ -288,13 +287,12 @@ namespace Songify_Slim
                         img_cover.Visibility = Visibility.Collapsed;
                     }
                 }));
-                FetchSpotifyWeb();
             }
         }
 
         private string CleanFormatString(string currSong)
         {
-            
+
             RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
@@ -314,7 +312,7 @@ namespace Songify_Slim
 
         private void DownloadCover(string cover)
         {
-            
+
             try
             {
                 if (cover == null)
@@ -362,7 +360,7 @@ namespace Songify_Slim
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            
+
             if (CoverPath != "" && CoverTemp != "")
             {
                 File.Delete(CoverPath);
@@ -401,7 +399,7 @@ namespace Songify_Slim
 
         private void FetchSpotifyWeb()
         {
-            
+
             SongFetcher sf = new SongFetcher();
             TrackInfo info = sf.FetchSpotifyWeb();
             if (info != null)
@@ -442,8 +440,8 @@ namespace Songify_Slim
 
         private void FetchTimer(int ms)
         {
-            
-            // Check if the timer is running, if yes stop it and start new with the ms givin in the parameter
+
+            // Check if the timer is running, if yes stop it and start new with the ms giving in the parameter
             try
             {
                 _timerFetcher.Dispose();
@@ -461,7 +459,7 @@ namespace Songify_Slim
 
         private void GetCurrentSongAsync()
         {
-            
+
             SongFetcher sf = new SongFetcher();
             string[] currentlyPlaying;
             switch (_selectedSource)
@@ -496,7 +494,7 @@ namespace Songify_Slim
                         }
                         break;
                     }
-                    WriteSong(_temp, "", "", null, _firstRun);
+                    WriteSong("", _temp, "", null, _firstRun);
 
                     break;
 
@@ -580,7 +578,7 @@ namespace Songify_Slim
 
         private void MenuItem1Click(object sender, EventArgs e)
         {
-            
+
             // Click on "Exit" in the Systray
             _forceClose = true;
             Close();
@@ -588,7 +586,7 @@ namespace Songify_Slim
 
         private void MenuItem2Click(object sender, EventArgs e)
         {
-            
+
             // Click on "Show" in the Systray
             Show();
             WindowState = WindowState.Normal;
@@ -596,7 +594,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            
+
             // If Systray is enabled [X] minimizes to systray
             if (!Settings.Systray)
             {
@@ -611,7 +609,7 @@ namespace Songify_Slim
 
         private void MetroWindowClosed(object sender, EventArgs e)
         {
-            
+
             Settings.PosX = Left;
             Settings.PosY = Top;
 
@@ -626,7 +624,7 @@ namespace Songify_Slim
 
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            
+
             Exception e = (Exception)args.ExceptionObject;
             Logger.LogExc(e);
             Logger.LogStr("##### Unhandled Exception #####");
@@ -650,9 +648,6 @@ namespace Songify_Slim
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log");
             }
 
-            
-
-
             if (Settings.AutoClearQueue)
             {
                 ReqList.Clear();
@@ -660,6 +655,7 @@ namespace Songify_Slim
             }
 
             Settings.MsgLoggingEnabled = false;
+
             // Load Config file if one exists
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
             {
@@ -749,16 +745,13 @@ namespace Songify_Slim
                 TwitchHandler.BotConnect();
             }
 
-            
-
             // automatically start fetching songs
             SetFetchTimer();
         }
 
-
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
-            
+
             // if the window state changes to minimize check run MinimizeToSysTray()
             if (WindowState != WindowState.Minimized) return;
             MinimizeToSysTray();
@@ -766,7 +759,7 @@ namespace Songify_Slim
 
         private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
             {
@@ -777,7 +770,7 @@ namespace Songify_Slim
 
         private void Mi_Queue_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // Opens the Queue Window
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
@@ -797,7 +790,7 @@ namespace Songify_Slim
 
         private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
-            
+
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification", "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
@@ -809,7 +802,7 @@ namespace Songify_Slim
 
         private void MinimizeToSysTray()
         {
-            
+
             // if the setting is set, hide window
             if (Settings.Systray)
             {
@@ -819,7 +812,6 @@ namespace Songify_Slim
 
         private void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            
             img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
@@ -838,7 +830,7 @@ namespace Songify_Slim
 
         private void SendTelemetry(bool active)
         {
-            
+
             // send telemetry data once
             AppActive = active;
             if (!WorkerTelemetry.IsBusy)
@@ -847,7 +839,6 @@ namespace Songify_Slim
 
         private void SetFetchTimer()
         {
-            
             switch (_selectedSource)
             {
                 case PlayerType.SpotifyLegacy:
@@ -873,23 +864,20 @@ namespace Songify_Slim
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
                     GetCurrentSongAsync();
-                    if (Settings.UseOwnApp)
-                        FetchTimer(2000);
-                    else
-                        FetchTimer(20000);
+                    FetchTimer(Settings.UseOwnApp ? 2000 : 20000);
                     break;
             }
         }
 
         private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            
+
             FetchSpotifyWeb();
         }
 
         private async void TelemetryDisclaimer()
         {
-            
+
             SendTelemetry(true);
             // show messagebox with the Telemetry disclaimer
             MessageDialogResult result = await this.ShowMessageAsync("Anonymous Data",
@@ -921,14 +909,14 @@ namespace Songify_Slim
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            
+
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
 
         private void TelemetryTimer()
         {
-            
+
             // call SendTelemetry every 5 minutes
             _timer = new Timer(e =>
             {
@@ -943,15 +931,15 @@ namespace Songify_Slim
             }, null, _startTimeSpan, _periodTimeSpan);
         }
 
-        private void WriteSong(string artist, string title, string extra, string cover = null, bool forceUpdate = false, string trackId = null)
+        private void WriteSong(string _artist, string _title, string _extra, string cover = null, bool forceUpdate = false, string _trackId = null)
         {
-            
-            _currentId = trackId;
 
-            if (artist.Contains("Various Artists, "))
+            _currentId = _trackId;
+
+            if (_artist.Contains("Various Artists, "))
             {
-                artist = artist.Replace("Various Artists, ", "");
-                artist = artist.Trim();
+                _artist = _artist.Replace("Various Artists, ", "");
+                _artist = _artist.Trim();
             }
 
             // get the songPath which is default the directory where the exe is, else get the user set directory
@@ -972,7 +960,7 @@ namespace Songify_Slim
                 File.WriteAllText(SongPath, "");
 
             // if all those are empty we expect the player to be paused
-            if (string.IsNullOrEmpty(artist) && string.IsNullOrEmpty(title) && string.IsNullOrEmpty(extra))
+            if (string.IsNullOrEmpty(_artist) && string.IsNullOrEmpty(_title) && string.IsNullOrEmpty(_extra))
             {
                 // read the text file
                 if (!File.Exists(SongPath))
@@ -984,7 +972,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    WriteSplitOutput(Settings.CustomPauseText, title, extra);
+                    WriteSplitOutput(Settings.CustomPauseText, _title, _extra);
                 }
 
                 DownloadCover(null);
@@ -997,14 +985,17 @@ namespace Songify_Slim
 
             // get the output string
             CurrSong = Settings.OutputString;
-            if (!String.IsNullOrEmpty(title))
+
+            if (_selectedSource == PlayerType.SpotifyWeb)
             {
                 // this only is used for spotify because here the artist and title are split
                 // replace parameters with actual info
-                CurrSong = CurrSong.Replace("{artist}", artist);
-                CurrSong = CurrSong.Replace("{title}", title);
-                CurrSong = CurrSong.Replace("{extra}", extra);
-                CurrSong = CurrSong.Replace("{uri}", trackId);
+                CurrSong = CurrSong.Format(
+                    artist => _artist,
+                    title => _title,
+                    extra => _extra,
+                    uri => _trackId
+                ).Format();
 
                 if (ReqList.Count > 0)
                 {
@@ -1054,10 +1045,26 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Replace(result, "");
 
                 // artist is set to be artist and title in this case, {title} and {extra} are empty strings
-                CurrSong = CurrSong.Replace("{artist}", artist);
-                CurrSong = CurrSong.Replace("{title}", title);
-                CurrSong = CurrSong.Replace("{extra}", extra);
-                CurrSong = CurrSong.Replace("{uri}", trackId);
+                CurrSong = CurrSong.Format(
+                    artist => _artist,
+                    title => _title,
+                    extra => _extra,
+                    uri => _trackId
+                ).Format();
+
+                try
+                {
+                    int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
+                    int end = CurrSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                    if (start >= 0)
+                    {
+                        CurrSong = CurrSong.Remove(start, end - start);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
             }
 
             // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
@@ -1076,9 +1083,9 @@ namespace Songify_Slim
             }
 
             string[] temp = File.ReadAllLines(SongPath);
-            
+
             // if the text file is different to _currSong (fetched song) or update is forced
-            if (temp[0].Trim() != CurrSong.Trim() || forceUpdate)
+            if (temp[0].Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
             {
                 // write song to the text file
                 File.WriteAllText(SongPath, CurrSong);
@@ -1104,7 +1111,7 @@ namespace Songify_Slim
 
                 if (Settings.SplitOutput)
                 {
-                    WriteSplitOutput(artist, title, extra);
+                    WriteSplitOutput(_artist, _title, _extra);
                 }
 
                 // if upload is enabled
@@ -1189,9 +1196,9 @@ namespace Songify_Slim
                 }
 
                 // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
-                if (trackId != null)
+                if (_trackId != null)
                 {
-                    WebHelper.UpdateWebQueue(trackId, "", "", "", "", "1", "u");
+                    WebHelper.UpdateWebQueue(_trackId, "", "", "", "", "1", "u");
                 }
 
                 _prevId = _currentId;
@@ -1225,7 +1232,7 @@ namespace Songify_Slim
 
         private void WriteSplitOutput(string artist, string title, string extra)
         {
-            
+
             // Writes the output to 2 different text files
 
             if (!File.Exists(Root + "/Artist.txt"))
