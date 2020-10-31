@@ -656,5 +656,17 @@ namespace Songify_Slim.Properties {
                 this["GuidedSetup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} please specify a song to add to the queue.")]
+        public string bot_Resp_NoSong {
+            get {
+                return ((string)(this["bot_Resp_NoSong"]));
+            }
+            set {
+                this["bot_Resp_NoSong"] = value;
+            }
+        }
     }
 }

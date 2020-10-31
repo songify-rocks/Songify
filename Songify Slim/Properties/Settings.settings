@@ -161,5 +161,8 @@
     <Setting Name="GuidedSetup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="bot_Resp_NoSong" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{user} please specify a song to add to the queue.</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

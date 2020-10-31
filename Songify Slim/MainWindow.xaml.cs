@@ -988,7 +988,7 @@ namespace Songify_Slim
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
-                // this only is used for spotify because here the artist and title are split
+                // this only is used for Spotify because here the artist and title are split
                 // replace parameters with actual info
                 CurrSong = CurrSong.Format(
                     artist => _artist,

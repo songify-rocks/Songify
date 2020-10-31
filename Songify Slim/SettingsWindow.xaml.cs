@@ -19,6 +19,8 @@ namespace Songify_Slim
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings
     {
+        private bool useOwnApiClient = Settings.UseOwnApp;
+
         private readonly string[] _colors = {
                                                    "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
                                                    "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
@@ -371,7 +373,7 @@ namespace Songify_Slim
         {
             // enables / disables telemetry
             if (ChbxSplit.IsChecked == null) return;
-            if (ChbxCover.IsChecked != null) Settings.SplitOutput = (bool) ChbxCover.IsChecked;
+            if (ChbxCover.IsChecked != null) Settings.SplitOutput = (bool)ChbxCover.IsChecked;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -403,26 +405,26 @@ namespace Songify_Slim
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets max requests per user value
-            if (NudMaxReq.Value != null) Settings.TwSrMaxReq = (int) NudMaxReq.Value;
+            if (NudMaxReq.Value != null) Settings.TwSrMaxReq = (int)NudMaxReq.Value;
         }
 
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets command cooldown
-            if (NudCooldown.Value != null) Settings.TwSrCooldown = (int) NudCooldown.Value;
+            if (NudCooldown.Value != null) Settings.TwSrCooldown = (int)NudCooldown.Value;
         }
 
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to autoconnect or not
-            if (Chbx_TwAutoconnect.IsChecked != null) Settings.TwAutoConnect = (bool) Chbx_TwAutoconnect.IsChecked;
+            if (Chbx_TwAutoconnect.IsChecked != null) Settings.TwAutoConnect = (bool)Chbx_TwAutoconnect.IsChecked;
         }
 
         private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
         {
             // Sets message loggint enabled or not
             if (Chbx_MessageLogging.IsChecked != null)
-                Settings.MsgLoggingEnabled = (bool) Chbx_MessageLogging.IsChecked;
+                Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
         }
 
         private void txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
@@ -446,7 +448,7 @@ namespace Songify_Slim
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to clear the queue on startup or not
-            if (Chbx_AutoClear.IsChecked != null) Settings.AutoClearQueue = (bool) Chbx_AutoClear.IsChecked;
+            if (Chbx_AutoClear.IsChecked != null) Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
         }
 
         private void MenuBtnReq_Click(object sender, RoutedEventArgs e)
@@ -483,17 +485,19 @@ namespace Songify_Slim
 
         private void nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (nud_Spaces.Value != null) Settings.SpaceCount = (int) nud_Spaces.Value;
+            if (nud_Spaces.Value != null) Settings.SpaceCount = (int)nud_Spaces.Value;
         }
 
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
         {
-            if (ChbxSpaces.IsChecked != null) Settings.AppendSpaces = (bool) ChbxSpaces.IsChecked;
+            if (ChbxSpaces.IsChecked != null) Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
         }
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
-            if (Tglsw_Spotify.IsChecked != null) Settings.UseOwnApp = (bool) Tglsw_Spotify.IsChecked;
+            if (Tglsw_Spotify.IsChecked != null) Settings.UseOwnApp = (bool)Tglsw_Spotify.IsChecked;
+            btn_save.Visibility = Visibility.Visible;
+            lbl_savingRestart.Visibility = Visibility.Visible;
         }
 
         private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
@@ -506,13 +510,17 @@ namespace Songify_Slim
             Settings.ClientSecret = tb_ClientSecret.Password;
         }
 
-        private void btn_save_Click(object sender, RoutedEventArgs e)
+        private async void btn_save_Click(object sender, RoutedEventArgs e)
         {
-            Settings.AccessToken = "";
-            Settings.RefreshToken = ""; 
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Information", "The restart is only necessary if you switched the API clients.\n\nYou DO NOT have to do this when linking your account!", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "restart", NegativeButtonText = "cancel"});
+            if (msgResult == MessageDialogResult.Affirmative)
+            {
+                Settings.AccessToken = "";
+                Settings.RefreshToken = "";
 
-            Process.Start(System.Windows.Application.ResourceAssembly.Location);
-            System.Windows.Application.Current.Shutdown();
+                Process.Start(System.Windows.Application.ResourceAssembly.Location);
+                System.Windows.Application.Current.Shutdown();
+            }
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
@@ -522,7 +530,7 @@ namespace Songify_Slim
 
         private void NudMaxlength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (NudMaxlength.Value != null) Settings.MaxSongLength = (int) NudMaxlength.Value;
+            if (NudMaxlength.Value != null) Settings.MaxSongLength = (int)NudMaxlength.Value;
         }
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)

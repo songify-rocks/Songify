@@ -135,7 +135,7 @@ namespace Songify_Slim.Util.Songify
                         {
                             if (window.GetType() == typeof(Window_Settings))
                             {
-                                ((Window_Settings) window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
+                                ((Window_Settings)window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
                             }
                         }
                     });
@@ -232,7 +232,10 @@ namespace Songify_Slim.Util.Songify
                 // Prevent crash on command without args
                 if (msgSplit.Length <= 1)
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, "@" + e.ChatMessage.DisplayName + " please specify a song to add to the queue.");
+                    string response = Settings.Settings.BotRespNoSong;
+                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+
                     StartCooldown();
                     return;
                 }
@@ -271,7 +274,7 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{artist}", "");
                         response = response.Replace("{title}", "");
                         response = response.Replace("{maxreq}", "");
-                        response = response.Replace("{errormsg}", "");
+                        response = response.Replace("{errormsg}", "No Song was found.");
 
                         Client.SendMessage(e.ChatMessage.Channel, response);
                         return;
@@ -303,7 +306,7 @@ namespace Songify_Slim.Util.Songify
             CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
             CooldownTimer.Start();
         }
-        
+
         private static string CleanFormatString(string currSong)
         {
             RegexOptions options = RegexOptions.None;
@@ -313,7 +316,7 @@ namespace Songify_Slim.Util.Songify
             // Add trailing spaces for better scroll
             return currSong;
         }
-        
+
         private static void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings

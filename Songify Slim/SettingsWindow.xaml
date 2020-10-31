@@ -140,8 +140,8 @@
                     <PasswordBox x:Name="tb_ClientSecret" HorizontalAlignment="Left" Height="23" Margin="116,157,0,0" VerticalAlignment="Top" Width="270" PasswordChanged="tb_ClientSecret_PasswordChanged"/>
                     <Label Content="Client ID" HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top"/>
                     <Label Content="Client Secret" HorizontalAlignment="Left" Margin="14,157,0,0" VerticalAlignment="Top"/>
-                    <Button x:Name="btn_save" Content="{x:Static local:Resources.sw_tcSpotify_SaveButton}" Margin="286,225,10,10" Click="btn_save_Click"/>
-                    <Label Content="{x:Static local:Resources.sw_tcSpotify_SavingWillRestart}" Margin="192,194,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" HorizontalAlignment="Right"/>
+                    <Button x:Name="btn_save" Content="{x:Static local:Resources.sw_tcSpotify_SaveButton}" Margin="286,225,10,10" Click="btn_save_Click" Visibility="Hidden"/>
+                    <Label x:Name="lbl_savingRestart" Content="{x:Static local:Resources.sw_tcSpotify_SavingWillRestart}" Margin="192,194,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Visibility="Hidden"/>
                     <Button x:Name="btn_OwnAppHelp" Content="?" HorizontalAlignment="Left" Margin="365,83,0,0" VerticalAlignment="Top" Width="21" Click="btn_OwnAppHelp_Click" Height="21"/>
 
                 </Grid>

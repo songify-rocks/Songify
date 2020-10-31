@@ -129,6 +129,9 @@
   <data name="brw_MaxSongs" xml:space="preserve">
     <value>Maximale Anzahl an Songs erreicht</value>
   </data>
+  <data name="brw_NoSong" xml:space="preserve">
+    <value>Kein Song wurde gewünscht (leerer Request)</value>
+  </data>
   <data name="brw_SongInQueue" xml:space="preserve">
     <value>Song bereits in der Warteschlange</value>
   </data>

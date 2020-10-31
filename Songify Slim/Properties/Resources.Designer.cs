@@ -97,6 +97,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die No song has been specified (empty request) ähnelt.
+        /// </summary>
+        public static string brw_NoSong {
+            get {
+                return ResourceManager.GetString("brw_NoSong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Song already in queue ähnelt.
         /// </summary>
         public static string brw_SongInQueue {

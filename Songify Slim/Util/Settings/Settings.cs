@@ -6,6 +6,22 @@
     internal class Settings
     {
 
+        public static string BotRespNoSong
+        {
+            get => GetBotRespNoSong();
+            set => SetBotRespNoSong(value);
+        }
+        
+        private static void SetBotRespNoSong(string value)
+        {
+            Properties.Settings.Default.bot_Resp_NoSong = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBotRespNoSong()
+        {
+            return Properties.Settings.Default.bot_Resp_NoSong;
+        }
         public static bool GuidedSetup
         {
             get => GetGuidedSetup();
