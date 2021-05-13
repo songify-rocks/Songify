@@ -1,12 +1,10 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-using Songify_Slim.Util.Settings;
+﻿using System.Windows;
+using Songify_Slim.UserControls;
 
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaktionslogik für Window_Botresponse.xaml
+    ///     Interaktionslogik für Window_Botresponse.xaml
     /// </summary>
     public partial class Window_Botresponse
     {
@@ -18,7 +16,7 @@ namespace Songify_Slim
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Cctrl.Content = new UserControls.UC_BotResponses();
+            Cctrl.Content = new UC_BotResponses();
         }
     }
 }

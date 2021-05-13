@@ -1,85 +1,88 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using AutoUpdaterDotNET;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Application = System.Windows.Application;
+using Clipboard = System.Windows.Clipboard;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Songify_Slim
 {
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings
     {
-        private bool useOwnApiClient = Settings.UseOwnApp;
-
-        private readonly string[] _colors = {
-                                                   "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
-                                                   "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
-                                                   "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
-                                                   "Taupe", "Sienna"
-                                       };
+        private readonly string[] _colors =
+        {
+            "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
+            "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
+            "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
+            "Taupe", "Sienna"
+        };
 
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
+        private readonly bool _appIdInitialValue = Settings.UseOwnApp;
 
         public Window_Settings()
         {
             InitializeComponent();
-            this.Title = Properties.Resources.mw_menu_Settings;
+            Title = Properties.Resources.mw_menu_Settings;
         }
 
         public void SetControls()
         {
             // Sets all the controls from settings
-            ThemeToggleSwitch.IsChecked = Settings.Theme == "BaseDark";
+            ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
             TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
-            ChbxAutostart.IsChecked = Settings.Autostart;
-            ChbxMinimizeSystray.IsChecked = Settings.Systray;
+            ChbxAutostart.IsOn = Settings.Autostart;
+            ChbxMinimizeSystray.IsOn = Settings.Systray;
             ChbxCustomPause.IsChecked = Settings.CustomPauseTextEnabled;
-            ChbxTelemetry.IsChecked = Settings.Telemetry;
+            ChbxTelemetry.IsOn = Settings.Telemetry;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             txtbx_nbuser.Text = Settings.NbUser;
-            ChbxUpload.IsChecked = Settings.Upload;
+            ChbxUpload.IsOn = Settings.Upload;
             NudChrome.Value = Settings.ChromeFetchRate;
-            ChbxCover.IsChecked = Settings.DownloadCover;
-            ChbxSplit.IsChecked = Settings.SplitOutput;
+            ChbxCover.IsOn = Settings.DownloadCover;
+            ChbxSplit.IsOn = Settings.SplitOutput;
             txtbx_twChannel.Text = Settings.TwChannel;
             txtbx_twOAuth.Password = Settings.TwOAuth;
             txtbx_twUser.Text = Settings.TwAcc;
             txtbx_RewardID.Text = Settings.TwRewardId;
-            Chbx_TwReward.IsChecked = Settings.TwSrReward;
-            Chbx_TwCommand.IsChecked = Settings.TwSrCommand;
+            Chbx_TwReward.IsOn = Settings.TwSrReward;
+            Chbx_TwCommand.IsOn = Settings.TwSrCommand;
             NudMaxReq.Value = Settings.TwSrMaxReq;
             NudCooldown.Value = Settings.TwSrCooldown;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
-            ChbxSplit.IsChecked = Settings.SplitOutput;
-            Chbx_AutoClear.IsChecked = Settings.AutoClearQueue;
+            ChbxSplit.IsOn = Settings.SplitOutput;
+            Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
             tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
-            Tglsw_Spotify.IsChecked = Settings.UseOwnApp;
+            Tglsw_Spotify.IsOn = Settings.UseOwnApp;
             NudMaxlength.Value = Settings.MaxSongLength;
 
-            if (Settings.NbUserId != null)
-            {
-                lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
-            }
+            if (Settings.NbUserId != null) lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             if (ApiHandler.Spotify != null)
-                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " + ApiHandler.Spotify.GetPrivateProfile().DisplayName;
+                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
+                                         ApiHandler.Spotify.GetPrivateProfile().DisplayName;
 
             ThemeHandler.ApplyTheme();
 
@@ -92,12 +95,27 @@ namespace Songify_Slim
                 case "de-DE":
                     cbx_Language.SelectedIndex = 1;
                     break;
+                case "ru-RU":
+                    cbx_Language.SelectedIndex = 1;
+                    break;
             }
 
             cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
+
+            //Settings.UseOwnApp = Tglsw_Spotify.IsOn;
+            //if (_appIdInitialValue != Settings.UseOwnApp)
+            //{
+            //    btn_save.Visibility = Visibility.Visible;
+            //    lbl_savingRestart.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    btn_save.Visibility = Visibility.Hidden;
+            //    lbl_savingRestart.Visibility = Visibility.Hidden;
+            //}
         }
 
-        private void AppendText(System.Windows.Controls.TextBox tb, string text)
+        private void AppendText(TextBox tb, string text)
         {
             // Appends Rightclick-Text from the output text box (parameters)
             tb.AppendText(text);
@@ -147,20 +165,18 @@ namespace Songify_Slim
         {
             // Copies the txt path to the clipboard and shows a notification
             if (string.IsNullOrEmpty(Settings.Directory))
-            {
-                System.Windows.Clipboard.SetDataObject(Assembly.GetEntryAssembly()?.Location.Replace("Songify Slim.exe", "Songify.txt") ?? throw new InvalidOperationException());
-            }
+                Clipboard.SetDataObject(
+                    Assembly.GetEntryAssembly()?.Location.Replace("Songify Slim.exe", "Songify.txt") ??
+                    throw new InvalidOperationException());
             else
-            {
-                System.Windows.Clipboard.SetDataObject(Settings.Directory + "\\Songify.txt");
-            }
+                Clipboard.SetDataObject(Settings.Directory + "\\Songify.txt");
             Lbl_Status.Content = @"Path copied to clipboard.";
         }
 
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            System.Windows.Clipboard.SetDataObject("https://songify.rocks/getsong.php?id=" + Settings.Uuid);
+            Clipboard.SetDataObject("https://songify.rocks/getsong.php?id=" + Settings.Uuid);
             Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
@@ -189,8 +205,8 @@ namespace Songify_Slim
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
         {
             // checkbox for autostart
-            bool? chbxAutostartIsChecked = ChbxAutostart.IsChecked;
-            MainWindow.RegisterInStartup(chbxAutostartIsChecked != null && (bool)chbxAutostartIsChecked);
+            bool? chbxAutostartIsChecked = ChbxAutostart.IsOn;
+            MainWindow.RegisterInStartup((bool)chbxAutostartIsChecked);
         }
 
         private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
@@ -199,41 +215,35 @@ namespace Songify_Slim
             if (ChbxCustomPause.IsChecked == null) return;
             Settings.CustomPauseTextEnabled = (bool)ChbxCustomPause.IsChecked;
             if (!(bool)ChbxCustomPause.IsChecked)
-            {
                 TxtbxCustompausetext.IsEnabled = false;
-            }
             else
-            {
                 TxtbxCustompausetext.IsEnabled = true;
-            }
         }
 
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
             // enables / disbales minimize to systray
-            bool? isChecked = ChbxMinimizeSystray.IsChecked;
-            Settings.Systray = isChecked != null && (bool)isChecked;
+            bool isChecked = ChbxMinimizeSystray.IsOn;
+            Settings.Systray = isChecked;
         }
 
         private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
         {
             // enables / disables telemetry
-            if (ChbxTelemetry.IsChecked == null) return;
-            Settings.Telemetry = (bool)ChbxTelemetry.IsChecked;
+            Settings.Telemetry = ChbxTelemetry.IsOn;
         }
 
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables upload
-            if (ChbxUpload.IsChecked != null)
-                Settings.Upload = (bool)ChbxUpload.IsChecked;
+            Settings.Upload = ChbxUpload.IsOn;
             ((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // sets the color, when selecting yellow it changes foreground color because else its hard to read
-            Settings.Color = ComboBoxColor.SelectedValue.ToString();
+            Settings.Color = (string)(ComboBoxColor.SelectedItem as ComboBoxItem)?.Content;
             ThemeHandler.ApplyTheme();
             if (Settings.Color != "Yellow")
             {
@@ -267,47 +277,49 @@ namespace Songify_Slim
 
         private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // assing mw to mainwindow for calling methods and setting texts etc
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
+            // assign mw to mainwindow for calling methods and setting texts etc
+            foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(MainWindow))
-                {
                     _mW = window;
-                }
-            }
+
+
 
             // add colors to the combobox
-            foreach (string s in _colors)
+            foreach (string s in ThemeManager.Current.ColorSchemes)
             {
-                ComboBoxColor.Items.Add(s);
+                ComboBoxItem i = new ComboBoxItem
+                {
+                    Content = s,
+                };
+
+                var x = ThemeManager.Current.GetTheme(Settings.Theme + "." + s);
+                if (x != null)
+                {
+                    LinearGradientBrush brush = new LinearGradientBrush(Color.FromRgb(x.PrimaryAccentColor.R, x.PrimaryAccentColor.G, x.PrimaryAccentColor.B), Colors.Transparent, angle: 0.0);
+                    i.Background = brush;
+                }
+                ComboBoxColor.Items.Add(i);
             }
 
             // select the current color
-            foreach (string s in ComboBoxColor.Items)
+            foreach (ComboBoxItem s in ComboBoxColor.Items)
             {
-                if (s != Settings.Color) continue;
-                ComboBoxColor.SelectedItem = s;
-                Settings.Color = s;
+                if ((string)s.Content == Settings.Color)
+                {
+                    ComboBoxColor.SelectedItem = s;
+                    Settings.Color = (string)s.Content;
+                }
             }
-
-
             SetControls();
         }
 
         private void ThemeToggleSwitchIsCheckedChanged(object sender, EventArgs e)
         {
             // set the theme (BaseLight / BaseDark)
-            if (ThemeToggleSwitch.IsChecked != null && (bool)ThemeToggleSwitch.IsChecked)
-            {
-                Settings.Theme = "BaseDark";
-            }
-            else
-            {
-                Settings.Theme = "BaseLight";
-
-            }
+            Settings.Theme = ThemeToggleSwitch.IsOn ? "Dark" : "Light";
 
             ThemeHandler.ApplyTheme();
+
         }
 
         private void Txtbx_nbuser_TextChanged(object sender, TextChangedEventArgs e)
@@ -328,20 +340,12 @@ namespace Songify_Slim
             Settings.OutputString = TxtbxOutputformat.Text;
         }
 
-        // nightbot JSON object
-        public class NbObj
-        {
-            public dynamic Channel { get; set; }
-        }
-
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets the source (Spotify, Youtube, Nightbot)
             if (!IsLoaded)
-            {
                 // This prevents that the selected is always 0 (initialize components)
                 return;
-            }
 
             if (NudChrome.Value != null) Settings.ChromeFetchRate = (int)NudChrome.Value;
         }
@@ -349,8 +353,7 @@ namespace Songify_Slim
         private void ChbxCover_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (ChbxCover.IsChecked == null) return;
-            Settings.DownloadCover = (bool)ChbxCover.IsChecked;
+            Settings.DownloadCover = ChbxCover.IsOn;
         }
 
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
@@ -361,7 +364,6 @@ namespace Songify_Slim
             {
                 ApiHandler.DoAuthAsync();
                 SetControls();
-
             }
             catch (Exception ex)
             {
@@ -372,8 +374,7 @@ namespace Songify_Slim
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (ChbxSplit.IsChecked == null) return;
-            if (ChbxCover.IsChecked != null) Settings.SplitOutput = (bool)ChbxCover.IsChecked;
+            Settings.SplitOutput = ChbxCover.IsOn;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -391,15 +392,13 @@ namespace Songify_Slim
         private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (Chbx_TwReward.IsChecked == null) return;
-            Settings.TwSrReward = (bool)Chbx_TwReward.IsChecked;
+            Settings.TwSrReward = Chbx_TwReward.IsOn;
         }
 
         private void Chbx_TwCommand_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (Chbx_TwCommand.IsChecked == null) return;
-            Settings.TwSrCommand = (bool)Chbx_TwCommand.IsChecked;
+            Settings.TwSrCommand = Chbx_TwCommand.IsOn;
         }
 
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -448,7 +447,7 @@ namespace Songify_Slim
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to clear the queue on startup or not
-            if (Chbx_AutoClear.IsChecked != null) Settings.AutoClearQueue = (bool)Chbx_AutoClear.IsChecked;
+            Settings.AutoClearQueue = Chbx_AutoClear.IsOn;
         }
 
         private void MenuBtnReq_Click(object sender, RoutedEventArgs e)
@@ -463,18 +462,23 @@ namespace Songify_Slim
             {
                 case 0:
                     // English
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
                     Settings.Language = "en";
                     break;
                 case 1:
                     // German
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("de-DE");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
                     Settings.Language = "de-DE";
+                    break;
+                case 2:
+                    // Russian
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
+                    Settings.Language = "ru-RU";
                     break;
             }
 
-            Process.Start(System.Windows.Application.ResourceAssembly.Location);
-            System.Windows.Application.Current.Shutdown();
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
 
         private void btn_Botresponse_Click(object sender, RoutedEventArgs e)
@@ -495,9 +499,17 @@ namespace Songify_Slim
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
-            if (Tglsw_Spotify.IsChecked != null) Settings.UseOwnApp = (bool)Tglsw_Spotify.IsChecked;
-            btn_save.Visibility = Visibility.Visible;
-            lbl_savingRestart.Visibility = Visibility.Visible;
+            Settings.UseOwnApp = Tglsw_Spotify.IsOn;
+            //if (_appIdInitialValue != Settings.UseOwnApp)
+            //{
+            //    btn_save.Visibility = Visibility.Visible;
+            //    lbl_savingRestart.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    btn_save.Visibility = Visibility.Hidden;
+            //    lbl_savingRestart.Visibility = Visibility.Hidden;
+            //}
         }
 
         private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
@@ -512,15 +524,16 @@ namespace Songify_Slim
 
         private async void btn_save_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Information", "The restart is only necessary if you switched the API clients.\n\nYou DO NOT have to do this when linking your account!", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "restart", NegativeButtonText = "cancel"});
-            if (msgResult == MessageDialogResult.Affirmative)
-            {
-                Settings.AccessToken = "";
-                Settings.RefreshToken = "";
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Information",
+                "The restart is only necessary if you switched the API clients.\n\nYou DO NOT have to do this when linking your account!",
+                MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = "restart", NegativeButtonText = "cancel" });
+            if (msgResult != MessageDialogResult.Affirmative) return;
+            Settings.AccessToken = "";
+            Settings.RefreshToken = "";
 
-                Process.Start(System.Windows.Application.ResourceAssembly.Location);
-                System.Windows.Application.Current.Shutdown();
-            }
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
@@ -535,14 +548,35 @@ namespace Songify_Slim
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
         {
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Warning", "Are you sure you want to reset all settings?", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
-            if (msgResult == MessageDialogResult.Affirmative)
-            {
-                File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-                Properties.Settings.Default.Reset();
-                Process.Start(System.Windows.Application.ResourceAssembly.Location);
-                System.Windows.Application.Current.Shutdown();
-            }
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Warning",
+                "Are you sure you want to reset all settings?", MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult != MessageDialogResult.Affirmative) return;
+            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+            Properties.Settings.Default.Reset();
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
+        }
+
+        // nightbot JSON object
+        public class NbObj
+        {
+            public dynamic Channel { get; set; }
+        }
+
+        private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (_appIdInitialValue == Settings.UseOwnApp) return;
+            e.Cancel = true;
+            Settings.AccessToken = "";
+            Settings.RefreshToken = "";
+            string temp = _appIdInitialValue == false ? "You switched from Songify's internal app-ID to your own. This is great because you won't get throttled by rate limits! \n\nIn order to use it though, Songify needs to be restarted and you have to relink with your Spotify account!" : "You switched from your own app-ID to Songify's internal one. This is bad and you will likely encounter problems. The API only allows a certain amount of requests done through an app. We have been exceeding this amount by a lot. Please use your own app-ID instead!\n\nSongify needs a restart and you have to link your Spotify account again.";
+
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Warning", temp, MessageDialogStyle.Affirmative,
+                new MetroDialogSettings { AffirmativeButtonText = "Restart" });
+            if (msgResult != MessageDialogResult.Affirmative) return;
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
     }
 }

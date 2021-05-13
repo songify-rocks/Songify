@@ -6,20 +6,20 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Xml.Linq;
 using Songify_Slim.Util.Settings;
-using Path = System.IO.Path;
 
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaction logic for HistoryWindow.xaml
+    ///     Interaction logic for HistoryWindow.xaml
     /// </summary>
     public partial class HistoryWindow
     {
         private readonly string _path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "\\history.shr";
         private XDocument _doc;
-        FileSystemWatcher _watcher;
+        private FileSystemWatcher _watcher;
 
         public HistoryWindow()
         {
@@ -50,7 +50,6 @@ namespace Songify_Slim
                 _watcher.Changed += OnChanged;
 
                 LoadFile();
-
             }
             catch (Exception ex)
             {
@@ -70,7 +69,8 @@ namespace Songify_Slim
             {
                 if (!File.Exists(_path))
                 {
-                    _doc = new XDocument(new XElement("History", new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
+                    _doc = new XDocument(new XElement("History",
+                        new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
                     _doc.Save(_path);
                 }
 
@@ -80,15 +80,15 @@ namespace Songify_Slim
 
 
                 dgvHistorySongs.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(() => { dgvHistorySongs.Items.Clear(); }));
+                    DispatcherPriority.Normal,
+                    new Action(() => { dgvHistorySongs.Items.Clear(); }));
                 LbxHistory.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(() => { LbxHistory.Items.Clear(); }));
+                    DispatcherPriority.Normal,
+                    new Action(() => { LbxHistory.Items.Clear(); }));
 
                 _doc = XDocument.Load(_path);
-                List<DateTime> list = new List<DateTime>();
-                List<string> dateList = new List<string>();
+                var list = new List<DateTime>();
+                var dateList = new List<string>();
 
                 if (_doc.Root != null)
                     foreach (XElement elem in _doc.Root.Elements())
@@ -98,20 +98,16 @@ namespace Songify_Slim
                         dateList.Clear();
                     }
 
-                IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
+                var orderedList = list.OrderByDescending(time => time.Date);
                 foreach (DateTime time in orderedList)
-                {
                     LbxHistory.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));
-                }
+                        DispatcherPriority.Normal,
+                        new Action(() => { LbxHistory.Items.Add(time.ToString("dd.MM.yyyy")); }));
 
                 if (LbxHistory.Items.Count > 0)
-                {
                     LbxHistory.Dispatcher.Invoke(
-                                System.Windows.Threading.DispatcherPriority.Normal,
-                                new Action(() => { LbxHistory.SelectedIndex = 0; }));
-                }
+                        DispatcherPriority.Normal,
+                        new Action(() => { LbxHistory.SelectedIndex = 0; }));
             }
             catch (Exception ex)
             {
@@ -127,36 +123,34 @@ namespace Songify_Slim
             //    return;
             //}
 
-            if (LbxHistory.SelectedIndex < 0)
-            {
-                return;
-            }
+            if (LbxHistory.SelectedIndex < 0) return;
             if (_doc == null)
                 return;
 
             dgvHistorySongs.Items.Clear();
             XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
 
-            List<XElement> nodes = new List<XElement>();
+            var nodes = new List<XElement>();
 
             if (root != null) nodes.AddRange(root.Elements());
 
             nodes.Reverse();
 
             foreach (XElement node in nodes)
-            {
                 if (node.Name == "Song")
                 {
                     Song data = new Song
                     {
-                        Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())).ToLongTimeString(),
+                        Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time")?.Value ??
+                                                                    throw new InvalidOperationException()))
+                            .ToLongTimeString(),
                         Name = node.Value,
-                        UnixTimeStamp = long.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())
+                        UnixTimeStamp =
+                            long.Parse(node.Attribute("Time")?.Value ?? throw new InvalidOperationException())
                     };
 
                     dgvHistorySongs.Items.Add(data);
                 }
-            }
         }
 
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
@@ -187,7 +181,7 @@ namespace Songify_Slim
             if (dgvHistorySongs.SelectedItem == null)
                 return;
 
-            Song sng = (Song)dgvHistorySongs.SelectedItem;
+            Song sng = (Song) dgvHistorySongs.SelectedItem;
 
             long key = sng.UnixTimeStamp;
 
@@ -195,7 +189,7 @@ namespace Songify_Slim
             xdoc.Element("History")
                 ?.Element("d_" + LbxHistory.SelectedItem)
                 ?.Elements("Song")
-                .Where(x => (string)x.Attribute("Time") == key.ToString())
+                .Where(x => (string) x.Attribute("Time") == key.ToString())
                 .Remove();
             xdoc.Save(_path);
             LoadFile();
@@ -256,6 +250,7 @@ namespace Songify_Slim
             _watcher.Dispose();
         }
     }
+
     public class Song
     {
         public string Time { get; set; }

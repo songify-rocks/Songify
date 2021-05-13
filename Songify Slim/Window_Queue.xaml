@@ -1,18 +1,18 @@
 ﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Queue"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Songify_Slim"
-                xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
 
-        mc:Ignorable="d"
-        Title="Song Queue" Height="444.318" Width="489.772" WindowStyle="ToolWindow" Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
+                      mc:Ignorable="d"
+                      Title="Song Queue" Height="444.318" Width="489.772" WindowStyle="ToolWindow"
+                      Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
     <Grid>
         <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False" CanUserSortColumns="False">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Delete" Click="DgvItemDelete_Click"/>
+                    <MenuItem Header="Delete" Click="DgvItemDelete_Click" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

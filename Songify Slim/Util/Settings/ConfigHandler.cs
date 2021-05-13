@@ -12,10 +12,9 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 namespace Songify_Slim
 {
     /// <summary>
-    /// This class is for writing, exporting and importing the config file
-    /// The config file is XML and has a single config tag with attributes
+    ///     This class is for writing, exporting and importing the config file
+    ///     The config file is XML and has a single config tag with attributes
     /// </summary>
-
     internal class ConfigHandler
     {
         public static void SaveConfig(string path = "")
@@ -36,10 +35,7 @@ namespace Songify_Slim
                 };
 
                 // Opneing the dialog and if the user clicked on "save" this code gets executed
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    WriteXml(saveFileDialog.FileName);
-                }
+                if (saveFileDialog.ShowDialog() == true) WriteXml(saveFileDialog.FileName);
             }
         }
 
@@ -115,16 +111,12 @@ namespace Songify_Slim
             }
 
             if (hidden)
-            {
                 // Get file info
                 // Put it back as hidden
                 myFile.Attributes |= FileAttributes.Hidden;
-            }
             else
-            {
                 // Remove the hidden attribute of the file
                 myFile.Attributes &= ~FileAttributes.Hidden;
-            }
         }
 
         public static void ReadXml(string path)
@@ -212,20 +204,13 @@ namespace Songify_Slim
                 };
 
                 // Opening the dialog and when the user hits "OK" the following code gets executed
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    ReadXml(openFileDialog.FileName);
-                }
+                if (openFileDialog.ShowDialog() == DialogResult.OK) ReadXml(openFileDialog.FileName);
 
                 // This will iterate through all windows of the software, if the window is typeof 
                 // Settingswindow (from there this class is called) it calls the method SetControls
                 foreach (Window window in Application.Current.Windows)
-                {
                     if (window.GetType() == typeof(Window_Settings))
-                    {
-                        ((Window_Settings)window).SetControls();
-                    }
-                }
+                        ((Window_Settings) window).SetControls();
             }
         }
     }

@@ -1,23 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Threading;
 using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.UserControls
 {
     /// <summary>
-    /// Interaktionslogik für UC_BotResponses.xaml
+    ///     Interaktionslogik für UC_BotResponses.xaml
     /// </summary>
     public partial class UC_BotResponses : UserControl
     {
@@ -42,21 +32,18 @@ namespace Songify_Slim.UserControls
         {
             Settings.BotRespMaxReq = tb_MaxSongs.Text;
             SetPreview(sender as TextBox);
-
         }
 
         private void tb_MaxLength_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespLength = tb_MaxLength.Text;
             SetPreview(sender as TextBox);
-
         }
 
         private void tb_Error_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespError = tb_Error.Text;
             SetPreview(sender as TextBox);
-
         }
 
         private void tb_Success_TextChanged(object sender, TextChangedEventArgs e)
@@ -76,6 +63,7 @@ namespace Songify_Slim.UserControls
         {
             SetPreview(sender as TextBox);
         }
+
         private void SetPreview(TextBox tb)
         {
             string response;
@@ -88,12 +76,12 @@ namespace Songify_Slim.UserControls
             response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
             response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
 
-            Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new Action(() =>
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() != typeof(Window_Botresponse)) continue;
-                    ((Window_Botresponse)window).lbl_Preview.Text = response;
+                    ((Window_Botresponse) window).lbl_Preview.Text = response;
                 }
             }));
         }
@@ -118,6 +106,5 @@ namespace Songify_Slim.UserControls
             tb_Success.Text = Settings.BotRespSuccess;
             tb_NoSong.Text = Settings.BotRespNoSong;
         }
-
     }
 }

@@ -1,18 +1,21 @@
 ﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Botresponse"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Songify_Slim.Properties"
-        mc:Ignorable="d"
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"        
-        Title="Bot Responses" Height="321.266" Width="629" Loaded="MetroWindow_Loaded" ResizeMode="NoResize"
-        d:DesignHeight="800">
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:Songify_Slim.Properties"
+                      mc:Ignorable="d"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      Title="Bot Responses" Height="321.266" Width="629" Loaded="MetroWindow_Loaded"
+                      ResizeMode="NoResize"
+                      d:DesignHeight="800">
     <Grid>
-        <TextBlock x:Name="lbl_Preview" VerticalAlignment="Top" Margin="10,239,15,0" Height="41" TextWrapping="Wrap"/>
-        <Label Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <ScrollViewer HorizontalAlignment="Left" Height="193" Margin="10,41,0,0" VerticalAlignment="Top" Width="596" d:DesignHeight="800">
-            <ContentControl x:Name="Cctrl" Content="ContentControl"/>
+        <TextBlock x:Name="lbl_Preview" VerticalAlignment="Top" Margin="10,239,15,0" Height="41" TextWrapping="Wrap" />
+        <Label Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="10,10,0,0"
+               VerticalAlignment="Top" />
+        <ScrollViewer HorizontalAlignment="Left" Height="193" Margin="10,41,0,0" VerticalAlignment="Top" Width="596"
+                      d:DesignHeight="800">
+            <ContentControl x:Name="Cctrl" Content="ContentControl" />
         </ScrollViewer>
 
     </Grid>

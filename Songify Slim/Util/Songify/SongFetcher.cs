@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,26 +11,25 @@ using Songify_Slim.Models;
 
 namespace Songify_Slim.Util.Songify
 {
-
     /// <summary>
-    /// This class is for retrieving data of currently playing songs
+    ///     This class is for retrieving data of currently playing songs
     /// </summary>
     internal class SongFetcher
     {
-        private string[] _songinfo;
-        private AutomationElement _parent;
         private static int _id;
-        private List<string> browsers = new List<string> { "chrome", "msedge", "opera" };
+        private readonly List<string> _browsers = new List<string> {"chrome", "msedge", "opera"};
+        private AutomationElement _parent;
+        private string[] _songinfo;
+
         /// <summary>
-        /// A method to fetch the song that's currently playing on Spotify.
-        /// returns null if unsuccessful and custom pause text is not set.
+        ///     A method to fetch the song that's currently playing on Spotify.
+        ///     returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
         public string[] FetchDesktopPlayer(string player)
         {
-            Process[] processes = Process.GetProcessesByName(player);
+            var processes = Process.GetProcessesByName(player);
             foreach (Process process in processes)
-            {
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     // If the process name is "Spotify" and the window title is not empty
@@ -40,50 +40,44 @@ namespace Songify_Slim.Util.Songify
                     {
                         case "Spotify":
                             // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
-                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" && wintitle != "Drag")
+                            if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" &&
+                                wintitle != "Drag")
                             {
                                 // Splitting the wintitle which is always Artist - Title
-                                _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                                _songinfo = wintitle.Split(new[] {" - "}, StringSplitOptions.None);
                                 try
                                 {
                                     artist = _songinfo[0].Trim();
                                     title = _songinfo[1].Trim();
                                     // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
                                     if (_songinfo.Length > 2)
-                                        extra = "(" + String.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
+                                        extra = "(" + string.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
                                 }
                                 catch (Exception ex)
                                 {
                                     Logger.LogExc(ex);
                                 }
 
-                                return new[] { artist, title, extra };
+                                return new[] {artist, title, extra};
                             }
                             // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
                             //if custom pause text is enabled and if so spit out custom text
 
                             if (Settings.Settings.CustomPauseTextEnabled)
-                            {
-                                return new[] { "", "", "" }; // (Settings.GetCustomPauseText(), "", "");
-                            }
+                                return new[] {"", "", ""}; // (Settings.GetCustomPauseText(), "", "");
                             break;
 
                         case "vlc":
                             //Splitting the wintitle which is always Artist - Title
 
                             if (!wintitle.Contains(" - VLC media player"))
-                            {
-                                if (Settings.Settings.CustomPauseTextEnabled)
-                                {
-                                    return new[] { Settings.Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
-                                }
-
-                                return new[] { "", "", "" };
-                            }
+                                return Settings.Settings.CustomPauseTextEnabled
+                                    ? new[] {Settings.Settings.CustomPauseText, "", ""}
+                                    : new[] {"", "", ""};
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
-                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                            _songinfo = wintitle.Split(new[] {" - "}, StringSplitOptions.None);
 
                             try
                             {
@@ -97,18 +91,20 @@ namespace Songify_Slim.Util.Songify
                             {
                                 Logger.LogExc(ex);
                             }
-                            return new[] { artist, title, extra };
+
+                            return new[] {artist, title, extra};
 
                         case "foobar2000":
                             // Splitting the wintitle which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
                             {
                                 if (Settings.Settings.CustomPauseTextEnabled)
-                                {
-                                    return new[] { Settings.Settings.CustomPauseText, "", "" }; // (Settings.GetCustomPauseText(), "", "");
-                                }
+                                    return new[]
+                                    {
+                                        Settings.Settings.CustomPauseText, "", ""
+                                    }; // (Settings.GetCustomPauseText(), "", "");
 
-                                return new[] { "", "", "" };
+                                return new[] {"", "", ""};
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -124,18 +120,19 @@ namespace Songify_Slim.Util.Songify
                             {
                                 Logger.LogExc(ex);
                             }
-                            return new[] { artist, title, extra };
+
+                            return new[] {artist, title, extra};
                     }
                 }
-            }
+
             return null;
         }
 
 
         /// <summary>
-        /// A method to fetch the song that's currently playing on Youtube.
-        /// returns empty string if unsuccessful and custom pause text is not set.
-        /// Currently supported browsers: Google Chrome
+        ///     A method to fetch the song that's currently playing on Youtube.
+        ///     returns empty string if unsuccessful and custom pause text is not set.
+        ///     Currently supported browsers: Google Chrome
         /// </summary>
         /// <param name="website"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
@@ -144,36 +141,29 @@ namespace Songify_Slim.Util.Songify
             string browser = "";
 
             // chrome, opera, msedge
-            foreach (string s in browsers)
+            foreach (string s in _browsers.Where(s => Process.GetProcessesByName(s).Length > 0))
             {
-                if (Process.GetProcessesByName(s).Length > 0)
-                {
-                    browser = s;
-                    break;
-                }
+                browser = s;
+                break;
             }
 
-            Process[] procsBrowser = Process.GetProcessesByName(browser);
+            var procsBrowser = Process.GetProcessesByName(browser);
 
             foreach (Process procBrowser in procsBrowser)
             {
                 // the chrome process must have a window
-                if (procBrowser.MainWindowHandle == IntPtr.Zero)
-                {
-                    continue;
-                }
+                if (procBrowser.MainWindowHandle == IntPtr.Zero) continue;
 
-                AutomationElement elm = _parent == null ? AutomationElement.FromHandle(procBrowser.MainWindowHandle) : _parent;
+                AutomationElement elm =
+                    _parent == null ? AutomationElement.FromHandle(procBrowser.MainWindowHandle) : _parent;
 
                 if (_id == 0)
-                {
                     // find the automation element
                     try
                     {
                         AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
                             new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
                         foreach (AutomationElement elem in elementCollection)
-                        {
                             // if the Tabitem Name contains Youtube
                             switch (website)
                             {
@@ -183,9 +173,10 @@ namespace Songify_Slim.Util.Songify
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
                                         // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                        return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
-
+                                        return FormattedString("YouTube",
+                                            Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                     }
+
                                     break;
 
                                 case "Deezer":
@@ -194,11 +185,10 @@ namespace Songify_Slim.Util.Songify
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
                                         return FormattedString("Deezer", elem.Current.Name);
-
                                     }
+
                                     break;
                             }
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -206,14 +196,13 @@ namespace Songify_Slim.Util.Songify
                         // Chrome has probably changed something, and above walking needs to be modified. :(
                         // put an assertion here or something to make sure you don't miss it
                     }
-                }
                 else
-                {
                     try
                     {
                         AutomationElement element =
                             elm.FindFirst(TreeScope.Descendants,
-                                new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.LookupById(_id)));
+                                new PropertyCondition(AutomationElement.ControlTypeProperty,
+                                    ControlType.LookupById(_id)));
 
                         // if the Tabitem Name contains Youtube
                         switch (website)
@@ -226,9 +215,10 @@ namespace Songify_Slim.Util.Songify
                                     _id = element.Current.ControlType.Id;
                                     _parent = TreeWalker.RawViewWalker.GetParent(element);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                    return FormattedString("YouTube", Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
-
+                                    return FormattedString("YouTube",
+                                        Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                 }
+
                                 break;
 
                             case "Deezer":
@@ -238,6 +228,7 @@ namespace Songify_Slim.Util.Songify
                                     _parent = TreeWalker.RawViewWalker.GetParent(element);
                                     return FormattedString("Deezer", element.Current.Name);
                                 }
+
                                 break;
                         }
                     }
@@ -245,8 +236,8 @@ namespace Songify_Slim.Util.Songify
                     {
                         // ignored
                     }
-                }
             }
+
             return "";
         }
 
@@ -279,33 +270,29 @@ namespace Songify_Slim.Util.Songify
         }
 
         /// <summary>
-        /// A method to fetch the song that is currently playing via NightBot Song Request.
-        /// Returns null if unsuccessful and custom pause text is not set.
-        /// Returns Error Message if NightBot ID is not set
+        ///     A method to fetch the song that is currently playing via NightBot Song Request.
+        ///     Returns null if unsuccessful and custom pause text is not set.
+        ///     Returns Error Message if NightBot ID is not set
         /// </summary>
         /// <returns>Returns String with currently playing NB Song Request</returns>
         public string FetchNightBot()
         {
             // Checking if the user has set the setting for Nightbot
-            if (!String.IsNullOrEmpty(Settings.Settings.NbUserId))
+            if (string.IsNullOrEmpty(Settings.Settings.NbUserId)) return "No NightBot ID set.";
+            // Getting JSON from the nightbot API
+            string jsn;
+            using (WebClient wc = new WebClient
             {
-                // Getting JSON from the nightbot API
-                string jsn;
-                using (WebClient wc = new WebClient()
-                {
-                    Encoding = Encoding.UTF8
-                })
-                {
-                    jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-                                            Settings.Settings.NbUserId);
-                }
-
-                // Deserialize JSON and get the current song 
-                NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-                return json._currentsong == null ? null : (string)json._currentsong.track.title;
+                Encoding = Encoding.UTF8
+            })
+            {
+                jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
+                                        Settings.Settings.NbUserId);
             }
 
-            return "No NightBot ID set.";
+            // Deserialize JSON and get the current song 
+            NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
+            return json._currentsong == null ? null : (string) json._currentsong.track.title;
         }
 
         public TrackInfo FetchSpotifyWeb()
@@ -320,12 +307,8 @@ namespace Songify_Slim.Util.Songify
             // gets the current playing songinfo
             TrackInfo songInfo = ApiHandler.GetSongInfo();
             // if no song is playing and custompausetext is enabled
-
-
-            if (songInfo == null) return new TrackInfo { isPlaying = false };
+            return songInfo ?? new TrackInfo {isPlaying = false};
             // return a new stringarray containing artist, title and so on
-            return songInfo;
-
         }
     }
 }

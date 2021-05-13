@@ -1,21 +1,20 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Songify_Slim
 {
-    class Logger
+    internal class Logger
     {
-        private static string logDirectoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
-        private static string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
+        private static readonly string logDirectoryPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
+
+        private static readonly string rootPath =
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
 
         private static void CreateLogDirectory()
         {
-            if (!Directory.Exists(logDirectoryPath))
-            {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+            if (!Directory.Exists(logDirectoryPath)) Directory.CreateDirectory(logDirectoryPath);
         }
 
         private static string GetLogFilePath(bool debug = false)
@@ -25,10 +24,7 @@ namespace Songify_Slim
 
             CreateLogDirectory();
 
-            if (!File.Exists(fileName))
-            {
-                File.Create(fileName);
-            }
+            if (!File.Exists(fileName)) File.Create(fileName);
 
             return fileName;
         }
@@ -40,26 +36,30 @@ namespace Songify_Slim
             string logFile = GetLogFilePath();
             try
             {
-                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
-                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
-                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
+                File.AppendAllText(logFile,
+                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
+                File.AppendAllText(logFile,
+                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
+                File.AppendAllText(logFile,
+                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
             }
             catch (Exception)
             {
-
             }
         }
 
-        public static void DebugLog(string msg, [CallerMemberName] string callingMethod = "", [CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
+        public static void DebugLog(string msg, [CallerMemberName] string callingMethod = "",
+            [CallerFilePath] string callingFilePath = "", [CallerLineNumber] int callingFileLineNumber = 0)
         {
             string logFile = GetLogFilePath(true);
             try
             {
-                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " + callingFileLineNumber + Environment.NewLine);
+                File.AppendAllText(logFile,
+                    DateTime.Now.ToString("hh:mm:ss") + ": " + msg + " " + callingMethod + "()" + "\t Line: " +
+                    callingFileLineNumber + Environment.NewLine);
             }
             catch
             {
-
             }
         }
 
@@ -73,7 +73,6 @@ namespace Songify_Slim
             }
             catch
             {
-
             }
         }
     }

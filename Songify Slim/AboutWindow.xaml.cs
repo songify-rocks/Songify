@@ -1,11 +1,11 @@
-﻿using MahApps.Metro.Controls;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows;
+using MahApps.Metro.Controls;
 
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaktionslogik für AboutWindow.xaml
+    ///     Interaktionslogik für AboutWindow.xaml
     /// </summary>
     public partial class AboutWindow : MetroWindow
     {

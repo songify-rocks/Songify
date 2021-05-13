@@ -3,31 +3,32 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:Dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
-                      StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed" ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="Manual">
+                      StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
+                      ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="Manual">
     <controls:MetroWindow.Resources>
-        <Style TargetType="{x:Type Dialog:MessageDialog}"
-       x:Key="NewCustomMessageDialogStyle"
-       BasedOn="{StaticResource {x:Type Dialog:BaseMetroDialog}}">
+        <Style TargetType="{x:Type dialog:MessageDialog}"
+               x:Key="NewCustomMessageDialogStyle"
+               BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Dialog:BaseMetroDialog}">
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
                         <ControlTemplate.Resources>
                             <Storyboard x:Key="DialogShownStoryboard">
                                 <DoubleAnimation AccelerationRatio=".9"
-                                            BeginTime="0:0:0"
-                                            Duration="0:0:0.2"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1" />
+                                                 BeginTime="0:0:0"
+                                                 Duration="0:0:0.2"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 To="1" />
                             </Storyboard>
                         </ControlTemplate.Resources>
                         <Grid Background="{TemplateBinding Background}">
                             <Border FocusVisualStyle="{x:Null}"
-                            Focusable="False">
+                                    Focusable="False">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -35,7 +36,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <ContentPresenter Grid.Row="0"
-                                                Content="{TemplateBinding DialogTop}" />
+                                                      Content="{TemplateBinding DialogTop}" />
                                     <Grid Grid.Row="1">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="10*" />
@@ -44,22 +45,22 @@
                                         </Grid.ColumnDefinitions>
                                         <!--  Content area  -->
                                         <Grid Grid.Column="1"
-                                        Margin="0 10 0 0">
+                                              Margin="0 10 0 0">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
                                             <TextBlock Grid.Row="0"
-                                                FontSize="{DynamicResource DialogTitleFontSize}"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Title}"
-                                                TextWrapping="Wrap" />
+                                                       FontSize="{DynamicResource DialogTitleFontSize}"
+                                                       Foreground="{TemplateBinding Foreground}"
+                                                       Text="{TemplateBinding Title}"
+                                                       TextWrapping="Wrap" />
                                             <ContentPresenter Grid.Row="1"
-                                                        Content="{TemplateBinding Content}" />
+                                                              Content="{TemplateBinding Content}" />
                                         </Grid>
                                     </Grid>
                                     <ContentPresenter Grid.Row="2"
-                                                Content="{TemplateBinding DialogBottom}" />
+                                                      Content="{TemplateBinding DialogBottom}" />
                                 </Grid>
                             </Border>
                         </Grid>
@@ -75,58 +76,72 @@
             </Setter>
         </Style>
 
-        <Style TargetType="{x:Type Dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
+        <Style TargetType="{x:Type dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
-
     <Grid>
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
-            <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175" Margin="10,11,0,0" Visibility="Hidden"/>
+            <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
+                   Margin="10,11,0,0" Visibility="Hidden" />
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
-                       Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" MaxHeight="185" />
+                       Text="Artist - Title" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"
+                       MaxWidth="400" MaxHeight="185" />
         </StackPanel>
-        <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
-            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Width="315"/>
+        <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0"
+                   ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
+            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Width="315" />
             <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,0">
                 <StackPanel Orientation="Horizontal">
                     <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©" Foreground="Black" />
                     <StatusBarItem x:Name="LblCopyrightLink" Foreground="Black" FontStyle="Italic">
-                        <Hyperlink NavigateUri="https://songify.rocks" RequestNavigate="Hyperlink_RequestNavigate" FontStyle="Normal" Foreground="Black">Songify.Rocks</Hyperlink>
+                        <Hyperlink NavigateUri="https://songify.rocks" RequestNavigate="Hyperlink_RequestNavigate"
+                                   FontStyle="Normal" Foreground="Black">
+                            Songify.Rocks
+                        </Hyperlink>
                     </StatusBarItem>
                 </StackPanel>
             </StatusBarItem>
         </StatusBar>
         <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,139,0">
             <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}"  Click="BtnWidget_Click"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit"  Click="MenuItem1Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="MenuItem1Click" />
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
-                <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Click="BtnTwitch_Click"/>
-                <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Click="BtnTwitch_Click" IsEnabled="False"/>
+                <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}"
+                          Click="BtnTwitch_Click" />
+                <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}"
+                          Click="BtnTwitch_Click" IsEnabled="False" />
             </MenuItem>
             <MenuItem Header="Songrequests">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Queue}">
-                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}" Click="Mi_Queue_Click" Tag="Window"/>
-                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click" Tag="Browser"/>
-                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}" Click="Mi_QueueClear_Click"/>
+                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}"
+                              Click="Mi_Queue_Click" Tag="Window" />
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click"
+                              Tag="Browser" />
+                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}"
+                              Click="Mi_QueueClear_Click" />
                 </MenuItem>
-                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}" Click="Mi_Blacklist_Click"/>
+                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}"
+                          Click="Mi_Blacklist_Click" />
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
-                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Tag="Window" Click="BtnHistory_Click"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser" Click="BtnHistory_Click"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Tag="Window"
+                          Click="BtnHistory_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser"
+                          Click="BtnHistory_Click" />
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
-                <MenuItem Header="Patreon"  Click="BtnPaypal_Click"/>
+                <MenuItem Header="Patreon" Click="BtnPaypal_Click" />
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
-                <MenuItem Header="FAQ" Click="BtnFAQ_Click"/>
-                <MenuItem Header="GitHub" Click="BtnGitHub_Click"/>
-                <MenuItem Header="Discord" Click="BtnDiscord_Click"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick"/>
+                <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
+                <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
+                <MenuItem Header="Discord" Click="BtnDiscord_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
             </MenuItem>
         </Menu>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124" SelectedIndex="0" IsTabStop="False" Padding="2" Margin="448,3,0,0"/>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124" SelectedIndex="0"
+                  IsTabStop="False" Padding="2" Margin="448,3,0,0" />
     </Grid>
 </controls:MetroWindow>

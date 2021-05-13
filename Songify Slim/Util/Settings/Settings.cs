@@ -5,38 +5,16 @@
     /// </summary>
     internal class Settings
     {
-
         public static string BotRespNoSong
         {
             get => GetBotRespNoSong();
             set => SetBotRespNoSong(value);
         }
-        
-        private static void SetBotRespNoSong(string value)
-        {
-            Properties.Settings.Default.bot_Resp_NoSong = value;
-            Properties.Settings.Default.Save();
-        }
 
-        private static string GetBotRespNoSong()
-        {
-            return Properties.Settings.Default.bot_Resp_NoSong;
-        }
         public static bool GuidedSetup
         {
             get => GetGuidedSetup();
             set => SetGuidedSetup(value);
-        }
-
-        private static void SetGuidedSetup(bool value)
-        {
-            Properties.Settings.Default.GuidedSetup = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetGuidedSetup()
-        {
-            return Properties.Settings.Default.GuidedSetup;
         }
 
         public static bool Debug
@@ -45,66 +23,22 @@
             set => SetDebug(value);
         }
 
-        private static void SetDebug(bool value)
-        {
-            Properties.Settings.Default.Debug = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetDebug()
-        {
-            return Properties.Settings.Default.Debug;
-        }
-
         public static int MaxSongLength
         {
             get => GetMaxSongLength();
             set => SetMaxSongLength(value);
         }
 
-        private static void SetMaxSongLength(int value)
-        {
-            Properties.Settings.Default.MaxSongLength = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetMaxSongLength()
-        {
-            return Properties.Settings.Default.MaxSongLength;
-        }
-        
         public static string ClientSecret
         {
             get => GetClientSecret();
             set => SetClientSecret(value);
         }
 
-        private static void SetClientSecret(string value)
-        {
-            Properties.Settings.Default.ClientSecret = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetClientSecret()
-        {
-            return Properties.Settings.Default.ClientSecret;
-        }
-
         public static string ClientId
         {
             get => GetClientId();
             set => SetClientId(value);
-        }
-
-        private static void SetClientId(string value)
-        {
-            Properties.Settings.Default.ClientID = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetClientId()
-        {
-            return Properties.Settings.Default.ClientID;
         }
 
 
@@ -114,32 +48,10 @@
             set => SetUseOwnApp(value);
         }
 
-        private static void SetUseOwnApp(bool value)
-        {
-            Properties.Settings.Default.UseOwnAppID = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetUseOwnApp()
-        {
-            return Properties.Settings.Default.UseOwnAppID;
-        }
-
         public static int SpaceCount
         {
             get => GetSpaceCount();
             set => SetSpaceCount(value);
-        }
-
-        private static void SetSpaceCount(int value)
-        {
-            Properties.Settings.Default.spaces = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetSpaceCount()
-        {
-            return Properties.Settings.Default.spaces;
         }
 
         public static bool AppendSpaces
@@ -148,32 +60,10 @@
             set => SetAppendSpaces(value);
         }
 
-        private static void SetAppendSpaces(bool value)
-        {
-            Properties.Settings.Default.spacesEnabled = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetAppendSpaces()
-        {
-            return Properties.Settings.Default.spacesEnabled;
-        }
-
         public static string BotRespSuccess
         {
             get => GetBot_Resp_Success();
             set => SetBot_Resp_Success(value);
-        }
-
-        private static void SetBot_Resp_Success(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Success = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_Success()
-        {
-            return Properties.Settings.Default.bot_Resp_Success;
         }
 
         public static string BotRespError
@@ -182,32 +72,10 @@
             set => SetBot_Resp_Error(value);
         }
 
-        private static void SetBot_Resp_Error(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Error = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_Error()
-        {
-            return Properties.Settings.Default.bot_Resp_Error;
-        }
-
         public static string BotRespMaxReq
         {
             get => GetBot_Resp_MaxReq();
             set => SetBot_Resp_MaxReq(value);
-        }
-
-        private static void SetBot_Resp_MaxReq(string value)
-        {
-            Properties.Settings.Default.bot_Resp_MaxReq = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_MaxReq()
-        {
-            return Properties.Settings.Default.bot_Resp_MaxReq;
         }
 
         public static string BotRespIsInQueue
@@ -216,49 +84,16 @@
             set => SetBot_Resp_IsInQueue(value);
         }
 
-        private static void SetBot_Resp_IsInQueue(string value)
-        {
-            Properties.Settings.Default.bot_Resp_IsInQueue = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_IsInQueue()
-        {
-            return Properties.Settings.Default.bot_Resp_IsInQueue;
-        }
-
         public static string BotRespLength
         {
             get => GetBot_Resp_Length();
             set => SetBot_Resp_Length(value);
         }
 
-        private static void SetBot_Resp_Length(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Length = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_Length()
-        {
-            return Properties.Settings.Default.bot_Resp_Length;
-        }
-
         public static string BotRespBlacklist
         {
             get => Getbot_Resp_Blacklist();
             set => Setbot_Resp_Blacklist(value);
-        }
-
-        private static void Setbot_Resp_Blacklist(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Blacklist = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string Getbot_Resp_Blacklist()
-        {
-            return Properties.Settings.Default.bot_Resp_Blacklist;
         }
 
         public static string Language
@@ -268,49 +103,16 @@
             set => SetLangauge(value);
         }
 
-        private static void SetLangauge(string value)
-        {
-            Properties.Settings.Default.language = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetLanguage()
-        {
-            return Properties.Settings.Default.language;
-        }
-
         public static string UserBlacklist
         {
             get => GetUserBlacklist();
             set => SetUserBlacklist(value);
         }
 
-        private static void SetUserBlacklist(string value)
-        {
-            Properties.Settings.Default.UserBlacklist = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetUserBlacklist()
-        {
-            return Properties.Settings.Default.UserBlacklist;
-        }
-
         public static string SpotifyDeviceId
         {
             get => GetSpotifyDeviceId();
             set => SetSpotifyDeviceId(value);
-        }
-
-        private static void SetSpotifyDeviceId(string value)
-        {
-            Properties.Settings.Default.SpotifyDeviceID = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetSpotifyDeviceId()
-        {
-            return Properties.Settings.Default.SpotifyDeviceID;
         }
 
         public static string AccessToken
@@ -525,6 +327,204 @@
 
         public static string Webua => GetWebua();
 
+        private static void SetBotRespNoSong(string value)
+        {
+            Properties.Settings.Default.bot_Resp_NoSong = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBotRespNoSong()
+        {
+            return Properties.Settings.Default.bot_Resp_NoSong;
+        }
+
+        private static void SetGuidedSetup(bool value)
+        {
+            Properties.Settings.Default.GuidedSetup = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetGuidedSetup()
+        {
+            return Properties.Settings.Default.GuidedSetup;
+        }
+
+        private static void SetDebug(bool value)
+        {
+            Properties.Settings.Default.Debug = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetDebug()
+        {
+            return Properties.Settings.Default.Debug;
+        }
+
+        private static void SetMaxSongLength(int value)
+        {
+            Properties.Settings.Default.MaxSongLength = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetMaxSongLength()
+        {
+            return Properties.Settings.Default.MaxSongLength;
+        }
+
+        private static void SetClientSecret(string value)
+        {
+            Properties.Settings.Default.ClientSecret = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetClientSecret()
+        {
+            return Properties.Settings.Default.ClientSecret;
+        }
+
+        private static void SetClientId(string value)
+        {
+            Properties.Settings.Default.ClientID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetClientId()
+        {
+            return Properties.Settings.Default.ClientID;
+        }
+
+        private static void SetUseOwnApp(bool value)
+        {
+            Properties.Settings.Default.UseOwnAppID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetUseOwnApp()
+        {
+            return Properties.Settings.Default.UseOwnAppID;
+        }
+
+        private static void SetSpaceCount(int value)
+        {
+            Properties.Settings.Default.spaces = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetSpaceCount()
+        {
+            return Properties.Settings.Default.spaces;
+        }
+
+        private static void SetAppendSpaces(bool value)
+        {
+            Properties.Settings.Default.spacesEnabled = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetAppendSpaces()
+        {
+            return Properties.Settings.Default.spacesEnabled;
+        }
+
+        private static void SetBot_Resp_Success(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Success = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Success()
+        {
+            return Properties.Settings.Default.bot_Resp_Success;
+        }
+
+        private static void SetBot_Resp_Error(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Error = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Error()
+        {
+            return Properties.Settings.Default.bot_Resp_Error;
+        }
+
+        private static void SetBot_Resp_MaxReq(string value)
+        {
+            Properties.Settings.Default.bot_Resp_MaxReq = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_MaxReq()
+        {
+            return Properties.Settings.Default.bot_Resp_MaxReq;
+        }
+
+        private static void SetBot_Resp_IsInQueue(string value)
+        {
+            Properties.Settings.Default.bot_Resp_IsInQueue = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_IsInQueue()
+        {
+            return Properties.Settings.Default.bot_Resp_IsInQueue;
+        }
+
+        private static void SetBot_Resp_Length(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Length = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Length()
+        {
+            return Properties.Settings.Default.bot_Resp_Length;
+        }
+
+        private static void Setbot_Resp_Blacklist(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Blacklist = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string Getbot_Resp_Blacklist()
+        {
+            return Properties.Settings.Default.bot_Resp_Blacklist;
+        }
+
+        private static void SetLangauge(string value)
+        {
+            Properties.Settings.Default.language = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetLanguage()
+        {
+            return Properties.Settings.Default.language;
+        }
+
+        private static void SetUserBlacklist(string value)
+        {
+            Properties.Settings.Default.UserBlacklist = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetUserBlacklist()
+        {
+            return Properties.Settings.Default.UserBlacklist;
+        }
+
+        private static void SetSpotifyDeviceId(string value)
+        {
+            Properties.Settings.Default.SpotifyDeviceID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetSpotifyDeviceId()
+        {
+            return Properties.Settings.Default.SpotifyDeviceID;
+        }
+
         private static string GetAccessToken()
         {
             return Properties.Settings.Default.AccessToken;
@@ -721,8 +721,8 @@
         {
             Properties.Settings.Default.AutoClearQueue = value;
             Properties.Settings.Default.Save();
-
         }
+
         private static void SetAutostart(bool autostart)
         {
             Properties.Settings.Default.autostart = autostart;
@@ -800,6 +800,7 @@
             Properties.Settings.Default.PosY = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetRefreshToken(string value)
         {
             Properties.Settings.Default.RefreshToken = value;
@@ -853,6 +854,7 @@
             Properties.Settings.Default.TwAutoConnect = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwChannel(string value)
         {
             Properties.Settings.Default.TwChannel = value;
@@ -882,16 +884,19 @@
             Properties.Settings.Default.TwSRCooldown = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSrMaxReq(int value)
         {
             Properties.Settings.Default.TwSRMaxReq = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSrReward(bool value)
         {
             Properties.Settings.Default.TwSRReward = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetUpload(bool uploadsong)
         {
             Properties.Settings.Default.uploadSonginfo = uploadsong;
@@ -903,6 +908,7 @@
             Properties.Settings.Default.UploadHistory = history;
             Properties.Settings.Default.Save();
         }
+
         private static void SetUuid(string uuid)
         {
             Properties.Settings.Default.uuid = uuid;

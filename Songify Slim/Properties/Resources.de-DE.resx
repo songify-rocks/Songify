@@ -308,10 +308,10 @@
     <value>Speichern</value>
   </data>
   <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>Speichern startet automatisch neu!</value>
+    <value>Speichern startet automatisch neu! DIES MUSS NUR EIN MAL DURCHGEFÜHRT WERDEN! NICHT AUF "SPEICHERN" KLICKEN WENN SONGIFY NEUGESTARTET &amp; DER SPOTIFY ACCOUNT GELINKT WURDE!</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Eigene Spotify AppID nutzen</value>
+    <value>Songifys Spotify AppID nutzen</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>Mit Windows starten</value>
@@ -351,5 +351,11 @@
   </data>
   <data name="sw_tc_System" xml:space="preserve">
     <value>Allgemein</value>
+  </data>
+  <data name="lang_ru" xml:space="preserve">
+    <value>Russisch</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Eigene Spotify AppID nutzen</value>
   </data>
 </root>

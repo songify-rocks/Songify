@@ -1,27 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Songify_Slim.Util.Settings;
+using Application = System.Windows.Application;
+using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Songify_Slim.GuidedSetup
 {
     /// <summary>
-    /// Interaction logic for UC_Setup_4.xaml
+    ///     Interaction logic for UC_Setup_4.xaml
     /// </summary>
     public partial class UC_Setup_4 : UserControl
     {
@@ -35,15 +24,10 @@ namespace Songify_Slim.GuidedSetup
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-
             // assing mw to mainwindow for calling methods and setting texts etc
-            foreach (Window window in System.Windows.Application.Current.Windows)
-            {
+            foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(Window_GuidedSetup))
-                {
                     _mW = window;
-                }
-            }
 
             // Sets all the controls from settings
             if (!string.IsNullOrEmpty(Settings.Directory))
@@ -51,10 +35,10 @@ namespace Songify_Slim.GuidedSetup
             ChbxCustomPause.IsChecked = Settings.CustomPauseTextEnabled;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
-            ChbxUpload.IsChecked = Settings.Upload;
-            ChbxCover.IsChecked = Settings.DownloadCover;
-            ChbxSplit.IsChecked = Settings.SplitOutput;
-            ChbxSplit.IsChecked = Settings.SplitOutput;
+            ChbxUpload.IsOn = Settings.Upload;
+            ChbxCover.IsOn = Settings.DownloadCover;
+            ChbxSplit.IsOn = Settings.SplitOutput;
+            ChbxSplit.IsOn = Settings.SplitOutput;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
         }
@@ -65,14 +49,14 @@ namespace Songify_Slim.GuidedSetup
             _fbd.Description = @"Path where the text file will be located.";
             _fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
 
-            if (_fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+            if (_fbd.ShowDialog() == DialogResult.Cancel)
                 return;
             TxtbxOutputdirectory.Text = _fbd.SelectedPath;
             Settings.Directory = _fbd.SelectedPath;
         }
 
 
-        private void AppendText(System.Windows.Controls.TextBox tb, string text)
+        private void AppendText(TextBox tb, string text)
         {
             // Appends Rightclick-Text from the output text box (parameters)
             tb.AppendText(text);
@@ -98,6 +82,7 @@ namespace Songify_Slim.GuidedSetup
             // appends text
             AppendText(TxtbxOutputformat, "{title}");
         }
+
         private void MenuBtnReq_Click(object sender, RoutedEventArgs e)
         {
             // appends text
@@ -109,44 +94,41 @@ namespace Songify_Slim.GuidedSetup
             // write custom output format to settings
             Settings.OutputString = TxtbxOutputformat.Text;
         }
+
         private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
         {
             // enables / disables custom pause
             if (ChbxCustomPause.IsChecked == null) return;
             Settings.CustomPauseTextEnabled = (bool)ChbxCustomPause.IsChecked;
             if (!(bool)ChbxCustomPause.IsChecked)
-            {
                 TxtbxCustompausetext.IsEnabled = false;
-            }
             else
-            {
                 TxtbxCustompausetext.IsEnabled = true;
-            }
         }
+
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables upload
-            if (ChbxUpload.IsChecked != null)
-                Settings.Upload = (bool)ChbxUpload.IsChecked;
+            Settings.Upload = (bool)ChbxUpload.IsOn;
         }
 
         private void ChbxCover_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (ChbxCover.IsChecked == null) return;
-            Settings.DownloadCover = (bool)ChbxCover.IsChecked;
+            Settings.DownloadCover = (bool)ChbxCover.IsOn;
         }
+
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            if (ChbxSplit.IsChecked == null) return;
-            if (ChbxCover.IsChecked != null) Settings.SplitOutput = (bool)ChbxCover.IsChecked;
+            Settings.SplitOutput = (bool)ChbxCover.IsOn;
         }
 
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
         {
             if (ChbxSpaces.IsChecked != null) Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
         }
+
         private void nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (nud_Spaces.Value != null) Settings.SpaceCount = (int)nud_Spaces.Value;
@@ -162,9 +144,9 @@ namespace Songify_Slim.GuidedSetup
         {
             if (!IsLoaded)
                 return;
-            var scrollViewer = (ScrollViewer) sender;
+            ScrollViewer scrollViewer = (ScrollViewer)sender;
             if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-                ((Window_GuidedSetup) _mW).btn_Next.IsEnabled = true;
+                ((Window_GuidedSetup)_mW).btn_Next.IsEnabled = true;
         }
     }
 }

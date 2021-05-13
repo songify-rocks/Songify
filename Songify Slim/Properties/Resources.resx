@@ -169,7 +169,7 @@
     <value>English</value>
   </data>
   <data name="mw_menu_Blacklist" xml:space="preserve">
-    <value>Blacklist</value>
+    <value>Blocklist</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
     <value>Connect</value>
@@ -308,10 +308,10 @@
     <value>Save</value>
   </data>
   <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>Saving will restart Songify!</value>
+    <value>Saving will restart Songify! THIS ONLY NEEDS TO BE DONE ONCE! DO NOT HIT SAVE AFTER RESTARTING AND LINKING YOUR ACCOUNT AGAIN!</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Use Songify AppID</value>
+    <value>Use Own AppID</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>autostart with windows</value>
@@ -351,5 +351,11 @@
   </data>
   <data name="sw_tc_System" xml:space="preserve">
     <value>System</value>
+  </data>
+  <data name="lang_ru" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Use Songify AppID</value>
   </data>
 </root>

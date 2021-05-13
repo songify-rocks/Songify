@@ -1,21 +1,21 @@
 ﻿using System.IO;
 using System.Reflection;
-using Songify_Slim.GuidedSetup;
 using System.Windows;
-using System.Windows.Media.Animation;
 using MahApps.Metro.Controls;
-using Settings = Songify_Slim.Util.Settings.Settings;
+using Songify_Slim.GuidedSetup;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {
     /// <summary>
-    /// Interaktionslogik für Window_GuidedSetup.xaml
+    ///     Interaktionslogik für Window_GuidedSetup.xaml
     /// </summary>
     public partial class Window_GuidedSetup
     {
+        private readonly int _maxSteps = 5;
+
         // Steps: 0 = Welcome, 1 = EULA, 2 = Setup Yes/No, 3 = General Settings, 4 = Spotify Setup, 5 = Finish
-        private int _step = 0;
-        private int _maxSteps = 5;
+        private int _step;
 
 
         public Window_GuidedSetup()
@@ -48,32 +48,31 @@ namespace Songify_Slim
                     if (!Settings.GuidedSetup)
                     {
                         new MainWindow().Show();
-                        this.Close();
+                        Close();
                     }
+
                     tsControl.Content = new UC_Setup_3();
                     break;
                 case 3:
                     tsControl.Content = new UC_Setup_4();
-                    this.btn_Next.IsEnabled = false;
+                    btn_Next.IsEnabled = false;
                     break;
                 case 4:
                     tsControl.Content = new UC_Setup_5();
                     btn_Next.Content = "Finish";
                     break;
                 case 5:
-                    ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+                    ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml",
+                        true);
                     new MainWindow().Show();
-                    this.Close();
+                    Close();
                     break;
             }
         }
 
         private void btn_Next_Click(object sender, RoutedEventArgs e)
         {
-            if (_step >= _maxSteps)
-            {
-                return;
-            }
+            if (_step >= _maxSteps) return;
 
             tsControl.Transition = TransitionType.Left;
             _step++;

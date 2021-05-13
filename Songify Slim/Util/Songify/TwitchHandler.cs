@@ -10,6 +10,7 @@ using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
+using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 
 namespace Songify_Slim.Util.Songify
@@ -18,10 +19,11 @@ namespace Songify_Slim.Util.Songify
     public static class TwitchHandler
     {
         public static TwitchClient Client;
-        public static bool OnCooldown;
-        public static Timer CooldownTimer = new Timer
+        private static bool _onCooldown;
+
+        private static readonly Timer CooldownTimer = new Timer
         {
-            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds,
+            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
         };
 
         public static void BotConnect()
@@ -29,24 +31,22 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 // Checks if twitch credentials are present
-                if (string.IsNullOrEmpty(Settings.Settings.TwAcc) || string.IsNullOrEmpty(Settings.Settings.TwOAuth) || string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                if (string.IsNullOrEmpty(Settings.Settings.TwAcc) || string.IsNullOrEmpty(Settings.Settings.TwOAuth) ||
+                    string.IsNullOrEmpty(Settings.Settings.TwChannel))
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (Window window in Application.Current.Windows)
-                        {
                             if (window.GetType() == typeof(MainWindow))
-                            {
                                 //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                                ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
-                            }
-                        }
+                                ((MainWindow) window).LblStatus.Content = "Please fill in Twitch credentials.";
                     });
                     return;
                 }
 
                 // creates new connection based on the credentials in settings
-                ConnectionCredentials credentials = new ConnectionCredentials(Settings.Settings.TwAcc, Settings.Settings.TwOAuth);
+                ConnectionCredentials credentials =
+                    new ConnectionCredentials(Settings.Settings.TwAcc, Settings.Settings.TwOAuth);
                 ClientOptions clientOptions = new ClientOptions
                 {
                     MessagesAllowedInPeriod = 750,
@@ -69,10 +69,9 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogStr("Couldn't connect to Twitch, mabe credentials are wrong?");
             }
-
         }
 
-        private static void _client_OnDisconnected(object sender, TwitchLib.Communication.Events.OnDisconnectedEventArgs e)
+        private static void _client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
             // Disconnected
             Application.Current.Dispatcher.Invoke(() =>
@@ -81,12 +80,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (window.GetType() != typeof(MainWindow))
                         continue;
-
                     //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                    ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
-                    ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
-                    ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
-
+                    ((MainWindow) window).LblStatus.Content = "Disconnected from Twitch";
+                    ((MainWindow) window).mi_TwitchConnect.IsEnabled = true;
+                    ((MainWindow) window).mi_TwitchDisconnect.IsEnabled = false;
                 }
             });
 
@@ -96,7 +93,7 @@ namespace Songify_Slim.Util.Songify
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Resets the cooldown for the !ssr command
-            OnCooldown = false;
+            _onCooldown = false;
             CooldownTimer.Stop();
         }
 
@@ -111,11 +108,10 @@ namespace Songify_Slim.Util.Songify
                         continue;
 
                     //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Green);
-                    ((MainWindow)window).LblStatus.Content = "Connected to Twitch";
-                    ((MainWindow)window).mi_TwitchConnect.IsEnabled = false;
-                    ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
+                    ((MainWindow) window).LblStatus.Content = "Connected to Twitch";
+                    ((MainWindow) window).mi_TwitchConnect.IsEnabled = false;
+                    ((MainWindow) window).mi_TwitchDisconnect.IsEnabled = true;
                 }
-
             });
             Logger.LogStr("Connected to Twitch");
         }
@@ -123,7 +119,6 @@ namespace Songify_Slim.Util.Songify
         private static void _client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             if (Settings.Settings.MsgLoggingEnabled)
-            {
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
                 if (e.ChatMessage.CustomRewardId != null)
                 {
@@ -132,15 +127,10 @@ namespace Songify_Slim.Util.Songify
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (Window window in Application.Current.Windows)
-                        {
                             if (window.GetType() == typeof(Window_Settings))
-                            {
-                                ((Window_Settings)window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
-                            }
-                        }
+                                ((Window_Settings) window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
                     });
                 }
-            }
 
             // if the reward is the same with the desired reward for the requests 
             if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
@@ -188,9 +178,8 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        string response;
                         // if no track has been found inform the requester
-                        response = Settings.Settings.BotRespError;
+                        string response = Settings.Settings.BotRespError;
                         response = response.Replace("{user}", e.ChatMessage.DisplayName);
                         response = response.Replace("{artist}", "");
                         response = response.Replace("{title}", "");
@@ -201,11 +190,12 @@ namespace Songify_Slim.Util.Songify
                         return;
                     }
                 }
+
                 return;
             }
 
             // Same code from above but it reacts to a command instead of rewards
-            if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
+            if (!Settings.Settings.TwSrCommand || !e.ChatMessage.Message.StartsWith("!ssr")) return;
             {
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
@@ -215,10 +205,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // if onCooldown skip
-                if (OnCooldown)
-                {
-                    return;
-                }
+                if (_onCooldown) return;
 
                 if (ApiHandler.Spotify == null)
                 {
@@ -239,6 +226,7 @@ namespace Songify_Slim.Util.Songify
                     StartCooldown();
                     return;
                 }
+
                 if (msgSplit[1].StartsWith("spotify:track:"))
                 {
                     // search for a track with the id
@@ -267,9 +255,8 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        string response;
                         // if no track has been found inform the requester
-                        response = Settings.Settings.BotRespError;
+                        string response = Settings.Settings.BotRespError;
                         response = response.Replace("{user}", e.ChatMessage.DisplayName);
                         response = response.Replace("{artist}", "");
                         response = response.Replace("{title}", "");
@@ -280,36 +267,31 @@ namespace Songify_Slim.Util.Songify
                         return;
                     }
                 }
+
                 // start the command cooldown
                 StartCooldown();
             }
-
         }
 
         private static bool IsUserBlocked(string displayName)
         {
-            string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
+            string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] {"|||"}, StringSplitOptions.None);
 
             // checks if one of the artist in the requested song is on the blacklist
-            foreach (string s in userBlacklist)
-            {
-                if (s == displayName)
-                    return true;
-            }
-            return false;
+            return userBlacklist.Any(s => s == displayName);
         }
 
         private static void StartCooldown()
         {
             // starts the cooldown on the command
-            OnCooldown = true;
+            _onCooldown = true;
             CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
             CooldownTimer.Start();
         }
 
         private static string CleanFormatString(string currSong)
         {
-            RegexOptions options = RegexOptions.None;
+            const RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
             currSong = currSong.Trim();
@@ -320,14 +302,13 @@ namespace Songify_Slim.Util.Songify
         private static void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings
-            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
+            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] {"|||"}, StringSplitOptions.None);
             string response;
             // gets the track information using spotify api
             FullTrack track = ApiHandler.GetTrack(trackId);
 
             // checks if one of the artist in the requested song is on the blacklist
             foreach (string s in blacklist)
-            {
                 if (Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1)
                 {
                     // if artist is on blacklist, skip and inform requester
@@ -342,7 +323,6 @@ namespace Songify_Slim.Util.Songify
                     Client.SendMessage(e.ChatMessage.Channel, response);
                     return;
                 }
-            }
 
             // checks if song length is longer or equal to 10 minutes
             if (track.DurationMs >= TimeSpan.FromMinutes(Settings.Settings.MaxSongLength).TotalMilliseconds)
@@ -434,6 +414,7 @@ namespace Songify_Slim.Util.Songify
                     if (window.GetType() == typeof(Window_Queue))
                         qw = window;
                 }
+
                 if (mw != null)
                     (mw as MainWindow)?.ReqList.Add(new RequestObject
                     {
@@ -445,29 +426,23 @@ namespace Songify_Slim.Util.Songify
                     });
 
                 if (qw != null)
-                {
                     //(qw as Window_Queue).dgv_Queue.ItemsSource.
                     (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
-                }
             });
         }
 
-        public static string FormattedTime(int duration)
+        private static string FormattedTime(int duration)
         {
             // duration in milliseconds gets converted to mm:ss
-            string minutes, seconds;
+            string seconds;
 
             TimeSpan t = TimeSpan.FromMilliseconds(duration);
-            minutes = t.Minutes.ToString();
+            string minutes = t.Minutes.ToString();
 
             if (t.Seconds < 10)
-            {
                 seconds = "0" + t.Seconds;
-            }
             else
-            {
                 seconds = t.Seconds.ToString();
-            }
 
             return minutes + ":" + seconds;
         }
@@ -477,14 +452,12 @@ namespace Songify_Slim.Util.Songify
             string artists = "";
             int counter = 0;
             // put all artists from the song in one string
-            foreach (SimpleArtist artist in track.Artists)
+            foreach (SimpleArtist artist in track.Artists.Where(artist => counter <= 3))
             {
-                if (counter <= 3)
-                {
-                    artists += artist.Name + ", ";
-                    counter++;
-                }
+                artists += artist.Name + ", ";
+                counter++;
             }
+
             // remove the last ", "
             artists = artists.Remove(artists.Length - 2, 2);
 
@@ -497,47 +470,28 @@ namespace Songify_Slim.Util.Songify
         private static bool IsInQueue(string id)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<RequestObject> temp = new List<RequestObject>();
+            var temp = new List<RequestObject>();
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (Window window in Application.Current.Windows)
-                {
                     if (window.GetType() == typeof(MainWindow))
-                    {
                         temp = (window as MainWindow)?.ReqList.FindAll(x => x.TrackID == id);
-                    }
-                }
             });
-
-            if (temp.Count > 0)
-            {
-                return true;
-            }
-
-            return false;
+            return temp.Count > 0;
         }
 
         private static bool MaxQueueItems(string requester)
         {
             // Checks if the requester already reached max songrequests
-            List<RequestObject> temp = new List<RequestObject>();
+            var temp = new List<RequestObject>();
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (Window window in Application.Current.Windows)
-                {
                     if (window.GetType() == typeof(MainWindow))
-                    {
                         temp = (window as MainWindow)?.ReqList.FindAll(x => x.Requester == requester);
-                    }
-                }
             });
 
-            if (temp.Count < Settings.Settings.TwSrMaxReq)
-            {
-                return false;
-            }
-
-            return true;
+            return temp.Count >= Settings.Settings.TwSrMaxReq;
         }
     }
 }

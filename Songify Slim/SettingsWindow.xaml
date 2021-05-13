@@ -1,192 +1,302 @@
 ﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Settings"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:local="clr-namespace:Songify_Slim.Properties"
-        mc:Ignorable="d"
-        Title="Settings" Height="334.856" Width="572" Loaded="SettingsWindow_Loaded" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:local="clr-namespace:Songify_Slim.Properties"
+                      mc:Ignorable="d"
+                      Title="Settings" Height="376.058" Width="662.643" Loaded="SettingsWindow_Loaded"
+                      ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
-        <TabControl Margin="10,10,10,21" TabStripPlacement="Left">
+        <controls:MetroAnimatedTabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">
                 <Grid>
-                    <Label Content="{x:Static local:Resources.sw_tcSystem_lblLangauge}" Width="100" Margin="10,11,286,199" Padding="0,5,5,5"/>
-                    <ComboBox x:Name="cbx_Language" HorizontalAlignment="Left" VerticalAlignment="Top" Width="147" Margin="228,11,0,0" SelectionChanged="ComboBox_SelectionChanged">
-                        <ComboBoxItem Content="{x:Static local:Resources.lang_en}"/>
-                        <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}"/>
+                    <Label Content="{x:Static local:Resources.sw_tcSystem_lblLangauge}"
+                           Margin="10,11,286,199" Padding="0,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <ComboBox x:Name="cbx_Language" HorizontalAlignment="Left" VerticalAlignment="Top" Width="141"
+                              Margin="330,11,0,0" SelectionChanged="ComboBox_SelectionChanged">
+                        <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
+                        <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}" />
+                        <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
                     </ComboBox>
-
-                    <controls:ToggleSwitch x:Name="ChbxAutostart" Content="{x:Static local:Resources.sw_tcSystem_Autostart}" HorizontalAlignment="Left" Header="{x:Static local:Resources.sw_tcSystem_Behavior}"
-                              Margin="10,64,0,0" VerticalAlignment="Top" Checked="ChbxAutostartChecked"
-                              Unchecked="ChbxAutostartChecked" Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI Semibold" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="366" />
-                    <controls:ToggleSwitch x:Name="ChbxMinimizeSystray" Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,115,0,0"
-                              Checked="ChbxMinimizeSystrayChecked" Unchecked="ChbxMinimizeSystrayChecked"
-                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="366" />
-                    <controls:ToggleSwitch x:Name="ChbxTelemetry" Content="{x:Static local:Resources.sw_tcSystem_SendAnonData}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,155,0,0" Header="{x:Static local:Resources.sw_tcSystem_Telemetry}"
-                                           Width="366" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI Semibold" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Height="49" IsCheckedChanged="ChbxTelemetry_IsCheckedChanged"/>
-
+                    <controls:ToggleSwitch x:Name="ChbxAutostart"
+                                           Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
+                                           HorizontalAlignment="Left"
+                                           Header="{x:Static local:Resources.sw_tcSystem_Behavior}"
+                                           Margin="10,64,0,0" VerticalAlignment="Top" Toggled="ChbxAutostartChecked"
+                                            Focusable="False" FontFamily="Segoe UI"
+                                            FontSize="12"
+                                           ContentPadding="0"
+                                            Width="467" Padding="0" BorderThickness="0" />
+                    <controls:ToggleSwitch x:Name="ChbxMinimizeSystray"
+                                           Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,119,0,0"
+                                           Toggled="ChbxMinimizeSystrayChecked" 
+                                           Focusable="False" FontFamily="Segoe UI" 
+                                           FontSize="12"
+                                          ContentPadding="0"
+                                            Width="467" Height="32" />
+                    <controls:ToggleSwitch x:Name="ChbxTelemetry"
+                                           Content="{x:Static local:Resources.sw_tcSystem_SendAnonData}"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,155,0,0"
+                                           Header="{x:Static local:Resources.sw_tcSystem_Telemetry}"
+                                           Width="467" FontFamily="Segoe UI" 
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Height="49"
+                                           Toggled="ChbxTelemetry_IsCheckedChanged" />
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="262,210,0,0"
-                            Click="BtnUpdatesClick" Height="17" VerticalAlignment="Top" HorizontalAlignment="Left" Width="114" Visibility="Hidden" />
-                    <Label Content="?" HorizontalAlignment="Left" Margin="59,150,0,0" VerticalAlignment="Top" Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}"/>
-                    <Label Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="9,209,0,0" Padding="0,5,5,5"/>
-                    <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="255,209,0,0" ValueChanged="NudChrome_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" />
-
-
+                            Click="BtnUpdatesClick" Height="17" VerticalAlignment="Top" HorizontalAlignment="Left"
+                            Width="114" Visibility="Hidden" />
+                    <Label Content="?" HorizontalAlignment="Left" Margin="67,151,0,0" VerticalAlignment="Top"
+                           Width="26" HorizontalContentAlignment="Center" ToolTip="{DynamicResource collectable_data}" />
+                    <Label Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Margin="9,209,0,0" Padding="0,5,5,5" />
+                    <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1"
+                                            NumericInputMode="Numbers" Margin="376,209,0,0"
+                                            ValueChanged="NudChrome_ValueChanged" Height="28"
+                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="95" />
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Output}">
                 <Grid>
-                    <Label Content="{x:Static local:Resources.sw_tcOutput_Directory}" HorizontalAlignment="Left" Margin="9,11,0,0"
+                    <Label Content="{x:Static local:Resources.sw_tcOutput_Directory}" HorizontalAlignment="Left"
+                           Margin="9,11,0,0"
                            VerticalAlignment="Top" />
-                    <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="112,11,0,0"
+                    <TextBox x:Name="TxtbxOutputdirectory" HorizontalAlignment="Left" Height="23" Margin="219,11,0,0"
                              TextWrapping="Wrap" VerticalAlignment="Top" Width="195" IsReadOnly="True" />
-                    <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="312,10,0,0"
+                    <Button x:Name="BtnOutputdirectory" Content="..." HorizontalAlignment="Left" Margin="419,10,0,0"
                             VerticalAlignment="Top" Width="27" Click="BtnOutputdirectoryClick"
                             RenderTransformOrigin="-1.138,0.407" />
-                    <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="344,10,0,0"
+                    <Button x:Name="BtnCopyToClip" HorizontalAlignment="Left" Margin="451,10,0,0"
                             VerticalAlignment="Top" Width="28" Click="BtnCopyToClipClick" Padding="5"
                             Focusable="False" ToolTip="Copy to Clipboard" Height="27">
 
                         <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
 
                     </Button>
-                    <Label Content="{x:Static local:Resources.sw_tcOutput_Fromat}" HorizontalAlignment="Left" Margin="9,42,0,0" VerticalAlignment="Top"/>
-                    <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="112,43,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" TextChanged="TxtbxOutputformat_TextChanged">
+                    <Label Content="{x:Static local:Resources.sw_tcOutput_Fromat}" HorizontalAlignment="Left"
+                           Margin="9,42,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="219,43,0,0"
+                             TextWrapping="Wrap" VerticalAlignment="Top" Width="260"
+                             TextChanged="TxtbxOutputformat_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click"/>
-                                <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click"/>
-                                <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click"/>
-                                <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click"/>
+                                <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click" />
+                                <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click" />
+                                <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click" />
+                                <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click" />
                             </ContextMenu>
                         </TextBox.ContextMenu>
                     </TextBox>
 
-                    <CheckBox x:Name="ChbxCustomPause" Content="{x:Static local:Resources.sw_tcOutput_PauseText}" HorizontalAlignment="Left"
-                              Margin="15,108,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked" Focusable="False" Unchecked="ChbxCustompauseChecked" />
-                    <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="260" Margin="112,105,0,0" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}" TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
-                    <controls:ToggleSwitch x:Name="ChbxUpload" Content="{x:Static local:Resources.sw_tcOutput_UploadSongInfo}" HorizontalAlignment="Left"
-                              Margin="15,136,0,0" VerticalAlignment="Top" Checked="ChbxUpload_Checked" Unchecked="ChbxUpload_Checked"
-                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" />
-                    <controls:ToggleSwitch x:Name="ChbxCover" Content="{x:Static local:Resources.sw_tcOutput_DownloadAlbum}" HorizontalAlignment="Left"
-                                           Margin="15,177,0,0" VerticalAlignment="Top" 
-                                           Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxCover_Checked" Unchecked="ChbxCover_Checked" />
-                    <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="344,140,0,0" VerticalAlignment="Top" Width="28" Click="BtnCopyURL_Click">
+                    <CheckBox x:Name="ChbxCustomPause" Content="{x:Static local:Resources.sw_tcOutput_PauseText}"
+                              HorizontalAlignment="Left"
+                              Margin="15,108,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked"
+                              Focusable="False" Unchecked="ChbxCustompauseChecked" />
+                    <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
+                             VerticalAlignment="Top" Width="260" Margin="219,105,0,0"
+                             controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
+                             TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
+                    <controls:ToggleSwitch x:Name="ChbxUpload"
+                                           Content="{x:Static local:Resources.sw_tcOutput_UploadSongInfo}"
+                                           HorizontalAlignment="Left"
+                                           Margin="15,136,0,0" VerticalAlignment="Top" Toggled="ChbxUpload_Checked"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="431" Height="36" ContentDirection="RightToLeft" />
+                    <controls:ToggleSwitch x:Name="ChbxCover"
+                                           Content="{x:Static local:Resources.sw_tcOutput_DownloadAlbum}"
+                                           HorizontalAlignment="Left"
+                                           Margin="15,177,0,0" VerticalAlignment="Top"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="431" Height="36"
+                                           Toggled="ChbxCover_Checked" />
+                    <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="451,140,0,0" VerticalAlignment="Top"
+                            Width="28" Click="BtnCopyURL_Click">
                         <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
                     </Button>
-                    <controls:ToggleSwitch x:Name="ChbxSplit" Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}" HorizontalAlignment="Left"
-                        Margin="15,218,0,0" VerticalAlignment="Top" 
-                        Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                        controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                        controls:ControlsHelper.HeaderMargin="0" Width="324" Height="36" Checked="ChbxSplit_Checked" Unchecked="ChbxSplit_Checked" />
-                    <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="112,78,0,0" Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked"/>
-                    <controls:NumericUpDown x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1" NumericInputMode="Numbers" Margin="251,74,0,0" ValueChanged="nud_Spaces_ValueChanged" HasDecimals="False" Height="23" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121" UpDownButtonsWidth="16" />
+                    <controls:ToggleSwitch x:Name="ChbxSplit"
+                                           Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}"
+                                           HorizontalAlignment="Left"
+                                           Margin="15,218,0,0" VerticalAlignment="Top"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="431" Height="36"
+                                           Toggled="ChbxSplit_Checked" />
+                    <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,78,0,0"
+                              Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" />
+                    <controls:NumericUpDown x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1"
+                                            NumericInputMode="Numbers" Margin="358,74,0,0"
+                                            ValueChanged="nud_Spaces_ValueChanged" Height="23"
+                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121"
+                                            UpDownButtonsWidth="16" />
+
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Appearance}">
                 <Grid>
-                    <Label x:Name="LabelColor" Content="{x:Static local:Resources.sw_Appearance_Color}" HorizontalAlignment="Left" Margin="11,13,0,0"
+                    <Label x:Name="LabelColor" Content="{x:Static local:Resources.sw_Appearance_Color}"
+                           HorizontalAlignment="Left" Margin="11,13,0,0"
                            VerticalAlignment="Top" Width="71" Padding="5" />
-                    <ComboBox x:Name="ComboBoxColor" Margin="114,13,0,0" Height="23" VerticalAlignment="Top"
+                    <ComboBox x:Name="ComboBoxColor" Margin="11,44,0,0" Height="23" VerticalAlignment="Top"
                               SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="238" />
-                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="193,44,0,0" HorizontalAlignment="Left"
-                                           Width="159" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Height="32" VerticalAlignment="Top"
-                                           Padding="5,0,0,0" IsCheckedChanged="ThemeToggleSwitchIsCheckedChanged"
-                                           OffLabel="{x:Static local:Resources.sw_Appearance_ThemeLight}" OnLabel="{x:Static local:Resources.sw_Appearance_ThemeDark}" />
+                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="325,40,0,0" HorizontalAlignment="Left"
+                                           Width="150" FontFamily="Segoe UI" FontSize="12"
+                                           ContentPadding="0"
+                                           Height="32" VerticalAlignment="Top"
+                                           Padding="5,0,0,0" Toggled="ThemeToggleSwitchIsCheckedChanged"
+                                           OffContent="{x:Static local:Resources.sw_Appearance_ThemeLight}"
+                                           OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}" />
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Integration}">
                 <Grid>
-                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Padding="0,5,5,5" />
-                    <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="286" Margin="10,41,0,0" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_NBWatermark}" TextChanged="Txtbx_nbuser_TextChanged" />
-                    <Button x:Name="btn_nblink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="301,40,0,0" Click="Btn_nblink_Click" />
-                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,125,0,0" Padding="0,5,5,5"/>
-                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="96" Margin="10,151,0,0" controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"/>
-                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23" controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="252" Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged"/>
-                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}" VerticalAlignment="Top" Width="222" Margin="10,182,0,0" TextChanged="txtbx_twChannel_TextChanged"/>
-                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top" Width="18" Margin="368,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token."/>
-                    <CheckBox x:Name="Chbx_TwAutoconnect" Content="{x:Static local:Resources.sw_Integration_Autoconnect}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,185,0,0" Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137"/>
-                    <Button x:Name="btn_Botresponse" Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,213,10,5" Height="27" Click="btn_Botresponse_Click"/>
+                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Margin="10,10,0,0" Padding="0,5,5,5" />
+                    <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
+                             VerticalAlignment="Top" Width="286" Margin="10,41,0,0"
+                             controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_NBWatermark}"
+                             TextChanged="Txtbx_nbuser_TextChanged" />
+                    <Button x:Name="btn_nblink" Content="{x:Static local:Resources.sw_Integration_btnLink}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="393,40,0,0"
+                            Click="Btn_nblink_Click" />
+                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,125,0,0"
+                           Padding="0,5,5,5" />
+                    <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text=""
+                             VerticalAlignment="Top" Width="96" Margin="10,151,0,0"
+                             controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged" />
+                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23"
+                                 controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="334"
+                                 Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged" />
+                    <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
+                             controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
+                             VerticalAlignment="Top" Width="222" Margin="10,182,0,0"
+                             TextChanged="txtbx_twChannel_TextChanged" />
+                    <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top"
+                            Margin="450,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" />
+                    <CheckBox x:Name="Chbx_TwAutoconnect"
+                              Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,187,0,0"
+                              Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137" />
+                    <Button x:Name="btn_Botresponse"
+                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,213,10,5"
+                            Height="27" Click="btn_Botresponse_Click" />
 
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify">
                 <Grid>
-                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,9,0,0" Padding="0,5,5,5" />
-                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" Width="286" />
-                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="90" Margin="296,35,0,0" Click="btn_spotifyLink_Click" />
-                    <controls:ToggleSwitch x:Name="Tglsw_Spotify" Margin="10,77,0,0" HorizontalAlignment="Left"
-                        Width="350" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                        controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                        controls:ControlsHelper.HeaderMargin="0" Height="43" VerticalAlignment="Top"
-                        Padding="5,0,0,0" IsCheckedChanged="Tglsw_Spotify_IsCheckedChanged"
-                        OffLabel="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}" OnLabel="Use own Spotify appID"/>
-                    <TextBox x:Name="tb_ClientID" HorizontalAlignment="Left" Height="23" Margin="116,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="270" TextChanged="tb_ClientID_TextChanged"/>
-                    <PasswordBox x:Name="tb_ClientSecret" HorizontalAlignment="Left" Height="23" Margin="116,157,0,0" VerticalAlignment="Top" Width="270" PasswordChanged="tb_ClientSecret_PasswordChanged"/>
-                    <Label Content="Client ID" HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top"/>
-                    <Label Content="Client Secret" HorizontalAlignment="Left" Margin="14,157,0,0" VerticalAlignment="Top"/>
-                    <Button x:Name="btn_save" Content="{x:Static local:Resources.sw_tcSpotify_SaveButton}" Margin="286,225,10,10" Click="btn_save_Click" Visibility="Hidden"/>
-                    <Label x:Name="lbl_savingRestart" Content="{x:Static local:Resources.sw_tcSpotify_SavingWillRestart}" Margin="192,194,10,0" VerticalAlignment="Top" HorizontalContentAlignment="Right" HorizontalAlignment="Right" Visibility="Hidden"/>
-                    <Button x:Name="btn_OwnAppHelp" Content="?" HorizontalAlignment="Left" Margin="365,83,0,0" VerticalAlignment="Top" Width="21" Click="btn_OwnAppHelp_Click" Height="21"/>
+                    <Label x:Name="lbl_Spotify" Content="Spotify" HorizontalAlignment="Left" VerticalAlignment="Top"
+                           Margin="10,9,0,0" Padding="0,5,5,5" />
+                    <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
+                           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" />
+                    <Button x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" VerticalAlignment="Top" Margin="0,35,10,0"
+                            Click="btn_spotifyLink_Click" HorizontalAlignment="Right" Width="90" />
+                    <controls:ToggleSwitch x:Name="Tglsw_Spotify" Margin="10,77,36,0" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Height="43" VerticalAlignment="Top"
+                                           Padding="5,0,0,0" Toggled="Tglsw_Spotify_IsCheckedChanged"
+                                           OffContent="{x:Static local:Resources.sw_tcSpotify_UseSongifyApp}"
+                                           OnContent="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}" />
+                    <TextBox x:Name="tb_ClientID" Height="23" Margin="0,118,10,0"
+                             TextWrapping="Wrap" VerticalAlignment="Top"
+                             TextChanged="tb_ClientID_TextChanged" HorizontalAlignment="Right" Width="270" />
+                    <PasswordBox x:Name="tb_ClientSecret" Height="23" Margin="0,157,10,0"
+                                 VerticalAlignment="Top" PasswordChanged="tb_ClientSecret_PasswordChanged" HorizontalAlignment="Right" Width="270" />
+                    <Label Content="Client ID" HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top" />
+                    <Label Content="Client Secret" HorizontalAlignment="Left" Margin="14,157,0,0"
+                           VerticalAlignment="Top" />
+                    <Button x:Name="btn_save" Content="{x:Static local:Resources.sw_tcSpotify_SaveButton}"
+                            Margin="0,271,10,10" Click="btn_save_Click" HorizontalAlignment="Right" Width="100" Visibility="Hidden" />
+                    <Button x:Name="btn_OwnAppHelp" Content="?" Margin="0,83,10,0"
+                            VerticalAlignment="Top" Click="btn_OwnAppHelp_Click" Height="21" HorizontalAlignment="Right" Width="21" />
 
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
                 <Grid>
-                    <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text="" VerticalAlignment="Top" Width="225" Margin="151,1,0,0" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged"/>
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_ChannelPoints}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <CheckBox x:Name="Chbx_MessageLogging" Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="151,32,0,0" Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked"/>
-                    <controls:ToggleSwitch x:Name="Chbx_TwReward" Content="{x:Static local:Resources.sw_SpotifySR_SRReward}" HorizontalAlignment="Left"
-                              Margin="5,60,0,0" VerticalAlignment="Top" Checked="Chbx_TwReward_Checked" Unchecked="Chbx_TwReward_Checked"
-                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
-                    <controls:ToggleSwitch x:Name="Chbx_TwCommand" Content="{x:Static local:Resources.sw_SpotifySR_SRCommand}" HorizontalAlignment="Left"
-                              Margin="5,96,0,0" VerticalAlignment="Top" Checked="Chbx_TwCommand_Checked" Unchecked="Chbx_TwCommand_Checked"
-                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
-                    <controls:ToggleSwitch x:Name="Chbx_AutoClear" Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" HorizontalAlignment="Left"
-                              Margin="5,233,0,0" VerticalAlignment="Top" Checked="Chbx_AutoClear_Checked" Unchecked="Chbx_AutoClear_Checked"
-                              Focusable="False" FontFamily="Segoe UI" HeaderFontFamily="Segoe UI" FontSize="12"
-                                           controls:ControlsHelper.HeaderFontSize="12" ContentPadding="0"
-                                           controls:ControlsHelper.HeaderMargin="0" Width="376" Height="36" />
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxReq}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,139,0,0"/>
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,172,0,0"/>
-                    <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,137,0,0" ValueChanged="NudMaxReq_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
+                    <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
+                             VerticalAlignment="Top" Width="225" Margin="250,1,0,0"
+                             controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" />
+                    <Label Content="{x:Static local:Resources.sw_SpotifySR_ChannelPoints}" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" />
+                    <CheckBox x:Name="Chbx_MessageLogging"
+                              Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="250,32,0,0"
+                              Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" />
+                    <controls:ToggleSwitch x:Name="Chbx_TwReward"
+                                           Content="{x:Static local:Resources.sw_SpotifySR_SRReward}"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,60,0,0" VerticalAlignment="Top" Toggled="Chbx_TwReward_Checked"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="470" Height="36" />
+                    <controls:ToggleSwitch x:Name="Chbx_TwCommand"
+                                           Content="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,96,0,0" VerticalAlignment="Top" Toggled="Chbx_TwCommand_Checked"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="470" Height="36" />
+                    <controls:ToggleSwitch x:Name="Chbx_AutoClear"
+                                           Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}"
+                                           HorizontalAlignment="Left"
+                                           Margin="5,233,0,0" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
+                                           Focusable="False" FontFamily="Segoe UI"
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="470" Height="36" />
+                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxReq}" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Margin="0,139,0,0" />
+                    <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Margin="0,172,0,0" />
+                    <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers" Margin="340,137,0,0"
+                                            ValueChanged="NudMaxReq_ValueChanged" Height="28"
+                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number" />
 
-                    <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,170,0,0" ValueChanged="NudCooldown_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,205,0,0"/>
-                    <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1" NumericInputMode="Numbers" Margin="267,203,0,0" ValueChanged="NudMaxlength_ValueChanged" HasDecimals="False" Height="28" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="109" />
+                    <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers" Margin="340,170,0,0"
+                                            ValueChanged="NudCooldown_ValueChanged" Height="28"
+                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" />
+                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" HorizontalAlignment="Left"
+                           VerticalAlignment="Top" Margin="0,205,0,0" />
+                    <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers" Margin="340,203,0,0"
+                                            ValueChanged="NudMaxlength_ValueChanged" Height="28"
+                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" />
                 </Grid>
             </TabItem>
             <TabItem Header="Config">
                 <Grid>
-                    <Button x:Name="Btn_ExportConfig" Content="{x:Static local:Resources.sw_Config_Export}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,42,0,0" Click="Btn_ExportConfig_Click"/>
-                    <Button x:Name="Btn_ImportConfig" Content="{x:Static local:Resources.sw_Config_Import}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="10,10,0,0" Click="Btn_ImportConfig_Click"/>
-                    <Button x:Name="Btn_ResetConfig" Content="Reset Config" HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="216,232,0,0" Click="Btn_ResetConfig_Click"/>
+                    <Button x:Name="Btn_ExportConfig" Content="{x:Static local:Resources.sw_Config_Export}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="307,42,0,0"
+                            Click="Btn_ExportConfig_Click" />
+                    <Button x:Name="Btn_ImportConfig" Content="{x:Static local:Resources.sw_Config_Import}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Width="170" Margin="307,10,0,0"
+                            Click="Btn_ImportConfig_Click" />
+                    <Button x:Name="Btn_ResetConfig" Content="Reset Config" HorizontalAlignment="Left"
+                            VerticalAlignment="Top" Width="170" Margin="307,273,0,0" Click="Btn_ResetConfig_Click" />
 
                 </Grid>
             </TabItem>
-        </TabControl>
-        <StatusBar Height="14" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
+        </controls:MetroAnimatedTabControl>
+        <StatusBar Height="14" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0"
+                   UseLayoutRounding="False">
             <Label x:Name="Lbl_Status" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
-                   HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,-4" VerticalAlignment="Top" />
+                   HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,-4"
+                   VerticalAlignment="Top" />
         </StatusBar>
     </Grid>
 </controls:MetroWindow>

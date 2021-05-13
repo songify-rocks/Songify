@@ -340,4 +340,22 @@
   <data name="sw_tc_System" xml:space="preserve">
     <value>Генерально</value>
   </data>
+  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
+    <value>Сохранение перезапустит Songify! ЭТО НУЖНО СДЕЛАТЬ ТОЛЬКО ОДИН РАЗ! НЕ НАЖИМАЙТЕ СОХРАНИТЬ ПОСЛЕ ПЕРЕЗАПУСКА И ПОДКЛЮЧЕНИЯ УЧЕТНОЙ ЗАПИСИ СНОВА!</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>сохранять</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Использовать Songify AppID</value>
+  </data>
+  <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
+    <value>Максимальная длина песни (в минутах)</value>
+  </data>
+  <data name="brw_NoSong" xml:space="preserve">
+    <value>Песня не указана (пустой запрос)</value>
+  </data>
+  <data name="mw_menu_History_Browser" xml:space="preserve">
+    <value>Браузер истории</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿namespace Songify_Slim
 {
-    class NBObj
+    internal class NBObj
     {
         public dynamic _currentsong { get; set; }
     }

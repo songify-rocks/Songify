@@ -3,13 +3,13 @@ using System.Net;
 
 namespace Songify_Slim.Util.Songify
 {
-    static class WebHelper
+    internal static class WebHelper
     {
         /// <summary>
-        /// This Class is a helper class to reduce repeatedly used code across multiple classes
+        ///     This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
-
-        public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester, string played, string o)
+        public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
+            string played, string o)
         {
             string operation = "";
 
@@ -31,26 +31,24 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 string extras = Settings.Settings.Uuid +
-                "&trackid=" + WebUtility.UrlEncode(trackId) +
-                "&artist=" + WebUtility.UrlEncode(artist.Replace("\"", "\\\"")) +
-                "&title=" + WebUtility.UrlEncode(title.Replace("\"", "\\\"")) +
-                "&length=" + WebUtility.UrlEncode(length) +
-                "&requester=" + WebUtility.UrlEncode(requester) +
-                "&played=" + WebUtility.UrlEncode(played) +
-                "&o=" + WebUtility.UrlEncode(o);
+                                "&trackid=" + WebUtility.UrlEncode(trackId) +
+                                "&artist=" + WebUtility.UrlEncode(artist.Replace("\"", "\\\"")) +
+                                "&title=" + WebUtility.UrlEncode(title.Replace("\"", "\\\"")) +
+                                "&length=" + WebUtility.UrlEncode(length) +
+                                "&requester=" + WebUtility.UrlEncode(requester) +
+                                "&played=" + WebUtility.UrlEncode(played) +
+                                "&o=" + WebUtility.UrlEncode(o);
                 string url = "http://songify.rocks/add_queue.php/?id=" + extras;
                 WebUtility.UrlEncode(url);
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest) WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse) myHttpWebRequest.GetResponse();
                 if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                {
                     Logger.LogStr(operation + " Queue:" + myHttpWebResponse.StatusDescription);
-                }
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)
@@ -58,6 +56,5 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(ex);
             }
         }
-
     }
 }

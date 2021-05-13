@@ -214,7 +214,16 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Blacklist ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Russian ähnelt.
+        /// </summary>
+        public static string lang_ru {
+            get {
+                return ResourceManager.GetString("lang_ru", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Blocklist ähnelt.
         /// </summary>
         public static string mw_menu_Blacklist {
             get {
@@ -674,7 +683,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Saving will restart Songify! ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Saving will restart Songify! THIS ONLY NEEDS TO BE DONE ONCE! DO NOT HIT SAVE AFTER RESTARTING AND LINKING YOUR ACCOUNT AGAIN! ähnelt.
         /// </summary>
         public static string sw_tcSpotify_SavingWillRestart {
             get {
@@ -683,11 +692,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use Songify AppID ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use Own AppID ähnelt.
         /// </summary>
         public static string sw_tcSpotify_UseOwnApp {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_UseOwnApp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Use Songify AppID ähnelt.
+        /// </summary>
+        public static string sw_tcSpotify_UseSongifyApp {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_UseSongifyApp", resourceCulture);
             }
         }
         
