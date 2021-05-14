@@ -96,7 +96,7 @@ namespace Songify_Slim
                     cbx_Language.SelectedIndex = 1;
                     break;
                 case "ru-RU":
-                    cbx_Language.SelectedIndex = 1;
+                    cbx_Language.SelectedIndex = 2;
                     break;
             }
 
@@ -295,8 +295,9 @@ namespace Songify_Slim
                 var x = ThemeManager.Current.GetTheme(Settings.Theme + "." + s);
                 if (x != null)
                 {
-                    LinearGradientBrush brush = new LinearGradientBrush(Color.FromRgb(x.PrimaryAccentColor.R, x.PrimaryAccentColor.G, x.PrimaryAccentColor.B), Colors.Transparent, angle: 0.0);
-                    i.Background = brush;
+                    SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(x.PrimaryAccentColor.R, x.PrimaryAccentColor.G, x.PrimaryAccentColor.B));
+                    i.BorderThickness = new Thickness(0, 0, 0, 2);
+                    i.BorderBrush = brush;
                 }
                 ComboBoxColor.Items.Add(i);
             }
