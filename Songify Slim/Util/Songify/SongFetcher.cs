@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Automation;
 using Newtonsoft.Json;
 using Songify_Slim.Models;
@@ -17,18 +18,21 @@ namespace Songify_Slim.Util.Songify
     internal class SongFetcher
     {
         private static int _id;
-        private readonly List<string> _browsers = new List<string> {"chrome", "msedge", "opera"};
+        private readonly List<string> _browsers = new List<string> { "chrome", "msedge", "opera" };
         private AutomationElement _parent;
-        private string[] _songinfo;
+        private static string[] _songinfo;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
         ///     returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
-        public string[] FetchDesktopPlayer(string player)
+        internal async Task<SongInfo> FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
+            string[] returnArray;
+
+
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
@@ -44,7 +48,7 @@ namespace Songify_Slim.Util.Songify
                                 wintitle != "Drag")
                             {
                                 // Splitting the wintitle which is always Artist - Title
-                                _songinfo = wintitle.Split(new[] {" - "}, StringSplitOptions.None);
+                                _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
                                 {
                                     artist = _songinfo[0].Trim();
@@ -58,13 +62,13 @@ namespace Songify_Slim.Util.Songify
                                     Logger.LogExc(ex);
                                 }
 
-                                return new[] {artist, title, extra};
+                                return new SongInfo { Artist = artist, Title = title };
                             }
                             // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
                             //if custom pause text is enabled and if so spit out custom text
 
                             if (Settings.Settings.CustomPauseTextEnabled)
-                                return new[] {"", "", ""}; // (Settings.GetCustomPauseText(), "", "");
+                                return new SongInfo { Artist = "", Title = "", Extra = "" }; // (Settings.GetCustomPauseText(), "", "");
                             break;
 
                         case "vlc":
@@ -72,12 +76,12 @@ namespace Songify_Slim.Util.Songify
 
                             if (!wintitle.Contains(" - VLC media player"))
                                 return Settings.Settings.CustomPauseTextEnabled
-                                    ? new[] {Settings.Settings.CustomPauseText, "", ""}
-                                    : new[] {"", "", ""};
+                                    ? new SongInfo { Artist = Settings.Settings.CustomPauseText, Title = "", Extra = "" }
+                                    : new SongInfo { Artist = "", Title = "", Extra = "" };
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
-                            _songinfo = wintitle.Split(new[] {" - "}, StringSplitOptions.None);
+                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
 
                             try
                             {
@@ -92,19 +96,25 @@ namespace Songify_Slim.Util.Songify
                                 Logger.LogExc(ex);
                             }
 
-                            return new[] {artist, title, extra};
+                            return new SongInfo { Artist = artist, Title = title, Extra = extra };
 
                         case "foobar2000":
                             // Splitting the wintitle which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
                             {
                                 if (Settings.Settings.CustomPauseTextEnabled)
-                                    return new[]
+                                    return new SongInfo
                                     {
-                                        Settings.Settings.CustomPauseText, "", ""
-                                    }; // (Settings.GetCustomPauseText(), "", "");
-
-                                return new[] {"", "", ""};
+                                        Artist = Settings.Settings.CustomPauseText,
+                                        Title = "",
+                                        Extra = ""
+                                    };
+                                return new SongInfo
+                                {
+                                    Artist = "",
+                                    Title = "",
+                                    Extra = ""
+                                };
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -121,7 +131,7 @@ namespace Songify_Slim.Util.Songify
                                 Logger.LogExc(ex);
                             }
 
-                            return new[] {artist, title, extra};
+                            return new SongInfo { Artist = artist, Title = title, Extra = extra };
                     }
                 }
 
@@ -292,7 +302,7 @@ namespace Songify_Slim.Util.Songify
 
             // Deserialize JSON and get the current song 
             NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-            return json._currentsong == null ? null : (string) json._currentsong.track.title;
+            return json._currentsong == null ? null : (string)json._currentsong.track.title;
         }
 
         public TrackInfo FetchSpotifyWeb()
@@ -307,7 +317,7 @@ namespace Songify_Slim.Util.Songify
             // gets the current playing songinfo
             TrackInfo songInfo = ApiHandler.GetSongInfo();
             // if no song is playing and custompausetext is enabled
-            return songInfo ?? new TrackInfo {isPlaying = false};
+            return songInfo ?? new TrackInfo { isPlaying = false };
             // return a new stringarray containing artist, title and so on
         }
     }

@@ -424,6 +424,7 @@
     </Compile>
     <Compile Include="Models\PlayerType.cs" />
     <Compile Include="Models\RequestModel.cs" />
+    <Compile Include="Models\SongInfo.cs" />
     <Compile Include="Models\TrackInfo.cs" />
     <Compile Include="Properties\Resources.de-DE.Designer.cs">
       <DependentUpon>Resources.de-DE.resx</DependentUpon>

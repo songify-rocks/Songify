@@ -70,7 +70,6 @@ namespace Songify_Slim
             NudCooldown.Value = Settings.TwSrCooldown;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
-            ChbxSplit.IsOn = Settings.SplitOutput;
             Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
@@ -375,7 +374,7 @@ namespace Songify_Slim
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            Settings.SplitOutput = ChbxCover.IsOn;
+            Settings.SplitOutput = ChbxSplit.IsOn;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

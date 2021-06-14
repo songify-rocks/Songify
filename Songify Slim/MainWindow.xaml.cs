@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows;
@@ -73,6 +74,8 @@ namespace Songify_Slim
 
         public void UploadSong(string currSong, string coverUrl = null)
         {
+            if (currSong == null)
+                return;
             try
             {
                 // extras are UUID and Songinfo
@@ -81,10 +84,10 @@ namespace Songify_Slim
                                 "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8);
                 string url = "https://songify.rocks/song.php?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest) WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse) myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
                     Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
 
@@ -107,15 +110,15 @@ namespace Songify_Slim
             // it sends the UUID (randomly generated on first launch), unix timestamp, version number and if the app is active
             try
             {
-                int unixTimestamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                 string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + _version + "&a=" + _appActive;
                 string url = "https://songify.rocks/songifydata.php/?id=" + extras;
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest) WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse) myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 myHttpWebResponse.Close();
             }
             catch (Exception ex)
@@ -141,7 +144,7 @@ namespace Songify_Slim
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
             // Opens the 'About'-Window
-            AboutWindow aW = new AboutWindow {Top = Top, Left = Left};
+            AboutWindow aW = new AboutWindow { Top = Top, Left = Left };
             aW.ShowDialog();
         }
 
@@ -164,13 +167,13 @@ namespace Songify_Slim
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
             // Opens the History in either Window or Browser
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem) sender;
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
                 if (!IsWindowOpen<HistoryWindow>())
                 {
                     // Opens the 'History'-Window
-                    HistoryWindow hW = new HistoryWindow {Top = Top, Left = Left};
+                    HistoryWindow hW = new HistoryWindow { Top = Top, Left = Left };
                     hW.ShowDialog();
                 }
             }
@@ -190,14 +193,14 @@ namespace Songify_Slim
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
-            Window_Settings sW = new Window_Settings {Top = Top, Left = Left};
+            Window_Settings sW = new Window_Settings { Top = Top, Left = Left };
             sW.ShowDialog();
         }
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem) sender;
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Header.ToString().Equals("Connect"))
                 // Connects
                 TwitchHandler.BotConnect();
@@ -384,10 +387,11 @@ namespace Songify_Slim
             _timerFetcher.Enabled = true;
         }
 
-        private void GetCurrentSongAsync()
+        private async Task GetCurrentSongAsync()
         {
             SongFetcher sf = new SongFetcher();
             string[] currentlyPlaying;
+            SongInfo songInfo = null;
             switch (_selectedSource)
             {
                 case PlayerType.SpotifyLegacy:
@@ -396,9 +400,9 @@ namespace Songify_Slim
 
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    currentlyPlaying = sf.FetchDesktopPlayer("Spotify");
-                    if (currentlyPlaying != null)
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
+                    songInfo = await sf.FetchDesktopPlayer("Spotify");
+                    if (songInfo != null)
+                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
                     break;
 
@@ -448,9 +452,9 @@ namespace Songify_Slim
 
                     #region VLC
 
-                    currentlyPlaying = sf.FetchDesktopPlayer("vlc");
-                    if (currentlyPlaying != null)
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
+                    songInfo = await sf.FetchDesktopPlayer("vlc");
+                    if (songInfo != null)
+                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
                     break;
 
@@ -460,9 +464,9 @@ namespace Songify_Slim
 
                     #region foobar2000
 
-                    currentlyPlaying = sf.FetchDesktopPlayer("foobar2000");
-                    if (currentlyPlaying != null)
-                        WriteSong(currentlyPlaying[0], currentlyPlaying[1], currentlyPlaying[2], null, _firstRun);
+                    songInfo = await sf.FetchDesktopPlayer("foobar2000");
+                    if (songInfo != null)
+                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
                     break;
 
@@ -492,7 +496,7 @@ namespace Songify_Slim
                     FetchSpotifyWeb();
                     break;
 
-                #endregion Spotify API
+                    #endregion Spotify API
             }
         }
 
@@ -540,7 +544,7 @@ namespace Songify_Slim
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            Exception e = (Exception) args.ExceptionObject;
+            Exception e = (Exception)args.ExceptionObject;
             Logger.LogExc(e);
             Logger.LogStr("##### Unhandled Exception #####");
             Logger.LogStr("MyHandler caught : " + e.Message);
@@ -580,7 +584,7 @@ namespace Songify_Slim
             _menuItem2.Text = @"Show";
             _menuItem2.Click += MenuItem2Click;
 
-            _contextMenu.MenuItems.AddRange(new[] {_menuItem2, _menuItem1});
+            _contextMenu.MenuItems.AddRange(new[] { _menuItem2, _menuItem1 });
 
             _notifyIcon.Icon = Properties.Resources.songify;
             _notifyIcon.ContextMenu = _contextMenu;
@@ -663,7 +667,7 @@ namespace Songify_Slim
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
             {
-                Window_Blacklist wB = new Window_Blacklist {Top = Top, Left = Left};
+                Window_Blacklist wB = new Window_Blacklist { Top = Top, Left = Left };
                 wB.Show();
             }
         }
@@ -671,12 +675,12 @@ namespace Songify_Slim
         private void Mi_Queue_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Queue Window
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem) sender;
+            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
                 if (!IsWindowOpen<Window_Queue>())
                 {
-                    Window_Queue wQ = new Window_Queue {Top = Top, Left = Left};
+                    Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
                     wQ.Show();
                 }
             }
@@ -692,7 +696,7 @@ namespace Songify_Slim
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                 "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
             {
                 ReqList.Clear();
@@ -706,18 +710,34 @@ namespace Songify_Slim
             if (Settings.Systray) Hide();
         }
 
-        private void OnTimedEvent(object source, ElapsedEventArgs e)
+        private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            _timerFetcher.Enabled = false;
+            s_cts = new CancellationTokenSource();
+
+            await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
                     img_cover.Visibility = Visibility.Visible;
                 else
                     img_cover.Visibility = Visibility.Collapsed;
             }));
+            Console.WriteLine(System.Diagnostics.Process.GetCurrentProcess().Threads.Count + " Threads");
+            try
+            {
+                s_cts.CancelAfter(3500);
 
-            // when the timer 'ticks' this code gets executed
-            GetCurrentSongAsync();
+                await GetCurrentSongAsync();            // when the timer 'ticks' this code gets executed
+            }
+            catch (TaskCanceledException)
+            {
+                Console.WriteLine("\nTasks cancelled: timed out.\n");
+            }
+            finally
+            {
+                s_cts.Dispose();
+                _timerFetcher.Enabled = true;
+            }
         }
 
         private void SendTelemetry(bool active)
@@ -989,7 +1009,7 @@ namespace Songify_Slim
                 {
                     _prevSong = CurrSong.Trim();
 
-                    int unixTimestamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
                     //save the history file
                     string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
@@ -1020,7 +1040,7 @@ namespace Songify_Slim
                 {
                     _prevSong = CurrSong.Trim();
 
-                    int unixTimestamp = (int) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                    int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
                     // Upload Song
                     try
@@ -1029,11 +1049,11 @@ namespace Songify_Slim
                                         HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
                         string url = "https://songify.rocks/song_history.php/?id=" + extras;
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
-                        HttpWebRequest myHttpWebRequest = (HttpWebRequest) WebRequest.Create(url);
+                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                         myHttpWebRequest.UserAgent = Settings.Webua;
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                        HttpWebResponse myHttpWebResponse = (HttpWebResponse) myHttpWebRequest.GetResponse();
+                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                         if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
                             Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
 
@@ -1114,6 +1134,7 @@ namespace Songify_Slim
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private string _prevId, _currentId;
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
+        private CancellationTokenSource s_cts;
 
         #endregion Variables
     }
