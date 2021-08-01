@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Songify.Model;
 
 namespace Songify.Plugin
 {
@@ -11,7 +7,9 @@ namespace Songify.Plugin
         public PluginTypes PluginType { get; }
         public string Author { get; }
         public string Version { get; }
-        public string Name { get; }
+        public string PluginName { get; }
+        public string SourceName { get; }
+        public Song Song { get; protected set; }
 
         /// <summary>
         /// <para>
