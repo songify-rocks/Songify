@@ -5,8 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Songify.Views"
         mc:Ignorable="d"
-        Title="MainView" Height="450" Width="800">
+        ResizeMode="CanMinimize"
+        Title="Songify" Height="285" Width="588">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <!-- Song Display -->
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <!--<ColumnDefinition Width="{Binding Path=CoverWidth, Mode=OneWay}" />-->
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Source="{Binding SelectedSource.Source.Song.CoverURL, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="1"
+                       Margin="20 0 20 0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       FontSize="22"
+                       FontWeight="Bold"
+                       TextWrapping="Wrap"
+                       Text="{Binding SelectedSource.Source.Song.Title}"/>
+        </Grid>
         
+        <!-- Song Source Dropdown -->
+        <ComboBox 
+            Grid.Row="1" 
+            Grid.Column="1"
+            Width="100px"
+            Height="24px"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            x:Name="Sources"
+            SelectedItem="{Binding Path=SelectedSource, Mode=OneWayToSource}"
+            DisplayMemberPath="Source.SourceName"
+            />
     </Grid>
 </Window>

@@ -9,7 +9,7 @@ namespace Songify.Plugin
         public string Version { get; }
         public string PluginName { get; }
         public string SourceName { get; }
-        public Song Song { get; protected set; }
+        public Song Song { get; set; }
 
         /// <summary>
         /// <para>
