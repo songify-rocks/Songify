@@ -30,9 +30,6 @@ namespace Songify_Slim.Util.Songify
         internal async Task<SongInfo> FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
-            string[] returnArray;
-
-
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
@@ -85,8 +82,10 @@ namespace Songify_Slim.Util.Songify
 
                             try
                             {
-                                wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
-
+                                if (wintitle.LastIndexOf('.') > 0)
+                                {
+                                    wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+                                }
                                 artist = wintitle;
                                 title = "";
                                 extra = "";
@@ -310,7 +309,7 @@ namespace Songify_Slim.Util.Songify
             // If the spotify object hast been created (successfully authed)
             if (ApiHandler.Spotify == null)
             {
-                Logger.LogStr("Spotify API Object is NULL");
+                Logger.LogStr("SPOTIFY API: Spotify API Object is NULL");
                 return null;
             }
 

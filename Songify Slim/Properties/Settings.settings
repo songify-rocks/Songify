@@ -164,5 +164,14 @@
     <Setting Name="bot_Resp_NoSong" Type="System.String" Scope="User">
       <Value Profile="(Default)">@{user} please specify a song to add to the queue.</Value>
     </Setting>
+    <Setting Name="AnnounceInChat" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="bot_cmd_song" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="bot_cmd_pos" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -105,6 +105,7 @@ namespace Songify_Slim
                     writer.WriteAttributeString("clientid", Settings.ClientId);
                     writer.WriteAttributeString("clientsecret", Settings.ClientSecret);
                     writer.WriteAttributeString("maxsonglength", Settings.MaxSongLength.ToString());
+                    writer.WriteAttributeString("announceinchat", Settings.AnnounceInChat.ToString());
                     writer.WriteEndElement();
                     writer.WriteEndElement();
                 }
@@ -180,6 +181,8 @@ namespace Songify_Slim
                     Settings.ClientSecret = node.Attributes["clientsecret"]?.InnerText;
                     if (int.TryParse(node.Attributes["maxsonglength"]?.InnerText, out value))
                         Settings.MaxSongLength = value;
+                    Settings.AnnounceInChat = Convert.ToBoolean(node.Attributes["announceinchat"]?.InnerText);
+
                 }
             }
             catch (Exception ex)
@@ -210,7 +213,7 @@ namespace Songify_Slim
                 // Settingswindow (from there this class is called) it calls the method SetControls
                 foreach (Window window in Application.Current.Windows)
                     if (window.GetType() == typeof(Window_Settings))
-                        ((Window_Settings) window).SetControls();
+                        ((Window_Settings)window).SetControls();
             }
         }
     }

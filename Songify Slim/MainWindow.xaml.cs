@@ -39,6 +39,35 @@ namespace Songify_Slim
 {
     public partial class MainWindow
     {
+        #region Variables
+
+        private static string _version;
+        private bool _appActive;
+        public string CurrSong;
+        public string _artist, _title;
+        private readonly NotifyIcon _notifyIcon = new NotifyIcon();
+        public readonly List<RequestObject> ReqList = new List<RequestObject>();
+        private string _songPath, _coverPath, _root, _coverTemp;
+        private readonly BackgroundWorker _workerTelemetry = new BackgroundWorker();
+        private readonly ContextMenu _contextMenu = new ContextMenu();
+        private readonly MenuItem _menuItem1 = new MenuItem();
+        private readonly MenuItem _menuItem2 = new MenuItem();
+        private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
+        private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
+        private bool _firstRun = true;
+        private bool _forceClose;
+        private string _prevSong;
+        private string _selectedSource;
+        private string _temp = "";
+        private Timer _timer;
+        private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private string _prevId, _currentId;
+        private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
+        private CancellationTokenSource s_cts;
+
+        #endregion Variables
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -89,7 +118,7 @@ namespace Songify_Slim
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                    Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
+                    Logger.LogStr("MAIN: Upload Song:" + myHttpWebResponse.StatusCode);
 
                 myHttpWebResponse.Close();
             }
@@ -209,9 +238,22 @@ namespace Songify_Slim
                 TwitchHandler.Client.Disconnect();
         }
 
-        private void BtnWidget_Click(object sender, RoutedEventArgs e)
+        private async void BtnWidget_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+            if (Settings.Upload)
+                Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+            else
+            {
+                // After user confirmation sends a command to the webserver which clears the queue
+                MessageDialogResult msgResult = await this.ShowMessageAsync("",
+                    "The widget only works if \"Upload Song Info\" is enabled. You can find this option under Settings -> Output.\n\n\nDo you want to activate it now?", MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    Settings.Upload = true;
+                    Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+                }
+            }
         }
 
         private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -357,7 +399,7 @@ namespace Songify_Slim
                     _songTimer.Start();
                 }
 
-                WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID);
+                WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID, info.url);
             }
             else
             {
@@ -390,8 +432,7 @@ namespace Songify_Slim
         private async Task GetCurrentSongAsync()
         {
             SongFetcher sf = new SongFetcher();
-            string[] currentlyPlaying;
-            SongInfo songInfo = null;
+            SongInfo songInfo;
             switch (_selectedSource)
             {
                 case PlayerType.SpotifyLegacy:
@@ -545,11 +586,11 @@ namespace Songify_Slim
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
-            Logger.LogExc(e);
             Logger.LogStr("##### Unhandled Exception #####");
             Logger.LogStr("MyHandler caught : " + e.Message);
             Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
             Logger.LogStr("###############################");
+            Logger.LogExc(e);
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
@@ -707,7 +748,10 @@ namespace Songify_Slim
         private void MinimizeToSysTray()
         {
             // if the setting is set, hide window
-            if (Settings.Systray) Hide();
+            if (Settings.Systray)
+            {
+                Hide();
+            }
         }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -717,12 +761,9 @@ namespace Songify_Slim
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
-                    img_cover.Visibility = Visibility.Visible;
-                else
-                    img_cover.Visibility = Visibility.Collapsed;
+                img_cover.Visibility = _selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
-            Console.WriteLine(System.Diagnostics.Process.GetCurrentProcess().Threads.Count + " Threads");
+            Console.WriteLine(Process.GetCurrentProcess().Threads.Count + " Threads");
             try
             {
                 s_cts.CancelAfter(3500);
@@ -750,7 +791,7 @@ namespace Songify_Slim
 
         private void SetFetchTimer()
         {
-            GetCurrentSongAsync();
+            _ = GetCurrentSongAsync();
 
             switch (_selectedSource)
             {
@@ -833,7 +874,7 @@ namespace Songify_Slim
         }
 
         private void WriteSong(string _artist, string _title, string _extra, string cover = null,
-            bool forceUpdate = false, string _trackId = null)
+            bool forceUpdate = false, string _trackId = null, string _trackUrl = null)
         {
             _currentId = _trackId;
 
@@ -950,6 +991,8 @@ namespace Songify_Slim
 
             // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
             CurrSong = CleanFormatString(CurrSong);
+            this._title = _title;
+            this._artist = _artist;
 
             // read the text file
             if (!File.Exists(_songPath))
@@ -1055,7 +1098,7 @@ namespace Songify_Slim
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                         if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                            Logger.LogStr("Upload Song:" + myHttpWebResponse.StatusCode);
+                            Logger.LogStr("MAIN: Upload Song:" + myHttpWebResponse.StatusCode);
 
                         myHttpWebResponse.Close();
                     }
@@ -1071,6 +1114,10 @@ namespace Songify_Slim
 
                 // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
                 if (_trackId != null) WebHelper.UpdateWebQueue(_trackId, "", "", "", "", "1", "u");
+
+                // Send Message to Twitch if checked
+                if (Settings.AnnounceInChat)
+                    TwitchHandler.SendCurrSong("Now playing: " + CurrSong + "( " + _trackUrl + " )");
 
                 _prevId = _currentId;
 
@@ -1111,31 +1158,18 @@ namespace Songify_Slim
             File.WriteAllText(_root + "/Title.txt", title + extra);
         }
 
-        #region Variables
 
-        private static string _version;
-        private bool _appActive;
-        public string CurrSong;
-        private readonly NotifyIcon _notifyIcon = new NotifyIcon();
-        public readonly List<RequestObject> ReqList = new List<RequestObject>();
-        private string _songPath, _coverPath, _root, _coverTemp;
-        private readonly BackgroundWorker _workerTelemetry = new BackgroundWorker();
-        private readonly ContextMenu _contextMenu = new ContextMenu();
-        private readonly MenuItem _menuItem1 = new MenuItem();
-        private readonly MenuItem _menuItem2 = new MenuItem();
-        private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
-        private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
-        private bool _firstRun = true;
-        private bool _forceClose;
-        private string _prevSong;
-        private string _selectedSource;
-        private string _temp = "";
-        private Timer _timer;
-        private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
-        private string _prevId, _currentId;
-        private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
-        private CancellationTokenSource s_cts;
+        private void mi_DMCAFreeMusic_Click(object sender, RoutedEventArgs e)
+        {
 
-        #endregion Variables
+        }
+
+        private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Botresponse wBr = new Window_Botresponse();
+            wBr.Show();
+        }
+
+
     }
 }

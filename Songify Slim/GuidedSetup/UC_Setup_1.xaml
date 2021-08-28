@@ -12,8 +12,7 @@
                    FontSize="24" Margin="33,113,545,0" />
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="16"
                    Margin="10,168,0,0" Width="265" Height="129" TextAlignment="Center">
-            <Run Text="First some legal stuff... " /><LineBreak /><Run /><LineBreak /><Run Text="P" />
-            <Run Text="lease read the EULA" />
+            <Run Text="First some legal stuff... " /><LineBreak /><Run /><LineBreak /><Run Text="Please read the EULA" />
         </TextBlock>
         <ScrollViewer x:Name="sc_EULA" Grid.Column="0" VerticalScrollBarVisibility="Auto" Margin="289,0,0,0"
                       Background="#FFD4D4D4" VerticalAlignment="Center" Padding="10"

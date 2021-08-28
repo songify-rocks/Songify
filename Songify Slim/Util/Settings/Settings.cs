@@ -1,10 +1,63 @@
-﻿namespace Songify_Slim.Util.Settings
+﻿using System;
+
+namespace Songify_Slim.Util.Settings
 {
     /// <summary>
     ///     This class is a getter and setter for Settings
     /// </summary>
     internal class Settings
     {
+        public static bool BotCmdPos
+        {
+            get => GetBotCmdPos();
+            set => SetBotCmdPos(value);
+        }
+
+        private static void SetBotCmdPos(bool value)
+        {
+            Properties.Settings.Default.bot_cmd_pos = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetBotCmdPos()
+        {
+            return Properties.Settings.Default.bot_cmd_pos;
+        }
+
+        public static bool BotCmdSong
+        {
+            get => GetBotCmdSong();
+            set => SetBotCmdSong(value);
+        }
+
+        private static void SetBotCmdSong(bool value)
+        {
+            Properties.Settings.Default.bot_cmd_song = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetBotCmdSong()
+        {
+            return Properties.Settings.Default.bot_cmd_song;
+        }
+
+        public static bool AnnounceInChat
+        {
+            get => GetAnnounceInChat();
+            set => SetAnnounceInChat(value);
+        }
+
+        private static void SetAnnounceInChat(bool value)
+        {
+            Properties.Settings.Default.AnnounceInChat = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetAnnounceInChat()
+        {
+            return Properties.Settings.Default.AnnounceInChat;
+        }
+
         public static string BotRespNoSong
         {
             get => GetBotRespNoSong();

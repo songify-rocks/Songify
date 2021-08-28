@@ -245,7 +245,7 @@
     <value>LINK</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Configure Bot Responses</value>
+    <value>Configure Bot Responses &amp; Commands</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>NB Username (Twitch Username)</value>
@@ -357,5 +357,14 @@
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
     <value>Use Songify AppID</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Bot Config</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>Spanish</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>French</value>
   </data>
 </root>

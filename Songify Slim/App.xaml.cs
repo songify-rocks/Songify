@@ -38,19 +38,19 @@ namespace Songify_Slim
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
 
-            //MainWindow main = new MainWindow();
-            //main.Show();
+            MainWindow main = new MainWindow();
+            main.Show();
 
-            if (Settings.Uuid != "")
-            {
-                MainWindow main = new MainWindow();
-                main.Show();
-            }
-            else
-            {
-                Window_GuidedSetup guidedSetup = new Window_GuidedSetup();
-                guidedSetup.Show();
-            }
+            //if (Settings.Uuid != "")
+            //{
+            //    MainWindow main = new MainWindow();
+            //    main.Show();
+            //}
+            //else
+            //{
+            //    Window_GuidedSetup guidedSetup = new Window_GuidedSetup();
+            //    guidedSetup.Show();
+            //}
         }
     }
 }

@@ -195,9 +195,6 @@
   <data name="mw_menu_History_Window" xml:space="preserve">
     <value>Окно истории</value>
   </data>
-  <data name="mw_menu_Histoy_Browser" xml:space="preserve">
-    <value>браузер истории</value>
-  </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Очередь</value>
   </data>
@@ -214,7 +211,7 @@
     <value>Настройки</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
-    <value>Поддержка </value>
+    <value>Поддержка</value>
   </data>
   <data name="mw_menu_Widget" xml:space="preserve">
     <value>Виджет</value>
@@ -245,7 +242,7 @@
     <value>Связать</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Настроить ответы бота</value>
+    <value>Настройка ответов и команд бота</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>NB Имя пользователя (Twitch имя пользователя)</value>
@@ -311,7 +308,7 @@
     <value>Проверит наличие обновлений</value>
   </data>
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
-    <value> Скорость сбора Chroma (в секундах)</value>
+    <value>Скорость сбора Chroma (в секундах)</value>
   </data>
   <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
     <value>Язык</value>
@@ -357,5 +354,17 @@
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
     <value>Браузер истории</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Используйте Songify AppID</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Конфигурация бота</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>Испанский</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>Французский</value>
   </data>
 </root>

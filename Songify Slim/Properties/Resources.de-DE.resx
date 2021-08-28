@@ -245,7 +245,7 @@
     <value>Verknüpfen</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Konfiguriere Bot-Antworten</value>
+    <value>Konfiguriere Bot-Antworten &amp; Befehle</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>NB Benutzernamen (Twitch Benutzername)</value>
@@ -357,5 +357,14 @@
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
     <value>Eigene Spotify AppID nutzen</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Bot Konfiguration</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>Spanisch</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>Französisch</value>
   </data>
 </root>

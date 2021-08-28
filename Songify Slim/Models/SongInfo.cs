@@ -9,5 +9,6 @@ namespace Songify_Slim.Models
         public string Title { get; set; }
         public string Extra { get; set; }
         public List<Image> albums { get; set; }
+        public string Url { get; set; }
     }
 }

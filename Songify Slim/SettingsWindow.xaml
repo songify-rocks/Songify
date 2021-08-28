@@ -20,6 +20,8 @@
                         <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
                         <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}" />
                         <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
+                        <ComboBoxItem Content="{x:Static local:Resources.lang_es}"/>
+                        <ComboBoxItem Content="{x:Static local:Resources.lang_fr}"/>
                     </ComboBox>
                     <controls:ToggleSwitch x:Name="ChbxAutostart"
                                            Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
@@ -92,10 +94,10 @@
                         </TextBox.ContextMenu>
                     </TextBox>
 
-                    <CheckBox x:Name="ChbxCustomPause" Content="{x:Static local:Resources.sw_tcOutput_PauseText}"
+                    <controls:ToggleSwitch x:Name="ChbxCustomPause" Content="{x:Static local:Resources.sw_tcOutput_PauseText}"
                               HorizontalAlignment="Left"
-                              Margin="15,108,0,0" VerticalAlignment="Top" Checked="ChbxCustompauseChecked"
-                              Focusable="False" Unchecked="ChbxCustompauseChecked" />
+                              Margin="15,102,0,0" VerticalAlignment="Top" Toggled="ChbxCustompauseChecked"
+                              Focusable="False" Width="199"/>
                     <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
                              VerticalAlignment="Top" Width="260" Margin="219,105,0,0"
                              controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
@@ -178,17 +180,18 @@
                                  Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged" />
                     <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
                              controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
-                             VerticalAlignment="Top" Width="222" Margin="10,182,0,0"
+                             VerticalAlignment="Top" Width="96" Margin="10,182,0,0"
                              TextChanged="txtbx_twChannel_TextChanged" />
                     <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top"
                             Margin="450,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" />
-                    <CheckBox x:Name="Chbx_TwAutoconnect"
+                    <controls:ToggleSwitch x:Name="Chbx_TwAutoconnect"
                               Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="237,187,0,0"
-                              Checked="Chbx_TwAutoconnect_Checked" Unchecked="Chbx_TwAutoconnect_Checked" Width="137" />
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="111,179,0,0"
+                              Toggled="Chbx_TwAutoconnect_Checked" Width="185" />
+
                     <Button x:Name="btn_Botresponse"
-                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,213,10,5"
-                            Height="27" Click="btn_Botresponse_Click" />
+                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,216,10,70" Click="btn_Botresponse_Click" />
+                    <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,179,0,0" Width="176" Content="Send song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
 
                 </Grid>
             </TabItem>

@@ -112,6 +112,9 @@
                           Click="BtnTwitch_Click" />
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}"
                           Click="BtnTwitch_Click" IsEnabled="False" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Twitch_Bot}">
+                    <MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click"/>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="Songrequests">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Queue}">
@@ -131,10 +134,10 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser"
                           Click="BtnHistory_Click" />
             </MenuItem>
-            <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
-                <MenuItem Header="Patreon" Click="BtnPaypal_Click" />
-            </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
+                    <MenuItem Header="Patreon" Click="BtnPaypal_Click" />
+                </MenuItem>
                 <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
                 <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
                 <MenuItem Header="Discord" Click="BtnDiscord_Click" />

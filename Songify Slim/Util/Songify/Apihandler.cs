@@ -20,7 +20,7 @@ namespace Songify_Slim.Util.Songify
         private static readonly Timer AuthRefresh = new Timer
         {
             // Interval for refreshing Spotify-Auth
-            Interval = (int) TimeSpan.FromMinutes(30).TotalMilliseconds
+            Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
         };
 
         // Spotify Authentication flow with the webserver
@@ -95,7 +95,7 @@ namespace Songify_Slim.Util.Songify
                             foreach (Window window in Application.Current.Windows)
                             {
                                 if (window.GetType() != typeof(Window_Settings)) continue;
-                                ((Window_Settings) window).SetControls();
+                                ((Window_Settings)window).SetControls();
                             }
                         }));
                 };
@@ -149,13 +149,13 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception)
             {
-                Logger.LogStr("Couldn't fetch Song info");
-                return new TrackInfo {Artists = "", Title = ""};
+                Logger.LogStr("SPOTIFY API: Couldn't fetch Song info");
+                return new TrackInfo { Artists = "", Title = "" };
             }
 
-            if (context.Error != null) Logger.LogStr(context.Error.Status + " | " + context.Error.Message);
+            if (context.Error != null) Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
-            if (context.Item == null) return new TrackInfo {Artists = "", Title = ""};
+            if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };
 
 
             string artists = "";
@@ -180,7 +180,8 @@ namespace Songify_Slim.Util.Songify
                 albums = albums,
                 SongID = context.Item.Id,
                 DurationMS = context.Item.DurationMs - context.ProgressMs,
-                isPlaying = context.IsPlaying
+                isPlaying = context.IsPlaying,
+                url = "https://open.spotify.com/track/" + context.Item.Id
             };
         }
 

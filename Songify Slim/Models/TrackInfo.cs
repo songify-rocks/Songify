@@ -11,5 +11,6 @@ namespace Songify_Slim.Models
         public string SongID { get; set; }
         public int DurationMS { get; set; }
         public bool isPlaying { get; set; }
+        public string url { get; set; }
     }
 }

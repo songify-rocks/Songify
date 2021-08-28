@@ -6,7 +6,7 @@
     xmlns:Properties="clr-namespace:Songify_Slim.Properties"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Songify_Slim.GuidedSetup.UC_Setup_4"
     mc:Ignorable="d"
-    d:DesignHeight="800" d:DesignWidth="800" Height="383" Loaded="UserControl_Loaded">
+    d:DesignHeight="800" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid Background="White">
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Now to the output settings"
                    VerticalAlignment="Top" FontSize="36" Margin="10,10,0,0" />
@@ -14,7 +14,7 @@
                    Text="Here we set where Songify should store the text files and how the output should look like"
                    VerticalAlignment="Top" FontSize="18" Margin="10,55,0,0" />
 
-        <ScrollViewer HorizontalAlignment="Left" Height="280" Margin="10,93,0,0" VerticalAlignment="Top" Width="780"
+        <ScrollViewer HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Width="780"
                       VerticalScrollBarVisibility="Auto" CanContentScroll="True"
                       ScrollChanged="ScrollViewer_ScrollChanged">
             <Grid Height="554">
@@ -61,7 +61,7 @@
                 <mah:ToggleSwitch x:Name="ChbxUpload" Content="Upload song info: Is required for chatbots."
                                   HorizontalAlignment="Left"
                                   Margin="10,332,0,0" VerticalAlignment="Top" Toggled="ChbxUpload_Checked"
-                                  Focusable="False" FontFamily="Segoe UI" ContentPadding="0" Width="746" Height="42" Padding="5,0,0,0"
+                                  Focusable="False" FontFamily="Segoe UI" FontSize="24" ContentPadding="0" Width="746" Height="42" Padding="5,0,0,0"
                                   Grid.Column="0" Grid.ColumnSpan="2" />
                 <mah:ToggleSwitch x:Name="ChbxCover" Content="Download album cover (only works with Spotify API)"
                                   HorizontalAlignment="Left"

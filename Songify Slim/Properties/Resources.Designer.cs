@@ -214,6 +214,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Spanish ähnelt.
+        /// </summary>
+        public static string lang_es {
+            get {
+                return ResourceManager.GetString("lang_es", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die French ähnelt.
+        /// </summary>
+        public static string lang_fr {
+            get {
+                return ResourceManager.GetString("lang_fr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Russian ähnelt.
         /// </summary>
         public static string lang_ru {
@@ -367,6 +385,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bot Config ähnelt.
+        /// </summary>
+        public static string mw_menu_Twitch_Bot {
+            get {
+                return ResourceManager.GetString("mw_menu_Twitch_Bot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Widget ähnelt.
         /// </summary>
         public static string mw_menu_Widget {
@@ -449,7 +476,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Configure Bot Responses ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Configure Bot Responses &amp; Commands ähnelt.
         /// </summary>
         public static string sw_Integration_ConfigureResponses {
             get {

@@ -39,7 +39,7 @@ namespace Songify_Slim.Util.Songify
                         foreach (Window window in Application.Current.Windows)
                             if (window.GetType() == typeof(MainWindow))
                                 //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                                ((MainWindow) window).LblStatus.Content = "Please fill in Twitch credentials.";
+                                ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
                     });
                     return;
                 }
@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception)
             {
-                Logger.LogStr("Couldn't connect to Twitch, mabe credentials are wrong?");
+                Logger.LogStr("TWITCH: Couldn't connect to Twitch, mabe credentials are wrong?");
             }
         }
 
@@ -81,13 +81,13 @@ namespace Songify_Slim.Util.Songify
                     if (window.GetType() != typeof(MainWindow))
                         continue;
                     //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                    ((MainWindow) window).LblStatus.Content = "Disconnected from Twitch";
-                    ((MainWindow) window).mi_TwitchConnect.IsEnabled = true;
-                    ((MainWindow) window).mi_TwitchDisconnect.IsEnabled = false;
+                    ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
+                    ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
+                    ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
                 }
             });
 
-            Logger.LogStr("Disconnected from Twitch");
+            Logger.LogStr("TWITCH: Disconnected from Twitch");
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -108,12 +108,12 @@ namespace Songify_Slim.Util.Songify
                         continue;
 
                     //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Green);
-                    ((MainWindow) window).LblStatus.Content = "Connected to Twitch";
-                    ((MainWindow) window).mi_TwitchConnect.IsEnabled = false;
-                    ((MainWindow) window).mi_TwitchDisconnect.IsEnabled = true;
+                    ((MainWindow)window).LblStatus.Content = "Connected to Twitch";
+                    ((MainWindow)window).mi_TwitchConnect.IsEnabled = false;
+                    ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
                 }
             });
-            Logger.LogStr("Connected to Twitch");
+            Logger.LogStr("TWITCH: Connected to Twitch");
         }
 
         private static void _client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
@@ -128,7 +128,10 @@ namespace Songify_Slim.Util.Songify
                     {
                         foreach (Window window in Application.Current.Windows)
                             if (window.GetType() == typeof(Window_Settings))
-                                ((Window_Settings) window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
+                            {
+                                ((Window_Settings)window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
+                                ((Window_Settings)window).Chbx_MessageLogging.IsChecked = false;
+                            }
                     });
                 }
 
@@ -195,7 +198,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // Same code from above but it reacts to a command instead of rewards
-            if (!Settings.Settings.TwSrCommand || !e.ChatMessage.Message.StartsWith("!ssr")) return;
+            if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
             {
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
@@ -271,11 +274,67 @@ namespace Songify_Slim.Util.Songify
                 // start the command cooldown
                 StartCooldown();
             }
+
+            if (e.ChatMessage.Message.StartsWith("!song") && Settings.Settings.BotCmdSong)
+            {
+                string currsong = GetCurrentSong();
+                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
+            }
+
+            if (e.ChatMessage.Message == "!pos" && Settings.Settings.BotCmdPos)
+            {
+                List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
+                string output = "";
+                if (queueItems.Count != 0)
+                {
+                    for (int i = 0; i < queueItems.Count; i++)
+                    {
+                        QueueItem item = queueItems[i];
+                        output += $"Pos {item.position}: {item.title}";
+                        if (i + 1 != queueItems.Count)
+                            output += " | ";
+                    }
+                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {output}");
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
+                }
+            }
+
+            if (e.ChatMessage.Message == "!next")
+            {
+                List<QueueItem> queueItems = GetQueueItems();
+                if (queueItems != null)
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {queueItems[0].title}");
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} there is no song next up.");
+                }
+            }
+        }
+
+        private static string GetCurrentSong()
+        {
+            string tmp = "";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        tmp = (window as MainWindow)?.CurrSong;
+                    }
+                }
+            });
+            return tmp;
         }
 
         private static bool IsUserBlocked(string displayName)
         {
-            string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] {"|||"}, StringSplitOptions.None);
+            string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
 
             // checks if one of the artist in the requested song is on the blacklist
             return userBlacklist.Any(s => s == displayName);
@@ -302,10 +361,16 @@ namespace Songify_Slim.Util.Songify
         private static void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings
-            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] {"|||"}, StringSplitOptions.None);
+            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
             string response;
             // gets the track information using spotify api
             FullTrack track = ApiHandler.GetTrack(trackId);
+            string artists = "";
+            for (int i = 0; i < track.Artists.Count; i++)
+                if (i != track.Artists.Count - 1)
+                    artists += track.Artists[i].Name + ", ";
+                else
+                    artists += track.Artists[i].Name;
 
             // checks if one of the artist in the requested song is on the blacklist
             foreach (string s in blacklist)
@@ -379,7 +444,7 @@ namespace Songify_Slim.Util.Songify
             if (error.Error != null)
             {
                 // if an error has been encountered, log it, inform the requester and skip 
-                Logger.LogStr(error.Error.Message + "\n" + error.Error.Status);
+                Logger.LogStr("TWITCH: " + error.Error.Message + "\n" + error.Error.Status);
                 response = Settings.Settings.BotRespError;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
                 response = response.Replace("{artist}", "");
@@ -391,10 +456,10 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            // if everything workes so far, inform the user that the song has been added to the queue
+            // if everything worked so far, inform the user that the song has been added to the queue
             response = Settings.Settings.BotRespSuccess;
             response = response.Replace("{user}", e.ChatMessage.DisplayName);
-            response = response.Replace("{artist}", track.Artists[0].Name);
+            response = response.Replace("{artist}", artists);
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{errormsg}", "");
@@ -421,7 +486,7 @@ namespace Songify_Slim.Util.Songify
                         Requester = e.ChatMessage.DisplayName,
                         TrackID = track.Id,
                         Title = track.Name,
-                        Artists = track.Artists[0].Name,
+                        Artists = artists,
                         Length = FormattedTime(track.DurationMs)
                     });
 
@@ -480,6 +545,64 @@ namespace Songify_Slim.Util.Songify
             return temp.Count > 0;
         }
 
+        private static List<QueueItem> GetQueueItems(string requester = null)
+        {
+            // Checks if the song ID is already in the internal queue (Mainwindow reqList)
+            List<RequestObject> temp = new List<RequestObject>();
+            List<QueueItem> temp3 = new List<QueueItem>();
+            string currsong = "";
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                    if (window.GetType() == typeof(MainWindow))
+                    {
+                        temp = (window as MainWindow)?.ReqList;
+                        currsong = $"{(window as MainWindow)?._artist} - {(window as MainWindow)?._title}";
+                    }
+            });
+
+            if (requester != null)
+            {
+                List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
+                foreach (RequestObject requestObject in temp2)
+                {
+                    int pos = temp.IndexOf(requestObject) + 1;
+                    temp3.Add(new QueueItem
+                    {
+                        position = pos,
+                        title = requestObject.Artists + " - " + requestObject.Title,
+                        requester = requestObject.Requester
+                    });
+                }
+                return temp3;
+            }
+            else
+            {
+                if (temp.Count > 0)
+                {
+                    if (temp.Count == 1 && $"{temp[0].Artists} - {temp[0].Title}" != currsong)
+                    {
+                        temp3.Add(new QueueItem
+                        {
+                            title = $"{temp[0].Artists} - {temp[0].Artists}",
+                            requester = $"{temp[0].Requester}"
+                        });
+                        return temp3;
+                    }
+                    else if (temp.Count > 1)
+                    {
+                        temp3.Add(new QueueItem
+                        {
+                            title = $"{temp[1].Artists} - {temp[1].Artists}",
+                            requester = $"{temp[1].Requester}"
+                        });
+                        return temp3;
+                    }
+                }
+            }
+            return null;
+        }
+
         private static bool MaxQueueItems(string requester)
         {
             // Checks if the requester already reached max songrequests
@@ -493,5 +616,18 @@ namespace Songify_Slim.Util.Songify
 
             return temp.Count >= Settings.Settings.TwSrMaxReq;
         }
+
+        public static void SendCurrSong(string song)
+        {
+            if (Client != null)
+                Client.SendMessage(Settings.Settings.TwChannel, song);
+        }
+    }
+
+    class QueueItem
+    {
+        public string requester { get; set; }
+        public string title { get; set; }
+        public int position { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace Songify_Slim
                 TxtbxOutputdirectory.Text = Settings.Directory;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
-            ChbxCustomPause.IsChecked = Settings.CustomPauseTextEnabled;
+            ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
             ChbxTelemetry.IsOn = Settings.Telemetry;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
@@ -69,7 +69,7 @@ namespace Songify_Slim
             NudMaxReq.Value = Settings.TwSrMaxReq;
             NudCooldown.Value = Settings.TwSrCooldown;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
-            Chbx_TwAutoconnect.IsChecked = Settings.TwAutoConnect;
+            Chbx_TwAutoconnect.IsOn = Settings.TwAutoConnect;
             Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             nud_Spaces.Value = Settings.SpaceCount;
@@ -77,6 +77,7 @@ namespace Songify_Slim
             tb_ClientSecret.Password = Settings.ClientSecret;
             Tglsw_Spotify.IsOn = Settings.UseOwnApp;
             NudMaxlength.Value = Settings.MaxSongLength;
+            tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
 
             if (Settings.NbUserId != null) lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             if (ApiHandler.Spotify != null)
@@ -96,6 +97,12 @@ namespace Songify_Slim
                     break;
                 case "ru-RU":
                     cbx_Language.SelectedIndex = 2;
+                    break;
+                case "es":
+                    cbx_Language.SelectedIndex = 3;
+                    break;
+                case "fr":
+                    cbx_Language.SelectedIndex = 4;
                     break;
             }
 
@@ -210,13 +217,8 @@ namespace Songify_Slim
 
         private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
         {
-            // enables / disables custom pause
-            if (ChbxCustomPause.IsChecked == null) return;
-            Settings.CustomPauseTextEnabled = (bool)ChbxCustomPause.IsChecked;
-            if (!(bool)ChbxCustomPause.IsChecked)
-                TxtbxCustompausetext.IsEnabled = false;
-            else
-                TxtbxCustompausetext.IsEnabled = true;
+            Settings.CustomPauseTextEnabled = ChbxCustomPause.IsOn;
+            TxtbxCustompausetext.IsEnabled = ChbxCustomPause.IsOn;
         }
 
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
@@ -416,7 +418,7 @@ namespace Songify_Slim
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to autoconnect or not
-            if (Chbx_TwAutoconnect.IsChecked != null) Settings.TwAutoConnect = (bool)Chbx_TwAutoconnect.IsChecked;
+            Settings.TwAutoConnect = Chbx_TwAutoconnect.IsOn;
         }
 
         private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
@@ -474,6 +476,16 @@ namespace Songify_Slim
                     // Russian
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
                     Settings.Language = "ru-RU";
+                    break;
+                case 3:
+                    // Spansih
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("es");
+                    Settings.Language = "es";
+                    break;
+                case 4:
+                    // Spansih
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr");
+                    Settings.Language = "fr";
                     break;
             }
 
@@ -577,6 +589,11 @@ namespace Songify_Slim
             if (msgResult != MessageDialogResult.Affirmative) return;
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
+        }
+
+        private void tgl_AnnounceInChat_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.AnnounceInChat = tgl_AnnounceInChat.IsOn;
         }
     }
 }
