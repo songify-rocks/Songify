@@ -307,9 +307,6 @@
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>Saving will restart Songify! THIS ONLY NEEDS TO BE DONE ONCE! DO NOT HIT SAVE AFTER RESTARTING AND LINKING YOUR ACCOUNT AGAIN!</value>
-  </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
     <value>Use Own AppID</value>
   </data>
@@ -366,5 +363,32 @@
   </data>
   <data name="lang_fr" xml:space="preserve">
     <value>French</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(translated using DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Displays the next song in queue</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>On</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Displays the queue position of the users songrequests</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Displays the current song</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Trigger</value>
   </data>
 </root>

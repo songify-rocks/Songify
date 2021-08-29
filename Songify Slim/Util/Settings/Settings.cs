@@ -7,6 +7,23 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
+        public static bool BotCmdNext
+        {
+            get => GetBotCmdNext();
+            set => SetBotCmdNext(value);
+        }
+
+        private static void SetBotCmdNext(bool value)
+        {
+            Properties.Settings.Default.bot_cmd_next = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static bool GetBotCmdNext()
+        {
+            return Properties.Settings.Default.bot_cmd_next;
+        }
+
         public static bool BotCmdPos
         {
             get => GetBotCmdPos();

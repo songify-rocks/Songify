@@ -6,12 +6,10 @@
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      Title="Bot Responses &amp; Commands" Height="321.266" Width="629" Loaded="MetroWindow_Loaded"
-                      ResizeMode="NoResize"
-                      d:DesignHeight="800">
+                      Title="Bot Responses &amp; Commands" Height="332.266" Width="629" Loaded="MetroWindow_Loaded"
+                      ResizeMode="NoResize">
     <Grid>
-
-        <controls:MetroTabControl HorizontalAlignment="Left" Height="292" VerticalAlignment="Top" Width="623">
+        <controls:MetroTabControl HorizontalAlignment="Left" Height="303" VerticalAlignment="Top" Width="623">
             <TabItem Header="Responses">
                 <Grid>
                     <Label Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="0"
@@ -20,31 +18,35 @@
                       d:DesignHeight="800">
                         <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" />
                     </ScrollViewer>
-                    <TextBox x:Name="lbl_Preview" VerticalAlignment="Top" Margin="10,202,15,0" Height="41" TextWrapping="Wrap" IsReadOnly="True" />
+                    <TextBox x:Name="lbl_Preview" VerticalAlignment="Top" Margin="10,212,15,0" Height="41" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" />
                 </Grid>
             </TabItem>
             <TabItem Header="Commands">
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10,0">
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Trigger" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Description" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Enabled" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"/>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"/>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,21,10,0">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="!song" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="Displays the current song" Width="341" VerticalAlignment="Center"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled"/>
+                            <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="341" VerticalAlignment="Center"/>
+                            <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="!pos" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="Displays the queue position of the users songrequests" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled"/>
+                            <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="!next" Width="70" VerticalAlignment="Center"/>
+                            <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
             </TabItem>
         </controls:MetroTabControl>
-
     </Grid>
 </controls:MetroWindow>

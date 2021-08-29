@@ -302,7 +302,7 @@ namespace Songify_Slim.Util.Songify
                 }
             }
 
-            if (e.ChatMessage.Message == "!next")
+            if (e.ChatMessage.Message == "!next" && Settings.Settings.BotCmdNext)
             {
                 List<QueueItem> queueItems = GetQueueItems();
                 if (queueItems != null)

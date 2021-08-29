@@ -70,6 +70,78 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Description ähnelt.
+        /// </summary>
+        public static string brw_cmd_description {
+            get {
+                return ResourceManager.GetString("brw_cmd_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Enabled ähnelt.
+        /// </summary>
+        public static string brw_cmd_enabled {
+            get {
+                return ResourceManager.GetString("brw_cmd_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Displays the next song in queue ähnelt.
+        /// </summary>
+        public static string brw_cmd_next {
+            get {
+                return ResourceManager.GetString("brw_cmd_next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Off ähnelt.
+        /// </summary>
+        public static string brw_cmd_off {
+            get {
+                return ResourceManager.GetString("brw_cmd_off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die On ähnelt.
+        /// </summary>
+        public static string brw_cmd_on {
+            get {
+                return ResourceManager.GetString("brw_cmd_on", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Displays the queue position of the users songrequests ähnelt.
+        /// </summary>
+        public static string brw_cmd_pos {
+            get {
+                return ResourceManager.GetString("brw_cmd_pos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Displays the current song ähnelt.
+        /// </summary>
+        public static string brw_cmd_song {
+            get {
+                return ResourceManager.GetString("brw_cmd_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Trigger ähnelt.
+        /// </summary>
+        public static string brw_cmd_trigger {
+            get {
+                return ResourceManager.GetString("brw_cmd_trigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error fetching songdata ähnelt.
         /// </summary>
         public static string brw_FetchError {
@@ -710,15 +782,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Saving will restart Songify! THIS ONLY NEEDS TO BE DONE ONCE! DO NOT HIT SAVE AFTER RESTARTING AND LINKING YOUR ACCOUNT AGAIN! ähnelt.
-        /// </summary>
-        public static string sw_tcSpotify_SavingWillRestart {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_SavingWillRestart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Use Own AppID ähnelt.
         /// </summary>
         public static string sw_tcSpotify_UseOwnApp {
@@ -805,6 +868,15 @@ namespace Songify_Slim.Properties {
         public static string sw_tcSystem_Telemetry {
             get {
                 return ResourceManager.GetString("sw_tcSystem_Telemetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die (translated using DeepL) ähnelt.
+        /// </summary>
+        public static string sw_tcSystem_translated {
+            get {
+                return ResourceManager.GetString("sw_tcSystem_translated", resourceCulture);
             }
         }
     }

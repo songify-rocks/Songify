@@ -307,9 +307,6 @@
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>Speichern</value>
   </data>
-  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>Speichern startet automatisch neu! DIES MUSS NUR EIN MAL DURCHGEFÜHRT WERDEN! NICHT AUF "SPEICHERN" KLICKEN WENN SONGIFY NEUGESTARTET &amp; DER SPOTIFY ACCOUNT GELINKT WURDE!</value>
-  </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
     <value>Songifys Spotify AppID nutzen</value>
   </data>
@@ -366,5 +363,32 @@
   </data>
   <data name="lang_fr" xml:space="preserve">
     <value>Französisch</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(übersetzt mit DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Zeigt das nächste Lied in der Warteschlange an</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Aus</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>Ein</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Zeigt die Position der Songanfragen in der Warteschlange für den aktuellen Benutzer an</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Zeigt den aktuellen Song an</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Auslöser</value>
   </data>
 </root>

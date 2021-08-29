@@ -704,5 +704,17 @@ namespace Songify_Slim.Properties {
                 this["bot_cmd_pos"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool bot_cmd_next {
+            get {
+                return ((bool)(this["bot_cmd_next"]));
+            }
+            set {
+                this["bot_cmd_next"] = value;
+            }
+        }
     }
 }

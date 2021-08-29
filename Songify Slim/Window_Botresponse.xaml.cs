@@ -18,6 +18,8 @@ namespace Songify_Slim
             Cctrl.Content = new UC_BotResponses();
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
+            tgl_botcmd_next.IsOn = Settings.BotCmdNext;
+
         }
 
         private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
@@ -28,6 +30,11 @@ namespace Songify_Slim
         private void tgl_botcmd_song_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdSong = (sender as MahApps.Metro.Controls.ToggleSwitch).IsOn;
+        }
+
+        private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdNext = (sender as MahApps.Metro.Controls.ToggleSwitch).IsOn;
         }
     }
 }

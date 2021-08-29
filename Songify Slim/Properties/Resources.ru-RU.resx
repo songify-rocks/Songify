@@ -337,9 +337,6 @@
   <data name="sw_tc_System" xml:space="preserve">
     <value>Генерально</value>
   </data>
-  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>Сохранение перезапустит Songify! ЭТО НУЖНО СДЕЛАТЬ ТОЛЬКО ОДИН РАЗ! НЕ НАЖИМАЙТЕ СОХРАНИТЬ ПОСЛЕ ПЕРЕЗАПУСКА И ПОДКЛЮЧЕНИЯ УЧЕТНОЙ ЗАПИСИ СНОВА!</value>
-  </data>
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>сохранять</value>
   </data>
@@ -366,5 +363,32 @@
   </data>
   <data name="lang_fr" xml:space="preserve">
     <value>Французский</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(переведено с помощью DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Отображает следующую песню в очереди</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>На сайте</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>На сайте</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Отображает положение в очереди пользователей songrequests</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Отображает текущую композицию</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Включено</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Триггер</value>
   </data>
 </root>

@@ -307,9 +307,6 @@
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>Sauvez</value>
   </data>
-  <data name="sw_tcSpotify_SavingWillRestart" xml:space="preserve">
-    <value>La sauvegarde redémarre Songify ! CECI NE DOIT ÊTRE FAIT QU'UNE SEULE FOIS ! N'APPUYEZ PAS SUR SAUVEGARDER APRÈS AVOIR REDÉMARRÉ ET RELIÉ À NOUVEAU VOTRE COMPTE !</value>
-  </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
     <value>Utiliser son propre AppID</value>
   </data>
@@ -366,5 +363,32 @@
   </data>
   <data name="lang_fr" xml:space="preserve">
     <value>Français</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(traduit à l'aide de DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Affiche la chanson suivante dans la file d'attente</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Éteint</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>Activée</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Affiche la position de la file d'attente des demandes de chansons des utilisateurs</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Affiche le morceau en cours</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Activé</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Déclencheur</value>
   </data>
 </root>

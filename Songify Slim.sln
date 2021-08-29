@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2027
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songify Slim", "Songify Slim\Songify Slim.csproj", "{79210295-B0CC-46F4-B77A-26C7D27F4754}"
 EndProject
@@ -20,6 +20,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_AutoCreateNewLanguageFiles = True
+		RESX_SortFileContentOnSave = False
 		SolutionGuid = {12169756-2254-4CD3-86A9-6FCF593762EC}
 	EndGlobalSection
 EndGlobal

@@ -15,6 +15,8 @@
                 <Grid>
                     <Label Content="{x:Static local:Resources.sw_tcSystem_lblLangauge}"
                            Margin="10,11,286,199" Padding="0,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <Label Content="{x:Static local:Resources.sw_tcSystem_translated}"
+                           Margin="4,26,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="9" FontStyle="Italic" />
                     <ComboBox x:Name="cbx_Language" HorizontalAlignment="Left" VerticalAlignment="Top" Width="141"
                               Margin="330,11,0,0" SelectionChanged="ComboBox_SelectionChanged">
                         <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
@@ -117,7 +119,7 @@
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
-                                           Width="431" Height="36"
+                                           Width="464" Height="36"
                                            Toggled="ChbxCover_Checked" />
                     <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="451,140,0,0" VerticalAlignment="Top"
                             Width="28" Click="BtnCopyURL_Click">
@@ -130,7 +132,7 @@
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
-                                           Width="431" Height="36"
+                                           Width="464" Height="36"
                                            Toggled="ChbxSplit_Checked" />
                     <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
                               HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,78,0,0"
@@ -150,8 +152,8 @@
                            VerticalAlignment="Top" Width="71" Padding="5" />
                     <ComboBox x:Name="ComboBoxColor" Margin="11,44,0,0" Height="23" VerticalAlignment="Top"
                               SelectionChanged="ComboBoxColorSelectionChanged" HorizontalAlignment="Left" Width="238" />
-                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="325,40,0,0" HorizontalAlignment="Left"
-                                           Width="150" FontFamily="Segoe UI" FontSize="12"
+                    <controls:ToggleSwitch x:Name="ThemeToggleSwitch" Margin="254,40,0,0" HorizontalAlignment="Left"
+                                           Width="225" FontFamily="Segoe UI" FontSize="12"
                                            ContentPadding="0"
                                            Height="32" VerticalAlignment="Top"
                                            Padding="5,0,0,0" Toggled="ThemeToggleSwitchIsCheckedChanged"
@@ -192,7 +194,6 @@
                     <Button x:Name="btn_Botresponse"
                             Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,216,10,70" Click="btn_Botresponse_Click" />
                     <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,179,0,0" Width="176" Content="Send song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
-
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify">
@@ -222,7 +223,6 @@
                             Margin="0,271,10,10" Click="btn_save_Click" HorizontalAlignment="Right" Width="100" Visibility="Hidden" />
                     <Button x:Name="btn_OwnAppHelp" Content="?" Margin="0,83,10,0"
                             VerticalAlignment="Top" Click="btn_OwnAppHelp_Click" Height="21" HorizontalAlignment="Right" Width="21" />
-
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
