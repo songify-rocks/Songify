@@ -47,5 +47,28 @@
                VerticalAlignment="Top" />
         <Label Content="{x:Static local:Resources.bw_lblBlockedUsers}" Margin="10,54,0,0" VerticalAlignment="Top"
                Grid.Column="1" />
+        <controls:MetroContentControl x:Name="cc_Content" Grid.ColumnSpan="2" Panel.ZIndex="50" Visibility="Hidden" >
+            <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Height="40" TextWrapping="Wrap" TextAlignment="Center" FontSize="16" Width="330"><Run Text="The search returned more than one artist. Select one or"/><Run Text=" more to block"/><Run Text="."/></TextBlock>
+                <DataGrid x:Name="dgv_Artists" SelectionMode="Single" CanUserReorderColumns="False"
+                  CanUserResizeColumns="False" CanUserSortColumns="False" HorizontalAlignment="Center" VerticalAlignment="Top" Height="323" Margin="15,55,15,0" >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="#" IsReadOnly="True" Binding="{Binding Path=Num}" Width="25"/>
+                        <DataGridTextColumn Header="Artist" IsReadOnly="True" Binding="{Binding Path=Artist}" Width="*" />
+                        <DataGridTemplateColumn Width="auto" IsReadOnly="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox HorizontalAlignment="Left" VerticalAlignment="Top" IsChecked="{Binding Path=IsSelected,  UpdateSourceTrigger=PropertyChanged}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <Button x:Name="btn_CancelArtists" Content="Cancel" HorizontalAlignment="Center" VerticalAlignment="Center" Width="86" Margin="245,383,106,10" Click="btn_CancelArtists_Click"/>
+
+                <Button x:Name="btn_AddArtists" Content="Add selected" HorizontalAlignment="Center" VerticalAlignment="Center" Width="86" Margin="336,383,15,10" Click="btn_AddArtists_Click"/>
+
+            </Grid>
+        </controls:MetroContentControl>
     </Grid>
 </controls:MetroWindow>

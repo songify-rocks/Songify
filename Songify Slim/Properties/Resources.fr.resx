@@ -374,7 +374,7 @@
     <value>Éteint</value>
   </data>
   <data name="brw_cmd_on" xml:space="preserve">
-    <value>Activée</value>
+    <value>Alumé</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
     <value>Affiche la position de la file d'attente des demandes de chansons des utilisateurs</value>

@@ -43,7 +43,7 @@ namespace Songify_Slim
             if (string.IsNullOrEmpty(Settings.UserBlacklist))
                 return;
 
-            UserBlacklist = Settings.UserBlacklist.Split(new[] {Splitter}, StringSplitOptions.None);
+            UserBlacklist = Settings.UserBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
 
             foreach (string s in UserBlacklist)
                 if (!string.IsNullOrEmpty(s))
@@ -57,7 +57,7 @@ namespace Songify_Slim
             if (string.IsNullOrEmpty(Settings.ArtistBlacklist))
                 return;
 
-            Blacklist = Settings.ArtistBlacklist.Split(new[] {Splitter}, StringSplitOptions.None);
+            Blacklist = Settings.ArtistBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
 
             foreach (string s in Blacklist)
                 if (!string.IsNullOrEmpty(s))
@@ -89,18 +89,30 @@ namespace Songify_Slim
                         return;
                     }
 
-
                     // Perform a search via the spotify API
                     SearchItem searchItem = ApiHandler.GetArtist(search);
                     if (searchItem.Artists.Items.Count <= 0)
                         return;
+                    if (searchItem.Artists.Items.Count > 1)
+                    {
+                        dgv_Artists.Items.Clear();
+                        int count = 1;
+                        foreach (FullArtist artist in searchItem.Artists.Items)
+                        {
+                            dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
+                            count++;
+                        }
+                        cc_Content.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        FullArtist fullartist = searchItem.Artists.Items[0];
 
-                    FullArtist fullartist = searchItem.Artists.Items[0];
-
-                    foreach (object item in ListView_Blacklist.Items)
-                        if (item.ToString() == fullartist.Name)
-                            return;
-                    ListView_Blacklist.Items.Add(fullartist.Name);
+                        foreach (object item in ListView_Blacklist.Items)
+                            if (item.ToString() == fullartist.Name)
+                                return;
+                        ListView_Blacklist.Items.Add(fullartist.Name);
+                    }
                     break;
                 case 1:
                     ListView_UserBlacklist.Items.Add(search);
@@ -117,7 +129,7 @@ namespace Songify_Slim
             if (ListView_Blacklist.Items.Count > 0)
             {
                 foreach (object item in ListView_Blacklist.Items)
-                    if ((string) item != "")
+                    if ((string)item != "")
                         s += item + Splitter;
                 s = s.Remove(s.Length - Splitter.Length);
             }
@@ -129,7 +141,7 @@ namespace Songify_Slim
             if (ListView_UserBlacklist.Items.Count > 0)
             {
                 foreach (object item in ListView_UserBlacklist.Items)
-                    if ((string) item != "")
+                    if ((string)item != "")
                         s += item + Splitter;
                 s = s.Remove(s.Length - Splitter.Length);
             }
@@ -147,7 +159,7 @@ namespace Songify_Slim
                 case 0:
                     MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                         "Do you really want to clear the Artist blacklist?", MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                        new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
                         Settings.ArtistBlacklist = "";
@@ -158,7 +170,7 @@ namespace Songify_Slim
                 case 1:
                     msgResult = await this.ShowMessageAsync("Notification",
                         "Do you really want to clear the User blacklist?", MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                        new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
                         Settings.UserBlacklist = "";
@@ -176,7 +188,7 @@ namespace Songify_Slim
 
             if (mnu == null) return;
 
-            listView = ((ContextMenu) mnu.Parent).PlacementTarget as ListBox;
+            listView = ((ContextMenu)mnu.Parent).PlacementTarget as ListBox;
 
             // right-click context menu to delete single blacklist entries
             if (listView != null && listView.SelectedItem == null)
@@ -186,7 +198,7 @@ namespace Songify_Slim
             {
                 MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                     "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     listView.Items.Remove(listView.SelectedItem);
@@ -211,7 +223,7 @@ namespace Songify_Slim
             {
                 MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                     "Delete " + ListView_Blacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     ListView_Blacklist.Items.Remove(ListView_Blacklist.SelectedItem);
@@ -226,7 +238,7 @@ namespace Songify_Slim
             {
                 MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                     "Delete " + ListView_UserBlacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings {AffirmativeButtonText = "Yes", NegativeButtonText = "No"});
+                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult == MessageDialogResult.Affirmative)
                 {
                     ListView_UserBlacklist.Items.Remove(ListView_UserBlacklist.SelectedItem);
@@ -234,5 +246,40 @@ namespace Songify_Slim
                 }
             }
         }
+
+        private void btn_AddArtists_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (BlockListArtists row in dgv_Artists.Items)
+            {
+                bool alreadyIn = false;
+                if (!row.IsSelected)
+                    continue;
+
+                foreach (object item in ListView_Blacklist.Items)
+                    if (item.ToString() == row.Artist)
+                    {
+                        alreadyIn = true;
+                        break;
+
+                    }
+                if (!alreadyIn)
+                    ListView_Blacklist.Items.Add(row.Artist);
+            }
+            dgv_Artists.Items.Clear();
+            cc_Content.Visibility = Visibility.Hidden;
+        }
+
+        private void btn_CancelArtists_Click(object sender, RoutedEventArgs e)
+        {
+            dgv_Artists.Items.Clear();
+            cc_Content.Visibility = Visibility.Hidden;
+        }
+    }
+
+    class BlockListArtists
+    {
+        public int Num { get; set; }
+        public string Artist { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

@@ -188,7 +188,7 @@ namespace Songify_Slim.Util.Songify
         public static SearchItem GetArtist(string searchStr)
         {
             // returns Artist matching the search string
-            return Spotify.SearchItems(searchStr, SearchType.Artist, 1);
+            return Spotify.SearchItems(searchStr, SearchType.Artist, 10);
         }
 
         public static ErrorResponse AddToQ(string songUri)
