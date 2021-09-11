@@ -284,25 +284,27 @@ namespace Songify_Slim.Util.Songify
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
         /// <returns>Returns String with currently playing NB Song Request</returns>
-        public string FetchNightBot()
-        {
-            // Checking if the user has set the setting for Nightbot
-            if (string.IsNullOrEmpty(Settings.Settings.NbUserId)) return "No NightBot ID set.";
-            // Getting JSON from the nightbot API
-            string jsn;
-            using (WebClient wc = new WebClient
-            {
-                Encoding = Encoding.UTF8
-            })
-            {
-                jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-                                        Settings.Settings.NbUserId);
-            }
 
-            // Deserialize JSON and get the current song 
-            NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-            return json._currentsong == null ? null : (string)json._currentsong.track.title;
-        }
+        //public string FetchNightBot()
+        //{
+        //    // Checking if the user has set the setting for Nightbot
+        //    if (string.IsNullOrEmpty(Settings.Settings.NbUserId)) return "No NightBot ID set.";
+        //    // Getting JSON from the nightbot API
+        //    string jsn;
+        //    using (WebClient wc = new WebClient
+        //    {
+        //        Encoding = Encoding.UTF8
+        //    })
+        //    {
+        //        string url = "https://api.nightbot.tv/1/song_requests/queue/?channel="+Settings.Settings.NbUserId;
+        //        jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
+        //                                Settings.Settings.NbUserId);
+        //    }
+
+        //    // Deserialize JSON and get the current song 
+        //    NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
+        //    return json._currentsong == null ? null : (string)json._currentsong.track.title;
+        //}
 
         public TrackInfo FetchSpotifyWeb()
         {

@@ -55,7 +55,7 @@ namespace Songify_Slim
             ChbxTelemetry.IsOn = Settings.Telemetry;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
-            txtbx_nbuser.Text = Settings.NbUser;
+            //txtbx_nbuser.Text = Settings.NbUser;
             ChbxUpload.IsOn = Settings.Upload;
             NudChrome.Value = Settings.ChromeFetchRate;
             ChbxCover.IsOn = Settings.DownloadCover;
@@ -79,7 +79,7 @@ namespace Songify_Slim
             NudMaxlength.Value = Settings.MaxSongLength;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
 
-            if (Settings.NbUserId != null) lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
+            //if (Settings.NbUserId != null) lbl_nightbot.Content = "Nightbot (ID: " + Settings.NbUserId + ")";
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;
@@ -141,31 +141,31 @@ namespace Songify_Slim
             ConfigHandler.LoadConfig();
         }
 
-        private void Btn_nblink_Click(object sender, RoutedEventArgs e)
-        {
-            // Links the nightbot account using username
-            try
-            {
-                // accessing nightbot API with username to get user id
-                string jsn;
-                using (WebClient wc = new WebClient())
-                {
-                    jsn = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.NbUser);
-                }
+        //private void Btn_nblink_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Links the nightbot account using username
+        //    try
+        //    {
+        //        // accessing nightbot API with username to get user id
+        //        string jsn;
+        //        using (WebClient wc = new WebClient())
+        //        {
+        //            jsn = wc.DownloadString("https://api.nightbot.tv/1/channels/t/" + Settings.NbUser);
+        //        }
 
-                NbObj json = JsonConvert.DeserializeObject<NbObj>(jsn);
-                string temp = json.Channel._id;
-                temp = temp.Replace("{", "").Replace("}", "");
-                Settings.NbUserId = temp;
-                Lbl_Status.Content = @"Account " + Settings.NbUser + " linked.";
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-            }
+        //        NbObj json = JsonConvert.DeserializeObject<NbObj>(jsn);
+        //        string temp = json.Channel._id;
+        //        temp = temp.Replace("{", "").Replace("}", "");
+        //        Settings.NbUserId = temp;
+        //        Lbl_Status.Content = @"Account " + Settings.NbUser + " linked.";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.LogExc(ex);
+        //    }
 
-            SetControls();
-        }
+        //    SetControls();
+        //}
 
         private void BtnCopyToClipClick(object sender, RoutedEventArgs e)
         {
@@ -324,11 +324,11 @@ namespace Songify_Slim
 
         }
 
-        private void Txtbx_nbuser_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // write Nightbot username to settings
-            Settings.NbUser = txtbx_nbuser.Text;
-        }
+        //private void Txtbx_nbuser_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    // write Nightbot username to settings
+        //    Settings.NbUser = txtbx_nbuser.Text;
+        //}
 
         private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
         {

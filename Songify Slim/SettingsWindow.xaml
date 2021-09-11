@@ -163,7 +163,7 @@
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Integration}">
                 <Grid>
-                    <Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top"
+                    <!--<Label x:Name="lbl_nightbot" Content="Nightbot" HorizontalAlignment="Left" VerticalAlignment="Top"
                            Margin="10,10,0,0" Padding="0,5,5,5" />
                     <TextBox x:Name="txtbx_nbuser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
                              VerticalAlignment="Top" Width="286" Margin="10,41,0,0"
@@ -171,29 +171,29 @@
                              TextChanged="Txtbx_nbuser_TextChanged" />
                     <Button x:Name="btn_nblink" Content="{x:Static local:Resources.sw_Integration_btnLink}"
                             HorizontalAlignment="Left" VerticalAlignment="Top" Width="85" Margin="393,40,0,0"
-                            Click="Btn_nblink_Click" />
-                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,125,0,0"
+                            Click="Btn_nblink_Click" />-->
+                    <Label Content="Twitch" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,7,0,0"
                            Padding="0,5,5,5" />
                     <TextBox x:Name="txtbx_twUser" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text=""
-                             VerticalAlignment="Top" Width="96" Margin="10,151,0,0"
+                             VerticalAlignment="Top" Width="96" Margin="10,33,0,0"
                              controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged" />
                     <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Left" Height="23"
-                                 controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="334"
-                                 Margin="111,151,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged" />
+                                 controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Top" Width="342"
+                                 Margin="111,33,0,0" PasswordChanged="txtbx_twOAuth_PasswordChanged" />
                     <TextBox x:Name="txtbx_twChannel" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
                              controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
-                             VerticalAlignment="Top" Width="96" Margin="10,182,0,0"
+                             VerticalAlignment="Top" Width="96" Margin="10,64,0,0"
                              TextChanged="txtbx_twChannel_TextChanged" />
                     <Button Content="?" HorizontalAlignment="Left" VerticalAlignment="Top"
-                            Margin="450,150,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" />
+                            Margin="458,32,0,0" Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" />
                     <controls:ToggleSwitch x:Name="Chbx_TwAutoconnect"
                               Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="111,179,0,0"
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="111,61,0,0"
                               Toggled="Chbx_TwAutoconnect_Checked" Width="185" />
 
                     <Button x:Name="btn_Botresponse"
-                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,216,10,70" Click="btn_Botresponse_Click" />
-                    <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,179,0,0" Width="176" Content="Send song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
+                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,98,10,188" Click="btn_Botresponse_Click" />
+                    <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,61,0,0" Width="176" Content="Send song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify">

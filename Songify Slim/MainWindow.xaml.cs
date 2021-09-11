@@ -165,7 +165,7 @@ namespace Songify_Slim
             string[] sourceBoxItems =
             {
                 PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Nightbot, PlayerType.VLC, PlayerType.Youtube
+                PlayerType.Deezer, PlayerType.FooBar2000,/* PlayerType.Nightbot,*/ PlayerType.VLC, PlayerType.Youtube
             };
             cbx_Source.ItemsSource = sourceBoxItems;
         }
@@ -469,25 +469,25 @@ namespace Songify_Slim
 
                 #endregion YouTube
 
-                case PlayerType.Nightbot:
+                //case PlayerType.Nightbot:
 
-                    #region Nightbot
+                //    #region Nightbot
 
-                    // Fetching the currently playing song on NB Song Request
-                    // and updating the output on success
-                    _temp = sf.FetchNightBot();
-                    if (string.IsNullOrWhiteSpace(_temp))
-                    {
-                        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
+                //    // Fetching the currently playing song on NB Song Request
+                //    // and updating the output on success
+                //    _temp = sf.FetchNightBot();
+                //    if (string.IsNullOrWhiteSpace(_temp))
+                //    {
+                //        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
 
-                        break;
-                    }
+                //        break;
+                //    }
 
-                    WriteSong(_temp, "", "", null, _firstRun);
+                //    WriteSong(_temp, "", "", null, _firstRun);
 
-                    break;
+                //    break;
 
-                #endregion Nightbot
+                //#endregion Nightbot
 
                 case PlayerType.VLC:
 
@@ -807,10 +807,10 @@ namespace Songify_Slim
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
-                case PlayerType.Nightbot:
-                    // Nightbot
-                    FetchTimer(3000);
-                    break;
+                //case PlayerType.Nightbot:
+                //    // Nightbot
+                //    FetchTimer(3000);
+                //    break;
 
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
