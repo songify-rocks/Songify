@@ -36,7 +36,7 @@ namespace Songify_Slim.Util.Songify
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
                 );
-                Console.WriteLine(@"Own ID");
+                //Console.WriteLine(@"Own ID");
             }
             else
             {
@@ -45,7 +45,7 @@ namespace Songify_Slim.Util.Songify
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
                 );
-                Console.WriteLine(@"Songify ID");
+                //Console.WriteLine(@"Songify ID");
             }
 
             try

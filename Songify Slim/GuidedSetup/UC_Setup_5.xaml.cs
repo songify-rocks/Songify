@@ -57,7 +57,7 @@ namespace Songify_Slim.GuidedSetup
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception);
+                Logger.LogExc(exception);
             }
         }
 
