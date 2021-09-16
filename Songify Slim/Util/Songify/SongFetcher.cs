@@ -119,15 +119,20 @@ namespace Songify_Slim.Util.Songify
                             wintitle = wintitle.Replace(" [foobar2000]", "");
                             try
                             {
-                                wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
-
-                                artist = wintitle;
-                                title = "";
-                                extra = "";
+                                if (wintitle.LastIndexOf('.') > 0)
+                                {
+                                    wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+                                }
                             }
                             catch (Exception ex)
                             {
                                 Logger.LogExc(ex);
+                            }
+                            finally
+                            {
+                                artist = wintitle;
+                                title = "";
+                                extra = "";
                             }
 
                             return new SongInfo { Artist = artist, Title = title, Extra = extra };
