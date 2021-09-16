@@ -1117,7 +1117,7 @@ namespace Songify_Slim
 
                 // Send Message to Twitch if checked
                 if (Settings.AnnounceInChat)
-                    TwitchHandler.SendCurrSong("Now playing: " + CurrSong + "( " + _trackUrl + " )");
+                    TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
 
                 _prevId = _currentId;
 

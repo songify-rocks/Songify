@@ -134,7 +134,6 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-
                             return new SongInfo { Artist = artist, Title = title, Extra = extra };
                     }
                 }
