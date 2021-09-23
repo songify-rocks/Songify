@@ -230,10 +230,10 @@ namespace Songify_Slim
         {
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Header.ToString().Equals("Connect"))
+            if (item.Tag.ToString().Equals("Connect"))
                 // Connects
                 TwitchHandler.BotConnect();
-            else if (item.Header.ToString().Equals("Disconnect"))
+            else if (item.Tag.ToString().Equals("Disconnect"))
                 // Disconnects
                 TwitchHandler.Client.Disconnect();
         }
