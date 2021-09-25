@@ -619,7 +619,7 @@ namespace Songify_Slim.Util.Songify
 
         public static void SendCurrSong(string song)
         {
-            if (Client != null)
+            if (Client != null && Client.IsConnected)
                 Client.SendMessage(Settings.Settings.TwChannel, song);
         }
     }

@@ -1116,7 +1116,7 @@ namespace Songify_Slim
                 if (_trackId != null) WebHelper.UpdateWebQueue(_trackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
-                if (Settings.AnnounceInChat)
+                if (Settings.AnnounceInChat && TwitchHandler.Client.IsConnected)
                     TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
 
                 _prevId = _currentId;
