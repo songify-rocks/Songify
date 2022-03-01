@@ -325,7 +325,6 @@ namespace Songify_Slim
                         }
                         catch (Exception) when (i <= numberOfRetries)
                         {
-                            //Console.WriteLine(@"Try " + i + @" of " + numberOfRetries);
                             Thread.Sleep(delayOnRetry);
                         }
                 }
@@ -365,8 +364,6 @@ namespace Songify_Slim
                         }
                         catch (Exception) when (i <= numberOfRetries)
                         {
-                            //Console.WriteLine(@"Try " + i + @" of " + numberOfRetries);
-
                             Thread.Sleep(delayOnRetry);
                         }
                 }));
@@ -742,7 +739,6 @@ namespace Songify_Slim
             {
                 img_cover.Visibility = _selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
-            //Console.WriteLine(Process.GetCurrentProcess().Threads.Count + " Threads");
             try
             {
                 s_cts.CancelAfter(3500);
@@ -751,7 +747,6 @@ namespace Songify_Slim
             }
             catch (TaskCanceledException)
             {
-                //Console.WriteLine("\nTasks cancelled: timed out.\n");
             }
             finally
             {

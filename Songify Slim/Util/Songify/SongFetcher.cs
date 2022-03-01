@@ -32,13 +32,11 @@ namespace Songify_Slim.Util.Songify
         internal async Task<SongInfo> FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
-            Console.WriteLine(processes.Length);
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
-                    Console.WriteLine(wintitle);
                     string artist = "", title = "", extra = "";
 
                     switch (player)
