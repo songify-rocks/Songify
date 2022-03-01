@@ -187,7 +187,7 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{artist}", "");
                         response = response.Replace("{title}", "");
                         response = response.Replace("{maxreq}", "");
-                        response = response.Replace("{errormsg}", "");
+                        response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
 
                         Client.SendMessage(e.ChatMessage.Channel, response);
                         return;
@@ -264,7 +264,7 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{artist}", "");
                         response = response.Replace("{title}", "");
                         response = response.Replace("{maxreq}", "");
-                        response = response.Replace("{errormsg}", "No Song was found.");
+                        response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
 
                         Client.SendMessage(e.ChatMessage.Channel, response);
                         return;
@@ -584,7 +584,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         temp3.Add(new QueueItem
                         {
-                            title = $"{temp[0].Artists} - {temp[0].Artists}",
+                            title = $"{temp[0].Artists} - {temp[0].Title}",
                             requester = $"{temp[0].Requester}"
                         });
                         return temp3;
@@ -593,7 +593,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         temp3.Add(new QueueItem
                         {
-                            title = $"{temp[1].Artists} - {temp[1].Artists}",
+                            title = $"{temp[1].Artists} - {temp[1].Title}",
                             requester = $"{temp[1].Requester}"
                         });
                         return temp3;

@@ -67,7 +67,6 @@ namespace Songify_Slim
 
         #endregion Variables
 
-
         public MainWindow()
         {
             InitializeComponent();
@@ -469,25 +468,6 @@ namespace Songify_Slim
 
                 #endregion YouTube
 
-                //case PlayerType.Nightbot:
-
-                //    #region Nightbot
-
-                //    // Fetching the currently playing song on NB Song Request
-                //    // and updating the output on success
-                //    _temp = sf.FetchNightBot();
-                //    if (string.IsNullOrWhiteSpace(_temp))
-                //    {
-                //        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
-
-                //        break;
-                //    }
-
-                //    WriteSong(_temp, "", "", null, _firstRun);
-
-                //    break;
-
-                //#endregion Nightbot
 
                 case PlayerType.VLC:
 
@@ -496,7 +476,6 @@ namespace Songify_Slim
                     songInfo = await sf.FetchDesktopPlayer("vlc");
                     if (songInfo != null)
                         WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
-
                     break;
 
                 #endregion VLC
@@ -965,9 +944,9 @@ namespace Songify_Slim
 
                 // get the first occurance of "}" to get the seperator from the custom output ({artist} - {title})
                 // and replace it
-                int pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
-                string result = CurrSong.Substring(pFrom + 2, 1);
-                CurrSong = CurrSong.Replace(result, "");
+                //int pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
+                //string result = CurrSong.Substring(pFrom + 2, 1);
+                //CurrSong = CurrSong.Replace(result, "");
 
                 // artist is set to be artist and title in this case, {title} and {extra} are empty strings
                 CurrSong = CurrSong.Format(
@@ -1124,10 +1103,7 @@ namespace Songify_Slim
                 //Save Album Cover
                 if (Settings.DownloadCover) DownloadCover(cover);
 
-                // write song to the output label
-                TxtblockLiveoutput.Dispatcher.Invoke(
-                    DispatcherPriority.Normal,
-                    new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
+
 
                 if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
                     img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -1142,6 +1118,11 @@ namespace Songify_Slim
                             img_cover.Source = image;
                         }));
             }
+
+            // write song to the output label
+            TxtblockLiveoutput.Dispatcher.Invoke(
+                DispatcherPriority.Normal,
+                new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
         }
 
         private void WriteSplitOutput(string artist, string title, string extra)

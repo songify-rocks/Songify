@@ -19,8 +19,10 @@ namespace Songify_Slim.Util.Songify
     {
         private static int _id;
         private readonly List<string> _browsers = new List<string> { "chrome", "msedge", "opera" };
+        private readonly List<string> _audioFileyTypes = new List<string> { ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf", ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg", ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma", ".wv", ".webm", ".8svx", ".cda" };
         private AutomationElement _parent;
         private static string[] _songinfo;
+        private static SongInfo previousSonginfo;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -30,11 +32,13 @@ namespace Songify_Slim.Util.Songify
         internal async Task<SongInfo> FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
+            Console.WriteLine(processes.Length);
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
+                    Console.WriteLine(wintitle);
                     string artist = "", title = "", extra = "";
 
                     switch (player)
@@ -70,6 +74,8 @@ namespace Songify_Slim.Util.Songify
 
                         case "vlc":
                             //Splitting the wintitle which is always Artist - Title
+                            if (wintitle == null || wintitle == string.Empty || wintitle == "vlc")
+                                return previousSonginfo;
 
                             if (!wintitle.Contains(" - VLC media player"))
                                 return Settings.Settings.CustomPauseTextEnabled
@@ -78,17 +84,22 @@ namespace Songify_Slim.Util.Songify
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
+                            foreach (string item in _audioFileyTypes)
+                            {
+                                if (wintitle.Contains(item))
+                                    wintitle = wintitle.Replace(item, "");
+                            }
+
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
 
                             try
                             {
-                                if (wintitle.LastIndexOf('.') > 0)
+                                if (_songinfo.Length == 2)
                                 {
-                                    wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+                                    artist = _songinfo[0];
+                                    title = _songinfo[1];
+                                    extra = "";
                                 }
-                                artist = wintitle;
-                                title = "";
-                                extra = "";
                             }
                             catch (Exception ex)
                             {
@@ -134,7 +145,8 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-                            return new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            return previousSonginfo;
                     }
                 }
 
