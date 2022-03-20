@@ -66,7 +66,7 @@ namespace Songify_Slim
                     writer.WriteAttributeString("directory", Settings.Directory);
                     writer.WriteAttributeString("color", Settings.Color);
                     writer.WriteAttributeString("tehme", Settings.Theme);
-                    writer.WriteAttributeString("atuostart", Settings.Autostart.ToString());
+                    writer.WriteAttributeString("autostart", Settings.Autostart.ToString());
                     writer.WriteAttributeString("systray", Settings.Systray.ToString());
                     writer.WriteAttributeString("customPause", Settings.CustomPauseTextEnabled.ToString());
                     writer.WriteAttributeString("customPauseText", Settings.CustomPauseText);
@@ -111,19 +111,19 @@ namespace Songify_Slim
                 }
             }
 
-            if (hidden)
-                // Get file info
-                // Put it back as hidden
-                myFile.Attributes |= FileAttributes.Hidden;
-            else
-                // Remove the hidden attribute of the file
-                myFile.Attributes &= ~FileAttributes.Hidden;
+            myFile.Attributes &= ~FileAttributes.Hidden;
         }
 
         public static void ReadXml(string path)
         {
             try
             {
+                if (new FileInfo(path).Length == 0)
+                {
+                    WriteXml(path);
+                    return;
+                }
+
                 int value;
                 // reading the XML file, attributes get saved in Settings
                 XmlDocument doc = new XmlDocument();
@@ -135,7 +135,7 @@ namespace Songify_Slim
                     Settings.Directory = node.Attributes["directory"]?.InnerText;
                     Settings.Color = node.Attributes["color"]?.InnerText;
                     Settings.Theme = node.Attributes["tehme"]?.InnerText;
-                    Settings.Autostart = Convert.ToBoolean(node.Attributes["atuostart"]?.InnerText);
+                    Settings.Autostart = Convert.ToBoolean(node.Attributes["autostart"]?.InnerText);
                     Settings.Systray = Convert.ToBoolean(node.Attributes["systray"]?.InnerText);
                     Settings.CustomPauseTextEnabled = Convert.ToBoolean(node.Attributes["customPause"]?.InnerText);
                     Settings.CustomPauseText = node.Attributes["customPauseText"]?.InnerText;

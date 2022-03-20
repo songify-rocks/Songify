@@ -31,7 +31,6 @@ namespace Songify_Slim
             "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
             "Taupe", "Sienna"
         };
-
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
@@ -526,6 +525,7 @@ namespace Songify_Slim
 
         private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             if (_appIdInitialValue == Settings.UseOwnApp) return;
             e.Cancel = true;
             Settings.AccessToken = "";

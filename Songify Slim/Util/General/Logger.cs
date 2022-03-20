@@ -37,11 +37,11 @@ namespace Songify_Slim
             try
             {
                 File.AppendAllText(logFile,
-                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Message + Environment.NewLine);
+                    DateTime.Now.ToString("HH:mm:ss") + ": " + exception.Message + Environment.NewLine);
                 File.AppendAllText(logFile,
-                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
+                    DateTime.Now.ToString("HH:mm:ss") + ": " + exception.StackTrace + Environment.NewLine);
                 File.AppendAllText(logFile,
-                    DateTime.Now.ToString("hh:mm:ss") + ": " + exception.Source + Environment.NewLine);
+                    DateTime.Now.ToString("HH:mm:ss") + ": " + exception.Source + Environment.NewLine);
             }
             catch (Exception)
             {

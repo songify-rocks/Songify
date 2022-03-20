@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception)
             {
-                Logger.LogStr("TWITCH: Couldn't connect to Twitch, mabe credentials are wrong?");
+                Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
         }
 

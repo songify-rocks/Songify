@@ -151,7 +151,8 @@ namespace Songify_Slim.Util.Songify
                 return new TrackInfo { Artists = "", Title = "" };
             }
 
-            if (context.Error != null) Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
+            if (context.Error != null) 
+                Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };
 

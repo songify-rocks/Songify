@@ -458,6 +458,16 @@ namespace Songify_Slim
 
                         break;
                     }
+                    if (_temp.Contains(" - "))
+                    {
+                        List<string> x = _temp.Split(new[] { " - " }, StringSplitOptions.None).ToList();
+                        string br_artists = x[0];
+                        x.Remove(x[0]);
+                        string br_title = string.Join(" - ", x);
+                        WriteSong(br_artists, br_title, "", null, _firstRun);
+
+                        break;
+                    }
 
                     WriteSong("", _temp, "", null, _firstRun);
 
@@ -551,7 +561,7 @@ namespace Songify_Slim
             Settings.PosY = Top;
 
             // write config file on closing
-            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             // send inactive
             SendTelemetry(false);
             // remove systray icon
@@ -573,7 +583,6 @@ namespace Songify_Slim
         {
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
-
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
 
@@ -951,6 +960,9 @@ namespace Songify_Slim
                     uri => _trackId
                 ).Format();
 
+                if (CurrSong.StartsWith(" - "))
+                    CurrSong = CurrSong.Remove(0, 2);
+
                 try
                 {
                     int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
@@ -972,18 +984,32 @@ namespace Songify_Slim
             if (!File.Exists(_songPath))
             {
                 File.Create(_songPath).Close();
-                File.WriteAllText(_songPath, CurrSong);
+                try
+                {
+                    File.WriteAllText(_songPath, CurrSong);
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr($"File {_songPath} couldn't be accessed.");
+                }
             }
 
-            if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);
-
-            string[] temp = File.ReadAllLines(_songPath);
+            //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);
+            string temp = "";
+            temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
-            if (temp[0].Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
+            if (temp.Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
             {
                 // write song to the text file
-                File.WriteAllText(_songPath, CurrSong);
+                try
+                {
+                    File.WriteAllText(_songPath, CurrSong);
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr($"File {_songPath} couldn't be accessed.");
+                }
 
                 try
                 {
