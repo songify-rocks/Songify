@@ -10,6 +10,7 @@
     <PackageReference Include="Caliburn.Micro" Version="4.0.173" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="WPF-UI" Version="1.2.2" />
     <PackageReference Include="YamlDotNet" Version="11.2.1" />
   </ItemGroup>
 

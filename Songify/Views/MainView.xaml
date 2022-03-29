@@ -4,32 +4,46 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Songify.Views"
+        xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
-        Title="Songify" Height="285" Width="588">
+        Title="Songify" Height="285" Width="588"
+        Style="{StaticResource UiWindow}"
+        WindowStyle="None"
+        >
+    <!-- Grid Definition for Title Bar and Content -->
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="20" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="20" />
         </Grid.RowDefinitions>
 
-        <!-- Song Display -->
-        <Grid Grid.Row="1" Grid.Column="1">
+        <wpfui:TitleBar Grid.Row="0" />
+
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <!--<ColumnDefinition Width="{Binding Path=CoverWidth, Mode=OneWay}" />-->
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
 
-            <Image Source="{Binding SelectedSource.Source.Song.CoverURL, Mode=OneWay}" />
+            <!-- Song Display -->
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <!--<ColumnDefinition Width="{Binding Path=CoverWidth, Mode=OneWay}" />-->
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="1"
+                <Image Source="{Binding SelectedSource.Source.Song.CoverURL, Mode=OneWay}" />
+
+                <TextBlock Grid.Column="1"
                        Margin="20 0 20 0"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
@@ -37,10 +51,10 @@
                        FontWeight="Bold"
                        TextWrapping="Wrap"
                        Text="{Binding SelectedSource.Source.Song.Title}"/>
-        </Grid>
-        
-        <!-- Song Source Dropdown -->
-        <ComboBox 
+            </Grid>
+
+            <!-- Song Source Dropdown -->
+            <ComboBox 
             Grid.Row="1" 
             Grid.Column="1"
             Width="100px"
@@ -51,5 +65,7 @@
             SelectedItem="{Binding Path=SelectedSource, Mode=OneWayToSource}"
             DisplayMemberPath="Source.SourceName"
             />
+
+        </Grid>
     </Grid>
 </Window>
