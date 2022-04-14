@@ -42,11 +42,11 @@ namespace Songify_Slim.Util.Songify
                 WebUtility.UrlEncode(url);
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest) WebRequest.Create(url);
+                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Settings.Webua;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse) myHttpWebRequest.GetResponse();
+                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
                     Logger.LogStr("WEB: " + operation + " Queue:" + myHttpWebResponse.StatusDescription);
                 myHttpWebResponse.Close();

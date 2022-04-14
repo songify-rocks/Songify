@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Songify_Slim.Util.Settings;
+using System;
 using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
-using Songify_Slim.Util.Settings;
 using Application = System.Windows.Application;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;

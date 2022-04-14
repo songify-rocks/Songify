@@ -25,9 +25,9 @@ namespace Songify_Slim.GuidedSetup
 
         private void sc_EULA_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            ScrollViewer scrollViewer = (ScrollViewer) sender;
+            ScrollViewer scrollViewer = (ScrollViewer)sender;
             if (scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
-                ((Window_GuidedSetup) _mW).btn_Next.IsEnabled = true;
+                ((Window_GuidedSetup)_mW).btn_Next.IsEnabled = true;
         }
     }
 }

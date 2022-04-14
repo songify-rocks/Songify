@@ -1,14 +1,11 @@
-﻿using System;
+﻿using Songify_Slim.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Automation;
-using Newtonsoft.Json;
-using Songify_Slim.Models;
 
 namespace Songify_Slim.Util.Songify
 {

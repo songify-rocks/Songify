@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using ControlzEx.Theming;
+using Songify_Slim.Util.Settings;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using ControlzEx.Theming;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {

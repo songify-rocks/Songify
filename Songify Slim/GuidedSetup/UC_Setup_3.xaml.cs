@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Songify_Slim.Util.Settings;
+using System;
 using System.Windows;
 using System.Windows.Controls;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.GuidedSetup
 {
@@ -19,20 +19,20 @@ namespace Songify_Slim.GuidedSetup
         {
             // checkbox for autostart
             bool? chbxAutostartIsChecked = ChbxAutostart.IsOn;
-            MainWindow.RegisterInStartup((bool) chbxAutostartIsChecked);
+            MainWindow.RegisterInStartup((bool)chbxAutostartIsChecked);
         }
 
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
             // enables / disbales minimize to systray
             bool? isChecked = ChbxMinimizeSystray.IsOn;
-            Settings.Systray = (bool) isChecked;
+            Settings.Systray = (bool)isChecked;
         }
 
         private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
         {
             // enables / disables telemetry
-            Settings.Telemetry = (bool) ChbxTelemetry.IsOn;
+            Settings.Telemetry = (bool)ChbxTelemetry.IsOn;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

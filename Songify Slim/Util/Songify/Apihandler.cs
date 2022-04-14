@@ -1,12 +1,12 @@
-using System;
-using System.Timers;
-using System.Windows;
-using System.Windows.Threading;
 using Songify_Slim.Models;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
+using System;
+using System.Timers;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -151,7 +151,7 @@ namespace Songify_Slim.Util.Songify
                 return new TrackInfo { Artists = "", Title = "" };
             }
 
-            if (context.Error != null) 
+            if (context.Error != null)
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };

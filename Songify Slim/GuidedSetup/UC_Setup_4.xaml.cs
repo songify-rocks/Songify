@@ -1,8 +1,8 @@
-﻿using System.Reflection;
+﻿using Songify_Slim.Util.Settings;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using Songify_Slim.Util.Settings;
 using Application = System.Windows.Application;
 using TextBox = System.Windows.Controls.TextBox;
 using UserControl = System.Windows.Controls.UserControl;

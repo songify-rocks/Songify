@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoUpdaterDotNET;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -21,13 +28,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using AutoUpdaterDotNET;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using MenuItem = System.Windows.Forms.MenuItem;
@@ -45,13 +45,11 @@ namespace Songify_Slim
         private bool _appActive;
         public string CurrSong;
         public string _artist, _title;
-        private readonly NotifyIcon _notifyIcon = new NotifyIcon();
+        public NotifyIcon _notifyIcon = new NotifyIcon();
         public readonly List<RequestObject> ReqList = new List<RequestObject>();
         private string _songPath, _coverPath, _root, _coverTemp;
         private readonly BackgroundWorker _workerTelemetry = new BackgroundWorker();
         private readonly ContextMenu _contextMenu = new ContextMenu();
-        private readonly MenuItem _menuItem1 = new MenuItem();
-        private readonly MenuItem _menuItem2 = new MenuItem();
         private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
         private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
         private bool _firstRun = true;
@@ -527,20 +525,6 @@ namespace Songify_Slim
             }
         }
 
-        private void MenuItem1Click(object sender, EventArgs e)
-        {
-            // Click on "Exit" in the Systray
-            _forceClose = true;
-            Close();
-        }
-
-        private void MenuItem2Click(object sender, EventArgs e)
-        {
-            // Click on "Show" in the Systray
-            Show();
-            WindowState = WindowState.Normal;
-        }
-
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             // If Systray is enabled [X] minimizes to systray
@@ -605,17 +589,33 @@ namespace Songify_Slim
             AddSourcesToSourceBox();
 
             // Create systray menu and icon and show it
-            _menuItem1.Text = @"Exit";
-            _menuItem1.Click += MenuItem1Click;
-            _menuItem2.Text = @"Show";
-            _menuItem2.Click += MenuItem2Click;
-
-            _contextMenu.MenuItems.AddRange(new[] { _menuItem2, _menuItem1 });
+            _contextMenu.MenuItems.AddRange(new[] {
+                new MenuItem("Twitch", new[] {
+                    new MenuItem("Connect", (sender1, args1) => {
+                        TwitchHandler.BotConnect();
+                    }),
+                    new MenuItem("Disconnect", (sender1, args1) => {
+                        TwitchHandler.Client.Disconnect();
+                    })
+                }),
+                new MenuItem("Show", (sender1, args1) => {
+                    Show();
+                    WindowState = WindowState.Normal;
+                }),
+                new MenuItem("Exit", (sender1, args1) => {
+                    _forceClose = true;
+                    Close();
+                })
+                });
 
             _notifyIcon.Icon = Properties.Resources.songify;
             _notifyIcon.ContextMenu = _contextMenu;
             _notifyIcon.Visible = true;
-            _notifyIcon.DoubleClick += MenuItem2Click;
+            _notifyIcon.DoubleClick += (sender1, args1) =>
+            {
+                Show();
+                WindowState = WindowState.Normal;
+            };
             _notifyIcon.Text = @"Songify";
 
             // set the current theme
@@ -676,7 +676,6 @@ namespace Songify_Slim
             }
 
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
-
             // automatically start fetching songs
             SetFetchTimer();
         }
@@ -733,10 +732,8 @@ namespace Songify_Slim
         private void MinimizeToSysTray()
         {
             // if the setting is set, hide window
-            if (Settings.Systray)
-            {
-                Hide();
-            }
+            Hide();
+            _notifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
         }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -842,6 +839,11 @@ namespace Songify_Slim
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void mi_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         private void TelemetryTimer()
@@ -1158,12 +1160,6 @@ namespace Songify_Slim
 
             File.WriteAllText(_root + "/Artist.txt", artist);
             File.WriteAllText(_root + "/Title.txt", title + extra);
-        }
-
-
-        private void mi_DMCAFreeMusic_Click(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)

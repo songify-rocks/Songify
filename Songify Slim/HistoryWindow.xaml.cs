@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Songify_Slim.Util.Settings;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {
@@ -181,7 +181,7 @@ namespace Songify_Slim
             if (dgvHistorySongs.SelectedItem == null)
                 return;
 
-            Song sng = (Song) dgvHistorySongs.SelectedItem;
+            Song sng = (Song)dgvHistorySongs.SelectedItem;
 
             long key = sng.UnixTimeStamp;
 
@@ -189,7 +189,7 @@ namespace Songify_Slim
             xdoc.Element("History")
                 ?.Element("d_" + LbxHistory.SelectedItem)
                 ?.Elements("Song")
-                .Where(x => (string) x.Attribute("Time") == key.ToString())
+                .Where(x => (string)x.Attribute("Time") == key.ToString())
                 .Remove();
             xdoc.Save(_path);
             LoadFile();
@@ -202,9 +202,9 @@ namespace Songify_Slim
 
             if (Tglbtn_Save.IsChecked != null)
             {
-                Settings.SaveHistory = (bool) Tglbtn_Save.IsChecked;
+                Settings.SaveHistory = (bool)Tglbtn_Save.IsChecked;
 
-                if ((bool) Tglbtn_Save.IsChecked)
+                if ((bool)Tglbtn_Save.IsChecked)
                 {
                     Tglbtn_Save.Content = "Save ✔️";
                     Lbl_Status.Content = "History Save Enabled ✔️";
@@ -224,9 +224,9 @@ namespace Songify_Slim
 
             if (Tglbtn_Upload.IsChecked != null)
             {
-                Settings.UploadHistory = (bool) Tglbtn_Upload.IsChecked;
+                Settings.UploadHistory = (bool)Tglbtn_Upload.IsChecked;
 
-                if ((bool) Tglbtn_Upload.IsChecked)
+                if ((bool)Tglbtn_Upload.IsChecked)
                 {
                     Tglbtn_Upload.Content = "Upload ✔️";
                     Lbl_Status.Content = "History Upload Enabled ✔️";

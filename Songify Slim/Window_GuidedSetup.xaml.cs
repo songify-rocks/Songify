@@ -1,9 +1,9 @@
-﻿using System.IO;
-using System.Reflection;
-using System.Windows;
-using MahApps.Metro.Controls;
+﻿using MahApps.Metro.Controls;
 using Songify_Slim.GuidedSetup;
 using Songify_Slim.Util.Settings;
+using System.IO;
+using System.Reflection;
+using System.Windows;
 
 namespace Songify_Slim
 {

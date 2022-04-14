@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Songify_Slim.Util.Settings;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.UserControls
 {
@@ -81,7 +81,7 @@ namespace Songify_Slim.UserControls
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() != typeof(Window_Botresponse)) continue;
-                    ((Window_Botresponse) window).lbl_Preview.Text = response;
+                    ((Window_Botresponse)window).lbl_Preview.Text = response;
                 }
             }));
         }

@@ -1,11 +1,10 @@
-﻿using System.Globalization;
+﻿using Songify_Slim.Util.Settings;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.General;
 
 namespace Songify_Slim
 {

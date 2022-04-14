@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using MahApps.Metro.Controls;
+using System.Diagnostics;
 using System.Windows;
-using MahApps.Metro.Controls;
 
 namespace Songify_Slim
 {

@@ -1,20 +1,18 @@
-﻿using System;
+﻿using AutoUpdaterDotNET;
+using ControlzEx.Theming;
+using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
-using AutoUpdaterDotNET;
-using ControlzEx.Theming;
-using MahApps.Metro.Controls.Dialogs;
-using Newtonsoft.Json;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
 using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
 using TextBox = System.Windows.Controls.TextBox;
@@ -24,13 +22,6 @@ namespace Songify_Slim
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings
     {
-        private readonly string[] _colors =
-        {
-            "Red", "Green", "Blue", "Purple", "Orange", "Lime", "Emerald",
-            "Teal", "Cyan", "Cobalt", "Indigo", "Violet", "Pink", "Magenta",
-            "Crimson", "Amber", "Yellow", "Brown", "Olive", "Steel", "Mauve",
-            "Taupe", "Sienna"
-        };
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Songify_Slim.Util.Settings
+﻿namespace Songify_Slim.Util.Settings
 {
     /// <summary>
     ///     This class is a getter and setter for Settings

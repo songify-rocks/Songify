@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using Songify_Slim.UserControls;
+﻿using Songify_Slim.UserControls;
 using Songify_Slim.Util.Settings;
+using System.Windows;
 
 namespace Songify_Slim
 {

@@ -1,17 +1,18 @@
-﻿using System;
+﻿using Songify_Slim.Models;
+using SpotifyAPI.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Timers;
 using System.Windows;
-using Songify_Slim.Models;
-using SpotifyAPI.Web.Models;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
+using TwitchLib.PubSub;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -19,6 +20,7 @@ namespace Songify_Slim.Util.Songify
     public static class TwitchHandler
     {
         public static TwitchClient Client;
+        public static TwitchPubSub PubSubClient;
         private static bool _onCooldown;
 
         private static readonly Timer CooldownTimer = new Timer
@@ -56,9 +58,9 @@ namespace Songify_Slim.Util.Songify
                 Client = new TwitchClient(customClient);
                 Client.Initialize(credentials, Settings.Settings.TwChannel);
 
-                Client.OnMessageReceived += _client_OnMessageReceived;
-                Client.OnConnected += _client_OnConnected;
-                Client.OnDisconnected += _client_OnDisconnected;
+                Client.OnMessageReceived += Client_OnMessageReceived;
+                Client.OnConnected += Client_OnConnected;
+                Client.OnDisconnected += Client_OnDisconnected;
 
                 Client.Connect();
 
@@ -71,7 +73,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void _client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
+        private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
             // Disconnected
             Application.Current.Dispatcher.Invoke(() =>
@@ -88,6 +90,7 @@ namespace Songify_Slim.Util.Songify
             });
 
             Logger.LogStr("TWITCH: Disconnected from Twitch");
+            ((MainWindow)Application.Current.MainWindow)._notifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -97,7 +100,7 @@ namespace Songify_Slim.Util.Songify
             CooldownTimer.Stop();
         }
 
-        private static void _client_OnConnected(object sender, OnConnectedArgs e)
+        private static void Client_OnConnected(object sender, OnConnectedArgs e)
         {
             // Connected
             Application.Current.Dispatcher.Invoke(() =>
@@ -116,7 +119,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("TWITCH: Connected to Twitch");
         }
 
-        private static void _client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
+        private static void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             if (Settings.Settings.MsgLoggingEnabled)
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
@@ -290,7 +293,7 @@ namespace Songify_Slim.Util.Songify
                     for (int i = 0; i < queueItems.Count; i++)
                     {
                         QueueItem item = queueItems[i];
-                        output += $"Pos {item.position}: {item.title}";
+                        output += $"Pos {item.Position}: {item.Title}";
                         if (i + 1 != queueItems.Count)
                             output += " | ";
                     }
@@ -307,7 +310,7 @@ namespace Songify_Slim.Util.Songify
                 List<QueueItem> queueItems = GetQueueItems();
                 if (queueItems != null)
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {queueItems[0].title}");
+                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {queueItems[0].Title}");
                 }
                 else
                 {
@@ -569,9 +572,9 @@ namespace Songify_Slim.Util.Songify
                     int pos = temp.IndexOf(requestObject) + 1;
                     temp3.Add(new QueueItem
                     {
-                        position = pos,
-                        title = requestObject.Artists + " - " + requestObject.Title,
-                        requester = requestObject.Requester
+                        Position = pos,
+                        Title = requestObject.Artists + " - " + requestObject.Title,
+                        Requester = requestObject.Requester
                     });
                 }
                 return temp3;
@@ -584,8 +587,8 @@ namespace Songify_Slim.Util.Songify
                     {
                         temp3.Add(new QueueItem
                         {
-                            title = $"{temp[0].Artists} - {temp[0].Title}",
-                            requester = $"{temp[0].Requester}"
+                            Title = $"{temp[0].Artists} - {temp[0].Title}",
+                            Requester = $"{temp[0].Requester}"
                         });
                         return temp3;
                     }
@@ -593,8 +596,8 @@ namespace Songify_Slim.Util.Songify
                     {
                         temp3.Add(new QueueItem
                         {
-                            title = $"{temp[1].Artists} - {temp[1].Title}",
-                            requester = $"{temp[1].Requester}"
+                            Title = $"{temp[1].Artists} - {temp[1].Title}",
+                            Requester = $"{temp[1].Requester}"
                         });
                         return temp3;
                     }
@@ -626,8 +629,8 @@ namespace Songify_Slim.Util.Songify
 
     class QueueItem
     {
-        public string requester { get; set; }
-        public string title { get; set; }
-        public int position { get; set; }
+        public string Requester { get; set; }
+        public string Title { get; set; }
+        public int Position { get; set; }
     }
 }

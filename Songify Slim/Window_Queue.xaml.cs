@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using Songify_Slim.Models;
+﻿using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
+using System.Windows;
 
 namespace Songify_Slim
 {
@@ -34,7 +34,7 @@ namespace Songify_Slim
             if (dgv_Queue.SelectedItem == null)
                 return;
 
-            RequestObject req = (RequestObject) dgv_Queue.SelectedItem;
+            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
 
             foreach (Window window in Application.Current.Windows)
             {

@@ -1,6 +1,6 @@
-﻿using System.Windows;
+﻿using Songify_Slim.Util.Settings;
+using System.Windows;
 using System.Windows.Controls;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.GuidedSetup
 {
@@ -9,7 +9,6 @@ namespace Songify_Slim.GuidedSetup
     /// </summary>
     public partial class UC_Setup_2 : UserControl
     {
-        private Window _mW;
 
         public UC_Setup_2()
         {

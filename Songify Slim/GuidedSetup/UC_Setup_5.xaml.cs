@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Threading;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim.GuidedSetup
 {
@@ -37,7 +37,7 @@ namespace Songify_Slim.GuidedSetup
                 Logger.LogExc(ex);
             }
 
-            _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal) {Interval = TimeSpan.FromSeconds(1)};
+            _dispatcherTimer = new DispatcherTimer(DispatcherPriority.Normal) { Interval = TimeSpan.FromSeconds(1) };
             _dispatcherTimer.Tick += DispatcherTimerOnTick;
             _dispatcherTimer.Start();
         }
