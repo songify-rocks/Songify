@@ -684,7 +684,7 @@ namespace Songify_Slim
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
             if (WindowState != WindowState.Minimized) return;
-            MinimizeToSysTray();
+            if (Settings.Systray) MinimizeToSysTray();
         }
 
         private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
