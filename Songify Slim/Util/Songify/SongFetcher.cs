@@ -101,7 +101,7 @@ namespace Songify_Slim.Util.Songify
                                 Logger.LogExc(ex);
                             }
 
-                            return new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            return new SongInfo { Artist = wintitle, Title = title, Extra = extra };
 
                         case "foobar2000":
                             // Splitting the wintitle which is always Artist - Title
@@ -193,8 +193,7 @@ namespace Songify_Slim.Util.Songify
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
                                         // Regex pattern to replace the notification in front of the tab (1) - (99+) 
-                                        return FormattedString("YouTube",
-                                            Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+                                        return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                     }
 
                                     break;
@@ -232,8 +231,8 @@ namespace Songify_Slim.Util.Songify
                                     break;
                                 if (element.Current.Name.Contains("YouTube"))
                                 {
-                                    _id = element.Current.ControlType.Id;
-                                    _parent = TreeWalker.RawViewWalker.GetParent(element);
+                                    //_id = element.Current.ControlType.Id;
+                                    //_parent = TreeWalker.RawViewWalker.GetParent(element);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+) 
                                     return FormattedString("YouTube",
                                         Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
@@ -248,7 +247,6 @@ namespace Songify_Slim.Util.Songify
                                     _parent = TreeWalker.RawViewWalker.GetParent(element);
                                     return FormattedString("Deezer", element.Current.Name);
                                 }
-
                                 break;
                         }
                     }

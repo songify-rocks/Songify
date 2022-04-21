@@ -452,7 +452,7 @@ namespace Songify_Slim
                     _temp = sf.FetchBrowser("YouTube");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
-                        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
+                        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, true);
 
                         break;
                     }
@@ -961,6 +961,9 @@ namespace Songify_Slim
                     extra => _extra,
                     uri => _trackId
                 ).Format();
+
+                if(CurrSong.EndsWith(" - "))
+                    CurrSong = CurrSong.Remove(CurrSong.Length - 3);
 
                 if (CurrSong.StartsWith(" - "))
                     CurrSong = CurrSong.Remove(0, 2);
