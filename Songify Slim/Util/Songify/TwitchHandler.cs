@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using TwitchLib.Client;
@@ -12,7 +13,6 @@ using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
-using TwitchLib.PubSub;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -20,8 +20,8 @@ namespace Songify_Slim.Util.Songify
     public static class TwitchHandler
     {
         public static TwitchClient Client;
-        public static TwitchPubSub PubSubClient;
         private static bool _onCooldown;
+        public static bool ForceDisconnect;
 
         private static readonly Timer CooldownTimer = new Timer
         {
@@ -73,7 +73,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
+        private static async void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
             // Disconnected
             Application.Current.Dispatcher.Invoke(() =>
@@ -90,7 +90,24 @@ namespace Songify_Slim.Util.Songify
             });
 
             Logger.LogStr("TWITCH: Disconnected from Twitch");
-            ((MainWindow)Application.Current.MainWindow)._notifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
+            ((MainWindow)Application.Current.MainWindow)?.NotifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
+
+            //Attempt to reconnect 5 times with a 5 second delay
+            if (ForceDisconnect)
+            {
+                ForceDisconnect = false;
+                return;
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                Logger.LogStr($"TWITCH: Attempting to reconnect to Twitch {i + 1}/5");
+                Client.Connect();
+                if (Client.IsConnected)
+                    break;
+                //Wait 5 seconds asynchronously
+                await Task.Delay(5000);
+            }
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -284,38 +301,40 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
             }
 
-            if (e.ChatMessage.Message == "!pos" && Settings.Settings.BotCmdPos)
+            switch (e.ChatMessage.Message)
             {
-                List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
-                string output = "";
-                if (queueItems.Count != 0)
-                {
-                    for (int i = 0; i < queueItems.Count; i++)
+                case "!pos" when Settings.Settings.BotCmdPos:
                     {
-                        QueueItem item = queueItems[i];
-                        output += $"Pos {item.Position}: {item.Title}";
-                        if (i + 1 != queueItems.Count)
-                            output += " | ";
-                    }
-                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {output}");
-                }
-                else
-                {
-                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
-                }
-            }
+                        List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
+                        string output = "";
+                        if (queueItems.Count != 0)
+                        {
+                            for (int i = 0; i < queueItems.Count; i++)
+                            {
+                                QueueItem item = queueItems[i];
+                                output += $"Pos {item.Position}: {item.Title}";
+                                if (i + 1 != queueItems.Count)
+                                    output += " | ";
+                            }
+                            Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {output}");
+                        }
+                        else
+                        {
+                            Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
+                        }
 
-            if (e.ChatMessage.Message == "!next" && Settings.Settings.BotCmdNext)
-            {
-                List<QueueItem> queueItems = GetQueueItems();
-                if (queueItems != null)
-                {
-                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {queueItems[0].Title}");
-                }
-                else
-                {
-                    Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} there is no song next up.");
-                }
+                        break;
+                    }
+                case "!next" when Settings.Settings.BotCmdNext:
+                    {
+                        List<QueueItem> queueItems = GetQueueItems();
+                        Client.SendMessage(e.ChatMessage.Channel,
+                            queueItems != null
+                                ? $"@{e.ChatMessage.DisplayName} {queueItems[0].Title}"
+                                : $"@{e.ChatMessage.DisplayName} there is no song next up.");
+
+                        break;
+                    }
             }
         }
 

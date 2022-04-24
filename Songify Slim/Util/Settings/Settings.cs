@@ -5,6 +5,8 @@
     /// </summary>
     internal class Settings
     {
+        
+        
         public static bool BotCmdNext
         {
             get => GetBotCmdNext();
@@ -83,12 +85,6 @@
         {
             get => GetGuidedSetup();
             set => SetGuidedSetup(value);
-        }
-
-        public static bool Debug
-        {
-            get => GetDebug();
-            set => SetDebug(value);
         }
 
         public static int MaxSongLength
@@ -415,17 +411,6 @@
         private static bool GetGuidedSetup()
         {
             return Properties.Settings.Default.GuidedSetup;
-        }
-
-        private static void SetDebug(bool value)
-        {
-            Properties.Settings.Default.Debug = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetDebug()
-        {
-            return Properties.Settings.Default.Debug;
         }
 
         private static void SetMaxSongLength(int value)

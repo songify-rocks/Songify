@@ -7,7 +7,7 @@
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Bot Responses &amp; Commands" Height="332.266" Width="629" Loaded="MetroWindow_Loaded"
-                      ResizeMode="NoResize">
+                      ResizeMode="NoResize" Closed="MetroWindow_Closed">
     <Grid>
         <controls:MetroTabControl HorizontalAlignment="Left" Height="303" VerticalAlignment="Top" Width="623">
             <TabItem Header="Responses">

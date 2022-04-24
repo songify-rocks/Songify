@@ -1,6 +1,9 @@
-﻿using Songify_Slim.UserControls;
+﻿using System.IO;
+using System.Reflection;
+using Songify_Slim.UserControls;
 using Songify_Slim.Util.Settings;
 using System.Windows;
+using MahApps.Metro.Controls;
 
 namespace Songify_Slim
 {
@@ -19,22 +22,27 @@ namespace Songify_Slim
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
             tgl_botcmd_next.IsOn = Settings.BotCmdNext;
-
         }
 
         private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.BotCmdPos = (sender as MahApps.Metro.Controls.ToggleSwitch).IsOn;
+            Settings.BotCmdPos = ((ToggleSwitch)sender).IsOn;
         }
 
         private void tgl_botcmd_song_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.BotCmdSong = (sender as MahApps.Metro.Controls.ToggleSwitch).IsOn;
+            Settings.BotCmdSong = ((ToggleSwitch)sender).IsOn;
         }
 
         private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.BotCmdNext = (sender as MahApps.Metro.Controls.ToggleSwitch).IsOn;
+            Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void MetroWindow_Closed(object sender, System.EventArgs e)
+        {
+            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+
         }
     }
 }

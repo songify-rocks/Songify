@@ -19,14 +19,14 @@ namespace Songify_Slim.Util.Songify
         private readonly List<string> _audioFileyTypes = new List<string> { ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf", ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg", ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma", ".wv", ".webm", ".8svx", ".cda" };
         private AutomationElement _parent;
         private static string[] _songinfo;
-        private static SongInfo previousSonginfo;
+        private static SongInfo _previousSonginfo;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
         ///     returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
-        internal async Task<SongInfo> FetchDesktopPlayer(string player)
+        internal Task<SongInfo> FetchDesktopPlayer(string player)
         {
             var processes = Process.GetProcessesByName(player);
             foreach (Process process in processes)
@@ -43,83 +43,65 @@ namespace Songify_Slim.Util.Songify
                             if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" &&
                                 wintitle != "Drag")
                             {
-                                // Splitting the wintitle which is always Artist - Title
+                                // Splitting the win title which is always Artist - Title
                                 _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
                                 {
                                     artist = _songinfo[0].Trim();
                                     title = _songinfo[1].Trim();
-                                    // Extra content like "- Offical Anthem" or "- XYZ Remix" and so on
-                                    if (_songinfo.Length > 2)
-                                        extra = "(" + string.Join("", _songinfo, 2, _songinfo.Length - 2).Trim() + ")";
                                 }
                                 catch (Exception ex)
                                 {
                                     Logger.LogExc(ex);
                                 }
 
-                                return new SongInfo { Artist = artist, Title = title };
+                                return Task.FromResult(new SongInfo { Artist = artist, Title = title });
                             }
-                            // the wintitle gets changed as soon as spotify is paused, therefore I'm checking 
+                            // the win title gets changed as soon as spotify is paused, therefore I'm checking 
                             //if custom pause text is enabled and if so spit out custom text
 
                             if (Settings.Settings.CustomPauseTextEnabled)
-                                return new SongInfo { Artist = "", Title = "", Extra = "" }; // (Settings.GetCustomPauseText(), "", "");
+                                return Task.FromResult(new SongInfo { Artist = "", Title = "", Extra = "" }); // (Settings.GetCustomPauseText(), "", "");
                             break;
 
                         case "vlc":
-                            //Splitting the wintitle which is always Artist - Title
-                            if (wintitle == null || wintitle == string.Empty || wintitle == "vlc")
-                                return previousSonginfo;
+                            //Splitting the win title which is always Artist - Title
+                            if (string.IsNullOrEmpty(wintitle) || wintitle == "vlc")
+                                return Task.FromResult(_previousSonginfo);
 
                             if (!wintitle.Contains(" - VLC media player"))
-                                return Settings.Settings.CustomPauseTextEnabled
+                                return Task.FromResult(Settings.Settings.CustomPauseTextEnabled
                                     ? new SongInfo { Artist = Settings.Settings.CustomPauseText, Title = "", Extra = "" }
-                                    : new SongInfo { Artist = "", Title = "", Extra = "" };
+                                    : new SongInfo { Artist = "", Title = "", Extra = "" });
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
-                            foreach (string item in _audioFileyTypes)
+                            foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
                             {
-                                if (wintitle.Contains(item))
-                                    wintitle = wintitle.Replace(item, "");
+                                wintitle = wintitle.Replace(item, "");
                             }
-
+                            
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-
-                            try
-                            {
-                                if (_songinfo.Length == 2)
-                                {
-                                    artist = _songinfo[0];
-                                    title = _songinfo[1];
-                                    extra = "";
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.LogExc(ex);
-                            }
-
-                            return new SongInfo { Artist = wintitle, Title = title, Extra = extra };
+                            
+                            return Task.FromResult(new SongInfo { Artist = wintitle, Title = title, Extra = extra });
 
                         case "foobar2000":
-                            // Splitting the wintitle which is always Artist - Title
+                            // Splitting the win title which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
                             {
                                 if (Settings.Settings.CustomPauseTextEnabled)
-                                    return new SongInfo
+                                    return Task.FromResult(new SongInfo
                                     {
                                         Artist = Settings.Settings.CustomPauseText,
                                         Title = "",
                                         Extra = ""
-                                    };
-                                return new SongInfo
+                                    });
+                                return Task.FromResult(new SongInfo
                                 {
                                     Artist = "",
                                     Title = "",
                                     Extra = ""
-                                };
+                                });
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -140,12 +122,12 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-                            previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
-                            return previousSonginfo;
+                            _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            return Task.FromResult(_previousSonginfo);
                     }
                 }
 
-            return null;
+            return Task.FromResult<SongInfo>(null);
         }
 
 
@@ -184,7 +166,7 @@ namespace Songify_Slim.Util.Songify
                         AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
                             new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
                         foreach (AutomationElement elem in elementCollection)
-                            // if the Tabitem Name contains Youtube
+                            // if the tab item Name contains Youtube
                             switch (website)
                             {
                                 case "YouTube":
@@ -223,7 +205,7 @@ namespace Songify_Slim.Util.Songify
                                 new PropertyCondition(AutomationElement.ControlTypeProperty,
                                     ControlType.LookupById(_id)));
 
-                        // if the Tabitem Name contains Youtube
+                        // if the tab item Name contains Youtube
                         switch (website)
                         {
                             case "YouTube":

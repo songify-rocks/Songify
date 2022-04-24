@@ -45,7 +45,7 @@ namespace Songify_Slim
         private bool _appActive;
         public string CurrSong;
         public string _artist, _title;
-        public NotifyIcon _notifyIcon = new NotifyIcon();
+        public NotifyIcon NotifyIcon = new NotifyIcon();
         public readonly List<RequestObject> ReqList = new List<RequestObject>();
         private string _songPath, _coverPath, _root, _coverTemp;
         private readonly BackgroundWorker _workerTelemetry = new BackgroundWorker();
@@ -61,7 +61,7 @@ namespace Songify_Slim
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private string _prevId, _currentId;
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
-        private CancellationTokenSource s_cts;
+        private CancellationTokenSource _sCts;
 
         #endregion Variables
 
@@ -227,12 +227,18 @@ namespace Songify_Slim
         {
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
-            if (item.Tag.ToString().Equals("Connect"))
+            switch (item.Tag.ToString())
+            {
                 // Connects
-                TwitchHandler.BotConnect();
-            else if (item.Tag.ToString().Equals("Disconnect"))
+                case "Connect":
+                    TwitchHandler.BotConnect();
+                    break;
                 // Disconnects
-                TwitchHandler.Client.Disconnect();
+                case "Disconnect":
+                    TwitchHandler.ForceDisconnect = true;
+                    TwitchHandler.Client.Disconnect();
+                    break;
+            }
         }
 
         private async void BtnWidget_Click(object sender, RoutedEventArgs e)
@@ -276,7 +282,7 @@ namespace Songify_Slim
                 }));
         }
 
-        private string CleanFormatString(string currSong)
+        private static string CleanFormatString(string currSong)
         {
             RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);
@@ -459,10 +465,10 @@ namespace Songify_Slim
                     if (_temp.Contains(" - "))
                     {
                         List<string> x = _temp.Split(new[] { " - " }, StringSplitOptions.None).ToList();
-                        string br_artists = x[0];
+                        string brArtists = x[0];
                         x.Remove(x[0]);
-                        string br_title = string.Join(" - ", x);
-                        WriteSong(br_artists, br_title, "", null, _firstRun);
+                        string brTitle = string.Join(" - ", x);
+                        WriteSong(brArtists, brTitle, "", null, _firstRun);
 
                         break;
                     }
@@ -549,8 +555,8 @@ namespace Songify_Slim
             // send inactive
             SendTelemetry(false);
             // remove systray icon
-            _notifyIcon.Visible = false;
-            _notifyIcon.Dispose();
+            NotifyIcon.Visible = false;
+            NotifyIcon.Dispose();
         }
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
@@ -608,15 +614,15 @@ namespace Songify_Slim
                 })
                 });
 
-            _notifyIcon.Icon = Properties.Resources.songify;
-            _notifyIcon.ContextMenu = _contextMenu;
-            _notifyIcon.Visible = true;
-            _notifyIcon.DoubleClick += (sender1, args1) =>
+            NotifyIcon.Icon = Properties.Resources.songify;
+            NotifyIcon.ContextMenu = _contextMenu;
+            NotifyIcon.Visible = true;
+            NotifyIcon.DoubleClick += (sender1, args1) =>
             {
                 Show();
                 WindowState = WindowState.Normal;
             };
-            _notifyIcon.Text = @"Songify";
+            NotifyIcon.Text = @"Songify";
 
             // set the current theme
             ThemeHandler.ApplyTheme();
@@ -733,13 +739,13 @@ namespace Songify_Slim
         {
             // if the setting is set, hide window
             Hide();
-            _notifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
+            NotifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
         }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             _timerFetcher.Enabled = false;
-            s_cts = new CancellationTokenSource();
+            _sCts = new CancellationTokenSource();
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
@@ -747,7 +753,7 @@ namespace Songify_Slim
             }));
             try
             {
-                s_cts.CancelAfter(3500);
+                _sCts.CancelAfter(3500);
 
                 await GetCurrentSongAsync();            // when the timer 'ticks' this code gets executed
             }
@@ -756,7 +762,7 @@ namespace Songify_Slim
             }
             finally
             {
-                s_cts.Dispose();
+                _sCts.Dispose();
                 _timerFetcher.Enabled = true;
             }
         }
@@ -1000,7 +1006,7 @@ namespace Songify_Slim
             }
 
             //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);
-            string temp = "";
+            string temp;
             temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
