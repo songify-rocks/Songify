@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
+using MahApps.Metro.Controls;
 using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
 using TextBox = System.Windows.Controls.TextBox;
@@ -42,7 +43,6 @@ namespace Songify_Slim
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
             ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
-            ChbxTelemetry.IsOn = Settings.Telemetry;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             ChbxUpload.IsOn = Settings.Upload;
@@ -176,12 +176,6 @@ namespace Songify_Slim
             // enables / disbales minimize to systray
             bool isChecked = ChbxMinimizeSystray.IsOn;
             Settings.Systray = isChecked;
-        }
-
-        private void ChbxTelemetry_IsCheckedChanged(object sender, EventArgs e)
-        {
-            // enables / disables telemetry
-            Settings.Telemetry = ChbxTelemetry.IsOn;
         }
 
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
@@ -533,6 +527,21 @@ namespace Songify_Slim
         private void tgl_AnnounceInChat_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.AnnounceInChat = tgl_AnnounceInChat.IsOn;
+        }
+
+        private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdPos = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void tgl_botcmd_song_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdSong = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

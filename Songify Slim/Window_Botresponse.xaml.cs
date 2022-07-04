@@ -42,7 +42,6 @@ namespace Songify_Slim
         private void MetroWindow_Closed(object sender, System.EventArgs e)
         {
             ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-
         }
     }
 }

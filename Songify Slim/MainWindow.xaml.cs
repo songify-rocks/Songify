@@ -31,7 +31,6 @@ using System.Xml.Linq;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using MenuItem = System.Windows.Forms.MenuItem;
-using Timer = System.Threading.Timer;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -42,22 +41,17 @@ namespace Songify_Slim
         #region Variables
 
         private static string _version;
-        private bool _appActive;
         public string CurrSong;
         public string _artist, _title;
-        public NotifyIcon NotifyIcon = new NotifyIcon();
+        public readonly NotifyIcon NotifyIcon = new NotifyIcon();
         public readonly List<RequestObject> ReqList = new List<RequestObject>();
         private string _songPath, _coverPath, _root, _coverTemp;
-        private readonly BackgroundWorker _workerTelemetry = new BackgroundWorker();
         private readonly ContextMenu _contextMenu = new ContextMenu();
-        private readonly TimeSpan _periodTimeSpan = TimeSpan.FromMinutes(5);
-        private readonly TimeSpan _startTimeSpan = TimeSpan.Zero;
         private bool _firstRun = true;
         private bool _forceClose;
         private string _prevSong;
         private string _selectedSource;
         private string _temp = "";
-        private Timer _timer;
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private string _prevId, _currentId;
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
@@ -71,8 +65,6 @@ namespace Songify_Slim
             Left = Settings.PosX;
             Top = Settings.PosY;
             _songTimer.Elapsed += SongTimer_Elapsed;
-            // Backgroundworker for telemetry, and methods
-            _workerTelemetry.DoWork += Worker_Telemetry_DoWork;
         }
 
         private static bool IsWindowOpen<T>(string name = "") where T : Window
@@ -128,41 +120,13 @@ namespace Songify_Slim
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }
         }
-
-        private void Worker_Telemetry_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // Backgroundworker is asynchronous
-            // sending a webrequest that parses parameters to php code
-            // it sends the UUID (randomly generated on first launch), unix timestamp, version number and if the app is active
-            try
-            {
-                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-                string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&v=" + _version + "&a=" + _appActive;
-                string url = "https://songify.rocks/songifydata.php/?id=" + extras;
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
-
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                myHttpWebResponse.Close();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                // Writing to the statusstrip label
-                LblStatus.Dispatcher.Invoke(
-                    DispatcherPriority.Normal,
-                    new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
-            }
-        }
-
+        
         private void AddSourcesToSourceBox()
         {
             string[] sourceBoxItems =
             {
                 PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000,/* PlayerType.Nightbot,*/ PlayerType.VLC, PlayerType.Youtube
+                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.VLC, PlayerType.Youtube
             };
             cbx_Source.ItemsSource = sourceBoxItems;
         }
@@ -549,12 +513,6 @@ namespace Songify_Slim
         {
             Settings.PosX = Left;
             Settings.PosY = Top;
-
-            // write config file on closing
-            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-            // send inactive
-            SendTelemetry(false);
-            // remove systray icon
             NotifyIcon.Visible = false;
             NotifyIcon.Dispose();
         }
@@ -635,19 +593,11 @@ namespace Songify_Slim
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             _version = fvi.FileVersion;
 
-            // generate UUID if not exists, expand the window and show the telemetrydisclaimer
+            // generate UUID if not exists
             if (Settings.Uuid == "")
             {
-                Width = 588 + 200;
-                Height = 247.881 + 200;
                 Settings.Uuid = Guid.NewGuid().ToString();
-
-                TelemetryDisclaimer();
-            }
-            else
-            {
-                // start the timer that sends telemetry every 5 Minutes
-                TelemetryTimer();
+                Settings.Telemetry = false;
             }
 
             // check for update
@@ -767,14 +717,6 @@ namespace Songify_Slim
             }
         }
 
-        private void SendTelemetry(bool active)
-        {
-            // send telemetry data once
-            _appActive = active;
-            if (!_workerTelemetry.IsBusy)
-                _workerTelemetry.RunWorkerAsync();
-        }
-
         private void SetFetchTimer()
         {
             _ = GetCurrentSongAsync();
@@ -809,38 +751,7 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
-
-        private async void TelemetryDisclaimer()
-        {
-            SendTelemetry(true);
-            // show messagebox with the Telemetry disclaimer
-            MessageDialogResult result = await this.ShowMessageAsync("Anonymous Data",
-                FindResource("data_colletion") as string
-                , MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings
-                {
-                    AffirmativeButtonText = "Accept",
-                    NegativeButtonText = "Decline",
-                    DefaultButtonFocus = MessageDialogResult.Affirmative
-                });
-            if (result == MessageDialogResult.Affirmative)
-            {
-                // if accepted save to settings, restore window size
-                Settings.Telemetry = true;
-                Width = 588;
-                MinHeight = 285;
-                Height = 285;
-            }
-            else
-            {
-                // if accepted save to settings, restore window size
-                Settings.Telemetry = false;
-                Width = 588;
-                MinHeight = 285;
-                Height = 285;
-            }
-        }
-
+        
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
@@ -851,28 +762,19 @@ namespace Songify_Slim
         {
             Application.Current.Shutdown();
         }
-
-        private void TelemetryTimer()
+        
+        private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
+            bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
         {
-            // call SendTelemetry every 5 minutes
-            _timer = new Timer(e =>
-            {
-                if (Settings.Telemetry)
-                    SendTelemetry(true);
-                else
-                    _timer.Dispose();
-            }, null, _startTimeSpan, _periodTimeSpan);
-        }
+            _currentId = rTrackId;
 
-        private void WriteSong(string _artist, string _title, string _extra, string cover = null,
-            bool forceUpdate = false, string _trackId = null, string _trackUrl = null)
-        {
-            _currentId = _trackId;
+            if(rTrackUrl != null)
+                Console.WriteLine(rTrackUrl);
 
-            if (_artist.Contains("Various Artists, "))
+            if (rArtist.Contains("Various Artists, "))
             {
-                _artist = _artist.Replace("Various Artists, ", "");
-                _artist = _artist.Trim();
+                rArtist = rArtist.Replace("Various Artists, ", "");
+                rArtist = rArtist.Trim();
             }
 
             // get the songPath which is default the directory where the exe is, else get the user set directory
@@ -888,14 +790,14 @@ namespace Songify_Slim
                 File.WriteAllText(_songPath, "");
 
             // if all those are empty we expect the player to be paused
-            if (string.IsNullOrEmpty(_artist) && string.IsNullOrEmpty(_title) && string.IsNullOrEmpty(_extra))
+            if (string.IsNullOrEmpty(rArtist) && string.IsNullOrEmpty(rTitle) && string.IsNullOrEmpty(rExtra))
             {
                 // read the text file
                 if (!File.Exists(_songPath)) File.Create(_songPath).Close();
 
                 File.WriteAllText(_songPath, Settings.CustomPauseText);
 
-                if (Settings.SplitOutput) WriteSplitOutput(Settings.CustomPauseText, _title, _extra);
+                if (Settings.SplitOutput) WriteSplitOutput(Settings.CustomPauseText, rTitle, rExtra);
 
                 DownloadCover(null);
 
@@ -913,10 +815,11 @@ namespace Songify_Slim
                 // this only is used for Spotify because here the artist and title are split
                 // replace parameters with actual info
                 CurrSong = CurrSong.Format(
-                    artist => _artist,
-                    title => _title,
-                    extra => _extra,
-                    uri => _trackId
+                    artist => rArtist,
+                    title => rTitle,
+                    extra => rExtra,
+                    uri => rTrackId,
+                    url => rTrackUrl
                 ).Format();
 
                 if (ReqList.Count > 0)
@@ -954,7 +857,7 @@ namespace Songify_Slim
                 // used for Youtube and Nightbot
                 // replace parameters with actual info
 
-                // get the first occurance of "}" to get the seperator from the custom output ({artist} - {title})
+                // get the first occurrence of "}" to get the separator from the custom output ({artist} - {title})
                 // and replace it
                 //int pFrom = CurrSong.IndexOf("}", StringComparison.Ordinal);
                 //string result = CurrSong.Substring(pFrom + 2, 1);
@@ -962,10 +865,11 @@ namespace Songify_Slim
 
                 // artist is set to be artist and title in this case, {title} and {extra} are empty strings
                 CurrSong = CurrSong.Format(
-                    artist => _artist,
-                    title => _title,
-                    extra => _extra,
-                    uri => _trackId
+                    artist => rArtist,
+                    title => rTitle,
+                    extra => rExtra,
+                    uri => rTrackId,
+                    url => rTrackUrl
                 ).Format();
 
                 if(CurrSong.EndsWith(" - "))
@@ -985,11 +889,10 @@ namespace Songify_Slim
                     Logger.LogExc(ex);
                 }
             }
-
             // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
             CurrSong = CleanFormatString(CurrSong);
-            this._title = _title;
-            this._artist = _artist;
+            _title = rTitle;
+            _artist = rArtist;
 
             // read the text file
             if (!File.Exists(_songPath))
@@ -1006,8 +909,7 @@ namespace Songify_Slim
             }
 
             //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);
-            string temp;
-            temp = File.ReadAllText(_songPath);
+            string temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
             if (temp.Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
@@ -1041,10 +943,10 @@ namespace Songify_Slim
                     // ignored
                 }
 
-                if (Settings.SplitOutput) WriteSplitOutput(_artist, _title, _extra);
+                if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
 
                 // if upload is enabled
-                if (Settings.Upload) UploadSong(CurrSong.Trim(), cover);
+                if (Settings.Upload) UploadSong(CurrSong.Trim(), rCover);
 
                 if (_firstRun)
                 {
@@ -1124,19 +1026,17 @@ namespace Songify_Slim
                 }
 
                 // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
-                if (_trackId != null) WebHelper.UpdateWebQueue(_trackId, "", "", "", "", "1", "u");
+                if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
-                if (Settings.AnnounceInChat && TwitchHandler.Client.IsConnected)
+                if (TwitchHandler.Client != null && Settings.AnnounceInChat && TwitchHandler.Client.IsConnected)
                     TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
 
                 _prevId = _currentId;
 
                 //Save Album Cover
-                if (Settings.DownloadCover) DownloadCover(cover);
-
-
-
+                if (Settings.DownloadCover) DownloadCover(rCover);
+                
                 if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
                     img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                         new Action(() =>
