@@ -12,5 +12,8 @@ namespace Songify_Slim.Models
         public int DurationMS { get; set; }
         public bool isPlaying { get; set; }
         public string url { get; set; }
+        public int DurationPercentage { get; set; }
+        public int DurationTotal { get; set; }
+        public int Progress { get; set; }
     }
 }

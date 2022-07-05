@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -308,6 +309,8 @@ namespace Songify_Slim.Util.Songify
 
             // gets the current playing songinfo
             TrackInfo songInfo = ApiHandler.GetSongInfo();
+            File.WriteAllText("progress.txt", songInfo.DurationPercentage.ToString());
+            Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");
             // if no song is playing and custompausetext is enabled
             return songInfo ?? new TrackInfo { isPlaying = false };
             // return a new stringarray containing artist, title and so on

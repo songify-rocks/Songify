@@ -169,6 +169,9 @@ namespace Songify_Slim.Util.Songify
                 Settings.Settings.SpotifyDeviceId = context.Device.Id;
 
             var albums = context.Item.Album.Images;
+            double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;
+            double currentDuration = TimeSpan.FromMilliseconds(context.ProgressMs).TotalSeconds;
+            double percentage = 100 / totalSeconds * currentDuration;
 
             return new TrackInfo
             {
@@ -178,7 +181,10 @@ namespace Songify_Slim.Util.Songify
                 SongID = context.Item.Id,
                 DurationMS = context.Item.DurationMs - context.ProgressMs,
                 isPlaying = context.IsPlaying,
-                url = "https://open.spotify.com/track/" + context.Item.Id
+                url = "https://open.spotify.com/track/" + context.Item.Id,
+                DurationPercentage = (int)percentage,
+                DurationTotal = context.Item.DurationMs,
+                Progress = context.ProgressMs
             };
         }
 
