@@ -768,8 +768,8 @@ namespace Songify_Slim
         {
             _currentId = rTrackId;
 
-            if(rTrackUrl != null)
-                Console.WriteLine(rTrackUrl);
+            //if(rTrackUrl != null)
+            //    Console.WriteLine(rTrackUrl);
 
             if (rArtist.Contains("Various Artists, "))
             {
