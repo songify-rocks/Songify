@@ -104,7 +104,5 @@ Click on "Browse", then go to your Songify folder and select "progress.html", ad
 ![obs64_wj858QeXLq](https://user-images.githubusercontent.com/69881381/177661338-6d97c565-dbb7-48f9-8bb2-0ba386ae2a55.gif)
 
 To change colors, open the "progress.html" file via Notepad or any code editor, in line 41 & 42 you can edit the class name using the names listed above (from line 9 to 39), line 41 is the progress bar background color and line 42 is the color of the progress bar itself, after you edit the color make sure to click on your browser source in OBS and click "Refresh" under your preview to see the changes. If you want the progress bar without the background colored, set the class in line 41 in the html file to "prog-black", and in OBS right-click the browser source and set its blending mode to screen.
-#### Consider supporting 
-[<img src="https://c5.patreon.com/external/logo/become_a_patron_button.png"  target="_blank">](https://www.patreon.com/bePatron?u=31732074)
 #### Connect with us!
 [<img src="http://songify.bloemacher.com/img/discord.png"  target="_blank">](https://discordapp.com/invite/H8nd4T4)
