@@ -787,7 +787,7 @@ namespace Songify_Slim
             _coverPath = _root + "/cover.png";
 
             if (_firstRun)
-                File.WriteAllText(_songPath, "");
+                WriteOutput(_songPath, "");
 
             // if all those are empty we expect the player to be paused
             if (string.IsNullOrEmpty(rArtist) && string.IsNullOrEmpty(rTitle) && string.IsNullOrEmpty(rExtra))
@@ -795,7 +795,7 @@ namespace Songify_Slim
                 // read the text file
                 if (!File.Exists(_songPath)) File.Create(_songPath).Close();
 
-                File.WriteAllText(_songPath, Settings.CustomPauseText);
+                WriteOutput(_songPath, Settings.CustomPauseText);
 
                 if (Settings.SplitOutput) WriteSplitOutput(Settings.CustomPauseText, rTitle, rExtra);
 
@@ -900,7 +900,7 @@ namespace Songify_Slim
                 File.Create(_songPath).Close();
                 try
                 {
-                    File.WriteAllText(_songPath, CurrSong);
+                    WriteOutput(_songPath, CurrSong);
                 }
                 catch (Exception)
                 {
@@ -917,7 +917,7 @@ namespace Songify_Slim
                 // write song to the text file
                 try
                 {
-                    File.WriteAllText(_songPath, CurrSong);
+                    WriteOutput(_songPath, CurrSong);
                 }
                 catch (Exception)
                 {
@@ -1057,6 +1057,18 @@ namespace Songify_Slim
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
         }
 
+        private void WriteOutput(string songPath, string currSong)
+        {
+            try
+            {
+                File.WriteAllText(songPath, currSong);
+            }   
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
         private void WriteSplitOutput(string artist, string title, string extra)
         {
             // Writes the output to 2 different text files
@@ -1067,8 +1079,8 @@ namespace Songify_Slim
             if (!File.Exists(_root + "/Title.txt"))
                 File.Create(_root + "/Title.txt").Close();
 
-            File.WriteAllText(_root + "/Artist.txt", artist);
-            File.WriteAllText(_root + "/Title.txt", title + extra);
+            WriteOutput(_root + "/Artist.txt", artist);
+            WriteOutput(_root + "/Title.txt", title + extra);
         }
 
         private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)

@@ -86,11 +86,11 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
+                    ((MainWindow)Application.Current.MainWindow)?.NotifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
                 }
             });
 
             Logger.LogStr("TWITCH: Disconnected from Twitch");
-            ((MainWindow)Application.Current.MainWindow)?.NotifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
 
             //Attempt to reconnect 5 times with a 5 second delay
             if (ForceDisconnect)
@@ -101,8 +101,16 @@ namespace Songify_Slim.Util.Songify
 
             for (int i = 0; i < 5; i++)
             {
-                Logger.LogStr($"TWITCH: Attempting to reconnect to Twitch {i + 1}/5");
-                Client.Connect();
+                try
+                {
+                    Logger.LogStr($"TWITCH: Attempting to reconnect to Twitch {i + 1}/5");
+                    Client.Connect();
+                }
+                catch (Exception exception)
+                {
+                    Logger.LogExc(exception);
+                }
+
                 if (Client.IsConnected)
                     break;
                 //Wait 5 seconds asynchronously

@@ -54,7 +54,7 @@ namespace Songify_Slim
             string logFile = GetLogFilePath();
             try
             {
-                File.AppendAllText(logFile, DateTime.Now.ToString("hh:mm:ss") + @": " + s + Environment.NewLine);
+                File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
             }
             catch
             {

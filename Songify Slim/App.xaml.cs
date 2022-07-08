@@ -46,17 +46,6 @@ namespace Songify_Slim
 
             MainWindow main = new MainWindow();
             main.Show();
-
-            //if (Settings.Uuid != "")
-            //{
-            //    MainWindow main = new MainWindow();
-            //    main.Show();
-            //}
-            //else
-            //{
-            //    Window_GuidedSetup guidedSetup = new Window_GuidedSetup();
-            //    guidedSetup.Show();
-            //}
         }
     }
 }
