@@ -1054,11 +1054,13 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.UseOwnAppID = value;
             Properties.Settings.Default.Save();
         }
+        
         private static void SetUserBlacklist(string value)
         {
             Properties.Settings.Default.UserBlacklist = value;
             Properties.Settings.Default.Save();
         }
+        
         private static void SetUuid(string uuid)
         {
             Properties.Settings.Default.uuid = uuid;

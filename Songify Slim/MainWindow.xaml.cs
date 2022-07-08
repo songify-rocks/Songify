@@ -605,7 +605,6 @@ namespace Songify_Slim
             AutoUpdater.UpdateMode = Mode.ForcedDownload;
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
-
             AutoUpdater.Start("https://songify.rocks/update.xml");
 
             // set the cbx index to the correct source
@@ -614,8 +613,7 @@ namespace Songify_Slim
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content =
-                "Songify v" + _version.Substring(0, 5) + " Copyright ©";
+            LblCopyright.Content =$"Songify v{_version.Substring(0, 5)} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {

@@ -86,7 +86,6 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
-                    ((MainWindow)Application.Current.MainWindow)?.NotifyIcon.ShowBalloonTip(5000, "Songify", "Disconnected from Twitch", System.Windows.Forms.ToolTipIcon.Error);
                 }
             });
 
@@ -104,6 +103,16 @@ namespace Songify_Slim.Util.Songify
                 try
                 {
                     Logger.LogStr($"TWITCH: Attempting to reconnect to Twitch {i + 1}/5");
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window.GetType() != typeof(MainWindow))
+                                continue;
+                            //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                            ((MainWindow)window).LblStatus.Content = $"Attempting to reconnect to Twitch {i + 1}/5";
+                        }
+                    });
                     Client.Connect();
                 }
                 catch (Exception exception)
@@ -116,6 +125,8 @@ namespace Songify_Slim.Util.Songify
                 //Wait 5 seconds asynchronously
                 await Task.Delay(5000);
             }
+
+            ForceDisconnect = true;
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)

@@ -66,7 +66,7 @@ namespace Songify_Slim
                 Config cfg = Settings.Export();
                 foreach (PropertyInfo prop in cfg.GetType().GetProperties())
                 {
-                    writer.WriteAttributeString(prop.Name, prop.GetValue(cfg, null).ToString());
+                    writer.WriteAttributeString(prop.Name.ToLower(), prop.GetValue(cfg, null).ToString());
                 }
                 writer.WriteEndElement();
                 writer.WriteEndElement();

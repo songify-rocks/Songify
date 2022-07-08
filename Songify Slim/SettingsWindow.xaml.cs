@@ -481,7 +481,7 @@ namespace Songify_Slim
             if (msgResult != MessageDialogResult.Affirmative) return;
             Settings.AccessToken = "";
             Settings.RefreshToken = "";
-
+            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
