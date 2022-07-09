@@ -314,14 +314,36 @@ namespace Songify_Slim.Util.Songify
                 StartCooldown();
             }
 
-            if (e.ChatMessage.Message.StartsWith("!song") && Settings.Settings.BotCmdSong)
-            {
-                string currsong = GetCurrentSong();
-                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
-            }
-
             switch (e.ChatMessage.Message)
             {
+                case "!skip":
+                    {
+                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (((MainWindow)Application.Current.MainWindow)?.ReqList.Count > 0 && ((MainWindow)Application.Current.MainWindow).ReqList.First().Requester == e.ChatMessage.DisplayName))
+                        {
+                            Console.WriteLine(@"Moderator skipped song");
+                            ErrorResponse response = ApiHandler.SkipSong();
+                            if (response.Error != null)
+                            {
+                                Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
+                            }
+                            else
+                            {
+                                Client.SendMessage(e.ChatMessage.Channel, "Skipping song...");
+                            }
+                        }
+                        else
+                        {
+                            Client.SendMessage(e.ChatMessage.Channel, "You are not allowed to skip songs.");
+                        }
+                        break;
+                    }
+                case "!song" when Settings.Settings.BotCmdSong:
+                    {
+                        string currsong = GetCurrentSong();
+                        Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
+                        break;
+                    }
+
                 case "!pos" when Settings.Settings.BotCmdPos:
                     {
                         List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);

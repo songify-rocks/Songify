@@ -309,7 +309,14 @@ namespace Songify_Slim.Util.Songify
 
             // gets the current playing songinfo
             TrackInfo songInfo = ApiHandler.GetSongInfo();
-            File.WriteAllText("progress.txt", songInfo.DurationPercentage.ToString());
+            try
+            {
+                File.WriteAllText($"{Settings.Settings.Directory}/progress.txt", songInfo.DurationPercentage.ToString());
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
             //Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");
             // if no song is playing and custompausetext is enabled
             return songInfo ?? new TrackInfo { isPlaying = false };

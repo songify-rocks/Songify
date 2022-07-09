@@ -218,5 +218,10 @@ namespace Songify_Slim.Util.Songify
             // Returns a bool wether the playbackstate is playing or not (used for custom pause text)
             return Spotify.GetPlayback().IsPlaying;
         }
+
+        public static ErrorResponse SkipSong()
+        {
+            return Spotify.SkipPlaybackToNext();
+        }
     }
 }
