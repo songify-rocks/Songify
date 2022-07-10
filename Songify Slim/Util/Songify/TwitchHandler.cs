@@ -88,45 +88,7 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
                 }
             });
-
             Logger.LogStr("TWITCH: Disconnected from Twitch");
-
-            //Attempt to reconnect 5 times with a 5 second delay
-            if (ForceDisconnect)
-            {
-                ForceDisconnect = false;
-                return;
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                try
-                {
-                    Logger.LogStr($"TWITCH: Attempting to reconnect to Twitch {i + 1}/5");
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() != typeof(MainWindow))
-                                continue;
-                            //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                            ((MainWindow)window).LblStatus.Content = $"Attempting to reconnect to Twitch {i + 1}/5";
-                        }
-                    });
-                    Client.Connect();
-                }
-                catch (Exception exception)
-                {
-                    Logger.LogExc(exception);
-                }
-
-                if (Client.IsConnected)
-                    break;
-                //Wait 5 seconds asynchronously
-                await Task.Delay(5000);
-            }
-
-            ForceDisconnect = true;
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)

@@ -9,7 +9,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
-                      ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="CenterScreen">
+                      ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="CenterScreen" KeyDown="MetroWindow_KeyDown">
     <controls:MetroWindow.Resources>
         <Style TargetType="{x:Type dialog:MessageDialog}"
                x:Key="NewCustomMessageDialogStyle"

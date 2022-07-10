@@ -24,13 +24,16 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
 using Application = System.Windows.Application;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
+using MessageBox = System.Windows.MessageBox;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -120,7 +123,7 @@ namespace Songify_Slim
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
             }
         }
-        
+
         private void AddSourcesToSourceBox()
         {
             string[] sourceBoxItems =
@@ -525,6 +528,13 @@ namespace Songify_Slim
             Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
             Logger.LogStr("###############################");
             Logger.LogExc(e);
+
+            if (!args.IsTerminating) return;
+            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
+                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                Process.Start(Logger.LogDirectoryPath);
+            }
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
@@ -613,7 +623,7 @@ namespace Songify_Slim
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content =$"Songify v{_version.Substring(0, 5)} Copyright ©";
+            LblCopyright.Content = $"Songify v{_version.Substring(0, 5)} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -749,7 +759,7 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
-        
+
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
@@ -760,7 +770,16 @@ namespace Songify_Slim
         {
             Application.Current.Shutdown();
         }
-        
+
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            //If the user presses alt + F12 run Crash() method.
+            //if (e.Key == Key.F12)
+            //{
+            //    Crash();
+            //}
+        }
+
         private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
             bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
         {
@@ -870,7 +889,7 @@ namespace Songify_Slim
                     url => rTrackUrl
                 ).Format();
 
-                if(CurrSong.EndsWith(" - "))
+                if (CurrSong.EndsWith(" - "))
                     CurrSong = CurrSong.Remove(CurrSong.Length - 3);
 
                 if (CurrSong.StartsWith(" - "))
@@ -1034,7 +1053,7 @@ namespace Songify_Slim
 
                 //Save Album Cover
                 if (Settings.DownloadCover) DownloadCover(rCover);
-                
+
                 if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
                     img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
                         new Action(() =>
@@ -1060,7 +1079,7 @@ namespace Songify_Slim
             try
             {
                 File.WriteAllText(songPath, currSong);
-            }   
+            }
             catch (Exception e)
             {
                 Logger.LogExc(e);
@@ -1087,6 +1106,9 @@ namespace Songify_Slim
             wBr.Show();
         }
 
-
+        private static void Crash()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

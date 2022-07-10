@@ -5,7 +5,7 @@ namespace Songify_Slim
 {
     internal class Logger
     {
-        private static readonly string LogDirectoryPath =
+        public static readonly string LogDirectoryPath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
 
         private static readonly string RootPath =
