@@ -31,8 +31,10 @@ namespace Songify_Slim.Util.Songify
 
         public static void BotConnect()
         {
-            if(Client != null && Client.IsConnected)
+            if (Client != null && Client.IsConnected)
                 return;
+            if (Client != null && !Client.IsConnected)
+                Client.Connect();
             try
             {
                 // Checks if twitch credentials are present
