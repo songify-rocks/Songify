@@ -64,8 +64,8 @@ namespace Songify_Slim.Util.Settings
 
         public static string BotRespBlacklist
         {
-            get => Getbot_Resp_Blacklist();
-            set => Setbot_Resp_Blacklist(value);
+            get => GetBot_Resp_Blacklist();
+            set => SetBot_Resp_Blacklist(value);
         }
 
         public static string BotRespError
@@ -94,8 +94,8 @@ namespace Songify_Slim.Util.Settings
 
         public static string BotRespNoSong
         {
-            get => GetBotRespNoSong();
-            set => SetBotRespNoSong(value);
+            get => GetBot_Resp_NoSong();
+            set => SetBot_Resp_NoSong(value);
         }
 
         public static string BotRespSuccess
@@ -448,7 +448,14 @@ namespace Songify_Slim.Util.Settings
                 UploadHistory = GetUploadHistory(),
                 UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
-                Uuid = GetUuid()
+                Uuid = GetUuid(),
+                BotRespBlacklist = GetBot_Resp_Blacklist(),
+                BotRespError = GetBot_Resp_Error(),
+                BotRespIsInQueue = GetBot_Resp_IsInQueue(),
+                BotRespLength = GetBot_Resp_Length(),
+                BotRespMaxReq = GetBot_Resp_MaxReq(),
+                BotRespNoSong = GetBot_Resp_NoSong(),
+                BotRespSuccess = GetBot_Resp_Success()
             };
         }
 
@@ -482,7 +489,7 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.autostart;
         }
 
-        private static string Getbot_Resp_Blacklist()
+        private static string GetBot_Resp_Blacklist()
         {
             return Properties.Settings.Default.bot_Resp_Blacklist;
         }
@@ -527,7 +534,7 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_cmd_song;
         }
 
-        private static string GetBotRespNoSong()
+        private static string GetBot_Resp_NoSong()
         {
             return Properties.Settings.Default.bot_Resp_NoSong;
         }
@@ -773,7 +780,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
-        private static void Setbot_Resp_Blacklist(string value)
+        private static void SetBot_Resp_Blacklist(string value)
         {
             Properties.Settings.Default.bot_Resp_Blacklist = value;
             Properties.Settings.Default.Save();
@@ -824,7 +831,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.bot_cmd_song = value;
             Properties.Settings.Default.Save();
         }
-        private static void SetBotRespNoSong(string value)
+        private static void SetBot_Resp_NoSong(string value)
         {
             Properties.Settings.Default.bot_Resp_NoSong = value;
             Properties.Settings.Default.Save();

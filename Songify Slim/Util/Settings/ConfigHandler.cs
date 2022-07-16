@@ -148,6 +148,13 @@ namespace Songify_Slim
                         config.BotCmdNext = ToBoolean(node.Attributes["botcmdnext"] != null ? node.Attributes["botcmdnext"].Value : Settings.BotCmdNext.ToString());
                         config.BotCmdPos = ToBoolean(node.Attributes["botcmdpos"] != null ? node.Attributes["botcmdpos"].Value : Settings.BotCmdPos.ToString());
                         config.BotCmdSong = ToBoolean(node.Attributes["botcmdsong"] != null ? node.Attributes["botcmdsong"].Value : Settings.BotCmdSong.ToString());
+                        config.BotRespBlacklist = node.Attributes["clientsecret"] != null ? node.Attributes["clientsecret"].Value : Settings.ClientSecret;
+                        config.BotRespError = node.Attributes["botresperror"] != null ? node.Attributes["botresperror"].Value : Settings.BotRespError;
+                        config.BotRespIsInQueue = node.Attributes["botrespisinqueue"] != null ? node.Attributes["botrespisinqueue"].Value : Settings.BotRespIsInQueue;
+                        config.BotRespLength = node.Attributes["botresplength"] != null ? node.Attributes["botresplength"].Value : Settings.BotRespLength;
+                        config.BotRespMaxReq = node.Attributes["botrespmaxreq"] != null ? node.Attributes["botrespmaxreq"].Value : Settings.BotRespMaxReq;
+                        config.BotRespNoSong = node.Attributes["botrespnosong"] != null ? node.Attributes["botrespnosong"].Value : Settings.BotRespNoSong;
+                        config.BotRespSuccess = node.Attributes["botrespsuccess"] != null ? node.Attributes["botrespsuccess"].Value : Settings.BotRespSuccess;
                     }
 
                     //Set the config object to the current config
@@ -190,51 +197,58 @@ namespace Songify_Slim
     public class Config
     {
         // Create fields for each setting in the config file
-        public string Directory { get; set; }
-        public string Color { get; set; }
-        public string Theme { get; set; }
-        public bool Autostart { get; set; }
-        public bool Systray { get; set; }
-        public bool CustomPauseTextEnabled { get; set; }
-        public string CustomPauseText { get; set; }
-        public string OutputString { get; set; }
-        public string Uuid { get; set; }
-        public bool Telemetry { get; set; }
-        public string NbUser { get; set; }
-        public string NbUserId { get; set; }
-        public bool Upload { get; set; }
-        public bool UploadHistory { get; set; }
-        public bool SaveHistory { get; set; }
-        public bool DownloadCover { get; set; }
-        public string RefreshToken { get; set; }
-        public bool SplitOutput { get; set; }
-        public string AccessToken { get; set; }
-        public string TwAcc { get; set; }
-        public string TwOAuth { get; set; }
-        public string TwChannel { get; set; }
-        public string TwRewardId { get; set; }
-        public bool TwSrReward { get; set; }
-        public bool TwSrCommand { get; set; }
-        public int TwSrMaxReq { get; set; }
-        public int TwSrCooldown { get; set; }
-        public bool MsgLoggingEnabled { get; set; }
-        public bool TwAutoConnect { get; set; }
-        public string ArtistBlacklist { get; set; }
-        public string UserBlacklist { get; set; }
-        public int PosX { get; set; }
-        public int PosY { get; set; }
-        public bool AutoClearQueue { get; set; }
-        public string SpotifyDeviceId { get; set; }
-        public string Language { get; set; }
-        public bool AppendSpaces { get; set; }
-        public int SpaceCount { get; set; }
-        public bool UseOwnApp { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public int MaxSongLength { get; set; }
         public bool AnnounceInChat { get; set; }
+        public bool AppendSpaces { get; set; }
+        public bool AutoClearQueue { get; set; }
+        public bool Autostart { get; set; }
         public bool BotCmdNext { get; set; }
         public bool BotCmdPos { get; set; }
         public bool BotCmdSong { get; set; }
+        public bool CustomPauseTextEnabled { get; set; }
+        public bool DownloadCover { get; set; }
+        public bool MsgLoggingEnabled { get; set; }
+        public bool SaveHistory { get; set; }
+        public bool SplitOutput { get; set; }
+        public bool Systray { get; set; }
+        public bool Telemetry { get; set; }
+        public bool TwAutoConnect { get; set; }
+        public bool TwSrCommand { get; set; }
+        public bool TwSrReward { get; set; }
+        public bool Upload { get; set; }
+        public bool UploadHistory { get; set; }
+        public bool UseOwnApp { get; set; }
+        public int MaxSongLength { get; set; }
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+        public int SpaceCount { get; set; }
+        public int TwSrCooldown { get; set; }
+        public int TwSrMaxReq { get; set; }
+        public string AccessToken { get; set; }
+        public string ArtistBlacklist { get; set; }
+        public string BotRespBlacklist { get; set; }
+        public string BotRespError { get; set; }
+        public string BotRespIsInQueue { get; set; }
+        public string BotRespLength { get; set; }
+        public string BotRespMaxReq { get; set; }
+        public string BotRespNoSong { get; set; }
+        public string BotRespSuccess { get; set; }
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string Color { get; set; }
+        public string CustomPauseText { get; set; }
+        public string Directory { get; set; }
+        public string Language { get; set; }
+        public string NbUser { get; set; }
+        public string NbUserId { get; set; }
+        public string OutputString { get; set; }
+        public string RefreshToken { get; set; }
+        public string SpotifyDeviceId { get; set; }
+        public string Theme { get; set; }
+        public string TwAcc { get; set; }
+        public string TwChannel { get; set; }
+        public string TwOAuth { get; set; }
+        public string TwRewardId { get; set; }
+        public string UserBlacklist { get; set; }
+        public string Uuid { get; set; }
     }
 }
