@@ -24,7 +24,7 @@
             <Run Text="This Project is a free time project and licensed under the GNU General Public License v3.0." />
             <LineBreak /><Run /><LineBreak /><Run /><LineBreak />
             <Run Text="If you want to support this project feel free to" /><Run Text=" " />
-            <Run Text=" become a Patron or hang out with us on Discord!" />
+            <Run Text=" hang out with us on Discord!" />
         </TextBlock>
         <Button Grid.Column="1" x:Name="BtnDonate" Margin="69,210,70,0" Click="BtnDonateClick" VerticalAlignment="Top">
             <StackPanel Orientation="Horizontal">

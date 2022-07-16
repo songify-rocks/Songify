@@ -181,7 +181,7 @@ namespace Songify_Slim
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
             // links to the projects patreon page (the button name is old because I used to use paypal)
-            Process.Start("https://www.patreon.com/Songify");
+            Process.Start("https://ko-fi.com/overcodetv");
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)

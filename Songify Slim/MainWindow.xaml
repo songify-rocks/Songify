@@ -135,14 +135,12 @@
                           Click="BtnHistory_Click" />
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Support}">
-                    <MenuItem Header="Patreon" Click="BtnPaypal_Click" />
-                </MenuItem>
                 <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
                 <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
                 <MenuItem Header="Discord" Click="BtnDiscord_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
             </MenuItem>
+            <MenuItem Header="Buy Us A Coffee" Click="BtnPaypal_Click" />
         </Menu>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124" SelectedIndex="0"
                   IsTabStop="False" Padding="2" Margin="448,3,0,0" />

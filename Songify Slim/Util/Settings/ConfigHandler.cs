@@ -37,7 +37,11 @@ namespace Songify_Slim
                 };
 
                 // Opneing the dialog and if the user clicked on "save" this code gets executed
-                if (saveFileDialog.ShowDialog() != null ? saveFileDialog.ShowDialog().Value : false) WriteXml(saveFileDialog.FileName);
+                if (saveFileDialog.ShowDialog() != true) return;
+                if (saveFileDialog.FileName != "")
+                {
+                    WriteXml(saveFileDialog.FileName);
+                }
             }
         }
 
