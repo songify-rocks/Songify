@@ -67,7 +67,10 @@ namespace Songify_Slim
             Tglsw_Spotify.IsOn = Settings.UseOwnApp;
             NudMaxlength.Value = Settings.MaxSongLength;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
-
+            tgl_botcmd_next.IsOn = Settings.BotCmdNext;
+            tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
+            tgl_botcmd_song.IsOn = Settings.BotCmdSong;
+            
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;

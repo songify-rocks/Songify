@@ -104,6 +104,7 @@ namespace Songify_Slim
                                 "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
                                 "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8);
                 string url = "https://songify.rocks/song.php?id=" + extras;
+                Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 myHttpWebRequest.UserAgent = Settings.Webua;

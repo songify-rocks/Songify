@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Automation;
@@ -311,7 +312,11 @@ namespace Songify_Slim.Util.Songify
             TrackInfo songInfo = ApiHandler.GetSongInfo();
             try
             {
-                File.WriteAllText($"{Settings.Settings.Directory}/progress.txt", songInfo.DurationPercentage.ToString());
+                string path = string.IsNullOrEmpty(Settings.Settings.Directory)
+                ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
+                : Settings.Settings.Directory;
+                
+                File.WriteAllText($"{path}/progress.txt", songInfo.DurationPercentage.ToString());
             }
             catch (Exception e)
             {
