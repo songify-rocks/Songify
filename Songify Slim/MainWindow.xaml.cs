@@ -828,6 +828,8 @@ namespace Songify_Slim
             // get the output string
             CurrSong = Settings.OutputString;
 
+            // Replace {artist}, {title} and {extra} in the output string with values from rArtist, rTitle and rExtra
+
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
                 // this only is used for Spotify because here the artist and title are split
@@ -890,12 +892,10 @@ namespace Songify_Slim
                     url => rTrackUrl
                 ).Format();
 
-                if (CurrSong.EndsWith(" - "))
-                    CurrSong = CurrSong.Remove(CurrSong.Length - 3);
-
-                if (CurrSong.StartsWith(" - "))
-                    CurrSong = CurrSong.Remove(0, 2);
-
+                CurrSong = CurrSong.Trim();
+                // Remove trailing "-" from the output string
+                if (CurrSong.EndsWith("-")) CurrSong = CurrSong.Remove(CurrSong.Length - 1);
+                
                 try
                 {
                     int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);

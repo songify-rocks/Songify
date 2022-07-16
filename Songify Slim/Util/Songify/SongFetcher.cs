@@ -84,9 +84,10 @@ namespace Songify_Slim.Util.Songify
                             }
                             
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-                            
-                            return Task.FromResult(new SongInfo { Artist = wintitle, Title = title, Extra = extra });
 
+                            _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            return Task.FromResult(_previousSonginfo);
+                        
                         case "foobar2000":
                             // Splitting the win title which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
@@ -109,9 +110,9 @@ namespace Songify_Slim.Util.Songify
                             wintitle = wintitle.Replace(" [foobar2000]", "");
                             try
                             {
-                                if (wintitle.LastIndexOf('.') > 0)
+                                foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
                                 {
-                                    wintitle = wintitle.Substring(0, wintitle.LastIndexOf('.'));
+                                    wintitle = wintitle.Replace(item, "");
                                 }
                             }
                             catch (Exception ex)
@@ -131,8 +132,7 @@ namespace Songify_Slim.Util.Songify
 
             return Task.FromResult<SongInfo>(null);
         }
-
-
+        
         /// <summary>
         ///     A method to fetch the song that's currently playing on Youtube.
         ///     returns empty string if unsuccessful and custom pause text is not set.
