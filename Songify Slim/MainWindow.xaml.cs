@@ -47,7 +47,7 @@ namespace Songify_Slim
         public string CurrSong;
         public string _artist, _title;
         public readonly NotifyIcon NotifyIcon = new NotifyIcon();
-        public readonly List<RequestObject> ReqList = new List<RequestObject>();
+        public List<RequestObject> ReqList = new List<RequestObject>();
         private string _songPath, _coverPath, _root, _coverTemp;
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private bool _firstRun = true;
@@ -1068,6 +1068,9 @@ namespace Songify_Slim
                             img_cover.Source = image;
                         }));
             }
+
+            // Clear the SkipVotes list in TwitchHandler Class
+            TwitchHandler.SkipVotes.Clear();
 
             // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(

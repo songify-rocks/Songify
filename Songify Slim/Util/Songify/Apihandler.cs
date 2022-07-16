@@ -4,6 +4,7 @@ using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
 using System;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Threading;
@@ -218,10 +219,10 @@ namespace Songify_Slim.Util.Songify
             // Returns a bool wether the playbackstate is playing or not (used for custom pause text)
             return Spotify.GetPlayback().IsPlaying;
         }
-
-        public static ErrorResponse SkipSong()
+        
+        public static async Task<ErrorResponse> SkipSong()
         {
-            return Spotify.SkipPlaybackToNext();
+            return await Spotify.SkipPlaybackToNextAsync();
         }
     }
 }

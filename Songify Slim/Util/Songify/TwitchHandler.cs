@@ -22,6 +22,7 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient Client;
         private static bool _onCooldown;
         public static bool ForceDisconnect;
+        public static List<string> SkipVotes = new List<string> { "test1", "test2", "test3" };
 
         private static readonly Timer CooldownTimer = new Timer
         {
@@ -117,7 +118,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("TWITCH: Connected to Twitch");
         }
 
-        private static void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
+        private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             if (Settings.Settings.MsgLoggingEnabled)
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
@@ -280,10 +281,21 @@ namespace Songify_Slim.Util.Songify
             {
                 case "!skip":
                     {
-                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (((MainWindow)Application.Current.MainWindow)?.ReqList.Count > 0 && ((MainWindow)Application.Current.MainWindow).ReqList.First().Requester == e.ChatMessage.DisplayName))
+                        int count = 0;
+                        string name = "";
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            int? reqListCount = ((MainWindow)Application.Current.MainWindow)?.ReqList.Count;
+                            if (reqListCount != null)
+                                count = (int)reqListCount;
+                            if (count > 0)
+                                name = ((MainWindow)Application.Current.MainWindow)?.ReqList.First().Requester;
+                        });
+
+                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || count > 0 && name == e.ChatMessage.DisplayName)
                         {
                             Console.WriteLine(@"Moderator or Requester skipped the song");
-                            ErrorResponse response = ApiHandler.SkipSong();
+                            ErrorResponse response = await ApiHandler.SkipSong();
                             if (response.Error != null)
                             {
                                 Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
@@ -291,6 +303,37 @@ namespace Songify_Slim.Util.Songify
                             else
                             {
                                 Client.SendMessage(e.ChatMessage.Channel, "Skipping song...");
+                            }
+                        }
+                        else
+                        {
+                            //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
+                            if (SkipVotes.Contains(e.ChatMessage.DisplayName))
+                            {
+                                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you already voted to skip the song.");
+                            }
+                            else
+                            {
+                                SkipVotes.Add(e.ChatMessage.DisplayName);
+                                string msg =
+                                    $"{e.ChatMessage.DisplayName} voted to skip the current song.";
+                                if (SkipVotes.Count < 5)
+                                    msg += $" {5 - SkipVotes.Count} more votes needed.";
+                                msg += $" ({SkipVotes.Count}/5)";
+                                Client.SendMessage(e.ChatMessage.Channel, msg);
+                                if (SkipVotes.Count >= 5)
+                                {
+                                    ErrorResponse response = await ApiHandler.SkipSong();
+                                    if (response.Error != null)
+                                    {
+                                        Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
+                                    }
+                                    else
+                                    {
+                                        Client.SendMessage(e.ChatMessage.Channel, "/announce Skipping song by vote...");
+                                    }
+                                    SkipVotes.Clear();
+                                }
                             }
                         }
                         break;
