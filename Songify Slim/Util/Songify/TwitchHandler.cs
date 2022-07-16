@@ -31,6 +31,8 @@ namespace Songify_Slim.Util.Songify
 
         public static void BotConnect()
         {
+            if(Client != null && Client.IsConnected)
+                return;
             try
             {
                 // Checks if twitch credentials are present
@@ -87,6 +89,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
                 }
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch");
@@ -113,6 +117,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Connected to Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = false;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
                 }
             });
             Logger.LogStr("TWITCH: Connected to Twitch");
