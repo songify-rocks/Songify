@@ -189,6 +189,12 @@ namespace Songify_Slim.Util.Settings
             set => SetNbUserId(value);
         }
 
+        public static bool OpenQueueOnStartup
+        {
+            get => GetOpenQueueOnStartup();
+            set => SetOpenQueueOnStartup(value);
+        }
+
         public static string OutputString
         {
             get => GetOutputString();
@@ -347,58 +353,6 @@ namespace Songify_Slim.Util.Settings
 
         public static string Webua => GetWebua();
 
-        public static void Import(Config config)
-        {
-            //Set the config values
-            SetAccessToken(config.AccessToken);
-            SetAnnounceInChat(config.AnnounceInChat);
-            SetAppendSpaces(config.AppendSpaces);
-            SetArtistBlacklist(config.ArtistBlacklist);
-            SetAutoClearQueue(config.AutoClearQueue);
-            SetAutostart(config.Autostart);
-            SetBotCmdNext(config.BotCmdNext);
-            SetBotCmdPos(config.BotCmdPos);
-            SetBotCmdSong(config.BotCmdSong);
-            SetClientId(config.ClientId);
-            SetClientSecret(config.ClientSecret);
-            SetColor(config.Color);
-            SetCustomPauseText(config.CustomPauseText);
-            SetCustomPauseTextEnabled(config.CustomPauseTextEnabled);
-            SetDirectory(config.Directory);
-            SetDownloadCover(config.DownloadCover);
-            SetLangauge(config.Language);
-            SetMaxSongLength(config.MaxSongLength);
-            SetMsgLoggingEnabled(config.MsgLoggingEnabled);
-            SetNbUser(config.NbUser);
-            SetNbUserId(config.NbUserId);
-            SetOutputString(config.OutputString);
-            SetPosX(config.PosX);
-            SetPosY(config.PosY);
-            SetRefreshToken(config.RefreshToken);
-            SetSaveHistory(config.SaveHistory);
-            SetSpaceCount(config.SpaceCount);
-            SetSplitOutput(config.SplitOutput);
-            SetSpotifyDeviceId(config.SpotifyDeviceId);
-            SetSystray(config.Systray);
-            SetTelemetry(config.Telemetry);
-            SetTheme(config.Theme);
-            SetTwAcc(config.TwAcc);
-            SetTwAutoConnect(config.TwAutoConnect);
-            SetTwChannel(config.TwChannel);
-            SetTwOAuth(config.TwOAuth);
-            SetTwRewardId(config.TwRewardId);
-            SetTwSrCommand(config.TwSrCommand);
-            SetTwSrCooldown(config.TwSrCooldown);
-            SetTwSrMaxReq(config.TwSrMaxReq);
-            SetTwSrReward(config.TwSrReward);
-            SetUpload(config.Upload);
-            SetUploadHistory(config.UploadHistory);
-            SetUseOwnApp(config.UseOwnApp);
-            SetUserBlacklist(config.UserBlacklist);
-            SetUuid(config.Uuid);
-            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-        }
-
         public static Config Export()
         {
             return new Config
@@ -455,10 +409,63 @@ namespace Songify_Slim.Util.Settings
                 BotRespLength = GetBot_Resp_Length(),
                 BotRespMaxReq = GetBot_Resp_MaxReq(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
-                BotRespSuccess = GetBot_Resp_Success()
+                BotRespSuccess = GetBot_Resp_Success(),
+                OpenQueueOnStartup = GetOpenQueueOnStartup()
             };
         }
 
+        public static void Import(Config config)
+        {
+            //Set the config values
+            SetAccessToken(config.AccessToken);
+            SetAnnounceInChat(config.AnnounceInChat);
+            SetAppendSpaces(config.AppendSpaces);
+            SetArtistBlacklist(config.ArtistBlacklist);
+            SetAutoClearQueue(config.AutoClearQueue);
+            SetAutostart(config.Autostart);
+            SetBotCmdNext(config.BotCmdNext);
+            SetBotCmdPos(config.BotCmdPos);
+            SetBotCmdSong(config.BotCmdSong);
+            SetClientId(config.ClientId);
+            SetClientSecret(config.ClientSecret);
+            SetColor(config.Color);
+            SetCustomPauseText(config.CustomPauseText);
+            SetCustomPauseTextEnabled(config.CustomPauseTextEnabled);
+            SetDirectory(config.Directory);
+            SetDownloadCover(config.DownloadCover);
+            SetLangauge(config.Language);
+            SetMaxSongLength(config.MaxSongLength);
+            SetMsgLoggingEnabled(config.MsgLoggingEnabled);
+            SetNbUser(config.NbUser);
+            SetNbUserId(config.NbUserId);
+            SetOutputString(config.OutputString);
+            SetPosX(config.PosX);
+            SetPosY(config.PosY);
+            SetRefreshToken(config.RefreshToken);
+            SetSaveHistory(config.SaveHistory);
+            SetSpaceCount(config.SpaceCount);
+            SetSplitOutput(config.SplitOutput);
+            SetSpotifyDeviceId(config.SpotifyDeviceId);
+            SetSystray(config.Systray);
+            SetTelemetry(config.Telemetry);
+            SetTheme(config.Theme);
+            SetTwAcc(config.TwAcc);
+            SetTwAutoConnect(config.TwAutoConnect);
+            SetTwChannel(config.TwChannel);
+            SetTwOAuth(config.TwOAuth);
+            SetTwRewardId(config.TwRewardId);
+            SetTwSrCommand(config.TwSrCommand);
+            SetTwSrCooldown(config.TwSrCooldown);
+            SetTwSrMaxReq(config.TwSrMaxReq);
+            SetTwSrReward(config.TwSrReward);
+            SetUpload(config.Upload);
+            SetUploadHistory(config.UploadHistory);
+            SetUseOwnApp(config.UseOwnApp);
+            SetUserBlacklist(config.UserBlacklist);
+            SetUuid(config.Uuid);
+            SetOpenQueueOnStartup(config.OpenQueueOnStartup);
+            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+        }
         private static string GetAccessToken()
         {
             return Properties.Settings.Default.AccessToken;
@@ -514,6 +521,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_Resp_MaxReq;
         }
 
+        private static string GetBot_Resp_NoSong()
+        {
+            return Properties.Settings.Default.bot_Resp_NoSong;
+        }
+
         private static string GetBot_Resp_Success()
         {
             return Properties.Settings.Default.bot_Resp_Success;
@@ -532,11 +544,6 @@ namespace Songify_Slim.Util.Settings
         private static bool GetBotCmdSong()
         {
             return Properties.Settings.Default.bot_cmd_song;
-        }
-
-        private static string GetBot_Resp_NoSong()
-        {
-            return Properties.Settings.Default.bot_Resp_NoSong;
         }
 
         private static int GetChromeFetchRate()
@@ -607,6 +614,11 @@ namespace Songify_Slim.Util.Settings
         private static string GetNbUserId()
         {
             return Properties.Settings.Default.NBUserID;
+        }
+
+        private static bool GetOpenQueueOnStartup()
+        {
+            return Properties.Settings.Default.OpenQueueOnStartup;
         }
 
         private static string GetOutputString()
@@ -810,6 +822,12 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBot_Resp_NoSong(string value)
+        {
+            Properties.Settings.Default.bot_Resp_NoSong = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetBot_Resp_Success(string value)
         {
             Properties.Settings.Default.bot_Resp_Success = value;
@@ -821,21 +839,19 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.bot_cmd_next = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetBotCmdPos(bool value)
         {
             Properties.Settings.Default.bot_cmd_pos = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetBotCmdSong(bool value)
         {
             Properties.Settings.Default.bot_cmd_song = value;
             Properties.Settings.Default.Save();
         }
-        private static void SetBot_Resp_NoSong(string value)
-        {
-            Properties.Settings.Default.bot_Resp_NoSong = value;
-            Properties.Settings.Default.Save();
-        }
+
         private static void SetChromeFetchRate(int rate)
         {
             Properties.Settings.Default.ChromeFetchRate = rate;
@@ -889,6 +905,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.GuidedSetup = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetLangauge(string value)
         {
             Properties.Settings.Default.language = value;
@@ -900,6 +917,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.MaxSongLength = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetMsgLoggingEnabled(bool value)
         {
             Properties.Settings.Default.MsgLoggingEnabled = value;
@@ -918,6 +936,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetOpenQueueOnStartup(bool value)
+        {
+            Properties.Settings.Default.OpenQueueOnStartup = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetOutputString(string outputstring)
         {
             Properties.Settings.Default.outputString = outputstring;

@@ -22,12 +22,17 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient Client;
         private static bool _onCooldown;
         public static bool ForceDisconnect;
-        public static List<string> SkipVotes = new List<string>();
+        private static List<string> SkipVotes = new List<string>();
 
         private static readonly Timer CooldownTimer = new Timer
         {
             Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
         };
+
+        public static void ResetVotes()
+        {
+            SkipVotes.Clear();
+        }
 
         public static void BotConnect()
         {

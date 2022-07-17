@@ -10,7 +10,7 @@
                       Title="Settings" Height="376.058" Width="662.643" Loaded="SettingsWindow_Loaded"
                       ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
-        <controls:MetroAnimatedTabControl Margin="10,10,10,21" TabStripPlacement="Left">
+        <controls:MetroTabControl Margin="10,10,10,21" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">
                 <Grid>
                     <Label Content="{x:Static local:Resources.sw_tcSystem_lblLangauge}"
@@ -42,6 +42,13 @@
                                            FontSize="12"
                                           ContentPadding="0"
                                             Width="467" Height="32" />
+                    <controls:ToggleSwitch x:Name="ChbxOpenQueueOnStartup"
+                                           Content="open queue window on startup"
+                                           HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,150,0,0"
+                                           Focusable="False" FontFamily="Segoe UI" 
+                                           FontSize="12"
+                                           ContentPadding="0"
+                                           Width="467" Height="32" Toggled="ChbxOpenQueueOnStartup_Toggled" />
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="262,210,0,0"
                             Click="BtnUpdatesClick" Height="17" VerticalAlignment="Top" HorizontalAlignment="Left"
                             Width="114" Visibility="Hidden" />
@@ -308,7 +315,7 @@
 
                 </Grid>
             </TabItem>
-        </controls:MetroAnimatedTabControl>
+        </controls:MetroTabControl>
         <StatusBar Height="14" VerticalAlignment="Bottom" Padding="0" ScrollViewer.CanContentScroll="True" Margin="0"
                    UseLayoutRounding="False">
             <Label x:Name="Lbl_Status" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"

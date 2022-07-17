@@ -716,5 +716,17 @@ namespace Songify_Slim.Properties {
                 this["bot_cmd_next"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OpenQueueOnStartup {
+            get {
+                return ((bool)(this["OpenQueueOnStartup"]));
+            }
+            set {
+                this["OpenQueueOnStartup"] = value;
+            }
+        }
     }
 }

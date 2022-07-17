@@ -604,6 +604,7 @@ namespace Songify_Slim
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             _version = fvi.FileVersion;
 
+
             // generate UUID if not exists
             if (Settings.Uuid == "")
             {
@@ -624,7 +625,7 @@ namespace Songify_Slim
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = $"Songify v{_version.Substring(0, 5)} Copyright ©";
+            LblCopyright.Content = $"Songify v{_version} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -640,9 +641,17 @@ namespace Songify_Slim
                 img_cover.Visibility = Visibility.Hidden;
             }
 
+            if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
             // automatically start fetching songs
             SetFetchTimer();
+        }
+
+        private void OpenQueue()
+        {
+            if (IsWindowOpen<Window_Queue>()) return;
+            Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
+            wQ.Show();
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -668,11 +677,7 @@ namespace Songify_Slim
             System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
-                if (!IsWindowOpen<Window_Queue>())
-                {
-                    Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
-                    wQ.Show();
-                }
+                OpenQueue();
             }
             // Opens the Queue in the Browser
             else if (item.Header.ToString().Contains("Browser"))
@@ -895,7 +900,7 @@ namespace Songify_Slim
                 CurrSong = CurrSong.Trim();
                 // Remove trailing "-" from the output string
                 if (CurrSong.EndsWith("-")) CurrSong = CurrSong.Remove(CurrSong.Length - 1);
-                
+
                 try
                 {
                     int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
@@ -1070,7 +1075,7 @@ namespace Songify_Slim
             }
 
             // Clear the SkipVotes list in TwitchHandler Class
-            TwitchHandler.SkipVotes.Clear();
+            TwitchHandler.ResetVotes();
 
             // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(

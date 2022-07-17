@@ -70,7 +70,8 @@ namespace Songify_Slim
             tgl_botcmd_next.IsOn = Settings.BotCmdNext;
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
-            
+            ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
+
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;
@@ -545,6 +546,11 @@ namespace Songify_Slim
         private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void ChbxOpenQueueOnStartup_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.OpenQueueOnStartup = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

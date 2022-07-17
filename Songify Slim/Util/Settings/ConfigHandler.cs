@@ -155,6 +155,7 @@ namespace Songify_Slim
                         config.BotRespMaxReq = node.Attributes["botrespmaxreq"] != null ? node.Attributes["botrespmaxreq"].Value : Settings.BotRespMaxReq;
                         config.BotRespNoSong = node.Attributes["botrespnosong"] != null ? node.Attributes["botrespnosong"].Value : Settings.BotRespNoSong;
                         config.BotRespSuccess = node.Attributes["botrespsuccess"] != null ? node.Attributes["botrespsuccess"].Value : Settings.BotRespSuccess;
+                        config.OpenQueueOnStartup = ToBoolean(node.Attributes["openqueueonstartup"] != null ? node.Attributes["openqueueonstartup"].Value : Settings.OpenQueueOnStartup.ToString());
                     }
 
                     //Set the config object to the current config
@@ -250,5 +251,6 @@ namespace Songify_Slim
         public string TwRewardId { get; set; }
         public string UserBlacklist { get; set; }
         public string Uuid { get; set; }
+        public bool OpenQueueOnStartup { get; set; }
     }
 }
