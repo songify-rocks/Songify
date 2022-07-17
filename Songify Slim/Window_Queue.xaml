@@ -9,13 +9,18 @@
                       Title="Song Queue" Height="444.318" Width="489.772" WindowStyle="ToolWindow"
                       Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
     <Grid>
-        <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False" CanUserSortColumns="False">
+        <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Delete" Click="DgvItemDelete_Click" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="Artists" Binding="{Binding Path=Artists}"/>
+                <DataGridTextColumn IsReadOnly="True"  Width="*" Header="Title" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn  IsReadOnly="True" Width="75" Header="Length" Binding="{Binding Path=Length}"/>
+                <DataGridTextColumn IsReadOnly="True"  Width=".5*" Header="Requester" Binding="{Binding Path=Requester}"/>
+            </DataGrid.Columns>
         </DataGrid>
-
     </Grid>
 </controls:MetroWindow>

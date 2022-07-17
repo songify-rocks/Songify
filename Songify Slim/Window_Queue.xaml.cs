@@ -24,7 +24,6 @@ namespace Songify_Slim
                     continue;
 
                 dgv_Queue.ItemsSource = (window as MainWindow)?.ReqList;
-                dgv_Queue.Columns[0].Visibility = Visibility.Hidden;
             }
         }
 
