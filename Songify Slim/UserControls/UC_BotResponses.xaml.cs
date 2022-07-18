@@ -58,7 +58,17 @@ namespace Songify_Slim.UserControls
             Settings.BotRespNoSong = tb_NoSong.Text;
             SetPreview(sender as TextBox);
         }
+        private void tb_VoteSkip_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespVoteSkip = tb_VoteSkip.Text;
+            SetPreview(sender as TextBox);
+        }
 
+        private void tb_ModSkip_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespModSkip = tb_ModSkip.Text;
+            SetPreview(sender as TextBox);
+        }
         private void tb__GotFocus(object sender, RoutedEventArgs e)
         {
             SetPreview(sender as TextBox);
@@ -75,6 +85,7 @@ namespace Songify_Slim.UserControls
             response = response.Replace("{maxreq}", Settings.TwSrMaxReq.ToString());
             response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
             response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
+            response = response.Replace("{votes}", "3/5");
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
@@ -105,6 +116,8 @@ namespace Songify_Slim.UserControls
             tb_Error.Text = Settings.BotRespError;
             tb_Success.Text = Settings.BotRespSuccess;
             tb_NoSong.Text = Settings.BotRespNoSong;
+            tb_ModSkip.Text = Settings.BotRespModSkip;
+            tb_VoteSkip.Text = Settings.BotRespVoteSkip;
         }
     }
 }

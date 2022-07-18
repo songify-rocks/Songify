@@ -52,7 +52,7 @@
                     <Button x:Name="BtnUpdates" Content="Check for Updates" Margin="262,210,0,0"
                             Click="BtnUpdatesClick" Height="17" VerticalAlignment="Top" HorizontalAlignment="Left"
                             Width="114" Visibility="Hidden" />
-                   <Label Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" HorizontalAlignment="Left"
+                    <Label Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" HorizontalAlignment="Left"
                            VerticalAlignment="Top" Margin="9,209,0,0" Padding="0,5,5,5" />
                     <controls:NumericUpDown x:Name="NudChrome" Minimum="1" Maximum="10" Interval="1"
                                             NumericInputMode="Numbers" Margin="376,209,0,0"
@@ -190,31 +190,35 @@
                             Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,276,10,10" Click="btn_Botresponse_Click" />
                     <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Margin="10,96,0,0" Width="293" Content="Automatically announce song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
 
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10,146,10,0">
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="44" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="320" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
+                    <StackPanel Orientation="Vertical" Margin="10,130,10,0">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+                            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="44" FontStyle="Italic" FontSize="10"/>
+                            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="320" FontStyle="Italic" FontSize="10"/>
+                            <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="!song" Width="44" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="320" VerticalAlignment="Center"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="!pos" Width="44" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="320" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="!next" Width="44" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="320" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="!skip" Width="44" VerticalAlignment="Center"/>
+                                <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester) Starts a vote if used by regulars (5 votes needed)" Width="320" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                            </StackPanel>
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="10,164,10,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="!song" Width="44" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="320" VerticalAlignment="Center"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="!pos" Width="44" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="320" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="!next" Width="44" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="320" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                        </StackPanel>
-                    </StackPanel>
-
-
-
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify">

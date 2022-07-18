@@ -22,6 +22,7 @@ namespace Songify_Slim
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
             tgl_botcmd_next.IsOn = Settings.BotCmdNext;
+            tgl_botcmd_skip.IsOn = Settings.BotCmdSkip;
         }
 
         private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
@@ -38,10 +39,14 @@ namespace Songify_Slim
         {
             Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
         }
-
+        private void tgl_botcmd_skip_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
+        }
         private void MetroWindow_Closed(object sender, System.EventArgs e)
         {
             ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
         }
+
     }
 }

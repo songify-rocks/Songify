@@ -34,15 +34,20 @@
                             <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="341" VerticalAlignment="Center"/>
                             <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                             <TextBlock Text="!pos" Width="70" VerticalAlignment="Center"/>
                             <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                             <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                             <TextBlock Text="!next" Width="70" VerticalAlignment="Center"/>
                             <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
                             <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                            <TextBlock Text="!skip" Width="70" VerticalAlignment="Center"/>
+                            <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)&#x0a;Starts a vote if used by regulars (5 votes needed)" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                            <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

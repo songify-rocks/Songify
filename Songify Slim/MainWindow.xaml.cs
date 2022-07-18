@@ -937,6 +937,9 @@ namespace Songify_Slim
             // if the text file is different to _currSong (fetched song) or update is forced
             if (temp.Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
             {
+                // Clear the SkipVotes list in TwitchHandler Class
+                TwitchHandler.ResetVotes();
+
                 // write song to the text file
                 try
                 {
@@ -1048,7 +1051,7 @@ namespace Songify_Slim
                     }
                 }
 
-                // Update Song Queue, Track has been player. All parameters are optional except track id, playerd and o. o has to be the value "u"
+                // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
                 if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
@@ -1073,9 +1076,6 @@ namespace Songify_Slim
                             img_cover.Source = image;
                         }));
             }
-
-            // Clear the SkipVotes list in TwitchHandler Class
-            TwitchHandler.ResetVotes();
 
             // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(

@@ -40,44 +40,42 @@ namespace Songify_Slim
             TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
-            ChbxAutostart.IsOn = Settings.Autostart;
-            ChbxMinimizeSystray.IsOn = Settings.Systray;
-            ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
-            TxtbxCustompausetext.Text = Settings.CustomPauseText;
-            TxtbxOutputformat.Text = Settings.OutputString;
-            ChbxUpload.IsOn = Settings.Upload;
-            NudChrome.Value = Settings.ChromeFetchRate;
-            ChbxCover.IsOn = Settings.DownloadCover;
-            ChbxSplit.IsOn = Settings.SplitOutput;
-            txtbx_twChannel.Text = Settings.TwChannel;
-            txtbx_twOAuth.Password = Settings.TwOAuth;
-            txtbx_twUser.Text = Settings.TwAcc;
-            txtbx_RewardID.Text = Settings.TwRewardId;
-            Chbx_TwReward.IsOn = Settings.TwSrReward;
-            Chbx_TwCommand.IsOn = Settings.TwSrCommand;
-            NudMaxReq.Value = Settings.TwSrMaxReq;
-            NudCooldown.Value = Settings.TwSrCooldown;
+            Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
             Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             Chbx_TwAutoconnect.IsOn = Settings.TwAutoConnect;
-            Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
+            Chbx_TwCommand.IsOn = Settings.TwSrCommand;
+            Chbx_TwReward.IsOn = Settings.TwSrReward;
+            ChbxAutostart.IsOn = Settings.Autostart;
+            ChbxCover.IsOn = Settings.DownloadCover;
+            ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
+            ChbxMinimizeSystray.IsOn = Settings.Systray;
+            ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
+            ChbxSplit.IsOn = Settings.SplitOutput;
+            ChbxUpload.IsOn = Settings.Upload;
             nud_Spaces.Value = Settings.SpaceCount;
+            NudChrome.Value = Settings.ChromeFetchRate;
+            NudCooldown.Value = Settings.TwSrCooldown;
+            NudMaxlength.Value = Settings.MaxSongLength;
+            NudMaxReq.Value = Settings.TwSrMaxReq;
             tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
-            Tglsw_Spotify.IsOn = Settings.UseOwnApp;
-            NudMaxlength.Value = Settings.MaxSongLength;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
             tgl_botcmd_next.IsOn = Settings.BotCmdNext;
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
+            tgl_botcmd_skip.IsOn = Settings.BotCmdSkip;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
-            ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
-
+            Tglsw_Spotify.IsOn = Settings.UseOwnApp;
+            txtbx_RewardID.Text = Settings.TwRewardId;
+            txtbx_twChannel.Text = Settings.TwChannel;
+            txtbx_twOAuth.Password = Settings.TwOAuth;
+            txtbx_twUser.Text = Settings.TwAcc;
+            TxtbxCustompausetext.Text = Settings.CustomPauseText;
+            TxtbxOutputformat.Text = Settings.OutputString;
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;
-
             ThemeHandler.ApplyTheme();
-
             cbx_Language.SelectionChanged -= ComboBox_SelectionChanged;
             switch (Settings.Language)
             {
@@ -97,7 +95,6 @@ namespace Songify_Slim
                     cbx_Language.SelectedIndex = 4;
                     break;
             }
-
             cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
         }
 
@@ -546,6 +543,10 @@ namespace Songify_Slim
         private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
+        }
+        private void tgl_botcmd_skip_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
         }
 
         private void ChbxOpenQueueOnStartup_Toggled(object sender, RoutedEventArgs e)

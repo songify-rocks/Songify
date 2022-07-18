@@ -728,5 +728,41 @@ namespace Songify_Slim.Properties {
                 this["OpenQueueOnStartup"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool bot_cmd_skip {
+            get {
+                return ((bool)(this["bot_cmd_skip"]));
+            }
+            set {
+                this["bot_cmd_skip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} skipped the current song.")]
+        public string bot_Resp_ModSkip {
+            get {
+                return ((string)(this["bot_Resp_ModSkip"]));
+            }
+            set {
+                this["bot_Resp_ModSkip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} voted to skip the current song. ({votes})")]
+        public string bot_Resp_VoteSkip {
+            get {
+                return ((string)(this["bot_Resp_VoteSkip"]));
+            }
+            set {
+                this["bot_Resp_VoteSkip"] = value;
+            }
+        }
     }
 }

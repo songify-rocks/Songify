@@ -179,5 +179,14 @@
     <Setting Name="OpenQueueOnStartup" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="bot_cmd_skip" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="bot_Resp_ModSkip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{user} skipped the current song.</Value>
+    </Setting>
+    <Setting Name="bot_Resp_VoteSkip" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{user} voted to skip the current song. ({votes})</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

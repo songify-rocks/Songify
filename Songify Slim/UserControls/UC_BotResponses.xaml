@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:properties="clr-namespace:Songify_Slim.Properties"
-             mc:Ignorable="d" d:DesignWidth="800" Loaded="UserControl_Loaded" Height="346.071">
+             mc:Ignorable="d" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Vertical">
@@ -51,6 +51,18 @@
               FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_NoSong" Height="23" VerticalAlignment="Top"
                  TextChanged="tb_NoSong_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Broadcaster / Moderator / Requester skipped the song" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_ModSkip" Height="23" VerticalAlignment="Top"
+                         TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="User voted to skip the current song" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_VoteSkip" Height="23" VerticalAlignment="Top"
+                         TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
         </StackPanel>
     </Grid>

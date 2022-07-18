@@ -32,6 +32,7 @@ namespace Songify_Slim.Util.Songify
         public static void ResetVotes()
         {
             SkipVotes.Clear();
+            Console.WriteLine("Reset votes");
         }
 
         public static void BotConnect()
@@ -294,6 +295,7 @@ namespace Songify_Slim.Util.Songify
             {
                 case "!skip":
                     {
+                        string msg = "";
                         int count = 0;
                         string name = "";
                         Application.Current.Dispatcher.Invoke(() =>
@@ -307,7 +309,8 @@ namespace Songify_Slim.Util.Songify
 
                         if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || count > 0 && name == e.ChatMessage.DisplayName)
                         {
-                            Console.WriteLine(@"Moderator or Requester skipped the song");
+                            msg = Settings.Settings.BotRespModSkip;
+                            msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                             ErrorResponse response = await ApiHandler.SkipSong();
                             if (response.Error != null)
                             {
@@ -315,25 +318,22 @@ namespace Songify_Slim.Util.Songify
                             }
                             else
                             {
-                                Client.SendMessage(e.ChatMessage.Channel, "Skipping song...");
+                                Client.SendMessage(e.ChatMessage.Channel, msg);
                             }
                         }
                         else
                         {
                             //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
-                            if (SkipVotes.Contains(e.ChatMessage.DisplayName))
-                            {
-                                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you already voted to skip the song.");
-                            }
-                            else
+                            if (!SkipVotes.Contains(e.ChatMessage.DisplayName))
                             {
                                 SkipVotes.Add(e.ChatMessage.DisplayName);
-                                string msg =
-                                    $"{e.ChatMessage.DisplayName} voted to skip the current song.";
-                                if (SkipVotes.Count < 5)
-                                    msg += $" {5 - SkipVotes.Count} more votes needed.";
-                                msg += $" ({SkipVotes.Count}/5)";
+
+                                msg = Settings.Settings.BotRespVoteSkip;
+                                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/5");
+
                                 Client.SendMessage(e.ChatMessage.Channel, msg);
+                                
                                 if (SkipVotes.Count >= 5)
                                 {
                                     ErrorResponse response = await ApiHandler.SkipSong();
@@ -343,7 +343,7 @@ namespace Songify_Slim.Util.Songify
                                     }
                                     else
                                     {
-                                        Client.SendMessage(e.ChatMessage.Channel, "/announce Skipping song by vote...");
+                                        Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
                                     }
                                     SkipVotes.Clear();
                                 }

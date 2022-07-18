@@ -56,6 +56,12 @@ namespace Songify_Slim.Util.Settings
             set => SetBotCmdPos(value);
         }
 
+        public static bool BotCmdSkip
+        {
+            get => GetBotCmdSkip();
+            set => SetBotCmdSkip(value);
+        }
+
         public static bool BotCmdSong
         {
             get => GetBotCmdSong();
@@ -92,6 +98,8 @@ namespace Songify_Slim.Util.Settings
             set => SetBot_Resp_MaxReq(value);
         }
 
+        public static string BotRespModSkip { get => GetBot_Resp_ModSkip(); set => SetBot_Resp_ModSkip(value); }
+
         public static string BotRespNoSong
         {
             get => GetBot_Resp_NoSong();
@@ -103,6 +111,8 @@ namespace Songify_Slim.Util.Settings
             get => GetBot_Resp_Success();
             set => SetBot_Resp_Success(value);
         }
+
+        public static string BotRespVoteSkip { get => GetBot_Resp_VoteSkip(); set => SetBot_Resp_VoteSkip(value); }
 
         public static int ChromeFetchRate
         {
@@ -352,7 +362,7 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string Webua => GetWebua();
-
+        
         public static Config Export()
         {
             return new Config
@@ -365,7 +375,17 @@ namespace Songify_Slim.Util.Settings
                 Autostart = GetAutostart(),
                 BotCmdNext = GetBotCmdNext(),
                 BotCmdPos = GetBotCmdPos(),
+                BotCmdSkip = GetBotCmdSkip(),
                 BotCmdSong = GetBotCmdSong(),
+                BotRespBlacklist = GetBot_Resp_Blacklist(),
+                BotRespError = GetBot_Resp_Error(),
+                BotRespIsInQueue = GetBot_Resp_IsInQueue(),
+                BotRespLength = GetBot_Resp_Length(),
+                BotRespMaxReq = GetBot_Resp_MaxReq(),
+                BotRespModSkip = GetBot_Resp_ModSkip(),
+                BotRespNoSong = GetBot_Resp_NoSong(),
+                BotRespSuccess = GetBot_Resp_Success(),
+                BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 ClientId = GetClientId(),
                 ClientSecret = GetClientSecret(),
                 Color = GetColor(),
@@ -378,6 +398,7 @@ namespace Songify_Slim.Util.Settings
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 NbUser = GetNbUser(),
                 NbUserId = GetNbUserId(),
+                OpenQueueOnStartup = GetOpenQueueOnStartup(),
                 OutputString = GetOutputString(),
                 PosX = (int)GetPosX(),
                 PosY = (int)GetPosY(),
@@ -402,15 +423,7 @@ namespace Songify_Slim.Util.Settings
                 UploadHistory = GetUploadHistory(),
                 UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
-                Uuid = GetUuid(),
-                BotRespBlacklist = GetBot_Resp_Blacklist(),
-                BotRespError = GetBot_Resp_Error(),
-                BotRespIsInQueue = GetBot_Resp_IsInQueue(),
-                BotRespLength = GetBot_Resp_Length(),
-                BotRespMaxReq = GetBot_Resp_MaxReq(),
-                BotRespNoSong = GetBot_Resp_NoSong(),
-                BotRespSuccess = GetBot_Resp_Success(),
-                OpenQueueOnStartup = GetOpenQueueOnStartup()
+                Uuid = GetUuid()
             };
         }
 
@@ -423,8 +436,11 @@ namespace Songify_Slim.Util.Settings
             SetArtistBlacklist(config.ArtistBlacklist);
             SetAutoClearQueue(config.AutoClearQueue);
             SetAutostart(config.Autostart);
+            SetBot_Resp_ModSkip(config.BotRespModSkip);
+            SetBot_Resp_VoteSkip(config.BotRespVoteSkip);
             SetBotCmdNext(config.BotCmdNext);
             SetBotCmdPos(config.BotCmdPos);
+            SetBotCmdSkip(config.BotCmdSkip);
             SetBotCmdSong(config.BotCmdSong);
             SetClientId(config.ClientId);
             SetClientSecret(config.ClientSecret);
@@ -438,6 +454,7 @@ namespace Songify_Slim.Util.Settings
             SetMsgLoggingEnabled(config.MsgLoggingEnabled);
             SetNbUser(config.NbUser);
             SetNbUserId(config.NbUserId);
+            SetOpenQueueOnStartup(config.OpenQueueOnStartup);
             SetOutputString(config.OutputString);
             SetPosX(config.PosX);
             SetPosY(config.PosY);
@@ -463,9 +480,9 @@ namespace Songify_Slim.Util.Settings
             SetUseOwnApp(config.UseOwnApp);
             SetUserBlacklist(config.UserBlacklist);
             SetUuid(config.Uuid);
-            SetOpenQueueOnStartup(config.OpenQueueOnStartup);
             ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
         }
+
         private static string GetAccessToken()
         {
             return Properties.Settings.Default.AccessToken;
@@ -521,6 +538,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_Resp_MaxReq;
         }
 
+        private static string GetBot_Resp_ModSkip()
+        {
+            return Properties.Settings.Default.bot_Resp_ModSkip;
+        }
+
         private static string GetBot_Resp_NoSong()
         {
             return Properties.Settings.Default.bot_Resp_NoSong;
@@ -531,6 +553,12 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_Resp_Success;
         }
 
+        private static string GetBot_Resp_VoteSkip()
+        {
+
+            return Properties.Settings.Default.bot_Resp_VoteSkip;
+        }
+
         private static bool GetBotCmdNext()
         {
             return Properties.Settings.Default.bot_cmd_next;
@@ -539,6 +567,11 @@ namespace Songify_Slim.Util.Settings
         private static bool GetBotCmdPos()
         {
             return Properties.Settings.Default.bot_cmd_pos;
+        }
+
+        private static bool GetBotCmdSkip()
+        {
+            return Properties.Settings.Default.bot_cmd_skip;
         }
 
         private static bool GetBotCmdSong()
@@ -822,6 +855,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBot_Resp_ModSkip(string value)
+        {
+            Properties.Settings.Default.bot_Resp_ModSkip = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetBot_Resp_NoSong(string value)
         {
             Properties.Settings.Default.bot_Resp_NoSong = value;
@@ -834,6 +872,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBot_Resp_VoteSkip(string value)
+        {
+            Properties.Settings.Default.bot_Resp_VoteSkip = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetBotCmdNext(bool value)
         {
             Properties.Settings.Default.bot_cmd_next = value;
@@ -846,6 +889,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBotCmdSkip(bool value)
+        {
+            Properties.Settings.Default.bot_cmd_skip = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetBotCmdSong(bool value)
         {
             Properties.Settings.Default.bot_cmd_song = value;
@@ -941,6 +989,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.OpenQueueOnStartup = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetOutputString(string outputstring)
         {
             Properties.Settings.Default.outputString = outputstring;
@@ -1084,13 +1133,13 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.UseOwnAppID = value;
             Properties.Settings.Default.Save();
         }
-        
+
         private static void SetUserBlacklist(string value)
         {
             Properties.Settings.Default.UserBlacklist = value;
             Properties.Settings.Default.Save();
         }
-        
+
         private static void SetUuid(string uuid)
         {
             Properties.Settings.Default.uuid = uuid;
