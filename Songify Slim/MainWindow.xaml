@@ -6,7 +6,10 @@
                       xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
+                      TextOptions.TextFormattingMode="Display"
+                      RenderOptions.BitmapScalingMode="NearestNeighbor"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
                       ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="CenterScreen" KeyDown="MetroWindow_KeyDown">
@@ -75,7 +78,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
         <Style TargetType="{x:Type dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
     <Grid>
@@ -105,6 +107,12 @@
             <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                    <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
+                    <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
+                    <MenuItem Header="Discord" Click="BtnDiscord_Click" />
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
+                </MenuItem>
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
@@ -134,13 +142,41 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser"
                           Click="BtnHistory_Click" />
             </MenuItem>
-            <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
-                <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
-                <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
-                <MenuItem Header="Discord" Click="BtnDiscord_Click" />
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
+            
+            <MenuItem Click="BtnPaypal_Click" Background="Transparent">
+                <MenuItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconForkAwesome Kind="Buymeacoffee" Margin="0,0,5,0"/>
+                            <TextBlock Text="Buy Us A Coffee" VerticalAlignment="Center" FontWeight="Thin"/>
+                            <StackPanel.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="50" CenterY="9"/>
+                                    <TranslateTransform X="0" Y="0"/>
+                                </TransformGroup>
+                            </StackPanel.RenderTransform>
+                            <StackPanel.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetName="RotateTransform" 
+                                                             Storyboard.TargetProperty="Angle" 
+                                                             From="-2" To="2" Duration="0:0:1" 
+                                                             BeginTime="0:0:0" 
+                                                             RepeatBehavior="Forever" 
+                                                             AutoReverse="True"
+                                                              >
+                                            </DoubleAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </StackPanel.Triggers>
+                        </StackPanel>
+                    </DataTemplate>
+                </MenuItem.HeaderTemplate>
             </MenuItem>
-            <MenuItem Header="Buy Us A Coffee" Click="BtnPaypal_Click" />
         </Menu>
         <ComboBox x:Name="cbx_Source" HorizontalAlignment="Left" VerticalAlignment="Top" Width="124" SelectedIndex="0"
                   IsTabStop="False" Padding="2" Margin="448,3,0,0" />
