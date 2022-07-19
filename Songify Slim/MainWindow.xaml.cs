@@ -24,7 +24,6 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
@@ -43,39 +42,28 @@ namespace Songify_Slim
     {
         #region Variables
 
-        private static string _version;
-        public string CurrSong;
-        public string _artist, _title;
         public readonly NotifyIcon NotifyIcon = new NotifyIcon();
+        public string _artist, _title;
+        public string CurrSong;
         public List<RequestObject> ReqList = new List<RequestObject>();
-        private string _songPath, _coverPath, _root, _coverTemp;
+        private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
+        private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
         private bool _firstRun = true;
         private bool _forceClose;
+        private string _prevId, _currentId;
         private string _prevSong;
+        private CancellationTokenSource _sCts;
         private string _selectedSource;
+        private string _songPath, _coverPath, _root, _coverTemp;
         private string _temp = "";
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
-        private string _prevId, _currentId;
-        private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
-        private CancellationTokenSource _sCts;
-
         #endregion Variables
 
         public MainWindow()
         {
             InitializeComponent();
-            Left = Settings.PosX;
-            Top = Settings.PosY;
             _songTimer.Elapsed += SongTimer_Elapsed;
-        }
-
-        private static bool IsWindowOpen<T>(string name = "") where T : Window
-        {
-            // This method checks if a window of type <T> is already opened in the current application context and returns true or false
-            return string.IsNullOrEmpty(name)
-                ? Application.Current.Windows.OfType<T>().Any()
-                : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -122,6 +110,50 @@ namespace Songify_Slim
                 LblStatus.Dispatcher.Invoke(
                     DispatcherPriority.Normal,
                     new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+            }
+        }
+
+        private static string CleanFormatString(string currSong)
+        {
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new Regex("[ ]{2,}", options);
+            currSong = regex.Replace(currSong, " ");
+            currSong = currSong.Trim();
+
+            // Add trailing spaces for better scroll
+            if (Settings.AppendSpaces)
+                for (int i = 0; i < Settings.SpaceCount; i++)
+                    currSong += " ";
+
+            return currSong;
+        }
+
+        private static void Crash()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static bool IsWindowOpen<T>(string name = "") where T : Window
+        {
+            // This method checks if a window of type <T> is already opened in the current application context and returns true or false
+            return string.IsNullOrEmpty(name)
+                ? Application.Current.Windows.OfType<T>().Any()
+                : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
+        }
+        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            Logger.LogStr("##### Unhandled Exception #####");
+            Logger.LogStr("MyHandler caught : " + e.Message);
+            Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
+            Logger.LogStr("###############################");
+            Logger.LogExc(e);
+
+            if (!args.IsTerminating) return;
+            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
+                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                Process.Start(Logger.LogDirectoryPath);
             }
         }
 
@@ -249,22 +281,6 @@ namespace Songify_Slim
                         img_cover.Visibility = Visibility.Collapsed;
                 }));
         }
-
-        private static string CleanFormatString(string currSong)
-        {
-            RegexOptions options = RegexOptions.None;
-            Regex regex = new Regex("[ ]{2,}", options);
-            currSong = regex.Replace(currSong, " ");
-            currSong = currSong.Trim();
-
-            // Add trailing spaces for better scroll
-            if (Settings.AppendSpaces)
-                for (int i = 0; i < Settings.SpaceCount; i++)
-                    currSong += " ";
-
-            return currSong;
-        }
-
         private void DownloadCover(string cover)
         {
             try
@@ -305,40 +321,6 @@ namespace Songify_Slim
             {
                 Logger.LogExc(ex);
             }
-        }
-
-        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            if (_coverPath != "" && _coverTemp != "")
-            {
-                File.Delete(_coverPath);
-                File.Move(_coverTemp, _coverPath);
-            }
-
-
-            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new Action(() =>
-                {
-                    int numberOfRetries = 5;
-                    int delayOnRetry = 1000;
-
-                    for (int i = 1; i < numberOfRetries; i++)
-                        try
-                        {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            image.UriSource = new Uri(_coverPath);
-                            image.EndInit();
-                            img_cover.Source = image;
-                            break;
-                        }
-                        catch (Exception) when (i <= numberOfRetries)
-                        {
-                            Thread.Sleep(delayOnRetry);
-                        }
-                }));
         }
 
         private void FetchSpotifyWeb()
@@ -499,6 +481,12 @@ namespace Songify_Slim
             }
         }
 
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+        }
+
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             // If Systray is enabled [X] minimizes to systray
@@ -513,29 +501,21 @@ namespace Songify_Slim
             }
         }
 
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            //If the user presses alt + F12 run Crash() method.
+            //if (e.Key == Key.F12)
+            //{
+            //    Crash();
+            //}
+        }
+
         private void MetroWindowClosed(object sender, EventArgs e)
         {
             Settings.PosX = Left;
             Settings.PosY = Top;
             NotifyIcon.Visible = false;
             NotifyIcon.Dispose();
-        }
-
-        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
-        {
-            Exception e = (Exception)args.ExceptionObject;
-            Logger.LogStr("##### Unhandled Exception #####");
-            Logger.LogStr("MyHandler caught : " + e.Message);
-            Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
-            Logger.LogStr("###############################");
-            Logger.LogExc(e);
-
-            if (!args.IsTerminating) return;
-            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
-                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-            {
-                Process.Start(Logger.LogDirectoryPath);
-            }
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
@@ -647,13 +627,6 @@ namespace Songify_Slim
             SetFetchTimer();
         }
 
-        private void OpenQueue()
-        {
-            if (IsWindowOpen<Window_Queue>()) return;
-            Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
-            wQ.Show();
-        }
-
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
@@ -669,6 +642,11 @@ namespace Songify_Slim
                 Window_Blacklist wB = new Window_Blacklist { Top = Top, Left = Left };
                 wB.Show();
             }
+        }
+
+        private void mi_Exit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
 
         private void Mi_Queue_Click(object sender, RoutedEventArgs e)
@@ -697,6 +675,12 @@ namespace Songify_Slim
                 ReqList.Clear();
                 WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             }
+        }
+
+        private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
+        {
+            Window_Botresponse wBr = new Window_Botresponse();
+            wBr.Show();
         }
 
         private void MinimizeToSysTray()
@@ -729,6 +713,13 @@ namespace Songify_Slim
                 _sCts.Dispose();
                 _timerFetcher.Enabled = true;
             }
+        }
+
+        private void OpenQueue()
+        {
+            if (IsWindowOpen<Window_Queue>()) return;
+            Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
+            wQ.Show();
         }
 
         private void SetFetchTimer()
@@ -766,28 +757,53 @@ namespace Songify_Slim
             FetchSpotifyWeb();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            e.Handled = true;
-        }
+            if (_coverPath != "" && _coverTemp != "")
+            {
+                File.Delete(_coverPath);
+                File.Move(_coverTemp, _coverPath);
+            }
 
-        private void mi_Exit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
 
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                new Action(() =>
+                {
+                    int numberOfRetries = 5;
+                    int delayOnRetry = 1000;
+
+                    for (int i = 1; i < numberOfRetries; i++)
+                        try
+                        {
+                            BitmapImage image = new BitmapImage();
+                            image.BeginInit();
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                            image.UriSource = new Uri(_coverPath);
+                            image.EndInit();
+                            img_cover.Source = image;
+                            break;
+                        }
+                        catch (Exception) when (i <= numberOfRetries)
+                        {
+                            Thread.Sleep(delayOnRetry);
+                        }
+                }));
+        }
+        private void WriteOutput(string songPath, string currSong)
         {
-            //If the user presses alt + F12 run Crash() method.
-            //if (e.Key == Key.F12)
-            //{
-            //    Crash();
-            //}
+            try
+            {
+                File.WriteAllText(songPath, currSong);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
         }
 
         private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
-            bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
+                    bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
         {
             _currentId = rTrackId;
 
@@ -1082,19 +1098,6 @@ namespace Songify_Slim
                 DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
         }
-
-        private void WriteOutput(string songPath, string currSong)
-        {
-            try
-            {
-                File.WriteAllText(songPath, currSong);
-            }
-            catch (Exception e)
-            {
-                Logger.LogExc(e);
-            }
-        }
-
         private void WriteSplitOutput(string artist, string title, string extra)
         {
             // Writes the output to 2 different text files
@@ -1107,17 +1110,6 @@ namespace Songify_Slim
 
             WriteOutput(_root + "/Artist.txt", artist);
             WriteOutput(_root + "/Title.txt", title + extra);
-        }
-
-        private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
-        {
-            Window_Botresponse wBr = new Window_Botresponse();
-            wBr.Show();
-        }
-
-        private static void Crash()
-        {
-            throw new NotImplementedException();
         }
     }
 }

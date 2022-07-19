@@ -12,7 +12,10 @@
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
-                      ShowDialogsOverTitleBar="False" Closing="MetroWindow_Closing" WindowStartupLocation="CenterScreen" KeyDown="MetroWindow_KeyDown">
+                      ShowDialogsOverTitleBar="False" 
+                      Closing="MetroWindow_Closing" 
+                      KeyDown="MetroWindow_KeyDown" 
+                      SaveWindowPosition="True">
     <controls:MetroWindow.Resources>
         <Style TargetType="{x:Type dialog:MessageDialog}"
                x:Key="NewCustomMessageDialogStyle"
