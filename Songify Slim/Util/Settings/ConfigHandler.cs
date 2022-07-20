@@ -105,10 +105,10 @@ namespace Songify_Slim
                                 ? node.Attributes["twsrmaxreq"].InnerText
                                 : Settings.TwSrMaxReq.ToString(), out int twsrmaxreq);
                         int.TryParse(
-                            node.Attributes["twsrcooldown"] != null 
-                                ? node.Attributes["twsrcooldown"].InnerText 
+                            node.Attributes["twsrcooldown"] != null
+                                ? node.Attributes["twsrcooldown"].InnerText
                                 : Settings.TwSrCooldown.ToString(), out int twsrcooldown);
-                        
+
                         config.AccessToken = node.Attributes["accesstoken"] != null ? node.Attributes["accesstoken"].Value : Settings.AccessToken;
                         config.AnnounceInChat = ToBoolean(node.Attributes["announceinchat"] != null ? node.Attributes["announceinchat"].Value : Settings.AnnounceInChat.ToString());
                         config.AppendSpaces = ToBoolean(node.Attributes["spacesenabled"] != null ? node.Attributes["spacesenabled"].Value : Settings.AppendSpaces.ToString());
@@ -142,6 +142,7 @@ namespace Songify_Slim
                         config.NbUserId = node.Attributes["nbuserid"] != null ? node.Attributes["nbuserid"].Value : Settings.NbUserId;
                         config.OpenQueueOnStartup = ToBoolean(node.Attributes["openqueueonstartup"] != null ? node.Attributes["openqueueonstartup"].Value : Settings.OpenQueueOnStartup.ToString());
                         config.OutputString = node.Attributes["outputString"] != null ? node.Attributes["outputString"].Value : Settings.OutputString;
+                        config.OutputString2 = node.Attributes["outputString2"] != null ? node.Attributes["outputString2"].Value : Settings.OutputString2;
                         config.PosX = ToInt32(node.Attributes["posx"] != null ? node.Attributes["posx"].Value : Settings.PosX.ToString(CultureInfo.CurrentCulture));
                         config.PosY = ToInt32(node.Attributes["posy"] != null ? node.Attributes["posy"].Value : Settings.PosY.ToString(CultureInfo.CurrentCulture));
                         config.RefreshToken = node.Attributes["refreshtoken"] != null ? node.Attributes["refreshtoken"].Value : Settings.RefreshToken;
@@ -161,6 +162,7 @@ namespace Songify_Slim
                         config.TwSrCooldown = twsrcooldown;
                         config.TwSrMaxReq = twsrmaxreq;
                         config.TwSrReward = ToBoolean(node.Attributes["twsrreward"] != null ? node.Attributes["twsrreward"].Value : Settings.TwSrReward.ToString());
+                        config.TwSrUserLevel = ToInt32(node.Attributes["twsruserlevel"] != null ? node.Attributes["twsruserlevel"].Value : Settings.TwSrUserLevel.ToString(CultureInfo.CurrentCulture));
                         config.Upload = ToBoolean(node.Attributes["uploadSonginfo"] != null ? node.Attributes["uploadSonginfo"].Value : Settings.Upload.ToString());
                         config.UploadHistory = ToBoolean(node.Attributes["uploadhistory"] != null ? node.Attributes["uploadhistory"].Value : Settings.UploadHistory.ToString());
                         config.UseOwnApp = ToBoolean(node.Attributes["ownApp"] != null ? node.Attributes["ownApp"].Value : Settings.UseOwnApp.ToString());
@@ -227,6 +229,7 @@ namespace Songify_Slim
         public bool TwAutoConnect { get; set; }
         public bool TwSrCommand { get; set; }
         public bool TwSrReward { get; set; }
+        public int TwSrUserLevel { get; set; }
         public bool Upload { get; set; }
         public bool UploadHistory { get; set; }
         public bool UseOwnApp { get; set; }
@@ -265,5 +268,6 @@ namespace Songify_Slim
         public string TwRewardId { get; set; }
         public string UserBlacklist { get; set; }
         public string Uuid { get; set; }
+        public string OutputString2 { get; set; }
     }
 }

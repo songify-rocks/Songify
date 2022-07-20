@@ -764,5 +764,29 @@ namespace Songify_Slim.Properties {
                 this["bot_Resp_VoteSkip"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{artist} - {title} {extra}")]
+        public string outputString2 {
+            get {
+                return ((string)(this["outputString2"]));
+            }
+            set {
+                this["outputString2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int TwSRUserLevel {
+            get {
+                return ((int)(this["TwSRUserLevel"]));
+            }
+            set {
+                this["TwSRUserLevel"] = value;
+            }
+        }
     }
 }

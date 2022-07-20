@@ -283,8 +283,8 @@
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
     <value>Скачать обложку альбома (Только API)</value>
   </data>
-  <data name="sw_tcOutput_Fromat" xml:space="preserve">
-    <value>Выходной формат</value>
+  <data name="sw_tcOutput_Format" xml:space="preserve">
+    <value>Выходной формат  (Text File &amp; Widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
     <value>Текст во время перерыва</value>
@@ -390,5 +390,8 @@
   </data>
   <data name="brw_cmd_trigger" xml:space="preserve">
     <value>Триггер</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Output Format (Twitch Chat)</value>
   </data>
 </root>

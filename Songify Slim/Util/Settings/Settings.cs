@@ -211,6 +211,24 @@ namespace Songify_Slim.Util.Settings
             set => SetOutputString(value);
         }
 
+        public static string OutputString2
+        {
+            get => GetOutputString2();
+            set => SetOutputString2(value);
+        }
+
+        private static void SetOutputString2(string value)
+        {
+            Properties.Settings.Default.outputString2 = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetOutputString2()
+        {
+            return Properties.Settings.Default.outputString2;
+        }
+
+
         public static double PosX
         {
             get => GetPosX();
@@ -362,7 +380,24 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string Webua => GetWebua();
-        
+
+        public static int TwSrUserLevel
+        {
+            get => GetTwSrUserLevel(); 
+            set => SetTwSrUserLevel(value);
+        }
+
+        private static void SetTwSrUserLevel(int value)
+        {
+            Properties.Settings.Default.TwSRUserLevel = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrUserLevel()
+        {
+            return Properties.Settings.Default.TwSRUserLevel;
+        }
+
         public static Config Export()
         {
             return new Config
@@ -400,6 +435,7 @@ namespace Songify_Slim.Util.Settings
                 NbUserId = GetNbUserId(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
                 OutputString = GetOutputString(),
+                OutputString2 = GetOutputString2(),
                 PosX = (int)GetPosX(),
                 PosY = (int)GetPosY(),
                 RefreshToken = GetRefreshToken(),
@@ -419,6 +455,7 @@ namespace Songify_Slim.Util.Settings
                 TwSrCooldown = GetTwSrCooldown(),
                 TwSrMaxReq = GetTwSrMaxReq(),
                 TwSrReward = GetTwSrReward(),
+                TwSrUserLevel = GetTwSrUserLevel(),
                 Upload = GetUpload(),
                 UploadHistory = GetUploadHistory(),
                 UseOwnApp = GetUseOwnApp(),
@@ -456,6 +493,7 @@ namespace Songify_Slim.Util.Settings
             SetNbUserId(config.NbUserId);
             SetOpenQueueOnStartup(config.OpenQueueOnStartup);
             SetOutputString(config.OutputString);
+            SetOutputString2(config.OutputString2);
             SetPosX(config.PosX);
             SetPosY(config.PosY);
             SetRefreshToken(config.RefreshToken);
@@ -475,6 +513,7 @@ namespace Songify_Slim.Util.Settings
             SetTwSrCooldown(config.TwSrCooldown);
             SetTwSrMaxReq(config.TwSrMaxReq);
             SetTwSrReward(config.TwSrReward);
+            SetTwSrUserLevel(config.TwSrUserLevel);
             SetUpload(config.Upload);
             SetUploadHistory(config.UploadHistory);
             SetUseOwnApp(config.UseOwnApp);

@@ -289,8 +289,8 @@
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
     <value>Download album cover (only works with API)</value>
   </data>
-  <data name="sw_tcOutput_Fromat" xml:space="preserve">
-    <value>Output Format</value>
+  <data name="sw_tcOutput_Format" xml:space="preserve">
+    <value>Output Format (Text file &amp; Widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
     <value>Pause Text</value>
@@ -390,5 +390,8 @@
   </data>
   <data name="brw_cmd_trigger" xml:space="preserve">
     <value>Trigger</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Output Format (Twitch Chat)</value>
   </data>
 </root>

@@ -289,8 +289,8 @@
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
     <value>Descargar la portada del álbum (sólo funciona con la API)</value>
   </data>
-  <data name="sw_tcOutput_Fromat" xml:space="preserve">
-    <value>Formato de salida</value>
+  <data name="sw_tcOutput_Format" xml:space="preserve">
+    <value>Formato de salida  (Text File &amp; Widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
     <value>Texto de pausa</value>
@@ -390,5 +390,8 @@
   </data>
   <data name="brw_cmd_trigger" xml:space="preserve">
     <value>Disparador</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Output Format (Twitch Chat)</value>
   </data>
 </root>

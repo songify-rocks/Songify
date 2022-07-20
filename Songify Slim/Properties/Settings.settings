@@ -188,5 +188,11 @@
     <Setting Name="bot_Resp_VoteSkip" Type="System.String" Scope="User">
       <Value Profile="(Default)">@{user} voted to skip the current song. ({votes})</Value>
     </Setting>
+    <Setting Name="outputString2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{artist} - {title} {extra}</Value>
+    </Setting>
+    <Setting Name="TwSRUserLevel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

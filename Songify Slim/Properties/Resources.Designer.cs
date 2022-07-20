@@ -728,11 +728,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Output Format.
+        ///   Looks up a localized string similar to Output Format (Text file &amp; Widget).
         /// </summary>
-        public static string sw_tcOutput_Fromat {
+        public static string sw_tcOutput_Format {
             get {
-                return ResourceManager.GetString("sw_tcOutput_Fromat", resourceCulture);
+                return ResourceManager.GetString("sw_tcOutput_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output Format (Twitch Chat).
+        /// </summary>
+        public static string sw_tcOutput_Format2 {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_Format2", resourceCulture);
             }
         }
         

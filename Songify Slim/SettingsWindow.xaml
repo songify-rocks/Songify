@@ -77,67 +77,79 @@
                         <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
 
                     </Button>
-                    <Label Content="{x:Static local:Resources.sw_tcOutput_Fromat}" HorizontalAlignment="Left"
+                    <Label Content="{x:Static local:Resources.sw_tcOutput_Format}" HorizontalAlignment="Left"
                            Margin="9,42,0,0" VerticalAlignment="Top" />
                     <TextBox x:Name="TxtbxOutputformat" HorizontalAlignment="Left" Height="23" Margin="219,43,0,0"
-                             TextWrapping="Wrap" VerticalAlignment="Top" Width="260"
+                             TextWrapping="NoWrap" VerticalAlignment="Top" Width="260"
                              TextChanged="TxtbxOutputformat_TextChanged">
                         <TextBox.ContextMenu>
                             <ContextMenu>
-                                <MenuItem x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click" />
-                                <MenuItem x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click" />
-                                <MenuItem x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click" />
-                                <MenuItem x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click" />
+                                <MenuItem Tag="1" x:Name="MenuBtnArtist" Header="Artist" Click="MenuBtnArtist_Click" />
+                                <MenuItem Tag="1" x:Name="MenuBtnTitle" Header="Title" Click="MenuBtnTitle_Click" />
+                                <MenuItem Tag="1" x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click" />
+                                <MenuItem Tag="1" x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click" />
+                                <MenuItem Tag="1" x:Name="MenuBtnUrl" Header="URL" Click="MenuBtnUrl_Click" />
                             </ContextMenu>
                         </TextBox.ContextMenu>
                     </TextBox>
 
                     <controls:ToggleSwitch x:Name="ChbxCustomPause" Content="{x:Static local:Resources.sw_tcOutput_PauseText}"
-                              HorizontalAlignment="Left"
-                              Margin="15,102,0,0" VerticalAlignment="Top" Toggled="ChbxCustompauseChecked"
+                              Margin="15,0,0,0" Toggled="ChbxCustompauseChecked"
                               Focusable="False" Width="199"/>
                     <TextBox x:Name="TxtbxCustompausetext" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap"
-                             VerticalAlignment="Top" Width="260" Margin="219,105,0,0"
+                             VerticalAlignment="Center" Width="260" Margin="219,0,0,0"
                              controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
                              TextChanged="TxtbxCustompausetext_TextChanged" IsEnabled="False" />
                     <controls:ToggleSwitch x:Name="ChbxUpload"
                                            Content="{x:Static local:Resources.sw_tcOutput_UploadSongInfo}"
-                                           HorizontalAlignment="Left"
-                                           Margin="15,136,0,0" VerticalAlignment="Top" Toggled="ChbxUpload_Checked"
+                                           Margin="15,186,0,0" Toggled="ChbxUpload_Checked"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
-                                           Width="431" Height="36" ContentDirection="RightToLeft" />
+                                           Width="431" Height="36" ContentDirection="RightToLeft" VerticalAlignment="Top" />
                     <controls:ToggleSwitch x:Name="ChbxCover"
                                            Content="{x:Static local:Resources.sw_tcOutput_DownloadAlbum}"
-                                           HorizontalAlignment="Left"
-                                           Margin="15,177,0,0" VerticalAlignment="Top"
+                                           Margin="15,227,0,0" VerticalAlignment="Top"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="464" Height="36"
                                            Toggled="ChbxCover_Checked" />
-                    <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="451,140,0,0" VerticalAlignment="Top"
+                    <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" Margin="451,189,0,0" VerticalAlignment="Top"
                             Width="28" Click="BtnCopyURL_Click">
                         <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" />
                     </Button>
                     <controls:ToggleSwitch x:Name="ChbxSplit"
                                            Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}"
-                                           HorizontalAlignment="Left"
-                                           Margin="15,218,0,0" VerticalAlignment="Top"
+                                           Margin="15,268,0,0" VerticalAlignment="Top"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="464" Height="36"
                                            Toggled="ChbxSplit_Checked" />
                     <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
-                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,78,0,0"
-                              Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" />
+                              HorizontalAlignment="Left" VerticalAlignment="Top" Margin="219,111,0,0"
+                              Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" RenderTransformOrigin="0.47,1.039" />
                     <controls:NumericUpDown x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1"
-                                            NumericInputMode="Numbers" Margin="358,74,0,0"
+                                            NumericInputMode="Numbers" Margin="358,107,0,0"
                                             ValueChanged="nud_Spaces_ValueChanged" Height="23"
                                             Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="121"
                                             UpDownButtonsWidth="16" />
+                    <Label Content="{x:Static local:Resources.sw_tcOutput_Format2}" HorizontalAlignment="Left"
+                        Margin="9,76,0,0" VerticalAlignment="Top" />
+                    <TextBox x:Name="TxtbxOutputformat2" HorizontalAlignment="Left" Height="23" Margin="219,76,0,0"
+                        TextWrapping="NoWrap" VerticalAlignment="Top" Width="260"
+                        TextChanged="TxtbxOutputformat2_TextChanged">
+                        <TextBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Tag="2" x:Name="MenuBtnArtist2" Header="Artist" Click="MenuBtnArtist_Click" />
+                                <MenuItem Tag="2" x:Name="MenuBtnTitle2" Header="Title" Click="MenuBtnTitle_Click" />
+                                <MenuItem Tag="2" x:Name="MenuBtnExtra2" Header="Extra" Click="MenuBtnExtra_Click" />
+                                <MenuItem Tag="2" x:Name="MenuBtnReq2" Header="Requester" Click="MenuBtnReq_Click" />
+                                <MenuItem Tag="2" x:Name="MenuBtnUrl2" Header="URL" Click="MenuBtnUrl_Click" />
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
 
                 </Grid>
             </TabItem>
@@ -279,31 +291,46 @@
                                            Width="470" Height="36" />
                     <controls:ToggleSwitch x:Name="Chbx_AutoClear"
                                            Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}"
-                                           HorizontalAlignment="Left"
-                                           Margin="5,233,0,0" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
+                                           Margin="5,132,0,0" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="470" Height="36" />
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxReq}" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" Margin="0,139,0,0" />
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" Margin="0,172,0,0" />
-                    <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
-                                            NumericInputMode="Numbers" Margin="340,137,0,0"
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="10,168,11,0">
+                        <DockPanel >
+                            <Label Content="Minimum user level required for SR" HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"  />
+                            <ComboBox x:Name="CbxUserLevels" Width="135" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,6,0,0">
+                            <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxReq}" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" Margin="0,0,0,0" />
+                            <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers" Margin="0,0,0,0"
                                             ValueChanged="NudMaxReq_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number" />
-
-                    <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1"
-                                            NumericInputMode="Numbers" Margin="340,170,0,0"
+                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+                        </DockPanel>
+                        <DockPanel Margin="0,6,0,0">
+                            <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" Margin="0,0,0,0" />
+                            <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers" Margin="0,0,0,0"
                                             ValueChanged="NudCooldown_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" />
-                    <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" Margin="0,205,0,0" />
-                    <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1"
-                                            NumericInputMode="Numbers" Margin="340,203,0,0"
+                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+
+                        </DockPanel>
+                        <DockPanel Margin="0,6,0,0">
+                            <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" HorizontalAlignment="Left"
+                                   VerticalAlignment="Center" />
+                            <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1"
+                                            NumericInputMode="Numbers"
                                             ValueChanged="NudMaxlength_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" />
+                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+                        </DockPanel>
+                        
+                    </StackPanel>
+
+
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

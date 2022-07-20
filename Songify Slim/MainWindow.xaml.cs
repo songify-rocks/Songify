@@ -44,7 +44,7 @@ namespace Songify_Slim
 
         public readonly NotifyIcon NotifyIcon = new NotifyIcon();
         public string _artist, _title;
-        public string CurrSong;
+        public string CurrSong, CurrSongTwitch;
         public List<RequestObject> ReqList = new List<RequestObject>();
         private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
@@ -848,7 +848,7 @@ namespace Songify_Slim
 
             // get the output string
             CurrSong = Settings.OutputString;
-
+            CurrSongTwitch = Settings.OutputString2;
             // Replace {artist}, {title} and {extra} in the output string with values from rArtist, rTitle and rExtra
 
             if (_selectedSource == PlayerType.SpotifyWeb)
@@ -856,6 +856,14 @@ namespace Songify_Slim
                 // this only is used for Spotify because here the artist and title are split
                 // replace parameters with actual info
                 CurrSong = CurrSong.Format(
+                    artist => rArtist,
+                    title => rTitle,
+                    extra => rExtra,
+                    uri => rTrackId,
+                    url => rTrackUrl
+                ).Format();
+                
+                CurrSongTwitch = CurrSongTwitch.Format(
                     artist => rArtist,
                     title => rTitle,
                     extra => rExtra,
@@ -912,7 +920,14 @@ namespace Songify_Slim
                     uri => rTrackId,
                     url => rTrackUrl
                 ).Format();
-
+                CurrSongTwitch = CurrSongTwitch.Format(
+                    artist => rArtist,
+                    title => rTitle,
+                    extra => rExtra,
+                    uri => rTrackId,
+                    url => rTrackUrl
+                ).Format();
+                CurrSongTwitch = CurrSongTwitch.Trim();
                 CurrSong = CurrSong.Trim();
                 // Remove trailing "-" from the output string
                 if (CurrSong.EndsWith("-")) CurrSong = CurrSong.Remove(CurrSong.Length - 1);

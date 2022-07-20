@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using TwitchLib.Client;
+using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
@@ -19,6 +20,16 @@ namespace Songify_Slim.Util.Songify
     // This class handles everything regarding to twitch.tv
     public static class TwitchHandler
     {
+        //create a list with Twitch UserTypes and assign int values to them 
+        public enum TwitchUserLevels
+        {
+            Everyone = 0,
+            Vip = 1,
+            Subscriber = 2,
+            Moderator = 3,
+            Broadcaster = 4
+        }
+
         public static TwitchClient Client;
         private static bool _onCooldown;
         public static bool ForceDisconnect;
@@ -84,7 +95,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
+        private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
             // Disconnected
             Application.Current.Dispatcher.Invoke(() =>
@@ -154,6 +165,13 @@ namespace Songify_Slim.Util.Songify
             // if the reward is the same with the desired reward for the requests 
             if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
             {
+                if (CheckUserLevel(e.ChatMessage) < Settings.Settings.TwSrUserLevel)
+                {
+                    //Send a Message to the user, that his Userlevel is too low
+                    Client.SendWhisper(e.ChatMessage.Username, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.");
+                    return;
+                }
+
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
                     Client.SendWhisper(e.ChatMessage.Username, "You are blocked from making Songrequests");
@@ -216,6 +234,12 @@ namespace Songify_Slim.Util.Songify
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
             {
+                if (CheckUserLevel(e.ChatMessage) < Settings.Settings.TwSrUserLevel)
+                {
+                    //Send a Message to the user, that his Userlevel is too low
+                    Client.SendWhisper(e.ChatMessage.Username, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    return;
+                }
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
@@ -333,7 +357,7 @@ namespace Songify_Slim.Util.Songify
                                 msg = msg.Replace("{votes}", $"{SkipVotes.Count}/5");
 
                                 Client.SendMessage(e.ChatMessage.Channel, msg);
-                                
+
                                 if (SkipVotes.Count >= 5)
                                 {
                                     ErrorResponse response = await ApiHandler.SkipSong();
@@ -392,6 +416,16 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+        private static int CheckUserLevel(ChatMessage o)
+        {
+            int userLevel = 0;
+            if (o.IsBroadcaster) userLevel = 4;
+            if (o.IsModerator) userLevel = 3;
+            if (o.IsSubscriber) userLevel = 2;
+            if (o.IsVip) userLevel = 1;
+            return userLevel;
+        }
+
         private static string GetCurrentSong()
         {
             string tmp = "";
@@ -401,7 +435,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (window.GetType() == typeof(MainWindow))
                     {
-                        tmp = (window as MainWindow)?.CurrSong;
+                        tmp = (window as MainWindow)?.CurrSongTwitch;
                     }
                 }
             });
