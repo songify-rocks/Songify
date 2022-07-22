@@ -1,4 +1,6 @@
-﻿using Songify_Slim.Util.Settings;
+﻿using System;
+using System.Diagnostics;
+using Songify_Slim.Util.Settings;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -36,7 +38,27 @@ namespace Songify_Slim
                 //app is already running! Exiting the application
                 Current.Shutdown();
 
+            AppDomain currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += MyHandler;
+
             base.OnStartup(e);
+        }
+
+        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            Logger.LogStr("##### Unhandled Exception #####");
+            Logger.LogStr("MyHandler caught : " + e.Message);
+            Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
+            Logger.LogStr("###############################");
+            Logger.LogExc(e);
+
+            if (!args.IsTerminating) return;
+            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
+                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                Process.Start(Logger.LogDirectoryPath);
+            }
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -47,5 +69,7 @@ namespace Songify_Slim
             MainWindow main = new MainWindow();
             main.Show();
         }
+
+
     }
 }

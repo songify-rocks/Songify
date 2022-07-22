@@ -24,6 +24,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
@@ -41,7 +42,6 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
-
         public readonly NotifyIcon NotifyIcon = new NotifyIcon();
         public string _artist, _title;
         public string CurrSong, CurrSongTwitch;
@@ -140,22 +140,23 @@ namespace Songify_Slim
                 ? Application.Current.Windows.OfType<T>().Any()
                 : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
-        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
-        {
-            Exception e = (Exception)args.ExceptionObject;
-            Logger.LogStr("##### Unhandled Exception #####");
-            Logger.LogStr("MyHandler caught : " + e.Message);
-            Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
-            Logger.LogStr("###############################");
-            Logger.LogExc(e);
+        
+        //private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        //{
+        //    Exception e = (Exception)args.ExceptionObject;
+        //    Logger.LogStr("##### Unhandled Exception #####");
+        //    Logger.LogStr("MyHandler caught : " + e.Message);
+        //    Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
+        //    Logger.LogStr("###############################");
+        //    Logger.LogExc(e);
 
-            if (!args.IsTerminating) return;
-            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
-                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-            {
-                Process.Start(Logger.LogDirectoryPath);
-            }
-        }
+        //    if (!args.IsTerminating) return;
+        //    if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
+        //            MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+        //    {
+        //        Process.Start(Logger.LogDirectoryPath);
+        //    }
+        //}
 
         private void AddSourcesToSourceBox()
         {
@@ -504,10 +505,10 @@ namespace Songify_Slim
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             //If the user presses alt + F12 run Crash() method.
-            //if (e.Key == Key.F12)
-            //{
-            //    Crash();
-            //}
+            if (e.Key == Key.F12)
+            {
+                Crash();
+            }
         }
 
         private void MetroWindowClosed(object sender, EventArgs e)
@@ -520,8 +521,9 @@ namespace Songify_Slim
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += MyHandler;
+            //AppDomain currentDomain = AppDomain.CurrentDomain;
+            //currentDomain.UnhandledException += MyHandler;
+            
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
 

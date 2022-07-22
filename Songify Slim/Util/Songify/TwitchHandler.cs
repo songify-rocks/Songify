@@ -32,12 +32,16 @@ namespace Songify_Slim.Util.Songify
 
         public static TwitchClient Client;
         private static bool _onCooldown;
+        private static bool _skipCooldown;
         public static bool ForceDisconnect;
         private static List<string> SkipVotes = new List<string>();
-
         private static readonly Timer CooldownTimer = new Timer
         {
             Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
+        };
+        private static readonly Timer SkipCooldownTimer = new Timer
+        {
+            Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
         };
 
         public static void ResetVotes()
@@ -88,11 +92,18 @@ namespace Songify_Slim.Util.Songify
 
                 // subscirbes to the cooldowntimer elapsed event for the command cooldown
                 CooldownTimer.Elapsed += CooldownTimer_Elapsed;
+                SkipCooldownTimer.Elapsed += SkipCooldownTimer_Elapsed;
             }
             catch (Exception)
             {
                 Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
+        }
+
+        private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            _skipCooldown = false;
+            SkipCooldownTimer.Stop();
         }
 
         private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
@@ -165,10 +176,11 @@ namespace Songify_Slim.Util.Songify
             // if the reward is the same with the desired reward for the requests 
             if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
             {
-                if (CheckUserLevel(e.ChatMessage) < Settings.Settings.TwSrUserLevel)
+                int userlevel = CheckUserLevel(e.ChatMessage);
+                if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    Client.SendWhisper(e.ChatMessage.Username, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.");
+                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.");
                     return;
                 }
 
@@ -234,10 +246,11 @@ namespace Songify_Slim.Util.Songify
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
             {
-                if (CheckUserLevel(e.ChatMessage) < Settings.Settings.TwSrUserLevel)
+                int userlevel = CheckUserLevel(e.ChatMessage);
+                if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    Client.SendWhisper(e.ChatMessage.Username, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
                     return;
                 }
                 // Do nothing if the user is blocked, don't even reply
@@ -319,6 +332,8 @@ namespace Songify_Slim.Util.Songify
             {
                 case "!skip":
                     {
+                        if(_skipCooldown)
+                            return;
                         string msg = "";
                         int count = 0;
                         string name = "";
@@ -331,7 +346,7 @@ namespace Songify_Slim.Util.Songify
                                 name = ((MainWindow)Application.Current.MainWindow)?.ReqList.First().Requester;
                         });
 
-                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || count > 0 && name == e.ChatMessage.DisplayName)
+                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (count > 0 && name == e.ChatMessage.DisplayName))
                         {
                             msg = Settings.Settings.BotRespModSkip;
                             msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
@@ -343,6 +358,8 @@ namespace Songify_Slim.Util.Songify
                             else
                             {
                                 Client.SendMessage(e.ChatMessage.Channel, msg);
+                                _skipCooldown = true;
+                                SkipCooldownTimer.Start();
                             }
                         }
                         else
@@ -368,6 +385,8 @@ namespace Songify_Slim.Util.Songify
                                     else
                                     {
                                         Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+                                        _skipCooldown = true;
+                                        SkipCooldownTimer.Start();
                                     }
                                     SkipVotes.Clear();
                                 }
@@ -418,12 +437,10 @@ namespace Songify_Slim.Util.Songify
 
         private static int CheckUserLevel(ChatMessage o)
         {
-            int userLevel = 0;
-            if (o.IsBroadcaster) userLevel = 4;
-            if (o.IsModerator) userLevel = 3;
-            if (o.IsSubscriber) userLevel = 2;
-            if (o.IsVip) userLevel = 1;
-            return userLevel;
+            if (o.IsBroadcaster) return 4;
+            if (o.IsModerator) return 3;
+            if (o.IsSubscriber) return 2;
+            return o.IsVip ? 1 : 0;
         }
 
         private static string GetCurrentSong()
