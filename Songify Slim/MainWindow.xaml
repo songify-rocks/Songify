@@ -84,6 +84,25 @@
         <Style TargetType="{x:Type dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
     <Grid>
+        <Grid x:Name="grdUpdate" Margin="0,34,0,20" Panel.ZIndex="100" Visibility="Hidden">
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="0" Grid.RowSpan="2" Margin="0,0,0,6">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="tbVersion" Text="Songify just update to version XXX" HorizontalAlignment="Center" FontSize="20" />
+                    <RichTextBox x:Name="rtbPatchnotes" BorderThickness="0" IsReadOnly="True"/>
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,6,6">
+                <Button x:Name="btnUpdateOK" Content="OK" Width="100" Click="btnUpdateOK_Click"/>
+            </StackPanel>
+        </Grid>
         <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
                    Margin="10,11,0,0" Visibility="Hidden" />
@@ -111,7 +130,7 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />
                 <MenuItem Header="Patch notes" Click="BtnPatchNotes_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                    <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
                     <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
                     <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
                     <MenuItem Header="Discord" Click="BtnDiscord_Click" />

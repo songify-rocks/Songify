@@ -37,10 +37,12 @@ namespace Songify_Slim
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevels.Items.Clear();
-            var values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
+            Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
             foreach (var value in values)
             {
+                if (value.ToString() == "Broadcaster") continue;
                 CbxUserLevels.Items.Add(value);
+                CbxUserLevelsMaxReq.Items.Add(value);
             }
             
             // Sets all the controls from settings
@@ -65,7 +67,7 @@ namespace Songify_Slim
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
-            NudMaxReq.Value = Settings.TwSrMaxReq;
+            //NudMaxReq.Value = Settings.TwSrMaxReq;
             tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
@@ -443,8 +445,27 @@ namespace Songify_Slim
 
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            // Sets max requests per user value
-            if (NudMaxReq.Value != null) Settings.TwSrMaxReq = (int)NudMaxReq.Value;
+            //Sets max requests per user value
+            switch ((TwitchHandler.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
+            {
+                case TwitchHandler.TwitchUserLevels.Everyone:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Vip:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Subscriber:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Moderator:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Broadcaster:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
@@ -588,6 +609,32 @@ namespace Songify_Slim
         private void CbxUserLevels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Settings.TwSrUserLevel = CbxUserLevels.SelectedIndex;
+        }
+
+        private void CbxUserLevelsMaxReq_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
+            switch ((TwitchHandler.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
+            {
+                case TwitchHandler.TwitchUserLevels.Everyone:
+                    NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Vip:
+                    NudMaxReq.Value = Settings.TwSrMaxReqVip;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Subscriber:
+                    NudMaxReq.Value = Settings.TwSrMaxReqSubscriber;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Moderator:
+                    NudMaxReq.Value = Settings.TwSrMaxReqModerator;
+                    break;
+                case TwitchHandler.TwitchUserLevels.Broadcaster:
+                    NudMaxReq.Value = Settings.TwSrMaxReqBroadcaster;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            NudMaxReq.ValueChanged += NudMaxReq_ValueChanged;
         }
     }
 }

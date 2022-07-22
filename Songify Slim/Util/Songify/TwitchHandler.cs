@@ -550,7 +550,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // checks if the user has already the max amount of songs in the queue
-            if (MaxQueueItems(e.ChatMessage.DisplayName))
+            if (MaxQueueItems(e.ChatMessage.DisplayName, e.ChatMessage))
             {
                 // if the user reached max requests in the queue skip and inform requester
                 response = Settings.Settings.BotRespMaxReq;
@@ -731,8 +731,9 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        private static bool MaxQueueItems(string requester)
+        private static bool MaxQueueItems(string requester, ChatMessage chatMessage)
         {
+            int maxreq = 1;
             // Checks if the requester already reached max songrequests
             var temp = new List<RequestObject>();
             Application.Current.Dispatcher.Invoke(() =>
@@ -742,7 +743,27 @@ namespace Songify_Slim.Util.Songify
                         temp = (window as MainWindow)?.ReqList.FindAll(x => x.Requester == requester);
             });
 
-            return temp.Count >= Settings.Settings.TwSrMaxReq;
+            switch ((TwitchUserLevels)CheckUserLevel(chatMessage))
+            {
+                case TwitchUserLevels.Everyone:
+                    maxreq = Settings.Settings.TwSrMaxReqEveryone;
+                    break;
+                case TwitchUserLevels.Vip:
+                    maxreq = Settings.Settings.TwSrMaxReqVip;
+                    break;
+                case TwitchUserLevels.Subscriber:
+                    maxreq = Settings.Settings.TwSrMaxReqSubscriber;
+                    break;
+                case TwitchUserLevels.Moderator:
+                    maxreq = Settings.Settings.TwSrMaxReqModerator;
+                    break;
+                case TwitchUserLevels.Broadcaster:
+                    maxreq = 999;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            return temp.Count >= maxreq;
         }
 
         public static void SendCurrSong(string song)

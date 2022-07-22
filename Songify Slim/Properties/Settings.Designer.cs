@@ -788,5 +788,77 @@ namespace Songify_Slim.Properties {
                 this["TwSRUserLevel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReqEveryone {
+            get {
+                return ((int)(this["TwSRMaxReqEveryone"]));
+            }
+            set {
+                this["TwSRMaxReqEveryone"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReqVip {
+            get {
+                return ((int)(this["TwSRMaxReqVip"]));
+            }
+            set {
+                this["TwSRMaxReqVip"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReqSubscriber {
+            get {
+                return ((int)(this["TwSRMaxReqSubscriber"]));
+            }
+            set {
+                this["TwSRMaxReqSubscriber"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReqModerator {
+            get {
+                return ((int)(this["TwSRMaxReqModerator"]));
+            }
+            set {
+                this["TwSRMaxReqModerator"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int TwSRMaxReqBroadcaster {
+            get {
+                return ((int)(this["TwSRMaxReqBroadcaster"]));
+            }
+            set {
+                this["TwSRMaxReqBroadcaster"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UpgradeRequired {
+            get {
+                return ((bool)(this["UpgradeRequired"]));
+            }
+            set {
+                this["UpgradeRequired"] = value;
+            }
+        }
     }
 }

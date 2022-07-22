@@ -217,18 +217,6 @@ namespace Songify_Slim.Util.Settings
             set => SetOutputString2(value);
         }
 
-        private static void SetOutputString2(string value)
-        {
-            Properties.Settings.Default.outputString2 = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetOutputString2()
-        {
-            return Properties.Settings.Default.outputString2;
-        }
-
-
         public static double PosX
         {
             get => GetPosX();
@@ -337,6 +325,93 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrCooldown(value);
         }
 
+        public static int TwSrMaxReqEveryone
+        {
+            get => GetTwSrMaxReqEveryone();
+            set => SetTwSrMaxReqEveryone(value);
+        }
+
+        private static void SetTwSrMaxReqEveryone(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqEveryone = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrMaxReqEveryone()
+        {
+            return Properties.Settings.Default.TwSRMaxReqEveryone;
+        }
+
+        public static int TwSrMaxReqVip
+        {
+            get => GetTwSrMaxReqVip();
+            set => SetTwSrMaxReqVip(value);
+        }
+
+        private static void SetTwSrMaxReqVip(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqVip = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrMaxReqVip()
+        {
+            return Properties.Settings.Default.TwSRMaxReqVip;
+
+        }
+
+        public static int TwSrMaxReqSubscriber
+        {
+            get => GetTwSrMaxReqSubscriber();
+            set => SetTwSrMaxReqSubscriber(value);
+        }
+
+        private static void SetTwSrMaxReqSubscriber(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqSubscriber = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrMaxReqSubscriber()
+        {
+            return Properties.Settings.Default.TwSRMaxReqSubscriber;
+
+        }
+
+        public static int TwSrMaxReqModerator
+        {
+            get => GetTwSrMaxReqModerator();
+            set => SetTwSrMaxReqModerator(value);
+        }
+
+        private static void SetTwSrMaxReqModerator(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqModerator = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrMaxReqModerator()
+        {
+            return Properties.Settings.Default.TwSRMaxReqModerator;
+        }
+
+        public static int TwSrMaxReqBroadcaster
+        {
+            get => GetTwSrMaxReqBroadcaster();
+            set => SetTwSrMaxReqBroadcaster(value);
+        }
+
+        private static void SetTwSrMaxReqBroadcaster(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqBroadcaster = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetTwSrMaxReqBroadcaster()
+        {
+            return Properties.Settings.Default.TwSRMaxReqBroadcaster;
+        }
+
         public static int TwSrMaxReq
         {
             get => GetTwSrMaxReq();
@@ -347,6 +422,12 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetTwSrReward();
             set => SetTwSrReward(value);
+        }
+
+        public static int TwSrUserLevel
+        {
+            get => GetTwSrUserLevel();
+            set => SetTwSrUserLevel(value);
         }
 
         public static bool Upload
@@ -380,23 +461,6 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string Webua => GetWebua();
-
-        public static int TwSrUserLevel
-        {
-            get => GetTwSrUserLevel(); 
-            set => SetTwSrUserLevel(value);
-        }
-
-        private static void SetTwSrUserLevel(int value)
-        {
-            Properties.Settings.Default.TwSRUserLevel = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetTwSrUserLevel()
-        {
-            return Properties.Settings.Default.TwSRUserLevel;
-        }
 
         public static Config Export()
         {
@@ -454,13 +518,18 @@ namespace Songify_Slim.Util.Settings
                 TwSrCommand = GetTwSrCommand(),
                 TwSrCooldown = GetTwSrCooldown(),
                 TwSrMaxReq = GetTwSrMaxReq(),
+                TwSrMaxReqBroadcaster = GetTwSrMaxReqBroadcaster(),
+                TwSrMaxReqEveryone = GetTwSrMaxReqEveryone(),
+                TwSrMaxReqModerator = GetTwSrMaxReqModerator(),
+                TwSrMaxReqSubscriber = GetTwSrMaxReqSubscriber(),
+                TwSrMaxReqVip = GetTwSrMaxReqVip(),
                 TwSrReward = GetTwSrReward(),
                 TwSrUserLevel = GetTwSrUserLevel(),
                 Upload = GetUpload(),
                 UploadHistory = GetUploadHistory(),
                 UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
-                Uuid = GetUuid()
+                Uuid = GetUuid(),
             };
         }
 
@@ -512,6 +581,11 @@ namespace Songify_Slim.Util.Settings
             SetTwSrCommand(config.TwSrCommand);
             SetTwSrCooldown(config.TwSrCooldown);
             SetTwSrMaxReq(config.TwSrMaxReq);
+            SetTwSrMaxReqBroadcaster(config.TwSrMaxReqBroadcaster);
+            SetTwSrMaxReqEveryone(config.TwSrMaxReqEveryone);
+            SetTwSrMaxReqModerator(config.TwSrMaxReqModerator);
+            SetTwSrMaxReqSubscriber(config.TwSrMaxReqSubscriber);
+            SetTwSrMaxReqVip(config.TwSrMaxReqVip);
             SetTwSrReward(config.TwSrReward);
             SetTwSrUserLevel(config.TwSrUserLevel);
             SetUpload(config.Upload);
@@ -698,6 +772,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.outputString;
         }
 
+        private static string GetOutputString2()
+        {
+            return Properties.Settings.Default.outputString2;
+        }
+
         private static double GetPosX()
         {
             return Properties.Settings.Default.PosX;
@@ -796,6 +875,11 @@ namespace Songify_Slim.Util.Settings
         private static bool GetTwSrReward()
         {
             return Properties.Settings.Default.TwSRReward;
+        }
+
+        private static int GetTwSrUserLevel()
+        {
+            return Properties.Settings.Default.TwSRUserLevel;
         }
 
         private static bool GetUpload()
@@ -899,6 +983,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.bot_Resp_ModSkip = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetBot_Resp_NoSong(string value)
         {
             Properties.Settings.Default.bot_Resp_NoSong = value;
@@ -916,6 +1001,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.bot_Resp_VoteSkip = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetBotCmdNext(bool value)
         {
             Properties.Settings.Default.bot_cmd_next = value;
@@ -933,6 +1019,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.bot_cmd_skip = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetBotCmdSong(bool value)
         {
             Properties.Settings.Default.bot_cmd_song = value;
@@ -1035,6 +1122,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetOutputString2(string value)
+        {
+            Properties.Settings.Default.outputString2 = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetPosX(double value)
         {
             Properties.Settings.Default.PosX = value;
@@ -1155,6 +1247,11 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetTwSrUserLevel(int value)
+        {
+            Properties.Settings.Default.TwSRUserLevel = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetUpload(bool uploadsong)
         {
             Properties.Settings.Default.uploadSonginfo = uploadsong;

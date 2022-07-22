@@ -23,14 +23,20 @@ using System.Timers;
 using System.Web;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using MdXaml;
+using Octokit;
 using Application = System.Windows.Application;
+using Color = System.Drawing.Color;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using FontFamily = System.Windows.Media.FontFamily;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
@@ -42,6 +48,7 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
+        bool updated = false;
         public readonly NotifyIcon NotifyIcon = new NotifyIcon();
         public string _artist, _title;
         public string CurrSong, CurrSongTwitch;
@@ -64,6 +71,31 @@ namespace Songify_Slim
         {
             InitializeComponent();
             _songTimer.Elapsed += SongTimer_Elapsed;
+
+            if (Properties.Settings.Default.UpgradeRequired)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.UpgradeRequired = false;
+                Properties.Settings.Default.Save();
+                updated = true;
+            }
+
+            if (updated)
+            {
+                GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
+                Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
+                Release release = releases.Result[0];
+                string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
+                Markdown engine = new Markdown();
+                FlowDocument document = engine.Transform(markdownTxt);
+                document.FontFamily = new FontFamily("Sogeo UI");
+                document.LineHeight = 30;
+                document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+                document.FontSize = 16;
+                rtbPatchnotes.Document = document;
+                tbVersion.Text = $"Songify Update {release.TagName}";
+                grdUpdate.Visibility = Visibility.Visible;
+            }
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -140,7 +172,7 @@ namespace Songify_Slim
                 ? Application.Current.Windows.OfType<T>().Any()
                 : Application.Current.Windows.OfType<T>().Any(w => w.Name.Equals(name));
         }
-        
+
         //private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         //{
         //    Exception e = (Exception)args.ExceptionObject;
@@ -523,7 +555,7 @@ namespace Songify_Slim
         {
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += MyHandler;
-            
+
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
 
@@ -600,7 +632,7 @@ namespace Songify_Slim
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.Start("https://songify.rocks/update.xml");
-
+            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Source;
             _selectedSource = cbx_Source.SelectedValue.ToString();
@@ -627,6 +659,12 @@ namespace Songify_Slim
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
             // automatically start fetching songs
             SetFetchTimer();
+        }
+
+        private void AutoUpdater_ApplicationExitEvent()
+        {
+            Properties.Settings.Default.UpgradeRequired = true;
+            Properties.Settings.Default.Save();
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)
@@ -729,14 +767,19 @@ namespace Songify_Slim
             // Check if the patch notes window is already open, if not open it, else switch to it
             if (IsWindowOpen<Window_Patchnotes>())
             {
-                Window_Patchnotes wPN = (Window_Patchnotes)Window.GetWindow(this);
-                wPN.Activate();
+                Window_Patchnotes wPN = Application.Current.Windows.OfType<Window_Patchnotes>().First();
+                wPN.Focus();
             }
             else
             {
                 Window_Patchnotes wPN = new Window_Patchnotes();
                 wPN.Show();
             }
+        }
+
+        private void btnUpdateOK_Click(object sender, RoutedEventArgs e)
+        {
+            grdUpdate.Visibility = Visibility.Collapsed;
         }
 
         private void SetFetchTimer()
@@ -879,7 +922,7 @@ namespace Songify_Slim
                     uri => rTrackId,
                     url => rTrackUrl
                 ).Format();
-                
+
                 CurrSongTwitch = CurrSongTwitch.Format(
                     artist => rArtist,
                     title => rTitle,

@@ -40,7 +40,7 @@ namespace Songify_Slim
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
-
+            
             base.OnStartup(e);
         }
 

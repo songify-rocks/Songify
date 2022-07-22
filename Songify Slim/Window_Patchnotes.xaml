@@ -18,8 +18,15 @@
             <ListBox DisplayMemberPath="Version" SelectedValuePath="Content" x:Name="LbxVersions" Width="100" Margin="6" VerticalAlignment="Stretch" SelectionChanged="LbxVersions_SelectionChanged" DockPanel.Dock="Bottom"></ListBox>
         </DockPanel>
         <DockPanel Grid.Column="1">
-            <Label Content ="Changes" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top"></Label>
-            <ScrollViewer Margin="6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="6,0,0,0">
+                <Label Content ="Changes" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <TextBlock VerticalAlignment="Center" Margin="6,0,0,0">
+                    <Hyperlink x:Name="Hyperlink" Click="Hyperlink_Click">
+                        See all changes on GitHub
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <ScrollViewer Margin="6,0,6,6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
                 <RichTextBox x:Name="RtbPatchnotes"  IsReadOnly="True" Margin="6" VerticalAlignment="Stretch" FontFamily="Segoe UI"></RichTextBox>
             </ScrollViewer>
         </DockPanel>

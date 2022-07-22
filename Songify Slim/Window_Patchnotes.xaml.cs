@@ -21,22 +21,20 @@ namespace Songify_Slim
     /// </summary>
     public partial class Window_Patchnotes
     {
-        GitHubClient client;
-        List<ReleaseObject> _releaseList = new List<ReleaseObject>();
         Markdown engine = new Markdown();
-        
+
         public Window_Patchnotes()
         {
             InitializeComponent();
-            client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
             Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
             foreach (Release release in releases.Result)
             {
-                LbxVersions.Items.Add(new ReleaseObject() { Version = release.TagName, Content = release.Body });
+                LbxVersions.Items.Add(new ReleaseObject() { Version = release.TagName, Content = release.Body, URL = release.HtmlUrl});
             }
 
             LbxVersions.SelectedIndex = 0;
@@ -49,13 +47,20 @@ namespace Songify_Slim
             engine.HyperlinkCommand.CanExecute(true);
             document.FontFamily = new FontFamily("Sogeo UI");
             RtbPatchnotes.Document = document;
+            string uri = (LbxVersions.SelectedItem as ReleaseObject)?.URL;
+            Hyperlink.NavigateUri = new Uri(uri);
         }
 
         private class ReleaseObject
         {
             public string Version { get; set; }
             public string Content { get; set; }
+            public string URL { get; set; }
+        }
 
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start((sender as Hyperlink).NavigateUri.ToString());
         }
     }
 }

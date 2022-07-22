@@ -263,6 +263,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
+
                 <Grid>
                     <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
                              VerticalAlignment="Top" Width="225" Margin="250,1,0,0"
@@ -296,19 +297,22 @@
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="470" Height="36" />
-                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="10,168,11,0">
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Top" Margin="0,168,10,0">
                         <DockPanel >
                             <Label Content="Minimum user level required for SR" HorizontalAlignment="Left"
                                    VerticalAlignment="Center"  />
                             <ComboBox x:Name="CbxUserLevels" Width="135" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right"/>
                         </DockPanel>
-                        <DockPanel Margin="0,6,0,0">
-                            <Label Content="{x:Static local:Resources.sw_SpotifySR_MaxReq}" HorizontalAlignment="Left"
-                           VerticalAlignment="Center" Margin="0,0,0,0" />
-                            <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
-                                            NumericInputMode="Numbers" Margin="0,0,0,0"
-                                            ValueChanged="NudMaxReq_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+                        <DockPanel Margin="0,6,0,0" LastChildFill="False">
+                            <Label Content="Max SR per user (based on user level)" HorizontalAlignment="Left"
+                                       VerticalAlignment="Center" Margin="0,0,0,0" />
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <ComboBox SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0"/>
+                                <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
+                                                        NumericInputMode="Numbers" Margin="0,0,0,0"
+                                                        ValueChanged="NudMaxReq_ValueChanged" Height="28"
+                                                        Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number"/>
+                            </StackPanel>
                         </DockPanel>
                         <DockPanel Margin="0,6,0,0">
                             <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
@@ -327,10 +331,7 @@
                                             ValueChanged="NudMaxlength_ValueChanged" Height="28"
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
                         </DockPanel>
-                        
                     </StackPanel>
-
-
                 </Grid>
             </TabItem>
             <TabItem Header="Config">

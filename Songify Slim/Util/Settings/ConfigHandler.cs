@@ -1,5 +1,6 @@
 ﻿using Songify_Slim.Util.Settings;
 using System;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -168,6 +169,12 @@ namespace Songify_Slim
                         config.UseOwnApp = ToBoolean(node.Attributes["ownApp"] != null ? node.Attributes["ownApp"].Value : Settings.UseOwnApp.ToString());
                         config.UserBlacklist = node.Attributes["userblacklist"] != null ? node.Attributes["userblacklist"].Value : Settings.UserBlacklist;
                         config.Uuid = node.Attributes["uuid"] != null ? node.Attributes["uuid"].Value : Settings.Uuid;
+                        config.TwSrMaxReqEveryone = ToInt32(node.Attributes["twsrmaxreqeveryone"] != null ? node.Attributes["twsrmaxreqeveryone"].Value : Settings.TwSrMaxReqEveryone.ToString(CultureInfo.CurrentCulture));
+                        config.TwSrMaxReqVip = ToInt32(node.Attributes["twsrmaxreqvip"] != null ? node.Attributes["twsrmaxreqvip"].Value : Settings.TwSrMaxReqVip.ToString(CultureInfo.CurrentCulture));
+                        config.TwSrMaxReqSubscriber = ToInt32(node.Attributes["twsrmaxreqsubscriber"] != null ? node.Attributes["twsrmaxreqsubscriber"].Value : Settings.TwSrMaxReqSubscriber.ToString(CultureInfo.CurrentCulture));
+                        config.TwSrMaxReqVip = ToInt32(node.Attributes["twsrmaxreqvip"] != null ? node.Attributes["twsrmaxreqvip"].Value : Settings.TwSrMaxReqVip.ToString(CultureInfo.CurrentCulture));
+                        config.TwSrMaxReqModerator = ToInt32(node.Attributes["twsrmaxreqmoderator"] != null ? node.Attributes["twsrmaxreqmoderator"].Value : Settings.TwSrMaxReqModerator.ToString(CultureInfo.CurrentCulture));
+                        config.TwSrMaxReqBroadcaster = ToInt32(node.Attributes["twsrmaxreqbroadcaster"] != null ? node.Attributes["twsrmaxreqbroadcaster"].Value : Settings.TwSrMaxReqBroadcaster.ToString(CultureInfo.CurrentCulture));
                     }
 
                     //Set the config object to the current config
@@ -239,6 +246,11 @@ namespace Songify_Slim
         public int SpaceCount { get; set; }
         public int TwSrCooldown { get; set; }
         public int TwSrMaxReq { get; set; }
+        public int TwSrMaxReqEveryone { get; set; }
+        public int TwSrMaxReqVip { get; set; }
+        public int TwSrMaxReqSubscriber { get; set; }
+        public int TwSrMaxReqModerator { get; set; }
+        public int TwSrMaxReqBroadcaster { get; set; }
         public string AccessToken { get; set; }
         public string ArtistBlacklist { get; set; }
         public string BotRespBlacklist { get; set; }
