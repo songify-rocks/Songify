@@ -332,7 +332,7 @@ namespace Songify_Slim.Util.Songify
             {
                 case "!skip":
                     {
-                        if(_skipCooldown)
+                        if (_skipCooldown)
                             return;
                         string msg = "";
                         int count = 0;
@@ -526,6 +526,7 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{title}", "");
                 response = response.Replace("{maxreq}", "");
                 response = response.Replace("{errormsg}", "");
+                response = response.Replace("{maxlength}", Settings.Settings.MaxSongLength.ToString());
                 response = CleanFormatString(response);
 
                 Client.SendMessage(e.ChatMessage.Channel, response);

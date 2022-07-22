@@ -1,0 +1,27 @@
+﻿<controls:MetroWindow x:Class="Songify_Slim.Window_Patchnotes"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Songify_Slim"
+        mc:Ignorable="d"
+        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        Title="Patch Notes" Height="450" Width="800" ShowMaxRestoreButton="False" ShowMinButton="False" Loaded="MetroWindow_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Column="0" >
+            <Label Content ="Version" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top"></Label>
+            <ListBox DisplayMemberPath="Version" SelectedValuePath="Content" x:Name="LbxVersions" Width="100" Margin="6" VerticalAlignment="Stretch" SelectionChanged="LbxVersions_SelectionChanged" DockPanel.Dock="Bottom"></ListBox>
+        </DockPanel>
+        <DockPanel Grid.Column="1">
+            <Label Content ="Changes" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top"></Label>
+            <ScrollViewer Margin="6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
+                <RichTextBox x:Name="RtbPatchnotes"  IsReadOnly="True" Margin="6" VerticalAlignment="Stretch" FontFamily="Segoe UI"></RichTextBox>
+            </ScrollViewer>
+        </DockPanel>
+    </Grid>
+</controls:MetroWindow>

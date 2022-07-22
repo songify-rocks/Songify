@@ -724,6 +724,21 @@ namespace Songify_Slim
             wQ.Show();
         }
 
+        private void BtnPatchNotes_Click(object sender, RoutedEventArgs e)
+        {
+            // Check if the patch notes window is already open, if not open it, else switch to it
+            if (IsWindowOpen<Window_Patchnotes>())
+            {
+                Window_Patchnotes wPN = (Window_Patchnotes)Window.GetWindow(this);
+                wPN.Activate();
+            }
+            else
+            {
+                Window_Patchnotes wPN = new Window_Patchnotes();
+                wPN.Show();
+            }
+        }
+
         private void SetFetchTimer()
         {
             _ = GetCurrentSongAsync();

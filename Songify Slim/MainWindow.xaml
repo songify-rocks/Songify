@@ -110,7 +110,8 @@
             <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                <MenuItem Header="Patch notes" Click="BtnPatchNotes_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
                     <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
                     <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
                     <MenuItem Header="Discord" Click="BtnDiscord_Click" />
@@ -145,7 +146,7 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser"
                           Click="BtnHistory_Click" />
             </MenuItem>
-            
+
             <MenuItem Click="BtnPaypal_Click" Background="Transparent">
                 <MenuItem.HeaderTemplate>
                     <DataTemplate>
