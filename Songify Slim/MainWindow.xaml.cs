@@ -939,12 +939,20 @@ namespace Songify_Slim
                         CurrSong = CurrSong.Replace("{{", "");
                         CurrSong = CurrSong.Replace("}}", "");
                         CurrSong = CurrSong.Replace("{req}", rq.Requester);
+
+                        CurrSongTwitch = CurrSongTwitch.Replace("{{", "");
+                        CurrSongTwitch = CurrSongTwitch.Replace("}}", "");
+                        CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.Requester);
                     }
                     else
                     {
                         int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
                         int end = CurrSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSong = CurrSong.Remove(start, end - start);
+
+                        start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
+                        end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                        if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
                     }
                 }
                 else
@@ -954,6 +962,10 @@ namespace Songify_Slim
                         int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
                         int end = CurrSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSong = CurrSong.Remove(start, end - start);
+
+                        start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
+                        end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                        if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
                     }
                     catch (Exception ex)
                     {
