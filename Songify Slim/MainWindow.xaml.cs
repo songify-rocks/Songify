@@ -665,6 +665,7 @@ namespace Songify_Slim
         {
             Properties.Settings.Default.UpgradeRequired = true;
             Properties.Settings.Default.Save();
+            Application.Current.Shutdown();
         }
 
         private void MetroWindowStateChanged(object sender, EventArgs e)

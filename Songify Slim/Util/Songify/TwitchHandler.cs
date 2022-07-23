@@ -557,7 +557,7 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
                 response = response.Replace("{artist}", "");
                 response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", Settings.Settings.TwSrMaxReq.ToString());
+                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(e.ChatMessage)}");
                 response = response.Replace("{errormsg}", "");
                 response = CleanFormatString(response);
                 Client.SendMessage(e.ChatMessage.Channel, response);
@@ -622,6 +622,28 @@ namespace Songify_Slim.Util.Songify
                     //(qw as Window_Queue).dgv_Queue.ItemsSource.
                     (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
             });
+        }
+
+        private static int GetMaxRequestsForUserlevel(ChatMessage chatMessage)
+        {
+            switch ((TwitchUserLevels)CheckUserLevel(chatMessage))
+            {
+                case TwitchUserLevels.Everyone:
+                    return Settings.Settings.TwSrMaxReqEveryone;
+                case TwitchUserLevels.Vip:
+                    return Settings.Settings.TwSrMaxReqVip;
+
+                case TwitchUserLevels.Subscriber:
+                    return Settings.Settings.TwSrMaxReqSubscriber;
+
+                case TwitchUserLevels.Moderator:
+                    return Settings.Settings.TwSrMaxReqModerator;
+
+                case TwitchUserLevels.Broadcaster:
+                    return 999;
+                default:
+                    return 0;
+            }
         }
 
         private static string FormattedTime(int duration)
