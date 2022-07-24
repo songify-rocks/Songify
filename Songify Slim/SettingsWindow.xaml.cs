@@ -40,15 +40,19 @@ namespace Songify_Slim
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
             foreach (var value in values)
             {
-                if (value.ToString() == "Broadcaster") continue;
-                if (value.ToString() == "Everyone")
+                switch (value.ToString())
                 {
-                    CbxUserLevels.Items.Add(value);
-                    CbxUserLevelsMaxReq.Items.Add("Viewer (non vip/sub)");
-                    continue;
+                    case "Broadcaster":
+                        continue;
+                    case "Everyone":
+                        CbxUserLevels.Items.Add(value);
+                        CbxUserLevelsMaxReq.Items.Add("Viewer (non vip/sub)");
+                        continue;
+                    default:
+                        CbxUserLevels.Items.Add(value);
+                        CbxUserLevelsMaxReq.Items.Add(value);
+                        break;
                 }
-                CbxUserLevels.Items.Add(value);
-                CbxUserLevelsMaxReq.Items.Add(value);
             }
 
             // Sets all the controls from settings
@@ -89,7 +93,8 @@ namespace Songify_Slim
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             TxtbxOutputformat2.Text = Settings.OutputString2;
-            CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel;
+            CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
+
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          ApiHandler.Spotify.GetPrivateProfile().DisplayName;
@@ -208,14 +213,12 @@ namespace Songify_Slim
                     throw new InvalidOperationException());
             else
                 Clipboard.SetDataObject(Settings.Directory + "\\Songify.txt");
-            Lbl_Status.Content = @"Path copied to clipboard.";
         }
 
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
             Clipboard.SetDataObject("https://songify.rocks/getsong.php?id=" + Settings.Uuid);
-            Lbl_Status.Content = @"URL copied to clipboard.";
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
@@ -619,6 +622,9 @@ namespace Songify_Slim
 
         private void CbxUserLevelsMaxReq_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+
             NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
             switch ((TwitchHandler.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
             {
