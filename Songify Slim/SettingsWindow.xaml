@@ -10,7 +10,7 @@
                       Title="Settings" Height="376.058" Width="662.643" Loaded="SettingsWindow_Loaded"
                       ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
-        <controls:MetroTabControl Margin="10,10,10,21" TabStripPlacement="Left">
+        <controls:MetroTabControl Margin="10,0,10,20" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">
                 <Grid>
                     <Label Content="{x:Static local:Resources.sw_tcSystem_lblLangauge}"
@@ -199,7 +199,7 @@
                               Toggled="Chbx_TwAutoconnect_Checked" Width="116" />
 
                     <Button x:Name="btn_Botresponse"
-                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,276,10,10" Click="btn_Botresponse_Click" />
+                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Margin="10,286,10,10" Click="btn_Botresponse_Click" />
                     <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Margin="10,96,0,0" Width="293" Content="Automatically announce song to chat" Toggled="tgl_AnnounceInChat_Toggled"/>
 
                     <StackPanel Orientation="Vertical" Margin="10,130,10,0">
@@ -263,8 +263,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Spotify SR">
-
-                <Grid>
+                <Grid Margin="0,9,0,0">
                     <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
                              VerticalAlignment="Top" Width="225" Margin="250,1,0,0"
                              controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" />
@@ -301,17 +300,17 @@
                         <DockPanel >
                             <Label Content="Minimum user level required for SR" HorizontalAlignment="Left"
                                    VerticalAlignment="Center"  />
-                            <ComboBox x:Name="CbxUserLevels" Width="135" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right"/>
+                            <ComboBox x:Name="CbxUserLevels" Width="120" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right"/>
                         </DockPanel>
-                        <DockPanel Margin="0,6,0,0" LastChildFill="False">
-                            <Label Content="Max SR per user (based on user level)" HorizontalAlignment="Left"
+                        <DockPanel Visibility="Visible" Margin="0,6,0,0" LastChildFill="False">
+                            <Label Content="Max SR / User (based on user level)" HorizontalAlignment="Left"
                                        VerticalAlignment="Center" Margin="0,0,0,0" />
                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <ComboBox SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="120" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0"/>
+                                <ComboBox Height="28"  SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0"/>
                                 <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
                                                         NumericInputMode="Numbers" Margin="0,0,0,0"
                                                         ValueChanged="NudMaxReq_ValueChanged" Height="28"
-                                                        Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="135" UpDownButtonsWidth="22" DecimalPointCorrection="Number"/>
+                                                        Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="120" UpDownButtonsWidth="22" DecimalPointCorrection="Number"/>
                             </StackPanel>
                         </DockPanel>
                         <DockPanel Margin="0,6,0,0">
@@ -320,7 +319,7 @@
                             <controls:NumericUpDown x:Name="NudCooldown" Minimum="1" Maximum="100" Interval="1"
                                             NumericInputMode="Numbers" Margin="0,0,0,0"
                                             ValueChanged="NudCooldown_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
 
                         </DockPanel>
                         <DockPanel Margin="0,6,0,0">
@@ -329,7 +328,7 @@
                             <controls:NumericUpDown x:Name="NudMaxlength" Minimum="1" Maximum="100" Interval="1"
                                             NumericInputMode="Numbers"
                                             ValueChanged="NudMaxlength_ValueChanged" Height="28"
-                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="135" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
+                                            Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="120" DecimalPointCorrection="Number" DockPanel.Dock="Right" />
                         </DockPanel>
                     </StackPanel>
                 </Grid>

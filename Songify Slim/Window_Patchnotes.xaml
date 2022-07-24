@@ -27,7 +27,7 @@
                 </TextBlock>
             </StackPanel>
             <ScrollViewer Margin="6,0,6,6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
-                <RichTextBox x:Name="RtbPatchnotes"  IsReadOnly="True" Margin="6" VerticalAlignment="Stretch" FontFamily="Segoe UI"></RichTextBox>
+                <RichTextBox BorderThickness="0" x:Name="RtbPatchnotes"  IsReadOnly="True" Margin="6" VerticalAlignment="Stretch" FontFamily="Segoe UI"></RichTextBox>
             </ScrollViewer>
         </DockPanel>
     </Grid>

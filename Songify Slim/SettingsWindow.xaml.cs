@@ -41,10 +41,16 @@ namespace Songify_Slim
             foreach (var value in values)
             {
                 if (value.ToString() == "Broadcaster") continue;
+                if (value.ToString() == "Everyone")
+                {
+                    CbxUserLevels.Items.Add(value);
+                    CbxUserLevelsMaxReq.Items.Add("Viewer (non vip/sub)");
+                    continue;
+                }
                 CbxUserLevels.Items.Add(value);
                 CbxUserLevelsMaxReq.Items.Add(value);
             }
-            
+
             // Sets all the controls from settings
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
             TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
