@@ -1,6 +1,7 @@
 ﻿using Songify_Slim.Util.Settings;
 using System;
 using System.Configuration;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
@@ -119,6 +120,8 @@ namespace Songify_Slim
                         config.BotCmdNext = ToBoolean(node.Attributes["botcmdnext"] != null ? node.Attributes["botcmdnext"].Value : Settings.BotCmdNext.ToString());
                         config.BotCmdPos = ToBoolean(node.Attributes["botcmdpos"] != null ? node.Attributes["botcmdpos"].Value : Settings.BotCmdPos.ToString());
                         config.BotCmdSkip = ToBoolean(node.Attributes["botcmdskip"] != null ? node.Attributes["botcmdskip"].Value : Settings.BotCmdSkip.ToString());
+                        config.BotCmdSkipVote = ToBoolean(node.Attributes["botcmdskipvote"] != null ? node.Attributes["botcmdskipvote"].Value : Settings.BotCmdSkipVote.ToString());
+                        config.BotCmdSkipVoteCount = ToInt32(node.Attributes["botcmdskipvotecount"] != null ? node.Attributes["botcmdskipvotecount"].Value : Settings.BotCmdSkipVoteCount.ToString());
                         config.BotCmdSong = ToBoolean(node.Attributes["botcmdsong"] != null ? node.Attributes["botcmdsong"].Value : Settings.BotCmdSong.ToString());
                         config.BotRespBlacklist = node.Attributes["clientsecret"] != null ? node.Attributes["clientsecret"].Value : Settings.ClientSecret;
                         config.BotRespError = node.Attributes["botresperror"] != null ? node.Attributes["botresperror"].Value : Settings.BotRespError;
@@ -224,6 +227,7 @@ namespace Songify_Slim
         public bool BotCmdNext { get; set; }
         public bool BotCmdPos { get; set; }
         public bool BotCmdSkip { get; set; }
+        public bool BotCmdSkipVote { get; set; }
         public bool BotCmdSong { get; set; }
         public bool CustomPauseTextEnabled { get; set; }
         public bool DownloadCover { get; set; }
@@ -236,21 +240,22 @@ namespace Songify_Slim
         public bool TwAutoConnect { get; set; }
         public bool TwSrCommand { get; set; }
         public bool TwSrReward { get; set; }
-        public int TwSrUserLevel { get; set; }
         public bool Upload { get; set; }
         public bool UploadHistory { get; set; }
         public bool UseOwnApp { get; set; }
+        public int BotCmdSkipVoteCount { get; set; }
         public int MaxSongLength { get; set; }
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int SpaceCount { get; set; }
         public int TwSrCooldown { get; set; }
         public int TwSrMaxReq { get; set; }
-        public int TwSrMaxReqEveryone { get; set; }
-        public int TwSrMaxReqVip { get; set; }
-        public int TwSrMaxReqSubscriber { get; set; }
-        public int TwSrMaxReqModerator { get; set; }
         public int TwSrMaxReqBroadcaster { get; set; }
+        public int TwSrMaxReqEveryone { get; set; }
+        public int TwSrMaxReqModerator { get; set; }
+        public int TwSrMaxReqSubscriber { get; set; }
+        public int TwSrMaxReqVip { get; set; }
+        public int TwSrUserLevel { get; set; }
         public string AccessToken { get; set; }
         public string ArtistBlacklist { get; set; }
         public string BotRespBlacklist { get; set; }
@@ -271,6 +276,7 @@ namespace Songify_Slim
         public string NbUser { get; set; }
         public string NbUserId { get; set; }
         public string OutputString { get; set; }
+        public string OutputString2 { get; set; }
         public string RefreshToken { get; set; }
         public string SpotifyDeviceId { get; set; }
         public string Theme { get; set; }
@@ -280,6 +286,5 @@ namespace Songify_Slim
         public string TwRewardId { get; set; }
         public string UserBlacklist { get; set; }
         public string Uuid { get; set; }
-        public string OutputString2 { get; set; }
     }
 }

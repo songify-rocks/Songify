@@ -860,5 +860,29 @@ namespace Songify_Slim.Properties {
                 this["UpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool bot_cmd_skip_vote {
+            get {
+                return ((bool)(this["bot_cmd_skip_vote"]));
+            }
+            set {
+                this["bot_cmd_skip_vote"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int bot_cmd_skip_vote_count {
+            get {
+                return ((int)(this["bot_cmd_skip_vote_count"]));
+            }
+            set {
+                this["bot_cmd_skip_vote_count"] = value;
+            }
+        }
     }
 }

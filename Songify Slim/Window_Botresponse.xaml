@@ -29,26 +29,56 @@
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="10,21,10,0">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="!song" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="341" VerticalAlignment="Center"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                            <TextBlock Text="!pos" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                            <TextBlock Text="!next" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                            <TextBlock Text="!skip" Width="70" VerticalAlignment="Center"/>
-                            <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)&#x0a;Starts a vote if used by regulars (5 votes needed)" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                            <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                        </StackPanel>
+                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="!song" Width="70" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="341" VerticalAlignment="Center"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                <TextBlock Text="!pos" Width="70" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
+                            </StackPanel>
+                        </Border>
+                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                <TextBlock Text="!next" Width="70" VerticalAlignment="Center"/>
+                                <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border BorderThickness="0,0,0,0" Margin="0,0,0,0" Padding="0,0,0,6">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Stretch">
+                                    <TextBlock Text="!skip" Width="70" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                                    <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                    <TextBlock Text="Starts a vote if used by regular viewers" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="70,0,0,0"/>
+                                    <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Width="79"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"  Margin="0,0,94,0" HorizontalAlignment="Right">
+                                    <Label Content="Number of votes needed"/>
+                                    <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Right" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Grid>
             </TabItem>

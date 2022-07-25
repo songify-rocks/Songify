@@ -62,6 +62,29 @@ namespace Songify_Slim.Util.Settings
             set => SetBotCmdSkip(value);
         }
 
+        public static bool BotCmdSkipVote
+        {
+            get => GetBotCmdSkipVote();
+            set => SetBotCmdSkipVote(value);
+        }
+
+        public static int BotCmdSkipVoteCount
+        {
+            get => GetBotCmdSkipVoteCount();
+            set => SetBotCmdSkipVoteCount(value);
+        }
+
+        private static void SetBotCmdSkipVoteCount(int value)
+        {
+            Properties.Settings.Default.bot_cmd_skip_vote_count = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetBotCmdSkipVoteCount()
+        {
+            return Properties.Settings.Default.bot_cmd_skip_vote_count;
+        }
+
         public static bool BotCmdSong
         {
             get => GetBotCmdSong();
@@ -475,6 +498,8 @@ namespace Songify_Slim.Util.Settings
                 BotCmdNext = GetBotCmdNext(),
                 BotCmdPos = GetBotCmdPos(),
                 BotCmdSkip = GetBotCmdSkip(),
+                BotCmdSkipVote = GetBotCmdSkipVote(),
+                BotCmdSkipVoteCount = GetBotCmdSkipVoteCount(),
                 BotCmdSong = GetBotCmdSong(),
                 BotRespBlacklist = GetBot_Resp_Blacklist(),
                 BotRespError = GetBot_Resp_Error(),
@@ -530,6 +555,7 @@ namespace Songify_Slim.Util.Settings
                 UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
                 Uuid = GetUuid(),
+                
             };
         }
 
@@ -593,6 +619,8 @@ namespace Songify_Slim.Util.Settings
             SetUseOwnApp(config.UseOwnApp);
             SetUserBlacklist(config.UserBlacklist);
             SetUuid(config.Uuid);
+            SetBotCmdSkipVote(config.BotCmdSkipVote);
+            SetBotCmdSkipVoteCount(config.BotCmdSkipVoteCount);
             ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
         }
 
@@ -685,6 +713,11 @@ namespace Songify_Slim.Util.Settings
         private static bool GetBotCmdSkip()
         {
             return Properties.Settings.Default.bot_cmd_skip;
+        }
+
+        private static bool GetBotCmdSkipVote()
+        {
+            return Properties.Settings.Default.bot_cmd_skip_vote;
         }
 
         private static bool GetBotCmdSong()
@@ -1020,6 +1053,12 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBotCmdSkipVote(bool value)
+        {
+            Properties.Settings.Default.bot_cmd_skip_vote = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetBotCmdSong(bool value)
         {
             Properties.Settings.Default.bot_cmd_song = value;
@@ -1127,6 +1166,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.outputString2 = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetPosX(double value)
         {
             Properties.Settings.Default.PosX = value;
@@ -1252,6 +1292,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.TwSRUserLevel = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetUpload(bool uploadsong)
         {
             Properties.Settings.Default.uploadSonginfo = uploadsong;

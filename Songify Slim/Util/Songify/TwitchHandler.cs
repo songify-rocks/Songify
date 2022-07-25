@@ -348,6 +348,8 @@ namespace Songify_Slim.Util.Songify
 
                         if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (count > 0 && name == e.ChatMessage.DisplayName))
                         {
+                            if (!Settings.Settings.BotCmdSkip)
+                                return;
                             msg = Settings.Settings.BotRespModSkip;
                             msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                             ErrorResponse response = await ApiHandler.SkipSong();
@@ -364,6 +366,8 @@ namespace Songify_Slim.Util.Songify
                         }
                         else
                         {
+                            if (!Settings.Settings.BotCmdSkipVote)
+                                return;
                             //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
                             if (!SkipVotes.Contains(e.ChatMessage.DisplayName))
                             {
@@ -371,11 +375,11 @@ namespace Songify_Slim.Util.Songify
 
                                 msg = Settings.Settings.BotRespVoteSkip;
                                 msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/5");
+                                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
 
                                 Client.SendMessage(e.ChatMessage.Channel, msg);
 
-                                if (SkipVotes.Count >= 5)
+                                if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                                 {
                                     ErrorResponse response = await ApiHandler.SkipSong();
                                     if (response.Error != null)

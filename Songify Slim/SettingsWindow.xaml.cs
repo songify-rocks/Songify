@@ -32,7 +32,7 @@ namespace Songify_Slim
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
         }
-
+        
         public void SetControls()
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
@@ -81,10 +81,6 @@ namespace Songify_Slim
             tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
-            tgl_botcmd_next.IsOn = Settings.BotCmdNext;
-            tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
-            tgl_botcmd_skip.IsOn = Settings.BotCmdSkip;
-            tgl_botcmd_song.IsOn = Settings.BotCmdSong;
             Tglsw_Spotify.IsOn = Settings.UseOwnApp;
             txtbx_RewardID.Text = Settings.TwRewardId;
             txtbx_twChannel.Text = Settings.TwChannel;
@@ -530,26 +526,7 @@ namespace Songify_Slim
         {
             Settings.AnnounceInChat = tgl_AnnounceInChat.IsOn;
         }
-
-        private void tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdPos = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void tgl_botcmd_skip_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void tgl_botcmd_song_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSong = ((ToggleSwitch)sender).IsOn;
-        }
+        
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
