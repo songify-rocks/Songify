@@ -7,79 +7,84 @@
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       Title="Bot Responses &amp; Commands" Height="332.266" Width="629" Loaded="MetroWindow_Loaded"
-                      ResizeMode="NoResize" Closed="MetroWindow_Closed">
+                      ResizeMode="CanResizeWithGrip" Closed="MetroWindow_Closed">
     <Grid>
-        <controls:MetroTabControl HorizontalAlignment="Left" Height="303" VerticalAlignment="Top" Width="623">
+        <controls:MetroTabControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
             <TabItem Header="Responses">
                 <Grid>
-                    <Label Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="0"
-                        VerticalAlignment="Top" />
-                    <ScrollViewer HorizontalAlignment="Left" Height="171" Margin="0,26,0,0" VerticalAlignment="Top" Width="623"
-                      d:DesignHeight="800">
-                        <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="0"
+                           VerticalAlignment="Top" />
+                    <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
+                        <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                     </ScrollViewer>
-                    <TextBox x:Name="lbl_Preview" VerticalAlignment="Top" Margin="10,212,15,0" Height="41" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" />
+                    <TextBox Grid.Row="2" x:Name="lbl_Preview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41" VerticalAlignment="Bottom" />
                 </Grid>
             </TabItem>
             <TabItem Header="Commands">
                 <Grid>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="10,0">
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"/>
-                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" Width="207" FontStyle="Italic" FontSize="10"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Vertical" Margin="10,21,10,0">
-                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
-                            </Border.BorderBrush>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="!song" Width="70" VerticalAlignment="Center"/>
-                                <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" Width="341" VerticalAlignment="Center"/>
-                                <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
-                            </Border.BorderBrush>
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                <TextBlock Text="!pos" Width="70" VerticalAlignment="Center"/>
-                                <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                                <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" />
-                            </StackPanel>
-                        </Border>
-                        <Border BorderThickness="0,0,0,1" Margin="0,0,0,0" Padding="0,0,0,6">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
-                            </Border.BorderBrush>
-                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
-                                <TextBlock Text="!next" Width="70" VerticalAlignment="Center"/>
-                                <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                                <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}"/>
-                            </StackPanel>
-                        </Border>
-                        <Border BorderThickness="0,0,0,0" Margin="0,0,0,0" Padding="0,0,0,6">
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
-                            </Border.BorderBrush>
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Stretch">
-                                    <TextBlock Text="!skip" Width="70" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                                    <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                                    <TextBlock Text="Starts a vote if used by regular viewers" Width="341" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="70,0,0,0"/>
-                                    <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Width="79"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal"  Margin="0,0,94,0" HorizontalAlignment="Right">
-                                    <Label Content="Number of votes needed"/>
-                                    <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Right" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"  Grid.Row="0" Grid.Column="0" Margin="6,0,0,0" Padding="0,0,0,0"/>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"
+                                   Grid.Row="0" Grid.Column="1"/>
+                    <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" FontStyle="Italic" FontSize="10"
+                                   Grid.Row="0" Grid.Column="2" Width="106"/>
+                    <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                        </Border.BorderBrush>
+                    </Border>
+                    <TextBlock Grid.Column="0" Text="!song" Width="70" VerticalAlignment="Center" Grid.Row="1" Margin="6,0,0,0"/>
+                    <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="1" Grid.Column="2" MinWidth="0"/>
+                    <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="3" >
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                        </Border.BorderBrush>
+                    </Border>
+                    <TextBlock Grid.Column="0"  Text="!pos" Width="70" VerticalAlignment="Center" Grid.Row="2" Margin="6,0,0,0"/>
+                    <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="2" Grid.Column="2" MinWidth="0" />
+                    <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="4" >
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                        </Border.BorderBrush>
+                    </Border>
+                    <TextBlock Grid.Column="0" Text="!next" Width="70" VerticalAlignment="Center" Grid.Row="3" Margin="6,0,0,0"/>
+                    <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="3" Grid.Column="2" MinWidth="0"/>
+                    <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="5" >
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                        </Border.BorderBrush>
+                    </Border>
+                    <TextBlock Grid.Column="0" Text="!skip" Width="70" VerticalAlignment="Center" Grid.Row="4" Margin="6,0,0,0"/>
+                    <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="4" Grid.Column="2"/>
+
+                    <TextBlock Grid.Column="0" Text="!voteskip" Width="70" VerticalAlignment="Center" Grid.Row="5" Margin="6,0,0,0" Grid.RowSpan="2"/>
+                    <TextBlock Text="Starts a vote if used by regular viewers" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="5" Grid.Column="2"/>
+
+                    <Label Content="Number of votes needed" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
+                    <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="6" Grid.Column="2" />
                 </Grid>
             </TabItem>
         </controls:MetroTabControl>
