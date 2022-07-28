@@ -40,7 +40,10 @@ namespace Songify_Slim
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
-            
+
+            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
+                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+
             base.OnStartup(e);
         }
 
@@ -63,9 +66,6 @@ namespace Songify_Slim
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
-                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-
             MainWindow main = new MainWindow();
             main.Show();
         }

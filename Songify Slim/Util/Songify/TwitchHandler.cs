@@ -119,8 +119,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
-                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
-                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
+                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
+                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
                 }
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch");
@@ -147,8 +147,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Connected to Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = false;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
-                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
-                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
+                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
+                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
                 }
             });
             Logger.LogStr("TWITCH: Connected to Twitch");
@@ -332,25 +332,27 @@ namespace Songify_Slim.Util.Songify
             {
                 case "!skip":
                     {
+                        if (!Settings.Settings.BotCmdSkip)
+                            return;
+
                         if (_skipCooldown)
                             return;
-                        string msg = "";
+
                         int count = 0;
                         string name = "";
+                        
                         Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            int? reqListCount = ((MainWindow)Application.Current.MainWindow)?.ReqList.Count;
-                            if (reqListCount != null)
-                                count = (int)reqListCount;
-                            if (count > 0)
-                                name = ((MainWindow)Application.Current.MainWindow)?.ReqList.First().Requester;
-                        });
-
+                           {
+                               int? reqListCount = ((MainWindow)Application.Current.MainWindow)?.ReqList.Count;
+                               if (reqListCount != null)
+                                   count = (int)reqListCount;
+                               if (count > 0)
+                                   name = ((MainWindow)Application.Current.MainWindow)?.ReqList.First().Requester;
+                           });
+                        
                         if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (count > 0 && name == e.ChatMessage.DisplayName))
                         {
-                            if (!Settings.Settings.BotCmdSkip)
-                                return;
-                            msg = Settings.Settings.BotRespModSkip;
+                            string msg = Settings.Settings.BotRespModSkip;
                             msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                             ErrorResponse response = await ApiHandler.SkipSong();
                             if (response.Error != null)
@@ -364,40 +366,42 @@ namespace Songify_Slim.Util.Songify
                                 SkipCooldownTimer.Start();
                             }
                         }
-                        else
+                        break;
+                    }
+                case "!voteskip":
+                    {
+                        if (!Settings.Settings.BotCmdSkipVote)
+                            return;
+                        //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
+                        if (!SkipVotes.Contains(e.ChatMessage.DisplayName))
                         {
-                            if (!Settings.Settings.BotCmdSkipVote)
-                                return;
-                            //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
-                            if (!SkipVotes.Contains(e.ChatMessage.DisplayName))
+                            SkipVotes.Add(e.ChatMessage.DisplayName);
+
+                            string msg = Settings.Settings.BotRespVoteSkip;
+                            msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                            msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
+
+                            Client.SendMessage(e.ChatMessage.Channel, msg);
+
+                            if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                             {
-                                SkipVotes.Add(e.ChatMessage.DisplayName);
-
-                                msg = Settings.Settings.BotRespVoteSkip;
-                                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
-
-                                Client.SendMessage(e.ChatMessage.Channel, msg);
-
-                                if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
+                                ErrorResponse response = await ApiHandler.SkipSong();
+                                if (response.Error != null)
                                 {
-                                    ErrorResponse response = await ApiHandler.SkipSong();
-                                    if (response.Error != null)
-                                    {
-                                        Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
-                                    }
-                                    else
-                                    {
-                                        Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
-                                        _skipCooldown = true;
-                                        SkipCooldownTimer.Start();
-                                    }
-                                    SkipVotes.Clear();
+                                    Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
                                 }
+                                else
+                                {
+                                    Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+                                    _skipCooldown = true;
+                                    SkipCooldownTimer.Start();
+                                }
+                                SkipVotes.Clear();
                             }
                         }
                         break;
                     }
+
                 case "!song" when Settings.Settings.BotCmdSong:
                     {
                         string currsong = GetCurrentSong();

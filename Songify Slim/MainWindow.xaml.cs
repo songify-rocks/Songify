@@ -49,7 +49,7 @@ namespace Songify_Slim
     {
         #region Variables
         bool updated = false;
-        public readonly NotifyIcon NotifyIcon = new NotifyIcon();
+        public NotifyIcon notifyIcon = new NotifyIcon();
         public string _artist, _title;
         public string CurrSong, CurrSongTwitch;
         public List<RequestObject> ReqList = new List<RequestObject>();
@@ -69,7 +69,11 @@ namespace Songify_Slim
 
         public MainWindow()
         {
+            if (Settings.Systray) MinimizeToSysTray();
+
+            // start minimized in systray (hide)
             InitializeComponent();
+
             _songTimer.Elapsed += SongTimer_Elapsed;
 
             if (Properties.Settings.Default.UpgradeRequired)
@@ -82,19 +86,22 @@ namespace Songify_Slim
 
             if (updated)
             {
-                GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
-                Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
-                Release release = releases.Result[0];
-                string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-                Markdown engine = new Markdown();
-                FlowDocument document = engine.Transform(markdownTxt);
-                document.FontFamily = new FontFamily("Sogeo UI");
-                document.LineHeight = 30;
-                document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-                document.FontSize = 16;
-                rtbPatchnotes.Document = document;
-                tbVersion.Text = $"Songify Update {release.TagName}";
-                grdUpdate.Visibility = Visibility.Visible;
+                Task.Run(() =>
+                {
+                    GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
+                    Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
+                    Release release = releases.Result[0];
+                    string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
+                    Markdown engine = new Markdown();
+                    FlowDocument document = engine.Transform(markdownTxt);
+                    document.FontFamily = new FontFamily("Sogeo UI");
+                    document.LineHeight = 30;
+                    document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+                    document.FontSize = 16;
+                    rtbPatchnotes.Document = document;
+                    tbVersion.Text = $"Songify Update {release.TagName}";
+                    grdUpdate.Visibility = Visibility.Visible;
+                });
             }
         }
 
@@ -525,6 +532,9 @@ namespace Songify_Slim
             // If Systray is enabled [X] minimizes to systray
             if (!Settings.Systray)
             {
+                notifyIcon.Visible = false;
+                notifyIcon?.Dispose();
+                notifyIcon = null;
                 e.Cancel = false;
             }
             else
@@ -547,15 +557,12 @@ namespace Songify_Slim
         {
             Settings.PosX = Left;
             Settings.PosY = Top;
-            NotifyIcon.Visible = false;
-            NotifyIcon.Dispose();
         }
 
         private void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += MyHandler;
-
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
 
@@ -569,10 +576,6 @@ namespace Songify_Slim
             }
 
             Settings.MsgLoggingEnabled = false;
-
-            // Load Config file if one exists
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
-                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
 
             // Add sources to combobox
             AddSourcesToSourceBox();
@@ -588,8 +591,11 @@ namespace Songify_Slim
                     })
                 }),
                 new MenuItem("Show", (sender1, args1) => {
-                    Show();
-                    WindowState = WindowState.Normal;
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        Show();
+                        WindowState = WindowState.Normal;
+                    }));
                 }),
                 new MenuItem("Exit", (sender1, args1) => {
                     _forceClose = true;
@@ -597,27 +603,26 @@ namespace Songify_Slim
                 })
                 });
 
-            NotifyIcon.Icon = Properties.Resources.songify;
-            NotifyIcon.ContextMenu = _contextMenu;
-            NotifyIcon.Visible = true;
-            NotifyIcon.DoubleClick += (sender1, args1) =>
+            notifyIcon.Icon = Properties.Resources.songify;
+            notifyIcon.ContextMenu = _contextMenu;
+            notifyIcon.Visible = true;
+            notifyIcon.DoubleClick += (sender1, args1) =>
             {
-                Show();
-                WindowState = WindowState.Normal;
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    Show();
+                    WindowState = WindowState.Normal;
+                }));
             };
-            NotifyIcon.Text = @"Songify";
+            notifyIcon.Text = @"Songify";
 
             // set the current theme
             ThemeHandler.ApplyTheme();
-
-            // start minimized in systray (hide)
-            if (Settings.Systray) MinimizeToSysTray();
 
             // get the software version from assembly
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             _version = fvi.FileVersion;
-
 
             // generate UUID if not exists
             if (Settings.Uuid == "")
@@ -659,6 +664,7 @@ namespace Songify_Slim
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
             // automatically start fetching songs
             SetFetchTimer();
+
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -671,8 +677,24 @@ namespace Songify_Slim
         private void MetroWindowStateChanged(object sender, EventArgs e)
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
-            if (WindowState != WindowState.Minimized) return;
-            if (Settings.Systray) MinimizeToSysTray();
+            //if (WindowState != WindowState.Minimized) return;
+            //if (Settings.Systray) MinimizeToSysTray();
+            switch (this.WindowState)
+            {
+                case WindowState.Normal:
+                    break;
+                case WindowState.Minimized:
+                    if (Settings.Systray)
+                    {
+                        MinimizeToSysTray();
+                    }
+                    break;
+                case WindowState.Maximized:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
         }
 
         private void Mi_Blacklist_Click(object sender, RoutedEventArgs e)
@@ -727,8 +749,8 @@ namespace Songify_Slim
         private void MinimizeToSysTray()
         {
             // if the setting is set, hide window
-            Hide();
-            NotifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(Hide));
+            notifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
         }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
