@@ -500,6 +500,12 @@ namespace Songify_Slim.Util.Songify
             string response;
             // gets the track information using spotify api
             FullTrack track = ApiHandler.GetTrack(trackId);
+            if (track.IsPlayable != null && (bool)!track.IsPlayable)
+            {
+                Client.SendMessage(e.ChatMessage.Channel, "This track is not available in the streamers region.");
+                return;
+            }
+            
             string artists = "";
             for (int i = 0; i < track.Artists.Count; i++)
                 if (i != track.Artists.Count - 1)

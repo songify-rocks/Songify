@@ -86,22 +86,19 @@ namespace Songify_Slim
 
             if (updated)
             {
-                Task.Run(() =>
-                {
-                    GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
-                    Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
-                    Release release = releases.Result[0];
-                    string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-                    Markdown engine = new Markdown();
-                    FlowDocument document = engine.Transform(markdownTxt);
-                    document.FontFamily = new FontFamily("Sogeo UI");
-                    document.LineHeight = 30;
-                    document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-                    document.FontSize = 16;
-                    rtbPatchnotes.Document = document;
-                    tbVersion.Text = $"Songify Update {release.TagName}";
-                    grdUpdate.Visibility = Visibility.Visible;
-                });
+                GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
+                Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
+                Release release = releases.Result[0];
+                string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
+                Markdown engine = new Markdown();
+                FlowDocument document = engine.Transform(markdownTxt);
+                document.FontFamily = new FontFamily("Sogeo UI");
+                document.LineHeight = 30;
+                document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+                document.FontSize = 16;
+                rtbPatchnotes.Document = document;
+                tbVersion.Text = $"Songify Update {release.TagName}";
+                grdUpdate.Visibility = Visibility.Visible;
             }
         }
 

@@ -204,8 +204,9 @@ namespace Songify_Slim.Util.Songify
 
         public static FullTrack GetTrack(string id)
         {
+            var x = Spotify.GetPrivateProfile().Country;
             // Returns a Track-Object matching the song id
-            return Spotify.GetTrack(id);
+            return Spotify.GetTrack(id, x);
         }
 
         public static SearchItem FindTrack(string searchQuery)
