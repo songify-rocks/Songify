@@ -65,12 +65,13 @@ namespace Songify_Slim
         private string _songPath, _coverPath, _root, _coverTemp;
         private string _temp = "";
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private readonly WebClient _webClient = new WebClient();
         #endregion Variables
 
         public MainWindow()
         {
             if (Settings.Systray) MinimizeToSysTray();
-
+            _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             // start minimized in systray (hide)
             InitializeComponent();
 
@@ -318,7 +319,8 @@ namespace Songify_Slim
                         img_cover.Visibility = Visibility.Collapsed;
                 }));
         }
-        private void DownloadCover(string cover)
+        
+        private async void DownloadCover(string cover)
         {
             try
             {
@@ -343,10 +345,8 @@ namespace Songify_Slim
                         {
                             Uri uri = new Uri(cover);
                             // Downloads the album cover to the filesystem
-                            WebClient webClient = new WebClient();
-                            webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
-                            webClient.DownloadFileAsync(uri, _coverTemp);
-                            break;
+                            await _webClient.DownloadFileTaskAsync(uri, _coverTemp);
+                            return;
                         }
                         catch (Exception) when (i <= numberOfRetries)
                         {
@@ -841,8 +841,24 @@ namespace Songify_Slim
         {
             if (_coverPath != "" && _coverTemp != "")
             {
-                File.Delete(_coverPath);
-                File.Move(_coverTemp, _coverPath);
+                try
+                {
+                    File.Delete(_coverPath);
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine(exception);
+                }
+
+                try
+                {
+                    File.Move(_coverTemp, _coverPath);
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine(exception);
+                }
+
             }
 
 
@@ -855,13 +871,20 @@ namespace Songify_Slim
                     for (int i = 1; i < numberOfRetries; i++)
                         try
                         {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            image.UriSource = new Uri(_coverPath);
-                            image.EndInit();
-                            img_cover.Source = image;
+                            try
+                            {
+                                BitmapImage image = new BitmapImage();
+                                image.BeginInit();
+                                image.CacheOption = BitmapCacheOption.OnLoad;
+                                image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                                image.UriSource = new Uri(_coverPath);
+                                image.EndInit();
+                                img_cover.Source = image;
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                            }
                             break;
                         }
                         catch (Exception) when (i <= numberOfRetries)
@@ -1186,18 +1209,18 @@ namespace Songify_Slim
                 //Save Album Cover
                 if (Settings.DownloadCover) DownloadCover(rCover);
 
-                if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
-                    img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                        new Action(() =>
-                        {
-                            BitmapImage image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                            image.UriSource = new Uri(_coverPath);
-                            image.EndInit();
-                            img_cover.Source = image;
-                        }));
+                //if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
+                //    img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                //        new Action(() =>
+                //        {
+                //            BitmapImage image = new BitmapImage();
+                //            image.BeginInit();
+                //            image.CacheOption = BitmapCacheOption.OnLoad;
+                //            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                //            image.UriSource = new Uri(_coverPath);
+                //            image.EndInit();
+                //            img_cover.Source = image;
+                //        }));
             }
 
             // write song to the output label
