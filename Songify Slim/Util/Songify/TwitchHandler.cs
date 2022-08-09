@@ -34,7 +34,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _onCooldown;
         private static bool _skipCooldown;
         public static bool ForceDisconnect;
-        private static List<string> SkipVotes = new List<string>();
+        private static List<string> _skipVotes = new List<string>();
         private static readonly Timer CooldownTimer = new Timer
         {
             Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
@@ -46,7 +46,7 @@ namespace Songify_Slim.Util.Songify
 
         public static void ResetVotes()
         {
-            SkipVotes.Clear();
+            _skipVotes.Clear();
             Console.WriteLine("Reset votes");
         }
 
@@ -373,17 +373,17 @@ namespace Songify_Slim.Util.Songify
                         if (!Settings.Settings.BotCmdSkipVote)
                             return;
                         //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
-                        if (!SkipVotes.Contains(e.ChatMessage.DisplayName))
+                        if (!_skipVotes.Contains(e.ChatMessage.DisplayName))
                         {
-                            SkipVotes.Add(e.ChatMessage.DisplayName);
+                            _skipVotes.Add(e.ChatMessage.DisplayName);
 
                             string msg = Settings.Settings.BotRespVoteSkip;
                             msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                            msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
+                            msg = msg.Replace("{votes}", $"{_skipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
 
                             Client.SendMessage(e.ChatMessage.Channel, msg);
 
-                            if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
+                            if (_skipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                             {
                                 ErrorResponse response = await ApiHandler.SkipSong();
                                 if (response.Error != null)
@@ -396,12 +396,11 @@ namespace Songify_Slim.Util.Songify
                                     _skipCooldown = true;
                                     SkipCooldownTimer.Start();
                                 }
-                                SkipVotes.Clear();
+                                _skipVotes.Clear();
                             }
                         }
                         break;
                     }
-
                 case "!song" when Settings.Settings.BotCmdSong:
                     {
                         string currsong = GetCurrentSong();
@@ -809,7 +808,7 @@ namespace Songify_Slim.Util.Songify
         }
     }
 
-    class QueueItem
+    internal class QueueItem
     {
         public string Requester { get; set; }
         public string Title { get; set; }

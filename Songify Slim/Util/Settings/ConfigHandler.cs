@@ -169,7 +169,7 @@ namespace Songify_Slim
                         config.TwSrUserLevel = ToInt32(node.Attributes["twsruserlevel"] != null ? node.Attributes["twsruserlevel"].Value : Settings.TwSrUserLevel.ToString(CultureInfo.CurrentCulture));
                         config.Upload = ToBoolean(node.Attributes["uploadSonginfo"] != null ? node.Attributes["uploadSonginfo"].Value : Settings.Upload.ToString());
                         config.UploadHistory = ToBoolean(node.Attributes["uploadhistory"] != null ? node.Attributes["uploadhistory"].Value : Settings.UploadHistory.ToString());
-                        config.UseOwnApp = ToBoolean(node.Attributes["ownApp"] != null ? node.Attributes["ownApp"].Value : Settings.UseOwnApp.ToString());
+                        config.UseOwnApp = ToBoolean(node.Attributes["useownapp"] != null ? node.Attributes["useownapp"].Value : Settings.UseOwnApp.ToString());
                         config.UserBlacklist = node.Attributes["userblacklist"] != null ? node.Attributes["userblacklist"].Value : Settings.UserBlacklist;
                         config.Uuid = node.Attributes["uuid"] != null ? node.Attributes["uuid"].Value : Settings.Uuid;
                         config.TwSrMaxReqEveryone = ToInt32(node.Attributes["twsrmaxreqeveryone"] != null ? node.Attributes["twsrmaxreqeveryone"].Value : Settings.TwSrMaxReqEveryone.ToString(CultureInfo.CurrentCulture));

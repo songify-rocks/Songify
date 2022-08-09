@@ -36,6 +36,7 @@ using Octokit;
 using Application = System.Windows.Application;
 using Color = System.Drawing.Color;
 using ContextMenu = System.Windows.Forms.ContextMenu;
+using FileMode = System.IO.FileMode;
 using FontFamily = System.Windows.Media.FontFamily;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
@@ -319,7 +320,7 @@ namespace Songify_Slim
                         img_cover.Visibility = Visibility.Collapsed;
                 }));
         }
-        
+
         private async void DownloadCover(string cover)
         {
             try
@@ -544,10 +545,10 @@ namespace Songify_Slim
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             //If the user presses alt + F12 run Crash() method.
-            if (e.Key == Key.F12)
-            {
-                Crash();
-            }
+            //if (e.Key == Key.F12)
+            //{
+            //    Crash();
+            //}
         }
 
         private void MetroWindowClosed(object sender, EventArgs e)
@@ -836,13 +837,44 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
+        protected virtual bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
+        }
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            Logger.LogStr("COVER: Cover Downloaded");
+
             if (_coverPath != "" && _coverTemp != "")
             {
                 try
                 {
+                    Logger.LogStr("COVER: Trying to delete old Cover");
+
+                    while (IsFileLocked(new FileInfo(_coverTemp)))
+                    {
+                        Logger.LogStr("COVER: Cover is locked, waiting...");
+                        Thread.Sleep(250);
+                    }
+                    Logger.LogStr("COVER: Deleting old Cover");
                     File.Delete(_coverPath);
                 }
                 catch (Exception exception)
@@ -852,6 +884,7 @@ namespace Songify_Slim
 
                 try
                 {
+                    Logger.LogStr("COVER: Renaming new Cover");
                     File.Move(_coverTemp, _coverPath);
                 }
                 catch (Exception exception)
@@ -871,8 +904,14 @@ namespace Songify_Slim
                     for (int i = 1; i < numberOfRetries; i++)
                         try
                         {
+                            Logger.LogStr($"COVER: Setting new Cover attempt {i}");
                             try
                             {
+                                while (IsFileLocked(new FileInfo(_coverPath)))
+                                {
+                                    Logger.LogStr("COVER: Cover is locked, waiting...");
+                                    Thread.Sleep(250);
+                                }
                                 BitmapImage image = new BitmapImage();
                                 image.BeginInit();
                                 image.CacheOption = BitmapCacheOption.OnLoad;
@@ -885,6 +924,7 @@ namespace Songify_Slim
                             {
                                 Debug.WriteLine(ex);
                             }
+                            Logger.LogStr($"COVER: Set succesfully");
                             break;
                         }
                         catch (Exception) when (i <= numberOfRetries)
@@ -893,6 +933,7 @@ namespace Songify_Slim
                         }
                 }));
         }
+        
         private void WriteOutput(string songPath, string currSong)
         {
             try
