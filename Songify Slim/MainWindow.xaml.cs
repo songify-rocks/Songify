@@ -54,6 +54,7 @@ namespace Songify_Slim
         public string _artist, _title;
         public string CurrSong, CurrSongTwitch;
         public List<RequestObject> ReqList = new List<RequestObject>();
+        public List<RequestObject> SkipList = new List<RequestObject>();
         private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
@@ -361,7 +362,7 @@ namespace Songify_Slim
             }
         }
 
-        private void FetchSpotifyWeb()
+        private async void FetchSpotifyWeb()
         {
             SongFetcher sf = new SongFetcher();
             TrackInfo info = sf.FetchSpotifyWeb();
@@ -385,6 +386,12 @@ namespace Songify_Slim
                     _songTimer.Stop();
                     _songTimer.Interval = info.DurationMS + 400;
                     _songTimer.Start();
+                }
+
+                if (SkipList.Find(o => o.TrackID == info.SongID) != null)
+                {
+                    SkipList.Remove(SkipList.Find(o => o.TrackID == info.SongID));
+                    await ApiHandler.SkipSong();
                 }
 
                 WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID, info.url);
@@ -646,7 +653,7 @@ namespace Songify_Slim
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
-                if (string.IsNullOrEmpty(Settings.AccessToken) && string.IsNullOrEmpty(Settings.RefreshToken))
+                if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = "Please link your Spotify account\nSettings -> Spotify";
                 else
                     ApiHandler.DoAuthAsync();
@@ -662,7 +669,7 @@ namespace Songify_Slim
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
             // automatically start fetching songs
             SetFetchTimer();
-
+            TwitchHandler.InitializeApi();
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -837,6 +844,12 @@ namespace Songify_Slim
         {
             FetchSpotifyWeb();
         }
+
+        private void mi_TwitchAPI_Click(object sender, RoutedEventArgs e)
+        {
+            TwitchHandler.APIConnect();
+        }
+
         protected virtual bool IsFileLocked(FileInfo file)
         {
             try
@@ -933,7 +946,7 @@ namespace Songify_Slim
                         }
                 }));
         }
-        
+
         private void WriteOutput(string songPath, string currSong)
         {
             try
@@ -1281,6 +1294,11 @@ namespace Songify_Slim
 
             WriteOutput(_root + "/Artist.txt", artist);
             WriteOutput(_root + "/Title.txt", title + extra);
+        }
+
+        private void BtnLogFolderClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Logger.LogDirectoryPath);
         }
     }
 }

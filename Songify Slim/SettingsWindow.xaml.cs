@@ -4,6 +4,8 @@ using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -11,10 +13,15 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
+using TwitchLib.Api.Helix.Models.ChannelPoints;
+using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
+using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
 using Application = System.Windows.Application;
+using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using MenuItem = System.Windows.Controls.MenuItem;
 using TextBox = System.Windows.Controls.TextBox;
@@ -27,13 +34,18 @@ namespace Songify_Slim
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
+        private List<CustomReward> CustomRewardsManagable = new List<CustomReward>();
+        private List<CustomReward> CustomRewards = new List<CustomReward>();
+        private List<int> refundConditons = new List<int>();
+
+
         public Window_Settings()
         {
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
         }
-        
-        public void SetControls()
+
+        public async void SetControls()
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevels.Items.Clear();
@@ -77,7 +89,6 @@ namespace Songify_Slim
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
-            //NudMaxReq.Value = Settings.TwSrMaxReq;
             tb_ClientID.Text = Settings.ClientId;
             tb_ClientSecret.Password = Settings.ClientSecret;
             tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
@@ -93,7 +104,7 @@ namespace Songify_Slim
 
             if (ApiHandler.Spotify != null)
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
-                                         ApiHandler.Spotify.GetPrivateProfile().DisplayName;
+                                         (await ApiHandler.Spotify.GetPrivateProfileAsync()).DisplayName;
             ThemeHandler.ApplyTheme();
             cbx_Language.SelectionChanged -= ComboBox_SelectionChanged;
             switch (Settings.Language)
@@ -115,6 +126,25 @@ namespace Songify_Slim
                     break;
             }
             cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
+
+            CbxRewards.Items.Clear();
+            foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+            {
+                CbxRewards.Items.Add(reward);
+                if (txtbx_RewardID.Text == reward.Id)
+                    CbxRewards.SelectedItem = reward;
+            }
+
+            foreach (int conditon in Settings.RefundConditons)
+            {
+                foreach (UIElement child in GrdTwitchReward.Children)
+                {
+                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund") && box.Tag.ToString() == conditon.ToString())
+                    {
+                        box.IsChecked = true;
+                    }
+                }
+            }
         }
 
         private void AppendText(string s, string text)
@@ -145,13 +175,13 @@ namespace Songify_Slim
         private void Btn_ExportConfig_Click(object sender, RoutedEventArgs e)
         {
             // calls confighandler
-            ConfigHandler.SaveConfig();
+            ConfigHandler.WriteAllConfig(Settings.Export());
         }
 
         private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
             // calls confighandler
-            ConfigHandler.LoadConfig();
+            //ConfigHandler.LoadConfig();
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
@@ -178,9 +208,11 @@ namespace Songify_Slim
                 MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings { AffirmativeButtonText = "restart", NegativeButtonText = "cancel" });
             if (msgResult != MessageDialogResult.Affirmative) return;
-            Settings.AccessToken = "";
-            Settings.RefreshToken = "";
-            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            Settings.SpotifyAccessToken = "";
+            Settings.SpotifyRefreshToken = "";
+            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            ConfigHandler.WriteAllConfig(Settings.Export());
+
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
@@ -188,7 +220,7 @@ namespace Songify_Slim
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
             // Links Spotify
-            Settings.RefreshToken = "";
+            Settings.SpotifyRefreshToken = "";
             try
             {
                 ApiHandler.DoAuthAsync();
@@ -408,11 +440,12 @@ namespace Songify_Slim
 
         private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            ConfigHandler.WriteAllConfig(Settings.Export());
             if (_appIdInitialValue == Settings.UseOwnApp) return;
             e.Cancel = true;
-            Settings.AccessToken = "";
-            Settings.RefreshToken = "";
+            Settings.SpotifyAccessToken = "";
+            Settings.SpotifyRefreshToken = "";
             string temp = _appIdInitialValue == false ? "You switched from Songify's internal app-ID to your own. This is great because you won't get throttled by rate limits! \n\nIn order to use it though, Songify needs to be restarted and you have to relink with your Spotify account!" : "You switched from your own app-ID to Songify's internal one. This is bad and you will likely encounter problems. The API only allows a certain amount of requests done through an app. We have been exceeding this amount by a lot. Please use your own app-ID instead!\n\nSongify needs a restart and you have to link your Spotify account again.";
 
             MessageDialogResult msgResult = await this.ShowMessageAsync("Warning", temp, MessageDialogStyle.Affirmative,
@@ -526,7 +559,6 @@ namespace Songify_Slim
         {
             Settings.AnnounceInChat = tgl_AnnounceInChat.IsOn;
         }
-        
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
@@ -587,6 +619,7 @@ namespace Songify_Slim
             // write custom output format to settings
             Settings.OutputString = TxtbxOutputformat.Text;
         }
+
         private void TxtbxOutputformat2_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.OutputString2 = ((TextBox)sender).Text;
@@ -624,6 +657,83 @@ namespace Songify_Slim
                     throw new ArgumentOutOfRangeException();
             }
             NudMaxReq.ValueChanged += NudMaxReq_ValueChanged;
+        }
+
+        private void BtnSync_Click(object sender, RoutedEventArgs e)
+        {
+            if (NudMaxReq.Value == null) return;
+            Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
+        }
+
+        private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            txtbx_RewardID.Text = ((CustomReward)CbxRewards.SelectedItem).Id;
+        }
+
+        private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
+        {
+            TabItemTwitch.Focus();
+            TabItemTwitch.IsSelected = true;
+            TabItemTwitchRewards.Focus();
+            TabItemTwitchRewards.IsSelected = true;
+        }
+
+        private async void BtnUpdateRewards_Click(object sender, RoutedEventArgs e)
+        {
+            CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
+            CbxRewards.Items.Clear();
+            foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+            {
+                CbxRewards.Items.Add(reward);
+                if (txtbx_RewardID.Text == reward.Id)
+                    CbxRewards.SelectedItem = reward;
+            }
+            CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
+
+        }
+
+        private void CheckRefundChecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            refundConditons.Add(int.Parse(((CheckBox)sender).Tag.ToString()));
+            if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
+            {
+                foreach (UIElement child in GrdTwitchReward.Children)
+                {
+                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund"))
+                    {
+                        box.IsChecked = true;
+                    }
+                }
+            }
+            Debug.WriteLine(string.Join(", ", refundConditons));
+            Settings.RefundConditons = refundConditons.ToArray();
+
+        }
+
+        private void CheckRefundUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            refundConditons.Remove(int.Parse(((CheckBox)sender).Tag.ToString()));
+            if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
+                foreach (UIElement child in GrdTwitchReward.Children)
+                {
+                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund"))
+                    {
+                        box.IsChecked = false;
+                    }
+                }
+            Debug.WriteLine(string.Join(", ", refundConditons));
+            Settings.RefundConditons = refundConditons.ToArray();
         }
     }
 }

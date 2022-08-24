@@ -251,12 +251,12 @@ namespace Songify_Slim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RefreshToken {
+        public string SpotifyRefreshToken {
             get {
-                return ((string)(this["RefreshToken"]));
+                return ((string)(this["SpotifyRefreshToken"]));
             }
             set {
-                this["RefreshToken"] = value;
+                this["SpotifyRefreshToken"] = value;
             }
         }
         
@@ -275,12 +275,12 @@ namespace Songify_Slim.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string AccessToken {
+        public string SpotifyAccessToken {
             get {
-                return ((string)(this["AccessToken"]));
+                return ((string)(this["SpotifyAccessToken"]));
             }
             set {
-                this["AccessToken"] = value;
+                this["SpotifyAccessToken"] = value;
             }
         }
         
@@ -882,6 +882,53 @@ namespace Songify_Slim.Properties {
             }
             set {
                 this["bot_cmd_skip_vote_count"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitchAccessToken {
+            get {
+                return ((string)(this["TwitchAccessToken"]));
+            }
+            set {
+                this["TwitchAccessToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitchChannelId {
+            get {
+                return ((string)(this["TwitchChannelId"]));
+            }
+            set {
+                this["TwitchChannelId"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::TwitchLib.Api.Helix.Models.Users.GetUsers.User TwitchUser {
+            get {
+                return ((global::TwitchLib.Api.Helix.Models.Users.GetUsers.User)(this["TwitchUser"]));
+            }
+            set {
+                this["TwitchUser"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public int[] RefundConditons {
+            get {
+                return ((int[])(this["RefundConditons"]));
+            }
+            set {
+                this["RefundConditons"] = value;
             }
         }
     }

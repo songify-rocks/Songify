@@ -62,8 +62,6 @@ namespace Songify_Slim
                     btn_Next.Content = "Finish";
                     break;
                 case 5:
-                    ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml",
-                        true);
                     new MainWindow().Show();
                     Close();
                     break;

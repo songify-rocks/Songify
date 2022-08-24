@@ -24,7 +24,7 @@ namespace Songify_Slim.GuidedSetup
         private void btn_Link_Click(object sender, RoutedEventArgs e)
         {
             // Links Spotify
-            Settings.RefreshToken = "";
+            Settings.SpotifyRefreshToken = "";
             Settings.ClientId = tb_ClientID.Text;
             Settings.ClientSecret = tb_ClientSecret.Password;
             try

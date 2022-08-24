@@ -59,13 +59,13 @@
     <Setting Name="SaveAlbumCover" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="RefreshToken" Type="System.String" Scope="User">
+    <Setting Name="SpotifyRefreshToken" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SplitString" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="AccessToken" Type="System.String" Scope="User">
+    <Setting Name="SpotifyAccessToken" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="TwAcc" Type="System.String" Scope="User">
@@ -217,6 +217,18 @@
     </Setting>
     <Setting Name="bot_cmd_skip_vote_count" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="TwitchAccessToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TwitchChannelId" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TwitchUser" Type="TwitchLib.Api.Helix.Models.Users.GetUsers.User" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="RefundConditons" Type="System.Int32[]" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

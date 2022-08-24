@@ -329,7 +329,7 @@
     <value>Конфигурация</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Интеграция</value>
+    <value>Twitch</value>
   </data>
   <data name="sw_tc_Output" xml:space="preserve">
     <value>Вывод</value>

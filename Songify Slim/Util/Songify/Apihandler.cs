@@ -53,16 +53,16 @@ namespace Songify_Slim.Util.Songify
                 AuthRefresh.Elapsed += AuthRefresh_Elapsed;
 
                 // If Refresh and Access-token are present, just refresh the auth
-                if (!string.IsNullOrEmpty(Settings.Settings.RefreshToken) &&
-                    !string.IsNullOrEmpty(Settings.Settings.AccessToken))
+                if (!string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken) &&
+                    !string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken))
                 {
                     Authed = true;
                     Spotify = new SpotifyWebAPI
                     {
-                        TokenType = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).TokenType,
-                        AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken
+                        TokenType = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).TokenType,
+                        AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken
                     };
-                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
+                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
                 }
                 else
                 {
@@ -77,8 +77,8 @@ namespace Songify_Slim.Util.Songify
 
                     _lastToken = await _auth.ExchangeCodeAsync(response.Code);
                     // Save tokens
-                    Settings.Settings.RefreshToken = _lastToken.RefreshToken;
-                    Settings.Settings.AccessToken = _lastToken.AccessToken;
+                    Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
+                    Settings.Settings.SpotifyAccessToken = _lastToken.AccessToken;
                     // create ne Spotify object
                     Spotify = new SpotifyWebAPI
                     {
@@ -102,9 +102,9 @@ namespace Songify_Slim.Util.Songify
                 // automatically refreshes the token after it expires
                 _auth.OnAccessTokenExpired += async (sender, e) =>
                 {
-                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
-                    Settings.Settings.RefreshToken = _lastToken.RefreshToken;
-                    Settings.Settings.AccessToken = Spotify.AccessToken;
+                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
+                    Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
+                    Settings.Settings.SpotifyAccessToken = Spotify.AccessToken;
                 };
 
                 _auth.Start();
@@ -128,8 +128,8 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 // When the timer elapses the tokens will get refreshed
-                Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.RefreshToken)).AccessToken;
-                Settings.Settings.AccessToken = Spotify.AccessToken;
+                Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
+                Settings.Settings.SpotifyAccessToken = Spotify.AccessToken;
             }
             catch (Exception ex)
             {

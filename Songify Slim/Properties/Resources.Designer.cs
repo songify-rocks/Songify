@@ -674,7 +674,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Integration.
+        ///   Looks up a localized string similar to Twitch.
         /// </summary>
         public static string sw_tc_Integration {
             get {

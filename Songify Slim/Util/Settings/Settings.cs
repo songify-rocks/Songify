@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using YamlDotNet.Core.Tokens;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -8,10 +10,22 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        public static string AccessToken
+
+        public static User TwitchUser
         {
-            get => GetAccessToken();
-            set => SetAccessToken(value);
+            get => GetTwitchUser();
+            set => SetTwitchUser(value);
+        }
+
+        private static void SetTwitchUser(User value)
+        {
+            Properties.Settings.Default.TwitchUser = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static User GetTwitchUser()
+        {
+            return Properties.Settings.Default.TwitchUser;
         }
 
         public static bool AnnounceInChat
@@ -74,17 +88,6 @@ namespace Songify_Slim.Util.Settings
             set => SetBotCmdSkipVoteCount(value);
         }
 
-        private static void SetBotCmdSkipVoteCount(int value)
-        {
-            Properties.Settings.Default.bot_cmd_skip_vote_count = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetBotCmdSkipVoteCount()
-        {
-            return Properties.Settings.Default.bot_cmd_skip_vote_count;
-        }
-
         public static bool BotCmdSong
         {
             get => GetBotCmdSong();
@@ -121,7 +124,11 @@ namespace Songify_Slim.Util.Settings
             set => SetBot_Resp_MaxReq(value);
         }
 
-        public static string BotRespModSkip { get => GetBot_Resp_ModSkip(); set => SetBot_Resp_ModSkip(value); }
+        public static string BotRespModSkip
+        {
+            get => GetBot_Resp_ModSkip();
+            set => SetBot_Resp_ModSkip(value);
+        }
 
         public static string BotRespNoSong
         {
@@ -135,7 +142,11 @@ namespace Songify_Slim.Util.Settings
             set => SetBot_Resp_Success(value);
         }
 
-        public static string BotRespVoteSkip { get => GetBot_Resp_VoteSkip(); set => SetBot_Resp_VoteSkip(value); }
+        public static string BotRespVoteSkip
+        {
+            get => GetBot_Resp_VoteSkip();
+            set => SetBot_Resp_VoteSkip(value);
+        }
 
         public static int ChromeFetchRate
         {
@@ -210,18 +221,6 @@ namespace Songify_Slim.Util.Settings
             set => SetMsgLoggingEnabled(value);
         }
 
-        public static string NbUser
-        {
-            get => GetNbUser();
-            set => SetNbUser(value);
-        }
-
-        public static string NbUserId
-        {
-            get => GetNbUserId();
-            set => SetNbUserId(value);
-        }
-
         public static bool OpenQueueOnStartup
         {
             get => GetOpenQueueOnStartup();
@@ -252,12 +251,6 @@ namespace Songify_Slim.Util.Settings
             set => SetPosY(value);
         }
 
-        public static string RefreshToken
-        {
-            get => GetRefreshToken();
-            set => SetRefreshToken(value);
-        }
-
         public static bool SaveHistory
         {
             get => GetSaveHistory();
@@ -282,10 +275,22 @@ namespace Songify_Slim.Util.Settings
             set => SetSplitOutput(value);
         }
 
+        public static string SpotifyAccessToken
+        {
+            get => GetSpotifyAccessToken();
+            set => SetSpotifyAccessToken(value);
+        }
+
         public static string SpotifyDeviceId
         {
             get => GetSpotifyDeviceId();
             set => SetSpotifyDeviceId(value);
+        }
+
+        public static string SpotifyRefreshToken
+        {
+            get => GetSpotifyRefreshToken();
+            set => SetSpotifyRefreshToken(value);
         }
 
         public static bool Systray
@@ -324,6 +329,18 @@ namespace Songify_Slim.Util.Settings
             set => SetTwChannel(value);
         }
 
+        public static string TwitchAccessToken
+        {
+            get => GetTwitchAccessToken();
+            set => SetTwitchAccessToken(value);
+        }
+
+        public static string TwitchChannelId
+        {
+            get => GetTwitchChannelId();
+            set => SetTwitchChannelId(value);
+        }
+
         public static string TwOAuth
         {
             get => GetTwOAuth();
@@ -348,74 +365,10 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrCooldown(value);
         }
 
-        public static int TwSrMaxReqEveryone
+        public static int TwSrMaxReq
         {
-            get => GetTwSrMaxReqEveryone();
-            set => SetTwSrMaxReqEveryone(value);
-        }
-
-        private static void SetTwSrMaxReqEveryone(int value)
-        {
-            Properties.Settings.Default.TwSRMaxReqEveryone = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetTwSrMaxReqEveryone()
-        {
-            return Properties.Settings.Default.TwSRMaxReqEveryone;
-        }
-
-        public static int TwSrMaxReqVip
-        {
-            get => GetTwSrMaxReqVip();
-            set => SetTwSrMaxReqVip(value);
-        }
-
-        private static void SetTwSrMaxReqVip(int value)
-        {
-            Properties.Settings.Default.TwSRMaxReqVip = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetTwSrMaxReqVip()
-        {
-            return Properties.Settings.Default.TwSRMaxReqVip;
-
-        }
-
-        public static int TwSrMaxReqSubscriber
-        {
-            get => GetTwSrMaxReqSubscriber();
-            set => SetTwSrMaxReqSubscriber(value);
-        }
-
-        private static void SetTwSrMaxReqSubscriber(int value)
-        {
-            Properties.Settings.Default.TwSRMaxReqSubscriber = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetTwSrMaxReqSubscriber()
-        {
-            return Properties.Settings.Default.TwSRMaxReqSubscriber;
-
-        }
-
-        public static int TwSrMaxReqModerator
-        {
-            get => GetTwSrMaxReqModerator();
-            set => SetTwSrMaxReqModerator(value);
-        }
-
-        private static void SetTwSrMaxReqModerator(int value)
-        {
-            Properties.Settings.Default.TwSRMaxReqModerator = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static int GetTwSrMaxReqModerator()
-        {
-            return Properties.Settings.Default.TwSRMaxReqModerator;
+            get => GetTwSrMaxReq();
+            set => SetTwSrMaxReq(value);
         }
 
         public static int TwSrMaxReqBroadcaster
@@ -424,21 +377,28 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrMaxReqBroadcaster(value);
         }
 
-        private static void SetTwSrMaxReqBroadcaster(int value)
+        public static int TwSrMaxReqEveryone
         {
-            Properties.Settings.Default.TwSRMaxReqBroadcaster = value;
-            Properties.Settings.Default.Save();
+            get => GetTwSrMaxReqEveryone();
+            set => SetTwSrMaxReqEveryone(value);
         }
 
-        private static int GetTwSrMaxReqBroadcaster()
+        public static int TwSrMaxReqModerator
         {
-            return Properties.Settings.Default.TwSRMaxReqBroadcaster;
+            get => GetTwSrMaxReqModerator();
+            set => SetTwSrMaxReqModerator(value);
         }
 
-        public static int TwSrMaxReq
+        public static int TwSrMaxReqSubscriber
         {
-            get => GetTwSrMaxReq();
-            set => SetTwSrMaxReq(value);
+            get => GetTwSrMaxReqSubscriber();
+            set => SetTwSrMaxReqSubscriber(value);
+        }
+
+        public static int TwSrMaxReqVip
+        {
+            get => GetTwSrMaxReqVip();
+            set => SetTwSrMaxReqVip(value);
         }
 
         public static bool TwSrReward
@@ -485,22 +445,53 @@ namespace Songify_Slim.Util.Settings
 
         public static string Webua => GetWebua();
 
-        public static Config Export()
+        public static int[] RefundConditons
         {
-            return new Config
+            get => GetRefundConditons();
+            set => SetRefundConditons(value);
+        }
+
+        private static void SetRefundConditons(int[] value)
+        {
+            Properties.Settings.Default.RefundConditons = value;
+            Properties.Settings.Default.Save();
+
+        }
+
+        private static int[] GetRefundConditons()
+        {
+            return Properties.Settings.Default.RefundConditons;
+        }
+
+        public static Configuration Export()
+        {
+            SpotifyCredentials spotifyCredentials = new SpotifyCredentials
             {
-                AccessToken = GetAccessToken(),
-                AnnounceInChat = GetAnnounceInChat(),
-                AppendSpaces = GetAppendSpaces(),
-                ArtistBlacklist = GetArtistBlacklist(),
-                AutoClearQueue = GetAutoClearQueue(),
-                Autostart = GetAutostart(),
+                AccessToken = GetSpotifyAccessToken(),
+                RefreshToken = GetSpotifyRefreshToken(),
+                DeviceId = GetSpotifyDeviceId(),
+                ClientId = GetClientId(),
+                ClientSecret = GetClientSecret()
+            };
+
+            TwitchCredentials twitchCredentials = new TwitchCredentials
+            {
+                AccessToken = GetTwitchAccessToken(),
+                ChannelName = GetTwChannel(),
+                ChannelId = GetTwitchChannelId(),
+                BotAccountName = GetTwAcc(),
+                BotOAuthToken = GetTwOAuth(),
+                TwitchUser = GetTwitchUser()
+            };
+
+            BotConfig botConfig = new BotConfig
+            {
                 BotCmdNext = GetBotCmdNext(),
                 BotCmdPos = GetBotCmdPos(),
                 BotCmdSkip = GetBotCmdSkip(),
                 BotCmdSkipVote = GetBotCmdSkipVote(),
-                BotCmdSkipVoteCount = GetBotCmdSkipVoteCount(),
                 BotCmdSong = GetBotCmdSong(),
+                BotCmdSkipVoteCount = GetBotCmdSkipVoteCount(),
                 BotRespBlacklist = GetBot_Resp_Blacklist(),
                 BotRespError = GetBot_Resp_Error(),
                 BotRespIsInQueue = GetBot_Resp_IsInQueue(),
@@ -509,38 +500,33 @@ namespace Songify_Slim.Util.Settings
                 BotRespModSkip = GetBot_Resp_ModSkip(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
                 BotRespSuccess = GetBot_Resp_Success(),
-                BotRespVoteSkip = GetBot_Resp_VoteSkip(),
-                ClientId = GetClientId(),
-                ClientSecret = GetClientSecret(),
-                Color = GetColor(),
-                CustomPauseText = GetCustomPauseText(),
+                BotRespVoteSkip = GetBot_Resp_VoteSkip()
+            };
+
+            AppConfig appConfig = new AppConfig
+            {
+                AnnounceInChat = GetAnnounceInChat(),
+                AppendSpaces = GetAppendSpaces(),
+                AutoClearQueue = GetAutoClearQueue(),
+                Autostart = GetAutostart(),
                 CustomPauseTextEnabled = GetCustomPauseTextEnabled(),
-                Directory = GetDirectory(),
                 DownloadCover = GetDownloadCover(),
-                Language = GetLanguage(),
-                MaxSongLength = GetMaxSongLength(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
-                NbUser = GetNbUser(),
-                NbUserId = GetNbUserId(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
-                OutputString = GetOutputString(),
-                OutputString2 = GetOutputString2(),
-                PosX = (int)GetPosX(),
-                PosY = (int)GetPosY(),
-                RefreshToken = GetRefreshToken(),
                 SaveHistory = GetSaveHistory(),
-                SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
-                SpotifyDeviceId = GetSpotifyDeviceId(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
-                Theme = GetTheme(),
-                TwAcc = GetTwAcc(),
                 TwAutoConnect = GetTwAutoConnect(),
-                TwChannel = GetTwChannel(),
-                TwOAuth = GetTwOAuth(),
-                TwRewardId = GetTwRewardId(),
                 TwSrCommand = GetTwSrCommand(),
+                TwSrReward = GetTwSrReward(),
+                Upload = GetUpload(),
+                UploadHistory = GetUploadHistory(),
+                UseOwnApp = GetUseOwnApp(),
+                MaxSongLength = GetMaxSongLength(),
+                PosX = (int)GetPosX(),
+                PosY = (int)GetPosY(),
+                SpaceCount = GetSpaceCount(),
                 TwSrCooldown = GetTwSrCooldown(),
                 TwSrMaxReq = GetTwSrMaxReq(),
                 TwSrMaxReqBroadcaster = GetTwSrMaxReqBroadcaster(),
@@ -548,85 +534,103 @@ namespace Songify_Slim.Util.Settings
                 TwSrMaxReqModerator = GetTwSrMaxReqModerator(),
                 TwSrMaxReqSubscriber = GetTwSrMaxReqSubscriber(),
                 TwSrMaxReqVip = GetTwSrMaxReqVip(),
-                TwSrReward = GetTwSrReward(),
                 TwSrUserLevel = GetTwSrUserLevel(),
-                Upload = GetUpload(),
-                UploadHistory = GetUploadHistory(),
-                UseOwnApp = GetUseOwnApp(),
+                TwRewardId = GetTwRewardId(),
+                ArtistBlacklist = GetArtistBlacklist(),
+                Color = GetColor(),
+                CustomPauseText = GetCustomPauseText(),
+                Directory = GetDirectory(),
+                Language = GetLanguage(),
+                OutputString = GetOutputString(),
+                OutputString2 = GetOutputString2(),
+                Theme = GetTheme(),
                 UserBlacklist = GetUserBlacklist(),
                 Uuid = GetUuid(),
-                
+                RefundConditons = GetRefundConditons(),
+            };
+
+            return new Configuration
+            {
+                AppConfig = appConfig,
+                SpotifyCredentials = spotifyCredentials,
+                TwitchCredentials = twitchCredentials,
+                BotConfig = botConfig
             };
         }
 
-        public static void Import(Config config)
+        public static void Import(Configuration config)
         {
-            //Set the config values
-            SetAccessToken(config.AccessToken);
-            SetAnnounceInChat(config.AnnounceInChat);
-            SetAppendSpaces(config.AppendSpaces);
-            SetArtistBlacklist(config.ArtistBlacklist);
-            SetAutoClearQueue(config.AutoClearQueue);
-            SetAutostart(config.Autostart);
-            SetBot_Resp_ModSkip(config.BotRespModSkip);
-            SetBot_Resp_VoteSkip(config.BotRespVoteSkip);
-            SetBotCmdNext(config.BotCmdNext);
-            SetBotCmdPos(config.BotCmdPos);
-            SetBotCmdSkip(config.BotCmdSkip);
-            SetBotCmdSong(config.BotCmdSong);
-            SetClientId(config.ClientId);
-            SetClientSecret(config.ClientSecret);
-            SetColor(config.Color);
-            SetCustomPauseText(config.CustomPauseText);
-            SetCustomPauseTextEnabled(config.CustomPauseTextEnabled);
-            SetDirectory(config.Directory);
-            SetDownloadCover(config.DownloadCover);
-            SetLangauge(config.Language);
-            SetMaxSongLength(config.MaxSongLength);
-            SetMsgLoggingEnabled(config.MsgLoggingEnabled);
-            SetNbUser(config.NbUser);
-            SetNbUserId(config.NbUserId);
-            SetOpenQueueOnStartup(config.OpenQueueOnStartup);
-            SetOutputString(config.OutputString);
-            SetOutputString2(config.OutputString2);
-            SetPosX(config.PosX);
-            SetPosY(config.PosY);
-            SetRefreshToken(config.RefreshToken);
-            SetSaveHistory(config.SaveHistory);
-            SetSpaceCount(config.SpaceCount);
-            SetSplitOutput(config.SplitOutput);
-            SetSpotifyDeviceId(config.SpotifyDeviceId);
-            SetSystray(config.Systray);
-            SetTelemetry(config.Telemetry);
-            SetTheme(config.Theme);
-            SetTwAcc(config.TwAcc);
-            SetTwAutoConnect(config.TwAutoConnect);
-            SetTwChannel(config.TwChannel);
-            SetTwOAuth(config.TwOAuth);
-            SetTwRewardId(config.TwRewardId);
-            SetTwSrCommand(config.TwSrCommand);
-            SetTwSrCooldown(config.TwSrCooldown);
-            SetTwSrMaxReq(config.TwSrMaxReq);
-            SetTwSrMaxReqBroadcaster(config.TwSrMaxReqBroadcaster);
-            SetTwSrMaxReqEveryone(config.TwSrMaxReqEveryone);
-            SetTwSrMaxReqModerator(config.TwSrMaxReqModerator);
-            SetTwSrMaxReqSubscriber(config.TwSrMaxReqSubscriber);
-            SetTwSrMaxReqVip(config.TwSrMaxReqVip);
-            SetTwSrReward(config.TwSrReward);
-            SetTwSrUserLevel(config.TwSrUserLevel);
-            SetUpload(config.Upload);
-            SetUploadHistory(config.UploadHistory);
-            SetUseOwnApp(config.UseOwnApp);
-            SetUserBlacklist(config.UserBlacklist);
-            SetUuid(config.Uuid);
-            SetBotCmdSkipVote(config.BotCmdSkipVote);
-            SetBotCmdSkipVoteCount(config.BotCmdSkipVoteCount);
-            ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-        }
+            #region SpotifyCredential
+            SetSpotifyAccessToken(config.SpotifyCredentials.AccessToken);
+            SetClientId(config.SpotifyCredentials.ClientId);
+            SetClientSecret(config.SpotifyCredentials.ClientSecret);
+            SetSpotifyRefreshToken(config.SpotifyCredentials.RefreshToken);
+            SetSpotifyDeviceId(config.SpotifyCredentials.DeviceId);
+            #endregion
 
-        private static string GetAccessToken()
-        {
-            return Properties.Settings.Default.AccessToken;
+            #region BotConfig
+            SetBot_Resp_ModSkip(config.BotConfig.BotRespModSkip);
+            SetBot_Resp_VoteSkip(config.BotConfig.BotRespVoteSkip);
+            SetBotCmdNext(config.BotConfig.BotCmdNext);
+            SetBotCmdPos(config.BotConfig.BotCmdPos);
+            SetBotCmdSkip(config.BotConfig.BotCmdSkip);
+            SetBotCmdSkipVote(config.BotConfig.BotCmdSkipVote);
+            SetBotCmdSkipVoteCount(config.BotConfig.BotCmdSkipVoteCount);
+            SetBotCmdSong(config.BotConfig.BotCmdSong);
+            #endregion
+
+            #region TwitchCredentials
+            SetTwAcc(config.TwitchCredentials.BotAccountName);
+            SetTwChannel(config.TwitchCredentials.ChannelName);
+            SetTwOAuth(config.TwitchCredentials.BotOAuthToken);
+            #endregion
+
+            #region MyRegion
+            SetAnnounceInChat(config.AppConfig.AnnounceInChat);
+            SetAppendSpaces(config.AppConfig.AppendSpaces);
+            SetArtistBlacklist(config.AppConfig.ArtistBlacklist);
+            SetAutoClearQueue(config.AppConfig.AutoClearQueue);
+            SetAutostart(config.AppConfig.Autostart);
+            SetColor(config.AppConfig.Color);
+            SetCustomPauseText(config.AppConfig.CustomPauseText);
+            SetCustomPauseTextEnabled(config.AppConfig.CustomPauseTextEnabled);
+            SetDirectory(config.AppConfig.Directory);
+            SetDownloadCover(config.AppConfig.DownloadCover);
+            SetLangauge(config.AppConfig.Language);
+            SetMaxSongLength(config.AppConfig.MaxSongLength);
+            SetMsgLoggingEnabled(config.AppConfig.MsgLoggingEnabled);
+            SetOpenQueueOnStartup(config.AppConfig.OpenQueueOnStartup);
+            SetOutputString(config.AppConfig.OutputString);
+            SetOutputString2(config.AppConfig.OutputString2);
+            SetPosX(config.AppConfig.PosX);
+            SetPosY(config.AppConfig.PosY);
+            SetSaveHistory(config.AppConfig.SaveHistory);
+            SetSpaceCount(config.AppConfig.SpaceCount);
+            SetSplitOutput(config.AppConfig.SplitOutput);
+            SetSystray(config.AppConfig.Systray);
+            SetTelemetry(config.AppConfig.Telemetry);
+            SetTheme(config.AppConfig.Theme);
+            SetTwAutoConnect(config.AppConfig.TwAutoConnect);
+            SetTwRewardId(config.AppConfig.TwRewardId);
+            SetTwSrCommand(config.AppConfig.TwSrCommand);
+            SetTwSrCooldown(config.AppConfig.TwSrCooldown);
+            SetTwSrMaxReq(config.AppConfig.TwSrMaxReq);
+            SetTwSrMaxReqBroadcaster(config.AppConfig.TwSrMaxReqBroadcaster);
+            SetTwSrMaxReqEveryone(config.AppConfig.TwSrMaxReqEveryone);
+            SetTwSrMaxReqModerator(config.AppConfig.TwSrMaxReqModerator);
+            SetTwSrMaxReqSubscriber(config.AppConfig.TwSrMaxReqSubscriber);
+            SetTwSrMaxReqVip(config.AppConfig.TwSrMaxReqVip);
+            SetTwSrReward(config.AppConfig.TwSrReward);
+            SetTwSrUserLevel(config.AppConfig.TwSrUserLevel);
+            SetUpload(config.AppConfig.Upload);
+            SetUploadHistory(config.AppConfig.UploadHistory);
+            SetUseOwnApp(config.AppConfig.UseOwnApp);
+            SetUserBlacklist(config.AppConfig.UserBlacklist);
+            SetUuid(config.AppConfig.Uuid);
+            SetRefundConditons(config.AppConfig.RefundConditons);
+            #endregion
+
+            ConfigHandler.WriteAllConfig(config);
         }
 
         private static bool GetAnnounceInChat()
@@ -720,6 +724,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_cmd_skip_vote;
         }
 
+        private static int GetBotCmdSkipVoteCount()
+        {
+            return Properties.Settings.Default.bot_cmd_skip_vote_count;
+        }
+
         private static bool GetBotCmdSong()
         {
             return Properties.Settings.Default.bot_cmd_song;
@@ -785,16 +794,6 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.MsgLoggingEnabled;
         }
 
-        private static string GetNbUser()
-        {
-            return Properties.Settings.Default.NBUser;
-        }
-
-        private static string GetNbUserId()
-        {
-            return Properties.Settings.Default.NBUserID;
-        }
-
         private static bool GetOpenQueueOnStartup()
         {
             return Properties.Settings.Default.OpenQueueOnStartup;
@@ -820,11 +819,6 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.PosY;
         }
 
-        private static string GetRefreshToken()
-        {
-            return Properties.Settings.Default.RefreshToken;
-        }
-
         private static bool GetSaveHistory()
         {
             return Properties.Settings.Default.SaveHistory;
@@ -845,9 +839,19 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.SplitString;
         }
 
+        private static string GetSpotifyAccessToken()
+        {
+            return Properties.Settings.Default.SpotifyAccessToken;
+        }
+
         private static string GetSpotifyDeviceId()
         {
             return Properties.Settings.Default.SpotifyDeviceID;
+        }
+
+        private static string GetSpotifyRefreshToken()
+        {
+            return Properties.Settings.Default.SpotifyRefreshToken;
         }
 
         private static bool GetSystray()
@@ -880,6 +884,18 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.TwChannel;
         }
 
+        private static string GetTwitchAccessToken()
+        {
+            return Properties.Settings.Default.TwitchAccessToken;
+
+        }
+
+        private static string GetTwitchChannelId()
+        {
+            return Properties.Settings.Default.TwitchChannelId;
+
+        }
+
         private static string GetTwOAuth()
         {
             return Properties.Settings.Default.TwOauth;
@@ -903,6 +919,33 @@ namespace Songify_Slim.Util.Settings
         private static int GetTwSrMaxReq()
         {
             return Properties.Settings.Default.TwSRMaxReq;
+        }
+
+        private static int GetTwSrMaxReqBroadcaster()
+        {
+            return Properties.Settings.Default.TwSRMaxReqBroadcaster;
+        }
+
+        private static int GetTwSrMaxReqEveryone()
+        {
+            return Properties.Settings.Default.TwSRMaxReqEveryone;
+        }
+
+        private static int GetTwSrMaxReqModerator()
+        {
+            return Properties.Settings.Default.TwSRMaxReqModerator;
+        }
+
+        private static int GetTwSrMaxReqSubscriber()
+        {
+            return Properties.Settings.Default.TwSRMaxReqSubscriber;
+
+        }
+
+        private static int GetTwSrMaxReqVip()
+        {
+            return Properties.Settings.Default.TwSRMaxReqVip;
+
         }
 
         private static bool GetTwSrReward()
@@ -943,12 +986,6 @@ namespace Songify_Slim.Util.Settings
         private static string GetWebua()
         {
             return Properties.Settings.Default.webua;
-        }
-
-        private static void SetAccessToken(string value)
-        {
-            Properties.Settings.Default.AccessToken = value;
-            Properties.Settings.Default.Save();
         }
 
         private static void SetAnnounceInChat(bool value)
@@ -1059,6 +1096,12 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBotCmdSkipVoteCount(int value)
+        {
+            Properties.Settings.Default.bot_cmd_skip_vote_count = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetBotCmdSong(bool value)
         {
             Properties.Settings.Default.bot_cmd_song = value;
@@ -1137,18 +1180,6 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
-        private static void SetNbUser(string nbuser)
-        {
-            Properties.Settings.Default.NBUser = nbuser;
-            Properties.Settings.Default.Save();
-        }
-
-        private static void SetNbUserId(string nbuserId)
-        {
-            Properties.Settings.Default.NBUserID = nbuserId;
-            Properties.Settings.Default.Save();
-        }
-
         private static void SetOpenQueueOnStartup(bool value)
         {
             Properties.Settings.Default.OpenQueueOnStartup = value;
@@ -1179,12 +1210,6 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
-        private static void SetRefreshToken(string value)
-        {
-            Properties.Settings.Default.RefreshToken = value;
-            Properties.Settings.Default.Save();
-        }
-
         private static void SetSaveHistory(bool savehistory)
         {
             Properties.Settings.Default.SaveHistory = savehistory;
@@ -1209,9 +1234,21 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetSpotifyAccessToken(string value)
+        {
+            Properties.Settings.Default.SpotifyAccessToken = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetSpotifyDeviceId(string value)
         {
             Properties.Settings.Default.SpotifyDeviceID = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetSpotifyRefreshToken(string value)
+        {
+            Properties.Settings.Default.SpotifyRefreshToken = value;
             Properties.Settings.Default.Save();
         }
 
@@ -1251,6 +1288,16 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetTwitchAccessToken(string value)
+        {
+            Properties.Settings.Default.TwitchAccessToken = value;
+            Properties.Settings.Default.Save();
+        }
+        private static void SetTwitchChannelId(string value)
+        {
+            Properties.Settings.Default.TwitchChannelId = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetTwOAuth(string value)
         {
             Properties.Settings.Default.TwOauth = value;
@@ -1281,6 +1328,34 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetTwSrMaxReqBroadcaster(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqBroadcaster = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetTwSrMaxReqEveryone(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqEveryone = value;
+            Properties.Settings.Default.Save();
+        }
+        private static void SetTwSrMaxReqModerator(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqModerator = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetTwSrMaxReqSubscriber(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqSubscriber = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetTwSrMaxReqVip(int value)
+        {
+            Properties.Settings.Default.TwSRMaxReqVip = value;
+            Properties.Settings.Default.Save();
+        }
         private static void SetTwSrReward(bool value)
         {
             Properties.Settings.Default.TwSRReward = value;

@@ -134,13 +134,15 @@
                     <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
                     <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
                     <MenuItem Header="Discord" Click="BtnDiscord_Click" />
+                    <MenuItem Header="Log-Folder" Click="BtnLogFolderClick" />
                     <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
                 </MenuItem>
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
+                <MenuItem x:Name="mi_TwitchAPI" Header="Twitch API" Click="mi_TwitchAPI_Click" />
                 <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Tag="Connect" Click="BtnTwitch_Click"
-                           />
+                />
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
                           IsEnabled="False" Click="BtnTwitch_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Twitch_Bot}" Click="mi_TW_BotResponses_Click">
