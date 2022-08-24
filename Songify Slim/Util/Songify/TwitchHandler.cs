@@ -765,7 +765,7 @@ namespace Songify_Slim.Util.Songify
             string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
 
             // checks if one of the artist in the requested song is on the blacklist
-            return userBlacklist.Any(s => s == displayName);
+            return userBlacklist.Any(s => s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private static void StartCooldown()
