@@ -182,17 +182,39 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <DockPanel >
+                                    <Image x:Name="ImgTwitchProfile" Height="100" Width="100" HorizontalAlignment="Left"/>
+                                    <StackPanel Orientation="Vertical" Margin="10,0,0,0" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                        <TextBlock x:Name="lblTwitchName" FontSize="16" Text=""></TextBlock>
+                                        <TextBlock x:Name="lblTwitch" FontSize="16" HorizontalAlignment="Stretch" TextWrapping="WrapWithOverflow" Text="" Padding="0,10,0,0"></TextBlock>
+                                    </StackPanel>
+                                </DockPanel>
+
+                                <Button x:Name="BtnLogInTwitch" Click="BtnLogInTwitch_Click" VerticalAlignment="Bottom" Grid.Row="1" Margin="0,12,0,0">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:ForkAwesome Kind="Twitch"/>
+                                            <TextBlock Text="Login with Twitch" Margin="6,0,0,0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
 
                             <Label Margin="0,4"  Content="Account name" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Padding="0,5,5,5" />
+                                   Padding="0,5,5,5" Grid.Row="1" />
                             <TextBox Margin="0,4" x:Name="txtbx_twUser" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""
                                                  VerticalAlignment="Top"
                                                  controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"
-                                                 Grid.Row="0" Grid.Column="1" />
+                                                 Grid.Row="1" Grid.Column="1" />
 
-                            <Label Margin="0,4" Content="oAuth Token" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="1"
+                            <Label Margin="0,4" Content="oAuth Token" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="2"
                                    Grid.Column="0" />
-                            <Grid Margin="0,4" Grid.Row="1" Grid.Column="1">
+                            <Grid Margin="0,4" Grid.Row="2" Grid.Column="1">
                                 <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Stretch"
                                          controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Stretch"
                                          PasswordChanged="txtbx_twOAuth_PasswordChanged" Grid.Row="1" Grid.Column="1" Margin="0,0,30,0" />
@@ -200,18 +222,18 @@
                            Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" Grid.Row="1" Grid.Column="1" />
                             </Grid>
 
-                            <Label Margin="0,4" Content="Channel to join" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="2"
+                            <Label Margin="0,4" Content="Channel to join" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="3"
                                    Grid.Column="0" />
                             <TextBox Margin="0,4" x:Name="txtbx_twChannel" HorizontalAlignment="Stretch" TextWrapping="Wrap"
                                      controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
                                      VerticalAlignment="Top"
-                                     TextChanged="txtbx_twChannel_TextChanged" Grid.Row="2" Grid.Column="1" />
+                                     TextChanged="txtbx_twChannel_TextChanged" Grid.Row="3" Grid.Column="1" />
 
                             <controls:ToggleSwitch Margin="0,4" x:Name="Chbx_TwAutoconnect"
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
-                                                   Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="3" Grid.Column="0"
+                                                   Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
-                            <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="Automatically Announce Song To Chat" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" />
+                            <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="Automatically Announce Song To Chat" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" />
 
                             <Button Margin="0,4" Grid.Row="6" x:Name="btn_Botresponse"
                                     Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Click="btn_Botresponse_Click" FontSize="14" Grid.ColumnSpan="2"

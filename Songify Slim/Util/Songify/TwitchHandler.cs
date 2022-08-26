@@ -12,8 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
 using NHttp;
 using TwitchLib.Api;
+using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
@@ -69,6 +71,7 @@ namespace Songify_Slim.Util.Songify
         private static HttpServer _webServer;
         private static string userId;
         public static List<TwitchUser> users = new List<TwitchUser>();
+        public static ValidateAccessTokenResponse TokenCheck;
 
         public static void ResetVotes()
         {
@@ -82,7 +85,7 @@ namespace Songify_Slim.Util.Songify
             string currentState = null;
 
             // This event is triggered when the application recieves a new token and state from the "RequestClientAuthorization" method.
-            ioa.OnRevcievedValues += (state, token) =>
+            ioa.OnRevcievedValues += async (state, token) =>
             {
                 if (state != currentState)
                 {
@@ -93,14 +96,23 @@ namespace Songify_Slim.Util.Songify
                 // Don't actually print the user token on screen or to the console.
                 // Here you should save it where the application can access it whenever it wants to, such as in appdata.
                 Settings.Settings.TwitchAccessToken = token;
-                InitializeApi();
+                await InitializeApi();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                        if (window.GetType() == typeof(Window_Settings))
+                        {
+                            ((Window_Settings)window).SetControls();
+                            break;
+                        }
+                });
             };
 
             // This method initialize the flow of getting the token and returns a temporary random state that we will use to check authenticity.
             currentState = ioa.RequestClientAuthorization();
         }
 
-        public static async void InitializeApi()
+        public static async Task InitializeApi()
         {
             _twitchApi = new TwitchAPI
             {
@@ -111,11 +123,12 @@ namespace Songify_Slim.Util.Songify
                 }
             };
 
-            var TokenCheck = await _twitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
+            TokenCheck = await _twitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
 
             if (TokenCheck == null)
             {
-                APIConnect();
+
+                //APIConnect();
                 return;
             }
 
@@ -151,6 +164,8 @@ namespace Songify_Slim.Util.Songify
             _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
             _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
             _twitchPubSub.Connect();
+
+
         }
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
@@ -197,7 +212,7 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
 
-                Client.SendWhisper(redeemedUser.DisplayName, msg);
+                Client.SendMessage(Settings.Settings.TwChannel, msg);
                 return;
             }
 
@@ -261,6 +276,7 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(Settings.Settings.TwChannel, msg);
 
             }
+
             else
             {
                 // if no track has been found inform the requester
@@ -651,6 +667,8 @@ namespace Songify_Slim.Util.Songify
                     {
                         if (!Settings.Settings.BotCmdSkipVote)
                             return;
+                        if (_skipCooldown)
+                            return;
                         //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
                         if (!_skipVotes.Contains(e.ChatMessage.DisplayName))
                         {
@@ -676,6 +694,8 @@ namespace Songify_Slim.Util.Songify
                                     SkipCooldownTimer.Start();
                                 }
                                 _skipVotes.Clear();
+                                _skipCooldown = true;
+                                SkipCooldownTimer.Start();
                             }
                         }
                         break;
@@ -719,8 +739,8 @@ namespace Songify_Slim.Util.Songify
                         break;
                     }
                 case "!remove":
-                {
-                    string tmp = "";
+                    {
+                        string tmp = "";
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             RequestObject reqObj = ((MainWindow)Application.Current.MainWindow)?.ReqList.FindLast(o =>

@@ -427,9 +427,12 @@ namespace Songify_Slim
 
                 // This will iterate through all windows of the software, if the window is typeof 
                 // Settingswindow (from there this class is called) it calls the method SetControls
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(Window_Settings))
-                        ((Window_Settings)window).SetControls();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                        if (window.GetType() == typeof(Window_Settings))
+                            ((Window_Settings)window).SetControls();
+                });
             }
         }
 

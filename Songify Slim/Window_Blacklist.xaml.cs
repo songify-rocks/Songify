@@ -3,9 +3,11 @@ using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using SpotifyAPI.Web.Models;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using MahApps.Metro.Controls;
 
 namespace Songify_Slim
 {
@@ -108,9 +110,10 @@ namespace Songify_Slim
                     {
                         FullArtist fullartist = searchItem.Artists.Items[0];
 
-                        foreach (object item in ListView_Blacklist.Items)
-                            if (item.ToString() == fullartist.Name)
-                                return;
+                        if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
+                        {
+                            return;
+                        }
                         ListView_Blacklist.Items.Add(fullartist.Name);
                     }
                     break;
@@ -145,9 +148,8 @@ namespace Songify_Slim
                         s += item + Splitter;
                 s = s.Remove(s.Length - Splitter.Length);
             }
-
             Settings.UserBlacklist = s;
-
+            Settings.Export();
             LoadBlacklists();
         }
 
@@ -183,28 +185,21 @@ namespace Songify_Slim
 
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem mnu = sender as MenuItem;
-            ListBox listView;
+            if (!(sender is MenuItem mnu)) return;
 
-            if (mnu == null) return;
-
-            listView = ((ContextMenu)mnu.Parent).PlacementTarget as ListBox;
+            ListBox listView = ((ContextMenu)mnu.Parent).PlacementTarget as ListBox;
 
             // right-click context menu to delete single blacklist entries
             if (listView != null && listView.SelectedItem == null)
                 return;
 
-            if (listView != null)
-            {
-                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
-                    "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
-                if (msgResult == MessageDialogResult.Affirmative)
-                {
-                    listView.Items.Remove(listView.SelectedItem);
-                    SaveBlacklist();
-                }
-            }
+            if (listView == null) return;
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
+                "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            if (msgResult != MessageDialogResult.Affirmative) return;
+            listView.Items.Remove(listView.SelectedItem);
+            SaveBlacklist();
         }
 
         private void tb_Blacklist_KeyDown(object sender, KeyEventArgs e)
@@ -274,9 +269,15 @@ namespace Songify_Slim
             dgv_Artists.Items.Clear();
             cc_Content.Visibility = Visibility.Hidden;
         }
+
+        private void cbx_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
+                ((ComboBox)sender).SelectedIndex == 0 ? "Artist" : "Username");
+        }
     }
 
-    class BlockListArtists
+    internal class BlockListArtists
     {
         public int Num { get; set; }
         public string Artist { get; set; }

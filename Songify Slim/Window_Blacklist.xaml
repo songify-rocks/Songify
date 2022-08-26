@@ -15,7 +15,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="tb_Blacklist" Height="26" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,12,61,0"
-                 controls:TextBoxHelper.Watermark="Artist" KeyDown="tb_Blacklist_KeyDown" TabIndex="1" />
+                  KeyDown="tb_Blacklist_KeyDown" TabIndex="1"/>
         <Button x:Name="btn_Add" VerticalAlignment="Top" Margin="0,12,80,0" HorizontalAlignment="Right" Width="81"
                 Click="btn_Add_Click" Height="26" Grid.Column="1" TabIndex="3"
                 Content="{x:Static local:Resources.bw_btnAdd}" />
@@ -23,7 +23,7 @@
                 HorizontalAlignment="Right" Width="65" Click="btn_Clear_Click" Padding="5,6"
                 Grid.IsSharedSizeScope="True" Grid.Column="1" VerticalAlignment="Top" Height="26" TabIndex="4" />
         <ComboBox x:Name="cbx_Type" HorizontalAlignment="Left" Margin="171,12,0,0" VerticalAlignment="Top"
-                  SelectedIndex="0" Width="100" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" TabIndex="2">
+                  SelectedIndex="0" Width="100" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2" TabIndex="2" SelectionChanged="cbx_Type_SelectionChanged">
             <ComboBoxItem Content="{x:Static local:Resources.bw_cbArtist}" />
             <ComboBoxItem Content="{x:Static local:Resources.bw_cbUser}" />
         </ComboBox>

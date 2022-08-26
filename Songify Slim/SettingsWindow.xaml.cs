@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
@@ -47,6 +48,7 @@ namespace Songify_Slim
 
         public async void SetControls()
         {
+
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevels.Items.Clear();
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
@@ -103,8 +105,12 @@ namespace Songify_Slim
             CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
 
             if (ApiHandler.Spotify != null)
+            {
                 lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
                                          (await ApiHandler.Spotify.GetPrivateProfileAsync()).DisplayName;
+            }
+
+
             ThemeHandler.ApplyTheme();
             cbx_Language.SelectionChanged -= ComboBox_SelectionChanged;
             switch (Settings.Language)
@@ -127,13 +133,26 @@ namespace Songify_Slim
             }
             cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
 
-            CbxRewards.Items.Clear();
-            foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+            if (TwitchHandler.TokenCheck != null)
             {
-                CbxRewards.Items.Add(reward);
-                if (txtbx_RewardID.Text == reward.Id)
-                    CbxRewards.SelectedItem = reward;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
+                bitmap.EndInit();
+                ImgTwitchProfile.Source = bitmap;
+                lblTwitchName.Text = Settings.TwitchUser.DisplayName;
+                lblTwitch.Text = Settings.TwitchUser.Description;
+                BtnLogInTwitch.Visibility = Visibility.Collapsed;
+                
+                CbxRewards.Items.Clear();
+                foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+                {
+                    CbxRewards.Items.Add(reward);
+                    if (txtbx_RewardID.Text == reward.Id)
+                        CbxRewards.SelectedItem = reward;
+                }
             }
+
 
             foreach (int conditon in Settings.RefundConditons)
             {
@@ -689,6 +708,9 @@ namespace Songify_Slim
 
         private async void BtnUpdateRewards_Click(object sender, RoutedEventArgs e)
         {
+            if (TwitchHandler.TokenCheck == null)
+                return;
+
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewards.Items.Clear();
             foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
@@ -734,6 +756,11 @@ namespace Songify_Slim
                 }
             Debug.WriteLine(string.Join(", ", refundConditons));
             Settings.RefundConditons = refundConditons.ToArray();
+        }
+
+        private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
+        {
+            TwitchHandler.APIConnect();
         }
     }
 }
