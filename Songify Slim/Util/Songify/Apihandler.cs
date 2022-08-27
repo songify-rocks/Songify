@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Songify_Slim.Util.Songify
@@ -93,8 +94,8 @@ namespace Songify_Slim.Util.Songify
                         {
                             foreach (Window window in Application.Current.Windows)
                             {
-                                if (window.GetType() != typeof(Window_Settings)) continue;
-                                ((Window_Settings)window).SetControls();
+                                if (window.GetType() == typeof(Window_Settings))
+                                    ((Window_Settings)window).SetControls();
                             }
                         }));
                 };
@@ -220,7 +221,7 @@ namespace Songify_Slim.Util.Songify
             // Returns a bool wether the playbackstate is playing or not (used for custom pause text)
             return Spotify.GetPlayback().IsPlaying;
         }
-        
+
         public static async Task<ErrorResponse> SkipSong()
         {
             return await Spotify.SkipPlaybackToNextAsync();

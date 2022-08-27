@@ -129,12 +129,53 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
 			responseString =
 			@"
 				<html>
-					<body>
-						<h1>
-							Authentication complete!
-						</h1>
-						<p>You are adviced not to show this page on stream.<p>
-						<p>This window closes in 5 seconds.<p>
+                    <style>
+                        body {
+                          text-align: center;
+                          padding: 40px 0;
+                          background: #EBF0F5;
+                        }
+                        h1 {
+                            color: #1ed760;
+                            font-family: ""Nunito Sans"", ""Helvetica Neue"", sans-serif;
+                            font-weight: 900;
+                            font-size: 40px;
+                            margin-bottom: 10px;
+                        }
+                        p {
+                            color: #404F5E;
+                            font-family: ""Nunito Sans"", ""Helvetica Neue"", sans-serif;
+                            font-size:20px;
+                            margin: 0;
+                        }
+                        .content {
+                            font-style: normal !important;
+                            color: #9ABC66;
+                            font-size: 50px;
+                            line-height: 200px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-evenly;
+                        }
+                        .card {
+                          background: white;
+                          padding: 60px;
+                          border-radius: 4px;
+                          box-shadow: 0 2px 3px #C8D0D8;
+                          display: inline-block;
+                          margin: 0 auto;
+                        }
+                      </style>
+                      <body>
+                        <div class=""card"">
+                        <div style=""border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;"">
+                          <div class=""content"">
+                              <img src=""https://songify.rocks/img/ms-icon-310x310.png"" style="" height: 50px;""/> + <img src=""https://songify.rocks/img/TwitchGlitchPurple.png"" style="" height: 50px;""/>
+                          </div>
+                        </div>
+                          <h1>Success</h1> 
+                          <p>Twitch and Songify are now connected!<br/>This page closes itself in 5 seconds.</p>
+                        </div>
 
 						<script>
 							let values = 

@@ -31,13 +31,17 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using MahApps.Metro.Controls;
 using MdXaml;
 using Octokit;
+using TwitchLib.Api.Helix.Models.ChannelPoints;
 using Application = System.Windows.Application;
+using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using FileMode = System.IO.FileMode;
 using FontFamily = System.Windows.Media.FontFamily;
+using Image = System.Drawing.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
@@ -564,8 +568,12 @@ namespace Songify_Slim
             Settings.PosY = Top;
         }
 
-        private void MetroWindowLoaded(object sender, RoutedEventArgs e)
+        private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            IconTwitchAPI.Foreground = Brushes.Red;
+            IconTwitchBot.Foreground = Brushes.Red;
+            IconTwitchPubSub.Foreground = Brushes.Red;
+            
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += MyHandler;
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
@@ -669,7 +677,8 @@ namespace Songify_Slim
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
             // automatically start fetching songs
             SetFetchTimer();
-            TwitchHandler.InitializeApi();
+            if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
+                await TwitchHandler.InitializeApi();
         }
 
         private void AutoUpdater_ApplicationExitEvent()

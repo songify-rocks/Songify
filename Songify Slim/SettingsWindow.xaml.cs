@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
+using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
@@ -48,7 +49,6 @@ namespace Songify_Slim
 
         public async void SetControls()
         {
-
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevels.Items.Clear();
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
@@ -106,8 +106,13 @@ namespace Songify_Slim
 
             if (ApiHandler.Spotify != null)
             {
-                lbl_SpotifyAcc.Content = Properties.Resources.sw_Integration_SpotifyLinked + " " +
-                                         (await ApiHandler.Spotify.GetPrivateProfileAsync()).DisplayName;
+                PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
+                lbl_SpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                bitmap.EndInit();
+                ImgSpotifyProfile.ImageSource = bitmap;
             }
 
 
@@ -139,11 +144,11 @@ namespace Songify_Slim
                 bitmap.BeginInit();
                 if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
-                ImgTwitchProfile.Source = bitmap;
+                ImgTwitchProfile.ImageSource = bitmap;
                 lblTwitchName.Text = Settings.TwitchUser.DisplayName;
-                lblTwitch.Text = Settings.TwitchUser.Description;
                 BtnLogInTwitch.Visibility = Visibility.Collapsed;
-                
+                PnlTwich.Visibility = Visibility.Visible;
+
                 CbxRewards.Items.Clear();
                 foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
                 {
@@ -152,8 +157,13 @@ namespace Songify_Slim
                         CbxRewards.SelectedItem = reward;
                 }
             }
+            else
+            {
+                PnlTwich.Visibility = Visibility.Collapsed;
+                BtnLogInTwitch.Visibility = Visibility.Visible;
+            }
 
-
+            if (Settings.RefundConditons == null) return;
             foreach (int conditon in Settings.RefundConditons)
             {
                 foreach (UIElement child in GrdTwitchReward.Children)
@@ -200,7 +210,7 @@ namespace Songify_Slim
         private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
             // calls confighandler
-            //ConfigHandler.LoadConfig();
+            ConfigHandler.LoadConfig();
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
@@ -219,23 +229,7 @@ namespace Songify_Slim
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
-
-        private async void btn_save_Click(object sender, RoutedEventArgs e)
-        {
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Information",
-                "The restart is only necessary if you switched the API clients.\n\nYou DO NOT have to do this when linking your account!",
-                MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = "restart", NegativeButtonText = "cancel" });
-            if (msgResult != MessageDialogResult.Affirmative) return;
-            Settings.SpotifyAccessToken = "";
-            Settings.SpotifyRefreshToken = "";
-            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-            ConfigHandler.WriteAllConfig(Settings.Export());
-
-            Process.Start(Application.ResourceAssembly.Location);
-            Application.Current.Shutdown();
-        }
-
+        
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
             // Links Spotify
@@ -690,6 +684,7 @@ namespace Songify_Slim
 
         private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (CbxRewards.SelectedItem == null) return;
             txtbx_RewardID.Text = ((CustomReward)CbxRewards.SelectedItem).Id;
         }
 
@@ -737,7 +732,7 @@ namespace Songify_Slim
                     }
                 }
             }
-            Debug.WriteLine(string.Join(", ", refundConditons));
+            //Debug.WriteLine(string.Join(", ", refundConditons));
             Settings.RefundConditons = refundConditons.ToArray();
 
         }
@@ -761,6 +756,21 @@ namespace Songify_Slim
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
         {
             TwitchHandler.APIConnect();
+        }
+
+        private void ToggleSwitchPrivacy_Toggled(object sender, RoutedEventArgs e)
+        {
+            if ((sender as ToggleSwitch).IsOn)
+            {
+                PnlTwich.Visibility = Visibility.Collapsed;
+                PnlSpotify.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                PnlTwich.Visibility = Visibility.Visible;
+                PnlSpotify.Visibility = Visibility.Visible;
+            }
+
         }
     }
 }

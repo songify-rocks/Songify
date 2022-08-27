@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
 using NHttp;
 using TwitchLib.Api;
@@ -97,6 +98,7 @@ namespace Songify_Slim.Util.Songify
                 // Here you should save it where the application can access it whenever it wants to, such as in appdata.
                 Settings.Settings.TwitchAccessToken = token;
                 await InitializeApi();
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     foreach (Window window in Application.Current.Windows)
@@ -127,8 +129,17 @@ namespace Songify_Slim.Util.Songify
 
             if (TokenCheck == null)
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window.GetType() != typeof(MainWindow))
+                            continue;
+                        ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.Red;
+                    }
+                });
 
-                //APIConnect();
+                APIConnect();
                 return;
             }
 
@@ -139,6 +150,16 @@ namespace Songify_Slim.Util.Songify
             User user = users.Users.FirstOrDefault();
             if (user == null)
                 return;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(MainWindow))
+                        continue;
+                    ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
+                }
+            });
 
             Settings.Settings.TwitchUser = user;
             Settings.Settings.TwitchChannelId = user.Id;
@@ -164,8 +185,6 @@ namespace Songify_Slim.Util.Songify
             _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
             _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
             _twitchPubSub.Connect();
-
-
         }
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
@@ -311,6 +330,15 @@ namespace Songify_Slim.Util.Songify
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
         {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(MainWindow))
+                        continue;
+                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.Red;
+                }
+            });
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
 
         }
@@ -318,6 +346,15 @@ namespace Songify_Slim.Util.Songify
         private static void OnPubSubServiceConnected(object sender, EventArgs e)
         {
             _twitchPubSub.SendTopics(Settings.Settings.TwitchAccessToken);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(MainWindow))
+                        continue;
+                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.GreenYellow;
+                }
+            });
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
 
@@ -397,6 +434,7 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
+                    ((MainWindow)window).IconTwitchBot.Foreground = Brushes.Red;
                 }
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch");
@@ -425,6 +463,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
+                    ((MainWindow)window).IconTwitchBot.Foreground = Brushes.GreenYellow;
+
                 }
             });
             Logger.LogStr("TWITCH: Connected to Twitch");

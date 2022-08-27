@@ -10,6 +10,7 @@
                       RenderOptions.BitmapScalingMode="NearestNeighbor"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:songifySlim="clr-namespace:Songify_Slim"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
                       ShowDialogsOverTitleBar="False" 
@@ -112,8 +113,56 @@
         </StackPanel>
         <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0"
                    ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
-            <StatusBarItem x:Name="LblStatus" Content="" Foreground="Black" Width="315" />
-            <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,0">
+            <StatusBarItem>
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Red">
+                                        <Setter Property="ToolTip" Value="Twitch Chat Bot: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch Chat Bot: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Red">
+                                        <Setter Property="ToolTip" Value="Twitch API: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch API: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Red">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem x:Name="LblStatus" Foreground="Black" Width="300" >
+                <StatusBar/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,-2">
                 <StackPanel Orientation="Horizontal">
                     <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©" Foreground="Black" />
                     <StatusBarItem x:Name="LblCopyrightLink" Foreground="Black" FontStyle="Italic">
