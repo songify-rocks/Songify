@@ -522,6 +522,9 @@
     <Compile Include="UserControls\UC_BotResponses.xaml.cs">
       <DependentUpon>UC_BotResponses.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_RewardItem.xaml.cs">
+      <DependentUpon>UC_RewardItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\General\StringExtension.cs" />
     <Compile Include="Util\Songify\Apihandler.cs" />
     <Compile Include="Util\Settings\ConfigHandler.cs" />
@@ -607,6 +610,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_BotResponses.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_RewardItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -701,6 +708,11 @@
     <Compile Include="Models\NBObj.cs" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\img\default-1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

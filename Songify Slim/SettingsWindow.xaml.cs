@@ -18,6 +18,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
+using Songify_Slim.UserControls;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
@@ -106,13 +107,20 @@ namespace Songify_Slim
 
             if (ApiHandler.Spotify != null)
             {
-                PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
-                lbl_SpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
-                bitmap.EndInit();
-                ImgSpotifyProfile.ImageSource = bitmap;
+                try
+                {
+                    PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
+                    lbl_SpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
+                    BitmapImage bitmap = new BitmapImage();
+                    bitmap.BeginInit();
+                    if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                    bitmap.EndInit();
+                    ImgSpotifyProfile.ImageSource = bitmap;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
             }
 
 
@@ -152,7 +160,7 @@ namespace Songify_Slim
                 CbxRewards.Items.Clear();
                 foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
                 {
-                    CbxRewards.Items.Add(reward);
+                    CbxRewards.Items.Add(new UC_RewardItem(reward));
                     if (txtbx_RewardID.Text == reward.Id)
                         CbxRewards.SelectedItem = reward;
                 }
@@ -229,7 +237,7 @@ namespace Songify_Slim
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
-        
+
         private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
             // Links Spotify
@@ -685,7 +693,7 @@ namespace Songify_Slim
         private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CbxRewards.SelectedItem == null) return;
-            txtbx_RewardID.Text = ((CustomReward)CbxRewards.SelectedItem).Id;
+            txtbx_RewardID.Text = (CbxRewards.SelectedItem as UC_RewardItem).Reward.Id;
         }
 
         private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
@@ -710,7 +718,8 @@ namespace Songify_Slim
             CbxRewards.Items.Clear();
             foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
             {
-                CbxRewards.Items.Add(reward);
+                CbxRewards.Items.Add(new UC_RewardItem(reward));
+
                 if (txtbx_RewardID.Text == reward.Id)
                     CbxRewards.SelectedItem = reward;
             }

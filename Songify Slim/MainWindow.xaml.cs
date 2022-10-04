@@ -1173,6 +1173,7 @@ namespace Songify_Slim
                         }
                     });
                 }
+                
                 catch (Exception)
                 {
                     // ignored

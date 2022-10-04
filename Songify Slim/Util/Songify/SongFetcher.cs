@@ -78,12 +78,27 @@ namespace Songify_Slim.Util.Songify
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
-                            foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
+                            try
                             {
-                                wintitle = wintitle.Replace(item, "");
+                                foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
+                                {
+                                    wintitle = wintitle.Replace(item, "");
+                                }
                             }
-                            
+                            catch (Exception ex)
+                            {
+                                Logger.LogExc(ex);
+                            }
+                            finally
+                            {
+                                artist = wintitle;
+                                title = "";
+                                extra = "";
+                            }
+
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+
+                            
 
                             _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
                             return Task.FromResult(_previousSonginfo);

@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Songify_Slim.UserControls.UC_RewardItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Songify_Slim.UserControls"
+             mc:Ignorable="d">
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Height="16">
+            <Border x:Name="ImgBorder" Width="16" Height="16" CornerRadius="2">
+                <Image x:Name="RewardImage" Height="14" Width="14" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Resources/img/default-1.png"/>
+            </Border>
+            <TextBlock Margin="6,0" x:Name="TbRewardName" Width="150" Text="Reward" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <TextBlock TextAlignment="Right" Width="50" x:Name="TbRewardCost" Text="Cost"  HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
+        </StackPanel>
+    </Grid>
+</UserControl>

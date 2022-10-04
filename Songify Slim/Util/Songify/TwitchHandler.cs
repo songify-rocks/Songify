@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -235,6 +236,22 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
+            // checks if the user has already the max amount of songs in the queue
+            if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
+            {
+                // if the user reached max requests in the queue skip and inform requester
+                string response = Settings.Settings.BotRespMaxReq;
+                response = response.Replace("{user}", redeemedUser.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
+                Client.SendMessage(Settings.Settings.TwChannel, response);
+                return;
+            }
+
+
             if (ApiHandler.Spotify == null)
             {
                 msg = "It seems that Spotify is not connected right now.";
@@ -269,7 +286,13 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 // search for a track with a search string from chat
-                SearchItem searchItem = ApiHandler.FindTrack(redemption.UserInput);
+                SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(redemption.UserInput));
+                if (searchItem.HasError())
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
+                    return;
+                }
+
                 if (searchItem.Tracks.Items.Count > 0)
                 {
                     // if a track was found convert the object to FullTrack (easier use than searchItem)
@@ -917,14 +940,14 @@ namespace Songify_Slim.Util.Songify
             }
 
             // checks if the user has already the max amount of songs in the queue
-            if (MaxQueueItems(e.ChatMessage.DisplayName, e.ChatMessage))
+            if (MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
             {
                 // if the user reached max requests in the queue skip and inform requester
                 response = Settings.Settings.BotRespMaxReq;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
                 response = response.Replace("{artist}", "");
                 response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(e.ChatMessage)}");
+                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
                 response = response.Replace("{errormsg}", "");
                 response = CleanFormatString(response);
                 Client.SendMessage(e.ChatMessage.Channel, response);
@@ -1145,9 +1168,9 @@ namespace Songify_Slim.Util.Songify
             };
         }
 
-        private static int GetMaxRequestsForUserlevel(ChatMessage chatMessage)
+        private static int GetMaxRequestsForUserlevel(int userLevel)
         {
-            switch ((TwitchUserLevels)CheckUserLevel(chatMessage))
+            switch ((TwitchUserLevels)userLevel)
             {
                 case TwitchUserLevels.Everyone:
                     return Settings.Settings.TwSrMaxReqEveryone;
@@ -1274,7 +1297,7 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        private static bool MaxQueueItems(string requester, ChatMessage chatMessage)
+        private static bool MaxQueueItems(string requester, int userLevel)
         {
             int maxreq;
             // Checks if the requester already reached max songrequests
@@ -1286,7 +1309,7 @@ namespace Songify_Slim.Util.Songify
                         temp = (window as MainWindow)?.ReqList.FindAll(x => x.Requester == requester);
             });
 
-            switch ((TwitchUserLevels)CheckUserLevel(chatMessage))
+            switch ((TwitchUserLevels)userLevel)
             {
                 case TwitchUserLevels.Everyone:
                     maxreq = Settings.Settings.TwSrMaxReqEveryone;
