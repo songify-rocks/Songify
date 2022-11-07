@@ -52,7 +52,6 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-
         private void tb_NoSong_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespNoSong = tb_NoSong.Text;
@@ -99,16 +98,6 @@ namespace Songify_Slim.UserControls
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //if (Settings.Language == "de-DE")
-            //{
-            //    tb_ArtistBlocked.Margin = new Thickness(230, tb_ArtistBlocked.Margin.Top, tb_ArtistBlocked.Margin.Right, tb_ArtistBlocked.Margin.Bottom);
-            //    tb_SongInQueue.Margin = new Thickness(230, tb_SongInQueue.Margin.Top, tb_SongInQueue.Margin.Right, tb_SongInQueue.Margin.Bottom);
-            //    tb_MaxSongs.Margin = new Thickness(230, tb_MaxSongs.Margin.Top, tb_MaxSongs.Margin.Right, tb_MaxSongs.Margin.Bottom);
-            //    tb_MaxLength.Margin = new Thickness(230, tb_MaxLength.Margin.Top, tb_MaxLength.Margin.Right, tb_MaxLength.Margin.Bottom);
-            //    tb_Error.Margin = new Thickness(230, tb_Error.Margin.Top, tb_Error.Margin.Right, tb_Error.Margin.Bottom);
-            //    tb_Success.Margin = new Thickness(230, tb_Success.Margin.Top, tb_Success.Margin.Right, tb_Success.Margin.Bottom);
-            //}
-
             tb_ArtistBlocked.Text = Settings.BotRespBlacklist;
             tb_SongInQueue.Text = Settings.BotRespIsInQueue;
             tb_MaxSongs.Text = Settings.BotRespMaxReq;
@@ -118,6 +107,18 @@ namespace Songify_Slim.UserControls
             tb_NoSong.Text = Settings.BotRespNoSong;
             tb_ModSkip.Text = Settings.BotRespModSkip;
             tb_VoteSkip.Text = Settings.BotRespVoteSkip;
+        }
+
+        private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespPos = tb_Pos.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void Tb_Next_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespNext = tb_Next.Text;
+            SetPreview(sender as TextBox);
         }
     }
 }

@@ -230,5 +230,11 @@
     <Setting Name="RefundConditons" Type="System.Int32[]" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="bot_Resp_Pos" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{user} {songs}{pos} {song}{/songs}</Value>
+    </Setting>
+    <Setting Name="bot_Resp_Next" Type="System.String" Scope="User">
+      <Value Profile="(Default)">@{user} {song}</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -577,6 +577,9 @@ namespace Songify_Slim
         public string BotRespNoSong { get; set; }
         public string BotRespSuccess { get; set; }
         public string BotRespVoteSkip { get; set; }
+        public string BotRespPos { get; set; }
+        public string BotRespNext { get; set; }
+
     }
 
     public class AppConfig

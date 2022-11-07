@@ -201,7 +201,7 @@ namespace Songify_Slim.Util.Songify
             var reward = e.RewardRedeemed.Redemption.Reward;
             var redeemedUser = e.RewardRedeemed.Redemption.User;
             string trackId = "";
-            
+
             if (reward.Id == Settings.Settings.TwRewardId)
             {
                 int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
@@ -796,11 +796,10 @@ namespace Songify_Slim.Util.Songify
                 case "!next" when Settings.Settings.BotCmdNext:
                     {
                         List<QueueItem> queueItems = GetQueueItems();
-                        Client.SendMessage(e.ChatMessage.Channel,
-                            queueItems != null
-                                ? $"@{e.ChatMessage.DisplayName} {queueItems[0].Title}"
-                                : $"@{e.ChatMessage.DisplayName} there is no song next up.");
-
+                        string response = Settings.Settings.BotRespNext;
+                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                        response = response.Replace("{song}", queueItems != null ? queueItems[0].Title : "there is no song next up.");
+                        Client.SendMessage(e.ChatMessage.Channel, response);
                         break;
                     }
                 case "!remove":

@@ -452,6 +452,41 @@ namespace Songify_Slim.Util.Settings
             set => SetRefundConditons(value);
         }
 
+
+        public static string BotRespNext
+        {
+            get => GetBot_Resp_Next();
+            set => SetBot_Resp_Next(value);
+        }
+
+        private static void SetBot_Resp_Next(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Next = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Next()
+        {
+            return Properties.Settings.Default.bot_Resp_Next;
+        }
+
+
+        public static string BotRespPos
+        {
+            get => GetBot_Resp_Pos();
+            set => SetBot_Resp_Pos(value); }
+
+        private static void SetBot_Resp_Pos(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Pos = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static string GetBot_Resp_Pos()
+        {
+            return Properties.Settings.Default.bot_Resp_Pos;
+        }
+
         private static void SetRefundConditons(int[] value)
         {
             Properties.Settings.Default.RefundConditons = value;
@@ -501,7 +536,9 @@ namespace Songify_Slim.Util.Settings
                 BotRespModSkip = GetBot_Resp_ModSkip(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
                 BotRespSuccess = GetBot_Resp_Success(),
-                BotRespVoteSkip = GetBot_Resp_VoteSkip()
+                BotRespVoteSkip = GetBot_Resp_VoteSkip(),
+                BotRespNext = GetBot_Resp_Next(),
+                BotRespPos = GetBot_Resp_Pos()
             };
 
             AppConfig appConfig = new AppConfig
@@ -572,6 +609,15 @@ namespace Songify_Slim.Util.Settings
             #region BotConfig
             SetBot_Resp_ModSkip(config.BotConfig.BotRespModSkip);
             SetBot_Resp_VoteSkip(config.BotConfig.BotRespVoteSkip);
+            SetBot_Resp_Pos(config.BotConfig.BotRespPos);
+            SetBot_Resp_Next(config.BotConfig.BotRespNext);
+            SetBot_Resp_MaxReq(config.BotConfig.BotRespMaxReq);
+            SetBot_Resp_IsInQueue(config.BotConfig.BotRespIsInQueue);
+            SetBot_Resp_Length(config.BotConfig.BotRespLength);
+            SetBot_Resp_Blacklist(config.BotConfig.BotRespBlacklist);
+            SetBot_Resp_Error(config.BotConfig.BotRespError);
+            SetBot_Resp_Success(config.BotConfig.BotRespSuccess);
+            SetBot_Resp_NoSong(config.BotConfig.BotRespNoSong);
             SetBotCmdNext(config.BotConfig.BotCmdNext);
             SetBotCmdPos(config.BotConfig.BotCmdPos);
             SetBotCmdSkip(config.BotConfig.BotCmdSkip);

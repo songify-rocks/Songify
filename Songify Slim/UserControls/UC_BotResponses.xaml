@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:properties="clr-namespace:Songify_Slim.Properties"
              mc:Ignorable="d" d:DesignWidth="800" Loaded="UserControl_Loaded">
-    <Grid>
+    <Grid d:Background="White">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
@@ -63,6 +63,18 @@
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_VoteSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Response for !pos command" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_Pos" Height="23" VerticalAlignment="Top"
+                         TextChanged="Tb_Pos_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Response for !next command" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_Next" Height="23" VerticalAlignment="Top"
+                         TextChanged="Tb_Next_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -922,13 +922,36 @@ namespace Songify_Slim.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public int[] RefundConditons {
             get {
                 return ((int[])(this["RefundConditons"]));
             }
             set {
                 this["RefundConditons"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} {songs}{pos} {song}{/songs}")]
+        public string bot_Resp_Pos {
+            get {
+                return ((string)(this["bot_Resp_Pos"]));
+            }
+            set {
+                this["bot_Resp_Pos"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("@{user} {song}")]
+        public string bot_Resp_Next {
+            get {
+                return ((string)(this["bot_Resp_Next"]));
+            }
+            set {
+                this["bot_Resp_Next"] = value;
             }
         }
     }
