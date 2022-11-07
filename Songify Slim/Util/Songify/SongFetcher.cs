@@ -6,8 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Automation;
+using TwitchLib.PubSub.Extensions;
+using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -22,7 +25,7 @@ namespace Songify_Slim.Util.Songify
         private AutomationElement _parent;
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
-
+        private static TrackInfo songInfo;
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
         ///     returns null if unsuccessful and custom pause text is not set.
@@ -98,11 +101,11 @@ namespace Songify_Slim.Util.Songify
 
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
 
-                            
+
 
                             _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
                             return Task.FromResult(_previousSonginfo);
-                        
+
                         case "foobar2000":
                             // Splitting the win title which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
@@ -147,7 +150,7 @@ namespace Songify_Slim.Util.Songify
 
             return Task.FromResult<SongInfo>(null);
         }
-        
+
         /// <summary>
         ///     A method to fetch the song that's currently playing on Youtube.
         ///     returns empty string if unsuccessful and custom pause text is not set.
@@ -323,14 +326,22 @@ namespace Songify_Slim.Util.Songify
             }
 
             // gets the current playing songinfo
-            TrackInfo songInfo = ApiHandler.GetSongInfo();
+            songInfo = ApiHandler.GetSongInfo();
             try
             {
+
                 string path = string.IsNullOrEmpty(Settings.Settings.Directory)
                 ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
                 : Settings.Settings.Directory;
-                
-                File.WriteAllText($"{path}/progress.txt", songInfo.DurationPercentage.ToString());
+                int current = (songInfo.DurationMS - songInfo.DurationTotal) * -1;
+                int total = songInfo.DurationTotal;
+                string j = Json.Serialize(new
+                {
+                    Current = current,
+                    Total = total
+                });
+
+                WriteProgressFile($"{path}/progress.txt", j);
             }
             catch (Exception e)
             {
@@ -340,6 +351,45 @@ namespace Songify_Slim.Util.Songify
             // if no song is playing and custompausetext is enabled
             return songInfo ?? new TrackInfo { isPlaying = false };
             // return a new stringarray containing artist, title and so on
+        }
+
+        private async void WriteProgressFile(string path, string j)
+        {
+            const int tries = 5;
+            for (int i = 0; i < tries; i++)
+            {
+                if (IsFileLocked(new FileInfo(path)))
+                {
+                    await Task.Delay(1000);
+                    Logger.LogStr("PROGRESS: Couldn't write to file");
+                    continue;
+                }
+
+                File.WriteAllText(path, j);
+                break;
+            }
+        }
+
+        protected virtual bool IsFileLocked(FileInfo file)
+        {
+            try
+            {
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+
+            //file is not locked
+            return false;
         }
     }
 }

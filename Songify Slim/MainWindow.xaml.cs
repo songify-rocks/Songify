@@ -45,6 +45,8 @@ using Image = System.Drawing.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
+using System.ServiceModel;
+using System.ServiceModel.Description;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -61,7 +63,6 @@ namespace Songify_Slim
         public List<RequestObject> SkipList = new List<RequestObject>();
         private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
-        private readonly System.Timers.Timer _songTimer = new System.Timers.Timer();
         private bool _firstRun = true;
         private bool _forceClose;
         private string _prevId, _currentId;
@@ -72,6 +73,7 @@ namespace Songify_Slim
         private string _temp = "";
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private readonly WebClient _webClient = new WebClient();
+        SongFetcher sf = new SongFetcher();
         #endregion Variables
 
         public MainWindow()
@@ -80,8 +82,6 @@ namespace Songify_Slim
             _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             // start minimized in systray (hide)
             InitializeComponent();
-
-            _songTimer.Elapsed += SongTimer_Elapsed;
 
             if (Properties.Settings.Default.UpgradeRequired)
             {
@@ -343,21 +343,9 @@ namespace Songify_Slim
 
                 else
                 {
-                    const int numberOfRetries = 5;
-                    const int delayOnRetry = 1000;
-
-                    for (int i = 1; i < numberOfRetries; i++)
-                        try
-                        {
-                            Uri uri = new Uri(cover);
-                            // Downloads the album cover to the filesystem
-                            await _webClient.DownloadFileTaskAsync(uri, _coverTemp);
-                            return;
-                        }
-                        catch (Exception) when (i <= numberOfRetries)
-                        {
-                            Thread.Sleep(delayOnRetry);
-                        }
+                    Uri uri = new Uri(cover);
+                    // Downloads the album cover to the filesystem
+                    await _webClient.DownloadFileTaskAsync(uri, _coverTemp);
                 }
             }
             catch (Exception ex)
@@ -368,46 +356,26 @@ namespace Songify_Slim
 
         private async void FetchSpotifyWeb()
         {
-            SongFetcher sf = new SongFetcher();
             TrackInfo info = sf.FetchSpotifyWeb();
-            if (info != null)
+            if (info == null) return;
+
+            if (!info.isPlaying)
             {
-                if (!info.isPlaying)
-                {
-                    if (Settings.CustomPauseTextEnabled)
-                        WriteSong("", "", "");
-                    return;
-                }
-
-                string albumUrl = null;
-
-                if (info.albums.Count != 0) albumUrl = info.albums[0].Url;
-
-                if (info.DurationMS > 2000)
-                {
-                    if (!_songTimer.Enabled)
-                        _songTimer.Enabled = true;
-                    _songTimer.Stop();
-                    _songTimer.Interval = info.DurationMS + 400;
-                    _songTimer.Start();
-                }
-
-                if (SkipList.Find(o => o.TrackID == info.SongID) != null)
-                {
-                    SkipList.Remove(SkipList.Find(o => o.TrackID == info.SongID));
-                    await ApiHandler.SkipSong();
-                }
-
-                WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID, info.url);
+                if (Settings.CustomPauseTextEnabled)
+                    WriteSong("", "", "");
+                return;
             }
-            else
+
+            string albumUrl = null;
+
+            if (info.albums.Count != 0) albumUrl = info.albums[0].Url;
+            if (SkipList.Find(o => o.TrackID == info.SongID) != null)
             {
-                if (!_songTimer.Enabled)
-                    _songTimer.Enabled = true;
-                _songTimer.Stop();
-                _songTimer.Interval = 1000;
-                _songTimer.Start();
+                SkipList.Remove(SkipList.Find(o => o.TrackID == info.SongID));
+                await ApiHandler.SkipSong();
             }
+
+            WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID, info.url);
         }
 
         private void FetchTimer(int ms)
@@ -430,7 +398,6 @@ namespace Songify_Slim
 
         private async Task GetCurrentSongAsync()
         {
-            SongFetcher sf = new SongFetcher();
             SongInfo songInfo;
             switch (_selectedSource)
             {
@@ -570,10 +537,15 @@ namespace Songify_Slim
 
         private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+            {
+                Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            }
+
             IconTwitchAPI.Foreground = Brushes.Red;
             IconTwitchBot.Foreground = Brushes.Red;
             IconTwitchPubSub.Foreground = Brushes.Red;
-            
+
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += MyHandler;
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
@@ -844,14 +816,9 @@ namespace Songify_Slim
 
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
-                    FetchTimer(Settings.UseOwnApp ? 2000 : 20000);
+                    FetchTimer(Settings.UseOwnApp ? 1000 : 20000);
                     break;
             }
-        }
-
-        private void SongTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            FetchSpotifyWeb();
         }
 
         private void mi_TwitchAPI_Click(object sender, RoutedEventArgs e)
@@ -883,6 +850,7 @@ namespace Songify_Slim
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+            int tries = 5;
             Logger.LogStr("COVER: Cover Downloaded");
 
             if (_coverPath != "" && _coverTemp != "")
@@ -891,11 +859,25 @@ namespace Songify_Slim
                 {
                     Logger.LogStr("COVER: Trying to delete old Cover");
 
-                    while (IsFileLocked(new FileInfo(_coverTemp)))
+                    for (int i = 0; i < tries; i++)
                     {
-                        Logger.LogStr("COVER: Cover is locked, waiting...");
-                        Thread.Sleep(250);
+                        if (IsFileLocked(new FileInfo(_coverPath)))
+                        {
+                            Thread.Sleep(1000);
+                            if (i != tries) continue;
+                            Logger.LogStr("COVER: Couldn't delete old cover, aborting");
+                            return;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
+                    //while (IsFileLocked(new FileInfo(_coverTemp)))
+                    //{
+                    //    Logger.LogStr("COVER: Cover is locked, waiting...");
+                    //    Thread.Sleep(1000);
+                    //}
                     Logger.LogStr("COVER: Deleting old Cover");
                     File.Delete(_coverPath);
                 }
@@ -916,9 +898,8 @@ namespace Songify_Slim
 
             }
 
-
             img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new Action(() =>
+                new Action(async () =>
                 {
                     int numberOfRetries = 5;
                     int delayOnRetry = 1000;
@@ -929,11 +910,6 @@ namespace Songify_Slim
                             Logger.LogStr($"COVER: Setting new Cover attempt {i}");
                             try
                             {
-                                while (IsFileLocked(new FileInfo(_coverPath)))
-                                {
-                                    Logger.LogStr("COVER: Cover is locked, waiting...");
-                                    Thread.Sleep(250);
-                                }
                                 BitmapImage image = new BitmapImage();
                                 image.BeginInit();
                                 image.CacheOption = BitmapCacheOption.OnLoad;
@@ -945,6 +921,9 @@ namespace Songify_Slim
                             catch (Exception ex)
                             {
                                 Debug.WriteLine(ex);
+                                Logger.LogStr("COVER: Couldn't load cover, waiting for 1s");
+                                await Task.Delay(1000);
+                                continue;
                             }
                             Logger.LogStr($"COVER: Set succesfully");
                             break;
@@ -1055,7 +1034,8 @@ namespace Songify_Slim
                         int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
                         int end = CurrSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSong = CurrSong.Remove(start, end - start);
-
+                        if (CurrSong.Contains("{{"))
+                            Debug.WriteLine("???");
                         start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
                         end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
@@ -1068,7 +1048,8 @@ namespace Songify_Slim
                         int start = CurrSong.IndexOf("{{", StringComparison.Ordinal);
                         int end = CurrSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSong = CurrSong.Remove(start, end - start);
-
+                        if (CurrSong.Contains("{{") || CurrSong.Contains("}}"))
+                            Debug.WriteLine("???");
                         start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
                         end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
@@ -1146,6 +1127,8 @@ namespace Songify_Slim
             // if the text file is different to _currSong (fetched song) or update is forced
             if (temp.Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
             {
+                if (temp.Trim() != CurrSong.Trim())
+                    Debug.WriteLine("???");
                 // Clear the SkipVotes list in TwitchHandler Class
                 TwitchHandler.ResetVotes();
 
@@ -1173,7 +1156,7 @@ namespace Songify_Slim
                         }
                     });
                 }
-                
+
                 catch (Exception)
                 {
                     // ignored
@@ -1265,7 +1248,7 @@ namespace Songify_Slim
                 if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
-                if (TwitchHandler.Client != null && Settings.AnnounceInChat && TwitchHandler.Client.IsConnected)
+                if (TwitchHandler.Client != null && Settings.AnnounceInChat && TwitchHandler.Client.IsConnected && Settings.IsLive)
                     TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
 
                 _prevId = _currentId;

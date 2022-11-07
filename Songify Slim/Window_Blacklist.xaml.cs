@@ -115,14 +115,14 @@ namespace Songify_Slim
                             return;
                         }
                         ListView_Blacklist.Items.Add(fullartist.Name);
+                        SaveBlacklist();
                     }
                     break;
                 case 1:
                     ListView_UserBlacklist.Items.Add(search);
+                    SaveBlacklist();
                     break;
             }
-
-            SaveBlacklist();
         }
 
         private void SaveBlacklist()
@@ -149,7 +149,8 @@ namespace Songify_Slim
                 s = s.Remove(s.Length - Splitter.Length);
             }
             Settings.UserBlacklist = s;
-            Settings.Export();
+            ConfigHandler.WriteAllConfig(Settings.Export());
+            Settings.Export(); 
             LoadBlacklists();
         }
 
@@ -262,6 +263,7 @@ namespace Songify_Slim
             }
             dgv_Artists.Items.Clear();
             cc_Content.Visibility = Visibility.Hidden;
+            SaveBlacklist();
         }
 
         private void btn_CancelArtists_Click(object sender, RoutedEventArgs e)
@@ -274,6 +276,11 @@ namespace Songify_Slim
         {
             tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
                 ((ComboBox)sender).SelectedIndex == 0 ? "Artist" : "Username");
+        }
+
+        private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveBlacklist();
         }
     }
 

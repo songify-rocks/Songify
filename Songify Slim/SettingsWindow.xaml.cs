@@ -41,6 +41,12 @@ namespace Songify_Slim
         private List<CustomReward> CustomRewards = new List<CustomReward>();
         private List<int> refundConditons = new List<int>();
 
+        private enum RewardActions
+        {
+            SongRequest,
+            Skip,
+            PlayThisSongNow
+        }
 
         public Window_Settings()
         {
@@ -158,12 +164,18 @@ namespace Songify_Slim
                 PnlTwich.Visibility = Visibility.Visible;
 
                 CbxRewards.Items.Clear();
+                CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
                 foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
                 {
-                    CbxRewards.Items.Add(new UC_RewardItem(reward));
+                    ComboBoxItem item = new ComboBoxItem()
+                    {
+                        Content = new UC_RewardItem(reward)
+                    };
+                    CbxRewards.Items.Add(item);
                     if (txtbx_RewardID.Text == reward.Id)
-                        CbxRewards.SelectedItem = reward;
+                        CbxRewards.SelectedItem = item;
                 }
+                CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
             }
             else
             {
@@ -713,18 +725,21 @@ namespace Songify_Slim
         {
             if (TwitchHandler.TokenCheck == null)
                 return;
-
-            CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
+            CbxRewards.IsEnabled = false;
             CbxRewards.Items.Clear();
+            CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
             {
-                CbxRewards.Items.Add(new UC_RewardItem(reward));
-
+                ComboBoxItem item = new ComboBoxItem()
+                {
+                    Content = new UC_RewardItem(reward)
+                };
+                CbxRewards.Items.Add(item);
                 if (txtbx_RewardID.Text == reward.Id)
-                    CbxRewards.SelectedItem = reward;
+                    CbxRewards.SelectedItem = item;
             }
             CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
-
+            CbxRewards.IsEnabled = true;
         }
 
         private void CheckRefundChecked(object sender, RoutedEventArgs e)

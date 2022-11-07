@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Songify_Slim
@@ -55,6 +56,8 @@ namespace Songify_Slim
             try
             {
                 File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
+                Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
+
             }
             catch
             {

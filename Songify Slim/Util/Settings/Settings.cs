@@ -10,6 +10,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
+        public static bool IsLive { get; set; }
 
         public static User TwitchUser
         {

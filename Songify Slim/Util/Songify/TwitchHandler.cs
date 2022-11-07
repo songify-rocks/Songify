@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NHttp;
@@ -21,6 +22,7 @@ using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
+using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -38,6 +40,7 @@ using Unosquare.Labs.EmbedIO;
 using Unosquare.Swan;
 using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
+using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -166,7 +169,6 @@ namespace Songify_Slim.Util.Songify
             Settings.Settings.TwitchChannelId = user.Id;
 
             ConfigHandler.WriteAllConfig(Settings.Settings.Export());
-
             _twitchPubSub = new TwitchPubSub();
             _twitchPubSub.OnListenResponse += OnListenResponse;
             _twitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
@@ -176,10 +178,12 @@ namespace Songify_Slim.Util.Songify
             _twitchPubSub.OnStreamUp += (sender, args) =>
             {
                 Debug.WriteLine("Stream is up");
+                Settings.Settings.IsLive = true;
             };
             _twitchPubSub.OnStreamDown += (sender, args) =>
             {
                 Debug.WriteLine("Stream is down");
+                Settings.Settings.IsLive = false;
             };
 
             _twitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
@@ -190,159 +194,154 @@ namespace Songify_Slim.Util.Songify
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
+            //if (!Settings.Settings.IsLive)
+            //    return;
             string msg = "";
             var redemption = e.RewardRedeemed.Redemption;
             var reward = e.RewardRedeemed.Redemption.Reward;
             var redeemedUser = e.RewardRedeemed.Redemption.User;
             string trackId = "";
-            if (reward.Id != Settings.Settings.TwRewardId) return;
-
-            int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
-            Debug.WriteLine($"{Enum.GetName(typeof(TwitchUserLevels), userlevel)}");
-
-            if (userlevel < Settings.Settings.TwSrUserLevel)
+            
+            if (reward.Id == Settings.Settings.TwRewardId)
             {
-                msg = $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
-                //Send a Message to the user, that his Userlevel is too low
-                if (Settings.Settings.RefundConditons.Any(i => i == 0))
+                int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
+                var x = await _twitchApi.Helix.Subscriptions.CheckUserSubscriptionAsync(Settings.Settings.TwitchUser.Id,
+                    e.RewardRedeemed.Redemption.User.Id);
+                Debug.WriteLine($"{Enum.GetName(typeof(TwitchUserLevels), userlevel)}");
+                if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
-                    UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                    if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                    msg = $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
+                    //Send a Message to the user, that his Userlevel is too low
+                    if (Settings.Settings.RefundConditons.Any(i => i == 0))
                     {
-                        msg += " Your points have been refunded.";
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        {
+                            msg += " Your points have been refunded.";
+                        }
                     }
-                }
 
-                Client.SendMessage(Settings.Settings.TwChannel, msg);
-                return;
-            }
-
-            if (IsUserBlocked(redeemedUser.DisplayName))
-            {
-                msg = "You are blocked from making Songrequests";
-                //Send a Message to the user, that his Userlevel is too low
-                if (Settings.Settings.RefundConditons.Any(i => i == 1))
-                {
-                    UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                    if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                    {
-                        msg += " Your points have been refunded.";
-                    }
-                }
-
-                Client.SendMessage(Settings.Settings.TwChannel, msg);
-                return;
-            }
-
-            // checks if the user has already the max amount of songs in the queue
-            if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
-            {
-                // if the user reached max requests in the queue skip and inform requester
-                string response = Settings.Settings.BotRespMaxReq;
-                response = response.Replace("{user}", redeemedUser.DisplayName);
-                response = response.Replace("{artist}", "");
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
-                response = response.Replace("{errormsg}", "");
-                response = CleanFormatString(response);
-                Client.SendMessage(Settings.Settings.TwChannel, response);
-                return;
-            }
-
-
-            if (ApiHandler.Spotify == null)
-            {
-                msg = "It seems that Spotify is not connected right now.";
-                //Send a Message to the user, that his Userlevel is too low
-                if (Settings.Settings.RefundConditons.Any(i => i == 2))
-                {
-                    UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                    if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                    {
-                        msg += " Your points have been refunded.";
-                    }
-                }
-
-                Client.SendMessage(Settings.Settings.TwChannel, msg);
-                return;
-            }
-
-            // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-            if (redemption.UserInput.StartsWith("spotify:track:"))
-            {
-                // search for a track with the id
-                trackId = redemption.UserInput.Replace("spotify:track:", "");
-            }
-
-            else if (redemption.UserInput.StartsWith("https://open.spotify.com/track/"))
-            {
-                trackId = redemption.UserInput.Replace("https://open.spotify.com/track/", "");
-                trackId = trackId.Split('?')[0];
-            }
-
-            else
-            {
-                // search for a track with a search string from chat
-                SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(redemption.UserInput));
-                if (searchItem.HasError())
-                {
-                    Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
+                    Client.SendMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
-
-                if (searchItem.Tracks.Items.Count > 0)
+                if (IsUserBlocked(redeemedUser.DisplayName))
                 {
-                    // if a track was found convert the object to FullTrack (easier use than searchItem)
-                    FullTrack fullTrack = searchItem.Tracks.Items[0];
-                    trackId = fullTrack.Id;
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(trackId))
-            {
-                ReturnObject returnObject = AddSong2(trackId, Settings.Settings.TwChannel, redeemedUser.DisplayName);
-                //Send a Message to the user, that his Userlevel is too low
-                msg = returnObject.Msg;
-                if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition))
-                {
-                    UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                    if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                    msg = "You are blocked from making Songrequests";
+                    //Send a Message to the user, that his Userlevel is too low
+                    if (Settings.Settings.RefundConditons.Any(i => i == 1))
                     {
-                        msg += " Your points have been refunded.";
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        {
+                            msg += " Your points have been refunded.";
+                        }
+                    }
+
+                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    return;
+                }
+                // checks if the user has already the max amount of songs in the queue
+                if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
+                {
+                    // if the user reached max requests in the queue skip and inform requester
+                    string response = Settings.Settings.BotRespMaxReq;
+                    response = response.Replace("{user}", redeemedUser.DisplayName);
+                    response = response.Replace("{artist}", "");
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
+                    response = response.Replace("{errormsg}", "");
+                    response = CleanFormatString(response);
+                    Client.SendMessage(Settings.Settings.TwChannel, response);
+                    return;
+                }
+                if (ApiHandler.Spotify == null)
+                {
+                    msg = "It seems that Spotify is not connected right now.";
+                    //Send a Message to the user, that his Userlevel is too low
+                    if (Settings.Settings.RefundConditons.Any(i => i == 2))
+                    {
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        {
+                            msg += " Your points have been refunded.";
+                        }
+                    }
+
+                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    return;
+                }
+                // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
+                if (redemption.UserInput.StartsWith("spotify:track:"))
+                {
+                    // search for a track with the id
+                    trackId = redemption.UserInput.Replace("spotify:track:", "");
+                }
+                else if (redemption.UserInput.StartsWith("https://open.spotify.com/track/"))
+                {
+                    trackId = redemption.UserInput.Replace("https://open.spotify.com/track/", "");
+                    trackId = trackId.Split('?')[0];
+                }
+                else
+                {
+                    // search for a track with a search string from chat
+                    SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(redemption.UserInput));
+                    if (searchItem.HasError())
+                    {
+                        Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
+                        return;
+                    }
+
+                    if (searchItem.Tracks.Items.Count > 0)
+                    {
+                        // if a track was found convert the object to FullTrack (easier use than searchItem)
+                        FullTrack fullTrack = searchItem.Tracks.Items[0];
+                        trackId = fullTrack.Id;
                     }
                 }
-                Client.SendMessage(Settings.Settings.TwChannel, msg);
-
-            }
-
-            else
-            {
-                // if no track has been found inform the requester
-                string response = Settings.Settings.BotRespError;
-                response = response.Replace("{user}", redeemedUser.DisplayName);
-                response = response.Replace("{artist}", "");
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", "");
-                response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-
-                //Send a Message to the user, that his Userlevel is too low
-                if (Settings.Settings.RefundConditons.Any(i => i == 7))
+                if (!string.IsNullOrWhiteSpace(trackId))
                 {
-                    UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                    if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                    ReturnObject returnObject = AddSong2(trackId, Settings.Settings.TwChannel, redeemedUser.DisplayName);
+                    //Send a Message to the user, that his Userlevel is too low
+                    msg = returnObject.Msg;
+                    if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition))
                     {
-                        response += " Your points have been refunded.";
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        {
+                            msg += " Your points have been refunded.";
+                        }
                     }
+                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+
                 }
+                else
+                {
+                    // if no track has been found inform the requester
+                    string response = Settings.Settings.BotRespError;
+                    response = response.Replace("{user}", redeemedUser.DisplayName);
+                    response = response.Replace("{artist}", "");
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}", "");
+                    response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
 
-                Client.SendMessage(Settings.Settings.TwChannel, response);
+                    //Send a Message to the user, that his Userlevel is too low
+                    if (Settings.Settings.RefundConditons.Any(i => i == 7))
+                    {
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        {
+                            response += " Your points have been refunded.";
+                        }
+                    }
+
+                    Client.SendMessage(Settings.Settings.TwChannel, response);
+                }
             }
-
         }
 
         private static void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
@@ -495,6 +494,9 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            //if (!Settings.Settings.IsLive)
+            //    return;
+
             if (Settings.Settings.MsgLoggingEnabled)
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
                 if (e.ChatMessage.CustomRewardId != null)
@@ -1258,43 +1260,28 @@ namespace Songify_Slim.Util.Songify
             if (requester != null)
             {
                 List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
-                foreach (RequestObject requestObject in temp2)
-                {
-                    int pos = temp.IndexOf(requestObject) + 1;
-                    temp3.Add(new QueueItem
-                    {
-                        Position = pos,
-                        Title = requestObject.Artists + " - " + requestObject.Title,
-                        Requester = requestObject.Requester
-                    });
-                }
+                temp3.AddRange(from requestObject in temp2 let pos = temp.IndexOf(requestObject) + 1 select new QueueItem { Position = pos, Title = requestObject.Artists + " - " + requestObject.Title, Requester = requestObject.Requester });
                 return temp3;
             }
-            else
+
+            if (temp.Count <= 0) return null;
+            if (temp.Count == 1 && $"{temp[0].Artists} - {temp[0].Title}" != currsong)
             {
-                if (temp.Count > 0)
+                temp3.Add(new QueueItem
                 {
-                    if (temp.Count == 1 && $"{temp[0].Artists} - {temp[0].Title}" != currsong)
-                    {
-                        temp3.Add(new QueueItem
-                        {
-                            Title = $"{temp[0].Artists} - {temp[0].Title}",
-                            Requester = $"{temp[0].Requester}"
-                        });
-                        return temp3;
-                    }
-                    else if (temp.Count > 1)
-                    {
-                        temp3.Add(new QueueItem
-                        {
-                            Title = $"{temp[1].Artists} - {temp[1].Title}",
-                            Requester = $"{temp[1].Requester}"
-                        });
-                        return temp3;
-                    }
-                }
+                    Title = $"{temp[0].Artists} - {temp[0].Title}",
+                    Requester = $"{temp[0].Requester}"
+                });
+                return temp3;
             }
-            return null;
+
+            if (temp.Count <= 1) return null;
+            temp3.Add(new QueueItem
+            {
+                Title = $"{temp[1].Artists} - {temp[1].Title}",
+                Requester = $"{temp[1].Requester}"
+            });
+            return temp3;
         }
 
         private static bool MaxQueueItems(string requester, int userLevel)
@@ -1340,8 +1327,17 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<List<CustomReward>> GetChannelRewards(bool b)
         {
-            var x = await _twitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null, b);
-            return x.Data.ToList();
+            GetCustomRewardsResponse rewardsResponse = null;
+            try
+            {
+                rewardsResponse = await _twitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null, b);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return rewardsResponse?.Data.ToList();
         }
     }
 

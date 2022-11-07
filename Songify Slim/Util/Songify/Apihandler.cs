@@ -157,8 +157,8 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };
-
-
+           
+            
             string artists = "";
 
             for (int i = 0; i < context.Item.Artists.Count; i++)
@@ -225,6 +225,11 @@ namespace Songify_Slim.Util.Songify
         public static async Task<ErrorResponse> SkipSong()
         {
             return await Spotify.SkipPlaybackToNextAsync();
+        }
+
+        public static void PlaySong(string trackId)
+        {
+            Spotify.ResumePlayback(Settings.Settings.SpotifyDeviceId, Spotify.GetTrack(trackId).Album.Uri, null, (int?)null);
         }
     }
 }

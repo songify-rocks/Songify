@@ -307,9 +307,11 @@
                                         </Button.Content>
                                     </Button>
                                 </Grid>
-                                <Button Margin="6,4,6,4" x:Name="BtnCreateReward" Content="Create Song Request Reward" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="BtnCreateReward_Click" Grid.Row="3"
-                                    Grid.Column="0" Grid.ColumnSpan="2" />
-                                <Label Content="Refund when" Grid.Row="4" Grid.ColumnSpan="2"></Label>
+                                <StackPanel x:Name="PanelRewardActions"  Orientation="Vertical" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <Button Margin="6,4,6,4" x:Name="BtnCreateReward" Content="Create Song Request Reward" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="BtnCreateReward_Click"/>
+
+                                </StackPanel>
+                                <Label Content="Refund when" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4" Content="User level is too low" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
                                 <CheckBox x:Name="ChkRefundUserBlocked" Tag="1" Margin="0,0,0,4" Content="User is blocked from SR" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
                                 <CheckBox x:Name="ChkRefundSpotifyNotConnected" Tag="2" Margin="5,0,0,4" Content="Spotify is not connected" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />

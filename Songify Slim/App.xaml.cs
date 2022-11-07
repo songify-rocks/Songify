@@ -43,7 +43,7 @@ namespace Songify_Slim
 
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-
+            
             base.OnStartup(e);
         }
 
