@@ -777,14 +777,30 @@ namespace Songify_Slim.Util.Songify
                         string output = "";
                         if (queueItems.Count != 0)
                         {
-                            for (int i = 0; i < queueItems.Count; i++)
+                            string response = Settings.Settings.BotRespPos;
+                            if (response.Contains("{songs}") && response.Contains("{/songs}"))
                             {
-                                QueueItem item = queueItems[i];
-                                output += $"Pos {item.Position}: {item.Title}";
-                                if (i + 1 != queueItems.Count)
-                                    output += " | ";
+                                //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
+                                string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
+                                string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
+                                string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
+                                string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
+
+                                string tmp = "";
+                                for (int i = 0; i < queueItems.Count; i++)
+                                {
+                                    QueueItem item = queueItems[i];
+                                    tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
+                                    //If the song is the last one, don't add a newline
+                                    if (i != queueItems.Count - 1)
+                                        tmp += " | ";
+                                }
+                                between = tmp;
+                                // Combine the 3 parts into one string
+                                output = before + between + after;
+                                Client.SendMessage(e.ChatMessage.Channel, $"{output}");
                             }
-                            Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {output}");
+
                         }
                         else
                         {

@@ -107,6 +107,9 @@ namespace Songify_Slim.UserControls
             tb_NoSong.Text = Settings.BotRespNoSong;
             tb_ModSkip.Text = Settings.BotRespModSkip;
             tb_VoteSkip.Text = Settings.BotRespVoteSkip;
+            tb_Pos.Text = Settings.BotRespPos;
+            tb_Next.Text = Settings.BotRespNext;
+
         }
 
         private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
