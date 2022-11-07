@@ -704,8 +704,9 @@ namespace Songify_Slim
 
         private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbxRewards.SelectedItem == null) return;
-            txtbx_RewardID.Text = (CbxRewards.SelectedItem as UC_RewardItem).Reward.Id;
+            string rewardId = ((CbxRewards.SelectedItem as ComboBoxItem)?.Content as UC_RewardItem)?.Reward.Id;
+            if (rewardId != null)
+                txtbx_RewardID.Text = rewardId;
         }
 
         private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)

@@ -293,7 +293,7 @@
 
                                 <Label Content="{x:Static local:Resources.sw_SpotifySR_ChannelPoints}" HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top" Margin="0,0,0,4" />
-                                <TextBox x:Name="txtbx_RewardID" HorizontalAlignment="Stretch" Height="23" Text=""
+                                <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Stretch" Height="23" Text=""
                                 VerticalAlignment="Top" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="1" Margin="0,0,4,0" />
                                 <CheckBox x:Name="Chbx_MessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
