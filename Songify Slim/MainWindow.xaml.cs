@@ -55,6 +55,8 @@ namespace Songify_Slim
     public partial class MainWindow
     {
         #region Variables
+
+        public WebServer webServer;
         bool updated = false;
         public NotifyIcon notifyIcon = new NotifyIcon();
         public string _artist, _title;
@@ -73,7 +75,7 @@ namespace Songify_Slim
         private string _temp = "";
         private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
         private readonly WebClient _webClient = new WebClient();
-        SongFetcher sf = new SongFetcher();
+        public SongFetcher sf = new SongFetcher();
         #endregion Variables
 
         public MainWindow()
@@ -651,6 +653,8 @@ namespace Songify_Slim
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
+            webServer = new WebServer(8080);
+            webServer.StartWebServer();
         }
 
         private void AutoUpdater_ApplicationExitEvent()

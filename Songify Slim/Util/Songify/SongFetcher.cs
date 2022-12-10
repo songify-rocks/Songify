@@ -8,7 +8,9 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation;
+using System.Windows.Threading;
 using TwitchLib.PubSub.Extensions;
 using Unosquare.Swan.Formatters;
 
@@ -17,7 +19,7 @@ namespace Songify_Slim.Util.Songify
     /// <summary>
     ///     This class is for retrieving data of currently playing songs
     /// </summary>
-    internal class SongFetcher
+    public class SongFetcher
     {
         private static int _id;
         private readonly List<string> _browsers = new List<string> { "chrome", "msedge", "opera" };
@@ -26,6 +28,8 @@ namespace Songify_Slim.Util.Songify
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
         private static TrackInfo songInfo;
+        public static string progress;
+
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
         ///     returns null if unsuccessful and custom pause text is not set.
@@ -335,11 +339,13 @@ namespace Songify_Slim.Util.Songify
                 : Settings.Settings.Directory;
                 int current = (songInfo.DurationMS - songInfo.DurationTotal) * -1;
                 int total = songInfo.DurationTotal;
-                string j = Json.Serialize(new
-                {
-                    Current = current,
-                    Total = total
-                });
+                //string j = Json.Serialize(new
+                //{
+                //    Current = current,
+                //    Total = total
+                //});
+
+                string j = Json.Serialize(songInfo);
 
                 WriteProgressFile($"{path}/progress.txt", j);
             }
@@ -355,19 +361,22 @@ namespace Songify_Slim.Util.Songify
 
         private async void WriteProgressFile(string path, string j)
         {
-            const int tries = 5;
-            for (int i = 0; i < tries; i++)
-            {
-                if (IsFileLocked(new FileInfo(path)))
-                {
-                    await Task.Delay(1000);
-                    Logger.LogStr("PROGRESS: Couldn't write to file");
-                    continue;
-                }
+            //const int tries = 5;
+            //for (int i = 0; i < tries; i++)
+            //{
+            //    if (IsFileLocked(new FileInfo(path)))
+            //    {
+            //        await Task.Delay(1000);
+            //        Logger.LogStr("PROGRESS: Couldn't write to file");
+            //        continue;
+            //    }
 
-                File.WriteAllText(path, j);
-                break;
-            }
+            //    File.WriteAllText(path, j);
+            //    break;
+            //}
+
+            progress = j;
+
         }
 
         protected virtual bool IsFileLocked(FileInfo file)

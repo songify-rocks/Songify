@@ -541,6 +541,7 @@
       <DependentUpon>UC_RewardItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\General\StringExtension.cs" />
+    <Compile Include="Util\General\WebServer.cs" />
     <Compile Include="Util\Songify\Apihandler.cs" />
     <Compile Include="Util\Settings\ConfigHandler.cs" />
     <Compile Include="HistoryWindow.xaml.cs">
