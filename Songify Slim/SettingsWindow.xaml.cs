@@ -19,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.General;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
@@ -796,6 +797,12 @@ namespace Songify_Slim
                 PnlSpotify.Visibility = Visibility.Visible;
             }
 
+        }
+
+        private void BtnWebserverStart_Click(object sender, RoutedEventArgs e)
+        {
+            if (NudServerPort.Value != null) 
+                GlobalObjects.WebServer.StartWebServer((int)NudServerPort.Value);
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
+using Songify_Slim.Util.General;
 using TwitchLib.PubSub.Extensions;
 using Unosquare.Swan.Formatters;
 
@@ -28,7 +29,6 @@ namespace Songify_Slim.Util.Songify
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
         private static TrackInfo songInfo;
-        public static string progress;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -375,7 +375,7 @@ namespace Songify_Slim.Util.Songify
             //    break;
             //}
 
-            progress = j;
+            GlobalObjects.APIResponse = j;
 
         }
 

@@ -1,6 +1,7 @@
 ﻿using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
 using System.Windows;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim
 {
@@ -18,13 +19,7 @@ namespace Songify_Slim
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // This loads in all the requestobjects
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window.GetType() != typeof(MainWindow))
-                    continue;
-
-                dgv_Queue.ItemsSource = (window as MainWindow)?.ReqList;
-            }
+            dgv_Queue.ItemsSource = GlobalObjects.ReqList;
         }
 
         private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
@@ -34,14 +29,7 @@ namespace Songify_Slim
                 return;
 
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
-
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window.GetType() != typeof(MainWindow))
-                    continue;
-                (window as MainWindow)?.ReqList.Remove(req);
-            }
-
+            GlobalObjects.ReqList.Remove(req);
             WebHelper.UpdateWebQueue(req.TrackID, "", "", "", "", "1", "u");
             dgv_Queue.Items.Refresh();
         }

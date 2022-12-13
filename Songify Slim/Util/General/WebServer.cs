@@ -12,25 +12,20 @@ namespace Songify_Slim.Util.General
 {
     public class WebServer
     {
-        private readonly int port;
         public string progress;
+        public bool run;
 
-        public WebServer(int port)
+        public void StartWebServer(int port)
         {
-            this.port = port;
-        }
-
-        public void StartWebServer()
-        {
+            if (!PortIsFree(port)) return;
             HttpListener listener = new HttpListener();
-
             // Listen on the specified port.
             listener.Prefixes.Add($"http://localhost:{port}/");
             listener.Start();
-
+            run = true;
             Task.Run(() =>
             {
-                while (true)
+                while (run)
                 {
                     // Wait for a request.
                     HttpListenerContext context = listener.GetContext();
@@ -39,17 +34,34 @@ namespace Songify_Slim.Util.General
             });
         }
 
+        private bool PortIsFree(int port)
+        {
+            // Get the IP global properties for the local network
+            var properties = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+
+            // Get a list of active TCP connections
+            var connections = properties.GetActiveTcpConnections();
+
+            // Check if the specified port is blocked
+            bool isBlocked = connections.All(connection => connection.LocalEndPoint.Port != port && connection.RemoteEndPoint.Port != port);
+            
+            return isBlocked;
+        }
+
+        public void StopWebServer()
+        {
+            run = false;
+        }
         private void ProcessRequest(HttpListenerContext context)
         {
             // Generate the HTML response.
             //string responseString = "<html><body><h1>Dynamic Values</h1>";
             //responseString += "<p>Current time: " + DateTime.Now.ToString() + "</p>";
             //responseString += "</body></html>";
-
-            string responseString = SongFetcher.progress;
+            
 
             // Convert the response string to a byte array.
-            byte[] responseBytes = Encoding.UTF8.GetBytes(responseString);
+            byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.APIResponse);
 
             // Get the response output stream and write the response to it.
             HttpListenerResponse response = context.Response;

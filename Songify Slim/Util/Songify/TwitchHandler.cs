@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using NHttp;
+using Songify_Slim.Util.General;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -41,6 +42,8 @@ using Unosquare.Swan;
 using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -205,8 +208,6 @@ namespace Songify_Slim.Util.Songify
             if (reward.Id == Settings.Settings.TwRewardId)
             {
                 int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
-                var x = await _twitchApi.Helix.Subscriptions.CheckUserSubscriptionAsync(Settings.Settings.TwitchUser.Id,
-                    e.RewardRedeemed.Redemption.User.Id);
                 Debug.WriteLine($"{Enum.GetName(typeof(TwitchUserLevels), userlevel)}");
                 if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
@@ -496,6 +497,21 @@ namespace Songify_Slim.Util.Songify
         {
             //if (!Settings.Settings.IsLive)
             //    return;
+            if (users.All(o => o.UserId != e.ChatMessage.UserId))
+            {
+                users.Add(new TwitchUser
+                {
+                    UserId = e.ChatMessage.UserId,
+                    UserName = e.ChatMessage.Username,
+                    DisplayName = e.ChatMessage.DisplayName,
+                    UserLevel = CheckUserLevel(e.ChatMessage)
+                });
+            }
+            else
+            {
+                users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
+            }
+
 
             if (Settings.Settings.MsgLoggingEnabled)
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
@@ -514,24 +530,11 @@ namespace Songify_Slim.Util.Songify
                     });
                 }
 
-            if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
-            {
-                // search users for a match on userid, if not found, add it to the list
-                if (!users.Any(o => o.UserId == e.ChatMessage.UserId))
-                {
-                    users.Add(new TwitchUser
-                    {
-                        UserId = e.ChatMessage.UserId,
-                        UserName = e.ChatMessage.Username,
-                        DisplayName = e.ChatMessage.DisplayName,
-                        UserLevel = CheckUserLevel(e.ChatMessage)
-                    });
-                }
-                else
-                {
-                    users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
-                }
-            }
+            //if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
+            //{
+            //    // search users for a match on userid, if not found, add it to the list
+
+            //}
 
             // if the reward is the same with the desired reward for the requests 
             //if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
@@ -703,11 +706,11 @@ namespace Songify_Slim.Util.Songify
 
                         Application.Current.Dispatcher.Invoke(() =>
                            {
-                               int? reqListCount = ((MainWindow)Application.Current.MainWindow)?.ReqList.Count;
+                               int? reqListCount = GlobalObjects.ReqList.Count;
                                if (reqListCount != null)
                                    count = (int)reqListCount;
                                if (count > 0)
-                                   name = ((MainWindow)Application.Current.MainWindow)?.ReqList.First().Requester;
+                                   name = GlobalObjects.ReqList.First().Requester;
                            });
 
                         if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (count > 0 && name == e.ChatMessage.DisplayName))
@@ -821,15 +824,12 @@ namespace Songify_Slim.Util.Songify
                 case "!remove":
                     {
                         string tmp = "";
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            RequestObject reqObj = ((MainWindow)Application.Current.MainWindow)?.ReqList.FindLast(o =>
-                                o.Requester == e.ChatMessage.DisplayName);
-                            tmp = $"{reqObj.Artists} - {reqObj.Title}";
-                            ((MainWindow)Application.Current.MainWindow)?.SkipList.Add(reqObj);
-                            ((MainWindow)Application.Current.MainWindow)?.ReqList.Remove(reqObj);
+                        RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
+                            o.Requester == e.ChatMessage.DisplayName);
+                        tmp = $"{reqObj.Artists} - {reqObj.Title}";
+                        GlobalObjects.SkipList.Add(reqObj);
+                        GlobalObjects.ReqList.Remove(reqObj);
 
-                        });
                         Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
                         break;
                     }
@@ -1009,21 +1009,18 @@ namespace Songify_Slim.Util.Songify
                 Window mw = null, qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(MainWindow))
-                        mw = window;
                     if (window.GetType() == typeof(Window_Queue))
                         qw = window;
                 }
 
-                if (mw != null)
-                    (mw as MainWindow)?.ReqList.Add(new RequestObject
-                    {
-                        Requester = e.ChatMessage.DisplayName,
-                        TrackID = track.Id,
-                        Title = track.Name,
-                        Artists = artists,
-                        Length = FormattedTime(track.DurationMs)
-                    });
+                GlobalObjects.ReqList.Add(new RequestObject
+                {
+                    Requester = e.ChatMessage.DisplayName,
+                    TrackID = track.Id,
+                    Title = track.Name,
+                    Artists = artists,
+                    Length = FormattedTime(track.DurationMs)
+                });
 
                 if (qw != null)
                     //(qw as Window_Queue).dgv_Queue.ItemsSource.
@@ -1159,13 +1156,11 @@ namespace Songify_Slim.Util.Songify
                 Window mw = null, qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(MainWindow))
-                        mw = window;
                     if (window.GetType() == typeof(Window_Queue))
                         qw = window;
                 }
 
-                (mw as MainWindow)?.ReqList.Add(new RequestObject
+                GlobalObjects.ReqList.Add(new RequestObject
                 {
                     Requester = username,
                     TrackID = track.Id,
@@ -1247,12 +1242,8 @@ namespace Songify_Slim.Util.Songify
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
             var temp = new List<RequestObject>();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(MainWindow))
-                        temp = (window as MainWindow)?.ReqList.FindAll(x => x.TrackID == id);
-            });
+            temp = GlobalObjects.ReqList.FindAll(x => x.TrackID == id);
+
             return temp.Count > 0;
         }
 
@@ -1262,12 +1253,13 @@ namespace Songify_Slim.Util.Songify
             List<RequestObject> temp = new List<RequestObject>();
             List<QueueItem> temp3 = new List<QueueItem>();
             string currsong = "";
+            temp = GlobalObjects.ReqList;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (Window window in Application.Current.Windows)
                     if (window.GetType() == typeof(MainWindow))
                     {
-                        temp = (window as MainWindow)?.ReqList;
                         currsong = $"{(window as MainWindow)?._artist} - {(window as MainWindow)?._title}";
                     }
             });
@@ -1304,12 +1296,7 @@ namespace Songify_Slim.Util.Songify
             int maxreq;
             // Checks if the requester already reached max songrequests
             var temp = new List<RequestObject>();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(MainWindow))
-                        temp = (window as MainWindow)?.ReqList.FindAll(x => x.Requester == requester);
-            });
+            temp = GlobalObjects.ReqList.FindAll(x => x.Requester == requester);
 
             switch ((TwitchUserLevels)userLevel)
             {

@@ -18,6 +18,7 @@ using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Application = System.Windows.Application;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
+using Settings = Songify_Slim.Util.Settings.Settings;
 
 namespace Songify_Slim
 {

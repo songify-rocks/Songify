@@ -61,8 +61,6 @@ namespace Songify_Slim
         public NotifyIcon notifyIcon = new NotifyIcon();
         public string _artist, _title;
         public string CurrSong, CurrSongTwitch;
-        public List<RequestObject> ReqList = new List<RequestObject>();
-        public List<RequestObject> SkipList = new List<RequestObject>();
         private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private bool _firstRun = true;
@@ -371,9 +369,9 @@ namespace Songify_Slim
             string albumUrl = null;
 
             if (info.albums.Count != 0) albumUrl = info.albums[0].Url;
-            if (SkipList.Find(o => o.TrackID == info.SongID) != null)
+            if (GlobalObjects.SkipList.Find(o => o.TrackID == info.SongID) != null)
             {
-                SkipList.Remove(SkipList.Find(o => o.TrackID == info.SongID));
+                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.TrackID == info.SongID));
                 await ApiHandler.SkipSong();
             }
 
@@ -558,7 +556,7 @@ namespace Songify_Slim
 
             if (Settings.AutoClearQueue)
             {
-                ReqList.Clear();
+                GlobalObjects.ReqList.Clear();
                 WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             }
 
@@ -653,8 +651,6 @@ namespace Songify_Slim
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
-            webServer = new WebServer(8080);
-            webServer.StartWebServer();
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -725,7 +721,7 @@ namespace Songify_Slim
                 new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
             {
-                ReqList.Clear();
+                GlobalObjects.ReqList.Clear();
                 WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             }
         }
@@ -829,6 +825,7 @@ namespace Songify_Slim
         {
             TwitchHandler.APIConnect();
         }
+
 
         protected virtual bool IsFileLocked(FileInfo file)
         {
@@ -1020,9 +1017,9 @@ namespace Songify_Slim
                     url => rTrackUrl
                 ).Format();
 
-                if (ReqList.Count > 0)
+                if (GlobalObjects.ReqList.Count > 0)
                 {
-                    RequestObject rq = ReqList.Find(x => x.TrackID == _currentId);
+                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _currentId);
                     if (rq != null)
                     {
                         CurrSong = CurrSong.Replace("{{", "");
@@ -1148,7 +1145,7 @@ namespace Songify_Slim
 
                 try
                 {
-                    ReqList.Remove(ReqList.Find(x => x.TrackID == _prevId));
+                    GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId));
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         foreach (Window window in Application.Current.Windows)
