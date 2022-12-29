@@ -115,7 +115,7 @@
                    ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False">
             <StatusBarItem>
                 <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="10" Kind="Chat" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -129,7 +129,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="10" Kind="Twitch" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -143,7 +143,21 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="10" Kind="CircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="10" Kind="Activity" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Red">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebServer" Width="10" Kind="Server" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6,0,0,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>

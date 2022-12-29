@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim.Util.General
@@ -17,6 +20,7 @@ namespace Songify_Slim.Util.General
 
         public void StartWebServer(int port)
         {
+            run = false;
             if (!PortIsFree(port)) return;
             HttpListener listener = new HttpListener();
             // Listen on the specified port.
@@ -25,12 +29,22 @@ namespace Songify_Slim.Util.General
             run = true;
             Task.Run(() =>
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (Application.Current.MainWindow != null)
+                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.YellowGreen;
+                });
                 while (run)
                 {
                     // Wait for a request.
                     HttpListenerContext context = listener.GetContext();
                     ProcessRequest(context);
                 }
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (Application.Current.MainWindow != null)
+                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Red;
+                });
             });
         }
 
@@ -43,8 +57,9 @@ namespace Songify_Slim.Util.General
             var connections = properties.GetActiveTcpConnections();
 
             // Check if the specified port is blocked
-            bool isBlocked = connections.All(connection => connection.LocalEndPoint.Port != port && connection.RemoteEndPoint.Port != port);
+            bool isBlocked = connections.All(connection => connection.LocalEndPoint.Port != port);
             
+            Debug.WriteLine($"PortFree: {isBlocked}");
             return isBlocked;
         }
 
@@ -52,6 +67,7 @@ namespace Songify_Slim.Util.General
         {
             run = false;
         }
+
         private void ProcessRequest(HttpListenerContext context)
         {
             // Generate the HTML response.

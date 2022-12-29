@@ -28,6 +28,7 @@ using Application = System.Windows.Application;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using MenuItem = System.Windows.Controls.MenuItem;
+using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Songify_Slim
@@ -111,6 +112,7 @@ namespace Songify_Slim
             TxtbxOutputformat.Text = Settings.OutputString;
             TxtbxOutputformat2.Text = Settings.OutputString2;
             CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
+            NudServerPort.Value = Settings.WebServerPort;
 
             if (ApiHandler.Spotify != null)
             {
@@ -712,7 +714,25 @@ namespace Songify_Slim
 
         private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
         {
-
+            CreateCustomRewardsResponse response = await TwitchHandler._twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
+                new CreateCustomRewardsRequest
+                {
+                    Title = null,
+                    Prompt = null,
+                    Cost = 0,
+                    IsEnabled = false,
+                    BackgroundColor = null,
+                    IsUserInputRequired = false,
+                    IsMaxPerStreamEnabled = false,
+                    MaxPerStream = null,
+                    IsMaxPerUserPerStreamEnabled = false,
+                    MaxPerUserPerStream = null,
+                    IsGlobalCooldownEnabled = false,
+                    GlobalCooldownSeconds = null,
+                    ShouldRedemptionsSkipRequestQueue = false
+                }, Settings.TwitchAccessToken);
+            if (response != null)
+                Debug.WriteLine(response);
         }
 
         private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
@@ -803,6 +823,13 @@ namespace Songify_Slim
         {
             if (NudServerPort.Value != null) 
                 GlobalObjects.WebServer.StartWebServer((int)NudServerPort.Value);
+        }
+
+        private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if(!IsLoaded) return;
+            double? value = ((NumericUpDown)sender).Value;
+            if (value != null) Settings.WebServerPort = (int)value;
         }
     }
 }

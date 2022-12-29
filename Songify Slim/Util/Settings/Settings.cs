@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Core.Tokens;
@@ -10,6 +11,23 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
+        public static int WebServerPort
+        {
+            get => GetWebServerPort();
+            set => SetWebServerPort(value);
+        }
+
+        private static void SetWebServerPort(int value)
+        {
+            Properties.Settings.Default.WebServerPort = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static int GetWebServerPort()
+        {
+            return Properties.Settings.Default.WebServerPort;
+        }
+
         public static bool IsLive { get; set; }
 
         public static User TwitchUser
@@ -585,6 +603,7 @@ namespace Songify_Slim.Util.Settings
                 UserBlacklist = GetUserBlacklist(),
                 Uuid = GetUuid(),
                 RefundConditons = GetRefundConditons(),
+                WebServerPort = GetWebServerPort(),
             };
 
             return new Configuration
@@ -632,7 +651,7 @@ namespace Songify_Slim.Util.Settings
             SetTwOAuth(config.TwitchCredentials.BotOAuthToken);
             #endregion
 
-            #region MyRegion
+            #region AppConfig
             SetAnnounceInChat(config.AppConfig.AnnounceInChat);
             SetAppendSpaces(config.AppConfig.AppendSpaces);
             SetArtistBlacklist(config.AppConfig.ArtistBlacklist);
@@ -675,6 +694,7 @@ namespace Songify_Slim.Util.Settings
             SetUserBlacklist(config.AppConfig.UserBlacklist);
             SetUuid(config.AppConfig.Uuid);
             SetRefundConditons(config.AppConfig.RefundConditons);
+            SetWebServerPort(config.AppConfig.WebServerPort);
             #endregion
 
             ConfigHandler.WriteAllConfig(config);

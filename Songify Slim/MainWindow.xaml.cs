@@ -545,6 +545,7 @@ namespace Songify_Slim
             IconTwitchAPI.Foreground = Brushes.Red;
             IconTwitchBot.Foreground = Brushes.Red;
             IconTwitchPubSub.Foreground = Brushes.Red;
+            IconWebServer.Foreground = Brushes.Red;
 
             //AppDomain currentDomain = AppDomain.CurrentDomain;
             //currentDomain.UnhandledException += MyHandler;

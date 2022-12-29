@@ -337,13 +337,6 @@ namespace Songify_Slim.Util.Songify
                 string path = string.IsNullOrEmpty(Settings.Settings.Directory)
                 ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
                 : Settings.Settings.Directory;
-                int current = (songInfo.DurationMS - songInfo.DurationTotal) * -1;
-                int total = songInfo.DurationTotal;
-                //string j = Json.Serialize(new
-                //{
-                //    Current = current,
-                //    Total = total
-                //});
 
                 string j = Json.Serialize(songInfo);
 

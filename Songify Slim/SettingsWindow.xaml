@@ -7,7 +7,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Settings" Height="400" MinHeight="400" Width="647" MinWidth="647" Loaded="SettingsWindow_Loaded"
+                      Title="Settings" Height="400" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
                       ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
         <TabControl Margin="10,0,10,0" TabStripPlacement="Left">
@@ -294,11 +294,12 @@
                                 <Label Content="{x:Static local:Resources.sw_SpotifySR_ChannelPoints}" HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top" Margin="0,0,0,4" />
                                 <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Stretch" Height="23" Text=""
-                                VerticalAlignment="Top" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="1" Margin="0,0,4,0" />
+                                VerticalAlignment="Top" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="1"
+                                Grid.Column="0" Margin="0,0,4,0" />
                                 <CheckBox x:Name="Chbx_MessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
-                                Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" />
+                                Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
                                 <Grid Grid.Column="1" Grid.Row="1">
                                     <ComboBox SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Margin="4,0,30,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="23" />
                                     <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click">
@@ -308,8 +309,27 @@
                                     </Button>
                                 </Grid>
                                 <StackPanel x:Name="PanelRewardActions"  Orientation="Vertical" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
-                                    <Button Margin="6,4,6,16" x:Name="BtnCreateReward" Content="Create Song Request Reward" HorizontalAlignment="Stretch" VerticalAlignment="Top" Click="BtnCreateReward_Click"/>
-
+                                    <Expander Header="Create New Reward" IsExpanded="True">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="32"/>
+                                                <RowDefinition Height="32"/>
+                                                <RowDefinition Height="32"/>
+                                                <RowDefinition Height="32"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Label Content="Title" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
+                                            <TextBox  Grid.Column="1" Grid.Row="0"  VerticalAlignment="Center"></TextBox>
+                                            <Label Content="Prompt" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
+                                            <TextBox  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"></TextBox>
+                                            <Label Content="Cost" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"/>
+                                            <controls:NumericUpDown HideUpDownButtons="True" Minimum="1" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center"></controls:NumericUpDown>
+                                            <Button Grid.Row="3" Grid.Column="1" x:Name="BtnCreateReward" Content="Create Song Request Reward" HorizontalAlignment="Stretch" Click="BtnCreateReward_Click" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Expander>
                                 </StackPanel>
                                 <Label Content="Refund when" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4" Content="User level is too low" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
@@ -458,7 +478,7 @@
                             <RowDefinition Height="32"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Web server Port" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Minimum="1025" Maximum="65536" Value="8080" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center"></controls:NumericUpDown>
+                        <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Minimum="1025" Maximum="65536" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
                         <Button x:Name="BtnWebserverStart" Content="Start Web Server" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
                         <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="Automatically start the web server" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
                         <Button Content="Open Website" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>

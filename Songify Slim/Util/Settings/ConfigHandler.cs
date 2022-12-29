@@ -197,6 +197,7 @@ namespace Songify_Slim
                                 Theme = Settings.Theme,
                                 UserBlacklist = Settings.UserBlacklist,
                                 Uuid = Settings.Uuid,
+                                WebServerPort = Settings.WebServerPort,
                             };
                         }
                         break;
@@ -617,7 +618,6 @@ namespace Songify_Slim
         public int TwSrUserLevel { get; set; }
         public string TwRewardId { get; set; }
         public int[] RefundConditons { get; set; }
-
         public string ArtistBlacklist { get; set; }
         public string Color { get; set; }
         public string CustomPauseText { get; set; }
@@ -628,6 +628,7 @@ namespace Songify_Slim
         public string Theme { get; set; }
         public string UserBlacklist { get; set; }
         public string Uuid { get; set; }
+        public int WebServerPort { get; set; }
     }
 
     public class Config
