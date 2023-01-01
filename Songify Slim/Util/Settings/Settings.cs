@@ -11,40 +11,21 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        public static int WebServerPort
+        public static bool BotOnlyWorkWhenLive
         {
-            get => GetWebServerPort();
-            set => SetWebServerPort(value);
+            get => GetBotOnlyWorkWhenLive();
+            set => SetBotOnlyWorkWhenLive(value);
         }
 
-        private static void SetWebServerPort(int value)
+        private static void SetBotOnlyWorkWhenLive(bool value)
         {
-            Properties.Settings.Default.WebServerPort = value;
+            Properties.Settings.Default.BotOnlyWorkWhenLive = value;
             Properties.Settings.Default.Save();
         }
 
-        private static int GetWebServerPort()
+        private static bool GetBotOnlyWorkWhenLive()
         {
-            return Properties.Settings.Default.WebServerPort;
-        }
-
-        public static bool IsLive { get; set; }
-
-        public static User TwitchUser
-        {
-            get => GetTwitchUser();
-            set => SetTwitchUser(value);
-        }
-
-        private static void SetTwitchUser(User value)
-        {
-            Properties.Settings.Default.TwitchUser = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static User GetTwitchUser()
-        {
-            return Properties.Settings.Default.TwitchUser;
+            return Properties.Settings.Default.BotOnlyWorkWhenLive;
         }
 
         public static bool AnnounceInChat
@@ -75,6 +56,18 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetAutostart();
             set => SetAutostart(value);
+        }
+
+        public static bool AutoStartWebServer
+        {
+            get => GetAutoStartWebServer();
+            set => SetAutoStartWebServer(value);
+        }
+
+        public static bool BetaUpdates
+        {
+            get => GetBetaUpdates();
+            set => SetBetaUpdates(value);
         }
 
         public static bool BotCmdNext
@@ -149,10 +142,22 @@ namespace Songify_Slim.Util.Settings
             set => SetBot_Resp_ModSkip(value);
         }
 
+        public static string BotRespNext
+        {
+            get => GetBot_Resp_Next();
+            set => SetBot_Resp_Next(value);
+        }
+
         public static string BotRespNoSong
         {
             get => GetBot_Resp_NoSong();
             set => SetBot_Resp_NoSong(value);
+        }
+
+        public static string BotRespPos
+        {
+            get => GetBot_Resp_Pos();
+            set => SetBot_Resp_Pos(value);
         }
 
         public static string BotRespSuccess
@@ -221,6 +226,8 @@ namespace Songify_Slim.Util.Settings
             set => SetGuidedSetup(value);
         }
 
+        public static bool IsLive { get; set; }
+
         public static string Language
         {
             get => GetLanguage();
@@ -268,6 +275,12 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetPosY();
             set => SetPosY(value);
+        }
+
+        public static int[] RefundConditons
+        {
+            get => GetRefundConditons();
+            set => SetRefundConditons(value);
         }
 
         public static bool SaveHistory
@@ -358,6 +371,12 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetTwitchChannelId();
             set => SetTwitchChannelId(value);
+        }
+
+        public static User TwitchUser
+        {
+            get => GetTwitchUser();
+            set => SetTwitchUser(value);
         }
 
         public static string TwOAuth
@@ -462,60 +481,13 @@ namespace Songify_Slim.Util.Settings
             set => SetUuid(value);
         }
 
+        public static int WebServerPort
+        {
+            get => GetWebServerPort();
+            set => SetWebServerPort(value);
+        }
+
         public static string Webua => GetWebua();
-
-        public static int[] RefundConditons
-        {
-            get => GetRefundConditons();
-            set => SetRefundConditons(value);
-        }
-
-
-        public static string BotRespNext
-        {
-            get => GetBot_Resp_Next();
-            set => SetBot_Resp_Next(value);
-        }
-
-        private static void SetBot_Resp_Next(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Next = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_Next()
-        {
-            return Properties.Settings.Default.bot_Resp_Next;
-        }
-
-
-        public static string BotRespPos
-        {
-            get => GetBot_Resp_Pos();
-            set => SetBot_Resp_Pos(value); }
-
-        private static void SetBot_Resp_Pos(string value)
-        {
-            Properties.Settings.Default.bot_Resp_Pos = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static string GetBot_Resp_Pos()
-        {
-            return Properties.Settings.Default.bot_Resp_Pos;
-        }
-
-        private static void SetRefundConditons(int[] value)
-        {
-            Properties.Settings.Default.RefundConditons = value;
-            Properties.Settings.Default.Save();
-
-        }
-
-        private static int[] GetRefundConditons()
-        {
-            return Properties.Settings.Default.RefundConditons;
-        }
 
         public static Configuration Export()
         {
@@ -556,7 +528,8 @@ namespace Songify_Slim.Util.Settings
                 BotRespSuccess = GetBot_Resp_Success(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 BotRespNext = GetBot_Resp_Next(),
-                BotRespPos = GetBot_Resp_Pos()
+                BotRespPos = GetBot_Resp_Pos(),
+                OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
             };
 
             AppConfig appConfig = new AppConfig
@@ -604,6 +577,8 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 RefundConditons = GetRefundConditons(),
                 WebServerPort = GetWebServerPort(),
+                AutoStartWebServer = GetAutoStartWebServer(),
+                BetaUpdates = GetBetaUpdates()
             };
 
             return new Configuration
@@ -695,6 +670,7 @@ namespace Songify_Slim.Util.Settings
             SetUuid(config.AppConfig.Uuid);
             SetRefundConditons(config.AppConfig.RefundConditons);
             SetWebServerPort(config.AppConfig.WebServerPort);
+            SetBetaUpdates(config.AppConfig.BetaUpdates);
             #endregion
 
             ConfigHandler.WriteAllConfig(config);
@@ -723,6 +699,16 @@ namespace Songify_Slim.Util.Settings
         private static bool GetAutostart()
         {
             return Properties.Settings.Default.autostart;
+        }
+
+        private static bool GetAutoStartWebServer()
+        {
+            return Properties.Settings.Default.AutoStartWebServer;
+        }
+
+        private static bool GetBetaUpdates()
+        {
+            return Properties.Settings.Default.BetaUpdates;
         }
 
         private static string GetBot_Resp_Blacklist()
@@ -755,9 +741,19 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.bot_Resp_ModSkip;
         }
 
+        private static string GetBot_Resp_Next()
+        {
+            return Properties.Settings.Default.bot_Resp_Next;
+        }
+
         private static string GetBot_Resp_NoSong()
         {
             return Properties.Settings.Default.bot_Resp_NoSong;
+        }
+
+        private static string GetBot_Resp_Pos()
+        {
+            return Properties.Settings.Default.bot_Resp_Pos;
         }
 
         private static string GetBot_Resp_Success()
@@ -886,6 +882,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.PosY;
         }
 
+        private static int[] GetRefundConditons()
+        {
+            return Properties.Settings.Default.RefundConditons;
+        }
+
         private static bool GetSaveHistory()
         {
             return Properties.Settings.Default.SaveHistory;
@@ -961,6 +962,11 @@ namespace Songify_Slim.Util.Settings
         {
             return Properties.Settings.Default.TwitchChannelId;
 
+        }
+
+        private static User GetTwitchUser()
+        {
+            return Properties.Settings.Default.TwitchUser;
         }
 
         private static string GetTwOAuth()
@@ -1050,6 +1056,11 @@ namespace Songify_Slim.Util.Settings
             return Properties.Settings.Default.uuid;
         }
 
+        private static int GetWebServerPort()
+        {
+            return Properties.Settings.Default.WebServerPort;
+        }
+
         private static string GetWebua()
         {
             return Properties.Settings.Default.webua;
@@ -1082,6 +1093,17 @@ namespace Songify_Slim.Util.Settings
         private static void SetAutostart(bool autostart)
         {
             Properties.Settings.Default.autostart = autostart;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetAutoStartWebServer(bool value)
+        {
+            Properties.Settings.Default.AutoStartWebServer = value;
+            Properties.Settings.Default.Save();
+        }
+        private static void SetBetaUpdates(bool value)
+        {
+            Properties.Settings.Default.BetaUpdates = value;
             Properties.Settings.Default.Save();
         }
 
@@ -1121,9 +1143,21 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetBot_Resp_Next(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Next = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetBot_Resp_NoSong(string value)
         {
             Properties.Settings.Default.bot_Resp_NoSong = value;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetBot_Resp_Pos(string value)
+        {
+            Properties.Settings.Default.bot_Resp_Pos = value;
             Properties.Settings.Default.Save();
         }
 
@@ -1277,6 +1311,13 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.Save();
         }
 
+        private static void SetRefundConditons(int[] value)
+        {
+            Properties.Settings.Default.RefundConditons = value;
+            Properties.Settings.Default.Save();
+
+        }
+
         private static void SetSaveHistory(bool savehistory)
         {
             Properties.Settings.Default.SaveHistory = savehistory;
@@ -1360,11 +1401,19 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.TwitchAccessToken = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwitchChannelId(string value)
         {
             Properties.Settings.Default.TwitchChannelId = value;
             Properties.Settings.Default.Save();
         }
+
+        private static void SetTwitchUser(User value)
+        {
+            Properties.Settings.Default.TwitchUser = value;
+            Properties.Settings.Default.Save();
+        }
+
         private static void SetTwOAuth(string value)
         {
             Properties.Settings.Default.TwOauth = value;
@@ -1406,6 +1455,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.TwSRMaxReqEveryone = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSrMaxReqModerator(int value)
         {
             Properties.Settings.Default.TwSRMaxReqModerator = value;
@@ -1423,6 +1473,7 @@ namespace Songify_Slim.Util.Settings
             Properties.Settings.Default.TwSRMaxReqVip = value;
             Properties.Settings.Default.Save();
         }
+
         private static void SetTwSrReward(bool value)
         {
             Properties.Settings.Default.TwSRReward = value;
@@ -1462,6 +1513,12 @@ namespace Songify_Slim.Util.Settings
         private static void SetUuid(string uuid)
         {
             Properties.Settings.Default.uuid = uuid;
+            Properties.Settings.Default.Save();
+        }
+
+        private static void SetWebServerPort(int value)
+        {
+            Properties.Settings.Default.WebServerPort = value;
             Properties.Settings.Default.Save();
         }
     }

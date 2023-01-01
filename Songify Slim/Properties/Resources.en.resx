@@ -394,4 +394,22 @@
   <data name="sw_tcOutput_Format2" xml:space="preserve">
     <value>Output Format (Twitch Chat)</value>
   </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Create Reward</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Prompt</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Cost</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>There was an issue creating the reward. Make sure you don't have a reward with the same name already.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>The reward "{name}" has been created.</value>
+  </data>
 </root>

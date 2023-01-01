@@ -9,43 +9,68 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim.Util.General
 {
     public class WebServer
     {
-        public string progress;
         public bool run;
+        private readonly HttpListener _listener = new HttpListener();
 
         public void StartWebServer(int port)
         {
-            run = false;
             if (!PortIsFree(port)) return;
-            HttpListener listener = new HttpListener();
             // Listen on the specified port.
-            listener.Prefixes.Add($"http://localhost:{port}/");
-            listener.Start();
+            _listener.Prefixes.Add($"http://localhost:{port}/");
+            _listener.Start();
             run = true;
             Task.Run(() =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (Application.Current.MainWindow != null)
-                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.YellowGreen;
+                    {
+                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
+                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    }
                 });
+                Logger.LogStr($"WebServer: Started on port {port}");
+
                 while (run)
                 {
-                    // Wait for a request.
-                    HttpListenerContext context = listener.GetContext();
-                    ProcessRequest(context);
+                    try
+                    {
+                        // Wait for a request.
+                        HttpListenerContext context = _listener.GetContext();
+                        ProcessRequest(context);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
                 }
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (Application.Current.MainWindow != null)
-                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Red;
-                });
+
             });
+        }
+
+        public void StopWebServer()
+        {
+
+            run = false;
+            Logger.LogStr($"WebServer: Started stopped");
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (Application.Current.MainWindow != null)
+                {
+                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.IndianRed;
+                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                }
+
+
+            });
+            _listener.Stop();
         }
 
         private bool PortIsFree(int port)
@@ -58,14 +83,9 @@ namespace Songify_Slim.Util.General
 
             // Check if the specified port is blocked
             bool isBlocked = connections.All(connection => connection.LocalEndPoint.Port != port);
-            
-            Debug.WriteLine($"PortFree: {isBlocked}");
-            return isBlocked;
-        }
 
-        public void StopWebServer()
-        {
-            run = false;
+            //Debug.WriteLine($"PortFree: {isBlocked}");
+            return isBlocked;
         }
 
         private void ProcessRequest(HttpListenerContext context)
@@ -74,8 +94,9 @@ namespace Songify_Slim.Util.General
             //string responseString = "<html><body><h1>Dynamic Values</h1>";
             //responseString += "<p>Current time: " + DateTime.Now.ToString() + "</p>";
             //responseString += "</body></html>";
-            
 
+            if (string.IsNullOrWhiteSpace(GlobalObjects.APIResponse))
+                return;
             // Convert the response string to a byte array.
             byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.APIResponse);
 

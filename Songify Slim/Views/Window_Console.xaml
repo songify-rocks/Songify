@@ -1,0 +1,24 @@
+﻿<mah:MetroWindow x:Class="Songify_Slim.Views.Window_Console"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:local="clr-namespace:Songify_Slim.Views"
+                      xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      mc:Ignorable="d"
+                      Title="Console" ShowMinButton="False" ShowMaxRestoreButton="False" Height="285" MinHeight="285" MaxHeight="285" Width="285" ResizeMode="CanResize" ShowActivated="False" Loaded="MetroWindow_Loaded" Closing="MetroWindow_Closing" IsWindowDraggable="False" LostFocus="MetroWindow_LostFocus">
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button ToolTip="Detach / Attach Console" x:Name="BtnAttachDetach" Click="BtnAttachDetach_OnClick">
+                <iconPacks:PackIconBootstrapIcons x:Name="IconDetach" Width="22"
+                                          Height="22"
+                                          Kind="LayoutSidebar" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+
+    <Grid>
+        <RichTextBox x:Name="richTextBox" TextChanged="richTextBox_TextChanged" IsReadOnly="True"/>
+    </Grid>
+</mah:MetroWindow>

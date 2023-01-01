@@ -1,6 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
+using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Threading;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim
 {
@@ -31,6 +35,11 @@ namespace Songify_Slim
 
         public static void LogExc(Exception exception)
         {
+            AppendConsole(exception.Message);
+            AppendConsole(exception.StackTrace);
+            AppendConsole(exception.Source);
+
+
             // Writes a log file with exceptions in it
             CreateLogDirectory();
             string logFile = GetLogFilePath();
@@ -49,14 +58,44 @@ namespace Songify_Slim
             }
         }
 
+        private static void AppendConsole(string s)
+        {
+            GlobalObjects.ConsoleDocument.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                if (GlobalObjects.ConsoleDocument.Blocks.Count > 0)
+                {
+                    Paragraph lastParagraph = (Paragraph)GlobalObjects.ConsoleDocument.Blocks.LastBlock;
+                    if (lastParagraph.Inlines.Count > 0)
+                    {
+                        Run lastRun = (Run)lastParagraph.Inlines.LastInline;
+                        if (lastRun.Text == s)
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph()
+                {
+                    Margin = new Thickness(0),
+                    Inlines = { new Run()
+                    {
+                        Text = $"{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)} {s}"
+                    } }
+                });
+            }));
+        }
+
         public static void LogStr(string s)
         {
+            AppendConsole(s);
+
             // Writes a log file with exceptions in it
             string logFile = GetLogFilePath();
             try
             {
                 File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
-                Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
+                //Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
 
             }
             catch

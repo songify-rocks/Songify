@@ -3,6 +3,7 @@ using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MahApps.Metro.IconPacks;
 using NHttp;
 using Songify_Slim.Util.General;
 using TwitchLib.Api;
@@ -59,7 +61,6 @@ namespace Songify_Slim.Util.Songify
             Moderator = 3,
             Broadcaster = 4
         }
-
         public static TwitchClient Client;
         private static bool _onCooldown;
         private static bool _skipCooldown;
@@ -76,7 +77,6 @@ namespace Songify_Slim.Util.Songify
         public static TwitchAPI _twitchApi;
         private static TwitchPubSub _twitchPubSub;
         private static string _clientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
-        private static HttpServer _webServer;
         private static string userId;
         public static List<TwitchUser> users = new List<TwitchUser>();
         public static ValidateAccessTokenResponse TokenCheck;
@@ -84,7 +84,7 @@ namespace Songify_Slim.Util.Songify
         public static void ResetVotes()
         {
             _skipVotes.Clear();
-            Console.WriteLine("Reset votes");
+            Logger.LogStr("TWITCH IRC: Reset votes");
         }
 
         public static void APIConnect()
@@ -142,11 +142,12 @@ namespace Songify_Slim.Util.Songify
                     {
                         if (window.GetType() != typeof(MainWindow))
                             continue;
-                        ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.Red;
+                        ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
+                        ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                        ((MainWindow)window).mi_TwitchAPI.Header = "Twitch login";
+
                     }
                 });
-
-                APIConnect();
                 return;
             }
 
@@ -165,6 +166,11 @@ namespace Songify_Slim.Util.Songify
                     if (window.GetType() != typeof(MainWindow))
                         continue;
                     ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
+                    ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
+                    ((MainWindow)window).mi_TwitchAPI.Header = "Twitch logged in";
+
+                    Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
                 }
             });
 
@@ -180,12 +186,12 @@ namespace Songify_Slim.Util.Songify
 
             _twitchPubSub.OnStreamUp += (sender, args) =>
             {
-                Debug.WriteLine("Stream is up");
+                Logger.LogStr("TWITCH API: Stream is up");
                 Settings.Settings.IsLive = true;
             };
             _twitchPubSub.OnStreamDown += (sender, args) =>
             {
-                Debug.WriteLine("Stream is down");
+                Logger.LogStr("TWITCH API: Stream is down");
                 Settings.Settings.IsLive = false;
             };
 
@@ -197,9 +203,8 @@ namespace Songify_Slim.Util.Songify
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
-            //if (!Settings.Settings.IsLive)
-            //    return;
-            string msg = "";
+            if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+                return;
             var redemption = e.RewardRedeemed.Redemption;
             var reward = e.RewardRedeemed.Redemption.Reward;
             var redeemedUser = e.RewardRedeemed.Redemption.User;
@@ -207,8 +212,10 @@ namespace Songify_Slim.Util.Songify
 
             if (reward.Id == Settings.Settings.TwRewardId)
             {
+                Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
                 int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
-                Debug.WriteLine($"{Enum.GetName(typeof(TwitchUserLevels), userlevel)}");
+                Logger.LogStr($"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(TwitchUserLevels), userlevel)})");
+                string msg = "";
                 if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     msg = $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
@@ -343,12 +350,29 @@ namespace Songify_Slim.Util.Songify
                     Client.SendMessage(Settings.Settings.TwChannel, response);
                 }
             }
+            else if (reward.Id == "e30da4a0-2130-4f90-9614-ac950e070710")
+            {
+                if (_skipCooldown)
+                    return;
+                ErrorResponse response = await ApiHandler.SkipSong();
+                if (response.Error != null)
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, "Error: " + response.Error.Message);
+                }
+                else
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, "Skipping current song...");
+                    _skipCooldown = true;
+                    SkipCooldownTimer.Start();
+                }
+            }
         }
 
         private static void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
         {
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
-
+            Logger.LogStr($"PUBSUB: Error");
+            Logger.LogExc(e.Exception);
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
@@ -359,11 +383,13 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (window.GetType() != typeof(MainWindow))
                         continue;
-                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.Red;
+                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.IndianRed;
+                    ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.TriangleFill;
+
                 }
             });
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
-
+            Logger.LogStr($"PUBSUB: Disconnected");
         }
 
         private static void OnPubSubServiceConnected(object sender, EventArgs e)
@@ -376,8 +402,10 @@ namespace Songify_Slim.Util.Songify
                     if (window.GetType() != typeof(MainWindow))
                         continue;
                     ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.GreenYellow;
+                    ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 }
             });
+            Logger.LogStr($"PUBSUB: Connected");
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
 
@@ -457,10 +485,12 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
-                    ((MainWindow)window).IconTwitchBot.Foreground = Brushes.Red;
+                    ((MainWindow)window).IconTwitchBot.Foreground = Brushes.IndianRed;
+                    ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+
                 }
             });
-            Logger.LogStr("TWITCH: Disconnected from Twitch");
+            Logger.LogStr("TWITCH: Disconnected from Twitch Chat");
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -486,6 +516,7 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
                     ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
+                    ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                     ((MainWindow)window).IconTwitchBot.Foreground = Brushes.GreenYellow;
 
                 }
@@ -495,8 +526,8 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            //if (!Settings.Settings.IsLive)
-            //    return;
+            if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+                return;
             if (users.All(o => o.UserId != e.ChatMessage.UserId))
             {
                 users.Add(new TwitchUser
@@ -511,7 +542,6 @@ namespace Songify_Slim.Util.Songify
             {
                 users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
-
 
             if (Settings.Settings.MsgLoggingEnabled)
                 // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
@@ -529,82 +559,6 @@ namespace Songify_Slim.Util.Songify
                             }
                     });
                 }
-
-            //if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
-            //{
-            //    // search users for a match on userid, if not found, add it to the list
-
-            //}
-
-            // if the reward is the same with the desired reward for the requests 
-            //if (Settings.Settings.TwSrReward && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
-            //{
-            //    int userlevel = CheckUserLevel(e.ChatMessage);
-            //    if (userlevel < Settings.Settings.TwSrUserLevel)
-            //    {
-            //        //Send a Message to the user, that his Userlevel is too low
-            //        Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.");
-            //        return;
-            //    }
-
-            //    if (IsUserBlocked(e.ChatMessage.DisplayName))
-            //    {
-            //        Client.SendWhisper(e.ChatMessage.Username, "You are blocked from making Songrequests");
-            //        return;
-            //    }
-
-            //    if (ApiHandler.Spotify == null)
-            //    {
-            //        Client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
-            //        return;
-            //    }
-
-            //    // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-            //    if (e.ChatMessage.Message.StartsWith("spotify:track:"))
-            //    {
-            //        // search for a track with the id
-            //        string trackId = e.ChatMessage.Message.Replace("spotify:track:", "");
-
-            //        // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-            //        AddSong(trackId, e);
-            //    }
-
-            //    else if (e.ChatMessage.Message.StartsWith("https://open.spotify.com/track/"))
-            //    {
-            //        string trackid = e.ChatMessage.Message.Replace("https://open.spotify.com/track/", "");
-            //        trackid = trackid.Split('?')[0];
-            //        AddSong(trackid, e);
-            //    }
-
-            //    else
-            //    {
-            //        // search for a track with a search string from chat
-            //        SearchItem searchItem = ApiHandler.FindTrack(e.ChatMessage.Message);
-            //        if (searchItem.Tracks.Items.Count > 0)
-            //        {
-            //            // if a track was found convert the object to FullTrack (easier use than searchItem)
-            //            FullTrack fullTrack = searchItem.Tracks.Items[0];
-
-            //            // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-            //            AddSong(fullTrack.Id, e);
-            //        }
-            //        else
-            //        {
-            //            // if no track has been found inform the requester
-            //            string response = Settings.Settings.BotRespError;
-            //            response = response.Replace("{user}", e.ChatMessage.DisplayName);
-            //            response = response.Replace("{artist}", "");
-            //            response = response.Replace("{title}", "");
-            //            response = response.Replace("{maxreq}", "");
-            //            response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-
-            //            Client.SendMessage(e.ChatMessage.Channel, response);
-            //            return;
-            //        }
-            //    }
-
-            //    return;
-            //}
 
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
@@ -1006,7 +960,7 @@ namespace Songify_Slim.Util.Songify
             // Add the song to the internal queue and update the queue window if its open
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Window mw = null, qw = null;
+                Window qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() == typeof(Window_Queue))
@@ -1022,9 +976,7 @@ namespace Songify_Slim.Util.Songify
                     Length = FormattedTime(track.DurationMs)
                 });
 
-                if (qw != null)
-                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                    (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
+                (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
             });
         }
 
@@ -1153,7 +1105,7 @@ namespace Songify_Slim.Util.Songify
             // Add the song to the internal queue and update the queue window if its open
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Window mw = null, qw = null;
+                Window qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window.GetType() == typeof(Window_Queue))

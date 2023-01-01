@@ -966,5 +966,41 @@ namespace Songify_Slim.Properties {
                 this["WebServerPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoStartWebServer {
+            get {
+                return ((bool)(this["AutoStartWebServer"]));
+            }
+            set {
+                this["AutoStartWebServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BetaUpdates {
+            get {
+                return ((bool)(this["BetaUpdates"]));
+            }
+            set {
+                this["BetaUpdates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BotOnlyWorkWhenLive {
+            get {
+                return ((bool)(this["BotOnlyWorkWhenLive"]));
+            }
+            set {
+                this["BotOnlyWorkWhenLive"] = value;
+            }
+        }
     }
 }

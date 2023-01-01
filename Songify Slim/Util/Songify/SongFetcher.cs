@@ -354,19 +354,19 @@ namespace Songify_Slim.Util.Songify
 
         private async void WriteProgressFile(string path, string j)
         {
-            //const int tries = 5;
-            //for (int i = 0; i < tries; i++)
-            //{
-            //    if (IsFileLocked(new FileInfo(path)))
-            //    {
-            //        await Task.Delay(1000);
-            //        Logger.LogStr("PROGRESS: Couldn't write to file");
-            //        continue;
-            //    }
+            const int tries = 5;
+            for (int i = 0; i < tries; i++)
+            {
+                if (IsFileLocked(new FileInfo(path)))
+                {
+                    await Task.Delay(1000);
+                    Logger.LogStr("PROGRESS: Couldn't write to file");
+                    continue;
+                }
 
-            //    File.WriteAllText(path, j);
-            //    break;
-            //}
+                File.WriteAllText(path, j);
+                break;
+            }
 
             GlobalObjects.APIResponse = j;
 

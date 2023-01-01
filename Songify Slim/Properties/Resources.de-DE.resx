@@ -394,4 +394,10 @@
   <data name="sw_tcOutput_Format2" xml:space="preserve">
     <value>Output Format (Twitch Chat)</value>
   </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Kanalpunkte Belohnung Erstellen</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Fehler beim Erstellen der Belohnung. Bitte stelle sicher, dass der Name für die Belohung nicht schon genutzt wird.</value>
+  </data>
 </root>

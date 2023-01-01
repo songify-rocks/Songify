@@ -142,7 +142,8 @@ namespace Songify_Slim
                                 BotRespModSkip = Settings.BotRespModSkip,
                                 BotRespNoSong = Settings.BotRespNoSong,
                                 BotRespSuccess = Settings.BotRespSuccess,
-                                BotRespVoteSkip = Settings.BotRespVoteSkip
+                                BotRespVoteSkip = Settings.BotRespVoteSkip,
+                                OnlyWorkWhenLive = Settings.BotOnlyWorkWhenLive,
                             };
                         }
                         break;
@@ -198,6 +199,8 @@ namespace Songify_Slim
                                 UserBlacklist = Settings.UserBlacklist,
                                 Uuid = Settings.Uuid,
                                 WebServerPort = Settings.WebServerPort,
+                                AutoStartWebServer = Settings.AutoStartWebServer,
+                                BetaUpdates = Settings.BetaUpdates
                             };
                         }
                         break;
@@ -209,65 +212,6 @@ namespace Songify_Slim
             Settings.Import(config);
         }
 
-        //public static void SaveConfig(string path = "")
-        //{
-        //    // Saving the Config file
-        //    if (path != "")
-        //    {
-        //        WriteXml(path);
-        //    }
-        //    else
-        //    {
-        //        // Importing the SaveFileDialog and giving it filter, directory and window title
-        //        SaveFileDialog saveFileDialog = new SaveFileDialog
-        //        {
-        //            Filter = "XML (*.xml)|*.xml",
-        //            InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
-        //            Title = "Export Config"
-        //        };
-
-        //        // Opneing the dialog and if the user clicked on "save" this code gets executed
-        //        if (saveFileDialog.ShowDialog() != true) return;
-        //        if (saveFileDialog.FileName != "")
-        //        {
-        //            WriteXml(saveFileDialog.FileName);
-        //        }
-        //    }
-        //}
-
-        //public static void WriteXml(string path, bool hidden = false)
-        //{
-        //    if (!File.Exists(path))
-        //        File.Create(path).Close();
-        //    FileInfo myFile = new FileInfo(path);
-        //    // Remove the hidden attribute of the file
-        //    myFile.Attributes &= ~FileAttributes.Hidden;
-
-        //    // XML-Writer settings
-        //    XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
-        //    {
-        //        Indent = true,
-        //        IndentChars = "\t",
-        //        NewLineOnAttributes = true
-        //    };
-
-        //    // Writing the XML, Attributnames are somewhat equal to Settings.
-        //    using (XmlWriter writer = XmlWriter.Create(path, xmlWriterSettings))
-        //    {
-        //        writer.WriteStartDocument();
-        //        writer.WriteStartElement("Songify_Config");
-        //        writer.WriteStartElement("Config");
-        //        Config cfg = Settings.Export();
-        //        foreach (PropertyInfo prop in cfg.GetType().GetProperties())
-        //        {
-        //            writer.WriteAttributeString(prop.Name.ToLower(), prop.GetValue(cfg, null).ToString());
-        //        }
-        //        writer.WriteEndElement();
-        //        writer.WriteEndElement();
-        //    }
-
-        //    myFile.Attributes &= ~FileAttributes.Hidden;
-        //}
 
         public static void ReadXml(string path)
         {
@@ -581,7 +525,7 @@ namespace Songify_Slim
         public string BotRespVoteSkip { get; set; }
         public string BotRespPos { get; set; }
         public string BotRespNext { get; set; }
-
+        public bool OnlyWorkWhenLive { get; set; }
     }
 
     public class AppConfig
@@ -629,6 +573,8 @@ namespace Songify_Slim
         public string UserBlacklist { get; set; }
         public string Uuid { get; set; }
         public int WebServerPort { get; set; }
+        public bool AutoStartWebServer { get; set; }
+        public bool BetaUpdates { get; set; }
     }
 
     public class Config

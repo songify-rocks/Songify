@@ -268,6 +268,60 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Reward.
+        /// </summary>
+        public static string crw_CreateReward {
+            get {
+                return ResourceManager.GetString("crw_CreateReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an issue creating the reward. Make sure you don&apos;t have a reward with the same name already..
+        /// </summary>
+        public static string crw_CreateRewardError {
+            get {
+                return ResourceManager.GetString("crw_CreateRewardError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The reward &quot;{name}&quot; has been created..
+        /// </summary>
+        public static string crw_CreateRewardSuccess {
+            get {
+                return ResourceManager.GetString("crw_CreateRewardSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cost.
+        /// </summary>
+        public static string crw_RewardCost {
+            get {
+                return ResourceManager.GetString("crw_RewardCost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prompt.
+        /// </summary>
+        public static string crw_RewardPrompt {
+            get {
+                return ResourceManager.GetString("crw_RewardPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string crw_RewardTitle {
+            get {
+                return ResourceManager.GetString("crw_RewardTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to German.
         /// </summary>
         public static string lang_deDE {
