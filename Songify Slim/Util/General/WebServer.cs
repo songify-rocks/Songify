@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Views;
 
 namespace Songify_Slim.Util.General
 {

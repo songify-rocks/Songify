@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Core.Tokens;
 
@@ -11,22 +13,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        public static bool BotOnlyWorkWhenLive
-        {
-            get => GetBotOnlyWorkWhenLive();
-            set => SetBotOnlyWorkWhenLive(value);
-        }
-
-        private static void SetBotOnlyWorkWhenLive(bool value)
-        {
-            Properties.Settings.Default.BotOnlyWorkWhenLive = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static bool GetBotOnlyWorkWhenLive()
-        {
-            return Properties.Settings.Default.BotOnlyWorkWhenLive;
-        }
+        private static Configuration currentConfig;
 
         public static bool AnnounceInChat
         {
@@ -104,6 +91,12 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetBotCmdSong();
             set => SetBotCmdSong(value);
+        }
+
+        public static bool BotOnlyWorkWhenLive
+        {
+            get => GetBotOnlyWorkWhenLive();
+            set => SetBotOnlyWorkWhenLive(value);
         }
 
         public static string BotRespBlacklist
@@ -220,12 +213,6 @@ namespace Songify_Slim.Util.Settings
             set => SetDownloadCover(value);
         }
 
-        public static bool GuidedSetup
-        {
-            get => GetGuidedSetup();
-            set => SetGuidedSetup(value);
-        }
-
         public static bool IsLive { get; set; }
 
         public static string Language
@@ -265,6 +252,12 @@ namespace Songify_Slim.Util.Settings
             set => SetOutputString2(value);
         }
 
+        public static int Player
+        {
+            get => GetSource();
+            set => SetSource(value);
+        }
+
         public static double PosX
         {
             get => GetPosX();
@@ -287,12 +280,6 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetSaveHistory();
             set => SetSaveHistory(value);
-        }
-
-        public static int Source
-        {
-            get => GetSource();
-            set => SetSource(value);
         }
 
         public static int SpaceCount
@@ -451,6 +438,8 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrUserLevel(value);
         }
 
+        public static bool UpdateRequired { get => GetUpdateRequired(); set => SetUpdateRequired(value); }
+
         public static bool Upload
         {
             get => GetUpload();
@@ -487,7 +476,7 @@ namespace Songify_Slim.Util.Settings
             set => SetWebServerPort(value);
         }
 
-        public static string Webua => GetWebua();
+        public static string WebUserAgent => GetWebua();
 
         public static Configuration Export()
         {
@@ -592,934 +581,944 @@ namespace Songify_Slim.Util.Settings
 
         public static void Import(Configuration config)
         {
-            #region SpotifyCredential
-            SetSpotifyAccessToken(config.SpotifyCredentials.AccessToken);
-            SetClientId(config.SpotifyCredentials.ClientId);
-            SetClientSecret(config.SpotifyCredentials.ClientSecret);
-            SetSpotifyRefreshToken(config.SpotifyCredentials.RefreshToken);
-            SetSpotifyDeviceId(config.SpotifyCredentials.DeviceId);
-            #endregion
+            currentConfig = config;
 
-            #region BotConfig
-            SetBot_Resp_ModSkip(config.BotConfig.BotRespModSkip);
-            SetBot_Resp_VoteSkip(config.BotConfig.BotRespVoteSkip);
-            SetBot_Resp_Pos(config.BotConfig.BotRespPos);
-            SetBot_Resp_Next(config.BotConfig.BotRespNext);
-            SetBot_Resp_MaxReq(config.BotConfig.BotRespMaxReq);
-            SetBot_Resp_IsInQueue(config.BotConfig.BotRespIsInQueue);
-            SetBot_Resp_Length(config.BotConfig.BotRespLength);
-            SetBot_Resp_Blacklist(config.BotConfig.BotRespBlacklist);
-            SetBot_Resp_Error(config.BotConfig.BotRespError);
-            SetBot_Resp_Success(config.BotConfig.BotRespSuccess);
-            SetBot_Resp_NoSong(config.BotConfig.BotRespNoSong);
-            SetBotCmdNext(config.BotConfig.BotCmdNext);
-            SetBotCmdPos(config.BotConfig.BotCmdPos);
-            SetBotCmdSkip(config.BotConfig.BotCmdSkip);
-            SetBotCmdSkipVote(config.BotConfig.BotCmdSkipVote);
-            SetBotCmdSkipVoteCount(config.BotConfig.BotCmdSkipVoteCount);
-            SetBotCmdSong(config.BotConfig.BotCmdSong);
-            #endregion
+            //#region SpotifyCredential
+            //SetSpotifyAccessToken(config.SpotifyCredentials.AccessToken);
+            //SetClientId(config.SpotifyCredentials.ClientId);
+            //SetClientSecret(config.SpotifyCredentials.ClientSecret);
+            //SetSpotifyRefreshToken(config.SpotifyCredentials.RefreshToken);
+            //SetSpotifyDeviceId(config.SpotifyCredentials.DeviceId);
+            //#endregion
 
-            #region TwitchCredentials
-            SetTwAcc(config.TwitchCredentials.BotAccountName);
-            SetTwChannel(config.TwitchCredentials.ChannelName);
-            SetTwOAuth(config.TwitchCredentials.BotOAuthToken);
-            #endregion
+            //#region BotConfig
+            //SetBot_Resp_ModSkip(config.BotConfig.BotRespModSkip);
+            //SetBot_Resp_VoteSkip(config.BotConfig.BotRespVoteSkip);
+            //SetBot_Resp_Pos(config.BotConfig.BotRespPos);
+            //SetBot_Resp_Next(config.BotConfig.BotRespNext);
+            //SetBot_Resp_MaxReq(config.BotConfig.BotRespMaxReq);
+            //SetBot_Resp_IsInQueue(config.BotConfig.BotRespIsInQueue);
+            //SetBot_Resp_Length(config.BotConfig.BotRespLength);
+            //SetBot_Resp_Blacklist(config.BotConfig.BotRespBlacklist);
+            //SetBot_Resp_Error(config.BotConfig.BotRespError);
+            //SetBot_Resp_Success(config.BotConfig.BotRespSuccess);
+            //SetBot_Resp_NoSong(config.BotConfig.BotRespNoSong);
+            //SetBotCmdNext(config.BotConfig.BotCmdNext);
+            //SetBotCmdPos(config.BotConfig.BotCmdPos);
+            //SetBotCmdSkip(config.BotConfig.BotCmdSkip);
+            //SetBotCmdSkipVote(config.BotConfig.BotCmdSkipVote);
+            //SetBotCmdSkipVoteCount(config.BotConfig.BotCmdSkipVoteCount);
+            //SetBotCmdSong(config.BotConfig.BotCmdSong);
+            //#endregion
 
-            #region AppConfig
-            SetAnnounceInChat(config.AppConfig.AnnounceInChat);
-            SetAppendSpaces(config.AppConfig.AppendSpaces);
-            SetArtistBlacklist(config.AppConfig.ArtistBlacklist);
-            SetAutoClearQueue(config.AppConfig.AutoClearQueue);
-            SetAutostart(config.AppConfig.Autostart);
-            SetColor(config.AppConfig.Color);
-            SetCustomPauseText(config.AppConfig.CustomPauseText);
-            SetCustomPauseTextEnabled(config.AppConfig.CustomPauseTextEnabled);
-            SetDirectory(config.AppConfig.Directory);
-            SetDownloadCover(config.AppConfig.DownloadCover);
-            SetLangauge(config.AppConfig.Language);
-            SetMaxSongLength(config.AppConfig.MaxSongLength);
-            SetMsgLoggingEnabled(config.AppConfig.MsgLoggingEnabled);
-            SetOpenQueueOnStartup(config.AppConfig.OpenQueueOnStartup);
-            SetOutputString(config.AppConfig.OutputString);
-            SetOutputString2(config.AppConfig.OutputString2);
-            SetPosX(config.AppConfig.PosX);
-            SetPosY(config.AppConfig.PosY);
-            SetSaveHistory(config.AppConfig.SaveHistory);
-            SetSpaceCount(config.AppConfig.SpaceCount);
-            SetSplitOutput(config.AppConfig.SplitOutput);
-            SetSystray(config.AppConfig.Systray);
-            SetTelemetry(config.AppConfig.Telemetry);
-            SetTheme(config.AppConfig.Theme);
-            SetTwAutoConnect(config.AppConfig.TwAutoConnect);
-            SetTwRewardId(config.AppConfig.TwRewardId);
-            SetTwSrCommand(config.AppConfig.TwSrCommand);
-            SetTwSrCooldown(config.AppConfig.TwSrCooldown);
-            SetTwSrMaxReq(config.AppConfig.TwSrMaxReq);
-            SetTwSrMaxReqBroadcaster(config.AppConfig.TwSrMaxReqBroadcaster);
-            SetTwSrMaxReqEveryone(config.AppConfig.TwSrMaxReqEveryone);
-            SetTwSrMaxReqModerator(config.AppConfig.TwSrMaxReqModerator);
-            SetTwSrMaxReqSubscriber(config.AppConfig.TwSrMaxReqSubscriber);
-            SetTwSrMaxReqVip(config.AppConfig.TwSrMaxReqVip);
-            SetTwSrReward(config.AppConfig.TwSrReward);
-            SetTwSrUserLevel(config.AppConfig.TwSrUserLevel);
-            SetUpload(config.AppConfig.Upload);
-            SetUploadHistory(config.AppConfig.UploadHistory);
-            SetUseOwnApp(config.AppConfig.UseOwnApp);
-            SetUserBlacklist(config.AppConfig.UserBlacklist);
-            SetUuid(config.AppConfig.Uuid);
-            SetRefundConditons(config.AppConfig.RefundConditons);
-            SetWebServerPort(config.AppConfig.WebServerPort);
-            SetBetaUpdates(config.AppConfig.BetaUpdates);
-            #endregion
+            //#region TwitchCredentials
+            //SetTwAcc(config.TwitchCredentials.BotAccountName);
+            //SetTwChannel(config.TwitchCredentials.ChannelName);
+            //SetTwOAuth(config.TwitchCredentials.BotOAuthToken);
+            //#endregion
+
+            //#region AppConfig
+            //SetAnnounceInChat(config.AppConfig.AnnounceInChat);
+            //SetAppendSpaces(config.AppConfig.AppendSpaces);
+            //SetArtistBlacklist(config.AppConfig.ArtistBlacklist);
+            //SetAutoClearQueue(config.AppConfig.AutoClearQueue);
+            //SetAutostart(config.AppConfig.Autostart);
+            //SetColor(config.AppConfig.Color);
+            //SetCustomPauseText(config.AppConfig.CustomPauseText);
+            //SetCustomPauseTextEnabled(config.AppConfig.CustomPauseTextEnabled);
+            //SetDirectory(config.AppConfig.Directory);
+            //SetDownloadCover(config.AppConfig.DownloadCover);
+            //SetLangauge(config.AppConfig.Language);
+            //SetMaxSongLength(config.AppConfig.MaxSongLength);
+            //SetMsgLoggingEnabled(config.AppConfig.MsgLoggingEnabled);
+            //SetOpenQueueOnStartup(config.AppConfig.OpenQueueOnStartup);
+            //SetOutputString(config.AppConfig.OutputString);
+            //SetOutputString2(config.AppConfig.OutputString2);
+            //SetPosX(config.AppConfig.PosX);
+            //SetPosY(config.AppConfig.PosY);
+            //SetSaveHistory(config.AppConfig.SaveHistory);
+            //SetSpaceCount(config.AppConfig.SpaceCount);
+            //SetSplitOutput(config.AppConfig.SplitOutput);
+            //SetSystray(config.AppConfig.Systray);
+            //SetTelemetry(config.AppConfig.Telemetry);
+            //SetTheme(config.AppConfig.Theme);
+            //SetTwAutoConnect(config.AppConfig.TwAutoConnect);
+            //SetTwRewardId(config.AppConfig.TwRewardId);
+            //SetTwSrCommand(config.AppConfig.TwSrCommand);
+            //SetTwSrCooldown(config.AppConfig.TwSrCooldown);
+            //SetTwSrMaxReq(config.AppConfig.TwSrMaxReq);
+            //SetTwSrMaxReqBroadcaster(config.AppConfig.TwSrMaxReqBroadcaster);
+            //SetTwSrMaxReqEveryone(config.AppConfig.TwSrMaxReqEveryone);
+            //SetTwSrMaxReqModerator(config.AppConfig.TwSrMaxReqModerator);
+            //SetTwSrMaxReqSubscriber(config.AppConfig.TwSrMaxReqSubscriber);
+            //SetTwSrMaxReqVip(config.AppConfig.TwSrMaxReqVip);
+            //SetTwSrReward(config.AppConfig.TwSrReward);
+            //SetTwSrUserLevel(config.AppConfig.TwSrUserLevel);
+            //SetUpload(config.AppConfig.Upload);
+            //SetUploadHistory(config.AppConfig.UploadHistory);
+            //SetUseOwnApp(config.AppConfig.UseOwnApp);
+            //SetUserBlacklist(config.AppConfig.UserBlacklist);
+            //SetUuid(config.AppConfig.Uuid);
+            //SetRefundConditons(config.AppConfig.RefundConditons);
+            //SetWebServerPort(config.AppConfig.WebServerPort);
+            //SetBetaUpdates(config.AppConfig.BetaUpdates);
+            //#endregion
 
             ConfigHandler.WriteAllConfig(config);
         }
 
         private static bool GetAnnounceInChat()
         {
-            return Properties.Settings.Default.AnnounceInChat;
+            return currentConfig.AppConfig.AnnounceInChat;
         }
 
         private static bool GetAppendSpaces()
         {
-            return Properties.Settings.Default.spacesEnabled;
+            return currentConfig.AppConfig.AppendSpaces;
         }
 
         private static string GetArtistBlacklist()
         {
-            return Properties.Settings.Default.ArtistBlacklist;
+            return currentConfig.AppConfig.ArtistBlacklist;
         }
 
         private static bool GetAutoClearQueue()
         {
-            return Properties.Settings.Default.AutoClearQueue;
+            return currentConfig.AppConfig.AutoClearQueue;
         }
 
         private static bool GetAutostart()
         {
-            return Properties.Settings.Default.autostart;
+            return currentConfig.AppConfig.Autostart;
         }
 
         private static bool GetAutoStartWebServer()
         {
-            return Properties.Settings.Default.AutoStartWebServer;
+            return currentConfig.AppConfig.AutoStartWebServer;
         }
 
         private static bool GetBetaUpdates()
         {
-            return Properties.Settings.Default.BetaUpdates;
+            return currentConfig.AppConfig.BetaUpdates;
         }
 
         private static string GetBot_Resp_Blacklist()
         {
-            return Properties.Settings.Default.bot_Resp_Blacklist;
+            return currentConfig.BotConfig.BotRespBlacklist;
         }
 
         private static string GetBot_Resp_Error()
         {
-            return Properties.Settings.Default.bot_Resp_Error;
+            return currentConfig.BotConfig.BotRespError;
         }
 
         private static string GetBot_Resp_IsInQueue()
         {
-            return Properties.Settings.Default.bot_Resp_IsInQueue;
+            return currentConfig.BotConfig.BotRespIsInQueue;
         }
 
         private static string GetBot_Resp_Length()
         {
-            return Properties.Settings.Default.bot_Resp_Length;
+            return currentConfig.BotConfig.BotRespLength;
         }
 
         private static string GetBot_Resp_MaxReq()
         {
-            return Properties.Settings.Default.bot_Resp_MaxReq;
+            return currentConfig.BotConfig.BotRespMaxReq;
         }
 
         private static string GetBot_Resp_ModSkip()
         {
-            return Properties.Settings.Default.bot_Resp_ModSkip;
+            return currentConfig.BotConfig.BotRespModSkip;
         }
 
         private static string GetBot_Resp_Next()
         {
-            return Properties.Settings.Default.bot_Resp_Next;
+            return currentConfig.BotConfig.BotRespNext;
         }
 
         private static string GetBot_Resp_NoSong()
         {
-            return Properties.Settings.Default.bot_Resp_NoSong;
+            return currentConfig.BotConfig.BotRespNoSong;
         }
 
         private static string GetBot_Resp_Pos()
         {
-            return Properties.Settings.Default.bot_Resp_Pos;
+            return currentConfig.BotConfig.BotRespPos;
         }
 
         private static string GetBot_Resp_Success()
         {
-            return Properties.Settings.Default.bot_Resp_Success;
+            return currentConfig.BotConfig.BotRespSuccess;
         }
 
         private static string GetBot_Resp_VoteSkip()
         {
 
-            return Properties.Settings.Default.bot_Resp_VoteSkip;
+            return currentConfig.BotConfig.BotRespVoteSkip;
         }
 
         private static bool GetBotCmdNext()
         {
-            return Properties.Settings.Default.bot_cmd_next;
+            return currentConfig.BotConfig.BotCmdNext;
         }
 
         private static bool GetBotCmdPos()
         {
-            return Properties.Settings.Default.bot_cmd_pos;
+            return currentConfig.BotConfig.BotCmdPos;
         }
 
         private static bool GetBotCmdSkip()
         {
-            return Properties.Settings.Default.bot_cmd_skip;
+            return currentConfig.BotConfig.BotCmdSkip;
         }
 
         private static bool GetBotCmdSkipVote()
         {
-            return Properties.Settings.Default.bot_cmd_skip_vote;
+            return currentConfig.BotConfig.BotCmdSkipVote;
         }
 
         private static int GetBotCmdSkipVoteCount()
         {
-            return Properties.Settings.Default.bot_cmd_skip_vote_count;
+            return currentConfig.BotConfig.BotCmdSkipVoteCount;
         }
 
         private static bool GetBotCmdSong()
         {
-            return Properties.Settings.Default.bot_cmd_song;
+            return currentConfig.BotConfig.BotCmdSong;
+        }
+
+        private static bool GetBotOnlyWorkWhenLive()
+        {
+            return currentConfig.AppConfig.BotOnlyWorkWhenLive;
         }
 
         private static int GetChromeFetchRate()
         {
-            return Properties.Settings.Default.ChromeFetchRate;
+            return currentConfig.AppConfig.ChromeFetchRate;
         }
 
         private static string GetClientId()
         {
-            return Properties.Settings.Default.ClientID;
+            return currentConfig.SpotifyCredentials.ClientId;
         }
 
         private static string GetClientSecret()
         {
-            return Properties.Settings.Default.ClientSecret;
+            return currentConfig.SpotifyCredentials.ClientSecret;
         }
 
         private static string GetColor()
         {
-            return Properties.Settings.Default.color;
+            return currentConfig.AppConfig.Color;
         }
 
         private static string GetCustomPauseText()
         {
-            return Properties.Settings.Default.customPauseText;
+            return currentConfig.AppConfig.CustomPauseText;
         }
 
         private static bool GetCustomPauseTextEnabled()
         {
-            return Properties.Settings.Default.customPause;
+            return currentConfig.AppConfig.CustomPauseTextEnabled;
         }
 
         private static string GetDirectory()
         {
-            return Properties.Settings.Default.directory;
+            return currentConfig.AppConfig.Directory;
         }
 
         private static bool GetDownloadCover()
         {
-            return Properties.Settings.Default.SaveAlbumCover;
-        }
-
-        private static bool GetGuidedSetup()
-        {
-            return Properties.Settings.Default.GuidedSetup;
+            return currentConfig.AppConfig.DownloadCover;
         }
 
         private static string GetLanguage()
         {
-            return Properties.Settings.Default.language;
+            return currentConfig.AppConfig.Language;
         }
 
         private static int GetMaxSongLength()
         {
-            return Properties.Settings.Default.MaxSongLength;
+            return currentConfig.AppConfig.MaxSongLength;
         }
 
         private static bool GetMsgLoggingEnabled()
         {
-            return Properties.Settings.Default.MsgLoggingEnabled;
+            return currentConfig.AppConfig.MsgLoggingEnabled;
         }
 
         private static bool GetOpenQueueOnStartup()
         {
-            return Properties.Settings.Default.OpenQueueOnStartup;
+            return currentConfig.AppConfig.OpenQueueOnStartup;
         }
 
         private static string GetOutputString()
         {
-            return Properties.Settings.Default.outputString;
+            return currentConfig.AppConfig.OutputString;
         }
 
         private static string GetOutputString2()
         {
-            return Properties.Settings.Default.outputString2;
+            return currentConfig.AppConfig.OutputString2;
         }
 
         private static double GetPosX()
         {
-            return Properties.Settings.Default.PosX;
+            return currentConfig.AppConfig.PosX;
         }
 
         private static double GetPosY()
         {
-            return Properties.Settings.Default.PosY;
+            return currentConfig.AppConfig.PosY;
         }
 
         private static int[] GetRefundConditons()
         {
-            return Properties.Settings.Default.RefundConditons;
+            return currentConfig.AppConfig.RefundConditons;
         }
 
         private static bool GetSaveHistory()
         {
-            return Properties.Settings.Default.SaveHistory;
+            return currentConfig.AppConfig.SaveHistory;
         }
 
         private static int GetSource()
         {
-            return Properties.Settings.Default.Source;
+            return currentConfig.AppConfig.Player;
         }
 
         private static int GetSpaceCount()
         {
-            return Properties.Settings.Default.spaces;
+            return currentConfig.AppConfig.SpaceCount;
         }
 
         private static bool GetSplitOutput()
         {
-            return Properties.Settings.Default.SplitString;
+            return currentConfig.AppConfig.SplitOutput;
         }
 
         private static string GetSpotifyAccessToken()
         {
-            return Properties.Settings.Default.SpotifyAccessToken;
+            return currentConfig.SpotifyCredentials.AccessToken;
         }
 
         private static string GetSpotifyDeviceId()
         {
-            return Properties.Settings.Default.SpotifyDeviceID;
+            return currentConfig.SpotifyCredentials.DeviceId;
         }
 
         private static string GetSpotifyRefreshToken()
         {
-            return Properties.Settings.Default.SpotifyRefreshToken;
+            return currentConfig.SpotifyCredentials.RefreshToken;
         }
 
         private static bool GetSystray()
         {
-            return Properties.Settings.Default.systray;
+            return currentConfig.AppConfig.Systray;
         }
 
         private static bool GetTelemetry()
         {
-            return Properties.Settings.Default.telemetry;
+            return currentConfig.AppConfig.Telemetry;
         }
 
         private static string GetTheme()
         {
-            return Properties.Settings.Default.theme;
+            return currentConfig.AppConfig.Theme;
         }
 
         private static string GetTwAcc()
         {
-            return Properties.Settings.Default.TwAcc;
+            return currentConfig.TwitchCredentials.BotAccountName;
         }
 
         private static bool GetTwAutoConnect()
         {
-            return Properties.Settings.Default.TwAutoConnect;
+            return currentConfig.AppConfig.TwAutoConnect;
         }
 
         private static string GetTwChannel()
         {
-            return Properties.Settings.Default.TwChannel;
+            return currentConfig.TwitchCredentials.ChannelName;
         }
 
         private static string GetTwitchAccessToken()
         {
-            return Properties.Settings.Default.TwitchAccessToken;
+            return currentConfig.TwitchCredentials.AccessToken;
 
         }
 
         private static string GetTwitchChannelId()
         {
-            return Properties.Settings.Default.TwitchChannelId;
+            return currentConfig.TwitchCredentials.ChannelId;
 
         }
 
         private static User GetTwitchUser()
         {
-            return Properties.Settings.Default.TwitchUser;
+            return currentConfig.TwitchCredentials.TwitchUser;
         }
 
         private static string GetTwOAuth()
         {
-            return Properties.Settings.Default.TwOauth;
+            return currentConfig.TwitchCredentials.BotOAuthToken;
         }
 
         private static string GetTwRewardId()
         {
-            return Properties.Settings.Default.TwRewardID;
+            return currentConfig.AppConfig.TwRewardId;
         }
 
         private static bool GetTwSrCommand()
         {
-            return Properties.Settings.Default.TwSRCommand;
+            return currentConfig.AppConfig.TwSrCommand;
         }
 
         private static int GetTwSrCooldown()
         {
-            return Properties.Settings.Default.TwSRCooldown;
+            return currentConfig.AppConfig.TwSrCooldown;
         }
 
         private static int GetTwSrMaxReq()
         {
-            return Properties.Settings.Default.TwSRMaxReq;
+            return currentConfig.AppConfig.TwSrMaxReq;
         }
 
         private static int GetTwSrMaxReqBroadcaster()
         {
-            return Properties.Settings.Default.TwSRMaxReqBroadcaster;
+            return currentConfig.AppConfig.TwSrMaxReqBroadcaster;
         }
 
         private static int GetTwSrMaxReqEveryone()
         {
-            return Properties.Settings.Default.TwSRMaxReqEveryone;
+            return currentConfig.AppConfig.TwSrMaxReqEveryone;
         }
 
         private static int GetTwSrMaxReqModerator()
         {
-            return Properties.Settings.Default.TwSRMaxReqModerator;
+            return currentConfig.AppConfig.TwSrMaxReqModerator;
         }
 
         private static int GetTwSrMaxReqSubscriber()
         {
-            return Properties.Settings.Default.TwSRMaxReqSubscriber;
-
+            return currentConfig.AppConfig.TwSrMaxReqSubscriber;
         }
 
         private static int GetTwSrMaxReqVip()
         {
-            return Properties.Settings.Default.TwSRMaxReqVip;
-
+            return currentConfig.AppConfig.TwSrMaxReqVip;
         }
 
         private static bool GetTwSrReward()
         {
-            return Properties.Settings.Default.TwSRReward;
+            return currentConfig.AppConfig.TwSrReward;
         }
 
         private static int GetTwSrUserLevel()
         {
-            return Properties.Settings.Default.TwSRUserLevel;
+            return currentConfig.AppConfig.TwSrUserLevel;
+        }
+
+        private static bool GetUpdateRequired()
+        {
+            return currentConfig.AppConfig.UpdateRequired;
         }
 
         private static bool GetUpload()
         {
-            return Properties.Settings.Default.uploadSonginfo;
+            return currentConfig.AppConfig.Upload;
         }
 
         private static bool GetUploadHistory()
         {
-            return Properties.Settings.Default.UploadHistory;
+            return currentConfig.AppConfig.UploadHistory;
         }
 
         private static bool GetUseOwnApp()
         {
-            return Properties.Settings.Default.UseOwnAppID;
+            return currentConfig.AppConfig.UseOwnApp;
         }
 
         private static string GetUserBlacklist()
         {
-            return Properties.Settings.Default.UserBlacklist;
+            return currentConfig.AppConfig.UserBlacklist;
         }
 
         private static string GetUuid()
         {
-            return Properties.Settings.Default.uuid;
+            return currentConfig.AppConfig.Uuid;
         }
 
         private static int GetWebServerPort()
         {
-            return Properties.Settings.Default.WebServerPort;
+            return currentConfig.AppConfig.WebServerPort;
         }
 
         private static string GetWebua()
         {
-            return Properties.Settings.Default.webua;
+            return "Songify Data Provider";
         }
 
         private static void SetAnnounceInChat(bool value)
         {
-            Properties.Settings.Default.AnnounceInChat = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.AnnounceInChat = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetAppendSpaces(bool value)
         {
-            Properties.Settings.Default.spacesEnabled = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.AppendSpaces = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetArtistBlacklist(string value)
         {
-            Properties.Settings.Default.ArtistBlacklist = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.ArtistBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetAutoClearQueue(bool value)
         {
-            Properties.Settings.Default.AutoClearQueue = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.AutoClearQueue = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetAutostart(bool autostart)
         {
-            Properties.Settings.Default.autostart = autostart;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Autostart = autostart;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetAutoStartWebServer(bool value)
         {
-            Properties.Settings.Default.AutoStartWebServer = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.AutoStartWebServer = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
+
         private static void SetBetaUpdates(bool value)
         {
-            Properties.Settings.Default.BetaUpdates = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.BetaUpdates = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetBot_Resp_Blacklist(string value)
         {
-            Properties.Settings.Default.bot_Resp_Blacklist = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Error(string value)
         {
-            Properties.Settings.Default.bot_Resp_Error = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespError = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_IsInQueue(string value)
         {
-            Properties.Settings.Default.bot_Resp_IsInQueue = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespIsInQueue = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Length(string value)
         {
-            Properties.Settings.Default.bot_Resp_Length = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespLength = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_MaxReq(string value)
         {
-            Properties.Settings.Default.bot_Resp_MaxReq = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespMaxReq = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_ModSkip(string value)
         {
-            Properties.Settings.Default.bot_Resp_ModSkip = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespModSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Next(string value)
         {
-            Properties.Settings.Default.bot_Resp_Next = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespNext = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_NoSong(string value)
         {
-            Properties.Settings.Default.bot_Resp_NoSong = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespNoSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Pos(string value)
         {
-            Properties.Settings.Default.bot_Resp_Pos = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespPos = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Success(string value)
         {
-            Properties.Settings.Default.bot_Resp_Success = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespSuccess = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_VoteSkip(string value)
         {
-            Properties.Settings.Default.bot_Resp_VoteSkip = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotRespVoteSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdNext(bool value)
         {
-            Properties.Settings.Default.bot_cmd_next = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdNext = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdPos(bool value)
         {
-            Properties.Settings.Default.bot_cmd_pos = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdPos = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkip(bool value)
         {
-            Properties.Settings.Default.bot_cmd_skip = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkipVote(bool value)
         {
-            Properties.Settings.Default.bot_cmd_skip_vote = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdSkipVote = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkipVoteCount(int value)
         {
-            Properties.Settings.Default.bot_cmd_skip_vote_count = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdSkipVoteCount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSong(bool value)
         {
-            Properties.Settings.Default.bot_cmd_song = value;
-            Properties.Settings.Default.Save();
+            currentConfig.BotConfig.BotCmdSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
         }
 
-        private static void SetChromeFetchRate(int rate)
+        private static void SetBotOnlyWorkWhenLive(bool value)
         {
-            Properties.Settings.Default.ChromeFetchRate = rate;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.BotOnlyWorkWhenLive = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+        private static void SetChromeFetchRate(int value)
+        {
+            currentConfig.AppConfig.ChromeFetchRate = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetClientId(string value)
         {
-            Properties.Settings.Default.ClientID = value;
-            Properties.Settings.Default.Save();
+            currentConfig.SpotifyCredentials.ClientId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
         }
 
         private static void SetClientSecret(string value)
         {
-            Properties.Settings.Default.ClientSecret = value;
-            Properties.Settings.Default.Save();
+            currentConfig.SpotifyCredentials.ClientSecret = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
         }
 
-        private static void SetColor(string color)
+        private static void SetColor(string value)
         {
-            Properties.Settings.Default.color = color;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Color = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetCustomPauseText(string customtext)
+        private static void SetCustomPauseText(string value)
         {
-            Properties.Settings.Default.customPauseText = customtext;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.CustomPauseText = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetCustomPauseTextEnabled(bool custompause)
+        private static void SetCustomPauseTextEnabled(bool value)
         {
-            Properties.Settings.Default.customPause = custompause;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.CustomPauseTextEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetDirectory(string directory)
+        private static void SetDirectory(string value)
         {
-            Properties.Settings.Default.directory = directory;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Directory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetDownloadCover(bool value)
         {
-            Properties.Settings.Default.SaveAlbumCover = value;
-            Properties.Settings.Default.Save();
-        }
-
-        private static void SetGuidedSetup(bool value)
-        {
-            Properties.Settings.Default.GuidedSetup = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.DownloadCover = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetLangauge(string value)
         {
-            Properties.Settings.Default.language = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Language = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetMaxSongLength(int value)
         {
-            Properties.Settings.Default.MaxSongLength = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.MaxSongLength = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetMsgLoggingEnabled(bool value)
         {
-            Properties.Settings.Default.MsgLoggingEnabled = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.MsgLoggingEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetOpenQueueOnStartup(bool value)
         {
-            Properties.Settings.Default.OpenQueueOnStartup = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.OpenQueueOnStartup = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetOutputString(string outputstring)
+        private static void SetOutputString(string value)
         {
-            Properties.Settings.Default.outputString = outputstring;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.OutputString = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetOutputString2(string value)
         {
-            Properties.Settings.Default.outputString2 = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.OutputString2 = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetPosX(double value)
         {
-            Properties.Settings.Default.PosX = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.PosX = (int)value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetPosY(double value)
         {
-            Properties.Settings.Default.PosY = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.PosY = (int)value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetRefundConditons(int[] value)
         {
-            Properties.Settings.Default.RefundConditons = value;
-            Properties.Settings.Default.Save();
-
+            currentConfig.AppConfig.RefundConditons = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetSaveHistory(bool savehistory)
+        private static void SetSaveHistory(bool value)
         {
-            Properties.Settings.Default.SaveHistory = savehistory;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.SaveHistory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetSource(int source)
+        private static void SetSource(int value)
         {
-            Properties.Settings.Default.Source = source;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Player = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetSpaceCount(int value)
         {
-            Properties.Settings.Default.spaces = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.SpaceCount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetSplitOutput(bool value)
         {
-            Properties.Settings.Default.SplitString = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.SplitOutput = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetSpotifyAccessToken(string value)
         {
-            Properties.Settings.Default.SpotifyAccessToken = value;
-            Properties.Settings.Default.Save();
+            currentConfig.SpotifyCredentials.AccessToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
         }
 
         private static void SetSpotifyDeviceId(string value)
         {
-            Properties.Settings.Default.SpotifyDeviceID = value;
-            Properties.Settings.Default.Save();
+            currentConfig.SpotifyCredentials.DeviceId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
         }
 
         private static void SetSpotifyRefreshToken(string value)
         {
-            Properties.Settings.Default.SpotifyRefreshToken = value;
-            Properties.Settings.Default.Save();
+            currentConfig.SpotifyCredentials.RefreshToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
         }
 
-        private static void SetSystray(bool systray)
+        private static void SetSystray(bool value)
         {
-            Properties.Settings.Default.systray = systray;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Systray = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetTelemetry(bool telemetry)
+        private static void SetTelemetry(bool value)
         {
-            Properties.Settings.Default.telemetry = telemetry;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Systray = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetTheme(string theme)
+        private static void SetTheme(string value)
         {
-            Properties.Settings.Default.theme = theme;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Theme = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwAcc(string value)
         {
-            Properties.Settings.Default.TwAcc = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.BotAccountName = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwAutoConnect(bool value)
         {
-            Properties.Settings.Default.TwAutoConnect = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwAutoConnect = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwChannel(string value)
         {
-            Properties.Settings.Default.TwChannel = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.ChannelName = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchAccessToken(string value)
         {
-            Properties.Settings.Default.TwitchAccessToken = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.AccessToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchChannelId(string value)
         {
-            Properties.Settings.Default.TwitchChannelId = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.ChannelId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchUser(User value)
         {
-            Properties.Settings.Default.TwitchUser = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.TwitchUser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwOAuth(string value)
         {
-            Properties.Settings.Default.TwOauth = value;
-            Properties.Settings.Default.Save();
+            currentConfig.TwitchCredentials.BotOAuthToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
         }
 
         private static void SetTwRewardId(string value)
         {
-            Properties.Settings.Default.TwRewardID = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwRewardId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrCommand(bool value)
         {
-            Properties.Settings.Default.TwSRCommand = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrCommand = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrCooldown(int value)
         {
-            Properties.Settings.Default.TwSRCooldown = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrCooldown = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReq(int value)
         {
-            Properties.Settings.Default.TwSRMaxReq = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReq = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqBroadcaster(int value)
         {
-            Properties.Settings.Default.TwSRMaxReqBroadcaster = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReqBroadcaster = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqEveryone(int value)
         {
-            Properties.Settings.Default.TwSRMaxReqEveryone = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReqEveryone = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqModerator(int value)
         {
-            Properties.Settings.Default.TwSRMaxReqModerator = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReqModerator = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqSubscriber(int value)
         {
-            Properties.Settings.Default.TwSRMaxReqSubscriber = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReqModerator = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqVip(int value)
         {
-            Properties.Settings.Default.TwSRMaxReqVip = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrMaxReqVip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrReward(bool value)
         {
-            Properties.Settings.Default.TwSRReward = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrReward = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetTwSrUserLevel(int value)
         {
-            Properties.Settings.Default.TwSRUserLevel = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.TwSrUserLevel = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetUpload(bool uploadsong)
+        private static void SetUpdateRequired(bool value)
         {
-            Properties.Settings.Default.uploadSonginfo = uploadsong;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.UpdateRequired = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+
+        }
+        private static void SetUpload(bool value)
+        {
+            currentConfig.AppConfig.Upload = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetUploadHistory(bool history)
+        private static void SetUploadHistory(bool value)
         {
-            Properties.Settings.Default.UploadHistory = history;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.UploadHistory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetUseOwnApp(bool value)
         {
-            Properties.Settings.Default.UseOwnAppID = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.UseOwnApp = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetUserBlacklist(string value)
         {
-            Properties.Settings.Default.UserBlacklist = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.UserBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetUuid(string uuid)
+        private static void SetUuid(string value)
         {
-            Properties.Settings.Default.uuid = uuid;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.Uuid = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
         private static void SetWebServerPort(int value)
         {
-            Properties.Settings.Default.WebServerPort = value;
-            Properties.Settings.Default.Save();
+            currentConfig.AppConfig.WebServerPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using Songify_Slim.Views;
 
 namespace Songify_Slim
 {
@@ -24,6 +25,9 @@ namespace Songify_Slim
 
         private App()
         {
+            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
+                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en"); 
         }
@@ -40,10 +44,6 @@ namespace Songify_Slim
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
-
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
-                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-            
             base.OnStartup(e);
         }
 

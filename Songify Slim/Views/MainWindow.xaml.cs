@@ -1,11 +1,4 @@
-﻿using AutoUpdaterDotNET;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -25,33 +18,32 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using MahApps.Metro.Controls;
+using AutoUpdaterDotNET;
+using MahApps.Metro.Controls.Dialogs;
 using MdXaml;
+using Microsoft.Win32;
 using Octokit;
-using TwitchLib.Api.Helix.Models.ChannelPoints;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using FileMode = System.IO.FileMode;
 using FontFamily = System.Windows.Media.FontFamily;
-using Image = System.Drawing.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Forms.MenuItem;
 using MessageBox = System.Windows.MessageBox;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using Songify_Slim.Views;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     public partial class MainWindow
     {
@@ -85,15 +77,7 @@ namespace Songify_Slim
             _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
 
 
-            if (Properties.Settings.Default.UpgradeRequired)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.UpgradeRequired = false;
-                Properties.Settings.Default.Save();
-                updated = true;
-            }
-
-            if (updated)
+            if (Settings.UpdateRequired)
             {
                 GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
                 Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
@@ -108,6 +92,7 @@ namespace Songify_Slim
                 rtbPatchnotes.Document = document;
                 tbVersion.Text = $"Songify Update {release.TagName}";
                 grdUpdate.Visibility = Visibility.Visible;
+                Settings.UpdateRequired = false;
             }
         }
 
@@ -140,7 +125,7 @@ namespace Songify_Slim
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Webua;
+                myHttpWebRequest.UserAgent = Settings.WebUserAgent;
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
                 if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
@@ -294,7 +279,7 @@ namespace Songify_Slim
 
             _selectedSource = cbx_Source.SelectedValue.ToString();
 
-            Settings.Source = cbx_Source.SelectedIndex;
+            Settings.Player = cbx_Source.SelectedIndex;
 
             // Dpending on which source is chosen, it starts the timer that fetches the song info
             SetFetchTimer();
@@ -610,7 +595,7 @@ namespace Songify_Slim
                 : "https://songify.rocks/update.xml");
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedIndex = Settings.Source;
+            cbx_Source.SelectedIndex = Settings.Player;
             _selectedSource = cbx_Source.SelectedValue.ToString();
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
@@ -641,8 +626,7 @@ namespace Songify_Slim
 
         private void AutoUpdater_ApplicationExitEvent()
         {
-            Properties.Settings.Default.UpgradeRequired = true;
-            Properties.Settings.Default.Save();
+            Settings.UpdateRequired = true;
             Application.Current.Shutdown();
         }
 
@@ -1211,7 +1195,7 @@ namespace Songify_Slim
                         string url = "https://songify.rocks/song_history.php/?id=" + extras;
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        myHttpWebRequest.UserAgent = Settings.Webua;
+                        myHttpWebRequest.UserAgent = Settings.WebUserAgent;
 
                         // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                         HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();

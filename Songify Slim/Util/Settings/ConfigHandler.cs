@@ -19,6 +19,7 @@ using Application = System.Windows.Application;
 using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Settings = Songify_Slim.Util.Settings.Settings;
+using System.Numerics;
 
 namespace Songify_Slim
 {
@@ -200,7 +201,11 @@ namespace Songify_Slim
                                 Uuid = Settings.Uuid,
                                 WebServerPort = Settings.WebServerPort,
                                 AutoStartWebServer = Settings.AutoStartWebServer,
-                                BetaUpdates = Settings.BetaUpdates
+                                BetaUpdates = Settings.BetaUpdates,
+                                ChromeFetchRate = Settings.ChromeFetchRate,
+                                Player = Settings.Player,
+                                WebUserAgent = Settings.WebUserAgent,
+                                BotOnlyWorkWhenLive = Settings.BotOnlyWorkWhenLive
                             };
                         }
                         break;
@@ -211,7 +216,6 @@ namespace Songify_Slim
 
             Settings.Import(config);
         }
-
 
         public static void ReadXml(string path)
         {
@@ -575,6 +579,11 @@ namespace Songify_Slim
         public int WebServerPort { get; set; }
         public bool AutoStartWebServer { get; set; }
         public bool BetaUpdates { get; set; }
+        public int ChromeFetchRate { get; set; }
+        public int Player { get; internal set; }
+        public string WebUserAgent { get; set; }
+        public bool UpdateRequired { get; set; }
+        public bool BotOnlyWorkWhenLive { get; set; }
     }
 
     public class Config

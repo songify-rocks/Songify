@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
+using Songify_Slim.Views;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;

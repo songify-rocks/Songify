@@ -43,7 +43,7 @@ namespace Songify_Slim.Util.Songify
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Settings.Webua;
+                myHttpWebRequest.UserAgent = Settings.Settings.WebUserAgent;
 
                 // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
                 HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();

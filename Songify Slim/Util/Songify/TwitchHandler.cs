@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using MahApps.Metro.IconPacks;
 using NHttp;
 using Songify_Slim.Util.General;
+using Songify_Slim.Views;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
