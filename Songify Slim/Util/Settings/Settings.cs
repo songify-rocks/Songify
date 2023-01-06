@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -13,7 +14,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        private static Configuration currentConfig;
+        private static Configuration currentConfig = new Configuration();
 
         public static bool AnnounceInChat
         {
@@ -27,7 +28,7 @@ namespace Songify_Slim.Util.Settings
             set => SetAppendSpaces(value);
         }
 
-        public static string ArtistBlacklist
+        public static List<string> ArtistBlacklist
         {
             get => GetArtistBlacklist();
             set => SetArtistBlacklist(value);
@@ -458,7 +459,7 @@ namespace Songify_Slim.Util.Settings
             set => SetUseOwnApp(value);
         }
 
-        public static string UserBlacklist
+        public static List<string> UserBlacklist
         {
             get => GetUserBlacklist();
             set => SetUserBlacklist(value);
@@ -677,7 +678,7 @@ namespace Songify_Slim.Util.Settings
             return currentConfig.AppConfig.AppendSpaces;
         }
 
-        private static string GetArtistBlacklist()
+        private static List<string> GetArtistBlacklist()
         {
             return currentConfig.AppConfig.ArtistBlacklist;
         }
@@ -1040,7 +1041,7 @@ namespace Songify_Slim.Util.Settings
             return currentConfig.AppConfig.UseOwnApp;
         }
 
-        private static string GetUserBlacklist()
+        private static List<string> GetUserBlacklist()
         {
             return currentConfig.AppConfig.UserBlacklist;
         }
@@ -1072,7 +1073,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetArtistBlacklist(string value)
+        private static void SetArtistBlacklist(List<string> value)
         {
             currentConfig.AppConfig.ArtistBlacklist = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
@@ -1503,7 +1504,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 
-        private static void SetUserBlacklist(string value)
+        private static void SetUserBlacklist(List<string> value)
         {
             currentConfig.AppConfig.UserBlacklist = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);

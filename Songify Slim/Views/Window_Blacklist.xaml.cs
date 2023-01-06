@@ -3,6 +3,7 @@ using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using SpotifyAPI.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -42,28 +43,22 @@ namespace Songify_Slim
         {
             ListView_UserBlacklist.Items.Clear();
 
-            if (string.IsNullOrEmpty(Settings.UserBlacklist))
+            if (Settings.UserBlacklist == null || Settings.UserBlacklist.Count == 0)
                 return;
 
-            UserBlacklist = Settings.UserBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
-
-            foreach (string s in UserBlacklist)
-                if (!string.IsNullOrEmpty(s))
-                    ListView_UserBlacklist.Items.Add(s);
+            foreach (string s in Settings.UserBlacklist.Where(s => !string.IsNullOrEmpty(s)))
+                ListView_UserBlacklist.Items.Add(s);
         }
 
         private void LoadAritstBlacklist()
         {
             ListView_Blacklist.Items.Clear();
 
-            if (string.IsNullOrEmpty(Settings.ArtistBlacklist))
+            if (Settings.ArtistBlacklist == null || Settings.ArtistBlacklist.Count == 0)
                 return;
 
-            Blacklist = Settings.ArtistBlacklist.Split(new[] { Splitter }, StringSplitOptions.None);
-
-            foreach (string s in Blacklist)
-                if (!string.IsNullOrEmpty(s))
-                    ListView_Blacklist.Items.Add(s);
+            foreach (string s in Settings.ArtistBlacklist.Where(s => !string.IsNullOrEmpty(s)))
+                ListView_Blacklist.Items.Add(s);
         }
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
@@ -129,28 +124,23 @@ namespace Songify_Slim
         {
             //Artist Blacklist
             string s = "";
+            List<string> tempList = new List<string>();
             if (ListView_Blacklist.Items.Count > 0)
             {
-                foreach (object item in ListView_Blacklist.Items)
-                    if ((string)item != "")
-                        s += item + Splitter;
-                s = s.Remove(s.Length - Splitter.Length);
+                tempList.AddRange(from object item in ListView_Blacklist.Items where (string)item != "" select (string)item);
             }
-
-            Settings.ArtistBlacklist = s;
+            Settings.ArtistBlacklist = tempList;
 
             //User Blacklist
-            s = "";
+            tempList = new List<string>();
             if (ListView_UserBlacklist.Items.Count > 0)
             {
-                foreach (object item in ListView_UserBlacklist.Items)
-                    if ((string)item != "")
-                        s += item + Splitter;
-                s = s.Remove(s.Length - Splitter.Length);
+                tempList.AddRange(from object item in ListView_UserBlacklist.Items where (string)item != "" select (string)item);
+
             }
-            Settings.UserBlacklist = s;
+            Settings.UserBlacklist = tempList;
             ConfigHandler.WriteAllConfig(Settings.Export());
-            Settings.Export(); 
+            Settings.Export();
             LoadBlacklists();
         }
 
@@ -165,7 +155,7 @@ namespace Songify_Slim
                         new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
-                        Settings.ArtistBlacklist = "";
+                        Settings.ArtistBlacklist.Clear();
                         ListView_Blacklist.Items.Clear();
                     }
 
@@ -176,7 +166,7 @@ namespace Songify_Slim
                         new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
-                        Settings.UserBlacklist = "";
+                        Settings.UserBlacklist.Clear();
                         ListView_UserBlacklist.Items.Clear();
                     }
 

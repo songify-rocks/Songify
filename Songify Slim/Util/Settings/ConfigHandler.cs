@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -261,6 +262,7 @@ namespace Songify_Slim
                     return;
                 }
 
+                Config config = new Config();
                 // reading the XML file, attributes get saved in Settings
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);
@@ -269,87 +271,76 @@ namespace Songify_Slim
                 {
                     if (node.Name != "Config") continue;
                     //Create a new Config object and set the attributes
-                    Config config = new Config();
-                    if (node.Attributes != null)
-                    {
-                        int.TryParse(
-                            node.Attributes["twsrmaxreq"] != null
-                                ? node.Attributes["twsrmaxreq"].InnerText
-                                : Settings.TwSrMaxReq.ToString(), out int twsrmaxreq);
-                        int.TryParse(
-                            node.Attributes["twsrcooldown"] != null
-                                ? node.Attributes["twsrcooldown"].InnerText
-                                : Settings.TwSrCooldown.ToString(), out int twsrcooldown);
 
-                        config.AccessToken = node.Attributes["accesstoken"] != null ? node.Attributes["accesstoken"].Value : Settings.SpotifyAccessToken;
-                        config.AnnounceInChat = ToBoolean(node.Attributes["announceinchat"] != null ? node.Attributes["announceinchat"].Value : Settings.AnnounceInChat.ToString());
-                        config.AppendSpaces = ToBoolean(node.Attributes["spacesenabled"] != null ? node.Attributes["spacesenabled"].Value : Settings.AppendSpaces.ToString());
-                        config.ArtistBlacklist = node.Attributes["artistblacklist"] != null ? node.Attributes["artistblacklist"].Value : Settings.ArtistBlacklist;
-                        config.AutoClearQueue = ToBoolean(node.Attributes["autoclearqueue"] != null ? node.Attributes["autoclearqueue"].Value : Settings.AutoClearQueue.ToString());
-                        config.Autostart = ToBoolean(node.Attributes["autostart"] != null ? node.Attributes["autostart"].Value : Settings.Autostart.ToString());
-                        config.BotCmdNext = ToBoolean(node.Attributes["botcmdnext"] != null ? node.Attributes["botcmdnext"].Value : Settings.BotCmdNext.ToString());
-                        config.BotCmdPos = ToBoolean(node.Attributes["botcmdpos"] != null ? node.Attributes["botcmdpos"].Value : Settings.BotCmdPos.ToString());
-                        config.BotCmdSkip = ToBoolean(node.Attributes["botcmdskip"] != null ? node.Attributes["botcmdskip"].Value : Settings.BotCmdSkip.ToString());
-                        config.BotCmdSkipVote = ToBoolean(node.Attributes["botcmdskipvote"] != null ? node.Attributes["botcmdskipvote"].Value : Settings.BotCmdSkipVote.ToString());
-                        config.BotCmdSkipVoteCount = ToInt32(node.Attributes["botcmdskipvotecount"] != null ? node.Attributes["botcmdskipvotecount"].Value : Settings.BotCmdSkipVoteCount.ToString());
-                        config.BotCmdSong = ToBoolean(node.Attributes["botcmdsong"] != null ? node.Attributes["botcmdsong"].Value : Settings.BotCmdSong.ToString());
-                        config.BotRespBlacklist = node.Attributes["botrespblacklist"] != null ? node.Attributes["botrespblacklist"].Value : Settings.ClientSecret;
-                        config.BotRespError = node.Attributes["botresperror"] != null ? node.Attributes["botresperror"].Value : Settings.BotRespError;
-                        config.BotRespIsInQueue = node.Attributes["botrespisinqueue"] != null ? node.Attributes["botrespisinqueue"].Value : Settings.BotRespIsInQueue;
-                        config.BotRespLength = node.Attributes["botresplength"] != null ? node.Attributes["botresplength"].Value : Settings.BotRespLength;
-                        config.BotRespMaxReq = node.Attributes["botrespmaxreq"] != null ? node.Attributes["botrespmaxreq"].Value : Settings.BotRespMaxReq;
-                        config.BotRespModSkip = node.Attributes["botrespmodskip"] != null ? node.Attributes["botrespmodskip"].Value : Settings.BotRespModSkip;
-                        config.BotRespNoSong = node.Attributes["botrespnosong"] != null ? node.Attributes["botrespnosong"].Value : Settings.BotRespNoSong;
-                        config.BotRespSuccess = node.Attributes["botrespsuccess"] != null ? node.Attributes["botrespsuccess"].Value : Settings.BotRespSuccess;
-                        config.BotRespVoteSkip = node.Attributes["botrespvoteskip"] != null ? node.Attributes["botrespvoteskip"].Value : Settings.BotRespVoteSkip;
-                        config.ClientId = node.Attributes["clientid"] != null ? node.Attributes["clientid"].Value : Settings.ClientId;
-                        config.ClientSecret = node.Attributes["clientsecret"] != null ? node.Attributes["clientsecret"].Value : Settings.ClientSecret;
-                        config.Color = node.Attributes["color"] != null ? node.Attributes["color"].Value : Settings.Color;
-                        config.CustomPauseText = node.Attributes["customPauseText"] != null ? node.Attributes["customPauseText"].Value : Settings.CustomPauseText;
-                        config.CustomPauseTextEnabled = ToBoolean(node.Attributes["customPause"] != null ? node.Attributes["customPause"].Value : Settings.CustomPauseTextEnabled.ToString());
-                        config.Directory = node.Attributes["directory"] != null ? node.Attributes["directory"].Value : Settings.Directory;
-                        config.DownloadCover = ToBoolean(node.Attributes["downloadcover"] != null ? node.Attributes["downloadcover"].Value : Settings.DownloadCover.ToString());
-                        config.Language = node.Attributes["lang"] != null ? node.Attributes["lang"].Value : Settings.Language;
-                        config.MaxSongLength = ToInt32(node.Attributes["maxsonglength"] != null ? node.Attributes["maxsonglength"].Value : Settings.MaxSongLength.ToString(CultureInfo.CurrentCulture));
-                        config.MsgLoggingEnabled = ToBoolean(node.Attributes["msglogging"] != null ? node.Attributes["msglogging"].Value : Settings.MsgLoggingEnabled.ToString());
-                        config.OpenQueueOnStartup = ToBoolean(node.Attributes["openqueueonstartup"] != null ? node.Attributes["openqueueonstartup"].Value : Settings.OpenQueueOnStartup.ToString());
-                        config.OutputString = node.Attributes["outputString"] != null ? node.Attributes["outputString"].Value : Settings.OutputString;
-                        config.OutputString2 = node.Attributes["outputString2"] != null ? node.Attributes["outputString2"].Value : Settings.OutputString2;
-                        config.PosX = ToInt32(node.Attributes["posx"] != null ? node.Attributes["posx"].Value : Settings.PosX.ToString(CultureInfo.CurrentCulture));
-                        config.PosY = ToInt32(node.Attributes["posy"] != null ? node.Attributes["posy"].Value : Settings.PosY.ToString(CultureInfo.CurrentCulture));
-                        config.RefreshToken = node.Attributes["refreshtoken"] != null ? node.Attributes["refreshtoken"].Value : Settings.SpotifyRefreshToken;
-                        config.SaveHistory = ToBoolean(node.Attributes["savehistory"] != null ? node.Attributes["savehistory"].Value : Settings.SaveHistory.ToString());
-                        config.SpaceCount = ToInt32(node.Attributes["Spacecount"] != null ? node.Attributes["Spacecount"].Value : Settings.SpaceCount.ToString(CultureInfo.CurrentCulture));
-                        config.SplitOutput = ToBoolean(node.Attributes["splitoutput"] != null ? node.Attributes["splitoutput"].Value : Settings.SplitOutput.ToString());
-                        config.SpotifyDeviceId = node.Attributes["spotifydeviceid"] != null ? node.Attributes["spotifydeviceid"].Value : Settings.SpotifyDeviceId;
-                        config.Systray = ToBoolean(node.Attributes["systray"] != null ? node.Attributes["systray"].Value : Settings.Systray.ToString());
-                        config.Telemetry = ToBoolean(node.Attributes["telemetry"] != null ? node.Attributes["telemetry"].Value : Settings.Telemetry.ToString());
-                        config.Theme = node.Attributes["theme"] != null ? node.Attributes["theme"].Value : Settings.Theme;
-                        config.TwAcc = node.Attributes["twacc"] != null ? node.Attributes["twacc"].Value : Settings.TwAcc;
-                        config.TwAutoConnect = ToBoolean(node.Attributes["twautoconnect"] != null ? node.Attributes["twautoconnect"].Value : Settings.TwAutoConnect.ToString());
-                        config.TwChannel = node.Attributes["twchannel"] != null ? node.Attributes["twchannel"].Value : Settings.TwChannel;
-                        config.TwOAuth = node.Attributes["twoauth"] != null ? node.Attributes["twoauth"].Value : Settings.TwOAuth;
-                        config.TwRewardId = node.Attributes["twrewardid"] != null ? node.Attributes["twrewardid"].Value : Settings.TwRewardId;
-                        config.TwSrCommand = ToBoolean(node.Attributes["twsrcommand"] != null ? node.Attributes["twsrcommand"].Value : Settings.TwSrCommand.ToString());
-                        config.TwSrCooldown = twsrcooldown;
-                        config.TwSrMaxReq = twsrmaxreq;
-                        config.TwSrReward = ToBoolean(node.Attributes["twsrreward"] != null ? node.Attributes["twsrreward"].Value : Settings.TwSrReward.ToString());
-                        config.TwSrUserLevel = ToInt32(node.Attributes["twsruserlevel"] != null ? node.Attributes["twsruserlevel"].Value : Settings.TwSrUserLevel.ToString(CultureInfo.CurrentCulture));
-                        config.Upload = ToBoolean(node.Attributes["uploadSonginfo"] != null ? node.Attributes["uploadSonginfo"].Value : Settings.Upload.ToString());
-                        config.UploadHistory = ToBoolean(node.Attributes["uploadhistory"] != null ? node.Attributes["uploadhistory"].Value : Settings.UploadHistory.ToString());
-                        config.UseOwnApp = ToBoolean(node.Attributes["useownapp"] != null ? node.Attributes["useownapp"].Value : Settings.UseOwnApp.ToString());
-                        config.UserBlacklist = node.Attributes["userblacklist"] != null ? node.Attributes["userblacklist"].Value : Settings.UserBlacklist;
-                        config.Uuid = node.Attributes["uuid"] != null ? node.Attributes["uuid"].Value : Settings.Uuid;
-                        config.TwSrMaxReqEveryone = ToInt32(node.Attributes["twsrmaxreqeveryone"] != null ? node.Attributes["twsrmaxreqeveryone"].Value : Settings.TwSrMaxReqEveryone.ToString(CultureInfo.CurrentCulture));
-                        config.TwSrMaxReqVip = ToInt32(node.Attributes["twsrmaxreqvip"] != null ? node.Attributes["twsrmaxreqvip"].Value : Settings.TwSrMaxReqVip.ToString(CultureInfo.CurrentCulture));
-                        config.TwSrMaxReqSubscriber = ToInt32(node.Attributes["twsrmaxreqsubscriber"] != null ? node.Attributes["twsrmaxreqsubscriber"].Value : Settings.TwSrMaxReqSubscriber.ToString(CultureInfo.CurrentCulture));
-                        config.TwSrMaxReqVip = ToInt32(node.Attributes["twsrmaxreqvip"] != null ? node.Attributes["twsrmaxreqvip"].Value : Settings.TwSrMaxReqVip.ToString(CultureInfo.CurrentCulture));
-                        config.TwSrMaxReqModerator = ToInt32(node.Attributes["twsrmaxreqmoderator"] != null ? node.Attributes["twsrmaxreqmoderator"].Value : Settings.TwSrMaxReqModerator.ToString(CultureInfo.CurrentCulture));
-                        config.TwSrMaxReqBroadcaster = ToInt32(node.Attributes["twsrmaxreqbroadcaster"] != null ? node.Attributes["twsrmaxreqbroadcaster"].Value : Settings.TwSrMaxReqBroadcaster.ToString(CultureInfo.CurrentCulture));
-                    }
-
-                    ConvertConfig(config);
+                    if (node.Attributes == null) continue;
+                    config.AccessToken = node.Attributes["accesstoken"] != null ? node.Attributes["accesstoken"].Value : "";
+                    config.AnnounceInChat = node.Attributes["announceinchat"] != null && ToBoolean(node.Attributes["announceinchat"].Value);
+                    config.AppendSpaces = node.Attributes["spacesenabled"] != null && ToBoolean(node.Attributes["spacesenabled"].Value);
+                    config.ArtistBlacklist = node.Attributes["artistblacklist"] != null ? node.Attributes["artistblacklist"].Value.Split(new[] { "|||" }, StringSplitOptions.None).ToList() : new List<string>();
+                    config.AutoClearQueue = node.Attributes["autoclearqueue"] != null && ToBoolean(node.Attributes["autoclearqueue"].Value);
+                    config.Autostart = node.Attributes["autostart"] != null && ToBoolean(node.Attributes["autostart"].Value);
+                    config.BotCmdNext = node.Attributes["botcmdnext"] != null && ToBoolean(node.Attributes["botcmdnext"].Value);
+                    config.BotCmdPos = node.Attributes["botcmdpos"] != null && ToBoolean(node.Attributes["botcmdpos"].Value);
+                    config.BotCmdSkip = node.Attributes["botcmdskip"] != null && ToBoolean(node.Attributes["botcmdskip"].Value);
+                    config.BotCmdSkipVote = node.Attributes["botcmdskipvote"] != null && ToBoolean(node.Attributes["botcmdskipvote"].Value);
+                    config.BotCmdSkipVoteCount = node.Attributes["botcmdskipvotecount"] != null ? ToInt32(node.Attributes["botcmdskipvotecount"].Value) : 5;
+                    config.BotCmdSong = node.Attributes["botcmdsong"] != null && ToBoolean(node.Attributes["botcmdsong"].Value);
+                    config.BotRespBlacklist = node.Attributes["botrespblacklist"] != null ? node.Attributes["botrespblacklist"].Value : "@{user} the Artist: {artist} has been blacklisted by the broadcaster.";
+                    config.BotRespError = node.Attributes["botresperror"] != null ? node.Attributes["botresperror"].Value : "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
+                    config.BotRespIsInQueue = node.Attributes["botrespisinqueue"] != null ? node.Attributes["botrespisinqueue"].Value : "@{user} this song is already in the queue.";
+                    config.BotRespLength = node.Attributes["botresplength"] != null ? node.Attributes["botresplength"].Value : "@{user} the song you requested exceeded the maximum song length ({maxlength}).";
+                    config.BotRespMaxReq = node.Attributes["botrespmaxreq"] != null ? node.Attributes["botrespmaxreq"].Value : "@{user} maximum number of songs in queue reached ({maxreq}).";
+                    config.BotRespModSkip = node.Attributes["botrespmodskip"] != null ? node.Attributes["botrespmodskip"].Value : "@{user} skipped the current song.";
+                    config.BotRespNoSong = node.Attributes["botrespnosong"] != null ? node.Attributes["botrespnosong"].Value : "@{user} please specify a song to add to the queue.";
+                    config.BotRespSuccess = node.Attributes["botrespsuccess"] != null ? node.Attributes["botrespsuccess"].Value : "{artist} - {title} requested by @{user} has been added to the queue.";
+                    config.BotRespVoteSkip = node.Attributes["botrespvoteskip"] != null ? node.Attributes["botrespvoteskip"].Value : "@{user} voted to skip the current song. ({votes})";
+                    config.ClientId = node.Attributes["clientid"] != null ? node.Attributes["clientid"].Value : "";
+                    config.ClientSecret = node.Attributes["clientsecret"] != null ? node.Attributes["clientsecret"].Value : "";
+                    config.Color = node.Attributes["color"] != null ? node.Attributes["color"].Value : "Blue";
+                    config.CustomPauseText = node.Attributes["customPauseText"] != null ? node.Attributes["customPauseText"].Value : "";
+                    config.CustomPauseTextEnabled = node.Attributes["customPause"] != null && ToBoolean(node.Attributes["customPause"].Value);
+                    config.Directory = node.Attributes["directory"] != null ? node.Attributes["directory"].Value : Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+                    config.DownloadCover = node.Attributes["downloadcover"] != null && ToBoolean(node.Attributes["downloadcover"].Value);
+                    config.Language = node.Attributes["lang"] != null ? node.Attributes["lang"].Value : "en";
+                    config.MaxSongLength = node.Attributes["maxsonglength"] != null ? ToInt32(node.Attributes["maxsonglength"].Value) : 10;
+                    config.MsgLoggingEnabled = node.Attributes["msglogging"] != null && ToBoolean(node.Attributes["msglogging"].Value);
+                    config.OpenQueueOnStartup = node.Attributes["openqueueonstartup"] != null && ToBoolean(node.Attributes["openqueueonstartup"].Value);
+                    config.OutputString = node.Attributes["outputString"] != null ? node.Attributes["outputString"].Value : "{artist} - {title} {extra}";
+                    config.OutputString2 = node.Attributes["outputString2"] != null ? node.Attributes["outputString2"].Value : "{artist} - {title} {extra}";
+                    config.PosX = node.Attributes["posx"] != null ? ToInt32(node.Attributes["posx"].Value) : 100;
+                    config.PosY = node.Attributes["posy"] != null ? ToInt32(node.Attributes["posy"].Value) : 100;
+                    config.RefreshToken = node.Attributes["refreshtoken"] != null ? node.Attributes["refreshtoken"].Value : "";
+                    config.SaveHistory = node.Attributes["savehistory"] != null && ToBoolean(node.Attributes["savehistory"].Value);
+                    config.SpaceCount = node.Attributes["Spacecount"] != null ? ToInt32(node.Attributes["Spacecount"].Value) : 10;
+                    config.SplitOutput = node.Attributes["splitoutput"] != null && ToBoolean(node.Attributes["splitoutput"].Value);
+                    config.SpotifyDeviceId = node.Attributes["spotifydeviceid"] != null ? node.Attributes["spotifydeviceid"].Value : "";
+                    config.Systray = node.Attributes["systray"] != null && ToBoolean(node.Attributes["systray"].Value);
+                    config.Telemetry = node.Attributes["telemetry"] != null && ToBoolean(node.Attributes["telemetry"].Value);
+                    config.Theme = node.Attributes["theme"] != null ? node.Attributes["theme"].Value : "Dark";
+                    config.TwAcc = node.Attributes["twacc"] != null ? node.Attributes["twacc"].Value : "";
+                    config.TwAutoConnect = node.Attributes["twautoconnect"] != null && ToBoolean(node.Attributes["twautoconnect"].Value);
+                    config.TwChannel = node.Attributes["twchannel"] != null ? node.Attributes["twchannel"].Value : "";
+                    config.TwOAuth = node.Attributes["twoauth"] != null ? node.Attributes["twoauth"].Value : "";
+                    config.TwRewardId = node.Attributes["twrewardid"] != null ? node.Attributes["twrewardid"].Value : "";
+                    config.TwSrCommand = node.Attributes["twsrcommand"] != null && ToBoolean(node.Attributes["twsrcommand"].Value);
+                    config.TwSrCooldown = node.Attributes["twsrcooldown"] != null ? ToInt32(node.Attributes["twsrcooldown"].Value) : 5;
+                    config.TwSrMaxReq = node.Attributes["twsrmaxreq"] != null ? ToInt32(node.Attributes["twsrmaxreq"].Value) : 1;
+                    config.TwSrMaxReqBroadcaster = node.Attributes["twsrmaxreqbroadcaster"] != null ? ToInt32(node.Attributes["twsrmaxreqbroadcaster"].Value) : 1;
+                    config.TwSrMaxReqEveryone = node.Attributes["twsrmaxreqeveryone"] != null ? ToInt32(node.Attributes["twsrmaxreqeveryone"].Value) : 1;
+                    config.TwSrMaxReqModerator = node.Attributes["twsrmaxreqmoderator"] != null ? ToInt32(node.Attributes["twsrmaxreqmoderator"].Value) : 1;
+                    config.TwSrMaxReqSubscriber = node.Attributes["twsrmaxreqsubscriber"] != null ? ToInt32(node.Attributes["twsrmaxreqsubscriber"].Value) : 1;
+                    config.TwSrMaxReqVip = node.Attributes["twsrmaxreqvip"] != null ? ToInt32(node.Attributes["twsrmaxreqvip"].Value) : 1;
+                    config.TwSrReward = node.Attributes["twsrreward"] != null && ToBoolean(node.Attributes["twsrreward"].Value);
+                    config.TwSrUserLevel = node.Attributes["twsruserlevel"] != null ? ToInt32(node.Attributes["twsruserlevel"].Value) : 1;
+                    config.Upload = node.Attributes["uploadSonginfo"] != null && ToBoolean(node.Attributes["uploadSonginfo"].Value);
+                    config.UploadHistory = node.Attributes["uploadhistory"] != null && ToBoolean(node.Attributes["uploadhistory"].Value);
+                    config.UseOwnApp = node.Attributes["useownapp"] != null && ToBoolean(node.Attributes["useownapp"].Value);
+                    config.UserBlacklist = node.Attributes["userblacklist"] != null ? node.Attributes["userblacklist"].Value.Split(new[] { "|||" }, StringSplitOptions.None).ToList() : new List<string>();
+                    config.Uuid = node.Attributes["uuid"] != null ? node.Attributes["uuid"].Value : "";
                 }
+
+                ConvertConfig(config);
+
             }
             catch (Exception ex)
             {
@@ -566,7 +557,7 @@ namespace Songify_Slim
         public int TwSrUserLevel { get; set; }
         public string TwRewardId { get; set; }
         public int[] RefundConditons { get; set; }
-        public string ArtistBlacklist { get; set; }
+        public List<string> ArtistBlacklist { get; set; }
         public string Color { get; set; }
         public string CustomPauseText { get; set; }
         public string Directory { get; set; }
@@ -574,7 +565,7 @@ namespace Songify_Slim
         public string OutputString { get; set; }
         public string OutputString2 { get; set; }
         public string Theme { get; set; }
-        public string UserBlacklist { get; set; }
+        public List<string> UserBlacklist { get; set; }
         public string Uuid { get; set; }
         public int WebServerPort { get; set; }
         public bool AutoStartWebServer { get; set; }
@@ -627,7 +618,7 @@ namespace Songify_Slim
         public int TwSrMaxReqVip { get; set; }
         public int TwSrUserLevel { get; set; }
         public string AccessToken { get; set; }
-        public string ArtistBlacklist { get; set; }
+        public List<string> ArtistBlacklist { get; set; }
 
         public string BotRespBlacklist { get; set; }
         public string BotRespError { get; set; }
@@ -655,7 +646,7 @@ namespace Songify_Slim
         public string TwChannel { get; set; }
         public string TwOAuth { get; set; }
         public string TwRewardId { get; set; }
-        public string UserBlacklist { get; set; }
+        public List<string> UserBlacklist { get; set; }
         public string Uuid { get; set; }
     }
 }

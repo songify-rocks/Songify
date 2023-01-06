@@ -117,7 +117,6 @@ namespace Songify_Slim
             TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
-
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? "Stop WebServer" : "Start WebServer";
 
 

@@ -154,7 +154,7 @@ namespace Songify_Slim.Util.Songify
 
             userId = TokenCheck.UserId;
 
-            var users = await _twitchApi.Helix.Users.GetUsersAsync(null, new List<string> { "Inzaniity" }, Settings.Settings.TwitchAccessToken);
+            var users = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
 
             User user = users.Users.FirstOrDefault();
             if (user == null)
@@ -817,10 +817,8 @@ namespace Songify_Slim.Util.Songify
 
         private static bool IsUserBlocked(string displayName)
         {
-            string[] userBlacklist = Settings.Settings.UserBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
-
             // checks if one of the artist in the requested song is on the blacklist
-            return userBlacklist.Any(s => s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
+            return Settings.Settings.UserBlacklist.Any(s => s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
         }
 
         private static void StartCooldown()
@@ -844,7 +842,6 @@ namespace Songify_Slim.Util.Songify
         private static void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings
-            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
             string response;
             // gets the track information using spotify api
             FullTrack track = ApiHandler.GetTrack(trackId);
@@ -862,21 +859,20 @@ namespace Songify_Slim.Util.Songify
                     artists += track.Artists[i].Name;
 
             // checks if one of the artist in the requested song is on the blacklist
-            foreach (string s in blacklist)
-                if (Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1)
-                {
-                    // if artist is on blacklist, skip and inform requester
-                    response = Settings.Settings.BotRespBlacklist;
-                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                    response = response.Replace("{artist}", s);
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", "");
-                    response = response.Replace("{errormsg}", "");
-                    response = CleanFormatString(response);
+            foreach (string s in Settings.Settings.ArtistBlacklist.Where(s => Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
+            {
+                // if artist is on blacklist, skip and inform requester
+                response = Settings.Settings.BotRespBlacklist;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", s);
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
 
-                    Client.SendMessage(e.ChatMessage.Channel, response);
-                    return;
-                }
+                Client.SendMessage(e.ChatMessage.Channel, response);
+                return;
+            }
 
             // checks if song length is longer or equal to 10 minutes
             if (track.DurationMs >= TimeSpan.FromMinutes(Settings.Settings.MaxSongLength).TotalMilliseconds)
@@ -984,7 +980,6 @@ namespace Songify_Slim.Util.Songify
         private static ReturnObject AddSong2(string trackId, string channel, string username)
         {
             // loads the blacklist from settings
-            string[] blacklist = Settings.Settings.ArtistBlacklist.Split(new[] { "|||" }, StringSplitOptions.None);
             string response;
             // gets the track information using spotify api
             FullTrack track = ApiHandler.GetTrack(trackId);
@@ -1007,25 +1002,24 @@ namespace Songify_Slim.Util.Songify
                     artists += track.Artists[i].Name;
 
             // checks if one of the artist in the requested song is on the blacklist
-            foreach (string s in blacklist)
-                if (Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1)
-                {
-                    // if artist is on blacklist, skip and inform requester
-                    response = Settings.Settings.BotRespBlacklist;
-                    response = response.Replace("{user}", username);
-                    response = response.Replace("{artist}", s);
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", "");
-                    response = response.Replace("{errormsg}", "");
-                    response = CleanFormatString(response);
+            foreach (string s in Settings.Settings.ArtistBlacklist.Where(s => Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
+            {
+                // if artist is on blacklist, skip and inform requester
+                response = Settings.Settings.BotRespBlacklist;
+                response = response.Replace("{user}", username);
+                response = response.Replace("{artist}", s);
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
 
-                    return new ReturnObject
-                    {
-                        Msg = response,
-                        Success = false,
-                        Refundcondition = 4
-                    };
-                }
+                return new ReturnObject
+                {
+                    Msg = response,
+                    Success = false,
+                    Refundcondition = 4
+                };
+            }
 
             // checks if song length is longer or equal to 10 minutes
             if (track.DurationMs >= TimeSpan.FromMinutes(Settings.Settings.MaxSongLength).TotalMilliseconds)
