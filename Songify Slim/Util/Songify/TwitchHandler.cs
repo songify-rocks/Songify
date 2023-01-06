@@ -3,36 +3,24 @@ using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
-using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
-using System.Windows.Threading;
 using MahApps.Metro.IconPacks;
-using NHttp;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
-using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
-using TwitchLib.Api.Services;
 using TwitchLib.Client;
-using TwitchLib.Client.Enums;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
@@ -40,12 +28,9 @@ using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
-using Unosquare.Labs.EmbedIO;
-using Unosquare.Swan;
 using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Window = System.Windows.Window;
 
 namespace Songify_Slim.Util.Songify
@@ -646,148 +631,138 @@ namespace Songify_Slim.Util.Songify
                 StartCooldown();
             }
 
-            switch (e.ChatMessage.Message)
+            if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
             {
-                case "!skip":
+                if (_skipCooldown)
+                    return;
+
+                int count = 0;
+                string name = "";
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    int? reqListCount = GlobalObjects.ReqList.Count;
+                    if (reqListCount != null)
+                        count = (int)reqListCount;
+                    if (count > 0)
+                        name = GlobalObjects.ReqList.First().Requester;
+                });
+
+                if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
+                    (count > 0 && name == e.ChatMessage.DisplayName))
+                {
+                    string msg = Settings.Settings.BotRespModSkip;
+                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    ErrorResponse response = await ApiHandler.SkipSong();
+                    if (response.Error != null)
                     {
-                        if (!Settings.Settings.BotCmdSkip)
-                            return;
-
-                        if (_skipCooldown)
-                            return;
-
-                        int count = 0;
-                        string name = "";
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                           {
-                               int? reqListCount = GlobalObjects.ReqList.Count;
-                               if (reqListCount != null)
-                                   count = (int)reqListCount;
-                               if (count > 0)
-                                   name = GlobalObjects.ReqList.First().Requester;
-                           });
-
-                        if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster || (count > 0 && name == e.ChatMessage.DisplayName))
-                        {
-                            string msg = Settings.Settings.BotRespModSkip;
-                            msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                            ErrorResponse response = await ApiHandler.SkipSong();
-                            if (response.Error != null)
-                            {
-                                Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
-                            }
-                            else
-                            {
-                                Client.SendMessage(e.ChatMessage.Channel, msg);
-                                _skipCooldown = true;
-                                SkipCooldownTimer.Start();
-                            }
-                        }
-                        break;
+                        Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
                     }
-                case "!voteskip":
+                    else
                     {
-                        if (!Settings.Settings.BotCmdSkipVote)
-                            return;
-                        if (_skipCooldown)
-                            return;
-                        //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
-                        if (!_skipVotes.Contains(e.ChatMessage.DisplayName))
-                        {
-                            _skipVotes.Add(e.ChatMessage.DisplayName);
-
-                            string msg = Settings.Settings.BotRespVoteSkip;
-                            msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                            msg = msg.Replace("{votes}", $"{_skipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
-
-                            Client.SendMessage(e.ChatMessage.Channel, msg);
-
-                            if (_skipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
-                            {
-                                ErrorResponse response = await ApiHandler.SkipSong();
-                                if (response.Error != null)
-                                {
-                                    Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
-                                }
-                                else
-                                {
-                                    Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
-                                    _skipCooldown = true;
-                                    SkipCooldownTimer.Start();
-                                }
-                                _skipVotes.Clear();
-                                _skipCooldown = true;
-                                SkipCooldownTimer.Start();
-                            }
-                        }
-                        break;
+                        Client.SendMessage(e.ChatMessage.Channel, msg);
+                        _skipCooldown = true;
+                        SkipCooldownTimer.Start();
                     }
-                case "!song" when Settings.Settings.BotCmdSong:
+                }
+            }
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" && Settings.Settings.BotCmdSkipVote)
+            {
+                if (_skipCooldown)
+                    return;
+                //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
+                if (!_skipVotes.Contains(e.ChatMessage.DisplayName))
+                {
+                    _skipVotes.Add(e.ChatMessage.DisplayName);
+
+                    string msg = Settings.Settings.BotRespVoteSkip;
+                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    msg = msg.Replace("{votes}", $"{_skipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
+
+                    Client.SendMessage(e.ChatMessage.Channel, msg);
+
+                    if (_skipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                     {
-                        string currsong = GetCurrentSong();
-                        Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
-                        break;
-                    }
-                case "!pos" when Settings.Settings.BotCmdPos:
-                    {
-                        List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
-                        string output = "";
-                        if (queueItems.Count != 0)
+                        ErrorResponse response = await ApiHandler.SkipSong();
+                        if (response.Error != null)
                         {
-                            string response = Settings.Settings.BotRespPos;
-                            if (response.Contains("{songs}") && response.Contains("{/songs}"))
-                            {
-                                //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                                string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
-                                string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
-                                string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
-                                string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
-
-                                string tmp = "";
-                                for (int i = 0; i < queueItems.Count; i++)
-                                {
-                                    QueueItem item = queueItems[i];
-                                    tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
-                                    //If the song is the last one, don't add a newline
-                                    if (i != queueItems.Count - 1)
-                                        tmp += " | ";
-                                }
-                                between = tmp;
-                                // Combine the 3 parts into one string
-                                output = before + between + after;
-                                Client.SendMessage(e.ChatMessage.Channel, $"{output}");
-                            }
-
+                            Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
                         }
                         else
                         {
-                            Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
+                            Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+                            _skipCooldown = true;
+                            SkipCooldownTimer.Start();
                         }
 
-                        break;
+                        _skipVotes.Clear();
+                        _skipCooldown = true;
+                        SkipCooldownTimer.Start();
                     }
-                case "!next" when Settings.Settings.BotCmdNext:
+                }
+            }
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSongTrigger}" && Settings.Settings.BotCmdSong)
+            {
+                string currsong = GetCurrentSong();
+                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
+            }
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
+            {
+                List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
+                string output = "";
+                if (queueItems.Count != 0)
+                {
+                    string response = Settings.Settings.BotRespPos;
+                    if (response.Contains("{songs}") && response.Contains("{/songs}"))
                     {
-                        List<QueueItem> queueItems = GetQueueItems();
-                        string response = Settings.Settings.BotRespNext;
-                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                        response = response.Replace("{song}", queueItems != null ? queueItems[0].Title : "there is no song next up.");
-                        Client.SendMessage(e.ChatMessage.Channel, response);
-                        break;
-                    }
-                case "!remove":
-                    {
-                        string tmp = "";
-                        RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
-                            o.Requester == e.ChatMessage.DisplayName);
-                        tmp = $"{reqObj.Artists} - {reqObj.Title}";
-                        GlobalObjects.SkipList.Add(reqObj);
-                        GlobalObjects.ReqList.Remove(reqObj);
+                        //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
+                        string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
+                        string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
+                        string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
+                        string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
 
-                        Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
-                        break;
+                        string tmp = "";
+                        for (int i = 0; i < queueItems.Count; i++)
+                        {
+                            QueueItem item = queueItems[i];
+                            tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
+                            //If the song is the last one, don't add a newline
+                            if (i != queueItems.Count - 1)
+                                tmp += " | ";
+                        }
+
+                        between = tmp;
+                        // Combine the 3 parts into one string
+                        output = before + between + after;
+                        Client.SendMessage(e.ChatMessage.Channel, $"{output}");
                     }
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel,
+                        $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
+                }
+            }
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
+            {
+                List<QueueItem> queueItems = GetQueueItems();
+                string response = Settings.Settings.BotRespNext;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{song}",
+                    queueItems != null ? queueItems[0].Title : "there is no song next up.");
+                Client.SendMessage(e.ChatMessage.Channel, response);
+            }
+            else if (e.ChatMessage.Message == "!remove")
+            {
+                string tmp = "";
+                RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
+                    o.Requester == e.ChatMessage.DisplayName);
+                tmp = $"{reqObj.Artists} - {reqObj.Title}";
+                GlobalObjects.SkipList.Add(reqObj);
+                GlobalObjects.ReqList.Remove(reqObj);
+
+                Client.SendMessage(e.ChatMessage.Channel,
+                    $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
         }
 

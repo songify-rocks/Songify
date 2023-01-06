@@ -521,6 +521,11 @@ namespace Songify_Slim
         public string BotRespPos { get; set; }
         public string BotRespNext { get; set; }
         public bool OnlyWorkWhenLive { get; set; }
+        public string BotCmdPosTrigger { get; set; }
+        public string BotCmdSongTrigger { get; set; }
+        public string BotCmdNextTrigger { get; set; }
+        public string BotCmdSkipTrigger { get; set; }
+        public string BotCmdVoteskipTrigger { get; set; }
     }
 
     public class AppConfig

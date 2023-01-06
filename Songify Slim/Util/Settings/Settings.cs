@@ -478,6 +478,70 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string WebUserAgent => GetWebua();
+        public static string BotCmdPosTrigger { get => GetCmdPosTrigger(); set => SetCmdPosTrigger(value); }
+        public static string BotCmdSongTrigger { get => GetCmdSongTrigger(); set => SetCmdSongTrigger(value); }
+        public static string BotCmdNextTrigger { get => GetCmdNextTrigger(); set => SetCmdNextTrigger(value); }
+
+        private static void SetCmdNextTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdNextTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdNextTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdNextTrigger;
+        }
+
+        private static void SetCmdSkipTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdSkipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdSkipTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdSkipTrigger;
+        }
+
+        private static void SetCmdVoteskipTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdVoteskipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdVoteskipTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdVoteskipTrigger;
+        }
+
+
+
+        public static string BotCmdSkipTrigger { get => GetCmdSkipTrigger(); set => SetCmdSkipTrigger(value); }
+        public static string BotCmdVoteskipTrigger { get => GetCmdVoteskipTrigger(); set => SetCmdVoteskipTrigger(value); }
+
+
+        private static void SetCmdSongTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdSongTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdSongTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdSongTrigger;
+        }
+
+        private static void SetCmdPosTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdPosTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdPosTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdPosTrigger;
+        }
 
         public static Configuration Export()
         {
