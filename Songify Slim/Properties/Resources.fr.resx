@@ -275,7 +275,7 @@
     <value>Activer la journalisation des messages</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Activer SR (Commande (!ssr SpotifyURI))</value>
+    <value>Activer SR (Commande)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Activation du SR (canal des récompenses)</value>

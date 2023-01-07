@@ -93,13 +93,12 @@ namespace Songify_Slim
                         {
                             config.SpotifyCredentials = new SpotifyCredentials
                             {
-                                AccessToken = Settings.SpotifyAccessToken,
-                                RefreshToken = Settings.SpotifyRefreshToken,
-                                DeviceId = Settings.SpotifyDeviceId,
-                                ClientId = Settings.SpotifyDeviceId,
-                                ClientSecret = Settings.ClientSecret
+                                AccessToken = "",
+                                RefreshToken = "",
+                                DeviceId = "",
+                                ClientId = "",
+                                ClientSecret = "",
                             };
-
                         }
                         break;
                     case ConfigTypes.TwitchCredentials:
@@ -113,10 +112,10 @@ namespace Songify_Slim
                             config.TwitchCredentials = new TwitchCredentials
                             {
                                 AccessToken = "",
-                                ChannelName = Settings.TwChannel,
+                                ChannelName = "",
                                 ChannelId = "",
-                                BotAccountName = Settings.TwAcc,
-                                BotOAuthToken = Settings.TwOAuth
+                                BotAccountName = "",
+                                BotOAuthToken = "",
                             };
                         }
                         break;
@@ -124,28 +123,53 @@ namespace Songify_Slim
                         if (File.Exists($@"{path}\BotConfig.yaml"))
                         {
                             var p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
+                            config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
+                            config.BotConfig.BotRespError = string.IsNullOrWhiteSpace(config.BotConfig.BotRespError) ? "@{user} there was an error adding your Song to the queue. Error message: {errormsg}" : config.BotConfig.BotRespError;
+                            config.BotConfig.BotRespIsInQueue = string.IsNullOrWhiteSpace(config.BotConfig.BotRespIsInQueue) ? "@{user} this song is already in the queue." : config.BotConfig.BotRespIsInQueue;
+                            config.BotConfig.BotRespLength = string.IsNullOrWhiteSpace(config.BotConfig.BotRespLength) ? "@{user} the song you requested exceeded the maximum song length ({maxlength})." : config.BotConfig.BotRespLength;
+                            config.BotConfig.BotRespMaxReq = string.IsNullOrWhiteSpace(config.BotConfig.BotRespMaxReq) ? "@{user} maximum number of songs in queue reached ({maxreq})." : config.BotConfig.BotRespMaxReq;
+                            config.BotConfig.BotRespModSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespModSkip) ? "@{user} skipped the current song." : config.BotConfig.BotRespModSkip;
+                            config.BotConfig.BotRespNoSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNoSong) ? "@{user} please specify a song to add to the queue." : config.BotConfig.BotRespNoSong;
+                            config.BotConfig.BotRespSuccess = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSuccess) ? "{artist} - {title} requested by @{user} has been added to the queue." : config.BotConfig.BotRespSuccess;
+                            config.BotConfig.BotRespVoteSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespVoteSkip) ? "@{user} voted to skip the current song. ({votes})" : config.BotConfig.BotRespVoteSkip;
+                            config.BotConfig.BotRespPos = string.IsNullOrWhiteSpace(config.BotConfig.BotRespPos) ? "@{user} {songs}{pos} {song}{/songs}" : config.BotConfig.BotRespPos;
+                            config.BotConfig.BotRespNext = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNext) ? "@{user} {song}" : config.BotConfig.BotRespNext;
+                            config.BotConfig.BotCmdPosTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdPosTrigger) ? "pos" : config.BotConfig.BotCmdPosTrigger;
+                            config.BotConfig.BotCmdSongTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSongTrigger) ? "song" : config.BotConfig.BotCmdSongTrigger;
+                            config.BotConfig.BotCmdNextTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdNextTrigger) ? "next" : config.BotConfig.BotCmdNextTrigger;
+                            config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
+                            config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
+                            config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
                             config.BotConfig = p;
                         }
                         else
                         {
                             config.BotConfig = new BotConfig
                             {
-                                BotCmdNext = Settings.BotCmdNext,
-                                BotCmdPos = Settings.BotCmdPos,
-                                BotCmdSkip = Settings.BotCmdSkip,
-                                BotCmdSkipVote = Settings.BotCmdSkipVote,
-                                BotCmdSong = Settings.BotCmdSong,
-                                BotCmdSkipVoteCount = Settings.BotCmdSkipVoteCount,
-                                BotRespBlacklist = Settings.BotRespBlacklist,
-                                BotRespError = Settings.BotRespError,
-                                BotRespIsInQueue = Settings.BotRespIsInQueue,
-                                BotRespLength = Settings.BotRespLength,
-                                BotRespMaxReq = Settings.BotRespMaxReq,
-                                BotRespModSkip = Settings.BotRespModSkip,
-                                BotRespNoSong = Settings.BotRespNoSong,
-                                BotRespSuccess = Settings.BotRespSuccess,
-                                BotRespVoteSkip = Settings.BotRespVoteSkip,
-                                OnlyWorkWhenLive = Settings.BotOnlyWorkWhenLive,
+                                BotCmdNext = false,
+                                BotCmdPos = false,
+                                BotCmdSkip = false,
+                                BotCmdSkipVote = false,
+                                BotCmdSong = false,
+                                BotCmdSkipVoteCount = 5,
+                                BotRespBlacklist = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
+                                BotRespError = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
+                                BotRespIsInQueue = "@{user} this song is already in the queue.",
+                                BotRespLength = "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
+                                BotRespMaxReq = "@{user} maximum number of songs in queue reached ({maxreq}).",
+                                BotRespModSkip = "@{user} skipped the current song.",
+                                BotRespNoSong = "@{user} please specify a song to add to the queue.",
+                                BotRespSuccess = "{artist} - {title} requested by @{user} has been added to the queue.",
+                                BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
+                                BotRespPos = "@{user} {songs}{pos} {song}{/songs}",
+                                BotRespNext = "@{user} {song}",
+                                OnlyWorkWhenLive = false,
+                                BotCmdPosTrigger = "pos",
+                                BotCmdSongTrigger = "song",
+                                BotCmdNextTrigger = "next",
+                                BotCmdSkipTrigger = "skip",
+                                BotCmdVoteskipTrigger = "voteskip",
+                                BotCmdSsrTrigger = "ssr",
                             };
                         }
                         break;
@@ -159,54 +183,57 @@ namespace Songify_Slim
                         {
                             config.AppConfig = new AppConfig
                             {
-                                AnnounceInChat = Settings.AnnounceInChat,
-                                AppendSpaces = Settings.AppendSpaces,
-                                AutoClearQueue = Settings.AutoClearQueue,
-                                Autostart = Settings.Autostart,
-                                CustomPauseTextEnabled = Settings.CustomPauseTextEnabled,
-                                DownloadCover = Settings.DownloadCover,
-                                MsgLoggingEnabled = Settings.MsgLoggingEnabled,
-                                OpenQueueOnStartup = Settings.OpenQueueOnStartup,
-                                SaveHistory = Settings.SaveHistory,
-                                SplitOutput = Settings.SplitOutput,
-                                Systray = Settings.Systray,
-                                Telemetry = Settings.Telemetry,
-                                TwAutoConnect = Settings.TwAutoConnect,
-                                TwSrCommand = Settings.TwSrCommand,
-                                TwSrReward = Settings.TwSrReward,
-                                Upload = Settings.Upload,
-                                UploadHistory = Settings.UploadHistory,
-                                UseOwnApp = Settings.UseOwnApp,
-                                MaxSongLength = Settings.MaxSongLength,
-                                PosX = (int)Settings.PosX,
-                                PosY = (int)Settings.PosY,
-                                SpaceCount = Settings.SpaceCount,
-                                TwRewardId = Settings.TwRewardId,
-                                TwSrCooldown = Settings.TwSrCooldown,
-                                TwSrMaxReq = Settings.TwSrMaxReq,
-                                TwSrMaxReqBroadcaster = Settings.TwSrMaxReqBroadcaster,
-                                TwSrMaxReqEveryone = Settings.TwSrMaxReqEveryone,
-                                TwSrMaxReqModerator = Settings.TwSrMaxReqModerator,
-                                TwSrMaxReqSubscriber = Settings.TwSrMaxReqSubscriber,
-                                TwSrMaxReqVip = Settings.TwSrMaxReqVip,
-                                TwSrUserLevel = Settings.TwSrUserLevel,
-                                ArtistBlacklist = Settings.ArtistBlacklist,
-                                Color = Settings.Color,
-                                CustomPauseText = Settings.CustomPauseText,
-                                Directory = Settings.Directory,
-                                Language = Settings.Language,
-                                OutputString = Settings.OutputString,
-                                OutputString2 = Settings.OutputString2,
-                                Theme = Settings.Theme,
-                                UserBlacklist = Settings.UserBlacklist,
-                                Uuid = Settings.Uuid,
-                                WebServerPort = Settings.WebServerPort,
-                                AutoStartWebServer = Settings.AutoStartWebServer,
-                                BetaUpdates = Settings.BetaUpdates,
-                                ChromeFetchRate = Settings.ChromeFetchRate,
-                                Player = Settings.Player,
-                                WebUserAgent = Settings.WebUserAgent,
-                                BotOnlyWorkWhenLive = Settings.BotOnlyWorkWhenLive
+                                AnnounceInChat = false,
+                                AppendSpaces = false,
+                                AutoClearQueue = false,
+                                Autostart = false,
+                                CustomPauseTextEnabled = false,
+                                DownloadCover = false,
+                                MsgLoggingEnabled = false,
+                                OpenQueueOnStartup = false,
+                                SaveHistory = false,
+                                SplitOutput = false,
+                                Systray = false,
+                                Telemetry = false,
+                                TwAutoConnect = false,
+                                TwSrCommand = false,
+                                TwSrReward = false,
+                                Upload = false,
+                                UploadHistory = false,
+                                UseOwnApp = false,
+                                MaxSongLength = 10,
+                                PosX = 100,
+                                PosY = 100,
+                                SpaceCount = 10,
+                                TwSrCooldown = 5,
+                                TwSrMaxReq = 1,
+                                TwSrMaxReqBroadcaster = 1,
+                                TwSrMaxReqEveryone = 1,
+                                TwSrMaxReqModerator = 1,
+                                TwSrMaxReqSubscriber = 1,
+                                TwSrMaxReqVip = 1,
+                                TwSrUserLevel = 1,
+                                TwRewardId = "",
+                                RefundConditons = new int[]
+                                {
+                                },
+                                ArtistBlacklist = new List<string>(),
+                                Color = "Blue",
+                                CustomPauseText = "",
+                                Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
+                                Language = "en",
+                                OutputString = "{artist} - {title} {extra} {{requested by @{req}}}",
+                                OutputString2 = "{artist} - {title} {extra} {{requested by @{req}}} -> {url}",
+                                Theme = "",
+                                UserBlacklist = new List<string>(),
+                                Uuid = "",
+                                WebServerPort = 1025,
+                                AutoStartWebServer = false,
+                                BetaUpdates = false,
+                                ChromeFetchRate = 1,
+                                Player = 0,
+                                UpdateRequired = false,
+                                BotOnlyWorkWhenLive = false
                             };
                         }
                         break;
@@ -526,6 +553,7 @@ namespace Songify_Slim
         public string BotCmdNextTrigger { get; set; }
         public string BotCmdSkipTrigger { get; set; }
         public string BotCmdVoteskipTrigger { get; set; }
+        public string BotCmdSsrTrigger { get; set; }
     }
 
     public class AppConfig
@@ -577,7 +605,7 @@ namespace Songify_Slim
         public bool BetaUpdates { get; set; }
         public int ChromeFetchRate { get; set; }
         public int Player { get; internal set; }
-        public string WebUserAgent { get; set; }
+        public string WebUserAgent = "Songify Data Provider";
         public bool UpdateRequired { get; set; }
         public bool BotOnlyWorkWhenLive { get; set; }
     }

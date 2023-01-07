@@ -338,6 +338,7 @@ namespace Songify_Slim.Util.Songify
                 ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
                 : Settings.Settings.Directory;
 
+                GlobalObjects.CurrentSong = songInfo;
                 string j = Json.Serialize(songInfo);
 
                 WriteProgressFile($"{path}/progress.txt", j);

@@ -275,7 +275,7 @@
     <value>Activar el registro de mensajes</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Activar SR (Comando (!ssr SpotifyURI))</value>
+    <value>Activar SR (Comando)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Habilitar SR (recompensas del canal)</value>

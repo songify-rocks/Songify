@@ -275,7 +275,7 @@
     <value>Enable Message Logging</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Enable SR (Command (!ssr SpotifyURI))</value>
+    <value>Enable SR (Command)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Enable SR (Channel Rewards)</value>

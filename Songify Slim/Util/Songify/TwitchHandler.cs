@@ -302,11 +302,18 @@ namespace Songify_Slim.Util.Songify
                     msg = returnObject.Msg;
                     if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition))
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        try
                         {
-                            msg += " Your points have been refunded.";
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                            {
+                                msg += " Your points have been refunded.";
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
                     Client.SendMessage(Settings.Settings.TwChannel, msg);
@@ -325,11 +332,18 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 7))
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
-                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                        try
                         {
-                            response += " Your points have been refunded.";
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                            {
+                                response += " Your points have been refunded.";
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
 
@@ -547,7 +561,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
             // Same code from above but it reacts to a command instead of rewards
-            if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith("!ssr"))
+            if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
             {
                 int userlevel = CheckUserLevel(e.ChatMessage);
                 if (userlevel < Settings.Settings.TwSrUserLevel)
@@ -602,7 +616,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    string searchString = e.ChatMessage.Message.Replace("!ssr ", "");
+                    string searchString = e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger} ", "");
                     // search for a track with a search string from chat
                     SearchItem searchItem = ApiHandler.FindTrack(searchString);
                     if (searchItem.Tracks.Items.Count > 0)
@@ -712,30 +726,30 @@ namespace Songify_Slim.Util.Songify
                 string output = "";
                 if (queueItems.Count != 0)
                 {
+                    if (Settings.Settings.BotRespPos == null)
+                        return;
                     string response = Settings.Settings.BotRespPos;
-                    if (response.Contains("{songs}") && response.Contains("{/songs}"))
+                    if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
+                    //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
+                    string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
+                    string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
+                    string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
+                    string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
+
+                    string tmp = "";
+                    for (int i = 0; i < queueItems.Count; i++)
                     {
-                        //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                        string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
-                        string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
-                        string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
-                        string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
-
-                        string tmp = "";
-                        for (int i = 0; i < queueItems.Count; i++)
-                        {
-                            QueueItem item = queueItems[i];
-                            tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
-                            //If the song is the last one, don't add a newline
-                            if (i != queueItems.Count - 1)
-                                tmp += " | ";
-                        }
-
-                        between = tmp;
-                        // Combine the 3 parts into one string
-                        output = before + between + after;
-                        Client.SendMessage(e.ChatMessage.Channel, $"{output}");
+                        QueueItem item = queueItems[i];
+                        tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
+                        //If the song is the last one, don't add a newline
+                        if (i != queueItems.Count - 1)
+                            tmp += " | ";
                     }
+
+                    between = tmp;
+                    // Combine the 3 parts into one string
+                    output = before + between + after;
+                    Client.SendMessage(e.ChatMessage.Channel, $"{output}");
                 }
                 else
                 {
@@ -745,11 +759,22 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
             {
-                List<QueueItem> queueItems = GetQueueItems();
                 string response = Settings.Settings.BotRespNext;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                response = response.Replace("{song}",
-                    queueItems != null ? queueItems[0].Title : "there is no song next up.");
+
+                if (GlobalObjects.ReqList.Count == 0)
+                    return;
+                response = response.Replace("{song}", GetNextSong());
+
+                //GlobalObjects.ReqList[0].TrackID == GlobalObjects.CurrentSong.SongID
+                //? response.Replace("{song}",
+                //    GlobalObjects.ReqList[1] != null
+                //        ? $"{GlobalObjects.ReqList[1].Artists} - {GlobalObjects.ReqList[1].Title}"
+                //        : "There is no song next up.")
+                //: response.Replace("{song}",
+                //    GlobalObjects.ReqList[0] != null
+                //        ? $"{GlobalObjects.ReqList[0].Artists} - {GlobalObjects.ReqList[0].Title}"
+                //        : "There is no song next up.");
                 Client.SendMessage(e.ChatMessage.Channel, response);
             }
             else if (e.ChatMessage.Message == "!remove")
@@ -764,6 +789,19 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
+        }
+
+        private static string GetNextSong()
+        {
+            int index = 0;
+            if (GlobalObjects.ReqList[0] == null)
+                return "There is no song next up.";
+            if (GlobalObjects.ReqList[0].TrackID != GlobalObjects.CurrentSong.SongID)
+                return $"{GlobalObjects.ReqList[index].Artists} - {GlobalObjects.ReqList[index].Title}";
+            if (GlobalObjects.ReqList[1] == null)
+                return "There is no song next up.";
+            index = 1;
+            return $"{GlobalObjects.ReqList[index].Artists} - {GlobalObjects.ReqList[index].Title}";
         }
 
         private static int CheckUserLevel(ChatMessage o)

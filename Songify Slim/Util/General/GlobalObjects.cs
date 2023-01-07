@@ -21,5 +21,6 @@ namespace Songify_Slim.Util.General
             : "hh:mm:ss tt";
 
         public static bool DetachConsole = false;
+        public static TrackInfo CurrentSong;
     }
 }

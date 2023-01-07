@@ -493,6 +493,20 @@ namespace Songify_Slim.Util.Settings
             return currentConfig.BotConfig.BotCmdNextTrigger;
         }
 
+
+        public static string BotCmdSsrTrigger { get => GetCmdSsrTrigger(); set => SetCmdSsrTrigger(value); }
+
+        private static void SetCmdSsrTrigger(string value)
+        {
+            currentConfig.BotConfig.BotCmdSsrTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetCmdSsrTrigger()
+        {
+            return currentConfig.BotConfig.BotCmdSsrTrigger;
+        }
+
         private static void SetCmdSkipTrigger(string value)
         {
             currentConfig.BotConfig.BotCmdSkipTrigger = value;
@@ -551,7 +565,8 @@ namespace Songify_Slim.Util.Settings
                 RefreshToken = GetSpotifyRefreshToken(),
                 DeviceId = GetSpotifyDeviceId(),
                 ClientId = GetClientId(),
-                ClientSecret = GetClientSecret()
+                ClientSecret = GetClientSecret(),
+
             };
 
             TwitchCredentials twitchCredentials = new TwitchCredentials
@@ -561,7 +576,8 @@ namespace Songify_Slim.Util.Settings
                 ChannelId = GetTwitchChannelId(),
                 BotAccountName = GetTwAcc(),
                 BotOAuthToken = GetTwOAuth(),
-                TwitchUser = GetTwitchUser()
+                TwitchUser = GetTwitchUser(),
+
             };
 
             BotConfig botConfig = new BotConfig
@@ -584,6 +600,12 @@ namespace Songify_Slim.Util.Settings
                 BotRespNext = GetBot_Resp_Next(),
                 BotRespPos = GetBot_Resp_Pos(),
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+                BotCmdPosTrigger = GetCmdPosTrigger(),
+                BotCmdSongTrigger = GetCmdSongTrigger(),
+                BotCmdNextTrigger = GetCmdNextTrigger(),
+                BotCmdSkipTrigger = GetCmdSkipTrigger(),
+                BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
+                BotCmdSsrTrigger = GetCmdSsrTrigger(),
             };
 
             AppConfig appConfig = new AppConfig
@@ -632,7 +654,13 @@ namespace Songify_Slim.Util.Settings
                 RefundConditons = GetRefundConditons(),
                 WebServerPort = GetWebServerPort(),
                 AutoStartWebServer = GetAutoStartWebServer(),
-                BetaUpdates = GetBetaUpdates()
+                BetaUpdates = GetBetaUpdates(),
+                ChromeFetchRate = GetChromeFetchRate(),
+                Player = GetSource(),
+                WebUserAgent = GetWebua(),
+                UpdateRequired = GetUpdateRequired(),
+                BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+
             };
 
             return new Configuration

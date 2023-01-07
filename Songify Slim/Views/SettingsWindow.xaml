@@ -335,19 +335,22 @@
                                                    Width="355" Height="36" />
                                             <Button x:Name="BtnFocusRewards" Content="Manage Rewards" Click="BtnFocusRewards_Click"></Button>
                                         </DockPanel>
-                                        <controls:ToggleSwitch x:Name="Chbx_TwCommand"
+                                        <Grid>
+                                            <controls:ToggleSwitch IsEnabled="False" x:Name="Chbx_TwCommand"
                                            Content="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
                                            HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="Chbx_TwCommand_Checked"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
-                                           Width="470" Height="36" />
+                                           Width="470" Height="36" Opacity="0.1" />
+                                            <Label Content="!ssr command moved to bot config" Margin="50,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                                        </Grid>
                                         <controls:ToggleSwitch x:Name="Chbx_AutoClear"
-                                           Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
-                                           Focusable="False" FontFamily="Segoe UI"
-                                           FontSize="12"
-                                           ContentPadding="0"
-                                           Width="470" Height="36" />
+                                                               Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
+                                                               Focusable="False" FontFamily="Segoe UI"
+                                                               FontSize="12"
+                                                               ContentPadding="0"
+                                                               Width="470" Height="36" />
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                         <DockPanel>
@@ -454,7 +457,7 @@
                             <RowDefinition Height="32"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="Web server Port" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Minimum="1025" Maximum="65536" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
+                        <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
                         <Button x:Name="BtnWebserverStart" Content="Start Web Server" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
                         <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="Automatically start the web server" Toggled="TglAutoStartWebserver_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
                         <Button x:Name="BtnWebserverOpenUrl" Click="BtnWebserverOpenUrl_OnClick"  Content="Open Website" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>

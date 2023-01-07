@@ -269,7 +269,7 @@
     <value>Включить ведение журнала сообщений</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Активизировать SR (Команда (!ssr SpotifyURI))</value>
+    <value>Активизировать SR (Команда)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Включить SR (Точки канала)</value>

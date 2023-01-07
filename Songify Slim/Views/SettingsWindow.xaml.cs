@@ -839,8 +839,23 @@ namespace Songify_Slim
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded) return;
-            double? value = ((NumericUpDown)sender).Value;
-            if (value != null) Settings.WebServerPort = (int)value;
+            int? value = (int?)((NumericUpDown)sender).Value;
+            if (value == null) return;
+            NudServerPort.ValueChanged -= NudServerPort_ValueChanged;
+            if (value < 1025)
+            {
+                NudServerPort.Value = 1025;
+                value = 1025;
+            }
+
+            if (value > 66535)
+            {
+                NudServerPort.Value = 66535;
+                value = 66535;
+            }
+
+            Settings.WebServerPort = (int)value;
+            NudServerPort.ValueChanged += NudServerPort_ValueChanged;
         }
 
         private void TglAutoStartWebserver_Toggled(object sender, RoutedEventArgs e)

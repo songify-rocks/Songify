@@ -692,7 +692,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable SR (Command (!ssr SpotifyURI)).
+        ///   Looks up a localized string similar to Enable SR (Command).
         /// </summary>
         public static string sw_SpotifySR_SRCommand {
             get {

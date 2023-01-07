@@ -275,7 +275,7 @@
     <value>Aktiviere Nachrichten Logging</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Aktiviere SR (Befehl (!ssr SpotifyURI))</value>
+    <value>Aktiviere SR (Befehl)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Aktiviere SR (Kanalpunkte)</value>

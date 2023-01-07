@@ -22,6 +22,8 @@ namespace Songify_Slim.Util.General
 
         public void StartWebServer(int port)
         {
+            if(port < 1025 || port > 65535)
+                return;
             if (!PortIsFree(port)) return;
             // Listen on the specified port.
             _listener.Prefixes.Add($"http://localhost:{port}/");

@@ -56,12 +56,15 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"  Grid.Row="0" Grid.Column="0" Margin="6,0,0,0" Padding="0,0,0,0"/>
                     <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"
                                    Grid.Row="0" Grid.Column="1"/>
                     <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" FontStyle="Italic" FontSize="10"
                                    Grid.Row="0" Grid.Column="2" Width="106"/>
+
+
                     <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
                         <Border.BorderBrush>
                             <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -69,7 +72,7 @@
                     </Border>
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="1" VerticalAlignment="Center" >
                         <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="TextBoxTriggerSong" Tag="song" Text="song" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" />
+                        <TextBox x:Name="TextBoxTriggerSong" Tag="song" Text="song" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
                     </DockPanel>
                     <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
                     <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="1" Grid.Column="2" MinWidth="0"/>
@@ -80,7 +83,7 @@
                     </Border>
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="2" VerticalAlignment="Center" >
                         <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="TextBoxTriggerPos" Tag="pos" Text="pos" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}"/>
+                        <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"  x:Name="TextBoxTriggerPos" Tag="pos" Text="pos" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}"/>
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0"  Text="!pos" Width="70" VerticalAlignment="Center" Grid.Row="2" Margin="6,0,0,0"/>-->
                     <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
@@ -92,7 +95,7 @@
                     </Border>
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="3" VerticalAlignment="Center" >
                         <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="TextBoxTriggerNext" Tag="next" Text="next" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                        <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerNext" Tag="next" Text="next" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0" Text="!next" Width="70" VerticalAlignment="Center" Grid.Row="3" Margin="6,0,0,0"/>-->
                     <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
@@ -104,7 +107,7 @@
                     </Border>
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="4" VerticalAlignment="Center" >
                         <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="TextBoxTriggerSkip" Tag="skip" Text="skip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                        <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerSkip" Tag="skip" Text="skip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0" Text="!skip" Width="70" VerticalAlignment="Center" Grid.Row="4" Margin="6,0,0,0"/>-->
 
@@ -113,14 +116,26 @@
 
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="5" VerticalAlignment="Center" >
                         <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                        <TextBox x:Name="TextBoxTriggerVoteskip" Tag="voteskip" Text="voteskip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                        <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerVoteskip" Tag="voteskip" Text="voteskip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0" Text="!voteskip" Width="70" VerticalAlignment="Center" Grid.Row="5" Margin="6,0,0,0" Grid.RowSpan="2"/>-->
                     <TextBlock Text="Starts a vote if used by regular viewers" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
                     <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="5" Grid.Column="2"/>
 
                     <Label Content="Number of votes needed" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
-                    <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="6" Grid.Column="2" Height="26" />
+                    <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="6" Grid.Column="2" Height="26" Margin="0,0,0,6" />
+                    <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="7" >
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                        </Border.BorderBrush>
+                    </Border>
+
+                    <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="7" VerticalAlignment="Center" >
+                        <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                        <TextBox x:Name="TextBoxTriggerSsr" Tag="ssr" Text="ssr" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
+                    </DockPanel>
+                    <TextBlock Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <controls:ToggleSwitch x:Name="tgl_botcmd_ssr" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="7" Grid.Column="2" MinWidth="0"/>
                 </Grid>
             </TabItem>
         </controls:MetroTabControl>
