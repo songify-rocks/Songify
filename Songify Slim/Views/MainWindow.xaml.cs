@@ -514,6 +514,7 @@ namespace Songify_Slim.Views
             IconTwitchBot.Foreground = Brushes.IndianRed;
             IconTwitchPubSub.Foreground = Brushes.IndianRed;
             IconWebServer.Foreground = Brushes.IndianRed;
+            IconWebSpotify.Foreground = Brushes.IndianRed;
 
             if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
                 File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");

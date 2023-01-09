@@ -1,4 +1,6 @@
+using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
+using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web.Enums;
@@ -64,6 +66,9 @@ namespace Songify_Slim.Util.Songify
                         AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken
                     };
                     Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
+                    (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
+                        Brushes.GreenYellow;                    
+                    (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 }
                 else
                 {
@@ -97,7 +102,11 @@ namespace Songify_Slim.Util.Songify
                                 if (window.GetType() == typeof(Window_Settings))
                                     ((Window_Settings)window).SetControls();
                             }
+                            (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
+                                Brushes.GreenYellow;
+                            (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                         }));
+                    
                 };
 
                 // automatically refreshes the token after it expires

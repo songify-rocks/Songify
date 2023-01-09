@@ -157,6 +157,21 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebSpotify" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="IndianRed">
+                                        <Setter Property="ToolTip" Value="Spotify: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Spotify: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+
                     <iconPacks:PackIconBootstrapIcons x:Name="IconWebServer" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
@@ -171,6 +186,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
+
                 </StackPanel>
             </StatusBarItem>
             <Border Padding="3,0,6,0" Height="20" Margin="0,-4,-4,-4" BorderThickness="1,0,0,0" CornerRadius="10,0,0,10">

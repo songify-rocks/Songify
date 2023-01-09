@@ -21,6 +21,11 @@ using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Settings = Songify_Slim.Util.Settings.Settings;
 using System.Numerics;
+using System.Text;
+using ControlzEx.Theming;
+using Octokit;
+using TwitchLib.Api.V5.Models.UploadVideo;
+using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
 
 namespace Songify_Slim
 {
@@ -235,6 +240,7 @@ namespace Songify_Slim
                                 Player = 0,
                                 UpdateRequired = false,
                                 BotOnlyWorkWhenLive = false
+
                             };
                         }
                         break;
@@ -512,103 +518,104 @@ namespace Songify_Slim
 
     public class SpotifyCredentials
     {
-        public string AccessToken { get; set; }
-        public string RefreshToken { get; set; }
-        public string DeviceId { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+        public string AccessToken { get; set; } = "";
+        public string RefreshToken { get; set; } = "";
+        public string DeviceId { get; set; } = "";
+        public string ClientId { get; set; } = "";
+        public string ClientSecret { get; set; } = "";
     }
 
     public class TwitchCredentials
     {
-        public string AccessToken { get; set; }
-        public string ChannelName { get; set; }
-        public string ChannelId { get; set; }
-        public string BotAccountName { get; set; }
-        public string BotOAuthToken { get; set; }
-        public User TwitchUser { get; set; }
+        public string AccessToken { get; set; } = "";
+        public string ChannelName { get; set; } = "";
+        public string ChannelId { get; set; } = "";
+        public string BotAccountName { get; set; } = "";
+        public string BotOAuthToken { get; set; } = "";
+        public User TwitchUser { get; set; } = null;
     }
 
     public class BotConfig
     {
-        public bool BotCmdNext { get; set; }
-        public bool BotCmdPos { get; set; }
-        public bool BotCmdSkip { get; set; }
-        public bool BotCmdSkipVote { get; set; }
-        public bool BotCmdSong { get; set; }
-        public int BotCmdSkipVoteCount { get; set; }
-        public string BotRespBlacklist { get; set; }
-        public string BotRespError { get; set; }
-        public string BotRespIsInQueue { get; set; }
-        public string BotRespLength { get; set; }
-        public string BotRespMaxReq { get; set; }
-        public string BotRespModSkip { get; set; }
-        public string BotRespNoSong { get; set; }
-        public string BotRespSuccess { get; set; }
-        public string BotRespVoteSkip { get; set; }
-        public string BotRespPos { get; set; }
-        public string BotRespNext { get; set; }
-        public bool OnlyWorkWhenLive { get; set; }
-        public string BotCmdPosTrigger { get; set; }
-        public string BotCmdSongTrigger { get; set; }
-        public string BotCmdNextTrigger { get; set; }
-        public string BotCmdSkipTrigger { get; set; }
-        public string BotCmdVoteskipTrigger { get; set; }
-        public string BotCmdSsrTrigger { get; set; }
+        public bool BotCmdNext { get; set; } = false;
+        public bool BotCmdPos { get; set; } = false;
+        public bool BotCmdSkip { get; set; } = false;
+        public bool BotCmdSkipVote { get; set; } = false;
+        public bool BotCmdSong { get; set; } = false;
+        public int BotCmdSkipVoteCount { get; set; } = 5;
+        public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.";
+        public string BotRespError { get; set; } = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
+        public string BotRespIsInQueue { get; set; } = "@{user} this song is already in the queue.";
+        public string BotRespLength { get; set; } = "@{user} the song you requested exceeded the maximum song length ({maxlength}).";
+        public string BotRespMaxReq { get; set; } = "@{user} maximum number of songs in queue reached ({maxreq}).";
+        public string BotRespModSkip { get; set; } = "@{user} skipped the current song.";
+        public string BotRespNoSong { get; set; } = "@{user} please specify a song to add to the queue.";
+        public string BotRespSuccess { get; set; } = "{artist} - {title} requested by @{user} has been added to the queue.";
+        public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
+        public string BotRespPos { get; set; } = "@{user} {songs}{pos} {song}{/songs}";
+        public string BotRespNext { get; set; } = "@{user} {song}";
+        public bool OnlyWorkWhenLive { get; set; } = false;
+        public string BotCmdPosTrigger { get; set; } = "pos";
+        public string BotCmdSongTrigger { get; set; } = "song";
+        public string BotCmdNextTrigger { get; set; } = "next";
+        public string BotCmdSkipTrigger { get; set; } = "skip";
+        public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
+        public string BotCmdSsrTrigger { get; set; } = "ssr";
     }
 
     public class AppConfig
     {
-        public bool AnnounceInChat { get; set; }
-        public bool AppendSpaces { get; set; }
-        public bool AutoClearQueue { get; set; }
-        public bool Autostart { get; set; }
-        public bool CustomPauseTextEnabled { get; set; }
-        public bool DownloadCover { get; set; }
-        public bool MsgLoggingEnabled { get; set; }
-        public bool OpenQueueOnStartup { get; set; }
-        public bool SaveHistory { get; set; }
-        public bool SplitOutput { get; set; }
-        public bool Systray { get; set; }
-        public bool Telemetry { get; set; }
-        public bool TwAutoConnect { get; set; }
-        public bool TwSrCommand { get; set; }
-        public bool TwSrReward { get; set; }
-        public bool Upload { get; set; }
-        public bool UploadHistory { get; set; }
-        public bool UseOwnApp { get; set; }
-        public int MaxSongLength { get; set; }
-        public int PosX { get; set; }
-        public int PosY { get; set; }
-        public int SpaceCount { get; set; }
-        public int TwSrCooldown { get; set; }
-        public int TwSrMaxReq { get; set; }
-        public int TwSrMaxReqBroadcaster { get; set; }
-        public int TwSrMaxReqEveryone { get; set; }
-        public int TwSrMaxReqModerator { get; set; }
-        public int TwSrMaxReqSubscriber { get; set; }
-        public int TwSrMaxReqVip { get; set; }
-        public int TwSrUserLevel { get; set; }
-        public string TwRewardId { get; set; }
-        public int[] RefundConditons { get; set; }
-        public List<string> ArtistBlacklist { get; set; }
-        public string Color { get; set; }
-        public string CustomPauseText { get; set; }
-        public string Directory { get; set; }
-        public string Language { get; set; }
-        public string OutputString { get; set; }
-        public string OutputString2 { get; set; }
-        public string Theme { get; set; }
-        public List<string> UserBlacklist { get; set; }
-        public string Uuid { get; set; }
-        public int WebServerPort { get; set; }
-        public bool AutoStartWebServer { get; set; }
-        public bool BetaUpdates { get; set; }
-        public int ChromeFetchRate { get; set; }
-        public int Player { get; internal set; }
+        public bool AnnounceInChat { get; set; } = false;
+        public bool AppendSpaces { get; set; } = false;
+        public bool AutoClearQueue { get; set; } = false;
+        public bool Autostart { get; set; } = false;
+        public bool CustomPauseTextEnabled { get; set; } = false;
+        public bool DownloadCover { get; set; } = false;
+        public bool MsgLoggingEnabled { get; set; } = false;
+        public bool OpenQueueOnStartup { get; set; } = false;
+        public bool SaveHistory { get; set; } = false;
+        public bool SplitOutput { get; set; } = false;
+        public bool Systray { get; set; } = false;
+        public bool Telemetry { get; set; } = false;
+        public bool TwAutoConnect { get; set; } = false;
+        public bool TwSrCommand { get; set; } = false;
+        public bool TwSrReward { get; set; } = false;
+        public bool Upload { get; set; } = false;
+        public bool UploadHistory { get; set; } = false;
+        public bool UseOwnApp { get; set; } = false;
+        public int MaxSongLength { get; set; } = 10;
+        public int PosX { get; set; } = 100;
+        public int PosY { get; set; } = 100;
+        public int SpaceCount { get; set; } = 10;
+        public int TwSrCooldown { get; set; } = 5;
+        public int TwSrMaxReq { get; set; } = 3;
+        public int TwSrMaxReqBroadcaster { get; set; } = 3;
+        public int TwSrMaxReqEveryone { get; set; } = 3;
+        public int TwSrMaxReqModerator { get; set; } = 3;
+        public int TwSrMaxReqSubscriber { get; set; } = 3;
+        public int TwSrMaxReqVip { get; set; } = 3;
+        public int TwSrUserLevel { get; set; } = 1;
+        public string TwRewardId { get; set; } = "";
+        public int[] RefundConditons { get; set; } = Array.Empty<int>();
+        public List<string> ArtistBlacklist { get; set; } = new List<string>();
+        public string Color { get; set; } = "Blue";
+        public string CustomPauseText { get; set; } = "";
+        public string Directory { get; set; } = "";
+        public string Language { get; set; } = "en";
+        public string OutputString { get; set; } = "{artist} - {title} {extra}";
+        public string OutputString2 { get; set; } = "{artist} - {title} {extra}";
+        public string Theme { get; set; } = "Light";
+        public List<string> UserBlacklist { get; set; } = new List<string>();
+        public string Uuid { get; set; } = "";
+        public int WebServerPort { get; set; } = 65530;
+        public bool AutoStartWebServer { get; set; } = false;
+        public bool BetaUpdates { get; set; } = false;
+        public int ChromeFetchRate { get; set; } = 1;
+        public int Player { get; internal set; } = 0;
+
         public string WebUserAgent = "Songify Data Provider";
-        public bool UpdateRequired { get; set; }
-        public bool BotOnlyWorkWhenLive { get; set; }
+        public bool UpdateRequired { get; set; } = true;
+        public bool BotOnlyWorkWhenLive { get; set; } = false;
     }
 
     public class Config

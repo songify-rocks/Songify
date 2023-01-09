@@ -81,7 +81,7 @@ namespace Songify_Slim
 
             // Sets all the controls from settings
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
-            TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
+            //TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
             Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
@@ -118,8 +118,7 @@ namespace Songify_Slim
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? "Stop WebServer" : "Start WebServer";
-
-
+            
             if (ApiHandler.Spotify != null)
             {
                 try
