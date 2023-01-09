@@ -385,6 +385,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Console.
+        /// </summary>
+        public static string mw_menu_Console {
+            get {
+                return ResourceManager.GetString("mw_menu_Console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
         public static string mw_menu_Disconnect {
@@ -430,6 +439,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Log-Folder.
+        /// </summary>
+        public static string mw_menu_Help_LogFolder {
+            get {
+                return ResourceManager.GetString("mw_menu_Help_LogFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to History.
         /// </summary>
         public static string mw_menu_History {
@@ -453,6 +471,15 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_History_Window {
             get {
                 return ResourceManager.GetString("mw_menu_History_Window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patch notes.
+        /// </summary>
+        public static string mw_menu_PatchNotes {
+            get {
+                return ResourceManager.GetString("mw_menu_PatchNotes", resourceCulture);
             }
         }
         
@@ -516,6 +543,15 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_Twitch_Bot {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_Bot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login with Twitch.
+        /// </summary>
+        public static string mw_menu_Twitch_TwitchLogin {
+            get {
+                return ResourceManager.GetString("mw_menu_Twitch_TwitchLogin", resourceCulture);
             }
         }
         
