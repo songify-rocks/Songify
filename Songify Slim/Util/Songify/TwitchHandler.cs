@@ -795,12 +795,20 @@ namespace Songify_Slim.Util.Songify
         {
             int index = 0;
             if (GlobalObjects.ReqList[0] == null)
+            {
                 return "There is no song next up.";
-            if (GlobalObjects.ReqList[0].TrackID != GlobalObjects.CurrentSong.SongID)
-                return $"{GlobalObjects.ReqList[index].Artists} - {GlobalObjects.ReqList[index].Title}";
-            if (GlobalObjects.ReqList[1] == null)
-                return "There is no song next up.";
-            index = 1;
+            }
+
+            if (GlobalObjects.ReqList[0].TrackID == GlobalObjects.CurrentSong.SongID)
+            {
+                if (GlobalObjects.ReqList[1] == null)
+                {
+                    return "There is no song next up.";
+                }
+
+                index = 1;
+            }
+
             return $"{GlobalObjects.ReqList[index].Artists} - {GlobalObjects.ReqList[index].Title}";
         }
 

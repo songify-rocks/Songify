@@ -123,6 +123,8 @@ namespace Songify_Slim
                         if (File.Exists($@"{path}\BotConfig.yaml"))
                         {
                             var p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
+                            config.BotConfig = p;
+
                             config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
                             config.BotConfig.BotRespError = string.IsNullOrWhiteSpace(config.BotConfig.BotRespError) ? "@{user} there was an error adding your Song to the queue. Error message: {errormsg}" : config.BotConfig.BotRespError;
                             config.BotConfig.BotRespIsInQueue = string.IsNullOrWhiteSpace(config.BotConfig.BotRespIsInQueue) ? "@{user} this song is already in the queue." : config.BotConfig.BotRespIsInQueue;
@@ -140,7 +142,6 @@ namespace Songify_Slim
                             config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
                             config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
                             config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
-                            config.BotConfig = p;
                         }
                         else
                         {
