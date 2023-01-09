@@ -33,8 +33,8 @@ Table of Contents for Songify v.1.3.9
     - [Songify is not showing the song cover](#songify-is-not-showing-the-song-cover)
     - [Song requests are not working](#song-requests-are-not-working)
     - [Songify uses a lot of CPU when grabbing info from Chrome](#songify-uses-a-lot-of-cpu-when-grabbing-info-from-chrome)
-    - [`INVALID CLIENT: Failed to get client` when trying to link my Spotify account](#invalid-client-failed-to-get-client-when-trying-to-link-my-spotify-account)
-    - [`INVALID_CLIENT: Invalid redirect URI` when trying to link my Spotify account](#invalid_client-invalid-redirect-uri-when-trying-to-link-my-spotify-account)
+    - ["INVALID CLIENT: Failed to get client" when trying to link my Spotify account](#invalid-client-failed-to-get-client-when-trying-to-link-my-spotify-account)
+    - ["INVALID_CLIENT: Invalid redirect URI" when trying to link my Spotify account](#invalid_client-invalid-redirect-uri-when-trying-to-link-my-spotify-account)
 
 
 # Getting Started
