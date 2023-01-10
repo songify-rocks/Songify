@@ -51,7 +51,7 @@
                                           ContentPadding="0"
                                             Width="467" Height="32" Grid.Row="3" />
                         <controls:ToggleSwitch x:Name="ChbxOpenQueueOnStartup"
-                                           Content="open queue window on startup" VerticalAlignment="Top"
+                                           Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}" VerticalAlignment="Top"
                                            Focusable="False" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0"
@@ -67,8 +67,8 @@
                            VerticalAlignment="Top" Padding="0,5,5,5" FontSize="16" Grid.Row="6" />
                         <controls:ToggleSwitch x:Name="ToggleSwitchPrivacy" FontFamily="Segoe UI" FontSize="12"
                                            ContentPadding="0" VerticalAlignment="Top"
-                                           OnContent="Hide account names and profile pictures"
-                                           OffContent="Display account names and profile pictures" Grid.Row="7" HorizontalAlignment="Left" Toggled="ToggleSwitchPrivacy_Toggled" />
+                                           OnContent="{x:Static local:Resources.Sw_System_Privacy}"
+                                           OffContent="{x:Static local:Resources.Sw_System_Privacy}" Grid.Row="7" HorizontalAlignment="Left" Toggled="ToggleSwitchPrivacy_Toggled" />
                         <Label x:Name="LabelColor" Content="{x:Static local:Resources.sw_Appearance_Color}"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Top" Width="71" Padding="5" Grid.Row="9" />
@@ -119,7 +119,7 @@
 
                             <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" Margin="-1,-1,-1,-1" />
                         </Button>
-                        <Label Content="{x:Static local:Resources.sw_tcOutput_Format}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Height="32" Width="194" />
+                        <Label Content="{x:Static local:Resources.sw_tcOutput_Format}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Height="32" />
                         <TextBox x:Name="TxtbxOutputformat" Height="26"
                              TextWrapping="NoWrap" VerticalAlignment="Center"
                              TextChanged="TxtbxOutputformat_TextChanged" Grid.Row="1" Grid.Column="1">
@@ -191,7 +191,7 @@
             <TabItem x:Name="TabItemTwitch" Header="{x:Static local:Resources.sw_tc_Integration}">
                 <Border Margin="10,0,0,0" BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}">
                     <TabControl  Margin="10,0,0,0">
-                        <TabItem Header="Accounts">
+                        <TabItem Header="{x:Static local:Resources.Sw_Integtation_Tc_Accounts}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -228,7 +228,7 @@
                                         <Button.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <iconPacks:ForkAwesome Kind="Twitch"/>
-                                                <TextBlock Text="Login with Twitch" Margin="6,0,0,0"/>
+                                                <TextBlock Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" Margin="6,0,0,0"/>
                                             </StackPanel>
                                         </Button.Content>
                                     </Button>
@@ -262,8 +262,8 @@
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
                                                    Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
-                                <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="Automatically Announce Song To Chat" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,4,0,4" />
-                                <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Content="Limit Twitch activity to only work when stream is live (needs Twitch login)" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
+                                <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,4,0,4" />
+                                <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
 
                                 <Button Margin="0,4" Grid.Row="6" x:Name="btn_Botresponse"
                                     Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Click="btn_Botresponse_Click" FontSize="14" Grid.ColumnSpan="2"
@@ -271,7 +271,7 @@
                             </Grid>
                         </TabItem>
                         <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
-                        <TabItem x:Name="TabItemTwitchRewards" Header="Rewards">
+                        <TabItem x:Name="TabItemTwitchRewards" Header="{x:Static local:Resources.Sw_Integtation_Tc_Rewards}">
                             <Grid x:Name="GrdTwitchReward">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -291,15 +291,15 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Stretch" Height="23" Text=""
-                                VerticalAlignment="Top" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="2"
-                                Grid.Column="0" />
+                                <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
+                                VerticalAlignment="Center" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="2"
+                                Grid.Column="0" Grid.ColumnSpan="2" Width="264" />
                                 <CheckBox x:Name="Chbx_MessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
                                 <Grid Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" Margin="0,0,0,4">
-                                    <ComboBox SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Margin="0,0,30,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="23" Width="230" />
+                                    <ComboBox SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Margin="0,0,34,0" VerticalAlignment="Center" Height="23" />
                                     <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top">
                                         <Button.Content>
                                             <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
@@ -307,21 +307,41 @@
                                     </Button>
                                 </Grid>
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="1" Content="Create New Reward" Margin="4,0,4,4" VerticalAlignment="Top" Click="BtnCreateNewReward_Click"></Button>
-                                <Label Content="Refund when" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
-                                <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4" Content="User level is too low" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundUserBlocked" Tag="1" Margin="0,0,0,4" Content="User is blocked from SR" Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundSpotifyNotConnected" Tag="2" Margin="5,0,0,4" Content="Spotify is not connected" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundSongUnavailable" Tag="3" Margin="0,0,0,4" Content="Song is not available in region" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundArtistBlocked" Tag="4" Margin="5,0,0,4" Content="Song contains blocked artist(s)" Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundSongLength" Tag="5" Margin="0,0,0,4" Content="Song duration is too long" Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundSongInQueue" Tag="6" Margin="5,0,0,4" Content="Song is already in queue" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundNothingFound" Tag="7" Margin="0,0,0,4" Content="No song was found" Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundSongAdded" Tag="8" Margin="5,0,0,4" Content="Song has been added to the queue" Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
-                                <CheckBox x:Name="ChkRefundEverything" Tag="-1" Margin="0,0,0,4" Content="always (make SR free)" Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" FontWeight="Bold"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked" />
+                                <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
+                                <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundUserBlocked" Tag="1" Margin="0,0,0,4"  Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUSerBlocked}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundSpotifyNotConnected" Tag="2" Margin="5,0,0,4"  Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSpotifyNotConnected}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundSongUnavailable" Tag="3" Margin="0,0,0,4"  Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongNotAvailable}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundArtistBlocked" Tag="4" Margin="5,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundArtistBlocked}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundSongLength" Tag="5" Margin="0,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongTooLong}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundSongInQueue" Tag="6" Margin="5,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAlreadyInQueue}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundNothingFound" Tag="7" Margin="0,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundNoSongFound}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundSongAdded" Tag="8" Margin="5,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongAdded}" TextWrapping="Wrap"/>
+                                </CheckBox>
+                                <CheckBox x:Name="ChkRefundEverything" Tag="-1" Margin="0,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" FontWeight="Bold"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap"/>
+                                </CheckBox>
                             </Grid>
                         </TabItem>
                         <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
-                        <TabItem Header="Song Requests">
+                        <TabItem Header="{x:Static local:Resources.Sw_Integtation_Tc_SongRequests}">
                             <Grid>
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch">
@@ -333,7 +353,7 @@
                                                    FontSize="12"
                                                    ContentPadding="0"
                                                    Width="355" Height="36" />
-                                            <Button x:Name="BtnFocusRewards" Content="Manage Rewards" Click="BtnFocusRewards_Click"></Button>
+                                            <Button x:Name="BtnFocusRewards" Content="{x:Static local:Resources.Sw_Integration_ManageRewards}" Click="BtnFocusRewards_Click"></Button>
                                         </DockPanel>
                                         <Grid>
                                             <controls:ToggleSwitch IsEnabled="False" x:Name="Chbx_TwCommand"
@@ -359,8 +379,8 @@
                                             <ComboBox x:Name="CbxUserLevels" Width="151" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right" />
                                         </DockPanel>
                                         <DockPanel Visibility="Visible" Margin="0,6,0,0" LastChildFill="False">
-                                            <Label Content="Max SR / User (based on user level)" HorizontalAlignment="Left"
-                                       VerticalAlignment="Center" Margin="0,0,0,0" />
+                                            <Label Content="{x:Static local:Resources.Sw_Integration_MaxSrUser}" HorizontalAlignment="Left"
+                                       VerticalAlignment="Center" Margin="0,0,0,0"/>
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <ComboBox Height="28"  SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0" />
                                                 <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
@@ -456,11 +476,11 @@
                             <RowDefinition Height="32"/>
                             <RowDefinition Height="32"/>
                         </Grid.RowDefinitions>
-                        <Label Grid.Row="0" Grid.Column="0" Content="Web server Port" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{x:Static local:Resources.sw_WebServer_Port}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
-                        <Button x:Name="BtnWebserverStart" Content="Start Web Server" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
+                        <Button x:Name="BtnWebserverStart" Content="{x:Static local:Resources.sw_WebServer_StartWebServer}" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
                         <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="Automatically start the web server" Toggled="TglAutoStartWebserver_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
-                        <Button x:Name="BtnWebserverOpenUrl" Click="BtnWebserverOpenUrl_OnClick"  Content="Open Website" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>
+                        <Button x:Name="BtnWebserverOpenUrl" Click="BtnWebserverOpenUrl_OnClick"  Content="{x:Static local:Resources.sw_WebServer_OpenWebsite}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>
                     </Grid>
                 </Border>
             </TabItem>

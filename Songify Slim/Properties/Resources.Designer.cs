@@ -124,6 +124,33 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Skips the current song (Broadcaster / Mod / Requester).
+        /// </summary>
+        public static string brw_cmd_skip {
+            get {
+                return ResourceManager.GetString("brw_cmd_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starts a vote to skip the current song.
+        /// </summary>
+        public static string brw_cmd_skipvote {
+            get {
+                return ResourceManager.GetString("brw_cmd_skipvote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of votes needed.
+        /// </summary>
+        public static string brw_cmd_skipvotecount {
+            get {
+                return ResourceManager.GetString("brw_cmd_skipvotecount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays the current song.
         /// </summary>
         public static string brw_cmd_song {
@@ -647,11 +674,137 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Rewards.
+        /// </summary>
+        public static string Sw_Integration_ManageRewards {
+            get {
+                return ResourceManager.GetString("Sw_Integration_ManageRewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max SR / User (based on user level).
+        /// </summary>
+        public static string Sw_Integration_MaxSrUser {
+            get {
+                return ResourceManager.GetString("Sw_Integration_MaxSrUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NB Username (Twitch Username).
         /// </summary>
         public static string sw_Integration_NBWatermark {
             get {
                 return ResourceManager.GetString("sw_Integration_NBWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit Twitch activity to only work when stream is live (needs Twitch login).
+        /// </summary>
+        public static string Sw_Integration_OnlyWorkWhenLive {
+            get {
+                return ResourceManager.GetString("Sw_Integration_OnlyWorkWhenLive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to always (make SR free).
+        /// </summary>
+        public static string Sw_Integration_RefundAlways {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundAlways", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song contains blocked artist(s).
+        /// </summary>
+        public static string Sw_Integration_RefundArtistBlocked {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundArtistBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No song was found.
+        /// </summary>
+        public static string Sw_Integration_RefundNoSongFound {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundNoSongFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refund when.
+        /// </summary>
+        public static string Sw_Integration_RefundOn {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song has been added to the queue.
+        /// </summary>
+        public static string Sw_Integration_RefundSongAdded {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSongAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is already in queue.
+        /// </summary>
+        public static string Sw_Integration_RefundSongAlreadyInQueue {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSongAlreadyInQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is not available in region.
+        /// </summary>
+        public static string Sw_Integration_RefundSongNotAvailable {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSongNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song duration is too long.
+        /// </summary>
+        public static string Sw_Integration_RefundSongTooLong {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSongTooLong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify is not connected.
+        /// </summary>
+        public static string Sw_Integration_RefundSpotifyNotConnected {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSpotifyNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is blocked from SR.
+        /// </summary>
+        public static string Sw_Integration_RefundUSerBlocked {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundUSerBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User level is too low.
+        /// </summary>
+        public static string Sw_Integration_RefundUserLevelLow {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundUserLevelLow", resourceCulture);
             }
         }
         
@@ -670,6 +823,42 @@ namespace Songify_Slim.Properties {
         public static string sw_Integration_TwitchChWatermark {
             get {
                 return ResourceManager.GetString("sw_Integration_TwitchChWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accounts.
+        /// </summary>
+        public static string Sw_Integtation_Tc_Accounts {
+            get {
+                return ResourceManager.GetString("Sw_Integtation_Tc_Accounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rewards.
+        /// </summary>
+        public static string Sw_Integtation_Tc_Rewards {
+            get {
+                return ResourceManager.GetString("Sw_Integtation_Tc_Rewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Requests.
+        /// </summary>
+        public static string Sw_Integtation_Tc_SongRequests {
+            get {
+                return ResourceManager.GetString("Sw_Integtation_Tc_SongRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically Announce Song To Chat.
+        /// </summary>
+        public static string Sw_intergration_AutoAnnounce {
+            get {
+                return ResourceManager.GetString("Sw_intergration_AutoAnnounce", resourceCulture);
             }
         }
         
@@ -742,6 +931,24 @@ namespace Songify_Slim.Properties {
         public static string sw_SpotifySR_SRReward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SRReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to open queue window on startup.
+        /// </summary>
+        public static string Sw_System_OpenQueueOnStartup {
+            get {
+                return ResourceManager.GetString("Sw_System_OpenQueueOnStartup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide account names and profile pictures.
+        /// </summary>
+        public static string Sw_System_Privacy {
+            get {
+                return ResourceManager.GetString("Sw_System_Privacy", resourceCulture);
             }
         }
         
@@ -976,6 +1183,33 @@ namespace Songify_Slim.Properties {
         public static string sw_tcSystem_translated {
             get {
                 return ResourceManager.GetString("sw_tcSystem_translated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Website.
+        /// </summary>
+        public static string sw_WebServer_OpenWebsite {
+            get {
+                return ResourceManager.GetString("sw_WebServer_OpenWebsite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web server Port.
+        /// </summary>
+        public static string sw_WebServer_Port {
+            get {
+                return ResourceManager.GetString("sw_WebServer_Port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Web Server.
+        /// </summary>
+        public static string sw_WebServer_StartWebServer {
+            get {
+                return ResourceManager.GetString("sw_WebServer_StartWebServer", resourceCulture);
             }
         }
     }

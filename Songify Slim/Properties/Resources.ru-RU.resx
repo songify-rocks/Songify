@@ -394,4 +394,112 @@
   <data name="sw_tcOutput_Format2" xml:space="preserve">
     <value>Output Format (Twitch Chat)</value>
   </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Создать награду</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Заголовок</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Быстрый</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Расходы</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Возникла проблема с созданием награды. Убедитесь, что у вас уже нет награды с таким названием.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>Награда "{name}" создана.</value>
+  </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Примечания к патчу</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Лог-папка</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Войти с Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Консоль</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Пропускает текущую песню (Broadcaster / Mod / Requester)</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Начинает голосование за пропуск текущей песни</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Необходимое количество голосов</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Порт веб-сервера</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Запустить веб-сервер</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Открыть веб-сайт</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>открыть окно очереди при запуске</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Автоматически объявлять песню в чате</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Ограничьте активность Twitch, чтобы она работала только во время трансляции (требуется вход в Twitch)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Управление наградами</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Макс. SR/пользователь (в зависимости от уровня пользователя)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Возврат, когда</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>Уровень пользователя слишком низкий</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>Пользователь заблокирован в SR</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Спотифай не подключен</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>Песня недоступна в регионе</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>Песня содержит заблокированных исполнителей</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>Продолжительность песни слишком велика</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>Песня уже в очереди</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>Песня не найдена</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>Песня добавлена в очередь</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>всегда (сделать SR бесплатным)</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Скрыть имена учетных записей и изображения профиля</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>учетные записи</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Награды</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Запросы песен</value>
+  </data>
 </root>

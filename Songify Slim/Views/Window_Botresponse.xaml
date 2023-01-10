@@ -111,7 +111,7 @@
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0" Text="!skip" Width="70" VerticalAlignment="Center" Grid.Row="4" Margin="6,0,0,0"/>-->
 
-                    <TextBlock Text="Skips the current song (Broadcaster / Mod / Requester)" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+                    <TextBlock Text="{x:Static local:Resources.brw_cmd_skip}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
                     <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="4" Grid.Column="2"/>
 
                     <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="5" VerticalAlignment="Center" >
@@ -119,10 +119,10 @@
                         <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerVoteskip" Tag="voteskip" Text="voteskip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
                     </DockPanel>
                     <!--<TextBlock Grid.Column="0" Text="!voteskip" Width="70" VerticalAlignment="Center" Grid.Row="5" Margin="6,0,0,0" Grid.RowSpan="2"/>-->
-                    <TextBlock Text="Starts a vote if used by regular viewers" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
+                    <TextBlock Text="{x:Static local:Resources.brw_cmd_skipvote}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
                     <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="5" Grid.Column="2"/>
 
-                    <Label Content="Number of votes needed" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
+                    <Label Content="{x:Static local:Resources.brw_cmd_skipvotecount}" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
                     <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="6" Grid.Column="2" Height="26" Margin="0,0,0,6" />
                     <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="7" >
                         <Border.BorderBrush>

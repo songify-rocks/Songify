@@ -525,4 +525,100 @@
     <value>Console</value>
     <comment>MenuItem content for "Console"</comment>
   </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Skips the current song (Broadcaster / Mod / Requester)</value>
+    <comment>Label content for "Skips the current song (Broadcaster / Mod / Requester)"</comment>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Starts a vote to skip the current song</value>
+    <comment>Label content for "Starts a vote to skip the current song"</comment>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Number of votes needed</value>
+    <comment>Label content for "Number of votes needed"</comment>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Web server Port</value>
+    <comment>Label content for Web Server Port</comment>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Start Web Server</value>
+    <comment>Button content for "Start Web Server"</comment>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Open Website</value>
+    <comment>Button content for "Open Website"</comment>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Hide account names and profile pictures</value>
+    <comment>ToggleSwitch Content for "Display account names and profile pictures"</comment>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>open queue window on startup</value>
+    <comment>ToggleSwitch content for "open queue window on startup"</comment>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Automatically Announce Song To Chat</value>
+    <comment>TollgeSwitch content for "Automatically Announce Song To Chat"</comment>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Limit Twitch activity to only work when stream is live (needs Twitch login)</value>
+    <comment>ToggleSwitch content for "Limit Twitch activity to only work when stream is live (needs Twitch login)"</comment>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Manage Rewards</value>
+    <comment>Button content for "Manage Rewards"</comment>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Max SR / User (based on user level)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Refund when</value>
+    <comment>Label content for "Refund when"</comment>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>User level is too low</value>
+    <comment>Checkbox content for "User level is too low"</comment>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>User is blocked from SR</value>
+    <comment>Checkbox content for "User is blocked from SR"</comment>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify is not connected</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>Song is not available in region</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>Song contains blocked artist(s)</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>Song duration is too long</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>Song is already in queue</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>No song was found</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>Song has been added to the queue</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>always (make SR free)</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>Accounts</value>
+    <comment>TabControl header content for "Accoutns"</comment>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Rewards</value>
+    <comment>TabControl header content for  "Rewards"
+</comment>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Song Requests</value>
+    <comment>TabControl header content for "Song Requests"</comment>
+  </data>
 </root>

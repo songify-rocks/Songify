@@ -412,4 +412,94 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>The reward "{name}" has been created.</value>
   </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Patch notes</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Log-Folder</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Login with Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Console</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Skips the current song (Broadcaster / Mod / Requester)</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Starts a vote to skip the current song</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Number of votes needed</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Web server Port</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Start Web Server</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Open Website</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Hide account names and profile pictures</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Song Requests</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>User is blocked from SR</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>open queue window on startup</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Automatically Announce Song To Chat</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Limit Twitch activity to only work when stream is live (needs Twitch login)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Manage Rewards</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Max SR / User (based on user level)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Refund when</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>User level is too low</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Rewards</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify is not connected</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>Song contains blocked artist(s)</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>Song duration is too long</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>Song is already in queue</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>No song was found</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>Song has been added to the queue</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>always (make SR free)</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>Accounts</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>Song is not available in region</value>
+  </data>
 </root>

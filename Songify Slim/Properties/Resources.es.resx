@@ -394,4 +394,112 @@
   <data name="sw_tcOutput_Format2" xml:space="preserve">
     <value>Output Format (Twitch Chat)</value>
   </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Crear recompensa</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Oportuno</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Costo</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Hubo un problema al crear la recompensa. Asegúrate de no tener una recompensa con el mismo nombre.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>Se ha creado la recompensa "{name}".</value>
+  </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Notas del parche</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Carpeta de registro</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Iniciar sesión con Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Consola</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Salta la canción actual (Emisor / Mod / Solicitante)</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Inicia una votación para omitir la canción actual</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Número de votos necesarios</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Puerto del servidor web</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Iniciar servidor web</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Abrir sitio web</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>ventana de cola abierta al iniciar</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Anunciar automáticamente la canción para chatear</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Limite la actividad de Twitch para que solo funcione cuando la transmisión esté en vivo (necesita iniciar sesión en Twitch)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Administrar recompensas</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Max SR / Usuario (basado en el nivel de usuario)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>reembolso cuando</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>El nivel de usuario es demasiado bajo</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>El usuario está bloqueado de SR</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify no está conectado</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>La canción no está disponible en la región</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>La canción contiene artistas bloqueados</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>La duración de la canción es demasiado larga.</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>La canción ya está en cola</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>No se encontró ninguna canción</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>La canción ha sido añadida a la cola.</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>siempre (hacer SR libre)</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Ocultar nombres de cuenta e imágenes de perfil</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>cuentas</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Recompensas</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Solicitudes de canciones</value>
+  </data>
 </root>
