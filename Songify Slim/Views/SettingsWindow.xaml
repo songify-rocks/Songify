@@ -285,7 +285,7 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -293,20 +293,23 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
                                 VerticalAlignment="Center" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="2"
-                                Grid.Column="0" Grid.ColumnSpan="2" Width="264" />
+                                Grid.Column="0" Grid.ColumnSpan="2" Width="264" Visibility="Collapsed" />
                                 <CheckBox x:Name="Chbx_MessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
-                                <Grid Grid.Column="0" Grid.Row="1" VerticalAlignment="Top" Margin="0,0,0,4">
-                                    <ComboBox SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Margin="0,0,34,0" VerticalAlignment="Center" Height="23" />
-                                    <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top">
-                                        <Button.Content>
-                                            <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
-                                        </Button.Content>
-                                    </Button>
-                                </Grid>
-                                <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="1" Content="Create New Reward" Margin="4,0,4,4" VerticalAlignment="Top" Click="BtnCreateNewReward_Click"></Button>
+                                <TextBlock Text="Reward for Song Requests" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                <ComboBox Grid.Row="1" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Height="23" Margin="0,0,0,6" Tag="sr" />
+                                <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top"
+                                        Grid.Row="0" Grid.Column="1" Margin="0,0,0,6">
+                                    <Button.Content>
+                                        <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
+                                    </Button.Content>
+                                </Button>
+                                <TextBlock Text="Reward for Song Skip" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
+
+                                <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="Create New Reward" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click"></Button>
                                 <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
                                     <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>

@@ -193,6 +193,9 @@ namespace Songify_Slim.Util.Songify
             var redeemedUser = e.RewardRedeemed.Redemption.User;
             string trackId = "";
 
+            List<CustomReward> managableRewards = await GetChannelRewards(true);
+            bool isManagable = managableRewards.Find(r => r.Id == reward.Id) != null;
+
             if (reward.Id == Settings.Settings.TwRewardId)
             {
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
@@ -203,7 +206,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     msg = $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
                     //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 0))
+                    if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
@@ -220,7 +223,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     msg = "You are blocked from making Songrequests";
                     //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 1))
+                    if (Settings.Settings.RefundConditons.Any(i => i == 1) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
@@ -252,7 +255,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     msg = "It seems that Spotify is not connected right now.";
                     //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 2))
+                    if (Settings.Settings.RefundConditons.Any(i => i == 2) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
@@ -298,7 +301,7 @@ namespace Songify_Slim.Util.Songify
                     ReturnObject returnObject = AddSong2(trackId, Settings.Settings.TwChannel, redeemedUser.DisplayName);
                     //Send a Message to the user, that his Userlevel is too low
                     msg = returnObject.Msg;
-                    if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition))
+                    if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition) && isManagable)
                     {
                         try
                         {
@@ -328,7 +331,7 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
 
                     //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 7))
+                    if (Settings.Settings.RefundConditons.Any(i => i == 7) && isManagable)
                     {
                         try
                         {
@@ -348,7 +351,7 @@ namespace Songify_Slim.Util.Songify
                     Client.SendMessage(Settings.Settings.TwChannel, response);
                 }
             }
-            else if (reward.Id == "e30da4a0-2130-4f90-9614-ac950e070710")
+            else if (reward.Id == Settings.Settings.TwRewardSkipId)
             {
                 if (_skipCooldown)
                     return;

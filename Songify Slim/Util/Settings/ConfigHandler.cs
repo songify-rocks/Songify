@@ -241,7 +241,8 @@ namespace Songify_Slim
                                 Player = 0,
                                 UpdateRequired = false,
                                 BotOnlyWorkWhenLive = false,
-                                TwSrUnlimitedSr = false
+                                TwSrUnlimitedSr = false,
+                                TwRewardSkipId = ""
                             };
                         }
                         break;
@@ -618,6 +619,7 @@ namespace Songify_Slim
         public bool UpdateRequired { get; set; } = true;
         public bool BotOnlyWorkWhenLive { get; set; } = false;
         public bool TwSrUnlimitedSr { get; set; } = false;
+        public string TwRewardSkipId { get; set; } = "";
     }
 
     public class Config
