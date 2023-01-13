@@ -226,7 +226,8 @@ namespace Songify_Slim
                                 ArtistBlacklist = new List<string>(),
                                 Color = "Blue",
                                 CustomPauseText = "",
-                                Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
+                                Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()
+                                    ?.Location),
                                 Language = "en",
                                 OutputString = "{artist} - {title} {extra} {{requested by @{req}}}",
                                 OutputString2 = "{artist} - {title} {extra} {{requested by @{req}}} -> {url}",
@@ -239,8 +240,8 @@ namespace Songify_Slim
                                 ChromeFetchRate = 1,
                                 Player = 0,
                                 UpdateRequired = false,
-                                BotOnlyWorkWhenLive = false
-
+                                BotOnlyWorkWhenLive = false,
+                                TwSrUnlimitedSr = false
                             };
                         }
                         break;
@@ -616,6 +617,7 @@ namespace Songify_Slim
         public string WebUserAgent = "Songify Data Provider";
         public bool UpdateRequired { get; set; } = true;
         public bool BotOnlyWorkWhenLive { get; set; } = false;
+        public bool TwSrUnlimitedSr { get; set; } = false;
     }
 
     public class Config

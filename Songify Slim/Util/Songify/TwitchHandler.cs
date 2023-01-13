@@ -130,8 +130,6 @@ namespace Songify_Slim.Util.Songify
                             continue;
                         ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
                         ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
-                        ((MainWindow)window).mi_TwitchAPI.Header = "Twitch login";
-
                     }
                 });
                 return;
@@ -154,7 +152,6 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
                     ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                     ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
-                    ((MainWindow)window).mi_TwitchAPI.Header = "Twitch logged in";
 
                     Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
                 }
@@ -237,19 +234,20 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
                 // checks if the user has already the max amount of songs in the queue
-                if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
-                {
-                    // if the user reached max requests in the queue skip and inform requester
-                    string response = Settings.Settings.BotRespMaxReq;
-                    response = response.Replace("{user}", redeemedUser.DisplayName);
-                    response = response.Replace("{artist}", "");
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
-                    response = response.Replace("{errormsg}", "");
-                    response = CleanFormatString(response);
-                    Client.SendMessage(Settings.Settings.TwChannel, response);
-                    return;
-                }
+                if (!Settings.Settings.TwSrUnlimitedSr)
+                    if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
+                    {
+                        // if the user reached max requests in the queue skip and inform requester
+                        string response = Settings.Settings.BotRespMaxReq;
+                        response = response.Replace("{user}", redeemedUser.DisplayName);
+                        response = response.Replace("{artist}", "");
+                        response = response.Replace("{title}", "");
+                        response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
+                        response = response.Replace("{errormsg}", "");
+                        response = CleanFormatString(response);
+                        Client.SendMessage(Settings.Settings.TwChannel, response);
+                        return;
+                    }
                 if (ApiHandler.Spotify == null)
                 {
                     msg = "It seems that Spotify is not connected right now.";
@@ -929,19 +927,20 @@ namespace Songify_Slim.Util.Songify
             }
 
             // checks if the user has already the max amount of songs in the queue
-            if (MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
-            {
-                // if the user reached max requests in the queue skip and inform requester
-                response = Settings.Settings.BotRespMaxReq;
-                response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                response = response.Replace("{artist}", "");
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
-                response = response.Replace("{errormsg}", "");
-                response = CleanFormatString(response);
-                Client.SendMessage(e.ChatMessage.Channel, response);
-                return;
-            }
+            if (!Settings.Settings.TwSrUnlimitedSr)
+                if (MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
+                {
+                    // if the user reached max requests in the queue skip and inform requester
+                    response = Settings.Settings.BotRespMaxReq;
+                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                    response = response.Replace("{artist}", "");
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
+                    response = response.Replace("{errormsg}", "");
+                    response = CleanFormatString(response);
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    return;
+                }
 
             // generate the spotifyURI using the track id
             string spotifyUri = "spotify:track:" + trackId;

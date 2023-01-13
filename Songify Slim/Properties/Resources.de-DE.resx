@@ -502,4 +502,10 @@
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
     <value>Songwünsche</value>
   </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Mit Twitch eingeloggt</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>unbegrenzte Songwünsche</value>
+  </data>
 </root>

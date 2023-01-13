@@ -574,6 +574,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logged in with Twitch.
+        /// </summary>
+        public static string mw_menu_Twitch_TwitchLoggedIn {
+            get {
+                return ResourceManager.GetString("mw_menu_Twitch_TwitchLoggedIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Login with Twitch.
         /// </summary>
         public static string mw_menu_Twitch_TwitchLogin {
@@ -931,6 +940,15 @@ namespace Songify_Slim.Properties {
         public static string sw_SpotifySR_SRReward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SRReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to unlimited song requests.
+        /// </summary>
+        public static string Sw_SpotifySR_UnlimitedSRs {
+            get {
+                return ResourceManager.GetString("Sw_SpotifySR_UnlimitedSRs", resourceCulture);
             }
         }
         

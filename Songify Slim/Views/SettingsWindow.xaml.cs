@@ -118,6 +118,7 @@ namespace Songify_Slim
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? "Stop WebServer" : "Start WebServer";
+            ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
             
             if (ApiHandler.Spotify != null)
             {
@@ -884,6 +885,11 @@ namespace Songify_Slim
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.BotOnlyWorkWhenLive = (bool)tgl_OnlyWorkWhenLive.IsOn;
+        }
+
+        private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.TwSrUnlimitedSr = (bool)ToggleSwitchUnlimitedSR.IsOn;
         }
     }
 }

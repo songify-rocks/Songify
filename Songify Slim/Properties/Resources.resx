@@ -621,4 +621,12 @@
     <value>Song Requests</value>
     <comment>TabControl header content for "Song Requests"</comment>
   </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Logged in with Twitch</value>
+    <comment>MenuItem content for when logged in with Twitch</comment>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>unlimited song requests</value>
+    <comment>ToggleSwitch Content for "unlimited song requests"</comment>
+  </data>
 </root>

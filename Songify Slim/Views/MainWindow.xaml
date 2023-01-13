@@ -238,7 +238,7 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
-                <MenuItem x:Name="mi_TwitchAPI" Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" Click="mi_TwitchAPI_Click" />
+                <MenuItem x:Name="mi_TwitchAPI" Click="mi_TwitchAPI_Click" Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}"/>
                 <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Tag="Connect" Click="BtnTwitch_Click"/>
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
                           IsEnabled="False" Click="BtnTwitch_Click" />

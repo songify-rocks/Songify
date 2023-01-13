@@ -533,6 +533,18 @@ namespace Songify_Slim.Util.Settings
 
         public static string BotCmdSkipTrigger { get => GetCmdSkipTrigger(); set => SetCmdSkipTrigger(value); }
         public static string BotCmdVoteskipTrigger { get => GetCmdVoteskipTrigger(); set => SetCmdVoteskipTrigger(value); }
+        public static bool TwSrUnlimitedSr { get => GetTwSrUnlimitedSr(); set => SetTwSrUnlimitedSr(value); }
+
+        private static bool GetTwSrUnlimitedSr()
+        {
+            return currentConfig.AppConfig.TwSrUnlimitedSr;
+        }
+
+        private static void SetTwSrUnlimitedSr(bool value)
+        {
+            currentConfig.AppConfig.TwSrUnlimitedSr = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
 
 
         private static void SetCmdSongTrigger(string value)

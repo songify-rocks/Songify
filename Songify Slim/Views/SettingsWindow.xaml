@@ -382,11 +382,37 @@
                                             <Label Content="{x:Static local:Resources.Sw_Integration_MaxSrUser}" HorizontalAlignment="Left"
                                        VerticalAlignment="Center" Margin="0,0,0,0"/>
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <ComboBox Height="28"  SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0" />
+                                                <ComboBox Height="28" SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0">
+                                                    <ComboBox.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="True">
+                                                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="False">
+                                                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ComboBox.Style>
+                                                </ComboBox>
                                                 <controls:NumericUpDown x:Name="NudMaxReq" Minimum="1" Maximum="100" Interval="1"
                                                         NumericInputMode="Numbers" Margin="0,0,6,0"
                                                         ValueChanged="NudMaxReq_ValueChanged" Height="28"
-                                                        Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="119" UpDownButtonsWidth="22" DecimalPointCorrection="Number" />
+                                                        Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="119" UpDownButtonsWidth="22" DecimalPointCorrection="Number">
+                                                    <controls:NumericUpDown.Style>
+                                                        <Style TargetType="controls:NumericUpDown">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="True">
+                                                                    <Setter Property="IsEnabled" Value="False"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="False">
+                                                                    <Setter Property="IsEnabled" Value="True"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </controls:NumericUpDown.Style>
+                                                </controls:NumericUpDown>
                                                 <Button ToolTip="Sync to all user levels" x:Name="BtnSync" Click="BtnSync_Click" Height="28">
                                                     <Button.Content>
                                                         <iconPacks:PackIconForkAwesome Kind="Refresh" Width="14" Height="14" RenderTransformOrigin="0.5,0.5">
@@ -403,6 +429,7 @@
                                                 </Button>
                                             </StackPanel>
                                         </DockPanel>
+                                        <controls:ToggleSwitch x:Name="ToggleSwitchUnlimitedSR" Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}" HorizontalAlignment="Right" Toggled="ToggleSwitchUnlimitedSR_Toggled"/>
                                         <DockPanel Margin="0,6,0,0">
                                             <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Margin="0,0,0,0" />

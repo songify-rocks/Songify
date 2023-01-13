@@ -502,4 +502,10 @@
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
     <value>Запросы песен</value>
   </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Авторизовался через Twitch</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>неограниченные запросы песен</value>
+  </data>
 </root>
