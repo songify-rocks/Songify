@@ -65,6 +65,7 @@ namespace Songify_Slim
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevels.Items.Clear();
+            CbxUserLevelsMaxReq.Items.Clear();
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
             foreach (var value in values)
             {
