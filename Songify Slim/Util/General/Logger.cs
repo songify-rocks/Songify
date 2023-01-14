@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
+using ControlzEx.Standard;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim
@@ -68,8 +72,19 @@ namespace Songify_Slim
                     if (lastParagraph.Inlines.Count > 0)
                     {
                         Run lastRun = (Run)lastParagraph.Inlines.LastInline;
-                        if (lastRun.Text == s)
+                        if (lastRun.Text.Contains(s))
                         {
+                            if (!int.TryParse(Regex.Match(lastRun.Text, @"\(([^)]*)\)").Groups[1].Value, out int tries))
+                            {
+                                tries = 1;
+                                return;
+                            }
+
+                            tries++;
+                            string str = Regex.Replace(lastRun.Text, @"\([^)]*\)", $"({tries})");
+                            str = Regex.Replace(str, @"\[[^)]*\]",
+                                $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}]");
+                            lastRun.Text = str;
                             return;
                         }
                     }
@@ -80,7 +95,7 @@ namespace Songify_Slim
                     Margin = new Thickness(0),
                     Inlines = { new Run()
                     {
-                        Text = $"{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)} {s}"
+                        Text = $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}"
                     } }
                 });
             }));
