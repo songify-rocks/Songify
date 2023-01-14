@@ -64,6 +64,7 @@ namespace Songify_Slim
         public async void SetControls()
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
+            CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
             CbxUserLevels.Items.Clear();
             CbxUserLevelsMaxReq.Items.Clear();
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
@@ -83,7 +84,9 @@ namespace Songify_Slim
                         break;
                 }
             }
-
+            CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
+            if (CbxUserLevelsMaxReq.Items.Count > 0)
+                CbxUserLevelsMaxReq.SelectedIndex = 0;
             // Sets all the controls from settings
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
             //TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
