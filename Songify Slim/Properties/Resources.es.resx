@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -124,31 +124,28 @@
     <value>Error al recuperar los datos de la canción</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
-    <value>Configure las respuestas del bot para los siguientes escenarios:</value>
+    <value>Personaliza las respuestas del bot para los siguientes casos:</value>
   </data>
   <data name="brw_MaxSongs" xml:space="preserve">
-    <value>Máximo de canciones en la cola</value>
+    <value>Número máximo de canciones en la cola</value>
   </data>
   <data name="brw_NoSong" xml:space="preserve">
     <value>No se ha especificado ninguna canción (solicitud vacía)</value>
   </data>
   <data name="brw_SongInQueue" xml:space="preserve">
-    <value>Canción ya en cola</value>
+    <value>La canción ya está en la cola</value>
   </data>
   <data name="brw_SongTooLong" xml:space="preserve">
-    <value>Canción demasiado larga</value>
+    <value>La canción es muy larga</value>
   </data>
   <data name="brw_Success" xml:space="preserve">
-    <value>Canción añadida con éxito</value>
+    <value>La canción se agregó con éxito</value>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">
-    <value>Añadir</value>
+    <value>Agregar</value>
   </data>
   <data name="bw_btnClear" xml:space="preserve">
-    <value>Claro</value>
-  </data>
-  <data name="bw_cbArtist" xml:space="preserve">
-    <value>Artista</value>
+    <value>Despejar</value>
   </data>
   <data name="bw_cbUser" xml:space="preserve">
     <value>Usuario</value>
@@ -169,7 +166,7 @@
     <value>Inglés</value>
   </data>
   <data name="mw_menu_Blacklist" xml:space="preserve">
-    <value>Lista de bloqueo</value>
+    <value>Lista de Bloqueo</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
     <value>Conectar</value>
@@ -190,31 +187,31 @@
     <value>Acerca de</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
-    <value>Historia</value>
+    <value>Historial</value>
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
-    <value>Navegador de historia</value>
+    <value>Historial en Navegador</value>
   </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
-    <value>Ventana de la historia</value>
+    <value>Ventana de Historial</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
-    <value>Cola de espera</value>
+    <value>Cola</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>Navegador de colas</value>
+    <value>Cola en Navegador</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
     <value>Despejar la cola</value>
   </data>
   <data name="mw_menu_Queue_Window" xml:space="preserve">
-    <value>Ventana de cola</value>
+    <value>Ventana de Cola</value>
   </data>
   <data name="mw_menu_Settings" xml:space="preserve">
     <value>Ajustes</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
-    <value>Apóyenos</value>
+    <value>Apóyanos</value>
   </data>
   <data name="mw_menu_Widget" xml:space="preserve">
     <value>Widget</value>
@@ -227,43 +224,43 @@
     <value>Color:</value>
   </data>
   <data name="sw_Appearance_ThemeDark" xml:space="preserve">
-    <value>Tema oscuro</value>
+    <value>Tema Oscuro</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
-    <value>Tema de la luz</value>
+    <value>Tema Claro</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
-    <value>CONFIGURACIÓN DE EXPORTACIÓN</value>
+    <value>EXPORTAR CONFIG</value>
   </data>
   <data name="sw_Config_Import" xml:space="preserve">
     <value>IMPORTAR CONFIG</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>autoconexión</value>
+    <value>conectar automáticamente</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
-    <value>LINK</value>
+    <value>ENLACE</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Configurar respuestas y comandos del bot</value>
+    <value>Configurar Respuestas &amp; Comandos del Bot</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
-    <value>Nombre de usuario NB (nombre de usuario de Twitch)</value>
+    <value>Usuario NB (Usuario de Twitch)</value>
   </data>
   <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
     <value>Cuenta vinculada:</value>
   </data>
   <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
-    <value>Canal para unirse</value>
+    <value>Canal a conectar</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Canal de puntos ID de recompensa</value>
+    <value>ID de Recompensa de Puntos del Canal</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>Borrar la cola al inicio</value>
+    <value>Borrar cola al iniciar</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Enfriamiento del comando (segundos)</value>
+    <value>Tiempo de Reutilización del Comando (segundos)</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Duración máxima de la canción (en minutos)</value>
@@ -278,7 +275,7 @@
     <value>Activar SR (Comando)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
-    <value>Habilitar SR (recompensas del canal)</value>
+    <value>Habilitar SR (Recompensas del Canal)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
     <value>añadir espacios</value>
@@ -287,40 +284,40 @@
     <value>Directorio de salida</value>
   </data>
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
-    <value>Descargar la portada del álbum (sólo funciona con la API)</value>
+    <value>Descargar la portada de álbum (sólo funciona con API)</value>
   </data>
   <data name="sw_tcOutput_Format" xml:space="preserve">
-    <value>Formato de salida  (Text File &amp; Widget)</value>
+    <value>Formato de salida (Texto &amp; Widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
     <value>Texto de pausa</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Texto de pausa personalizado (en blanco para el archivo de texto emtpy)</value>
+    <value>Texto de pausa personalizado (dejar en blanco para que el archivo de texto quede vacío)</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Dividir artista y título</value>
+    <value>Dividir Artista y Título</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
-    <value>Subir información de la canción</value>
+    <value>Compartir información de la canción</value>
   </data>
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>Guardar</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Utilizar el AppID propio</value>
+    <value>Usar AppID propio</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>autoarranque con windows</value>
+    <value>iniciar automáticamente con windows</value>
   </data>
   <data name="sw_tcSystem_Behavior" xml:space="preserve">
-    <value>Comportamiento</value>
+    <value>Funcionamiento</value>
   </data>
   <data name="sw_tcSystem_CheckButton" xml:space="preserve">
-    <value>COMPROBAR LAS ACTUALIZACIONES</value>
+    <value>BUSCAR ACTUALIZACIONES</value>
   </data>
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
-    <value>Velocidad de búsqueda de Chrome (segundos)</value>
+    <value>Constancia de búsqueda de Chrome (segundos)</value>
   </data>
   <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
     <value>Idioma</value>
@@ -338,7 +335,7 @@
     <value>Apariencia</value>
   </data>
   <data name="sw_tc_Config" xml:space="preserve">
-    <value>Configurar</value>
+    <value>Configuración</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
     <value>Twitch</value>
@@ -353,10 +350,10 @@
     <value>Ruso</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Utilizar Songify AppID</value>
+    <value>Usar AppID de Songify</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Configuración del bot</value>
+    <value>Configuración del Bot</value>
   </data>
   <data name="lang_es" xml:space="preserve">
     <value>Español</value>
@@ -374,10 +371,10 @@
     <value>Desactivado</value>
   </data>
   <data name="brw_cmd_on" xml:space="preserve">
-    <value>Activa</value>
+    <value>Activado</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
-    <value>Muestra la posición en la cola de las solicitudes de canciones de los usuarios</value>
+    <value>Muestra la posición en la cola de las canciones del usuario</value>
   </data>
   <data name="brw_cmd_song" xml:space="preserve">
     <value>Muestra la canción actual</value>
@@ -389,19 +386,19 @@
     <value>Activado</value>
   </data>
   <data name="brw_cmd_trigger" xml:space="preserve">
-    <value>Disparador</value>
+    <value>Comando</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Output Format (Twitch Chat)</value>
+    <value>Fomato de Salida (Chat de Twitch)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
-    <value>Crear recompensa</value>
+    <value>Crear Recompensa</value>
   </data>
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Título</value>
   </data>
   <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Oportuno</value>
+    <value>Alerta</value>
   </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Costo</value>
@@ -416,49 +413,49 @@
     <value>Notas del parche</value>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Carpeta de registro</value>
+    <value>Carpeta de Registro</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
-    <value>Iniciar sesión con Twitch</value>
+    <value>Iniciar Sesión con Twitch</value>
   </data>
   <data name="mw_menu_Console" xml:space="preserve">
     <value>Consola</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Salta la canción actual (Emisor / Mod / Solicitante)</value>
+    <value>Salta la canción actual (Streamer / Mod / Solicitante)</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
-    <value>Inicia una votación para omitir la canción actual</value>
+    <value>Inicia una votación para saltar la canción actual</value>
   </data>
   <data name="brw_cmd_skipvotecount" xml:space="preserve">
     <value>Número de votos necesarios</value>
   </data>
   <data name="sw_WebServer_Port" xml:space="preserve">
-    <value>Puerto del servidor web</value>
+    <value>Puerto del Servidor Web</value>
   </data>
   <data name="sw_WebServer_StartWebServer" xml:space="preserve">
-    <value>Iniciar servidor web</value>
+    <value>Iniciar Servidor Web</value>
   </data>
   <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
-    <value>Abrir sitio web</value>
+    <value>Abrir Sitio Web</value>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>ventana de cola abierta al iniciar</value>
+    <value>abrir ventana de cola al iniciar</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anunciar automáticamente la canción para chatear</value>
+    <value>Anunciar automáticamente las canciones en el chat</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
-    <value>Limite la actividad de Twitch para que solo funcione cuando la transmisión esté en vivo (necesita iniciar sesión en Twitch)</value>
+    <value>Limita la actividad de Twitch para que sólo funcione cuando la transmisión esté en vivo (necesita iniciar sesión en Twitch)</value>
   </data>
   <data name="Sw_Integration_ManageRewards" xml:space="preserve">
     <value>Administrar recompensas</value>
   </data>
   <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
-    <value>Max SR / Usuario (basado en el nivel de usuario)</value>
+    <value>Solicitudes Máximas por Usuario (basado en el nivel de usuario)</value>
   </data>
   <data name="Sw_Integration_RefundOn" xml:space="preserve">
-    <value>reembolso cuando</value>
+    <value>reembolsar cuando</value>
   </data>
   <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
     <value>El nivel de usuario es demasiado bajo</value>
@@ -473,39 +470,42 @@
     <value>La canción no está disponible en la región</value>
   </data>
   <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
-    <value>La canción contiene artistas bloqueados</value>
+    <value>La canción contiene artista(s) bloqueado(s)</value>
   </data>
   <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
-    <value>La duración de la canción es demasiado larga.</value>
+    <value>La duración de la canción es demasiado larga</value>
   </data>
   <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
-    <value>La canción ya está en cola</value>
+    <value>La canción ya está en la cola</value>
   </data>
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
     <value>No se encontró ninguna canción</value>
   </data>
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
-    <value>La canción ha sido añadida a la cola.</value>
+    <value>La canción se agregó a la cola</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>siempre (hacer SR libre)</value>
+    <value>siempre (hacer SR gratis)</value>
   </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
     <value>Ocultar nombres de cuenta e imágenes de perfil</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
-    <value>cuentas</value>
+    <value>Cuentas</value>
   </data>
   <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
     <value>Recompensas</value>
   </data>
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
-    <value>Solicitudes de canciones</value>
+    <value>Solicitud de Canciones</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
-    <value>Inicia sesión con Twitch</value>
+    <value>Sesión Iniciada en Twitch</value>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>solicitudes ilimitadas de canciones</value>
+    <value>solicitud de canciones ilimitadas</value>
+  </data>
+  <data name="bw_cbArtist" xml:space="preserve">
+    <value>Artista</value>
   </data>
 </root>
