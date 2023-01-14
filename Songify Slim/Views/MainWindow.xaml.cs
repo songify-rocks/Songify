@@ -1297,5 +1297,14 @@ namespace Songify_Slim.Views
             else
                 secondaryWindow.Show();
         }
+
+        private async void Mi_TwitchCheckOnlineStatus_OnClick(object sender, RoutedEventArgs e)
+        {
+            bool live = await TwitchHandler.CheckStreamIsUp();
+            Settings.IsLive = live;
+            mi_TwitchCheckOnlineStatus.Header = $"Check Stream Status ({(live ? "Live" : "Offline")})";
+            LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
+            Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
+        }
     }
 }

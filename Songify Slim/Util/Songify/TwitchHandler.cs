@@ -19,6 +19,8 @@ using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelInformation;
+using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
@@ -105,6 +107,14 @@ namespace Songify_Slim.Util.Songify
 
             // This method initialize the flow of getting the token and returns a temporary random state that we will use to check authenticity.
             currentState = ioa.RequestClientAuthorization();
+        }
+
+        public static async Task<bool> CheckStreamIsUp()
+        {
+            GetStreamsResponse x = await _twitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
+                new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
+            if (x.Streams.Length == 0) return false;
+            return x.Streams[0].Type == "live";
         }
 
         public static async Task InitializeApi()
