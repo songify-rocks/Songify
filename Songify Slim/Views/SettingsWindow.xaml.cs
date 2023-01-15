@@ -709,7 +709,7 @@ namespace Songify_Slim
         private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UC_RewardItem item = ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content as UC_RewardItem);
-            if(item == null)
+            if (item == null)
                 return;
             string rewardId = item.Reward == null ? "" : item.Reward.Id;
 
@@ -753,35 +753,37 @@ namespace Songify_Slim
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged -= CbxRewards_OnSelectionChanged;
             List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
-
-            CbxRewards.Items.Add(new ComboBoxItem()
+            List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
+            if (rewards.Count > 0)
             {
-                Content = new UC_RewardItem(null, false)
-            });
-
-            CbxRewardsSkip.Items.Add(new ComboBoxItem()
-            {
-                Content = new UC_RewardItem(null, false)
-            });
-
-            foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
-            {
-                bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
-
                 CbxRewards.Items.Add(new ComboBoxItem()
                 {
-                    Content = new UC_RewardItem(reward, managable)
+                    Content = new UC_RewardItem(null, false)
                 });
 
                 CbxRewardsSkip.Items.Add(new ComboBoxItem()
                 {
-                    Content = new UC_RewardItem(reward, managable)
+                    Content = new UC_RewardItem(null, false)
                 });
+
+                foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+                {
+                    bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
+
+                    CbxRewards.Items.Add(new ComboBoxItem()
+                    {
+                        Content = new UC_RewardItem(reward, managable)
+                    });
+
+                    CbxRewardsSkip.Items.Add(new ComboBoxItem()
+                    {
+                        Content = new UC_RewardItem(reward, managable)
+                    });
+                }
+
+                CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
+                CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
             }
-
-            CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
-            CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
-
             CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged += CbxRewards_OnSelectionChanged;
             CbxRewards.IsEnabled = true;
