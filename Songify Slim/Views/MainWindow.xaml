@@ -267,42 +267,40 @@
             <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Console}" Click="BtnMenuViewConsole_Click"></MenuItem>
             </MenuItem>
-            <MenuItem Click="BtnPaypal_Click" Background="Transparent">
-                <MenuItem.HeaderTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconForkAwesome Kind="Buymeacoffee" Margin="0,0,5,0"/>
-                            <TextBlock Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" VerticalAlignment="Center" FontWeight="Thin"/>
-                            <StackPanel.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="50" CenterY="9"/>
-                                    <TranslateTransform X="0" Y="0"/>
-                                </TransformGroup>
-                            </StackPanel.RenderTransform>
-                            <StackPanel.Triggers>
-                                <EventTrigger RoutedEvent="Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard RepeatBehavior="Forever">
-                                            <DoubleAnimation Storyboard.TargetName="RotateTransform" 
+        </Menu>
+        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Right" VerticalAlignment="Top" Width="116" SelectedIndex="0"
+                  IsTabStop="False" Padding="2" Margin="0,3,6,0" />
+        <Button Cursor="Hand" BorderThickness="0" Click="BtnPaypal_Click" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,20" Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconForkAwesome Kind="Buymeacoffee" Margin="0,0,5,0"/>
+                    <TextBlock   Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" VerticalAlignment="Center" FontWeight="Thin"/>
+                    <StackPanel.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="50" CenterY="9"/>
+                            <TranslateTransform X="0" Y="0"/>
+                        </TransformGroup>
+                    </StackPanel.RenderTransform>
+                    <StackPanel.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Name="wiggle">
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimation Storyboard.TargetName="RotateTransform" 
                                                              Storyboard.TargetProperty="Angle" 
                                                              From="-2" To="2" Duration="0:0:1" 
                                                              BeginTime="0:0:0" 
                                                              RepeatBehavior="Forever" 
                                                              AutoReverse="True"
                                                               >
-                                            </DoubleAnimation>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </StackPanel.Triggers>
-                        </StackPanel>
-                    </DataTemplate>
-                </MenuItem.HeaderTemplate>
-            </MenuItem>
-        </Menu>
-        <ComboBox x:Name="cbx_Source" HorizontalAlignment="Right" VerticalAlignment="Top" Width="116" SelectedIndex="0"
-                  IsTabStop="False" Padding="2" Margin="0,3,6,0" />
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </StackPanel.Triggers>
+                </StackPanel>
+            </Button.Content>
+        </Button>
     </Grid>
 </controls:MetroWindow>

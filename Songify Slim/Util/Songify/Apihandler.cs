@@ -6,11 +6,14 @@ using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web.Enums;
 using SpotifyAPI.Web.Models;
 using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -67,7 +70,7 @@ namespace Songify_Slim.Util.Songify
                     };
                     Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
                     (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
-                        Brushes.GreenYellow;                    
+                        Brushes.GreenYellow;
                     (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 }
                 else
@@ -106,7 +109,7 @@ namespace Songify_Slim.Util.Songify
                                 Brushes.GreenYellow;
                             (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                         }));
-                    
+
                 };
 
                 // automatically refreshes the token after it expires
@@ -166,8 +169,8 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };
-           
-            
+
+
             string artists = "";
 
             for (int i = 0; i < context.Item.Artists.Count; i++)
@@ -207,8 +210,20 @@ namespace Songify_Slim.Util.Songify
 
         public static ErrorResponse AddToQ(string songUri)
         {
+
             // Tries to add a song to the current playback queue
             ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
+            
+            // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times. 
+            if (!error.HasError()) return error;
+            if (error.Error.Status != 503) return error;
+            for (int i = 0; i < 5; i++)
+            {
+                Thread.Sleep(1000);
+                error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
+                if (!error.HasError())
+                    break;
+            }
             return error;
         }
 
