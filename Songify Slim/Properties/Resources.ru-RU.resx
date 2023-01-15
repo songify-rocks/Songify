@@ -574,4 +574,22 @@
   <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
     <value>Создать новую награду</value>
   </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>Вещатель/модератор/заявитель пропустил песню</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Ответ на команду !pos</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Ответ на команду !next</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Ответы и команды бота</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Ответы</value>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Команды</value>
+  </data>
 </root>

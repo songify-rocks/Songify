@@ -502,4 +502,94 @@
   <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
     <value>Song is not available in region</value>
   </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Responses</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Logged in with Twitch</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>unlimited song requests</value>
+  </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Song Requests</value>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Buy Us A Coffee</value>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Artist - Title</value>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Check Online Status</value>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>Song Queue</value>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Requester</value>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Blacklist</value>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>Song History</value>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Web Server</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>Automatically start the web server</value>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Stop Web Server</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Bot Responses &amp; Commands</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Response for !next command</value>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Reset Config</value>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>get beta updates</value>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Please link your Spotify account. Settings -&gt; Spotify</value>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Create New Reward</value>
+  </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>Broadcaster / Moderator / Requester skipped the song</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Response for !pos command</value>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
 </root>

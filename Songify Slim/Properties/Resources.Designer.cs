@@ -196,11 +196,38 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Broadcaster / Moderator / Requester skipped the song.
+        /// </summary>
+        public static string brw_ModSkip {
+            get {
+                return ResourceManager.GetString("brw_ModSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !next command.
+        /// </summary>
+        public static string brw_Next {
+            get {
+                return ResourceManager.GetString("brw_Next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No song has been specified (empty request).
         /// </summary>
         public static string brw_NoSong {
             get {
                 return ResourceManager.GetString("brw_NoSong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !pos command.
+        /// </summary>
+        public static string brw_Pos {
+            get {
+                return ResourceManager.GetString("brw_Pos", resourceCulture);
             }
         }
         
@@ -228,6 +255,24 @@ namespace Songify_Slim.Properties {
         public static string brw_Success {
             get {
                 return ResourceManager.GetString("brw_Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands.
+        /// </summary>
+        public static string brw_tc_Commands {
+            get {
+                return ResourceManager.GetString("brw_tc_Commands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Responses.
+        /// </summary>
+        public static string brw_tc_Responses {
+            get {
+                return ResourceManager.GetString("brw_tc_Responses", resourceCulture);
             }
         }
         
@@ -1408,6 +1453,15 @@ namespace Songify_Slim.Properties {
         public static string WinTitle_Blocklist {
             get {
                 return ResourceManager.GetString("WinTitle_Blocklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot Responses &amp; Commands.
+        /// </summary>
+        public static string WinTitle_BotResponsesCommands {
+            get {
+                return ResourceManager.GetString("WinTitle_BotResponsesCommands", resourceCulture);
             }
         }
         

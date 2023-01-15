@@ -574,4 +574,22 @@
   <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
     <value>Neue Belohnung erstellen</value>
   </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>Streamer / Moderator / Requester hat das Lied übersprungen</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Antwort auf den Befehl !pos</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Antwort auf den Befehl !next</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Bot-Antworten und -Befehle</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Antworten</value>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Befehle</value>
+  </data>
 </root>

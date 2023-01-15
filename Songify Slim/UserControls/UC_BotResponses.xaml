@@ -53,7 +53,7 @@
                  TextChanged="tb_NoSong_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
-                <Label Content="Broadcaster / Moderator / Requester skipped the song" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Label Content="{x:Static properties:Resources.brw_ModSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_ModSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
@@ -65,13 +65,13 @@
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
-                <Label Content="Response for !pos command" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Label Content="{x:Static properties:Resources.brw_Pos}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_Pos" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Pos_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
-                <Label Content="Response for !next command" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Label Content="{x:Static properties:Resources.brw_Next}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_Next" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Next_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />

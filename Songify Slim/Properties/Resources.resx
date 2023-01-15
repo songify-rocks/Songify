@@ -678,8 +678,7 @@
   </data>
   <data name="sw_WebServer_AutoStart" xml:space="preserve">
     <value>Automatically start the web server</value>
-    <comment>Toggleswitch content for "Automatically start the web server"
-</comment>
+    <comment>Toggleswitch content for "Automatically start the web server"</comment>
   </data>
   <data name="sw_Config_ResetConfig" xml:space="preserve">
     <value>Reset Config</value>
@@ -716,5 +715,29 @@
   <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
     <value>Create New Reward</value>
     <comment>Button content for "Create New Reward"</comment>
+  </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>Broadcaster / Moderator / Requester skipped the song</value>
+      <comment>Header for the textbox when the Broadcaster / Mod / Requester skipped the song</comment>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Response for !pos command</value>
+    <comment>Header for the textbox when the !pos command has been executed</comment>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Response for !next command</value>
+    <comment>Header for the textbox when !next hast been executed</comment>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Bot Responses &amp; Commands</value>
+    <comment>Window Title for the Bot Responses and Commands window</comment>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Responses</value>
+    <comment>Tabcontrol Header for "Responses" (Bot response window)</comment>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Commands</value>
+    <comment>TabControl Header for "Commands" (Bot Responses Window)</comment>
   </data>
 </root>

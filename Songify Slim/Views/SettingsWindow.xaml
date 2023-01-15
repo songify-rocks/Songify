@@ -371,7 +371,7 @@
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="470" Height="36" Opacity="0.1" />
-                                            <Label Content="!ssr command moved to bot config" Margin="50,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                                            <Label Content="!ssr command moved to bot config" Margin="50,0,0,4" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
                                         </Grid>
                                         <controls:ToggleSwitch x:Name="Chbx_AutoClear"
                                                                Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
@@ -388,7 +388,7 @@
                                         </DockPanel>
                                         <DockPanel Visibility="Visible" Margin="0,6,0,0" LastChildFill="False">
                                             <TextBlock Text="{x:Static local:Resources.Sw_Integration_MaxSrUser}" HorizontalAlignment="Left"
-                                       VerticalAlignment="Center" Margin="0,0,0,0" TextWrapping="WrapWithOverflow" Width="250"/>
+                                       VerticalAlignment="Center" Margin="0,0,0,0" TextWrapping="WrapWithOverflow" MaxWidth="250"/>
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <ComboBox Height="28" SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0">
                                                     <ComboBox.Style>

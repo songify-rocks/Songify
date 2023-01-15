@@ -6,7 +6,7 @@
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      Title="Bot Responses &amp; Commands" Height="332.266" Width="629" Loaded="MetroWindow_Loaded"
+                      Title="{x:Static local:Resources.WinTitle_BotResponsesCommands}" Height="332.266" Width="629" Loaded="MetroWindow_Loaded"
                       ResizeMode="CanResizeWithGrip" Closed="MetroWindow_Closed">
     <controls:MetroWindow.Resources>
         <Style x:Key="TextBoxTextBlock" BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
@@ -26,7 +26,7 @@
     </controls:MetroWindow.Resources>
     <Grid>
         <controls:MetroTabControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
-            <TabItem Header="Responses">
+            <TabItem Header="{x:Static local:Resources.brw_tc_Responses}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -41,7 +41,7 @@
                     <TextBox Grid.Row="2" x:Name="lbl_Preview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41" VerticalAlignment="Bottom" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Commands">
+            <TabItem Header="{x:Static local:Resources.brw_tc_Commands}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
