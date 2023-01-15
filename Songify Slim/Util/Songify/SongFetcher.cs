@@ -340,8 +340,9 @@ namespace Songify_Slim.Util.Songify
 
                 GlobalObjects.CurrentSong = songInfo;
                 string j = Json.Serialize(songInfo);
+                GlobalObjects.APIResponse = j;
 
-                WriteProgressFile($"{path}/progress.txt", j);
+                //WriteProgressFile($"{path}/progress.txt", j);
             }
             catch (Exception e)
             {
@@ -369,7 +370,6 @@ namespace Songify_Slim.Util.Songify
                 break;
             }
 
-            GlobalObjects.APIResponse = j;
 
         }
 

@@ -180,6 +180,7 @@ namespace Songify_Slim
                 BtnLogInTwitch.Visibility = Visibility.Collapsed;
                 PnlTwich.Visibility = Visibility.Visible;
                 await LoadRewards();
+                txtbx_twChannel.Text = Settings.TwitchUser.Login;
             }
             else
             {
