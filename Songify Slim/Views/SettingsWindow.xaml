@@ -7,7 +7,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Settings" Height="400" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
+                      Title="Settings" Height="434" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
                       ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
         <TabControl Margin="10,0,10,0" TabStripPlacement="Left">
@@ -62,7 +62,7 @@
                                             NumericInputMode="Numbers"
                                             ValueChanged="NudChrome_ValueChanged" Height="28"
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="145" Grid.Row="5" />
-                        <Label Content="Privacy"
+                        <Label Content="{x:Static local:Resources.Sw_System_PrivacyHeader}"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Top" Padding="0,5,5,5" FontSize="16" Grid.Row="6" />
                         <controls:ToggleSwitch x:Name="ToggleSwitchPrivacy" FontFamily="Segoe UI" FontSize="12"
@@ -199,7 +199,8 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
@@ -262,10 +263,14 @@
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
                                                    Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
-                                <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,4,0,4" />
-                                <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
+                                <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
+                                <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2">
+                                    <controls:ToggleSwitch.Content>
+                                        <TextBlock Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Width="550"></TextBlock>
+                                    </controls:ToggleSwitch.Content>
+                                </controls:ToggleSwitch>
 
-                                <Button Margin="0,4" Grid.Row="6" x:Name="btn_Botresponse"
+                                <Button Margin="0,4" Grid.Row="7" x:Name="btn_Botresponse"
                                     Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Click="btn_Botresponse_Click" FontSize="14" Grid.ColumnSpan="2"
                                     Grid.Column="0" />
                             </Grid>
@@ -309,7 +314,7 @@
                                 <TextBlock Text="Reward for Song Skip" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
                                 <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
 
-                                <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="Create New Reward" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
+                                <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
                                 <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
                                     <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
@@ -382,8 +387,8 @@
                                             <ComboBox x:Name="CbxUserLevels" Width="151" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right" />
                                         </DockPanel>
                                         <DockPanel Visibility="Visible" Margin="0,6,0,0" LastChildFill="False">
-                                            <Label Content="{x:Static local:Resources.Sw_Integration_MaxSrUser}" HorizontalAlignment="Left"
-                                       VerticalAlignment="Center" Margin="0,0,0,0"/>
+                                            <TextBlock Text="{x:Static local:Resources.Sw_Integration_MaxSrUser}" HorizontalAlignment="Left"
+                                       VerticalAlignment="Center" Margin="0,0,0,0" TextWrapping="WrapWithOverflow" Width="250"/>
                                             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center">
                                                 <ComboBox Height="28" SelectedIndex="0" x:Name="CbxUserLevelsMaxReq" Width="145" HorizontalAlignment="Right" VerticalAlignment="Center" SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" Margin="0,0,6,0">
                                                     <ComboBox.Style>
@@ -495,7 +500,7 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Web Server">
+            <TabItem Header="{x:Static local:Resources.sw_tc_WebServer}">
                 <Border BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}" Margin="10,0,0,0">
                     <Grid Margin="10,0,0,0">
                         <Grid.ColumnDefinitions>
@@ -509,12 +514,12 @@
                         <Label Grid.Row="0" Grid.Column="0" Content="{x:Static local:Resources.sw_WebServer_Port}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                         <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
                         <Button x:Name="BtnWebserverStart" Content="{x:Static local:Resources.sw_WebServer_StartWebServer}" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
-                        <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="Automatically start the web server" Toggled="TglAutoStartWebserver_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
+                        <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="{x:Static local:Resources.sw_WebServer_AutoStart}" Toggled="TglAutoStartWebserver_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
                         <Button x:Name="BtnWebserverOpenUrl" Click="BtnWebserverOpenUrl_OnClick"  Content="{x:Static local:Resources.sw_WebServer_OpenWebsite}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Config">
+            <TabItem Header="{x:Static local:Resources.sw_tc_Config}">
                 <Border BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}" Margin="10,0,0,0">
                     <Grid Margin="10,0,0,0">
                         <Grid.RowDefinitions>
@@ -527,14 +532,14 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <controls:ToggleSwitch x:Name="TglBetaUpdates"
-                                               Content="get beta updates" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0"
+                                               Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0"
                                                HorizontalAlignment="Stretch" Toggled="TglBetaUpdates_Toggled" />
                         <Button x:Name="Btn_ExportConfig" Content="{x:Static local:Resources.sw_Config_Export}"
                                 HorizontalAlignment="Right" VerticalAlignment="Top" Width="170" Click="Btn_ExportConfig_Click" Grid.Column="1" />
                         <Button x:Name="Btn_ImportConfig" Content="{x:Static local:Resources.sw_Config_Import}"
                             HorizontalAlignment="Right" VerticalAlignment="Top" Width="170"
                             Click="Btn_ImportConfig_Click" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" />
-                        <Button x:Name="Btn_ResetConfig" Content="Reset Config" HorizontalAlignment="Right"
+                        <Button x:Name="Btn_ResetConfig" Content="{x:Static local:Resources.sw_Config_ResetConfig}" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Width="170" Click="Btn_ResetConfig_Click" Grid.Row="1" Grid.Column="1" />
                     </Grid>
                 </Border>

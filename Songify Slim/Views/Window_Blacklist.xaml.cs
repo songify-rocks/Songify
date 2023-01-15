@@ -265,7 +265,7 @@ namespace Songify_Slim
         private void cbx_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
-                ((ComboBox)sender).SelectedIndex == 0 ? "Artist" : "Username");
+                ((ComboBox)sender).SelectedIndex == 0 ? Properties.Resources.bw_cbArtist : Properties.Resources.bw_cbUser);
         }
 
         private void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -6,8 +6,9 @@
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
 
-                      Title="Song History" Height="247.9" Width="588" Loaded="MetroWindow_Loaded"
+                      Title="{x:Static properties:Resources.WinTitle_History}" Height="247.9" Width="588" Loaded="MetroWindow_Loaded"
                       WindowStartupLocation="CenterOwner" Closed="MetroWindow_Closed">
 
     <controls:MetroWindow.RightWindowCommands>
@@ -34,8 +35,8 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="time" IsReadOnly="True" Binding="{Binding Path=Time}" />
-                <DataGridTextColumn Header="name" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" />
+                <DataGridTextColumn Header="{x:Static properties:Resources.s_Time}" IsReadOnly="True" Binding="{Binding Path=Time}" />
+                <DataGridTextColumn Header="{x:Static properties:Resources.s_Name}" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 
@@ -51,7 +52,7 @@
                    UseLayoutRounding="False">
             <Label x:Name="Lbl_Status" FontSize="10" Padding="0" VerticalContentAlignment="Bottom"
                    HorizontalContentAlignment="Stretch" Width="340" HorizontalAlignment="Left" Margin="0,-4"
-                   VerticalAlignment="Top" />
+                   VerticalAlignment="Top" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"/>
         </StatusBar>
     </Grid>
 </controls:MetroWindow>

@@ -59,6 +59,8 @@ namespace Songify_Slim
         {
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
+            if (Settings.Language == "es")
+                this.Width = 830;
         }
 
         public async void SetControls()
@@ -125,7 +127,7 @@ namespace Songify_Slim
             TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
-            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? "Stop WebServer" : "Start WebServer";
+            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
 
             if (ApiHandler.Spotify != null)
@@ -870,7 +872,7 @@ namespace Songify_Slim
             else
                 GlobalObjects.WebServer.StopWebServer();
 
-            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? "Stop WebServer" : "Start WebServer";
+            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer; 
         }
 
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)

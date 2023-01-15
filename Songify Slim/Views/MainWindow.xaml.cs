@@ -606,7 +606,7 @@ namespace Songify_Slim.Views
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
-                    TxtblockLiveoutput.Text = "Please link your Spotify account\nSettings -> Spotify";
+                    TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
                 else
                     ApiHandler.DoAuthAsync();
 
@@ -1302,7 +1302,7 @@ namespace Songify_Slim.Views
         {
             bool live = await TwitchHandler.CheckStreamIsUp();
             Settings.IsLive = live;
-            mi_TwitchCheckOnlineStatus.Header = $"Check Stream Status ({(live ? "Live" : "Offline")})";
+            mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(live ? "Live" : "Offline")})";
             LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
             Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
         }

@@ -6,8 +6,9 @@
                       xmlns:local="clr-namespace:Songify_Slim.Views"
                       xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Console" ShowMinButton="False" ShowMaxRestoreButton="False" Height="285" MinHeight="285" MaxHeight="285" Width="285" ResizeMode="CanResize" ShowActivated="False" Loaded="MetroWindow_Loaded" Closing="MetroWindow_Closing" IsWindowDraggable="False" LostFocus="MetroWindow_LostFocus">
+                      Title="{x:Static properties:Resources.mw_menu_Console}" ShowMinButton="False" ShowMaxRestoreButton="False" Height="285" MinHeight="285" MaxHeight="285" Width="285" ResizeMode="CanResize" ShowActivated="False" Loaded="MetroWindow_Loaded" Closing="MetroWindow_Closing" IsWindowDraggable="False" LostFocus="MetroWindow_LostFocus">
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button ToolTip="Detach / Attach Console" x:Name="BtnAttachDetach" Click="BtnAttachDetach_OnClick">

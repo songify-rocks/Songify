@@ -394,11 +394,38 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
+        /// </summary>
+        public static string mw_LiveOutputLinkSpotify {
+            get {
+                return ResourceManager.GetString("mw_LiveOutputLinkSpotify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist - Title.
+        /// </summary>
+        public static string mw_LiveOutputPlaceholder {
+            get {
+                return ResourceManager.GetString("mw_LiveOutputPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blocklist.
         /// </summary>
         public static string mw_menu_Blacklist {
             get {
                 return ResourceManager.GetString("mw_menu_Blacklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Buy Us A Coffee.
+        /// </summary>
+        public static string mw_menu_BuyUsACoffee {
+            get {
+                return ResourceManager.GetString("mw_menu_BuyUsACoffee", resourceCulture);
             }
         }
         
@@ -556,6 +583,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Song Requests.
+        /// </summary>
+        public static string mw_menu_SongRequests {
+            get {
+                return ResourceManager.GetString("mw_menu_SongRequests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Support Us.
         /// </summary>
         public static string mw_menu_Support {
@@ -570,6 +606,15 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_Twitch_Bot {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_Bot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check Online Status.
+        /// </summary>
+        public static string mw_menu_Twitch_CheckOnlineStatus {
+            get {
+                return ResourceManager.GetString("mw_menu_Twitch_CheckOnlineStatus", resourceCulture);
             }
         }
         
@@ -592,11 +637,74 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string mw_menu_View {
+            get {
+                return ResourceManager.GetString("mw_menu_View", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Widget.
         /// </summary>
         public static string mw_menu_Widget {
             get {
                 return ResourceManager.GetString("mw_menu_Widget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string s_Length {
+            get {
+                return ResourceManager.GetString("s_Length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string s_Name {
+            get {
+                return ResourceManager.GetString("s_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requester.
+        /// </summary>
+        public static string s_Requester {
+            get {
+                return ResourceManager.GetString("s_Requester", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string s_Save {
+            get {
+                return ResourceManager.GetString("s_Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string s_Time {
+            get {
+                return ResourceManager.GetString("s_Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload.
+        /// </summary>
+        public static string s_Upload {
+            get {
+                return ResourceManager.GetString("s_Upload", resourceCulture);
             }
         }
         
@@ -647,11 +755,29 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to get beta updates.
+        /// </summary>
+        public static string sw_Config_GetBetaUpdates {
+            get {
+                return ResourceManager.GetString("sw_Config_GetBetaUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to IMPORT CONFIG.
         /// </summary>
         public static string sw_Config_Import {
             get {
                 return ResourceManager.GetString("sw_Config_Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset Config.
+        /// </summary>
+        public static string sw_Config_ResetConfig {
+            get {
+                return ResourceManager.GetString("sw_Config_ResetConfig", resourceCulture);
             }
         }
         
@@ -971,6 +1097,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Privacy.
+        /// </summary>
+        public static string Sw_System_PrivacyHeader {
+            get {
+                return ResourceManager.GetString("Sw_System_PrivacyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Appearance.
         /// </summary>
         public static string sw_tc_Appearance {
@@ -1012,6 +1147,15 @@ namespace Songify_Slim.Properties {
         public static string sw_tc_System {
             get {
                 return ResourceManager.GetString("sw_tc_System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Server.
+        /// </summary>
+        public static string sw_tc_WebServer {
+            get {
+                return ResourceManager.GetString("sw_tc_WebServer", resourceCulture);
             }
         }
         
@@ -1205,6 +1349,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create New Reward.
+        /// </summary>
+        public static string sw_Twitch_Rewards_CreateNewReward {
+            get {
+                return ResourceManager.GetString("sw_Twitch_Rewards_CreateNewReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically start the web server.
+        /// </summary>
+        public static string sw_WebServer_AutoStart {
+            get {
+                return ResourceManager.GetString("sw_WebServer_AutoStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Website.
         /// </summary>
         public static string sw_WebServer_OpenWebsite {
@@ -1228,6 +1390,42 @@ namespace Songify_Slim.Properties {
         public static string sw_WebServer_StartWebServer {
             get {
                 return ResourceManager.GetString("sw_WebServer_StartWebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Web Server.
+        /// </summary>
+        public static string sw_WebServer_StopWebServer {
+            get {
+                return ResourceManager.GetString("sw_WebServer_StopWebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blacklist.
+        /// </summary>
+        public static string WinTitle_Blocklist {
+            get {
+                return ResourceManager.GetString("WinTitle_Blocklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song History.
+        /// </summary>
+        public static string WinTitle_History {
+            get {
+                return ResourceManager.GetString("WinTitle_History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Queue.
+        /// </summary>
+        public static string WinTitle_Queue {
+            get {
+                return ResourceManager.GetString("WinTitle_Queue", resourceCulture);
             }
         }
     }

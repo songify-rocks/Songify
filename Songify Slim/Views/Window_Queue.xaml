@@ -4,9 +4,10 @@
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
 
                       mc:Ignorable="d"
-                      Title="Song Queue" Height="444.318" Width="489.772" WindowStyle="ToolWindow"
+                      Title="{x:Static properties:Resources.WinTitle_Queue}" Height="444.318" Width="489.772" WindowStyle="ToolWindow"
                       Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner">
     <Grid>
         <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
@@ -16,10 +17,10 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="Artists" Binding="{Binding Path=Artists}"/>
-                <DataGridTextColumn IsReadOnly="True"  Width="*" Header="Title" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn  IsReadOnly="True" Width="75" Header="Length" Binding="{Binding Path=Length}"/>
-                <DataGridTextColumn IsReadOnly="True"  Width=".5*" Header="Requester" Binding="{Binding Path=Requester}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=Artists}"/>
+                <DataGridTextColumn IsReadOnly="True"  Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=Title}"/>
+                <DataGridTextColumn  IsReadOnly="True" Width="75" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}"/>
+                <DataGridTextColumn IsReadOnly="True"  Width=".5*" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -508,4 +508,70 @@
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
     <value>demandes de chansons illimitées</value>
   </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Demandes de chansons</value>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>Voir</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Achetez-nous un café</value>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Artiste - Titre</value>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Vérifier le statut en ligne</value>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>File d'attente de chansons</value>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Longueur</value>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Demandeur</value>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Liste noire</value>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>Histoire de la chanson</value>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Confidentialité</value>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Serveur Web</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>Démarrer automatiquement le serveur Web</value>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Réinitialiser la configuration</value>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Arrêter le serveur Web</value>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>obtenir des mises à jour bêta</value>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Veuillez lier votre compte Spotify. Paramètres -&gt; Spotify</value>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Sauvez</value>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Temps</value>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Créer une nouvelle récompense</value>
+  </data>
 </root>

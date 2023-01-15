@@ -6,7 +6,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Blacklist" Height="450" Width="445.182" WindowStyle="ToolWindow"
+                      Title="{x:Static local:Resources.WinTitle_Blocklist}" Height="450" Width="445.182" WindowStyle="ToolWindow"
                       Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
     <Grid>
         <Grid.ColumnDefinitions>

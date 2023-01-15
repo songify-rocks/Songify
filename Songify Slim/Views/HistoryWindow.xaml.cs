@@ -34,9 +34,9 @@ namespace Songify_Slim
                 Tglbtn_Save.IsChecked = Settings.SaveHistory;
                 Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
-                Tglbtn_Save.Content = Settings.SaveHistory ? "Save ✔️" : "Save ❌";
+                Tglbtn_Save.Content = Settings.SaveHistory ? $"{Properties.Resources.s_Save} ✔️" : $"{Properties.Resources.s_Save} ❌";
 
-                Tglbtn_Upload.Content = Settings.UploadHistory ? "Upload ✔️" : "Upload ❌";
+                Tglbtn_Upload.Content = Settings.UploadHistory ? $"{Properties.Resources.s_Upload} ✔️" : $"{Properties.Resources.s_Upload} ❌";
 
                 // listen to changes made to the history.shr file
                 _watcher = new FileSystemWatcher

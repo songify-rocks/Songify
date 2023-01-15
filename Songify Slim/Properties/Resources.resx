@@ -629,4 +629,92 @@
     <value>unlimited song requests</value>
     <comment>ToggleSwitch Content for "unlimited song requests"</comment>
   </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Song Requests</value>
+    <comment>Menu Header for "Song Requests"</comment>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>View</value>
+    <comment>Menu Header for "View"</comment>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Buy Us A Coffee</value>
+    <comment>Menu Header for "Buy Us A Coffee"</comment>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Artist - Title</value>
+    <comment>Textblock placeholder "Artist - Title"</comment>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Check Online Status</value>
+    <comment>MenuItem Header fro "Check Online Status" in Twitch</comment>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>Song Queue</value>
+    <comment>Window Title for the Queue Window</comment>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Length</value>
+    <comment>The word "Length"</comment>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Requester</value>
+    <comment>The word "Requester"</comment>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Blacklist</value>
+    <comment>The window title for the Blocklist Window</comment>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>Song History</value>
+    <comment>Window Title for the History Window</comment>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Privacy</value>
+    <comment>The word "Privacy"</comment>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Web Server</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>Automatically start the web server</value>
+    <comment>Toggleswitch content for "Automatically start the web server"
+</comment>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Reset Config</value>
+    <comment>Button content for "Reset Config"</comment>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Stop Web Server</value>
+    <comment>Button content for "Stop Web Server"</comment>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>get beta updates</value>
+    <comment>Toggleswitch Content for "get beta updates"</comment>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Please link your Spotify account. Settings -&gt; Spotify</value>
+    <comment>Textblock content for "Please link your Spotify account Settings -&gt; Spotify"</comment>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Save</value>
+    <comment>The word "Save" as in to save in file</comment>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Upload</value>
+    <comment>The word "Upload" as in to upload to the server</comment>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Name</value>
+    <comment>The word "Name" as in name of the song (Artist + Title)</comment>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Time</value>
+    <comment>The word "Time" as in when the song was played (history)</comment>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Create New Reward</value>
+    <comment>Button content for "Create New Reward"</comment>
+  </data>
 </root>
