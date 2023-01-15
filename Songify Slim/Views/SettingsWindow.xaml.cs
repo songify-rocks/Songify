@@ -752,42 +752,52 @@ namespace Songify_Slim
             CbxRewardsSkip.Items.Clear();
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged -= CbxRewards_OnSelectionChanged;
-            List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
-            List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
-            if (rewards.Count > 0)
-            {
-                CbxRewards.Items.Add(new ComboBoxItem()
+            if (Settings.TwitchUser.BroadcasterType != "")
+                try
                 {
-                    Content = new UC_RewardItem(null, false)
-                });
-
-                CbxRewardsSkip.Items.Add(new ComboBoxItem()
-                {
-                    Content = new UC_RewardItem(null, false)
-                });
-
-                foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
-                {
-                    bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
-
-                    CbxRewards.Items.Add(new ComboBoxItem()
+                    List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
+                    List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
+                    if (rewards.Count > 0)
                     {
-                        Content = new UC_RewardItem(reward, managable)
-                    });
+                        CbxRewards.Items.Add(new ComboBoxItem()
+                        {
+                            Content = new UC_RewardItem(null, false)
+                        });
 
-                    CbxRewardsSkip.Items.Add(new ComboBoxItem()
-                    {
-                        Content = new UC_RewardItem(reward, managable)
-                    });
+                        CbxRewardsSkip.Items.Add(new ComboBoxItem()
+                        {
+                            Content = new UC_RewardItem(null, false)
+                        });
+
+                        foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+                        {
+                            bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
+
+                            CbxRewards.Items.Add(new ComboBoxItem()
+                            {
+                                Content = new UC_RewardItem(reward, managable)
+                            });
+
+                            CbxRewardsSkip.Items.Add(new ComboBoxItem()
+                            {
+                                Content = new UC_RewardItem(reward, managable)
+                            });
+                        }
+
+                        CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
+                        CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
+                    }
+                    CbxRewards.IsEnabled = true;
+                    CbxRewardsSkip.IsEnabled = true;
+                    BtnCreateNewReward.IsEnabled = true;
+                }
+                catch (Exception e)
+                {
+                    Logger.LogExc(e);
                 }
 
-                CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
-                CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
-            }
             CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged += CbxRewards_OnSelectionChanged;
-            CbxRewards.IsEnabled = true;
-            CbxRewardsSkip.IsEnabled = true;
         }
 
         private static object GetItemFromList(ItemsControl comboBox, string s)

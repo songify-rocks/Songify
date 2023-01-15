@@ -585,8 +585,8 @@ namespace Songify_Slim.Views
             }
 
             // check for update
-            AutoUpdater.Mandatory = true;
-            AutoUpdater.UpdateMode = Mode.ForcedDownload;
+            AutoUpdater.Mandatory = false;
+            AutoUpdater.UpdateMode = Mode.Normal;
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
