@@ -111,6 +111,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<bool> CheckStreamIsUp()
         {
+            if (TokenCheck == null) return false;
             GetStreamsResponse x = await _twitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                 new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
             if (x.Streams.Length == 0) return false;

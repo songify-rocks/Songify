@@ -748,6 +748,7 @@ namespace Songify_Slim
             if (TwitchHandler.TokenCheck == null)
                 return;
             CbxRewards.IsEnabled = false;
+            CbxRewardsSkip.IsEnabled = false;
             CbxRewards.Items.Clear();
             CbxRewardsSkip.Items.Clear();
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
