@@ -740,4 +740,27 @@
     <value>Commands</value>
     <comment>TabControl Header for "Commands" (Bot Responses Window)</comment>
   </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>User voted to skip the current song</value>
+      <comment>Header for the textbox when the !voteskip command has been executed</comment>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Reward for Song Requests</value>
+    <comment>Label content for "Reward for Song Request"</comment>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Reward for Song Skip</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>!ssr command moved to bot config</value>
+    <comment>Label that states "!ssr command moved to bot config"</comment>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Minimum user level required for SR</value>
+    <comment>Label for "Minum user level required for SR"</comment>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Twitch account</value>
+    <comment>Label for "Twitch Account" (without colon)</comment>
+  </data>
 </root>

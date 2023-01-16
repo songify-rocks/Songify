@@ -171,7 +171,7 @@
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="121"
                                             UpDownButtonsWidth="16" Margin="131,0,0,0" />
                         <Label Content="{x:Static local:Resources.sw_tcOutput_Format2}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"
-                           Grid.Column="0" Height="32" Width="160" />
+                           Grid.Column="0" Height="32" MinWidth="160" />
                         <TextBox x:Name="TxtbxOutputformat2" Height="26"
                         TextWrapping="NoWrap" VerticalAlignment="Center"
                         TextChanged="TxtbxOutputformat2_TextChanged" Grid.Row="2" Grid.Column="1">
@@ -220,8 +220,7 @@
                                         </Border>
                                         <StackPanel Orientation="Vertical" Margin="10,0,0,0" DockPanel.Dock="Right" VerticalAlignment="Center">
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                <Label Content="Twitch account:" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                                <TextBlock x:Name="lblTwitchName" Text="" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                <Label x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </DockPanel>
@@ -261,7 +260,7 @@
 
                                 <controls:ToggleSwitch Margin="0,4" x:Name="Chbx_TwAutoconnect"
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
-                                                   Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0"
+                                                   Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
                                 <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
                                 <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2">
@@ -303,7 +302,7 @@
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
-                                <TextBlock Text="Reward for Song Requests" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSR}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
                                 <ComboBox Grid.Row="1" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Height="23" Margin="0,0,0,6" Tag="sr" />
                                 <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top"
                                         Grid.Row="0" Grid.Column="1" Margin="0,0,0,6">
@@ -311,7 +310,7 @@
                                         <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
                                     </Button.Content>
                                 </Button>
-                                <TextBlock Text="Reward for Song Skip" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
                                 <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
@@ -371,7 +370,7 @@
                                            FontSize="12"
                                            ContentPadding="0"
                                            Width="470" Height="36" Opacity="0.1" />
-                                            <Label Content="!ssr command moved to bot config" Margin="50,0,0,4" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                                            <Label Content="{x:Static local:Resources.sw_SpotifySR_SsrMovedToBotConfig}" Margin="50,0,0,4" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
                                         </Grid>
                                         <controls:ToggleSwitch x:Name="Chbx_AutoClear"
                                                                Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
@@ -382,8 +381,8 @@
                                     </StackPanel>
                                     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                         <DockPanel>
-                                            <Label Content="Minimum user level required for SR" HorizontalAlignment="Left"
-                                   VerticalAlignment="Center" />
+                                            <Label Content="{x:Static local:Resources.Sw_Integration_MinUserLevel}" HorizontalAlignment="Left"
+                                   VerticalAlignment="Center" Padding="0,5,5,5" />
                                             <ComboBox x:Name="CbxUserLevels" Width="151" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right" />
                                         </DockPanel>
                                         <DockPanel Visibility="Visible" Margin="0,6,0,0" LastChildFill="False">

@@ -59,7 +59,7 @@
                          TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
-                <Label Content="User voted to skip the current song" HorizontalAlignment="Left" VerticalAlignment="Top"
+                <Label Content="{x:Static properties:Resources.brw_VoteSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_VoteSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />

@@ -59,8 +59,8 @@ namespace Songify_Slim
         {
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
-            if (Settings.Language == "es")
-                this.Width = 830;
+            if (Settings.Language != "es") return;
+            this.Width = this.MinWidth = 830;
         }
 
         public async void SetControls()
@@ -178,7 +178,7 @@ namespace Songify_Slim
                 if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
                 ImgTwitchProfile.ImageSource = bitmap;
-                lblTwitchName.Text = Settings.TwitchUser.DisplayName;
+                lblTwitchName.Content = $"{Properties.Resources.sw_Integration_Twitch}: {Settings.TwitchUser.DisplayName}";
                 BtnLogInTwitch.Visibility = Visibility.Collapsed;
                 PnlTwich.Visibility = Visibility.Visible;
                 await LoadRewards();
@@ -872,7 +872,7 @@ namespace Songify_Slim
             else
                 GlobalObjects.WebServer.StopWebServer();
 
-            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer; 
+            BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
         }
 
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)

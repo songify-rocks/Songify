@@ -277,6 +277,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User voted to skip the current song.
+        /// </summary>
+        public static string brw_VoteSkip {
+            get {
+                return ResourceManager.GetString("brw_VoteSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string bw_btnAdd {
@@ -872,6 +881,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Minimum user level required for SR.
+        /// </summary>
+        public static string Sw_Integration_MinUserLevel {
+            get {
+                return ResourceManager.GetString("Sw_Integration_MinUserLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NB Username (Twitch Username).
         /// </summary>
         public static string sw_Integration_NBWatermark {
@@ -998,6 +1016,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Twitch account.
+        /// </summary>
+        public static string sw_Integration_Twitch {
+            get {
+                return ResourceManager.GetString("sw_Integration_Twitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Channel to join.
         /// </summary>
         public static string sw_Integration_TwitchChWatermark {
@@ -1039,6 +1066,24 @@ namespace Songify_Slim.Properties {
         public static string Sw_intergration_AutoAnnounce {
             get {
                 return ResourceManager.GetString("Sw_intergration_AutoAnnounce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reward for Song Skip.
+        /// </summary>
+        public static string sw_Spotify_RewardSkip {
+            get {
+                return ResourceManager.GetString("sw_Spotify_RewardSkip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reward for Song Requests.
+        /// </summary>
+        public static string sw_Spotify_RewardSR {
+            get {
+                return ResourceManager.GetString("sw_Spotify_RewardSR", resourceCulture);
             }
         }
         
@@ -1111,6 +1156,15 @@ namespace Songify_Slim.Properties {
         public static string sw_SpotifySR_SRReward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SRReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to !ssr command moved to bot config.
+        /// </summary>
+        public static string sw_SpotifySR_SsrMovedToBotConfig {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_SsrMovedToBotConfig", resourceCulture);
             }
         }
         
