@@ -59,7 +59,7 @@ namespace Songify_Slim
         {
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
-            if (Settings.Language != "es") return;
+            if (Settings.Language == "en") return;
             this.Width = this.MinWidth = 830;
         }
 
@@ -711,6 +711,8 @@ namespace Songify_Slim
 
         private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
             UC_RewardItem item = ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content as UC_RewardItem);
             if (item == null)
                 return;

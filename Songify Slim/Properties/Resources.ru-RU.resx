@@ -592,4 +592,22 @@
   <data name="brw_tc_Commands" xml:space="preserve">
     <value>Команды</value>
   </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>Пользователь проголосовал за пропуск текущей песни</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Награда за запросы песен</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Награда за пропуск песни</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>Команда !ssr перемещена в конфигурацию бота</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Минимальный уровень пользователя, необходимый для SR</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Twitch-аккаунт</value>
+  </data>
 </root>

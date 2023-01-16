@@ -515,7 +515,7 @@
     <value>Anzeige</value>
   </data>
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Kaufen Sie uns einen Kaffee</value>
+    <value>Kauf uns doch 'n Kaffee!</value>
   </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Künstler - Titel</value>
@@ -591,5 +591,23 @@
   </data>
   <data name="brw_tc_Commands" xml:space="preserve">
     <value>Befehle</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>Der Benutzer hat dafür gestimmt, den aktuellen Song zu überspringen</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Belohnung für Songanfragen</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Belohnung für Song-Skip</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>!ssr wurde in die Bot-Konfiguration verschoben</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Für SR erforderliches Mindestbenutzerlevel</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Twitch-Konto</value>
   </data>
 </root>
