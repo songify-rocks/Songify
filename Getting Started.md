@@ -39,7 +39,7 @@ Table of Contents for Songify v.1.3.9
 
 # Getting Started
 Download Songify from our Github [here](https://github.com/songify-rocks/Songify/releases/latest). Make sure to download the file called `Songify.zip` as the other files only contain the source code. Once downloaded extract the zip file and run `Songify.exe`. 
-On the first start of the app you will be prompted to link your Spotify account. In order to do so it is advised that you create you own Spotify API Access explained as explained [here](#linking-spotify). Before you do though, please read the entirety of this document as it contains important information about the app and how to use it.
+On the first start of the app you will be prompted to link your Spotify account. In order to do so it is advised that you create you own Spotify API Access as explained [here](#linking-spotify). Before you do though, please read the entirety of this document as it contains important information about the app and how to use it.
 
 ---
 
