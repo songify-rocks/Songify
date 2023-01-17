@@ -763,4 +763,8 @@
     <value>Twitch account</value>
     <comment>Label for "Twitch Account" (without colon)</comment>
   </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Logout</value>
+    <comment>The word logout as in "log out of twitch"</comment>
+  </data>
 </root>

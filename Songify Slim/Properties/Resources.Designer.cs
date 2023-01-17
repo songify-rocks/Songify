@@ -1448,6 +1448,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string sw_Twitch_LogOut {
+            get {
+                return ResourceManager.GetString("sw_Twitch_LogOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create New Reward.
         /// </summary>
         public static string sw_Twitch_Rewards_CreateNewReward {

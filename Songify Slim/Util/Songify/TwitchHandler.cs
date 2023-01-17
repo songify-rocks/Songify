@@ -94,6 +94,7 @@ namespace Songify_Slim.Util.Songify
                 Settings.Settings.TwitchAccessToken = token;
                 await InitializeApi();
 
+                Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     foreach (Window window in Application.Current.Windows)

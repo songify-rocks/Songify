@@ -932,5 +932,14 @@ namespace Songify_Slim
         {
             Settings.TwSrUnlimitedSr = (bool)ToggleSwitchUnlimitedSR.IsOn;
         }
+
+        private void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
+        {
+            Settings.TwitchAccessToken = "";
+            Settings.TwitchUser = null;
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
+
+        }
     }
 }

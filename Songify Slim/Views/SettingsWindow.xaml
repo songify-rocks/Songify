@@ -219,9 +219,16 @@
                                             </Border.Background>
                                         </Border>
                                         <StackPanel Orientation="Vertical" Margin="10,0,0,0" DockPanel.Dock="Right" VerticalAlignment="Center">
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                                <Label x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                                            </StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <Button Grid.Column="1"  x:Name="BtnTwitchLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}">
+                                                    <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
+                                                </Button>
+                                            </Grid>
                                         </StackPanel>
                                     </DockPanel>
                                     <Button x:Name="BtnLogInTwitch" Click="BtnLogInTwitch_Click" VerticalAlignment="Bottom" Grid.Row="1">
