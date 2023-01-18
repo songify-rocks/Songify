@@ -58,7 +58,7 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
             //s.Add("user:read:blocked_users");
             //s.Add("user:read:broadcast");
             //s.Add("user:read:email");
-            //s.Add("channel:moderate");
+            s.Add("channel:moderate");
             //s.Add("whispers:read");
             //s.Add("whispers:edit");
 

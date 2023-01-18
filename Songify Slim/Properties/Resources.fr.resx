@@ -610,4 +610,10 @@
   <data name="sw_Integration_Twitch" xml:space="preserve">
     <value>Compte Twitch</value>
   </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Se déconnecter</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Afin de pouvoir rembourser des points, la récompense doit être créée via Songify. Sélectionnez une récompense gérable ou créez-en une nouvelle.</value>
+  </data>
 </root>

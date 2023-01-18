@@ -35,6 +35,8 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Window = System.Windows.Window;
 
 namespace Songify_Slim
 {
@@ -47,6 +49,28 @@ namespace Songify_Slim
         private List<CustomReward> CustomRewardsManagable = new List<CustomReward>();
         private List<CustomReward> CustomRewards = new List<CustomReward>();
         private List<int> refundConditons = new List<int>();
+
+        //generate a bool variable that can be bound to UI elements 
+        private bool _isManageable;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsManageable
+        {
+            get { return _isManageable; }
+            set
+            {
+                _isManageable = value;
+                OnPropertyChanged("IsManageable");
+            }
+        }
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private enum RewardActions
         {
@@ -722,8 +746,9 @@ namespace Songify_Slim
             {
                 case "sr":
                     {
-                        if (rewardId != null)
-                            Settings.TwRewardId = rewardId;
+                        if (rewardId == null) break;
+                        Settings.TwRewardId = rewardId;
+                        SetCheckBoxEnabledState(item.IsManagable);
                         break;
                     }
                 case "skip":
@@ -732,6 +757,15 @@ namespace Songify_Slim
                             Settings.TwRewardSkipId = rewardId;
                         break;
                     }
+            }
+        }
+
+        private void SetCheckBoxEnabledState(bool itemIsManagable)
+        {
+            GridNonManageable.Visibility = itemIsManagable ? Visibility.Collapsed : Visibility.Visible;
+            foreach (CheckBox cb in GlobalObjects.FindVisualChildren<CheckBox>(GrdTwitchReward))
+            {
+                cb.IsEnabled = itemIsManagable;
             }
         }
 
@@ -791,6 +825,7 @@ namespace Songify_Slim
                         }
 
                         CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
+                        SetCheckBoxEnabledState(CbxRewards.SelectedItem != null && ((UC_RewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable);
                         CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
                     }
                     CbxRewards.IsEnabled = true;

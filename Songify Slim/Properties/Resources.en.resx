@@ -592,4 +592,28 @@
   <data name="s_Time" xml:space="preserve">
     <value>Time</value>
   </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one.</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Twitch account</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Minimum user level required for SR</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>!ssr command moved to bot config</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Reward for Song Skip</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Reward for Song Requests</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>User voted to skip the current song</value>
+  </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Logout</value>
+  </data>
 </root>

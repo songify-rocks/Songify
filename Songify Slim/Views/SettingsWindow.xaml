@@ -8,7 +8,8 @@
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
                       Title="Settings" Height="434" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
-                      ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing">
+                      ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing"
+                     >
     <Grid>
         <TabControl Margin="10,0,10,0" TabStripPlacement="Left">
             <TabItem Header="{x:Static local:Resources.sw_tc_System}">
@@ -322,6 +323,9 @@
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
                                 <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
+                                <Grid x:Name="GridNonManageable" Grid.Row="5" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.Window.Background}" Grid.RowSpan="5" Grid.ColumnSpan="2" Panel.ZIndex="1">
+                                    <TextBlock Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"></TextBlock>
+                                </Grid>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
                                     <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
                                 </CheckBox>

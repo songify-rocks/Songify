@@ -926,6 +926,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one..
+        /// </summary>
+        public static string sw_Integration_RefundDisclaimer {
+            get {
+                return ResourceManager.GetString("sw_Integration_RefundDisclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No song was found.
         /// </summary>
         public static string Sw_Integration_RefundNoSongFound {

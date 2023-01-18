@@ -610,4 +610,10 @@
   <data name="sw_Integration_Twitch" xml:space="preserve">
     <value>Twitch-аккаунт</value>
   </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Выйти</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Чтобы иметь возможность возмещать баллы, вознаграждение должно быть создано через Songify. Выберите награду, которой можно управлять, или создайте новую.</value>
+  </data>
 </root>

@@ -515,7 +515,7 @@
     <value>Anzeige</value>
   </data>
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Kauf uns doch 'n Kaffee!</value>
+    <value>Kauf uns doch 'n Kaffee</value>
   </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Künstler - Titel</value>
@@ -609,5 +609,11 @@
   </data>
   <data name="sw_Integration_Twitch" xml:space="preserve">
     <value>Twitch-Konto</value>
+  </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Ausloggen</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Um Punkte erstatten zu können, muss die Belohnung über Songify erstellt werden. Wähle eine Prämie aus die von Songify verwaltet werden kann oder erstelle eine neue.</value>
   </data>
 </root>

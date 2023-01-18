@@ -23,11 +23,13 @@ namespace Songify_Slim.UserControls
     public partial class UC_RewardItem
     {
         public CustomReward Reward;
+        public bool IsManagable;
 
         public UC_RewardItem(CustomReward customReward, bool managable)
         {
             InitializeComponent();
             this.Reward = customReward;
+            this.IsManagable = managable;
             if (Reward == null)
             {
                 TbRewardCost.Text = "";

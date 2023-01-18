@@ -767,4 +767,8 @@
     <value>Logout</value>
     <comment>The word logout as in "log out of twitch"</comment>
   </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one.</value>
+    <comment>Short disclaimer that hides Refund Conditions if the Reward is not managaeable by Songify.</comment>
+  </data>
 </root>
