@@ -592,4 +592,28 @@
   <data name="brw_tc_Commands" xml:space="preserve">
     <value>Comandos</value>
   </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>Un usuario votó para saltar la canción</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Recompensa para Solicitar Canción</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Recompensa para Saltar Canción</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>!ssr fue movido a la configuración del bot</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Nivel mínimo de usuario requerido para usar SR</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Cuenta de Twitch</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Para recibir los puntos reembolsados, la recompensa debe ser creada desde Songify. Selecciona una recompensa o crea una nueva.</value>
+  </data>
 </root>
