@@ -13,6 +13,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Util.General;
 using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify
@@ -38,7 +39,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.UseOwnApp)
             {
                 _auth = new TokenSwapAuth(
-                    "https://songify.rocks/auth/auth.php?id=" + Settings.Settings.ClientId +
+                    $"{GlobalObjects._baseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
@@ -47,7 +48,7 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 _auth = new TokenSwapAuth(
-                    "https://songify.rocks/auth/_index.php",
+                    $"{GlobalObjects._baseUrl}/auth/_index.php",
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
                 );

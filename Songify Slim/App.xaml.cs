@@ -7,8 +7,12 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Threading;
+using ControlzEx.Theming;
 using Songify_Slim.Views;
+using System.Runtime.InteropServices;
+using Common.Logging.Configuration;
 
 namespace Songify_Slim
 {
@@ -18,7 +22,11 @@ namespace Songify_Slim
     public partial class App : Application
     {
         private static Mutex _mutex;
-
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Logger.LogExc(e.Exception);
@@ -97,7 +105,7 @@ namespace Songify_Slim
             //        UserBlacklist = new List<string>(),
             //        Uuid = ""
             //    });
-            
+
 
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en"); 
@@ -106,12 +114,26 @@ namespace Songify_Slim
         protected override void OnStartup(StartupEventArgs e)
         {
             const string appName = "Songify";
-            bool createdNew;
 
-            _mutex = new Mutex(true, appName, out createdNew);
+            _mutex = new Mutex(true, appName, out bool createdNew);
             if (!createdNew)
+            {
+   
+                //bring the already running instance to show
+                Process[] processes = Process.GetProcessesByName(appName);
+                if (processes.Length > 0)
+                {
+                    foreach (Process process in processes)
+                    {
+                        if (process.MainWindowHandle == IntPtr.Zero) continue;
+                        ShowWindow(process.MainWindowHandle, 9); //SW_RESTORE = 9
+                        SetForegroundWindow(process.MainWindowHandle);
+                    }
+                }
                 //app is already running! Exiting the application
                 Current.Shutdown();
+            }
+
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;

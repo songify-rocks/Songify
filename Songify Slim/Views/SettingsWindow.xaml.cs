@@ -266,7 +266,7 @@ namespace Songify_Slim
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://songify.rocks/faq.html#appid");
+            Process.Start($"{GlobalObjects._baseUrl}/faq.html#appid");
         }
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
@@ -310,7 +310,7 @@ namespace Songify_Slim
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            Clipboard.SetDataObject("https://songify.rocks/getsong.php?id=" + Settings.Uuid);
+            Clipboard.SetDataObject($"{GlobalObjects._baseUrl}/getsong.php?id=" + Settings.Uuid);
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
@@ -332,7 +332,7 @@ namespace Songify_Slim
             AutoUpdater.UpdateMode = Mode.ForcedDownload;
             AutoUpdater.RunUpdateAsAdmin = false;
 
-            AutoUpdater.Start("https://songify.rocks/update.xml");
+            AutoUpdater.Start($"{GlobalObjects._baseUrl}/update.xml");
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

@@ -13,6 +13,7 @@ namespace Songify_Slim.Util.General
 {
     public static class GlobalObjects
     {
+        public const string _baseUrl = "https://songify.overcode.tv";
         public static WebServer WebServer = new WebServer();
         public static List<RequestObject> ReqList = new List<RequestObject>();
         public static List<RequestObject> SkipList = new List<RequestObject>();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Songify_Slim.Util.General;
+using System;
 using System.Net;
 
 namespace Songify_Slim.Util.Songify
@@ -38,7 +39,7 @@ namespace Songify_Slim.Util.Songify
                                 "&requester=" + WebUtility.UrlEncode(requester) +
                                 "&played=" + WebUtility.UrlEncode(played) +
                                 "&o=" + WebUtility.UrlEncode(o);
-                string url = "http://songify.rocks/add_queue.php/?id=" + extras;
+                string url = $"{GlobalObjects._baseUrl}/add_queue.php/?id=" + extras;
                 WebUtility.UrlEncode(url);
 
                 // Create a new 'HttpWebRequest' object to the mentioned URL.

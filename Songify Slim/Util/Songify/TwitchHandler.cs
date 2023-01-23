@@ -386,6 +386,8 @@ namespace Songify_Slim.Util.Songify
             Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
             Logger.LogStr($"PUBSUB: Error");
             Logger.LogExc(e.Exception);
+            _twitchPubSub.Disconnect();
+            _twitchPubSub.Connect();
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)

@@ -1,4 +1,5 @@
-﻿using Songify_Slim.Util.Settings;
+﻿using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -241,7 +242,7 @@ namespace Songify_Slim
 
         private void Btn_CpyHistoryURL_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetDataObject("https://songify.rocks/history.php?id=" + Settings.Uuid);
+            Clipboard.SetDataObject($"{GlobalObjects._baseUrl}/history.php?id=" + Settings.Uuid);
             Lbl_Status.Content = "History URL copied to Clipboard";
         }
 

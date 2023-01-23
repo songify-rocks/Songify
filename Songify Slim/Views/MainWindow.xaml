@@ -84,7 +84,7 @@
         </Style>
         <Style TargetType="{x:Type dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
     </controls:MetroWindow.Resources>
-    <Grid>
+    <Grid >
         <Grid x:Name="grdUpdate" Margin="0,34,0,20" Panel.ZIndex="100" Visibility="Hidden">
             <Grid.Background>
                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.ThemeBackground}"/>
@@ -104,7 +104,8 @@
                 <Button x:Name="btnUpdateOK" Content="OK" Width="100" Click="btnUpdateOK_Click"/>
             </StackPanel>
         </Grid>
-        <StackPanel Orientation="Horizontal" Margin="0,34,0,0">
+        <StackPanel Orientation="Horizontal" Margin="0,34,0,0" >
+
             <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
                    Margin="10,11,0,0" Visibility="Hidden" />
             <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
@@ -209,7 +210,7 @@
                         <StackPanel Orientation="Horizontal">
                             <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©"/>
                             <StatusBarItem x:Name="LblCopyrightLink" FontStyle="Italic">
-                                <Hyperlink  NavigateUri="https://songify.rocks" RequestNavigate="Hyperlink_RequestNavigate"
+                                <Hyperlink  NavigateUri="https://songify.overcode.tv" RequestNavigate="Hyperlink_RequestNavigate"
                                     FontStyle="Normal">
                                     <Hyperlink.Foreground>
                                         <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}"/>
@@ -222,7 +223,7 @@
                 </DockPanel>
             </Border>
         </StatusBar>
-        <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,0,0">
+        <Menu VerticalAlignment="Top" Padding="0" Margin="0,0,0,0" Background="Transparent">
             <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />

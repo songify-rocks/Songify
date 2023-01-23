@@ -121,7 +121,7 @@ namespace Songify_Slim.Views
                 string extras = Settings.Uuid +
                                 "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
                                 "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8);
-                string url = "https://songify.rocks/song.php?id=" + extras;
+                string url = $"{GlobalObjects._baseUrl}/song.php?id=" + extras;
                 Console.WriteLine(url);
                 // Create a new 'HttpWebRequest' object to the mentioned URL.
                 HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
@@ -196,7 +196,7 @@ namespace Songify_Slim.Views
 
         private void BtnFAQ_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://songify.rocks/faq.html");
+            Process.Start($"{GlobalObjects._baseUrl}/faq.html");
         }
 
         private void BtnGitHub_Click(object sender, RoutedEventArgs e)
@@ -220,7 +220,7 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Tag.ToString().Contains("Browser"))
             {
-                Process.Start("https://songify.rocks/history.php?id=" + Settings.Uuid);
+                Process.Start($"{GlobalObjects._baseUrl}/history.php?id=" + Settings.Uuid);
             }
         }
 
@@ -592,8 +592,8 @@ namespace Songify_Slim.Views
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             //AutoUpdater.ReportErrors = true;
             AutoUpdater.Start(Settings.BetaUpdates
-                ? "https://songify.rocks/update-beta.xml"
-                : "https://songify.rocks/update.xml");
+                ? $"{GlobalObjects._baseUrl}/update-beta.xml"
+                : $"{GlobalObjects._baseUrl}/update.xml");
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Player;
@@ -680,7 +680,7 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Header.ToString().Contains("Browser"))
             {
-                Process.Start("https://songify.rocks/queue.php?id=" + Settings.Uuid);
+                Process.Start($"{GlobalObjects._baseUrl}/queue.php?id=" + Settings.Uuid);
             }
         }
 
@@ -1193,7 +1193,7 @@ namespace Songify_Slim.Views
                     {
                         string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
                                         HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
-                        string url = "https://songify.rocks/song_history.php/?id=" + extras;
+                        string url = $"{GlobalObjects._baseUrl}/song_history.php/?id=" + extras;
                         // Create a new 'HttpWebRequest' object to the mentioned URL.
                         HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                         myHttpWebRequest.UserAgent = Settings.WebUserAgent;

@@ -170,7 +170,7 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
                         <div class=""card"">
                         <div style=""border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;"">
                           <div class=""content"">
-                              <img src=""https://songify.rocks/img/ms-icon-310x310.png"" style="" height: 50px;""/> + <img src=""https://songify.rocks/img/TwitchGlitchPurple.png"" style="" height: 50px;""/>
+                              <img src=""https://songify.overcode.tv/img/ms-icon-310x310.png"" style="" height: 50px;""/> + <img src=""https://songify.overcode.tv/img/TwitchGlitchPurple.png"" style="" height: 50px;""/>
                           </div>
                         </div>
                           <h1>Success</h1> 
