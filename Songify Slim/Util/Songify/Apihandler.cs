@@ -207,40 +207,70 @@ namespace Songify_Slim.Util.Songify
 
         public static SearchItem GetArtist(string searchStr)
         {
-            // returns Artist matching the search string
-            return Spotify.SearchItems(searchStr, SearchType.Artist, 10);
+            try
+            {
+                // returns Artist matching the search string
+                return Spotify.SearchItems(searchStr, SearchType.Artist, 10);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public static ErrorResponse AddToQ(string songUri)
         {
-
-            // Tries to add a song to the current playback queue
-            ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
-
-            // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times. 
-            if (!error.HasError()) return error;
-            if (error.Error.Status != 503) return error;
-            for (int i = 0; i < 5; i++)
+            try
             {
-                Thread.Sleep(1000);
-                error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
-                if (!error.HasError())
-                    break;
+                // Tries to add a song to the current playback queue
+                ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
+
+                // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times. 
+                if (!error.HasError()) return error;
+                if (error.Error.Status != 503) return error;
+                for (int i = 0; i < 5; i++)
+                {
+                    Thread.Sleep(1000);
+                    error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
+                    if (!error.HasError())
+                        break;
+                }
+                return error;
             }
-            return error;
+            catch (Exception e)
+            {
+                return null;
+            }
+
         }
 
         public static FullTrack GetTrack(string id)
         {
-            var x = Spotify.GetPrivateProfile().Country;
-            // Returns a Track-Object matching the song id
-            return Spotify.GetTrack(id, x);
+            try
+            {
+                var x = Spotify.GetPrivateProfile().Country;
+                // Returns a Track-Object matching the song id
+                return Spotify.GetTrack(id, x);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+
         }
 
         public static SearchItem FindTrack(string searchQuery)
         {
             // Returns a Track-Object matching a search query (artist - title). It only returns the first match which is found
-            return Spotify.SearchItems(searchQuery, SearchType.Track, 1);
+            try
+            {
+                return Spotify.SearchItems(searchQuery, SearchType.Track, 1);
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static bool GetPlaybackState()
@@ -251,7 +281,15 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<ErrorResponse> SkipSong()
         {
-            return await Spotify.SkipPlaybackToNextAsync();
+            try
+            {
+                return await Spotify.SkipPlaybackToNextAsync();
+
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public static void PlaySong(string trackId)
