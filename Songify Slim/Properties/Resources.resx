@@ -771,4 +771,20 @@
     <value>In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one.</value>
     <comment>Short disclaimer that hides Refund Conditions if the Reward is not managaeable by Songify.</comment>
   </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Bot Account</value>
+    <comment>Messagebox Header that says "Bot Account"</comment>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Successfully linked to {account}. Would you also like to use this account as the chat bot?</value>
+    <comment>Text that displays after linking to twitch that asks if this accoutn should also be used as the bot account</comment>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Yes</value>
+    <comment>The word "Yes" on a messagebox as in Yes/Confirm/Affirmative</comment>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>No</value>
+    <comment>The word "No" in a MessageBox Button as in No/Negaitve/Decline</comment>
+  </data>
 </root>

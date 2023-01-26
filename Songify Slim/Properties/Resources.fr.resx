@@ -616,4 +616,16 @@
   <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
     <value>Afin de pouvoir rembourser des points, la récompense doit être créée via Songify. Sélectionnez une récompense gérable ou créez-en une nouvelle.</value>
   </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Compte robot</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Lié avec succès à {account}. Souhaitez-vous également utiliser ce compte comme chat bot ?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Oui</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>Non</value>
+  </data>
 </root>

@@ -616,4 +616,16 @@
   <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
     <value>Чтобы иметь возможность возмещать баллы, вознаграждение должно быть создано через Songify. Выберите награду, которой можно управлять, или создайте новую.</value>
   </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Бот-аккаунт</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Успешно связано с {account}. Вы также хотите использовать эту учетную запись в качестве чат-бота?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
 </root>

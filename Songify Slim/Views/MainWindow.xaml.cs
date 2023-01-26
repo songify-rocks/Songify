@@ -31,6 +31,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using static ICSharpCode.AvalonEdit.Document.TextDocumentWeakEventManager;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
@@ -48,7 +49,7 @@ namespace Songify_Slim.Views
     public partial class MainWindow
     {
         #region Variables
-
+        private FileSystemWatcher _watcher;
         private Window_Console secondaryWindow;
         bool updated;
         public NotifyIcon notifyIcon = new NotifyIcon();
@@ -117,21 +118,7 @@ namespace Songify_Slim.Views
                 return;
             try
             {
-                // extras are UUID and Songinfo
-                string extras = Settings.Uuid +
-                                "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
-                                "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8);
-                string url = $"{GlobalObjects._baseUrl}/song.php?id=" + extras;
-                Console.WriteLine(url);
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.WebUserAgent;
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                    Logger.LogStr("MAIN: Upload Song:" + myHttpWebResponse.StatusCode);
-
-                myHttpWebResponse.Close();
+                WebHelper.UploadSong(currSong, coverUrl);
             }
             catch (Exception ex)
             {
@@ -516,12 +503,6 @@ namespace Songify_Slim.Views
             IconWebServer.Foreground = Brushes.IndianRed;
             IconWebSpotify.Foreground = Brushes.IndianRed;
 
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log"))
-                File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/log.log");
-
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log"))
-                File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/Debug.log");
-
             if (Settings.AutoClearQueue)
             {
                 GlobalObjects.ReqList.Clear();
@@ -584,6 +565,8 @@ namespace Songify_Slim.Views
                 Settings.Telemetry = false;
             }
 
+
+
             // check for update
             AutoUpdater.Mandatory = false;
             AutoUpdater.UpdateMode = Mode.Normal;
@@ -623,6 +606,7 @@ namespace Songify_Slim.Views
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
+            WebHelper.SendTelemetry();
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -796,7 +780,6 @@ namespace Songify_Slim.Views
         {
             TwitchHandler.APIConnect();
         }
-
 
         protected virtual bool IsFileLocked(FileInfo file)
         {
@@ -1191,19 +1174,7 @@ namespace Songify_Slim.Views
                     // Upload Song
                     try
                     {
-                        string extras = Settings.Uuid + "&tst=" + unixTimestamp + "&song=" +
-                                        HttpUtility.UrlEncode(CurrSong.Trim(), Encoding.UTF8);
-                        string url = $"{GlobalObjects._baseUrl}/song_history.php/?id=" + extras;
-                        // Create a new 'HttpWebRequest' object to the mentioned URL.
-                        HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        myHttpWebRequest.UserAgent = Settings.WebUserAgent;
-
-                        // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                        HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                        if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                            Logger.LogStr("MAIN: Upload Song:" + myHttpWebResponse.StatusCode);
-
-                        myHttpWebResponse.Close();
+                        WebHelper.UploadHistory(CurrSong.Trim(), unixTimestamp);
                     }
                     catch (Exception ex)
                     {

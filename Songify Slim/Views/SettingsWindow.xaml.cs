@@ -36,6 +36,7 @@ using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Button = System.Windows.Controls.Button;
 using Window = System.Windows.Window;
 
 namespace Songify_Slim
@@ -779,19 +780,21 @@ namespace Songify_Slim
 
         private async void BtnUpdateRewards_Click(object sender, RoutedEventArgs e)
         {
+            (sender as Button).IsEnabled = false;
             await LoadRewards();
+            (sender as Button).IsEnabled = true;
         }
 
-        private async Task LoadRewards()
+        public async Task LoadRewards()
         {
             if (TwitchHandler.TokenCheck == null)
                 return;
             CbxRewards.IsEnabled = false;
             CbxRewardsSkip.IsEnabled = false;
-            CbxRewards.Items.Clear();
-            CbxRewardsSkip.Items.Clear();
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged -= CbxRewards_OnSelectionChanged;
+            CbxRewards.Items.Clear();
+            CbxRewardsSkip.Items.Clear();
             if (Settings.TwitchUser.BroadcasterType != "")
                 try
                 {
@@ -841,7 +844,7 @@ namespace Songify_Slim
             CbxRewardsSkip.SelectionChanged += CbxRewards_OnSelectionChanged;
         }
 
-        private static object GetItemFromList(ItemsControl comboBox, string s)
+        public object GetItemFromList(ItemsControl comboBox, string s)
         {
             return comboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UC_RewardItem)item.Content).Reward != null && ((UC_RewardItem)item.Content).Reward.Id == s);
         }

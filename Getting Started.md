@@ -33,8 +33,8 @@ Table of Contents for Songify v.1.3.9
     - [Songify is not showing the song cover](#songify-is-not-showing-the-song-cover)
     - [Song requests are not working](#song-requests-are-not-working)
     - [Songify uses a lot of CPU when grabbing info from Chrome](#songify-uses-a-lot-of-cpu-when-grabbing-info-from-chrome)
-    - ["INVALID CLIENT: Failed to get client" when trying to link my Spotify account](#invalid-client-failed-to-get-client-when-trying-to-link-my-spotify-account)
-    - ["INVALID_CLIENT: Invalid redirect URI" when trying to link my Spotify account](#invalid_client-invalid-redirect-uri-when-trying-to-link-my-spotify-account)
+    - [`INVALID CLIENT: Failed to get client` when trying to link my Spotify account](#invalid-client-failed-to-get-client-when-trying-to-link-my-spotify-account)
+    - [`INVALID_CLIENT: Invalid redirect URI` when trying to link my Spotify account](#invalid_client-invalid-redirect-uri-when-trying-to-link-my-spotify-account)
 
 
 # Getting Started
@@ -185,13 +185,15 @@ In order to have song requests working you need to authenticate to the Spotify A
 6. Close the settings window, this will prompt for a restart of the app (click yes).
 7. Now go to Settings -> Spotify -> Link to link your Spotify account.
 8. If everything worked it should say "Linked account: Your Spotify username" and show your user profile picture.
+[Video](https://songify.overcode.tv/medai/video/spotify_api.webm)
+
 
 ## Twitch
 In order to have song requests working you need to authenticate to the Twitch API.
 1. Go to settings -> twitch and click on "Login with Twitch".
 2. Authorize the songify app.
 3. You'll get redirected to a success page.
-4. Go back to the settings window and fill in account name, oAuth Token and channel to join with your credentials. If you want to use a different account, for example your own bot account, make sure to get the oAuth token for that account. You want to enable autoconnect.
+4. Go back to the settings window and fill in account name and oAuth Token with your credentials. If you want to use a different account, for example your own bot account, make sure to get the oAuth token for that account. You want to enable autoconnect.
 
 ## Song Requests
 Song requests only work with Spotify Premium.

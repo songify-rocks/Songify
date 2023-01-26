@@ -616,4 +616,16 @@
   <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
     <value>Um Punkte erstatten zu können, muss die Belohnung über Songify erstellt werden. Wähle eine Prämie aus die von Songify verwaltet werden kann oder erstelle eine neue.</value>
   </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Bot-Konto</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Erfolgreich mit {account} verknüpft. Möchten Sie dieses Konto auch als Chatbot verwenden?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>Nein</value>
+  </data>
 </root>

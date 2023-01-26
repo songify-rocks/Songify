@@ -86,6 +86,8 @@ namespace Songify_Slim.Util.Songify
                         return;
 
                     _lastToken = await _auth.ExchangeCodeAsync(response.Code);
+                    if (_lastToken == null)
+                        return;
                     // Save tokens
                     Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
                     Settings.Settings.SpotifyAccessToken = _lastToken.AccessToken;
@@ -214,7 +216,7 @@ namespace Songify_Slim.Util.Songify
 
             // Tries to add a song to the current playback queue
             ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
-            
+
             // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times. 
             if (!error.HasError()) return error;
             if (error.Error.Status != 503) return error;

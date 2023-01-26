@@ -448,6 +448,42 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bot Account.
+        /// </summary>
+        public static string msgbx_BotAccount {
+            get {
+                return ResourceManager.GetString("msgbx_BotAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string msgbx_No {
+            get {
+                return ResourceManager.GetString("msgbx_No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully linked to {account}. Would you also like to use this account as the chat bot?.
+        /// </summary>
+        public static string msgbx_UseAsBotAccount {
+            get {
+                return ResourceManager.GetString("msgbx_UseAsBotAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string msgbx_Yes {
+            get {
+                return ResourceManager.GetString("msgbx_Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
         /// </summary>
         public static string mw_LiveOutputLinkSpotify {

@@ -616,4 +616,16 @@
   <data name="sw_Twitch_LogOut" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Bot Account</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Successfully linked to {account}. Would you also like to use this account as the chat bot?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
 </root>

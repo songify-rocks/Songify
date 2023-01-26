@@ -8,7 +8,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
+using System.Windows;
 using System.Windows.Media;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
@@ -95,14 +98,45 @@ namespace Songify_Slim.Util.Songify
                 await InitializeApi();
 
                 Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
-                Application.Current.Dispatcher.Invoke(() =>
+                bool shownInSettings = false;
+                await Application.Current.Dispatcher.Invoke(async () =>
                 {
                     foreach (Window window in Application.Current.Windows)
-                        if (window.GetType() == typeof(Window_Settings))
+                    {
+                        if (window.GetType() != typeof(Window_Settings)) continue;
+                        await ((Window_Settings)window).ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", Settings.Settings.TwitchUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                         {
-                            ((Window_Settings)window).SetControls();
-                            break;
-                        }
+                            AffirmativeButtonText = Properties.Resources.msgbx_Yes,
+                            NegativeButtonText = Properties.Resources.msgbx_No,
+                            DefaultButtonFocus = MessageDialogResult.Affirmative
+                        }).ContinueWith(x =>
+                        {
+                            if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
+                            Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
+                            Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
+
+                            return Task.CompletedTask;
+                        });
+                        ((Window_Settings)window).SetControls();
+                        shownInSettings = true;
+                        break;
+                    }
+                    if (!shownInSettings)
+                    {
+                        (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", Settings.Settings.TwitchUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                        {
+                            AffirmativeButtonText = Properties.Resources.msgbx_Yes,
+                            NegativeButtonText = Properties.Resources.msgbx_No,
+                            DefaultButtonFocus = MessageDialogResult.Affirmative
+                        }).ContinueWith(x =>
+                        {
+                            if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
+                            Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
+                            Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
+
+                            return Task.CompletedTask;
+                        });
+                    }
                 });
             };
 

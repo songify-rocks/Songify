@@ -104,14 +104,17 @@
                 <Button x:Name="btnUpdateOK" Content="OK" Width="100" Click="btnUpdateOK_Click"/>
             </StackPanel>
         </Grid>
-        <StackPanel Orientation="Horizontal" Margin="0,34,0,0" >
-
-            <Image x:Name="img_cover" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
-                   Margin="10,11,0,0" Visibility="Hidden" />
-            <TextBlock x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
+        <Grid VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="img_cover" Grid.Column="0" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
+                   Margin="10,0,0,0" Visibility="Hidden" />
+            <TextBlock Grid.Column="1" x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
                        Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"
                        MaxWidth="400" MaxHeight="185" />
-        </StackPanel>
+        </Grid>
         <StatusBar x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0"
                    ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False" Background="{DynamicResource MahApps.Brushes.Control.Background}">
             <StatusBarItem Padding="3,0,0,0" Background="{DynamicResource MahApps.Brushes.Control.Background}">
@@ -275,7 +278,7 @@
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconForkAwesome Kind="Buymeacoffee" Margin="0,0,5,0"/>
-                    <TextBlock   Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" VerticalAlignment="Center" FontWeight="Thin"/>
+                    <TextBlock Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" VerticalAlignment="Center"/>
                     <StackPanel.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>

@@ -733,9 +733,6 @@
     <Compile Include="Models\NBObj.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\img\echoLogo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\img\default-1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>

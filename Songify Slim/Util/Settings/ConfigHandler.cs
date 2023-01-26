@@ -26,6 +26,7 @@ using ControlzEx.Theming;
 using Octokit;
 using TwitchLib.Api.V5.Models.UploadVideo;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
+using System.Security.Cryptography;
 
 namespace Songify_Slim
 {
@@ -184,6 +185,7 @@ namespace Songify_Slim
                         {
                             var p = deserializer.Deserialize<AppConfig>(File.ReadAllText($@"{path}\AppConfig.yaml"));
                             config.AppConfig = p;
+                            config.AppConfig.AccessKey = string.IsNullOrWhiteSpace(config.AppConfig.AccessKey) ? GenerateAccessKey() : config.AppConfig.AccessKey;
                         }
                         else
                         {
@@ -242,7 +244,8 @@ namespace Songify_Slim
                                 UpdateRequired = false,
                                 BotOnlyWorkWhenLive = false,
                                 TwSrUnlimitedSr = false,
-                                TwRewardSkipId = ""
+                                TwRewardSkipId = "",
+                                AccessKey = GenerateAccessKey(),
                             };
                         }
                         break;
@@ -252,6 +255,18 @@ namespace Songify_Slim
             }
 
             Settings.Import(config);
+        }
+
+        public static string GenerateAccessKey()
+        {
+            string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
+            string key = new string(Enumerable.Repeat(allowedChars, 1)
+                .SelectMany(s => s)
+                .Take(128)
+                .OrderBy(s => Guid.NewGuid())
+                .ToArray());
+
+            return key;
         }
 
         public static void ReadXml(string path)
@@ -620,6 +635,7 @@ namespace Songify_Slim
         public bool BotOnlyWorkWhenLive { get; set; } = false;
         public bool TwSrUnlimitedSr { get; set; } = false;
         public string TwRewardSkipId { get; set; } = "";
+        public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
     }
 
     public class Config

@@ -16,6 +16,24 @@ namespace Songify_Slim.Util.Settings
     {
         private static Configuration currentConfig = new Configuration();
 
+
+        public static string AccessKey
+        {
+            get => GetAccessKey();
+            set => SetAccessKey(value);
+        }
+
+        private static void SetAccessKey(string value)
+        {
+            currentConfig.AppConfig.AccessKey = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static string GetAccessKey()
+        {
+            return currentConfig.AppConfig.AccessKey;
+        }
+
         public static bool AnnounceInChat
         {
             get => GetAnnounceInChat();
@@ -687,7 +705,7 @@ namespace Songify_Slim.Util.Settings
                 WebUserAgent = GetWebua(),
                 UpdateRequired = GetUpdateRequired(),
                 BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
-
+                AccessKey = GetAccessKey(),
             };
 
             return new Configuration
