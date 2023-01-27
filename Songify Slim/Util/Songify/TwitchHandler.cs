@@ -114,7 +114,6 @@ namespace Songify_Slim.Util.Songify
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
                             Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
                             Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
-
                             return Task.CompletedTask;
                         });
                         ((Window_Settings)window).SetControls();
@@ -133,10 +132,10 @@ namespace Songify_Slim.Util.Songify
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
                             Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
                             Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
-
                             return Task.CompletedTask;
                         });
                     }
+                    BotConnect();
                 });
             };
 
@@ -233,6 +232,8 @@ namespace Songify_Slim.Util.Songify
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
             if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+                return;
+            if (Client == null || !Client.IsConnected)
                 return;
             var redemption = e.RewardRedeemed.Redemption;
             var reward = e.RewardRedeemed.Redemption.Reward;
@@ -345,7 +346,6 @@ namespace Songify_Slim.Util.Songify
                 if (!string.IsNullOrWhiteSpace(trackId))
                 {
                     ReturnObject returnObject = AddSong2(trackId, Settings.Settings.TwChannel, redeemedUser.DisplayName);
-                    //Send a Message to the user, that his Userlevel is too low
                     msg = returnObject.Msg;
                     if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition) && isManagable)
                     {

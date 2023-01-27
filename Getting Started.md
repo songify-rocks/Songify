@@ -62,6 +62,7 @@ The app's main window shows a menu at the top with multiple entries (we will go 
   * Twitch Login => `Opens the website to login with Twitch`
   * Connect => `Connects the chat bot`
   * Disconnect => `Disconnects the chat bot`
+  * Check Online Status => `Checks if the stream is live. The PubSub event will not trigger when the stream is already live when Songify starts, so this is a way to check if the stream is live`
   * [Bot Config](#bot-responses--commands) => `Opens the bot config window`
 * Songrequests => `Brings up this menu`
   * Queue => `Opens the queue sub-menu`
@@ -74,14 +75,14 @@ The app's main window shows a menu at the top with multiple entries (we will go 
   * History Browser => `Opens a website that shows your listening history`
 * View => `Brings up this menu`
   * [Console](#console-window) => `Opens a consoel window that is attached to the main window and shows some logging information`
-* [☕ Buy Us A Coffee](https://ko-fi.com/overcodetv) => `Links to our Ko-Fi` 
 * Dropdown Menu to the top right => `This used to select which player you want to grab information from`
 
 #### Center area
-In the middle you'll see the current playing song as well as the album cover (if enabled)
+- In the middle you'll see the current playing song as well as the album cover (if enabled)
+- [☕ Buy Us A Coffee](https://ko-fi.com/overcodetv) => `Links to our Ko-Fi` 
 
 #### Footer
-- The footer will display a number of icons on the lower left which represent the status of services like Twitch API / Pubsub / Chatbot and web server. 
+- The footer will display a number of icons on the lower left which represent the status of services like Twitch Chat / Twitch API / Pubsub / Spotify and web server. 
 - In the middle of the bar are some informations shown
 - On the right side is the current version and a link to our website.
 

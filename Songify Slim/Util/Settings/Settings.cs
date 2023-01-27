@@ -1595,7 +1595,7 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetTwSrMaxReqSubscriber(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqModerator = value;
+            currentConfig.AppConfig.TwSrMaxReqSubscriber = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
 

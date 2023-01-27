@@ -958,7 +958,8 @@ namespace Songify_Slim
 
         private void BtnWebserverOpenUrl_OnClick(object sender, RoutedEventArgs e)
         {
-            Process.Start($"http://localhost:{Settings.WebServerPort}");
+            if (GlobalObjects.WebServer.run)
+                Process.Start($"http://localhost:{Settings.WebServerPort}");
         }
 
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
