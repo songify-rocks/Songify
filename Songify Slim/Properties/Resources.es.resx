@@ -389,7 +389,7 @@
     <value>Comando</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Fomato de Salida (Chat de Twitch)</value>
+    <value>Fomato de Salida (Twitch Chat)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
     <value>Crear Recompensa</value>
@@ -615,5 +615,17 @@
   </data>
   <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
     <value>Para recibir los puntos reembolsados, la recompensa debe ser creada desde Songify. Selecciona una recompensa o crea una nueva.</value>
+  </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Cuenta de Bot</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Se ha enlazado a la cuenta {account} de manera exitosa. ¿Quieres usar esta cuenta como bot del chat?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Sí</value>
   </data>
 </root>
