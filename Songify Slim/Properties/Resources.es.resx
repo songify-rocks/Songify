@@ -617,7 +617,7 @@
     <value>Para recibir los puntos reembolsados, la recompensa debe ser creada desde Songify. Selecciona una recompensa o crea una nueva.</value>
   </data>
   <data name="msgbx_BotAccount" xml:space="preserve">
-    <value>Cuenta del Bot</value>
+    <value>Cuenta de Bot</value>
   </data>
   <data name="msgbx_No" xml:space="preserve">
     <value>No</value>
