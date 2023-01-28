@@ -980,5 +980,15 @@ namespace Songify_Slim
             Application.Current.Shutdown();
 
         }
+
+        private void NudServerPort_MinimumReached(object sender, RoutedEventArgs e)
+        {
+            NudServerPort.Value = 1025;
+        }
+
+        private void NudServerPort_MaximumReached(object sender, RoutedEventArgs e)
+        {
+            NudServerPort.Value = 66535;
+        }
     }
 }

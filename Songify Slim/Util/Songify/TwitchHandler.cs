@@ -136,6 +136,7 @@ namespace Songify_Slim.Util.Songify
                         });
                     }
                     BotConnect();
+                    WebHelper.SendTelemetry();
                 });
             };
 

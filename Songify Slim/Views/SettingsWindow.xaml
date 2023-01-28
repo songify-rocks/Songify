@@ -522,7 +522,7 @@
                             <RowDefinition Height="32"/>
                         </Grid.RowDefinitions>
                         <Label Grid.Row="0" Grid.Column="0" Content="{x:Static local:Resources.sw_WebServer_Port}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                        <controls:NumericUpDown x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged"></controls:NumericUpDown>
+                        <controls:NumericUpDown Minimum="1025" Maximum="66535" x:Name="NudServerPort" Grid.Row="0" Grid.Column="0" HideUpDownButtons="True" Width="80" HorizontalAlignment="Right" VerticalAlignment="Center" ValueChanged="NudServerPort_ValueChanged" MinimumReached="NudServerPort_MinimumReached" MaximumReached="NudServerPort_MaximumReached"></controls:NumericUpDown>
                         <Button x:Name="BtnWebserverStart" Content="{x:Static local:Resources.sw_WebServer_StartWebServer}" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Click="BtnWebserverStart_Click"></Button>
                         <controls:ToggleSwitch x:Name="TglAutoStartWebserver" VerticalAlignment="Center" Content="{x:Static local:Resources.sw_WebServer_AutoStart}" Toggled="TglAutoStartWebserver_Toggled" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="0,4,0,4" Height="32" />
                         <Button x:Name="BtnWebserverOpenUrl" Click="BtnWebserverOpenUrl_OnClick"  Content="{x:Static local:Resources.sw_WebServer_OpenWebsite}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"></Button>
