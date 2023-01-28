@@ -9,7 +9,6 @@ Songify fetches the current playing song from Spotify, YouTube (Chrome) and many
 ## Features?
 
 * Gets the currently playing song and saves it to a text file. We also support splitting Artist and Title in seperate files
-* Has a progress bar HTML file to be added as an OBS browser source, with customizable colors, [How To Setup!](https://github.com/songify-rocks/Songify/blob/master/README.md/#progress-bar-setup)
 * Automatically start with windows
 * Minimize to the system tray
 * Custom output string
