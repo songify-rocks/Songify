@@ -146,10 +146,16 @@ namespace Songify_Slim.Util.Songify
         public static async Task<bool> CheckStreamIsUp()
         {
             if (TokenCheck == null) return false;
+            Logger.LogStr("TWITCH API: Checking if stream is up...");
             GetStreamsResponse x = await _twitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                 new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
-            if (x.Streams.Length == 0) return false;
-            return x.Streams[0].Type == "live";
+            if (x.Streams.Length != 0)
+            {
+                Logger.LogStr("TWITCH API: Stream is up");
+                return x.Streams[0].Type == "live";
+            }
+            Logger.LogStr("TWITCH API: Stream is down");
+            return false;
         }
 
         public static async Task InitializeApi()
@@ -231,6 +237,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
+            await CheckStreamIsUp();
             if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
                 return;
             if (Client == null || !Client.IsConnected)
@@ -575,6 +582,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            await CheckStreamIsUp();
             if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
                 return;
             if (users.All(o => o.UserId != e.ChatMessage.UserId))

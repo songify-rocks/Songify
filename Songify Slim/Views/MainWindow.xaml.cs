@@ -607,6 +607,7 @@ namespace Songify_Slim.Views
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
             WebHelper.SendTelemetry();
+            await TwitchHandler.CheckStreamIsUp();
         }
 
         private void AutoUpdater_ApplicationExitEvent()
