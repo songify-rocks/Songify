@@ -629,6 +629,6 @@
     <value>Non</value>
   </data>
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
-    <value>Envoyer une notification d'état de diffusion en direct pour discuter</value>
+    <value>Envoyer une notification hors ligne pour discuter</value>
   </data>
 </root>

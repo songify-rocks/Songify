@@ -241,17 +241,10 @@ namespace Songify_Slim.Util.Songify
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
             await CheckStreamIsUp();
-            if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+            if (!CheckLiveStatus())
             {
-                Application.Current.BeginInvoke(() =>
-                {
-                    (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
-                    {
-                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
-                    });
-                }, DispatcherPriority.Normal);
-                if (Client != null && Client.IsConnected && Settings.Settings.ChatLiveStatus)
-                    Client.SendMessage(Settings.Settings.TwChannel, "Command cancelled. Stream is offline.");
+                if (Settings.Settings.ChatLiveStatus)
+                    Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                 return;
             }
 
@@ -598,20 +591,6 @@ namespace Songify_Slim.Util.Songify
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             await CheckStreamIsUp();
-            if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
-            {
-                Application.Current.BeginInvoke(() =>
-                {
-                    (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
-                    {
-                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
-                    });
-                }, DispatcherPriority.Normal);
-                if (Client != null && Client.IsConnected && Settings.Settings.ChatLiveStatus)
-                    Client.SendMessage(Settings.Settings.TwChannel, "Command cancelled. Stream is offline.");
-                return;
-            }
-
             if (users.All(o => o.UserId != e.ChatMessage.UserId))
             {
                 users.Add(new TwitchUser
@@ -731,6 +710,13 @@ namespace Songify_Slim.Util.Songify
 
             if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
+
                 if (_skipCooldown)
                     return;
 
@@ -766,6 +752,12 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" && Settings.Settings.BotCmdSkipVote)
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
                 if (_skipCooldown)
                     return;
                 //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
@@ -801,11 +793,23 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSongTrigger}" && Settings.Settings.BotCmdSong)
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
                 string currsong = GetCurrentSong();
                 Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
                 List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
                 string output = "";
                 if (queueItems.Count != 0)
@@ -843,6 +847,12 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
                 string response = Settings.Settings.BotRespNext;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
 
@@ -863,6 +873,12 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == "!remove")
             {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
+                    return;
+                }
                 string tmp = "";
                 RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
                     o.Requester == e.ChatMessage.DisplayName);
@@ -873,6 +889,19 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
+        }
+
+        private static bool CheckLiveStatus()
+        {
+            if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive) return true;
+            Application.Current.BeginInvoke(() =>
+            {
+                (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
+                {
+                    ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
+                });
+            }, DispatcherPriority.Normal);
+            return false;
         }
 
         private static string GetNextSong()

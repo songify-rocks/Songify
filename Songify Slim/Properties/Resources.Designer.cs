@@ -1061,7 +1061,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Send stream live status notification to chat.
+        ///   Looks up a localized string similar to Send offline notification to chat.
         /// </summary>
         public static string Sw_Integration_StreamNotLifeNotification {
             get {

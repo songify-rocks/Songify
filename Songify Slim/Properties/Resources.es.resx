@@ -629,6 +629,6 @@
     <value>Sí</value>
   </data>
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
-    <value>Enviar notificación de estado de transmisión en vivo al chat</value>
+    <value>Enviar notificación sin conexión al chat</value>
   </data>
 </root>

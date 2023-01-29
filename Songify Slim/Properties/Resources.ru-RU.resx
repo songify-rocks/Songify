@@ -629,6 +629,6 @@
     <value>Нет</value>
   </data>
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
-    <value>Отправить уведомление о статусе трансляции в чат</value>
+    <value>Отправить офлайн-уведомление в чат</value>
   </data>
 </root>
