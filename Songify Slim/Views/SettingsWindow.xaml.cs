@@ -152,6 +152,7 @@ namespace Songify_Slim
             TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
+            tgl_InformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
             tgl_InformChat.IsOn = Settings.ChatLiveStatus;
@@ -966,6 +967,9 @@ namespace Songify_Slim
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.BotOnlyWorkWhenLive = (bool)tgl_OnlyWorkWhenLive.IsOn;
+            tgl_InformChat.IsEnabled = tgl_OnlyWorkWhenLive.IsOn;
+            if (tgl_OnlyWorkWhenLive.IsOn) return;
+            tgl_InformChat.IsOn = false;
         }
 
         private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
