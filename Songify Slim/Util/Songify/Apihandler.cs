@@ -88,30 +88,39 @@ namespace Songify_Slim.Util.Songify
                     _lastToken = await _auth.ExchangeCodeAsync(response.Code);
                     if (_lastToken == null)
                         return;
-                    // Save tokens
-                    Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
-                    Settings.Settings.SpotifyAccessToken = _lastToken.AccessToken;
-                    // create ne Spotify object
-                    Spotify = new SpotifyWebAPI
+                    try
                     {
-                        TokenType = _lastToken.TokenType,
-                        AccessToken = _lastToken.AccessToken
-                    };
-                    _auth.Stop();
-                    Authed = true;
-                    AuthRefresh.Start();
-                    await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                        new Action(() =>
+                        // Save tokens
+                        Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
+                        Settings.Settings.SpotifyAccessToken = _lastToken.AccessToken;
+                        // create ne Spotify object
+                        Spotify = new SpotifyWebAPI
                         {
-                            foreach (Window window in Application.Current.Windows)
+                            TokenType = _lastToken.TokenType,
+                            AccessToken = _lastToken.AccessToken
+                        };
+                        _auth.Stop();
+                        Authed = true;
+                        AuthRefresh.Start();
+                        await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                            new Action(() =>
                             {
-                                if (window.GetType() == typeof(Window_Settings))
-                                    ((Window_Settings)window).SetControls();
-                            }
-                            (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
-                                Brushes.GreenYellow;
-                            (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                        }));
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    if (window.GetType() == typeof(Window_Settings))
+                                        ((Window_Settings)window).SetControls();
+                                }
+                                (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
+                                    Brushes.GreenYellow;
+                                (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                            }));
+
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogStr("Error while saving Spotify tokens");
+                        Logger.LogExc(e);
+                    }
 
                 };
 
