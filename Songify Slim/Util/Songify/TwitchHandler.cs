@@ -37,6 +37,8 @@ using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
 using Window = System.Windows.Window;
+using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -240,7 +242,17 @@ namespace Songify_Slim.Util.Songify
         {
             await CheckStreamIsUp();
             if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+            {
+                Application.Current.BeginInvoke(() =>
+                {
+                    (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
+                    {
+                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
+                    });
+                }, DispatcherPriority.Normal);
                 return;
+            }
+
             if (Client == null || !Client.IsConnected)
                 return;
             var redemption = e.RewardRedeemed.Redemption;
@@ -585,7 +597,18 @@ namespace Songify_Slim.Util.Songify
         {
             await CheckStreamIsUp();
             if (!Settings.Settings.IsLive && Settings.Settings.BotOnlyWorkWhenLive)
+            {
+                Application.Current.BeginInvoke(() =>
+                {
+                    (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
+                    {
+                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
+                    });
+                }, DispatcherPriority.Normal);
+
                 return;
+            }
+
             if (users.All(o => o.UserId != e.ChatMessage.UserId))
             {
                 users.Add(new TwitchUser
