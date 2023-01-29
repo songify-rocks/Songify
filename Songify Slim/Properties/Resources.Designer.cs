@@ -1061,6 +1061,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Send stream live status notification to chat.
+        /// </summary>
+        public static string Sw_Integration_StreamNotLifeNotification {
+            get {
+                return ResourceManager.GetString("Sw_Integration_StreamNotLifeNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twitch account.
         /// </summary>
         public static string sw_Integration_Twitch {

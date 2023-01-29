@@ -787,4 +787,8 @@
     <value>No</value>
     <comment>The word "No" in a MessageBox Button as in No/Negaitve/Decline</comment>
   </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Send stream live status notification to chat</value>
+    <comment>Header for the ToggleSwtich to send a message to chat if the stream is not live and a command has been used</comment>
+  </data>
 </root>

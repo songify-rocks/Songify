@@ -628,4 +628,7 @@
   <data name="msgbx_No" xml:space="preserve">
     <value>Nein</value>
   </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Live-Statusbenachrichtigung des Streams an den Chat senden</value>
+  </data>
 </root>

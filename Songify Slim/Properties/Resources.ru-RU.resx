@@ -628,4 +628,7 @@
   <data name="msgbx_No" xml:space="preserve">
     <value>Нет</value>
   </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Отправить уведомление о статусе трансляции в чат</value>
+  </data>
 </root>

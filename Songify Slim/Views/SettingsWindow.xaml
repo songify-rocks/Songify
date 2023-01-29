@@ -279,7 +279,7 @@
                                     </controls:ToggleSwitch>
                                     <controls:ToggleSwitch x:Name="tgl_InformChat" VerticalAlignment="Top" Toggled="tgl_InformChat_Toggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center" ToolTip="Enabling this will send a message to chat if an action has been cancelled due to the stream being offline.">
                                         <controls:ToggleSwitch.Content>
-                                            <TextBlock Text="Send stream live status notification to chat" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{x:Static local:Resources.Sw_Integration_StreamNotLifeNotification}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                         </controls:ToggleSwitch.Content>
                                     </controls:ToggleSwitch>
 
