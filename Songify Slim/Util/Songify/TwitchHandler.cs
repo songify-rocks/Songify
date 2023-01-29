@@ -432,7 +432,7 @@ namespace Songify_Slim.Util.Songify
 
         private static void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
         {
-            Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
+            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
             Logger.LogStr($"PUBSUB: Error");
             Logger.LogExc(e.Exception);
             _twitchPubSub.Disconnect();
@@ -452,7 +452,7 @@ namespace Songify_Slim.Util.Songify
 
                 }
             });
-            Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
+            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
             Logger.LogStr($"PUBSUB: Disconnected");
         }
 
@@ -470,12 +470,12 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr($"PUBSUB: Connected");
-            Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
+            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
 
         private static void OnListenResponse(object sender, OnListenResponseArgs e)
         {
-            Debug.WriteLine($"{DateTime.Now.ToShortTimeString()} PubSub: Response received: {e.Response}");
+            //Debug.WriteLine($"{DateTime.Now.ToShortTimeString()} PubSub: Response received: {e.Response}");
         }
 
         public static void BotConnect()

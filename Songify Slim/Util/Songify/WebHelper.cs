@@ -93,7 +93,6 @@ namespace Songify_Slim.Util.Songify
                             "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
             string url = $"{GlobalObjects._baseUrl}/song.php?id=" + extras;
-            Console.WriteLine(url);
             DoWebRequest(url, "Upload Song");
         }
 

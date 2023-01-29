@@ -881,7 +881,7 @@ namespace Songify_Slim
                         box.IsChecked = false;
                     }
                 }
-            Debug.WriteLine(string.Join(", ", refundConditons));
+            //Debug.WriteLine(string.Join(", ", refundConditons));
             Settings.RefundConditons = refundConditons.ToArray();
         }
 

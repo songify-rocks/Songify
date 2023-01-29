@@ -51,8 +51,6 @@ namespace Songify_Slim
                        GlobalCooldownSeconds = null,
                        ShouldRedemptionsSkipRequestQueue = false
                    }, Settings.TwitchAccessToken);
-                if (response != null)
-                    Debug.WriteLine(response);
             }
             catch (Exception)
             {
