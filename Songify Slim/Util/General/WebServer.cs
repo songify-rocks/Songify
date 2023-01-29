@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.General
             {
                 if (Application.Current.MainWindow != null)
                 {
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.IndianRed;
+                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Gray;
                     ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
                 }
 

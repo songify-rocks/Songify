@@ -180,7 +180,7 @@
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="IndianRed">
+                                    <Trigger Property="Foreground" Value="Gray">
                                         <Setter Property="ToolTip" Value="WebServer: Not Running"/>
                                     </Trigger>
                                     <Trigger Property="Foreground" Value="GreenYellow">

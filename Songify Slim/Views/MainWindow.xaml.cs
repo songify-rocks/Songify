@@ -500,7 +500,7 @@ namespace Songify_Slim.Views
             IconTwitchAPI.Foreground = Brushes.IndianRed;
             IconTwitchBot.Foreground = Brushes.IndianRed;
             IconTwitchPubSub.Foreground = Brushes.IndianRed;
-            IconWebServer.Foreground = Brushes.IndianRed;
+            IconWebServer.Foreground = Brushes.Gray;
             IconWebSpotify.Foreground = Brushes.IndianRed;
 
             if (Settings.AutoClearQueue)

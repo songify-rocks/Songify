@@ -159,10 +159,13 @@ namespace Songify_Slim
                                 BotCmdSkipVote = false,
                                 BotCmdSong = false,
                                 BotCmdSkipVoteCount = 5,
-                                BotRespBlacklist = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
-                                BotRespError = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
+                                BotRespBlacklist =
+                                    "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
+                                BotRespError =
+                                    "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
                                 BotRespIsInQueue = "@{user} this song is already in the queue.",
-                                BotRespLength = "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
+                                BotRespLength =
+                                    "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
                                 BotRespMaxReq = "@{user} maximum number of songs in queue reached ({maxreq}).",
                                 BotRespModSkip = "@{user} skipped the current song.",
                                 BotRespNoSong = "@{user} please specify a song to add to the queue.",
@@ -177,6 +180,7 @@ namespace Songify_Slim
                                 BotCmdSkipTrigger = "skip",
                                 BotCmdVoteskipTrigger = "voteskip",
                                 BotCmdSsrTrigger = "ssr",
+                                ChatLiveStatus = false,
                             };
                         }
                         break;
@@ -578,6 +582,7 @@ namespace Songify_Slim
         public string BotCmdSkipTrigger { get; set; } = "skip";
         public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
         public string BotCmdSsrTrigger { get; set; } = "ssr";
+        public bool ChatLiveStatus { get; set; } = false;
     }
 
     public class AppConfig

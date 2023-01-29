@@ -250,6 +250,8 @@ namespace Songify_Slim.Util.Songify
                         ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
                     });
                 }, DispatcherPriority.Normal);
+                if (Client != null && Client.IsConnected && Settings.Settings.ChatLiveStatus)
+                    Client.SendMessage(Settings.Settings.TwChannel, "Command cancelled. Stream is offline.");
                 return;
             }
 
@@ -605,7 +607,8 @@ namespace Songify_Slim.Util.Songify
                         ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Command cancelled. Stream is offline.";
                     });
                 }, DispatcherPriority.Normal);
-
+                if (Client != null && Client.IsConnected && Settings.Settings.ChatLiveStatus)
+                    Client.SendMessage(Settings.Settings.TwChannel, "Command cancelled. Stream is offline.");
                 return;
             }
 

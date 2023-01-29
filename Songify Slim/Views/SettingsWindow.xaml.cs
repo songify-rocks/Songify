@@ -154,6 +154,7 @@ namespace Songify_Slim
             tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
+            tgl_InformChat.IsOn = Settings.ChatLiveStatus;
 
             if (ApiHandler.Spotify != null)
             {
@@ -989,6 +990,11 @@ namespace Songify_Slim
         private void NudServerPort_MaximumReached(object sender, RoutedEventArgs e)
         {
             NudServerPort.Value = 66535;
+        }
+
+        private void tgl_InformChat_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.ChatLiveStatus = (bool)tgl_InformChat.IsOn;
         }
     }
 }

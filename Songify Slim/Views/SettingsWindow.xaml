@@ -7,7 +7,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Settings" Height="434" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
+                      Title="Settings" Height="473" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
                       ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing"
                      >
     <Grid>
@@ -271,11 +271,19 @@
                                                    Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
                                 <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
-                                <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" Grid.Row="6" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2">
-                                    <controls:ToggleSwitch.Content>
-                                        <TextBlock Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" Width="550"></TextBlock>
-                                    </controls:ToggleSwitch.Content>
-                                </controls:ToggleSwitch>
+                                <StackPanel Orientation="Vertical" Grid.ColumnSpan="2"  Grid.Row="6" Grid.Column="0" >
+                                    <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center">
+                                        <controls:ToggleSwitch.Content>
+                                            <TextBlock Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        </controls:ToggleSwitch.Content>
+                                    </controls:ToggleSwitch>
+                                    <controls:ToggleSwitch x:Name="tgl_InformChat" VerticalAlignment="Top" Toggled="tgl_InformChat_Toggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center" ToolTip="Enabling this will send a message to chat if an action has been cancelled due to the stream being offline.">
+                                        <controls:ToggleSwitch.Content>
+                                            <TextBlock Text="Send stream live status notification to chat" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        </controls:ToggleSwitch.Content>
+                                    </controls:ToggleSwitch>
+
+                                </StackPanel>
 
                                 <Button Margin="0,4" Grid.Row="7" x:Name="btn_Botresponse"
                                     Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Click="btn_Botresponse_Click" FontSize="14" Grid.ColumnSpan="2"

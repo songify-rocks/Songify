@@ -553,6 +553,18 @@ namespace Songify_Slim.Util.Settings
         public static string BotCmdVoteskipTrigger { get => GetCmdVoteskipTrigger(); set => SetCmdVoteskipTrigger(value); }
         public static bool TwSrUnlimitedSr { get => GetTwSrUnlimitedSr(); set => SetTwSrUnlimitedSr(value); }
         public static string TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
+        public static bool ChatLiveStatus { get => GetChatLiveStatus(); set => SetChatLiveStatus(value); }
+
+        private static void SetChatLiveStatus(bool value)
+        {
+            currentConfig.BotConfig.ChatLiveStatus = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static bool GetChatLiveStatus()
+        {
+            return currentConfig.BotConfig.ChatLiveStatus;
+        }
 
 
         private static void SetTwRewardSkipId(string value)
@@ -651,6 +663,7 @@ namespace Songify_Slim.Util.Settings
                 BotCmdSkipTrigger = GetCmdSkipTrigger(),
                 BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
                 BotCmdSsrTrigger = GetCmdSsrTrigger(),
+                ChatLiveStatus = GetChatLiveStatus(),
             };
 
             AppConfig appConfig = new AppConfig
