@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        WindowStartupLocation="CenterOwner"
         Title="Patch Notes" Height="450" Width="800" ShowMaxRestoreButton="False" ShowMinButton="False" Loaded="MetroWindow_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>

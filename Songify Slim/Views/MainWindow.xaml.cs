@@ -77,24 +77,19 @@ namespace Songify_Slim.Views
 
             _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
 
-
-            if (Settings.UpdateRequired)
-            {
-                GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
-                Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
-                Release release = releases.Result[0];
-                string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-                Markdown engine = new Markdown();
-                FlowDocument document = engine.Transform(markdownTxt);
-                document.FontFamily = new FontFamily("Sogeo UI");
-                document.LineHeight = 30;
-                document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-                document.FontSize = 16;
-                rtbPatchnotes.Document = document;
-                tbVersion.Text = $"Songify Update {release.TagName}";
-                grdUpdate.Visibility = Visibility.Visible;
-                Settings.UpdateRequired = false;
-            }
+            //GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
+            //Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
+            //Release release = releases.Result[0];
+            //string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
+            //Markdown engine = new Markdown();
+            //FlowDocument document = engine.Transform(markdownTxt);
+            //document.FontFamily = new FontFamily("Sogeo UI");
+            //document.LineHeight = 30;
+            //document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+            //document.FontSize = 16;
+            //rtbPatchnotes.Document = document;
+            //tbVersion.Text = $"Songify Update {release.TagName}";
+            //grdUpdate.Visibility = Visibility.Visible;
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -564,9 +559,6 @@ namespace Songify_Slim.Views
                 Settings.Uuid = Guid.NewGuid().ToString();
                 Settings.Telemetry = false;
             }
-
-
-
             // check for update
             AutoUpdater.Mandatory = false;
             AutoUpdater.UpdateMode = Mode.Normal;
@@ -602,12 +594,17 @@ namespace Songify_Slim.Views
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
+
+            if (!Settings.UpdateRequired) return;
             // automatically start fetching songs
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
             WebHelper.SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
+
+            OpenPatchNotes(); 
+            Settings.UpdateRequired = false;
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -730,15 +727,25 @@ namespace Songify_Slim.Views
         private void BtnPatchNotes_Click(object sender, RoutedEventArgs e)
         {
             // Check if the patch notes window is already open, if not open it, else switch to it
+            OpenPatchNotes();
+        }
+
+        private static void OpenPatchNotes()
+        {
             if (IsWindowOpen<Window_Patchnotes>())
             {
                 Window_Patchnotes wPN = Application.Current.Windows.OfType<Window_Patchnotes>().First();
                 wPN.Focus();
+                wPN.Activate();
             }
             else
             {
-                Window_Patchnotes wPN = new Window_Patchnotes();
+                Window_Patchnotes wPN = new Window_Patchnotes()
+                {
+                    Owner = (Application.Current.MainWindow),
+                };
                 wPN.Show();
+                wPN.Activate();
             }
         }
 

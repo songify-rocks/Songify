@@ -38,6 +38,7 @@ namespace Songify_Slim
             }
 
             LbxVersions.SelectedIndex = 0;
+            LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
         }
         private void LbxVersions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
