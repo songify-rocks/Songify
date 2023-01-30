@@ -241,11 +241,18 @@ namespace Songify_Slim.Util.Songify
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
         {
             await CheckStreamIsUp();
-            if (!CheckLiveStatus())
+            try
             {
-                if (Settings.Settings.ChatLiveStatus)
-                    Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                return;
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
             }
 
             if (Client == null || !Client.IsConnected)
@@ -710,11 +717,18 @@ namespace Songify_Slim.Util.Songify
 
             if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
 
                 if (_skipCooldown)
@@ -752,11 +766,18 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" && Settings.Settings.BotCmdSkipVote)
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
                 if (_skipCooldown)
                     return;
@@ -793,11 +814,18 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSongTrigger}" && Settings.Settings.BotCmdSong)
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
                 string currsong = GetCurrentSong();
                 Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
@@ -873,11 +901,18 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == "!remove")
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
                 string tmp = "";
                 RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>

@@ -148,6 +148,7 @@ namespace Songify_Slim
                             config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
                             config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
                             config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
+                            config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
                         }
                         else
                         {
