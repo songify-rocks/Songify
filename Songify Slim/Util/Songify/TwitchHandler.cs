@@ -920,7 +920,8 @@ namespace Songify_Slim.Util.Songify
                 tmp = $"{reqObj.Artists} - {reqObj.Title}";
                 GlobalObjects.SkipList.Add(reqObj);
                 GlobalObjects.ReqList.Remove(reqObj);
-
+                WebHelper.UpdateWebQueue(reqObj.TrackID, "", "", "", "", "1", "u");
+                UpdateQueueWindow();
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
@@ -1123,7 +1124,19 @@ namespace Songify_Slim.Util.Songify
 
             // Upload the track and who requested it to the queue on the server
             UploadToQueue(track, e.ChatMessage.DisplayName);
+            GlobalObjects.ReqList.Add(new RequestObject
+            {
+                Requester = e.ChatMessage.DisplayName,
+                TrackID = track.Id,
+                Title = track.Name,
+                Artists = artists,
+                Length = FormattedTime(track.DurationMs)
+            });
+            UpdateQueueWindow();
+        }
 
+        private static void UpdateQueueWindow()
+        {
             // Add the song to the internal queue and update the queue window if its open
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -1133,15 +1146,6 @@ namespace Songify_Slim.Util.Songify
                     if (window.GetType() == typeof(Window_Queue))
                         qw = window;
                 }
-
-                GlobalObjects.ReqList.Add(new RequestObject
-                {
-                    Requester = e.ChatMessage.DisplayName,
-                    TrackID = track.Id,
-                    Title = track.Name,
-                    Artists = artists,
-                    Length = FormattedTime(track.DurationMs)
-                });
 
                 (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
             });
