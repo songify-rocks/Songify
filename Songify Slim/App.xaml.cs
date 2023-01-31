@@ -13,6 +13,7 @@ using ControlzEx.Theming;
 using Songify_Slim.Views;
 using System.Runtime.InteropServices;
 using Common.Logging.Configuration;
+using Microsoft.Win32;
 
 namespace Songify_Slim
 {
@@ -34,9 +35,29 @@ namespace Songify_Slim
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
             else
                 ConfigHandler.ReadConfig();
-
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
             //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en"); 
+            // Adding the RegKey for Songify in startup (autostart with windows)
+            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(
+                "SOFTWARE\\Songify",
+                true) ?? Registry.CurrentUser.CreateSubKey("SOFTWARE\\Songify");
+            if (registryKey != null && registryKey.GetValue("UUID") == null)
+            {
+                registryKey.SetValue("UUID", Settings.Uuid);
+            }
+            else
+            {
+                Settings.Uuid = registryKey.GetValue("UUID").ToString();
+            }
+            if (registryKey.GetValue("AccessKey") == null)
+            {
+                registryKey.SetValue("AccessKey", Settings.AccessKey);
+            }
+            else
+            {
+                Settings.AccessKey = registryKey.GetValue("AccessKey").ToString();
+            }
+
         }
 
         protected override void OnStartup(StartupEventArgs e)

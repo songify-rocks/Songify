@@ -1671,5 +1671,10 @@ namespace Songify_Slim.Util.Settings
             currentConfig.AppConfig.WebServerPort = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
         }
+
+        public static void ResetConfig()
+        {
+            currentConfig = new Configuration();
+        }
     }
 }

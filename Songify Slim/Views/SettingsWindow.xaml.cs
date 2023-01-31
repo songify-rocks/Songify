@@ -258,7 +258,22 @@ namespace Songify_Slim
         private void Btn_ExportConfig_Click(object sender, RoutedEventArgs e)
         {
             // calls confighandler
-            ConfigHandler.WriteAllConfig(Settings.Export());
+
+            FolderBrowserDialog fbd = new FolderBrowserDialog
+            {
+                Site = null,
+                Tag = null,
+                ShowNewFolderButton = false,
+                SelectedPath = null,
+                RootFolder = Environment.SpecialFolder.Desktop,
+                Description = null
+            };
+            fbd.Description = "Select a folder to save the config file";
+            fbd.ShowNewFolderButton = true;
+            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
+            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            ConfigHandler.WriteAllConfig(Settings.Export(), fbd.SelectedPath);
+            this.ShowMessageAsync("Success", "Config file saved successfully", MessageDialogStyle.Affirmative);
         }
 
         private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
@@ -279,6 +294,11 @@ namespace Songify_Slim
                 new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult != MessageDialogResult.Affirmative) return;
             File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
+            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/AppConfig.yaml");
+            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/BotConfig.yaml");
+            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/TwitchCredentials.yaml");
+            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/SpotifyCredentials.yaml");
+            Settings.ResetConfig();
             Properties.Settings.Default.Reset();
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();

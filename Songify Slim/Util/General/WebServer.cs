@@ -76,7 +76,7 @@ namespace Songify_Slim.Util.General
             _listener.Stop();
         }
 
-        private bool PortIsFree(int port)
+        public static bool PortIsFree(int port)
         {
             // Get the IP global properties for the local network
             var properties = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();

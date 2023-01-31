@@ -44,9 +44,10 @@ namespace Songify_Slim
             AppConfig
         }
 
-        public static void WriteConfig(ConfigTypes configType, object o)
+        public static void WriteConfig(ConfigTypes configType, object o, string path = null)
         {
-            string path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            if (path == null)
+                path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             var serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
@@ -521,12 +522,12 @@ namespace Songify_Slim
             WriteConfig(ConfigTypes.AppConfig, appConfig);
         }
 
-        public static void WriteAllConfig(Configuration config)
+        public static void WriteAllConfig(Configuration config, string path = null)
         {
-            WriteConfig(ConfigTypes.AppConfig, config.AppConfig);
-            WriteConfig(ConfigTypes.BotConfig, config.BotConfig);
-            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials);
-            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials);
+            WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path);
+            WriteConfig(ConfigTypes.BotConfig, config.BotConfig, path);
+            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path);
+            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials, path);
         }
     }
 
