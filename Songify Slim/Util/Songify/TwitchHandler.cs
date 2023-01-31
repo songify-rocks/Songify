@@ -39,6 +39,7 @@ using Application = System.Windows.Application;
 using Window = System.Windows.Window;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomRewardRedemption;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -832,11 +833,18 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
                 List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
                 string output = "";
@@ -875,28 +883,26 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
             {
-                if (!CheckLiveStatus())
+                try
                 {
-                    if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(e.ChatMessage.Channel, "The stream is not live right now.");
-                    return;
+                    if (!CheckLiveStatus())
+                    {
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
                 string response = Settings.Settings.BotRespNext;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
 
-                if (GlobalObjects.ReqList.Count == 0)
-                    return;
+                //if (GlobalObjects.ReqList.Count == 0)
+                //    return;
                 response = response.Replace("{song}", GetNextSong());
 
-                //GlobalObjects.ReqList[0].TrackID == GlobalObjects.CurrentSong.SongID
-                //? response.Replace("{song}",
-                //    GlobalObjects.ReqList[1] != null
-                //        ? $"{GlobalObjects.ReqList[1].Artists} - {GlobalObjects.ReqList[1].Title}"
-                //        : "There is no song next up.")
-                //: response.Replace("{song}",
-                //    GlobalObjects.ReqList[0] != null
-                //        ? $"{GlobalObjects.ReqList[0].Artists} - {GlobalObjects.ReqList[0].Title}"
-                //        : "There is no song next up.");
                 Client.SendMessage(e.ChatMessage.Channel, response);
             }
             else if (e.ChatMessage.Message == "!remove")
@@ -917,6 +923,7 @@ namespace Songify_Slim.Util.Songify
                 string tmp = "";
                 RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
                     o.Requester == e.ChatMessage.DisplayName);
+                if (reqObj == null) return;
                 tmp = $"{reqObj.Artists} - {reqObj.Title}";
                 GlobalObjects.SkipList.Add(reqObj);
                 GlobalObjects.ReqList.Remove(reqObj);
@@ -943,14 +950,14 @@ namespace Songify_Slim.Util.Songify
         private static string GetNextSong()
         {
             int index = 0;
-            if (GlobalObjects.ReqList[0] == null)
+            if (GlobalObjects.ReqList.Count == 0)
             {
                 return "There is no song next up.";
             }
 
-            if (GlobalObjects.ReqList[0].TrackID == GlobalObjects.CurrentSong.SongID)
+            if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.ReqList[0].TrackID == GlobalObjects.CurrentSong.SongID)
             {
-                if (GlobalObjects.ReqList[1] == null)
+                if (GlobalObjects.ReqList.Count <= 1)
                 {
                     return "There is no song next up.";
                 }
