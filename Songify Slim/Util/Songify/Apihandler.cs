@@ -192,7 +192,10 @@ namespace Songify_Slim.Util.Songify
                     artists += context.Item.Artists[i].Name;
 
             if (context.Device != null)
-                Settings.Settings.SpotifyDeviceId = context.Device.Id;
+            {
+                if (Settings.Settings.SpotifyDeviceId != context.Device.Id)
+                    Settings.Settings.SpotifyDeviceId = context.Device.Id;
+            }
 
             var albums = context.Item.Album.Images;
             double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;

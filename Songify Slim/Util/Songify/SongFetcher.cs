@@ -333,11 +333,6 @@ namespace Songify_Slim.Util.Songify
             songInfo = ApiHandler.GetSongInfo();
             try
             {
-
-                string path = string.IsNullOrEmpty(Settings.Settings.Directory)
-                ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
-                : Settings.Settings.Directory;
-
                 GlobalObjects.CurrentSong = songInfo;
                 string j = Json.Serialize(songInfo);
                 GlobalObjects.APIResponse = j;
@@ -352,47 +347,6 @@ namespace Songify_Slim.Util.Songify
             // if no song is playing and custompausetext is enabled
             return songInfo ?? new TrackInfo { isPlaying = false };
             // return a new stringarray containing artist, title and so on
-        }
-
-        private async void WriteProgressFile(string path, string j)
-        {
-            const int tries = 5;
-            for (int i = 0; i < tries; i++)
-            {
-                if (IsFileLocked(new FileInfo(path)))
-                {
-                    await Task.Delay(1000);
-                    Logger.LogStr("PROGRESS: Couldn't write to file");
-                    continue;
-                }
-
-                File.WriteAllText(path, j);
-                break;
-            }
-
-
-        }
-
-        protected virtual bool IsFileLocked(FileInfo file)
-        {
-            try
-            {
-                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    stream.Close();
-                }
-            }
-            catch (IOException)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                return true;
-            }
-
-            //file is not locked
-            return false;
         }
     }
 }

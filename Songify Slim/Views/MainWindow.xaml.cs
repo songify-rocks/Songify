@@ -595,14 +595,14 @@ namespace Songify_Slim.Views
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
 
-            if (!Settings.UpdateRequired) return;
+         
             // automatically start fetching songs
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi();
             WebHelper.SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
-
+            if (!Settings.UpdateRequired) return;
             OpenPatchNotes(); 
             Settings.UpdateRequired = false;
         }
