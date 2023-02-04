@@ -34,7 +34,7 @@ namespace Songify_Slim
             CreateCustomRewardsResponse response = null;
             try
             {
-                response = await TwitchHandler._twitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
+                response = await TwitchHandler.TwitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
                    new CreateCustomRewardsRequest
                    {
                        Title = name,

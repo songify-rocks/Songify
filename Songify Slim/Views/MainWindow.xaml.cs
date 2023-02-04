@@ -788,7 +788,7 @@ namespace Songify_Slim.Views
 
         private void mi_TwitchAPI_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Main);
+            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Main);
         }
 
         protected virtual bool IsFileLocked(FileInfo file)

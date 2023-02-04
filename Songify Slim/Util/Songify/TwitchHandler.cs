@@ -78,12 +78,12 @@ namespace Songify_Slim.Util.Songify
         {
             Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
         };
-        public static TwitchAPI _twitchApi;
-        public static TwitchAPI _twitchApiBot;
+        public static TwitchAPI TwitchApi;
+        public static TwitchAPI TwitchApiBot;
         private static TwitchPubSub _twitchPubSub;
-        private static string _clientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
-        private static string userId;
-        public static List<TwitchUser> users = new List<TwitchUser>();
+        private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
+        private static string _userId;
+        public static List<TwitchUser> Users = new List<TwitchUser>();
         public static ValidateAccessTokenResponse TokenCheck;
         public static ValidateAccessTokenResponse BotTokenCheck;
 
@@ -99,7 +99,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("TWITCH IRC: Reset votes");
         }
 
-        public static void APIConnect(TwitchAccount account)
+        public static void ApiConnect(TwitchAccount account)
         {
             ImplicitOAuth ioa = new ImplicitOAuth(1234);
             string currentState = null;
@@ -183,7 +183,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (TokenCheck == null) return false;
             Logger.LogStr("TWITCH API: Checking if stream is up...");
-            GetStreamsResponse x = await _twitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
+            GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                 new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
             if (x.Streams.Length != 0)
             {
@@ -203,16 +203,16 @@ namespace Songify_Slim.Util.Songify
                 #region Main
 
                 case TwitchAccount.Main:
-                    _twitchApi = new TwitchAPI
+                    TwitchApi = new TwitchAPI
                     {
                         Settings =
                         {
-                            ClientId = _clientId,
+                            ClientId = ClientId,
                             AccessToken = Settings.Settings.TwitchAccessToken
                         }
                     };
 
-                    TokenCheck = await _twitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
+                    TokenCheck = await TwitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
 
                     if (TokenCheck == null)
                     {
@@ -229,9 +229,9 @@ namespace Songify_Slim.Util.Songify
                         return;
                     }
 
-                    userId = TokenCheck.UserId;
+                    _userId = TokenCheck.UserId;
 
-                    users = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
+                    users = await TwitchApi.Helix.Users.GetUsersAsync(new List<string> { _userId }, null, Settings.Settings.TwitchAccessToken);
 
                     user = users.Users.FirstOrDefault();
                     if (user == null)
@@ -280,18 +280,18 @@ namespace Songify_Slim.Util.Songify
                 #endregion
                 #region Bot
                 case TwitchAccount.Bot:
-                    _twitchApiBot = new TwitchAPI
+                    TwitchApiBot = new TwitchAPI
                     {
                         Settings =
                         {
-                            ClientId = _clientId,
+                            ClientId = ClientId,
                             AccessToken = Settings.Settings.TwitchBotToken
                         }
                     };
-                    BotTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
-                    userId = BotTokenCheck.UserId;
+                    BotTokenCheck = await TwitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+                    _userId = BotTokenCheck.UserId;
 
-                    users = await _twitchApiBot.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
+                    users = await TwitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null, Settings.Settings.TwitchAccessToken);
 
                     user = users.Users.FirstOrDefault();
                     if (user == null)
@@ -334,7 +334,7 @@ namespace Songify_Slim.Util.Songify
             if (reward.Id == Settings.Settings.TwRewardId)
             {
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
-                int userlevel = users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
+                int userlevel = Users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
                 Logger.LogStr($"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(TwitchUserLevels), userlevel)})");
                 string msg = "";
                 if (userlevel < Settings.Settings.TwSrUserLevel)
@@ -343,7 +343,7 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
@@ -360,7 +360,7 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 1) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
@@ -392,7 +392,7 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 2) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
@@ -439,7 +439,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                         new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED }, Settings.Settings.TwitchAccessToken);
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
@@ -476,7 +476,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
@@ -542,8 +542,8 @@ namespace Songify_Slim.Util.Songify
                     var match = Regex.Match(input, @"track\/([^\?]+)");
                     if (match.Success)
                     {
-                        string songID = match.Groups[1].Value;
-                        ErrorResponse response = ApiHandler.AddToQ($"spotify:track:{songID}");
+                        string songId = match.Groups[1].Value;
+                        ErrorResponse response = ApiHandler.AddToQ($"spotify:track:{songId}");
                         if (response != null && !response.HasError())
                             await ApiHandler.SkipSong();
                     }
@@ -559,14 +559,14 @@ namespace Songify_Slim.Util.Songify
 
                 if (BotTokenCheck != null)
                 {
-                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                    await TwitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchBotUser.Id, $"{tup.Item1}", tup.Item2, Settings.Settings.TwitchBotToken);
                     return;
                 }
 
                 if (TokenCheck != null)
                 {
-                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                    await TwitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchUser.Id, $"{tup.Item1}", tup.Item2, Settings.Settings.TwitchAccessToken);
                     return;
                 }
@@ -741,9 +741,9 @@ namespace Songify_Slim.Util.Songify
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             await CheckStreamIsUp();
-            if (users.All(o => o.UserId != e.ChatMessage.UserId))
+            if (Users.All(o => o.UserId != e.ChatMessage.UserId))
             {
-                users.Add(new TwitchUser
+                Users.Add(new TwitchUser
                 {
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
@@ -753,7 +753,7 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
+                Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
 
             if (Settings.Settings.MsgLoggingEnabled)
@@ -1741,7 +1741,7 @@ namespace Songify_Slim.Util.Songify
             GetCustomRewardsResponse rewardsResponse = null;
             try
             {
-                rewardsResponse = await _twitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null, b);
+                rewardsResponse = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null, b);
             }
             catch (Exception e)
             {

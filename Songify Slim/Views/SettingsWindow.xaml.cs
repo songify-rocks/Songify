@@ -958,7 +958,7 @@ namespace Songify_Slim
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Main);
+            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Main);
         }
 
         private void ToggleSwitchPrivacy_Toggled(object sender, RoutedEventArgs e)
@@ -1081,7 +1081,7 @@ namespace Songify_Slim
 
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Bot);
+            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Bot);
 
         }
 
