@@ -123,6 +123,10 @@ namespace Songify_Slim
                                 ChannelId = "",
                                 BotAccountName = "",
                                 BotOAuthToken = "",
+                                TwitchUser = null,
+                                TwitchBotToken = "",
+                                BotUser = null,
+
                             };
                         }
                         break;
@@ -142,6 +146,7 @@ namespace Songify_Slim
                             config.BotConfig.BotRespSuccess = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSuccess) ? "{artist} - {title} requested by @{user} has been added to the queue." : config.BotConfig.BotRespSuccess;
                             config.BotConfig.BotRespVoteSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespVoteSkip) ? "@{user} voted to skip the current song. ({votes})" : config.BotConfig.BotRespVoteSkip;
                             config.BotConfig.BotRespPos = string.IsNullOrWhiteSpace(config.BotConfig.BotRespPos) ? "@{user} {songs}{pos} {song}{/songs}" : config.BotConfig.BotRespPos;
+                            config.BotConfig.BotRespSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSong) ? "@{user} {song}" : config.BotConfig.BotRespSong;
                             config.BotConfig.BotRespNext = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNext) ? "@{user} {song}" : config.BotConfig.BotRespNext;
                             config.BotConfig.BotCmdPosTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdPosTrigger) ? "pos" : config.BotConfig.BotCmdPosTrigger;
                             config.BotConfig.BotCmdSongTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSongTrigger) ? "song" : config.BotConfig.BotCmdSongTrigger;
@@ -173,6 +178,7 @@ namespace Songify_Slim
                                 BotRespNoSong = "@{user} please specify a song to add to the queue.",
                                 BotRespSuccess = "{artist} - {title} requested by @{user} has been added to the queue.",
                                 BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
+                                BotRespSong = "@{user} {song}",
                                 BotRespPos = "@{user} {songs}{pos} {song}{/songs}",
                                 BotRespNext = "@{user} {song}",
                                 OnlyWorkWhenLive = false,
@@ -183,6 +189,7 @@ namespace Songify_Slim
                                 BotCmdVoteskipTrigger = "voteskip",
                                 BotCmdSsrTrigger = "ssr",
                                 ChatLiveStatus = false,
+
                             };
                         }
                         break;
@@ -247,11 +254,18 @@ namespace Songify_Slim
                                 BetaUpdates = false,
                                 ChromeFetchRate = 1,
                                 Player = 0,
+                                WebUserAgent = "Songify Data Provider",
                                 UpdateRequired = false,
                                 BotOnlyWorkWhenLive = false,
                                 TwSrUnlimitedSr = false,
                                 TwRewardSkipId = "",
                                 AccessKey = GenerateAccessKey(),
+                                TwitchFetchPort = 4004,
+                                TwitchRedirectPort = 4003,
+                                TwRewardGoalRewardId = "",
+                                RewardGoalEnabled = false,
+                                RewardGoalSong = "",
+                                RewardGoalAmount = 0,
                             };
                         }
                         break;
@@ -473,6 +487,7 @@ namespace Songify_Slim
                 BotRespNoSong = cfg.BotRespNoSong,
                 BotRespSuccess = cfg.BotRespSuccess,
                 BotRespVoteSkip = cfg.BotRespVoteSkip,
+
             };
             WriteConfig(ConfigTypes.BotConfig, botConfig);
 
@@ -556,6 +571,8 @@ namespace Songify_Slim
         public string BotAccountName { get; set; } = "";
         public string BotOAuthToken { get; set; } = "";
         public User TwitchUser { get; set; } = null;
+        public string TwitchBotToken { get; set; } = "";
+        public User BotUser { get; set; } = null;
     }
 
     public class BotConfig
@@ -585,6 +602,7 @@ namespace Songify_Slim
         public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
         public string BotCmdSsrTrigger { get; set; } = "ssr";
         public bool ChatLiveStatus { get; set; } = false;
+        public string BotRespSong { get; set; } = "@{user} {song}";
     }
 
     public class AppConfig
@@ -643,6 +661,12 @@ namespace Songify_Slim
         public bool TwSrUnlimitedSr { get; set; } = false;
         public string TwRewardSkipId { get; set; } = "";
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
+        public int TwitchFetchPort { get; set; } = 4004;
+        public int TwitchRedirectPort { get; set; } = 4003;
+        public string TwRewardGoalRewardId { get; set; } = "";
+        public bool RewardGoalEnabled { get; set; } = false;
+        public string RewardGoalSong { get; set; } = "";
+        public int RewardGoalAmount { get; set; } = 0;
     }
 
     public class Config

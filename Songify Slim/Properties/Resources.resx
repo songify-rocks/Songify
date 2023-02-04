@@ -791,4 +791,8 @@
     <value>Send offline notification to chat</value>
     <comment>Header for the ToggleSwtich to send a message to chat if the stream is not live and a command has been used</comment>
   </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Response for !song command</value>
+    <comment>Label content "Response for !song command"</comment>
+  </data>
 </root>

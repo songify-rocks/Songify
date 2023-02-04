@@ -8,6 +8,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
+using System.Web.Caching;
+using System.Web.Management;
 using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro.Controls;
@@ -37,9 +39,17 @@ using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
 using Window = System.Windows.Window;
+using Songify_Slim.Util.Settings;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomRewardRedemption;
+using TwitchLib.Api.Helix.Models.Chat;
+using TwitchLib.PubSub.Models.Responses;
+using System.Windows.Interop;
+using Octokit;
+using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
+using ControlzEx.Standard;
+using TwitchLib.Api.Helix;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -69,11 +79,19 @@ namespace Songify_Slim.Util.Songify
             Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
         };
         public static TwitchAPI _twitchApi;
+        public static TwitchAPI _twitchApiBot;
         private static TwitchPubSub _twitchPubSub;
         private static string _clientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
         private static string userId;
         public static List<TwitchUser> users = new List<TwitchUser>();
         public static ValidateAccessTokenResponse TokenCheck;
+        public static ValidateAccessTokenResponse BotTokenCheck;
+
+        public enum TwitchAccount
+        {
+            Main,
+            Bot
+        }
 
         public static void ResetVotes()
         {
@@ -81,7 +99,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("TWITCH IRC: Reset votes");
         }
 
-        public static void APIConnect()
+        public static void APIConnect(TwitchAccount account)
         {
             ImplicitOAuth ioa = new ImplicitOAuth(1234);
             string currentState = null;
@@ -95,10 +113,24 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                // Don't actually print the user token on screen or to the console.
-                // Here you should save it where the application can access it whenever it wants to, such as in appdata.
-                Settings.Settings.TwitchAccessToken = token;
-                await InitializeApi();
+
+                switch (account)
+                {
+                    case TwitchAccount.Main:
+                        // Don't actually print the user token on screen or to the console.
+                        // Here you should save it where the application can access it whenever it wants to, such as in appdata.
+                        Settings.Settings.TwitchAccessToken = token;
+                        break;
+                    case TwitchAccount.Bot:
+                        // Don't actually print the user token on screen or to the console.
+                        // Here you should save it where the application can access it whenever it wants to, such as in appdata.
+                        Settings.Settings.TwitchBotToken = token;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(account), account, null);
+                }
+
+                await InitializeApi(account);
 
                 Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
                 bool shownInSettings = false;
@@ -107,7 +139,7 @@ namespace Songify_Slim.Util.Songify
                     foreach (Window window in Application.Current.Windows)
                     {
                         if (window.GetType() != typeof(Window_Settings)) continue;
-                        await ((Window_Settings)window).ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", Settings.Settings.TwitchUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                        await ((Window_Settings)window).ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                         {
                             AffirmativeButtonText = Properties.Resources.msgbx_Yes,
                             NegativeButtonText = Properties.Resources.msgbx_No,
@@ -115,8 +147,8 @@ namespace Songify_Slim.Util.Songify
                         }).ContinueWith(x =>
                         {
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
-                            Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
-                            Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
+                            Settings.Settings.TwOAuth = $"oauth:{(account == TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
+                            Settings.Settings.TwAcc = account == TwitchAccount.Main ? Settings.Settings.TwitchUser.Login : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
                         });
                         ((Window_Settings)window).SetControls();
@@ -125,7 +157,7 @@ namespace Songify_Slim.Util.Songify
                     }
                     if (!shownInSettings)
                     {
-                        (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", Settings.Settings.TwitchUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                        (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                         {
                             AffirmativeButtonText = Properties.Resources.msgbx_Yes,
                             NegativeButtonText = Properties.Resources.msgbx_No,
@@ -133,8 +165,8 @@ namespace Songify_Slim.Util.Songify
                         }).ContinueWith(x =>
                         {
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
-                            Settings.Settings.TwOAuth = $"oauth:{Settings.Settings.TwitchAccessToken}";
-                            Settings.Settings.TwAcc = Settings.Settings.TwitchUser.Login;
+                            Settings.Settings.TwOAuth = $"oauth:{(account == TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
+                            Settings.Settings.TwAcc = account == TwitchAccount.Main ? Settings.Settings.TwitchUser.Login : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
                         });
                     }
@@ -162,81 +194,114 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        public static async Task InitializeApi()
+        public static async Task InitializeApi(TwitchAccount twitchAccount)
         {
-            _twitchApi = new TwitchAPI
+            GetUsersResponse users;
+            User user;
+            switch (twitchAccount)
             {
-                Settings =
-                {
-                    ClientId = _clientId,
-                    AccessToken = Settings.Settings.TwitchAccessToken
-                }
-            };
+                #region Main
 
-            TokenCheck = await _twitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
-
-            if (TokenCheck == null)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
+                case TwitchAccount.Main:
+                    _twitchApi = new TwitchAPI
                     {
-                        if (window.GetType() != typeof(MainWindow))
-                            continue;
-                        ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
-                        ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                        Settings =
+                        {
+                            ClientId = _clientId,
+                            AccessToken = Settings.Settings.TwitchAccessToken
+                        }
+                    };
+
+                    TokenCheck = await _twitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
+
+                    if (TokenCheck == null)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                if (window.GetType() != typeof(MainWindow))
+                                    continue;
+                                ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
+                                ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                            }
+                        });
+                        return;
                     }
-                });
-                return;
+
+                    userId = TokenCheck.UserId;
+
+                    users = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
+
+                    user = users.Users.FirstOrDefault();
+                    if (user == null)
+                        return;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window.GetType() != typeof(MainWindow))
+                                continue;
+                            ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
+                            ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                            ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
+
+                            Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
+                        }
+                    });
+
+                    Settings.Settings.TwitchUser = user;
+                    Settings.Settings.TwitchChannelId = user.Id;
+
+                    ConfigHandler.WriteAllConfig(Settings.Settings.Export());
+                    _twitchPubSub = new TwitchPubSub();
+                    _twitchPubSub.OnListenResponse += OnListenResponse;
+                    _twitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
+                    _twitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
+                    _twitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
+
+                    _twitchPubSub.OnStreamUp += (sender, args) =>
+                    {
+                        Logger.LogStr("TWITCH API: Stream is up");
+                        Settings.Settings.IsLive = true;
+                    };
+                    _twitchPubSub.OnStreamDown += (sender, args) =>
+                    {
+                        Logger.LogStr("TWITCH API: Stream is down");
+                        Settings.Settings.IsLive = false;
+                    };
+
+                    _twitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
+                    _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
+                    _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
+                    _twitchPubSub.Connect();
+                    break;
+                #endregion
+                #region Bot
+                case TwitchAccount.Bot:
+                    _twitchApiBot = new TwitchAPI
+                    {
+                        Settings =
+                        {
+                            ClientId = _clientId,
+                            AccessToken = Settings.Settings.TwitchBotToken
+                        }
+                    };
+                    BotTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+                    userId = BotTokenCheck.UserId;
+
+                    users = await _twitchApiBot.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
+
+                    user = users.Users.FirstOrDefault();
+                    if (user == null)
+                        return;
+                    Settings.Settings.TwitchBotUser = user;
+                    break;
+                #endregion
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
-
-            userId = TokenCheck.UserId;
-
-            var users = await _twitchApi.Helix.Users.GetUsersAsync(new List<string> { userId }, null, Settings.Settings.TwitchAccessToken);
-
-            User user = users.Users.FirstOrDefault();
-            if (user == null)
-                return;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(MainWindow))
-                        continue;
-                    ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
-                    ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                    ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
-
-                    Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
-                }
-            });
-
-            Settings.Settings.TwitchUser = user;
-            Settings.Settings.TwitchChannelId = user.Id;
-
-            ConfigHandler.WriteAllConfig(Settings.Settings.Export());
-            _twitchPubSub = new TwitchPubSub();
-            _twitchPubSub.OnListenResponse += OnListenResponse;
-            _twitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
-            _twitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
-            _twitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
-
-            _twitchPubSub.OnStreamUp += (sender, args) =>
-            {
-                Logger.LogStr("TWITCH API: Stream is up");
-                Settings.Settings.IsLive = true;
-            };
-            _twitchPubSub.OnStreamDown += (sender, args) =>
-            {
-                Logger.LogStr("TWITCH API: Stream is down");
-                Settings.Settings.IsLive = false;
-            };
-
-            _twitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
-            _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
-            _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
-            _twitchPubSub.Connect();
         }
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
@@ -386,8 +451,15 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
-                    Client.SendMessage(Settings.Settings.TwChannel, msg);
 
+                    if (msg.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(msg);
+                    }
+                    else
+                    {
+                        Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    }
                 }
                 else
                 {
@@ -416,11 +488,17 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
-
-                    Client.SendMessage(Settings.Settings.TwChannel, response);
+                    if (response.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(response);
+                    }
+                    else
+                    {
+                        Client.SendMessage(Settings.Settings.TwChannel, response);
+                    }
                 }
             }
-            else if (reward.Id == Settings.Settings.TwRewardSkipId)
+            if (reward.Id == Settings.Settings.TwRewardSkipId)
             {
                 if (_skipCooldown)
                     return;
@@ -436,6 +514,70 @@ namespace Songify_Slim.Util.Songify
                     SkipCooldownTimer.Start();
                 }
             }
+            if (reward.Id == Settings.Settings.TwRewardGoalRewardId)
+            {
+                if (!Settings.Settings.RewardGoalEnabled) return;
+                GlobalObjects.RewardGoalCount++;
+                Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
+
+                if (GlobalObjects.RewardGoalCount % 10 == 0)
+                {
+                    Console.WriteLine("Reached count " + GlobalObjects.RewardGoalCount);
+                    Client.SendMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
+
+                }
+                if (Settings.Settings.RewardGoalAmount - GlobalObjects.RewardGoalCount < 10)
+                {
+                    Console.WriteLine("Reached count " + GlobalObjects.RewardGoalCount);
+                    Client.SendMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
+
+                }
+
+                if (GlobalObjects.RewardGoalCount >= Settings.Settings.RewardGoalAmount)
+                {
+                    GlobalObjects.RewardGoalCount = 0;
+                    Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
+                    Client.SendMessage(Settings.Settings.TwChannel, "The reward goal has been reached! " + Settings.Settings.RewardGoalAmount);
+                    string input = Settings.Settings.RewardGoalSong;
+                    var match = Regex.Match(input, @"track\/([^\?]+)");
+                    if (match.Success)
+                    {
+                        string songID = match.Groups[1].Value;
+                        ErrorResponse response = ApiHandler.AddToQ($"spotify:track:{songID}");
+                        if (response != null && !response.HasError())
+                            await ApiHandler.SkipSong();
+                    }
+                }
+            }
+        }
+
+        private static async Task AnnounceInChat(string msg)
+        {
+            Tuple<string, AnnouncementColors> tup = GetStringAndColor(msg);
+            try
+            {
+
+                if (BotTokenCheck != null)
+                {
+                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                        Settings.Settings.TwitchBotUser.Id, $"{tup.Item1}", tup.Item2, Settings.Settings.TwitchBotToken);
+                    return;
+                }
+
+                if (TokenCheck != null)
+                {
+                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                        Settings.Settings.TwitchUser.Id, $"{tup.Item1}", tup.Item2, Settings.Settings.TwitchAccessToken);
+                    return;
+                }
+
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("TWITCH API: Could not send announcement. Has the bot been created through the app?");
+            }
+
+            Client.SendMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
         }
 
         private static void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
@@ -706,8 +848,14 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{title}", "");
                         response = response.Replace("{maxreq}", "");
                         response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-
-                        Client.SendMessage(e.ChatMessage.Channel, response);
+                        if (response.StartsWith("[announce "))
+                        {
+                            await AnnounceInChat(response);
+                        }
+                        else
+                        {
+                            Client.SendMessage(e.ChatMessage.Channel, response);
+                        }
                         return;
                     }
                 }
@@ -715,7 +863,6 @@ namespace Songify_Slim.Util.Songify
                 // start the command cooldown
                 StartCooldown();
             }
-
             if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
             {
                 try
@@ -752,6 +899,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     string msg = Settings.Settings.BotRespModSkip;
                     msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
                     ErrorResponse response = await ApiHandler.SkipSong();
                     if (response.Error != null)
                     {
@@ -759,7 +907,14 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        Client.SendMessage(e.ChatMessage.Channel, msg);
+                        if (msg.StartsWith("[announce "))
+                        {
+                            await AnnounceInChat(msg);
+                        }
+                        else
+                        {
+                            Client.SendMessage(e.ChatMessage.Channel, msg);
+                        }
                         _skipCooldown = true;
                         SkipCooldownTimer.Start();
                     }
@@ -791,7 +946,14 @@ namespace Songify_Slim.Util.Songify
                     msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                     msg = msg.Replace("{votes}", $"{_skipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
 
-                    Client.SendMessage(e.ChatMessage.Channel, msg);
+                    if (msg.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(msg);
+                    }
+                    else
+                    {
+                        Client.SendMessage(e.ChatMessage.Channel, msg);
+                    }
 
                     if (_skipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                     {
@@ -828,8 +990,17 @@ namespace Songify_Slim.Util.Songify
                 {
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
-                string currsong = GetCurrentSong();
-                Client.SendMessage(e.ChatMessage.Channel, $"@{e.ChatMessage.DisplayName} {currsong}");
+                string msg = Settings.Settings.BotRespSong;
+                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                msg = msg.Replace("{song}", GetCurrentSong());
+                if (msg.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(msg);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, msg);
+                }
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
             {
@@ -873,7 +1044,14 @@ namespace Songify_Slim.Util.Songify
                     between = tmp;
                     // Combine the 3 parts into one string
                     output = before + between + after;
-                    Client.SendMessage(e.ChatMessage.Channel, $"{output}");
+                    if (response.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(response);
+                    }
+                    else
+                    {
+                        Client.SendMessage(e.ChatMessage.Channel, output);
+                    }
                 }
                 else
                 {
@@ -902,7 +1080,14 @@ namespace Songify_Slim.Util.Songify
                 //if (GlobalObjects.ReqList.Count == 0)
                 //    return;
                 response = response.Replace("{song}", GetNextSong());
-
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
                 Client.SendMessage(e.ChatMessage.Channel, response);
             }
             else if (e.ChatMessage.Message == "!remove")
@@ -932,6 +1117,36 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
+        }
+
+        private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
+        {
+            AnnouncementColors colors = AnnouncementColors.Purple;
+            int startIndex = 9;
+            int endIndex = response.IndexOf("]", startIndex);
+
+            string colorName = response.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
+
+            switch (colorName)
+            {
+                case "green":
+                    colors = AnnouncementColors.Green;
+                    break;
+                case "orange":
+                    colors = AnnouncementColors.Orange;
+                    break;
+                case "blue":
+                    colors = AnnouncementColors.Blue;
+                    break;
+                case "purple":
+                    colors = AnnouncementColors.Purple;
+                    break;
+                case "primary":
+                    colors = AnnouncementColors.Primary;
+                    break;
+            }
+            response = response.Replace($"[announce {colorName}]", string.Empty).Trim();
+            return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
         }
 
         private static bool CheckLiveStatus()
@@ -1016,7 +1231,7 @@ namespace Songify_Slim.Util.Songify
             return currSong;
         }
 
-        private static void AddSong(string trackId, OnMessageReceivedArgs e)
+        private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             // loads the blacklist from settings
             string response;
@@ -1047,7 +1262,14 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{errormsg}", "");
                 response = CleanFormatString(response);
 
-                Client.SendMessage(e.ChatMessage.Channel, response);
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
                 return;
             }
 
@@ -1064,7 +1286,14 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{maxlength}", Settings.Settings.MaxSongLength.ToString());
                 response = CleanFormatString(response);
 
-                Client.SendMessage(e.ChatMessage.Channel, response);
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
                 return;
             }
 
@@ -1080,7 +1309,14 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{errormsg}", "");
                 response = CleanFormatString(response);
 
-                Client.SendMessage(e.ChatMessage.Channel, response);
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
                 return;
             }
 
@@ -1096,7 +1332,14 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{maxreq}", $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    if (response.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(response);
+                    }
+                    else
+                    {
+                        Client.SendMessage(e.ChatMessage.Channel, response);
+                    }
                     return;
                 }
 
@@ -1116,7 +1359,14 @@ namespace Songify_Slim.Util.Songify
                 response = response.Replace("{maxreq}", "");
                 response = response.Replace("{errormsg}", error.Error.Message);
 
-                Client.SendMessage(e.ChatMessage.Channel, response);
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
                 return;
             }
 
@@ -1127,7 +1377,14 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{errormsg}", "");
-            Client.SendMessage(e.ChatMessage.Channel, response);
+            if (response.StartsWith("[announce "))
+            {
+                await AnnounceInChat(response);
+            }
+            else
+            {
+                Client.SendMessage(e.ChatMessage.Channel, response);
+            }
 
             // Upload the track and who requested it to the queue on the server
             UploadToQueue(track, e.ChatMessage.DisplayName);
@@ -1449,10 +1706,34 @@ namespace Songify_Slim.Util.Songify
             return temp.Count >= maxreq;
         }
 
-        public static void SendCurrSong(string song)
+        public static async void SendCurrSong()
         {
-            if (Client != null && Client.IsConnected)
-                Client.SendMessage(Settings.Settings.TwChannel, song);
+
+            try
+            {
+                if (!CheckLiveStatus())
+                {
+                    if (Settings.Settings.ChatLiveStatus)
+                        Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            }
+
+            string msg = Settings.Settings.BotRespSong;
+            msg = Regex.Replace(msg, @"(@)?\{user\}", "");
+            msg = msg.Replace("{song}", GetCurrentSong());
+            if (msg.StartsWith("[announce "))
+            {
+                await AnnounceInChat(msg);
+            }
+            else
+            {
+                Client.SendMessage(Settings.Settings.TwChannel, msg);
+            }
         }
 
         public static async Task<List<CustomReward>> GetChannelRewards(bool b)

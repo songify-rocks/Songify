@@ -3,6 +3,8 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using Songify_Slim.Util.General;
+using TwitchLib.Api.Helix.Models.Chat;
 
 namespace Songify_Slim.UserControls
 {
@@ -85,6 +87,7 @@ namespace Songify_Slim.UserControls
             response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
             response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
             response = response.Replace("{votes}", "3/5");
+            response = response.Replace("{song}", "Rick Astley - Never Gonna Give You Up");
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
@@ -109,7 +112,12 @@ namespace Songify_Slim.UserControls
             tb_VoteSkip.Text = Settings.BotRespVoteSkip;
             tb_Pos.Text = Settings.BotRespPos;
             tb_Next.Text = Settings.BotRespNext;
+            tb_Song.Text = Settings.BotRespSong;
 
+            foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
+            {
+                box.SelectedIndex = 0;
+            }
         }
 
         private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -122,6 +130,64 @@ namespace Songify_Slim.UserControls
         {
             Settings.BotRespNext = tb_Next.Text;
             SetPreview(sender as TextBox);
+        }
+
+        private void Tb_Song_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespSong = tb_Song.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void setTextBoxText(TextBox tb, ComboBox cb, CheckBox check)
+        {
+            if (check.IsChecked != null && !(bool)check.IsChecked) return;
+            if (tb.Text.StartsWith("[announce "))
+                tb.Text = GetStringAndColor(tb.Text, ((ComboBoxItem)cb.SelectedItem).Content.ToString().ToLower());
+            else
+                tb.Text = "[announce " + ((ComboBoxItem)cb.SelectedItem).Content.ToString().ToLower() + "]" + tb.Text;
+            
+        }
+
+
+        private void Cb_ArtistBlocked_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            setTextBoxText(tb_ArtistBlocked, cb_ArtistBlocked, check_ArtistBlocked);
+        }
+
+
+        private static string GetStringAndColor(string response, string newColor)
+        {
+            int startIndex = 9;
+            int endIndex = response.IndexOf("]", startIndex);
+            string colorName = response.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
+            response = response.Replace($"[announce {colorName}]", $"[announce {newColor}]").Trim();
+            return response;
+        }
+
+        private void Cb_SongInQueue_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            setTextBoxText(tb_SongInQueue, cb_SongInQueue, check_SongInQueue);
+        }
+
+        private void AnnounceCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            ComboBox cbx = GlobalObjects.FindChild<ComboBox>(this, (sender as CheckBox).Name.Replace("check", "cb"));
+            TextBox tbx = GlobalObjects.FindChild<TextBox>(this, (sender as CheckBox).Name.Replace("check", "tb"));
+            if ((bool)!(sender as CheckBox).IsChecked)
+            {
+
+                if (cbx == null) return;
+                if (!tbx.Text.StartsWith("[announce ")) return;
+                cbx.SelectedIndex = 0;
+                const int startIndex = 9;
+                int endIndex = tbx.Text.IndexOf("]", startIndex);
+                string colorName = tbx.Text.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
+                tbx.Text = tbx.Text.Replace($"[announce {colorName}]", string.Empty).Trim();
+            }
+            else
+            {
+                tbx.Text = "[announce " + ((ComboBoxItem)cbx.SelectedItem).Content.ToString().ToLower() + "]" + tbx.Text;
+            }
         }
     }
 }

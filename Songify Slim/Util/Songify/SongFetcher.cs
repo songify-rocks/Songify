@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
+using Newtonsoft.Json;
 using Songify_Slim.Util.General;
 using TwitchLib.PubSub.Extensions;
 using Unosquare.Swan.Formatters;
@@ -335,7 +336,15 @@ namespace Songify_Slim.Util.Songify
             {
                 GlobalObjects.CurrentSong = songInfo;
                 string j = Json.Serialize(songInfo);
-                GlobalObjects.APIResponse = j;
+                dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
+                IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
+                dictionary["Requester"] = GlobalObjects.Requester;
+                dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
+                dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
+                string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+                //Console.WriteLine(updatedJson);
+
+                GlobalObjects.APIResponse = updatedJson;
 
                 //WriteProgressFile($"{path}/progress.txt", j);
             }

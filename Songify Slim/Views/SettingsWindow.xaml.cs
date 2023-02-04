@@ -35,6 +35,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
+using VonRiddarn.Twitch.ImplicitOAuth;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Button = System.Windows.Controls.Button;
 using Window = System.Windows.Window;
@@ -111,6 +112,7 @@ namespace Songify_Slim
                         break;
                 }
             }
+            NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
             CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
             if (CbxUserLevelsMaxReq.Items.Count > 0)
                 CbxUserLevelsMaxReq.SelectedIndex = 0;
@@ -156,6 +158,21 @@ namespace Songify_Slim
             BtnWebserverStart.Content = GlobalObjects.WebServer.run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
             tgl_InformChat.IsOn = Settings.ChatLiveStatus;
+            ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
+            ComboboxRedirectPort.Items.Clear();
+            ComboboxfetchPort.Items.Clear();
+            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
+            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
+            ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
+            ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
+            ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
+            ToggleRewardGoalEnabled.IsOn = Settings.RewardGoalEnabled;
+            TextBoxRewardGoalSong.Text = Settings.RewardGoalSong;
+            NumUpDpwnRewardGoalAmount.ValueChanged -= NumUpDpwnRewardGoalAmount_ValueChanged;
+            NumUpDpwnRewardGoalAmount.Value = Settings.RewardGoalAmount;
+            NumUpDpwnRewardGoalAmount.ValueChanged += NumUpDpwnRewardGoalAmount_ValueChanged;
 
             if (ApiHandler.Spotify != null)
             {
@@ -205,15 +222,29 @@ namespace Songify_Slim
                 if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
                 ImgTwitchProfile.ImageSource = bitmap;
-                lblTwitchName.Content = $"{Properties.Resources.sw_Integration_Twitch}: {Settings.TwitchUser.DisplayName}";
+                lblTwitchName.Content = $"Main Account:\n{Settings.TwitchUser.DisplayName}";
                 BtnLogInTwitch.Visibility = Visibility.Collapsed;
-                PnlTwich.Visibility = Visibility.Visible;
                 await LoadRewards();
                 txtbx_twChannel.Text = Settings.TwitchUser.Login;
             }
             else
             {
-                PnlTwich.Visibility = Visibility.Collapsed;
+                BtnLogInTwitch.Visibility = Visibility.Visible;
+            }
+
+            if (TwitchHandler.BotTokenCheck != null)
+            {
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                if (Settings.TwitchBotUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchBotUser.ProfileImageUrl, UriKind.Absolute);
+                bitmap.EndInit();
+                ImgTwitchBotProfile.ImageSource = bitmap;
+                lblTwitchBotName.Content = $"Bot Account:\n{Settings.TwitchBotUser.DisplayName}";
+                BtnLogInTwitchBot.Visibility = Visibility.Collapsed;
+                await LoadRewards();
+            }
+            else
+            {
                 BtnLogInTwitch.Visibility = Visibility.Visible;
             }
 
@@ -780,6 +811,12 @@ namespace Songify_Slim
                             Settings.TwRewardSkipId = rewardId;
                         break;
                     }
+                case "reward":
+                    {
+                        if (rewardId != null)
+                            Settings.TwRewardGoalRewardId = rewardId;
+                        break;
+                    }
             }
         }
 
@@ -815,8 +852,10 @@ namespace Songify_Slim
             CbxRewardsSkip.IsEnabled = false;
             CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged -= CbxRewards_OnSelectionChanged;
+            ComboboxRewardGoalReward.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewards.Items.Clear();
             CbxRewardsSkip.Items.Clear();
+            ComboboxRewardGoalReward.Items.Clear();
             if (Settings.TwitchUser.BroadcasterType != "")
                 try
                 {
@@ -834,6 +873,11 @@ namespace Songify_Slim
                             Content = new UC_RewardItem(null, false)
                         });
 
+                        ComboboxRewardGoalReward.Items.Add(new ComboBoxItem()
+                        {
+                            Content = new UC_RewardItem(null, false)
+                        });
+
                         foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
                         {
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
@@ -847,11 +891,16 @@ namespace Songify_Slim
                             {
                                 Content = new UC_RewardItem(reward, managable)
                             });
+                            ComboboxRewardGoalReward.Items.Add(new ComboBoxItem()
+                            {
+                                Content = new UC_RewardItem(reward, managable)
+                            });
                         }
 
                         CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
                         SetCheckBoxEnabledState(CbxRewards.SelectedItem != null && ((UC_RewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable);
                         CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
+                        ComboboxRewardGoalReward.SelectedItem = GetItemFromList(ComboboxRewardGoalReward, Settings.TwRewardGoalRewardId);
                     }
                     CbxRewards.IsEnabled = true;
                     CbxRewardsSkip.IsEnabled = true;
@@ -864,6 +913,7 @@ namespace Songify_Slim
 
             CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
             CbxRewardsSkip.SelectionChanged += CbxRewards_OnSelectionChanged;
+            ComboboxRewardGoalReward.SelectionChanged += CbxRewards_OnSelectionChanged;
         }
 
         public object GetItemFromList(ItemsControl comboBox, string s)
@@ -908,7 +958,7 @@ namespace Songify_Slim
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.APIConnect();
+            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Main);
         }
 
         private void ToggleSwitchPrivacy_Toggled(object sender, RoutedEventArgs e)
@@ -999,11 +1049,19 @@ namespace Songify_Slim
 
         private void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
         {
-            Settings.TwitchAccessToken = "";
-            Settings.TwitchUser = null;
+            switch (((Button)sender).Tag.ToString().ToLower())
+            {
+                case "main":
+                    Settings.TwitchAccessToken = "";
+                    Settings.TwitchUser = null;
+                    break;
+                case "bot":
+                    Settings.TwitchBotToken = "";
+                    Settings.TwitchBotUser = null;
+                    break;
+            }
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
-
         }
 
         private void NudServerPort_MinimumReached(object sender, RoutedEventArgs e)
@@ -1019,6 +1077,42 @@ namespace Songify_Slim
         private void tgl_InformChat_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.ChatLiveStatus = (bool)tgl_InformChat.IsOn;
+        }
+
+        private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
+        {
+            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Bot);
+
+        }
+
+        private void ComboboxRedirectPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.TwitchRedirectPort = (int)ComboboxRedirectPort.SelectedItem;
+        }
+
+        private void ComboboxfetchPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Settings.TwitchFetchPort = (int)ComboboxfetchPort.SelectedItem;
+        }
+
+        private void ToggleRewardGoalEnabled_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.RewardGoalEnabled = (bool)ToggleRewardGoalEnabled.IsOn;
+        }
+
+        private void TextBoxRewardGoalSong_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.RewardGoalSong = TextBoxRewardGoalSong.Text;
+        }
+
+        private void NumUpDpwnRewardGoalAmount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            Settings.RewardGoalAmount = (int)NumUpDpwnRewardGoalAmount.Value;
+        }
+
+        private void ComboboxRewardGoalReward_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

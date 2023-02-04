@@ -495,6 +495,40 @@ namespace Songify_Slim.Util.Settings
             set => SetWebServerPort(value);
         }
 
+        public static int TwitchRedirectPort
+        {
+            get => GetTwitchRedirectPort();
+            set => SetTwitchRedirectPort(value);
+        }
+
+        private static void SetTwitchRedirectPort(int value)
+        {
+            currentConfig.AppConfig.TwitchRedirectPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static int GetTwitchRedirectPort()
+        {
+            return currentConfig.AppConfig.TwitchRedirectPort;
+        }
+
+        public static int TwitchFetchPort
+        {
+            get => GetTwitchFetchPort();
+            set => SetTwitchFetchPort(value);
+        }
+
+        private static void SetTwitchFetchPort(int value)
+        {
+            currentConfig.AppConfig.TwitchFetchPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static int GetTwitchFetchPort()
+        {
+            return currentConfig.AppConfig.TwitchFetchPort;
+        }
+
         public static string WebUserAgent => GetWebua();
         public static string BotCmdPosTrigger { get => GetCmdPosTrigger(); set => SetCmdPosTrigger(value); }
         public static string BotCmdSongTrigger { get => GetCmdSongTrigger(); set => SetCmdSongTrigger(value); }
@@ -554,6 +588,93 @@ namespace Songify_Slim.Util.Settings
         public static bool TwSrUnlimitedSr { get => GetTwSrUnlimitedSr(); set => SetTwSrUnlimitedSr(value); }
         public static string TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
         public static bool ChatLiveStatus { get => GetChatLiveStatus(); set => SetChatLiveStatus(value); }
+        public static string TwitchBotToken { get => GetTwitchBotToken(); set => SetTwitchBotToken(value); }
+        public static User TwitchBotUser { get => GetTwitchBotUser(); set => SetTwitchBotUser(value); }
+        public static string BotRespSong { get => GetBot_resp_Song(); set => SetBot_Resp_Song(value); }
+        public static string TwRewardGoalRewardId { get => GetTwRewardGoalRewardId(); set => SetTwRewardGoalRewardId(value); }
+        public static bool RewardGoalEnabled { get => GetRewardGoalEnabled(); set => SetRewardGoalEnabled(value); }
+
+        private static bool GetRewardGoalEnabled()
+        {
+            return currentConfig.AppConfig.RewardGoalEnabled;
+        }
+
+        private static void SetRewardGoalEnabled(bool value)
+        {
+            currentConfig.AppConfig.RewardGoalEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        public static string RewardGoalSong { get => GetRewardGoalSong(); set => SetRewardGoalSong(value); }
+
+        private static string GetRewardGoalSong()
+        {
+            return currentConfig.AppConfig.RewardGoalSong;
+        }
+
+        private static void SetRewardGoalSong(string value)
+        {
+            currentConfig.AppConfig.RewardGoalSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
+
+        private static int GetRewardGoalAmount()
+        {
+            return currentConfig.AppConfig.RewardGoalAmount;
+        }
+
+        private static void SetRewardGoalAmount(int value)
+        {
+            currentConfig.AppConfig.RewardGoalAmount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static string GetTwRewardGoalRewardId()
+        {
+            return currentConfig.AppConfig.TwRewardGoalRewardId;
+        }
+
+        private static void SetTwRewardGoalRewardId(string value)
+        {
+            currentConfig.AppConfig.TwRewardGoalRewardId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static void SetBot_Resp_Song(string value)
+        {
+            currentConfig.BotConfig.BotRespSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetBot_resp_Song()
+        {
+            return currentConfig.BotConfig.BotRespSong;
+        }
+
+        private static User GetTwitchBotUser()
+        {
+            return currentConfig.TwitchCredentials.BotUser;
+        }
+
+        private static void SetTwitchBotUser(User value)
+        {
+            currentConfig.TwitchCredentials.BotUser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+        }
+
+
+        private static string GetTwitchBotToken()
+        {
+            return currentConfig.TwitchCredentials.TwitchBotToken;
+        }
+
+        private static void SetTwitchBotToken(string value)
+        {
+            currentConfig.TwitchCredentials.TwitchBotToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+        }
 
         private static void SetChatLiveStatus(bool value)
         {
@@ -634,7 +755,8 @@ namespace Songify_Slim.Util.Settings
                 BotAccountName = GetTwAcc(),
                 BotOAuthToken = GetTwOAuth(),
                 TwitchUser = GetTwitchUser(),
-
+                TwitchBotToken = GetTwitchBotToken(),
+                BotUser = GetTwitchBotUser(),
             };
 
             BotConfig botConfig = new BotConfig
@@ -652,6 +774,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespMaxReq = GetBot_Resp_MaxReq(),
                 BotRespModSkip = GetBot_Resp_ModSkip(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
+                BotRespSong = GetBot_resp_Song(),
                 BotRespSuccess = GetBot_Resp_Success(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 BotRespNext = GetBot_Resp_Next(),
@@ -699,6 +822,7 @@ namespace Songify_Slim.Util.Settings
                 TwSrMaxReqVip = GetTwSrMaxReqVip(),
                 TwSrUserLevel = GetTwSrUserLevel(),
                 TwRewardId = GetTwRewardId(),
+                TwRewardSkipId = GetTwRewardSkipId(),
                 ArtistBlacklist = GetArtistBlacklist(),
                 Color = GetColor(),
                 CustomPauseText = GetCustomPauseText(),
@@ -718,7 +842,14 @@ namespace Songify_Slim.Util.Settings
                 WebUserAgent = GetWebua(),
                 UpdateRequired = GetUpdateRequired(),
                 BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+                TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
                 AccessKey = GetAccessKey(),
+                TwitchFetchPort = GetTwitchFetchPort(),
+                TwitchRedirectPort = GetTwitchRedirectPort(),
+                TwRewardGoalRewardId = GetTwRewardGoalRewardId(),
+                RewardGoalEnabled = GetRewardGoalEnabled(),
+                RewardGoalSong = GetRewardGoalSong(),
+                RewardGoalAmount = GetRewardGoalAmount(),
             };
 
             return new Configuration

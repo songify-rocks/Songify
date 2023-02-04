@@ -595,15 +595,17 @@ namespace Songify_Slim.Views
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
 
-         
+
             // automatically start fetching songs
             SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
-                await TwitchHandler.InitializeApi();
+                await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Main);
+            if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
+                await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
             WebHelper.SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
             if (!Settings.UpdateRequired) return;
-            OpenPatchNotes(); 
+            OpenPatchNotes();
             Settings.UpdateRequired = false;
         }
 
@@ -786,7 +788,7 @@ namespace Songify_Slim.Views
 
         private void mi_TwitchAPI_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.APIConnect();
+            TwitchHandler.APIConnect(TwitchHandler.TwitchAccount.Main);
         }
 
         protected virtual bool IsFileLocked(FileInfo file)
@@ -995,6 +997,8 @@ namespace Songify_Slim.Views
                         CurrSongTwitch = CurrSongTwitch.Replace("{{", "");
                         CurrSongTwitch = CurrSongTwitch.Replace("}}", "");
                         CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.Requester);
+                        GlobalObjects.Requester = rq.Requester;
+
                     }
                     else
                     {
@@ -1004,6 +1008,7 @@ namespace Songify_Slim.Views
                         start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
                         end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
+                        GlobalObjects.Requester = "";
                     }
                 }
                 else
@@ -1016,6 +1021,7 @@ namespace Songify_Slim.Views
                         start = CurrSongTwitch.IndexOf("{{", StringComparison.Ordinal);
                         end = CurrSongTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                         if (start >= 0) CurrSongTwitch = CurrSongTwitch.Remove(start, end - start);
+                        GlobalObjects.Requester = "";
                     }
                     catch (Exception ex)
                     {
@@ -1198,17 +1204,9 @@ namespace Songify_Slim.Views
                 if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
-                if (TwitchHandler.Client != null && Settings.AnnounceInChat && TwitchHandler.Client.IsConnected)
+                if (Settings.AnnounceInChat)
                 {
-                    if (Settings.BotOnlyWorkWhenLive)
-                    {
-                        if (Settings.IsLive)
-                            TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
-                    }
-                    else
-                    {
-                        TwitchHandler.SendCurrSong("Now playing: " + CurrSong.Trim());
-                    }
+                    TwitchHandler.SendCurrSong();
                 }
 
 

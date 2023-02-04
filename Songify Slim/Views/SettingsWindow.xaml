@@ -213,6 +213,10 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
                                     <DockPanel x:Name="PnlTwich" Margin="0,6,0,6">
                                         <Border CornerRadius="40" Width="60" Height="60" BorderThickness="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                                             <Border.Background>
@@ -222,17 +226,44 @@
                                         <StackPanel Orientation="Vertical" Margin="10,0,0,0" DockPanel.Dock="Right" VerticalAlignment="Center">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Label Grid.Column="0" x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                                                <Button Grid.Column="1"  x:Name="BtnTwitchLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}">
+                                                <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Main">
                                                     <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
                                                 </Button>
                                             </Grid>
                                         </StackPanel>
                                     </DockPanel>
-                                    <Button x:Name="BtnLogInTwitch" Click="BtnLogInTwitch_Click" VerticalAlignment="Bottom" Grid.Row="1">
+                                    <DockPanel x:Name="PnlTwichBot" Margin="0,6,0,6" Grid.Column="1">
+                                        <Border CornerRadius="40" Width="60" Height="60" BorderThickness="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
+                                            <Border.Background>
+                                                <ImageBrush x:Name="ImgTwitchBotProfile" Stretch="Fill" ImageSource="/songify.ico"/>
+                                            </Border.Background>
+                                        </Border>
+                                        <StackPanel Orientation="Vertical" Margin="10,0,0,0" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" x:Name="lblTwitchBotName" Content="Twitch Bot" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchBotLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Bot">
+                                                    <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
+                                                </Button>
+                                            </Grid>
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <Button x:Name="BtnLogInTwitch" Click="BtnLogInTwitch_Click" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="0" Margin="6,0,6,0">
+                                        <Button.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <iconPacks:ForkAwesome Kind="Twitch"/>
+                                                <TextBlock Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" Margin="6,0,0,0"/>
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button x:Name="BtnLogInTwitchBot" Click="BtnLogInTwitchBot_OnClick" VerticalAlignment="Bottom" Grid.Row="1" Grid.Column="1" Margin="6,0,6,0">
                                         <Button.Content>
                                             <StackPanel Orientation="Horizontal">
                                                 <iconPacks:ForkAwesome Kind="Twitch"/>
@@ -242,29 +273,53 @@
                                     </Button>
                                 </Grid>
 
-                                <Label Margin="0,4"  Content="Account name" HorizontalAlignment="Left" VerticalAlignment="Top"
-                                   Padding="0,5,5,5" Grid.Row="1" Grid.Column="0" />
-                                <TextBox Margin="0,4" x:Name="txtbx_twUser" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""
+                                <!--#region Twitch Credentials (not using API) -->
+                                <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials"/>
+                                <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                    <Grid.Style>
+                                        <Style TargetType="Grid">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=CheckShowCred, Path=IsOn}" Value="False">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ElementName=CheckShowCred, Path=IsOn}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Grid.Style>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Margin="0,4"  Content="Account name" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                   Padding="0,5,5,5" Grid.Row="0" Grid.Column="0" />
+                                    <TextBox Margin="0,4" x:Name="txtbx_twUser" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""
                                                  VerticalAlignment="Top"
                                                  controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"
-                                                 Grid.Row="1" Grid.Column="1" />
-
-                                <Label Margin="0,4" Content="oAuth Token" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="2"
-                                   Grid.Column="0" />
-                                <Grid Margin="0,4" Grid.Row="2" Grid.Column="1">
-                                    <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Stretch"
+                                                 Grid.Row="0" Grid.Column="1" />
+                                    <Label Margin="0,4" Content="oAuth Token" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="1"
+                                       Grid.Column="0" />
+                                    <Grid Margin="0,4" Grid.Row="1" Grid.Column="1">
+                                        <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Stretch"
                                          controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Stretch"
                                          PasswordChanged="txtbx_twOAuth_PasswordChanged" Grid.Row="1" Grid.Column="1" Margin="0,0,30,0" />
-                                    <Button Content="?" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                        <Button Content="?" HorizontalAlignment="Right" VerticalAlignment="Top"
                            Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" Grid.Row="1" Grid.Column="1" />
-                                </Grid>
-
-                                <Label Margin="0,4" Content="Channel to join" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="3"
-                                   Grid.Column="0" />
-                                <TextBox Margin="0,4" x:Name="txtbx_twChannel" HorizontalAlignment="Stretch" TextWrapping="Wrap"
+                                    </Grid>
+                                    <Label Margin="0,4" Content="Channel to join" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="2"
+                                       Grid.Column="0" />
+                                    <TextBox Margin="0,4" x:Name="txtbx_twChannel" HorizontalAlignment="Stretch" TextWrapping="Wrap"
                                      controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
                                      VerticalAlignment="Top"
-                                     TextChanged="txtbx_twChannel_TextChanged" Grid.Row="3" Grid.Column="1" />
+                                     TextChanged="txtbx_twChannel_TextChanged" Grid.Row="2" Grid.Column="1" />
+                                </Grid>
+                                <!--#endregion-->
 
                                 <controls:ToggleSwitch Margin="0,4" x:Name="Chbx_TwAutoconnect"
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
@@ -292,79 +347,109 @@
                         </TabItem>
                         <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
                         <TabItem x:Name="TabItemTwitchRewards" Header="{x:Static local:Resources.Sw_Integtation_Tc_Rewards}">
-                            <Grid x:Name="GrdTwitchReward">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
+                            <TabControl>
+                                <TabItem Header="SR">
+                                    <Grid x:Name="GrdTwitchReward">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
                                 VerticalAlignment="Center" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="2"
                                 Grid.Column="0" Grid.ColumnSpan="2" Width="264" Visibility="Collapsed" />
-                                <CheckBox x:Name="Chbx_MessageLogging"
+                                        <CheckBox x:Name="Chbx_MessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
-                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSR}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
-                                <ComboBox Grid.Row="1" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Height="23" Margin="0,0,0,6" Tag="sr" />
-                                <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top"
+                                        <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSR}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                        <ComboBox Grid.Row="1" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewards" Height="23" Margin="0,0,0,6" Tag="sr" />
+                                        <Button x:Name="BtnUpdateRewards" Width="26" Height="26" HorizontalAlignment="Right" Click="BtnUpdateRewards_Click" VerticalAlignment="Top"
                                         Grid.Row="0" Grid.Column="1" Margin="0,0,0,6">
-                                    <Button.Content>
-                                        <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
-                                    </Button.Content>
-                                </Button>
-                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
-                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
+                                            <Button.Content>
+                                                <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
+                                            </Button.Content>
+                                        </Button>
+                                        <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
+                                        <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
 
-                                <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
-                                <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
-                                <Grid x:Name="GridNonManageable" Grid.Row="5" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.Window.Background}" Grid.RowSpan="5" Grid.ColumnSpan="2" Panel.ZIndex="1">
-                                    <TextBlock Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"></TextBlock>
-                                </Grid>
-                                <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundUserBlocked" Tag="1" Margin="0,0,0,4"  Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUSerBlocked}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundSpotifyNotConnected" Tag="2" Margin="5,0,0,4"  Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSpotifyNotConnected}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundSongUnavailable" Tag="3" Margin="0,0,0,4"  Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongNotAvailable}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundArtistBlocked" Tag="4" Margin="5,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundArtistBlocked}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundSongLength" Tag="5" Margin="0,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongTooLong}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundSongInQueue" Tag="6" Margin="5,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAlreadyInQueue}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundNothingFound" Tag="7" Margin="0,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundNoSongFound}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundSongAdded" Tag="8" Margin="5,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongAdded}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                                <CheckBox x:Name="ChkRefundEverything" Tag="-1" Margin="0,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" FontWeight="Bold"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap"/>
-                                </CheckBox>
-                            </Grid>
+                                        <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
+                                        <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
+                                        <Grid x:Name="GridNonManageable" Grid.Row="5" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.Window.Background}" Grid.RowSpan="5" Grid.ColumnSpan="2" Panel.ZIndex="1">
+                                            <TextBlock Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"></TextBlock>
+                                        </Grid>
+                                        <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundUserBlocked" Tag="1" Margin="0,0,0,4"  Grid.Row="5" HorizontalAlignment="Stretch" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUSerBlocked}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundSpotifyNotConnected" Tag="2" Margin="5,0,0,4"  Grid.Row="6" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSpotifyNotConnected}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundSongUnavailable" Tag="3" Margin="0,0,0,4"  Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongNotAvailable}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundArtistBlocked" Tag="4" Margin="5,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundArtistBlocked}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundSongLength" Tag="5" Margin="0,0,0,4"  Grid.Row="7" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongTooLong}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundSongInQueue" Tag="6" Margin="5,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAlreadyInQueue}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundNothingFound" Tag="7" Margin="0,0,0,4"  Grid.Row="8" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundNoSongFound}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundSongAdded" Tag="8" Margin="5,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundSongAdded}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                        <CheckBox x:Name="ChkRefundEverything" Tag="-1" Margin="0,0,0,4"  Grid.Row="9" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1" FontWeight="Bold"  Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
+                                            <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap"/>
+                                        </CheckBox>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
+                                <TabItem Header="Reward Goals">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Label Content="State" Grid.Row="0" Grid.Column="0"/>
+                                        <Label Content="Song URL" Grid.Row="0" Grid.Column="1"/>
+                                        <Label Content="Amount needed" Grid.Row="0" Grid.Column="2"/>
+                                        <Label Content="Reward" Grid.Row="0" Grid.Column="3"/>
+                                        <controls:ToggleSwitch x:Name="ToggleRewardGoalEnabled" Content="Enabled" Grid.Row="1" Grid.Column="0" Margin="0,0,6,0" MinWidth="0" Toggled="ToggleRewardGoalEnabled_Toggled"/>
+                                        <TextBox Grid.Row="1" x:Name="TextBoxRewardGoalSong" Grid.Column="1" controls:TextBoxHelper.Watermark="Song Link" Margin="0,0,6,0" TextChanged="TextBoxRewardGoalSong_TextChanged"></TextBox>
+                                        <controls:NumericUpDown x:Name="NumUpDpwnRewardGoalAmount"  Grid.Row="1" Minimum="0" Grid.Column="2" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Margin="0,0,6,0" ValueChanged="NumUpDpwnRewardGoalAmount_ValueChanged"></controls:NumericUpDown>
+                                        <ComboBox x:Name="ComboboxRewardGoalReward" Grid.Row="1" Grid.Column="3" Tag="reward" SelectionChanged="CbxRewards_OnSelectionChanged"></ComboBox>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+
                         </TabItem>
                         <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
                         <TabItem Header="{x:Static local:Resources.Sw_Integtation_Tc_SongRequests}">
@@ -544,6 +629,7 @@
                             <RowDefinition Height="32"/>
                             <RowDefinition Height="32"/>
                             <RowDefinition Height="32"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -559,6 +645,17 @@
                             Click="Btn_ImportConfig_Click" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" />
                         <Button x:Name="Btn_ResetConfig" Content="{x:Static local:Resources.sw_Config_ResetConfig}" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Width="170" Click="Btn_ResetConfig_Click" Grid.Row="1" Grid.Column="1" />
+                        <Label Grid.Column="0" Content="Twitch Auth Ports" Grid.Row="2"/>
+                        <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Redirect Port:" Width="80"/>
+                                <ComboBox x:Name="ComboboxRedirectPort" MinWidth="100" SelectionChanged="ComboboxRedirectPort_SelectionChanged"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                <Label Content="Fetch Port:" Width="80"/>
+                                <ComboBox x:Name="ComboboxfetchPort" MinWidth="100" SelectionChanged="ComboboxfetchPort_SelectionChanged"/>
+                            </StackPanel>
+                        </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>

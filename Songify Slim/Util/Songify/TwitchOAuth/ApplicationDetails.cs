@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Songify_Slim;
+using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
 
 namespace VonRiddarn.Twitch.ImplicitOAuth
@@ -13,16 +14,16 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
         public static string twitchClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
 
 
-        private static readonly List<int> RedirectPorts = new List<int> { 4003, 49180, 54321, 57689, 64567, 65100 };
-        private static readonly List<int> FetchPorts = new List<int> { 4004, 49181, 54322, 57690, 64568, 65101 };
+        public static readonly List<int> RedirectPorts = new List<int> { 4003, 49180, 54321, 57689, 64567, 65100 };
+        public static readonly List<int> FetchPorts = new List<int> { 4004, 49181, 54322, 57690, 64568, 65101 };
 
         // The URI you entered when registering your application in the twitch console.
         // Default is fine.
-        public static string redirectUri = $"http://localhost:{GetRedirectPort()}/";
+        public static string redirectUri = $"http://localhost:{Songify_Slim.Util.Settings.Settings.TwitchRedirectPort}/";
 
         // Any URI you want to fetch results on.
         // Default is fine.
-        public static string fetchUri = $"http://localhost:{GetFetchPort()}/";
+        public static string fetchUri = $"http://localhost:{Songify_Slim.Util.Settings.Settings.TwitchFetchPort}/";
 
         private static int GetFetchPort()
         {

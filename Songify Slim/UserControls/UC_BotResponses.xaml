@@ -10,16 +10,64 @@
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
                VerticalAlignment="Top" Margin="0" FontSize="10" Padding="0,10,5,0" />
-                <TextBox x:Name="tb_ArtistBlocked" VerticalAlignment="Top"
-                 TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
-                 GotFocus="tb__GotFocus" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="check_ArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
+                    <ComboBox x:Name="cb_ArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
+                        <ComboBoxItem Content="Orange"/>
+                        <ComboBoxItem Content="Blue"/>
+                        <ComboBoxItem Content="Purple"/>
+                        <ComboBoxItem Content="Primary"/>
+                        <ComboBox.Style>
+                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=check_ArtistBlocked, Path=IsChecked}" Value="False">
+                                        <Setter Property="SelectedIndex" Value="0"></Setter>
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                    <TextBox Grid.Column="2" x:Name="tb_ArtistBlocked" VerticalAlignment="Center"
+                             TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
+                             GotFocus="tb__GotFocus" Height="23" />
+                </Grid>
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_SongInQueue}" HorizontalAlignment="Left"
                VerticalAlignment="Top" FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_SongInQueue" Height="23" VerticalAlignment="Top"
-                 TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
-                 GotFocus="tb__GotFocus" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="check_SongInQueue" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Visibility="Collapsed"/>
+                    <ComboBox x:Name="cb_SongInQueue" SelectionChanged="Cb_SongInQueue_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
+                        <ComboBoxItem Content="Orange"/>
+                        <ComboBoxItem Content="Blue"/>
+                        <ComboBoxItem Content="Purple"/>
+                        <ComboBoxItem Content="Primary"/>
+                        <ComboBox.Style>
+                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=check_SongInQueue, Path=IsChecked}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                        <Setter Property="SelectedIndex" Value="0"></Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                    <TextBox Grid.Column="2" x:Name="tb_SongInQueue" Height="23" VerticalAlignment="Top"
+                             TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
+                             GotFocus="tb__GotFocus" />
+                </Grid>
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_MaxSongs}" HorizontalAlignment="Left"
@@ -63,6 +111,12 @@
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_VoteSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="{x:Static properties:Resources.brw_Song}" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_Song" Height="23" VerticalAlignment="Top"
+                         TextChanged="Tb_Song_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Pos}" HorizontalAlignment="Left" VerticalAlignment="Top"
