@@ -424,7 +424,7 @@
                                     </Grid>
                                 </TabItem>
                                 <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
-                                <TabItem Header="Reward Goals">
+                                <TabItem Header="Reward Goal">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>

@@ -179,6 +179,7 @@ namespace Songify_Slim
                                 BotRespSuccess = "{artist} - {title} requested by @{user} has been added to the queue.",
                                 BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
                                 BotRespSong = "@{user} {song}",
+                                BotRespRefund = "Your points have been refunded.",
                                 BotRespPos = "@{user} {songs}{pos} {song}{/songs}",
                                 BotRespNext = "@{user} {song}",
                                 OnlyWorkWhenLive = false,
@@ -189,6 +190,7 @@ namespace Songify_Slim
                                 BotCmdVoteskipTrigger = "voteskip",
                                 BotCmdSsrTrigger = "ssr",
                                 ChatLiveStatus = false,
+
 
                             };
                         }
@@ -603,6 +605,7 @@ namespace Songify_Slim
         public string BotCmdSsrTrigger { get; set; } = "ssr";
         public bool ChatLiveStatus { get; set; } = false;
         public string BotRespSong { get; set; } = "@{user} {song}";
+        public string BotRespRefund { get; set; } = "Your points have been refunded.";
     }
 
     public class AppConfig

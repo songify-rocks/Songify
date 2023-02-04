@@ -343,11 +343,11 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
-                            msg += " Your points have been refunded.";
+                            msg += $" {Settings.Settings.BotRespRefund}";
                         }
                     }
 
@@ -360,11 +360,11 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 1) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
-                            msg += " Your points have been refunded.";
+                            msg += $" {Settings.Settings.BotRespRefund}";
                         }
                     }
 
@@ -392,11 +392,11 @@ namespace Songify_Slim.Util.Songify
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 2) && isManagable)
                     {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                        UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
-                            msg += " Your points have been refunded.";
+                            msg += $" {Settings.Settings.BotRespRefund}";
                         }
                     }
 
@@ -439,11 +439,11 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
+                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED }, Settings.Settings.TwitchAccessToken);
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
-                                msg += " Your points have been refunded.";
+                                msg += $" {Settings.Settings.BotRespRefund}";
                             }
                         }
                         catch (Exception)
@@ -476,11 +476,11 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(userId, reward.Id,
+                            UpdateRedemptionStatusResponse updateRedemptionStatus = await _twitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
                             new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
-                                response += " Your points have been refunded.";
+                                response += $" {Settings.Settings.BotRespRefund}";
                             }
                         }
                         catch (Exception)

@@ -619,6 +619,18 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
+        public static string BotRespRefund { get => GetBot_Resp_Refund(); set => SetBot_Resp_Refund(value); }
+
+        private static void SetBot_Resp_Refund(string value)
+        {
+            currentConfig.BotConfig.BotRespRefund = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+        }
+
+        private static string GetBot_Resp_Refund()
+        {
+            return currentConfig.BotConfig.BotRespRefund;
+        }
 
         private static int GetRewardGoalAmount()
         {
@@ -740,79 +752,99 @@ namespace Songify_Slim.Util.Settings
             SpotifyCredentials spotifyCredentials = new SpotifyCredentials
             {
                 AccessToken = GetSpotifyAccessToken(),
-                RefreshToken = GetSpotifyRefreshToken(),
-                DeviceId = GetSpotifyDeviceId(),
                 ClientId = GetClientId(),
                 ClientSecret = GetClientSecret(),
+                DeviceId = GetSpotifyDeviceId(),
+                RefreshToken = GetSpotifyRefreshToken(),
 
             };
 
             TwitchCredentials twitchCredentials = new TwitchCredentials
             {
                 AccessToken = GetTwitchAccessToken(),
-                ChannelName = GetTwChannel(),
-                ChannelId = GetTwitchChannelId(),
                 BotAccountName = GetTwAcc(),
                 BotOAuthToken = GetTwOAuth(),
-                TwitchUser = GetTwitchUser(),
-                TwitchBotToken = GetTwitchBotToken(),
                 BotUser = GetTwitchBotUser(),
+                ChannelId = GetTwitchChannelId(),
+                ChannelName = GetTwChannel(),
+                TwitchBotToken = GetTwitchBotToken(),
+                TwitchUser = GetTwitchUser(),
             };
 
             BotConfig botConfig = new BotConfig
             {
                 BotCmdNext = GetBotCmdNext(),
+                BotCmdNextTrigger = GetCmdNextTrigger(),
                 BotCmdPos = GetBotCmdPos(),
+                BotCmdPosTrigger = GetCmdPosTrigger(),
                 BotCmdSkip = GetBotCmdSkip(),
+                BotCmdSkipTrigger = GetCmdSkipTrigger(),
                 BotCmdSkipVote = GetBotCmdSkipVote(),
-                BotCmdSong = GetBotCmdSong(),
                 BotCmdSkipVoteCount = GetBotCmdSkipVoteCount(),
+                BotCmdSong = GetBotCmdSong(),
+                BotCmdSongTrigger = GetCmdSongTrigger(),
+                BotCmdSsrTrigger = GetCmdSsrTrigger(),
+                BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
                 BotRespBlacklist = GetBot_Resp_Blacklist(),
                 BotRespError = GetBot_Resp_Error(),
                 BotRespIsInQueue = GetBot_Resp_IsInQueue(),
                 BotRespLength = GetBot_Resp_Length(),
                 BotRespMaxReq = GetBot_Resp_MaxReq(),
                 BotRespModSkip = GetBot_Resp_ModSkip(),
+                BotRespNext = GetBot_Resp_Next(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
+                BotRespPos = GetBot_Resp_Pos(),
+                BotRespRefund = GetBot_Resp_Refund(),
                 BotRespSong = GetBot_resp_Song(),
                 BotRespSuccess = GetBot_Resp_Success(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
-                BotRespNext = GetBot_Resp_Next(),
-                BotRespPos = GetBot_Resp_Pos(),
-                OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
-                BotCmdPosTrigger = GetCmdPosTrigger(),
-                BotCmdSongTrigger = GetCmdSongTrigger(),
-                BotCmdNextTrigger = GetCmdNextTrigger(),
-                BotCmdSkipTrigger = GetCmdSkipTrigger(),
-                BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
-                BotCmdSsrTrigger = GetCmdSsrTrigger(),
                 ChatLiveStatus = GetChatLiveStatus(),
+                OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
             };
 
             AppConfig appConfig = new AppConfig
             {
+                AccessKey = GetAccessKey(),
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
+                ArtistBlacklist = GetArtistBlacklist(),
                 AutoClearQueue = GetAutoClearQueue(),
                 Autostart = GetAutostart(),
+                AutoStartWebServer = GetAutoStartWebServer(),
+                BetaUpdates = GetBetaUpdates(),
+                BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+                ChromeFetchRate = GetChromeFetchRate(),
+                Color = GetColor(),
+                CustomPauseText = GetCustomPauseText(),
                 CustomPauseTextEnabled = GetCustomPauseTextEnabled(),
+                Directory = GetDirectory(),
                 DownloadCover = GetDownloadCover(),
+                Language = GetLanguage(),
+                MaxSongLength = GetMaxSongLength(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
+                OutputString = GetOutputString(),
+                OutputString2 = GetOutputString2(),
+                Player = GetSource(),
+                PosX = (int)GetPosX(),
+                PosY = (int)GetPosY(),
+                RefundConditons = GetRefundConditons(),
+                RewardGoalAmount = GetRewardGoalAmount(),
+                RewardGoalEnabled = GetRewardGoalEnabled(),
+                RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
+                SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
+                Theme = GetTheme(),
                 TwAutoConnect = GetTwAutoConnect(),
+                TwitchFetchPort = GetTwitchFetchPort(),
+                TwitchRedirectPort = GetTwitchRedirectPort(),
+                TwRewardGoalRewardId = GetTwRewardGoalRewardId(),
+                TwRewardId = GetTwRewardId(),
+                TwRewardSkipId = GetTwRewardSkipId(),
                 TwSrCommand = GetTwSrCommand(),
-                TwSrReward = GetTwSrReward(),
-                Upload = GetUpload(),
-                UploadHistory = GetUploadHistory(),
-                UseOwnApp = GetUseOwnApp(),
-                MaxSongLength = GetMaxSongLength(),
-                PosX = (int)GetPosX(),
-                PosY = (int)GetPosY(),
-                SpaceCount = GetSpaceCount(),
                 TwSrCooldown = GetTwSrCooldown(),
                 TwSrMaxReq = GetTwSrMaxReq(),
                 TwSrMaxReqBroadcaster = GetTwSrMaxReqBroadcaster(),
@@ -820,36 +852,17 @@ namespace Songify_Slim.Util.Settings
                 TwSrMaxReqModerator = GetTwSrMaxReqModerator(),
                 TwSrMaxReqSubscriber = GetTwSrMaxReqSubscriber(),
                 TwSrMaxReqVip = GetTwSrMaxReqVip(),
+                TwSrReward = GetTwSrReward(),
+                TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
                 TwSrUserLevel = GetTwSrUserLevel(),
-                TwRewardId = GetTwRewardId(),
-                TwRewardSkipId = GetTwRewardSkipId(),
-                ArtistBlacklist = GetArtistBlacklist(),
-                Color = GetColor(),
-                CustomPauseText = GetCustomPauseText(),
-                Directory = GetDirectory(),
-                Language = GetLanguage(),
-                OutputString = GetOutputString(),
-                OutputString2 = GetOutputString2(),
-                Theme = GetTheme(),
+                UpdateRequired = GetUpdateRequired(),
+                Upload = GetUpload(),
+                UploadHistory = GetUploadHistory(),
+                UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
                 Uuid = GetUuid(),
-                RefundConditons = GetRefundConditons(),
                 WebServerPort = GetWebServerPort(),
-                AutoStartWebServer = GetAutoStartWebServer(),
-                BetaUpdates = GetBetaUpdates(),
-                ChromeFetchRate = GetChromeFetchRate(),
-                Player = GetSource(),
                 WebUserAgent = GetWebua(),
-                UpdateRequired = GetUpdateRequired(),
-                BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
-                TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
-                AccessKey = GetAccessKey(),
-                TwitchFetchPort = GetTwitchFetchPort(),
-                TwitchRedirectPort = GetTwitchRedirectPort(),
-                TwRewardGoalRewardId = GetTwRewardGoalRewardId(),
-                RewardGoalEnabled = GetRewardGoalEnabled(),
-                RewardGoalSong = GetRewardGoalSong(),
-                RewardGoalAmount = GetRewardGoalAmount(),
             };
 
             return new Configuration

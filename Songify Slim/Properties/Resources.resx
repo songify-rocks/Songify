@@ -795,4 +795,8 @@
     <value>Response for !song command</value>
     <comment>Label content "Response for !song command"</comment>
   </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Text that gets added to the response if points are refunded</value>
+    <comment>Title for the text field</comment>
+  </data>
 </root>

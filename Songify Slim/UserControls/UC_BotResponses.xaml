@@ -113,6 +113,12 @@
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
+                <Label Content="{x:Static properties:Resources.brw_Refund}" HorizontalAlignment="Left" VerticalAlignment="Top"
+                       FontSize="10" Padding="0,10,5,0"/>
+                <TextBox x:Name="tb_Refund" Height="23" VerticalAlignment="Top"
+                         TextChanged="Tb_Refund_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+            </StackPanel>
+            <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Song}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
                 <TextBox x:Name="tb_Song" Height="23" VerticalAlignment="Top"

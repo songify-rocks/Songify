@@ -631,4 +631,10 @@
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
     <value>Send offline notification to chat</value>
   </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Text that gets added to the response if points are refunded</value>
+  </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Response for !song command</value>
+  </data>
 </root>

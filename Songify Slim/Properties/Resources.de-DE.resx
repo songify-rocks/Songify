@@ -631,4 +631,10 @@
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
     <value>Sende Offline-Benachrichtigung an den Chat</value>
   </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Antwort auf den Befehl !song</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Text, der der Antwort hinzugefügt wird, wenn Punkte zurückerstattet werden</value>
+  </data>
 </root>

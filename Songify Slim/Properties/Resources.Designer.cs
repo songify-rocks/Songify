@@ -232,6 +232,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Text that gets added to the response if points are refunded.
+        /// </summary>
+        public static string brw_Refund {
+            get {
+                return ResourceManager.GetString("brw_Refund", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response for !song command.
         /// </summary>
         public static string brw_Song {
