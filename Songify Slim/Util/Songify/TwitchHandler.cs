@@ -159,8 +159,18 @@ namespace Songify_Slim.Util.Songify
                         });
                     }
                     ForceDisconnect = true;
-                    Client.Disconnect();
-                    Client = null;
+                    if (Client != null)
+                    {
+                        try
+                        {
+                            Client.Disconnect();
+                            Client = null;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                        }
+                    }
                     BotConnect();
                     WebHelper.SendTelemetry();
                 });
