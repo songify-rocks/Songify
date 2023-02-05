@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using MahApps.Metro.Controls;
@@ -25,6 +26,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
 using TwitchLib.Api.Helix.Models.Chat;
+using TwitchLib.Api.Helix.Models.Soundtrack;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
@@ -422,6 +424,13 @@ namespace Songify_Slim.Util.Songify
                 }
                 if (!string.IsNullOrWhiteSpace(trackId))
                 {
+                    if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
+                    {
+                        Debug.WriteLine("This song is blocked");
+                        Client.SendMessage(Settings.Settings.TwChannel, "This song is blocked");
+                        return;
+                    }
+
                     ReturnObject returnObject = AddSong2(trackId, Settings.Settings.TwChannel, redeemedUser.DisplayName);
                     msg = returnObject.Msg;
                     if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition) && isManagable)
@@ -1223,6 +1232,13 @@ namespace Songify_Slim.Util.Songify
 
         private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
+            if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
+            {
+                Debug.WriteLine("This song is blocked");
+                Client.SendMessage(Settings.Settings.TwChannel, "This song is blocked");
+                return;
+            }
+
             // loads the blacklist from settings
             string response;
             // gets the track information using spotify api
@@ -1407,6 +1423,7 @@ namespace Songify_Slim.Util.Songify
 
         private static ReturnObject AddSong2(string trackId, string channel, string username)
         {
+
             // loads the blacklist from settings
             string response;
             // gets the track information using spotify api

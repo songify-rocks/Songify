@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,6 +38,18 @@ namespace Songify_Slim
         {
             LoadAritstBlacklist();
             LoadUserBlacklist();
+            LoadSongBlacklist();
+        }
+
+        private void LoadSongBlacklist()
+        {
+            ListView_SongBlacklist.Items.Clear();
+
+            if (Settings.SongBlacklist == null || Settings.SongBlacklist.Count == 0)
+                return;
+
+            foreach (TrackItem s in Settings.SongBlacklist.Where(s => s != null))
+                ListView_SongBlacklist.Items.Add(s);
         }
 
         private void LoadUserBlacklist()
@@ -82,7 +95,7 @@ namespace Songify_Slim
                     if (ApiHandler.Spotify == null)
                     {
                         await this.ShowMessageAsync("Notification",
-                            "Spotify is not connected. You need to connect to Spotify in order to fill the blacklist.");
+                            "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
                         return;
                     }
 
@@ -110,14 +123,56 @@ namespace Songify_Slim
                             return;
                         }
                         ListView_Blacklist.Items.Add(fullartist.Name);
-                        SaveBlacklist();
                     }
                     break;
                 case 1:
                     ListView_UserBlacklist.Items.Add(search);
-                    SaveBlacklist();
+                    break;
+                case 2: // Song Blacklist
+                    List<FullTrack> tracks = new List<FullTrack>();
+                    string trackId = "";
+                    if (ApiHandler.Spotify == null)
+                    {
+                        await this.ShowMessageAsync("Notification",
+                            "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
+                        return;
+                    }
+                    if (search.StartsWith("spotify:track:"))
+                    {
+                        // search for a track with the id
+                        trackId = search.Replace("spotify:track:", "");
+                        // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
+                        tracks.Add(ApiHandler.GetTrack(trackId));
+                    }
+
+                    else if (search.StartsWith("https://open.spotify.com/track/"))
+                    {
+                        trackId = search.Replace("https://open.spotify.com/track/", "");
+                        trackId = trackId.Split('?')[0];
+                        tracks.Add(ApiHandler.GetTrack(trackId));
+                    }
+                    else
+                    {
+                        var result = ApiHandler.FindTrack(search);
+                        if (result.Tracks != null)
+                            tracks.AddRange(result.Tracks.Items);
+                    }
+
+                    foreach (FullTrack resultTrack in tracks)
+                    {
+                        string artists = string.Join(", ", resultTrack.Artists.Select(a => a.Name).ToList());
+                        ListView_SongBlacklist.Items.Add(new TrackItem
+                        {
+                            Artists = artists,
+                            TrackName = resultTrack.Name,
+                            TrackId = resultTrack.Id,
+                            TrackUri = resultTrack.Uri,
+                            ReadableName = $"{artists} - {resultTrack.Name}"
+                        });
+                    }
                     break;
             }
+            SaveBlacklist();
         }
 
         private void SaveBlacklist()
@@ -139,6 +194,13 @@ namespace Songify_Slim
 
             }
             Settings.UserBlacklist = tempList;
+
+
+            //Song Blacklist
+            Settings.SongBlacklist.Clear();
+            Settings.SongBlacklist.AddRange(from object item in ListView_SongBlacklist.Items
+                                            where (TrackItem)item != null
+                                            select (TrackItem)item);
             ConfigHandler.WriteAllConfig(Settings.Export());
             Settings.Export();
             LoadBlacklists();
@@ -151,7 +213,7 @@ namespace Songify_Slim
             {
                 case 0:
                     MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
-                        "Do you really want to clear the Artist blacklist?", MessageDialogStyle.AffirmativeAndNegative,
+                        "Do you really want to clear the Artist blocklist?", MessageDialogStyle.AffirmativeAndNegative,
                         new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
@@ -162,7 +224,7 @@ namespace Songify_Slim
                     break;
                 case 1:
                     msgResult = await this.ShowMessageAsync("Notification",
-                        "Do you really want to clear the User blacklist?", MessageDialogStyle.AffirmativeAndNegative,
+                        "Do you really want to clear the User blocklist?", MessageDialogStyle.AffirmativeAndNegative,
                         new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                     if (msgResult == MessageDialogResult.Affirmative)
                     {
@@ -186,7 +248,7 @@ namespace Songify_Slim
 
             if (listView == null) return;
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
-                "Delete " + listView.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
+                "Delete " + listView.SelectedValue + "?", MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult != MessageDialogResult.Affirmative) return;
             listView.Items.Remove(listView.SelectedItem);
@@ -264,14 +326,53 @@ namespace Songify_Slim
 
         private void cbx_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
-                ((ComboBox)sender).SelectedIndex == 0 ? Properties.Resources.bw_cbArtist : Properties.Resources.bw_cbUser);
+            switch (((ComboBox)sender).SelectedIndex)
+            {
+                case 0:
+                    tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
+                        Properties.Resources.bw_cbArtist);
+                    break;
+                case 1:
+                    tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
+                        Properties.Resources.bw_cbUser);
+                    break;
+                case 2:
+                    tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
+                        "Song");
+                    break;
+            }
+
+
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             SaveBlacklist();
         }
+
+        private async void ListView_SongBlacklist_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete)
+            {
+                MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
+                    "Delete " + ListView_SongBlacklist.SelectedItem + "?", MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    ListView_SongBlacklist.Items.Remove(ListView_SongBlacklist.SelectedItem);
+                    SaveBlacklist();
+                }
+            }
+        }
+    }
+
+    public class TrackItem
+    {
+        public string Artists { get; set; }
+        public string TrackName { get; set; }
+        public string TrackId { get; set; }
+        public string TrackUri { get; set; }
+        public string ReadableName { get; set; }
     }
 
     internal class BlockListArtists

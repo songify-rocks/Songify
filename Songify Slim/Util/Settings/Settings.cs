@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SpotifyAPI.Web.Models;
+using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings
@@ -614,6 +615,18 @@ namespace Songify_Slim.Util.Settings
 
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
         public static string BotRespRefund { get => GetBot_Resp_Refund(); set => SetBot_Resp_Refund(value); }
+        public static List<TrackItem> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
+
+        private static List<TrackItem> GetSongBlacklist()
+        {
+            return currentConfig.AppConfig.SongBlacklist;
+        }
+
+        private static void SetSongBlacklist(List<TrackItem> value)
+        {
+            currentConfig.AppConfig.SongBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
 
         private static void SetBot_Resp_Refund(string value)
         {
@@ -857,6 +870,7 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
+                SongBlacklist = GetSongBlacklist(),
             };
 
             return new Configuration

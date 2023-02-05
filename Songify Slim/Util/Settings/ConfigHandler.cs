@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -253,6 +254,7 @@ namespace Songify_Slim
                                 RewardGoalEnabled = false,
                                 RewardGoalSong = "",
                                 RewardGoalAmount = 0,
+                                SongBlacklist = new List<TrackItem>(),
                             };
                         }
                         break;
@@ -654,7 +656,8 @@ namespace Songify_Slim
         public string TwRewardGoalRewardId { get; set; } = "";
         public bool RewardGoalEnabled { get; set; }
         public string RewardGoalSong { get; set; } = "";
-        public int RewardGoalAmount { get; set; }
+        public int RewardGoalAmount { get; set; } = 0;
+        public List<TrackItem> SongBlacklist { get; set; } = new List<TrackItem>();
     }
 
     public class Config
