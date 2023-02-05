@@ -976,9 +976,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
-                string msg = Settings.Settings.BotRespSong;
+
+                string msg = GetCurrentSong();
                 msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                msg = msg.Replace("{song}", GetCurrentSong());
+                msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
                 if (msg.StartsWith("[announce "))
                 {
                     await AnnounceInChat(msg);
@@ -1708,10 +1709,10 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
             }
-
-            string msg = Settings.Settings.BotRespSong;
+            string msg = GetCurrentSong();
             msg = Regex.Replace(msg, @"(@)?\{user\}", "");
-            msg = msg.Replace("{song}", GetCurrentSong());
+            msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+
             if (msg.StartsWith("[announce "))
             {
                 await AnnounceInChat(msg);

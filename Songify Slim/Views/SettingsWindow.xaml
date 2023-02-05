@@ -97,7 +97,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="38"/>
                             <RowDefinition Height="38"/>
-                            <RowDefinition Height="38"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="38"/>
                             <RowDefinition Height="38"/>
                             <RowDefinition Height="38"/>
@@ -172,10 +172,10 @@
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="121"
                                             UpDownButtonsWidth="16" Margin="131,0,0,0" />
                         <Label Content="{x:Static local:Resources.sw_tcOutput_Format2}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"
-                           Grid.Column="0" Height="32" MinWidth="160" />
+                           Grid.Column="0" Height="32" MinWidth="160" Visibility="Collapsed" />
                         <TextBox x:Name="TxtbxOutputformat2" Height="26"
                         TextWrapping="NoWrap" VerticalAlignment="Center"
-                        TextChanged="TxtbxOutputformat2_TextChanged" Grid.Row="2" Grid.Column="1">
+                        TextChanged="TxtbxOutputformat2_TextChanged" Grid.Row="2" Grid.Column="1" Visibility="Collapsed">
                             <TextBox.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem Tag="2" x:Name="MenuBtnArtist2" Header="Artist" Click="MenuBtnArtist_Click" />

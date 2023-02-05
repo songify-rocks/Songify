@@ -557,10 +557,11 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            //AutoUpdater.ReportErrors = true;
+            AutoUpdater.ReportErrors = true;
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects._baseUrl}/update-beta.xml"
                 : $"{GlobalObjects._baseUrl}/update.xml");
+            //AutoUpdater.Start($"{GlobalObjects._baseUrl}/update-alpha.xml");
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Player;
@@ -952,7 +953,7 @@ namespace Songify_Slim.Views
 
             // get the output string
             CurrSong = Settings.OutputString;
-            CurrSongTwitch = Settings.OutputString2;
+            CurrSongTwitch = Settings.BotRespSong;
             // Replace {artist}, {title} and {extra} in the output string with values from rArtist, rTitle and rExtra
 
             if (_selectedSource == PlayerType.SpotifyWeb)
