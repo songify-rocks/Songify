@@ -1,7 +1,7 @@
-﻿using Songify_Slim.Models;
-using Songify_Slim.Util.Songify;
-using System.Windows;
+﻿using System.Windows;
+using Songify_Slim.Models;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim
 {

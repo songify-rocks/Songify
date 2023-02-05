@@ -1,9 +1,4 @@
-﻿using AutoUpdaterDotNET;
-using ControlzEx.Theming;
-using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,30 +10,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using AutoUpdaterDotNET;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
-using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
-using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
+using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
-using VonRiddarn.Twitch.ImplicitOAuth;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using Button = System.Windows.Controls.Button;
-using Window = System.Windows.Window;
 
 namespace Songify_Slim
 {
@@ -86,7 +80,7 @@ namespace Songify_Slim
             InitializeComponent();
             Title = Properties.Resources.mw_menu_Settings;
             if (Settings.Language == "en") return;
-            this.Width = this.MinWidth = 830;
+            Width = MinWidth = 830;
         }
 
         public async void SetControls()
@@ -304,7 +298,7 @@ namespace Songify_Slim
             fbd.RootFolder = Environment.SpecialFolder.MyComputer;
             if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             ConfigHandler.WriteAllConfig(Settings.Export(), fbd.SelectedPath);
-            this.ShowMessageAsync("Success", "Config file saved successfully", MessageDialogStyle.Affirmative);
+            this.ShowMessageAsync("Success", "Config file saved successfully");
         }
 
         private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
@@ -556,7 +550,7 @@ namespace Songify_Slim
             AppendText((sender as MenuItem)?.Tag.ToString(), "{url}");
         }
 
-        private async void MetroWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             ConfigHandler.WriteAllConfig(Settings.Export());
@@ -863,17 +857,17 @@ namespace Songify_Slim
                     List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
                     if (rewards.Count > 0)
                     {
-                        CbxRewards.Items.Add(new ComboBoxItem()
+                        CbxRewards.Items.Add(new ComboBoxItem
                         {
                             Content = new UC_RewardItem(null, false)
                         });
 
-                        CbxRewardsSkip.Items.Add(new ComboBoxItem()
+                        CbxRewardsSkip.Items.Add(new ComboBoxItem
                         {
                             Content = new UC_RewardItem(null, false)
                         });
 
-                        ComboboxRewardGoalReward.Items.Add(new ComboBoxItem()
+                        ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
                         {
                             Content = new UC_RewardItem(null, false)
                         });
@@ -882,16 +876,16 @@ namespace Songify_Slim
                         {
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
-                            CbxRewards.Items.Add(new ComboBoxItem()
+                            CbxRewards.Items.Add(new ComboBoxItem
                             {
                                 Content = new UC_RewardItem(reward, managable)
                             });
 
-                            CbxRewardsSkip.Items.Add(new ComboBoxItem()
+                            CbxRewardsSkip.Items.Add(new ComboBoxItem
                             {
                                 Content = new UC_RewardItem(reward, managable)
                             });
-                            ComboboxRewardGoalReward.Items.Add(new ComboBoxItem()
+                            ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
                             {
                                 Content = new UC_RewardItem(reward, managable)
                             });
@@ -1036,7 +1030,7 @@ namespace Songify_Slim
 
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
         {
-            Settings.BotOnlyWorkWhenLive = (bool)tgl_OnlyWorkWhenLive.IsOn;
+            Settings.BotOnlyWorkWhenLive = tgl_OnlyWorkWhenLive.IsOn;
             tgl_InformChat.IsEnabled = tgl_OnlyWorkWhenLive.IsOn;
             if (tgl_OnlyWorkWhenLive.IsOn) return;
             tgl_InformChat.IsOn = false;
@@ -1044,7 +1038,7 @@ namespace Songify_Slim
 
         private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.TwSrUnlimitedSr = (bool)ToggleSwitchUnlimitedSR.IsOn;
+            Settings.TwSrUnlimitedSr = ToggleSwitchUnlimitedSR.IsOn;
         }
 
         private void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
@@ -1076,7 +1070,7 @@ namespace Songify_Slim
 
         private void tgl_InformChat_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.ChatLiveStatus = (bool)tgl_InformChat.IsOn;
+            Settings.ChatLiveStatus = tgl_InformChat.IsOn;
         }
 
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
@@ -1097,7 +1091,7 @@ namespace Songify_Slim
 
         private void ToggleRewardGoalEnabled_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.RewardGoalEnabled = (bool)ToggleRewardGoalEnabled.IsOn;
+            Settings.RewardGoalEnabled = ToggleRewardGoalEnabled.IsOn;
         }
 
         private void TextBoxRewardGoalSong_TextChanged(object sender, TextChangedEventArgs e)

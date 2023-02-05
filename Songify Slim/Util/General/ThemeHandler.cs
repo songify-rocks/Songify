@@ -1,6 +1,6 @@
-﻿using ControlzEx.Theming;
+﻿using System.Windows;
+using ControlzEx.Theming;
 using Songify_Slim.Util.Settings;
-using System.Windows;
 
 namespace Songify_Slim
 {

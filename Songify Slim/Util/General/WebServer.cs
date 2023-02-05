@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using MahApps.Metro.IconPacks;
-using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
 
 namespace Songify_Slim.Util.General
@@ -62,7 +59,7 @@ namespace Songify_Slim.Util.General
         {
 
             run = false;
-            Logger.LogStr($"WebServer: Started stopped");
+            Logger.LogStr("WebServer: Started stopped");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Application.Current.MainWindow != null)
@@ -79,7 +76,7 @@ namespace Songify_Slim.Util.General
         public static bool PortIsFree(int port)
         {
             // Get the IP global properties for the local network
-            var properties = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+            var properties = IPGlobalProperties.GetIPGlobalProperties();
 
             // Get a list of active TCP connections
             var connections = properties.GetActiveTcpConnections();

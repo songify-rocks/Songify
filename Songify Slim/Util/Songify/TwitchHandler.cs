@@ -1,6 +1,4 @@
-﻿using Songify_Slim.Models;
-using SpotifyAPI.Web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,15 +6,17 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
-using System.Web.Caching;
-using System.Web.Management;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
+using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
+using SpotifyAPI.Web.Models;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -24,7 +24,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
-using TwitchLib.Api.Helix.Models.Channels.GetChannelInformation;
+using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
@@ -35,21 +35,7 @@ using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
-using Timer = System.Timers.Timer;
 using VonRiddarn.Twitch.ImplicitOAuth;
-using Application = System.Windows.Application;
-using Window = System.Windows.Window;
-using Songify_Slim.Util.Settings;
-using System.Windows.Forms;
-using System.Windows.Threading;
-using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomRewardRedemption;
-using TwitchLib.Api.Helix.Models.Chat;
-using TwitchLib.PubSub.Models.Responses;
-using System.Windows.Interop;
-using Octokit;
-using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
-using ControlzEx.Standard;
-using TwitchLib.Api.Helix;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -139,10 +125,10 @@ namespace Songify_Slim.Util.Songify
                     foreach (Window window in Application.Current.Windows)
                     {
                         if (window.GetType() != typeof(Window_Settings)) continue;
-                        await ((Window_Settings)window).ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                        await ((Window_Settings)window).ShowMessageAsync(Resources.msgbx_BotAccount, Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                         {
-                            AffirmativeButtonText = Properties.Resources.msgbx_Yes,
-                            NegativeButtonText = Properties.Resources.msgbx_No,
+                            AffirmativeButtonText = Resources.msgbx_Yes,
+                            NegativeButtonText = Resources.msgbx_No,
                             DefaultButtonFocus = MessageDialogResult.Affirmative
                         }).ContinueWith(x =>
                         {
@@ -157,10 +143,10 @@ namespace Songify_Slim.Util.Songify
                     }
                     if (!shownInSettings)
                     {
-                        (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Properties.Resources.msgbx_BotAccount, Properties.Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                        (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Resources.msgbx_BotAccount, Resources.msgbx_UseAsBotAccount.Replace("{account}", account == TwitchAccount.Main ? Settings.Settings.TwitchUser.DisplayName : Settings.Settings.TwitchBotUser.DisplayName), MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                         {
-                            AffirmativeButtonText = Properties.Resources.msgbx_Yes,
-                            NegativeButtonText = Properties.Resources.msgbx_No,
+                            AffirmativeButtonText = Resources.msgbx_Yes,
+                            NegativeButtonText = Resources.msgbx_No,
                             DefaultButtonFocus = MessageDialogResult.Affirmative
                         }).ContinueWith(x =>
                         {
@@ -344,7 +330,7 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            new List<string> { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -361,7 +347,7 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.Settings.RefundConditons.Any(i => i == 1) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            new List<string> { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -393,7 +379,7 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.Settings.RefundConditons.Any(i => i == 2) && isManagable)
                     {
                         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            new List<string> { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -440,7 +426,7 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
-                        new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED }, Settings.Settings.TwitchAccessToken);
+                        new List<string> { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED }, Settings.Settings.TwitchAccessToken);
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
                                 msg += $" {Settings.Settings.BotRespRefund}";
@@ -477,7 +463,7 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(Settings.Settings.TwitchUser.Id, reward.Id,
-                            new List<string>() { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest() { Status = CustomRewardRedemptionStatus.CANCELED });
+                            new List<string> { e.RewardRedeemed.Redemption.Id }, new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
                                 response += $" {Settings.Settings.BotRespRefund}";
@@ -583,7 +569,7 @@ namespace Songify_Slim.Util.Songify
         private static void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
         {
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
-            Logger.LogStr($"PUBSUB: Error");
+            Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
             _twitchPubSub.Disconnect();
             _twitchPubSub.Connect();
@@ -603,7 +589,7 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
-            Logger.LogStr($"PUBSUB: Disconnected");
+            Logger.LogStr("PUBSUB: Disconnected");
         }
 
         private static void OnPubSubServiceConnected(object sender, EventArgs e)
@@ -619,7 +605,7 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 }
             });
-            Logger.LogStr($"PUBSUB: Connected");
+            Logger.LogStr("PUBSUB: Connected");
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
 

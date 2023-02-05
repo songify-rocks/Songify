@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using MdXaml;
 using Octokit;
 
@@ -34,7 +29,7 @@ namespace Songify_Slim
             Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
             foreach (Release release in releases.Result)
             {
-                LbxVersions.Items.Add(new ReleaseObject() { Version = release.TagName, Content = release.Body, URL = release.HtmlUrl});
+                LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, URL = release.HtmlUrl});
             }
 
             LbxVersions.SelectedIndex = 0;
@@ -61,7 +56,7 @@ namespace Songify_Slim
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start((sender as Hyperlink).NavigateUri.ToString());
+            Process.Start((sender as Hyperlink).NavigateUri.ToString());
         }
     }
 }

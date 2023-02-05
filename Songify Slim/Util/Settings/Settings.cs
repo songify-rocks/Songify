@@ -1,11 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
-using YamlDotNet.Core.Tokens;
 
 namespace Songify_Slim.Util.Settings
 {

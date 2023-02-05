@@ -1,19 +1,18 @@
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Views;
-using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
-using SpotifyAPI.Web.Models;
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
 using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using SpotifyAPI.Web.Auth;
+using SpotifyAPI.Web.Enums;
+using SpotifyAPI.Web.Models;
 using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify

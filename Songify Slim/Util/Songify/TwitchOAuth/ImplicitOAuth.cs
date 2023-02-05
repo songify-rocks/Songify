@@ -1,11 +1,9 @@
-using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Windows.Forms.VisualStyles;
-using Microsoft.Win32;
-using Songify_Slim.Views;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace VonRiddarn.Twitch.ImplicitOAuth
 {
@@ -16,7 +14,7 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
         #region Variables
         // Privates
         string twitchAuthUrl = "https://id.twitch.tv/oauth2/authorize";
-        int salt = 0;
+        int salt;
 
         // Listener for twitch redirect.
         HttpListener redirectListener = new HttpListener();
@@ -95,14 +93,14 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
             {
                 redirectListener.Prefixes.Add(ApplicationDetails.redirectUri);
                 redirectListener.Start();
-                redirectListener.BeginGetContext(new AsyncCallback(IncommingTwitchRequest), redirectListener);
+                redirectListener.BeginGetContext(IncommingTwitchRequest, redirectListener);
             }
 
             if (!fetchListeneer.IsListening)
             {
                 fetchListeneer.Prefixes.Add(ApplicationDetails.fetchUri);
                 fetchListeneer.Start();
-                fetchListeneer.BeginGetContext(new AsyncCallback(IncommingLocalRequest), fetchListeneer);
+                fetchListeneer.BeginGetContext(IncommingLocalRequest, fetchListeneer);
             }
         }
 
@@ -223,7 +221,7 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
 
 
             // Save html to buffer and send to browser
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            byte[] buffer = Encoding.UTF8.GetBytes(responseString);
             httpResponse.ContentLength64 = buffer.Length;
             Stream output = httpResponse.OutputStream;
             output.Write(buffer, 0, buffer.Length);

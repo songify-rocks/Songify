@@ -1,10 +1,9 @@
-﻿using Songify_Slim.Util.Settings;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Songify_Slim.Util.General;
-using TwitchLib.Api.Helix.Models.Chat;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.UserControls
 {

@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using Songify_Slim.Util.Settings;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
-using ControlzEx.Theming;
-using Songify_Slim.Views;
-using System.Runtime.InteropServices;
-using Common.Logging.Configuration;
 using Microsoft.Win32;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Views;
 
 namespace Songify_Slim
 {
     /// <summary>
     ///     Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App
     {
         private static Mutex _mutex;
 
@@ -69,7 +64,7 @@ namespace Songify_Slim
                 _mutex = Mutex.OpenExisting(appName);
                 if (_mutex != null)
                 {
-                    var mainWindow = Application.Current.MainWindow;
+                    Window mainWindow = Current.MainWindow;
                     if (mainWindow != null)
                     {
                         mainWindow.Show();

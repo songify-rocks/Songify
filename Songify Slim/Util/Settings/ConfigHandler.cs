@@ -1,32 +1,17 @@
-﻿using Songify_Slim.Util.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Diagnostics;
-using System.Diagnostics.Contracts;
-using System.Diagnostics.Eventing.Reader;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static System.Convert;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Application = System.Windows.Application;
-using OpenFileDialog = System.Windows.Forms.OpenFileDialog;
-using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 using Settings = Songify_Slim.Util.Settings.Settings;
-using System.Numerics;
-using System.Text;
-using ControlzEx.Theming;
-using Octokit;
-using TwitchLib.Api.V5.Models.UploadVideo;
-using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
-using System.Security.Cryptography;
 
 namespace Songify_Slim
 {
@@ -572,18 +557,18 @@ namespace Songify_Slim
         public string ChannelId { get; set; } = "";
         public string BotAccountName { get; set; } = "";
         public string BotOAuthToken { get; set; } = "";
-        public User TwitchUser { get; set; } = null;
+        public User TwitchUser { get; set; }
         public string TwitchBotToken { get; set; } = "";
-        public User BotUser { get; set; } = null;
+        public User BotUser { get; set; }
     }
 
     public class BotConfig
     {
-        public bool BotCmdNext { get; set; } = false;
-        public bool BotCmdPos { get; set; } = false;
-        public bool BotCmdSkip { get; set; } = false;
-        public bool BotCmdSkipVote { get; set; } = false;
-        public bool BotCmdSong { get; set; } = false;
+        public bool BotCmdNext { get; set; }
+        public bool BotCmdPos { get; set; }
+        public bool BotCmdSkip { get; set; }
+        public bool BotCmdSkipVote { get; set; }
+        public bool BotCmdSong { get; set; }
         public int BotCmdSkipVoteCount { get; set; } = 5;
         public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.";
         public string BotRespError { get; set; } = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
@@ -596,38 +581,38 @@ namespace Songify_Slim
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
         public string BotRespPos { get; set; } = "@{user} {songs}{pos} {song}{/songs}";
         public string BotRespNext { get; set; } = "@{user} {song}";
-        public bool OnlyWorkWhenLive { get; set; } = false;
+        public bool OnlyWorkWhenLive { get; set; }
         public string BotCmdPosTrigger { get; set; } = "pos";
         public string BotCmdSongTrigger { get; set; } = "song";
         public string BotCmdNextTrigger { get; set; } = "next";
         public string BotCmdSkipTrigger { get; set; } = "skip";
         public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
         public string BotCmdSsrTrigger { get; set; } = "ssr";
-        public bool ChatLiveStatus { get; set; } = false;
+        public bool ChatLiveStatus { get; set; }
         public string BotRespSong { get; set; } = "@{user} {song}";
         public string BotRespRefund { get; set; } = "Your points have been refunded.";
     }
 
     public class AppConfig
     {
-        public bool AnnounceInChat { get; set; } = false;
-        public bool AppendSpaces { get; set; } = false;
-        public bool AutoClearQueue { get; set; } = false;
-        public bool Autostart { get; set; } = false;
-        public bool CustomPauseTextEnabled { get; set; } = false;
-        public bool DownloadCover { get; set; } = false;
-        public bool MsgLoggingEnabled { get; set; } = false;
-        public bool OpenQueueOnStartup { get; set; } = false;
-        public bool SaveHistory { get; set; } = false;
-        public bool SplitOutput { get; set; } = false;
-        public bool Systray { get; set; } = false;
-        public bool Telemetry { get; set; } = false;
-        public bool TwAutoConnect { get; set; } = false;
-        public bool TwSrCommand { get; set; } = false;
-        public bool TwSrReward { get; set; } = false;
-        public bool Upload { get; set; } = false;
-        public bool UploadHistory { get; set; } = false;
-        public bool UseOwnApp { get; set; } = false;
+        public bool AnnounceInChat { get; set; }
+        public bool AppendSpaces { get; set; }
+        public bool AutoClearQueue { get; set; }
+        public bool Autostart { get; set; }
+        public bool CustomPauseTextEnabled { get; set; }
+        public bool DownloadCover { get; set; }
+        public bool MsgLoggingEnabled { get; set; }
+        public bool OpenQueueOnStartup { get; set; }
+        public bool SaveHistory { get; set; }
+        public bool SplitOutput { get; set; }
+        public bool Systray { get; set; }
+        public bool Telemetry { get; set; }
+        public bool TwAutoConnect { get; set; }
+        public bool TwSrCommand { get; set; }
+        public bool TwSrReward { get; set; }
+        public bool Upload { get; set; }
+        public bool UploadHistory { get; set; }
+        public bool UseOwnApp { get; set; }
         public int MaxSongLength { get; set; } = 10;
         public int PosX { get; set; } = 100;
         public int PosY { get; set; } = 100;
@@ -653,23 +638,23 @@ namespace Songify_Slim
         public List<string> UserBlacklist { get; set; } = new List<string>();
         public string Uuid { get; set; } = "";
         public int WebServerPort { get; set; } = 65530;
-        public bool AutoStartWebServer { get; set; } = false;
-        public bool BetaUpdates { get; set; } = false;
+        public bool AutoStartWebServer { get; set; }
+        public bool BetaUpdates { get; set; }
         public int ChromeFetchRate { get; set; } = 1;
-        public int Player { get; internal set; } = 0;
+        public int Player { get; internal set; }
 
         public string WebUserAgent = "Songify Data Provider";
         public bool UpdateRequired { get; set; } = true;
-        public bool BotOnlyWorkWhenLive { get; set; } = false;
-        public bool TwSrUnlimitedSr { get; set; } = false;
+        public bool BotOnlyWorkWhenLive { get; set; }
+        public bool TwSrUnlimitedSr { get; set; }
         public string TwRewardSkipId { get; set; } = "";
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public int TwitchFetchPort { get; set; } = 4004;
         public int TwitchRedirectPort { get; set; } = 4003;
         public string TwRewardGoalRewardId { get; set; } = "";
-        public bool RewardGoalEnabled { get; set; } = false;
+        public bool RewardGoalEnabled { get; set; }
         public string RewardGoalSong { get; set; } = "";
-        public int RewardGoalAmount { get; set; } = 0;
+        public int RewardGoalAmount { get; set; }
     }
 
     public class Config

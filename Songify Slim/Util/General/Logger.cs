@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
-using ControlzEx.Standard;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim
@@ -90,10 +87,10 @@ namespace Songify_Slim
                     }
                 }
 
-                GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph()
+                GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph
                 {
                     Margin = new Thickness(0),
-                    Inlines = { new Run()
+                    Inlines = { new Run
                     {
                         Text = $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}"
                     } }

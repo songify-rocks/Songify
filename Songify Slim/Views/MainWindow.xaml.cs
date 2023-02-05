@@ -8,15 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Web;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -24,23 +21,18 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using AutoUpdaterDotNET;
 using MahApps.Metro.Controls.Dialogs;
-using MdXaml;
 using Microsoft.Win32;
-using Octokit;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
-using static ICSharpCode.AvalonEdit.Document.TextDocumentWeakEventManager;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
-using Color = System.Drawing.Color;
 using ContextMenu = System.Windows.Forms.ContextMenu;
-using FileMode = System.IO.FileMode;
-using FontFamily = System.Windows.Media.FontFamily;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MenuItem = System.Windows.Forms.MenuItem;
+using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
+using Timer = System.Timers.Timer;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -65,7 +57,7 @@ namespace Songify_Slim.Views
         private string _selectedSource;
         private string _songPath, _coverPath, _root, _coverTemp;
         private string _temp = "";
-        private System.Timers.Timer _timerFetcher = new System.Timers.Timer();
+        private Timer _timerFetcher = new Timer();
         private readonly WebClient _webClient = new WebClient();
         public SongFetcher sf = new SongFetcher();
         #endregion Variables
@@ -189,7 +181,7 @@ namespace Songify_Slim.Views
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
             // Opens the History in either Window or Browser
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            MenuItem item = (MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
                 if (!IsWindowOpen<HistoryWindow>())
@@ -222,7 +214,7 @@ namespace Songify_Slim.Views
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
             // Tries to connect to the twitch service given the credentials in the settings or disconnects
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            MenuItem item = (MenuItem)sender;
             switch (item.Tag.ToString())
             {
                 // Connects
@@ -340,7 +332,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(ex);
             }
 
-            _timerFetcher = new System.Timers.Timer();
+            _timerFetcher = new Timer();
             _timerFetcher.Elapsed += OnTimedEvent;
             _timerFetcher.Interval = ms;
             _timerFetcher.Enabled = true;
@@ -511,22 +503,22 @@ namespace Songify_Slim.Views
 
             // Create systray menu and icon and show it
             _contextMenu.MenuItems.AddRange(new[] {
-                new MenuItem("Twitch", new[] {
-                    new MenuItem("Connect", (sender1, args1) => {
+                new System.Windows.Forms.MenuItem("Twitch", new[] {
+                    new System.Windows.Forms.MenuItem("Connect", (sender1, args1) => {
                         TwitchHandler.BotConnect();
                     }),
-                    new MenuItem("Disconnect", (sender1, args1) => {
+                    new System.Windows.Forms.MenuItem("Disconnect", (sender1, args1) => {
                         TwitchHandler.Client.Disconnect();
                     })
                 }),
-                new MenuItem("Show", (sender1, args1) => {
+                new System.Windows.Forms.MenuItem("Show", (sender1, args1) => {
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
                         Show();
                         WindowState = WindowState.Normal;
                     }));
                 }),
-                new MenuItem("Exit", (sender1, args1) => {
+                new System.Windows.Forms.MenuItem("Exit", (sender1, args1) => {
                     _forceClose = true;
                     Close();
                 })
@@ -620,7 +612,7 @@ namespace Songify_Slim.Views
             // if the window state changes to minimize check run MinimizeToSysTray()
             //if (WindowState != WindowState.Minimized) return;
             //if (Settings.Systray) MinimizeToSysTray();
-            switch (this.WindowState)
+            switch (WindowState)
             {
                 case WindowState.Normal:
                     break;
@@ -656,7 +648,7 @@ namespace Songify_Slim.Views
         private void Mi_Queue_Click(object sender, RoutedEventArgs e)
         {
             // Opens the Queue Window
-            System.Windows.Controls.MenuItem item = (System.Windows.Controls.MenuItem)sender;
+            MenuItem item = (MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
                 OpenQueue();
@@ -742,7 +734,7 @@ namespace Songify_Slim.Views
             }
             else
             {
-                Window_Patchnotes wPN = new Window_Patchnotes()
+                Window_Patchnotes wPN = new Window_Patchnotes
                 {
                     Owner = (Application.Current.MainWindow),
                 };
@@ -817,8 +809,8 @@ namespace Songify_Slim.Views
         {
             if (secondaryWindow == null) return;
             if (GlobalObjects.DetachConsole) return;
-            secondaryWindow.Left = this.Left + this.Width;
-            secondaryWindow.Top = this.Top;
+            secondaryWindow.Left = Left + Width;
+            secondaryWindow.Top = Top;
         }
 
         private void MetroWindow_GotFocus(object sender, RoutedEventArgs e)
@@ -846,10 +838,8 @@ namespace Songify_Slim.Views
                             if (i != tries) continue;
                             return;
                         }
-                        else
-                        {
-                            break;
-                        }
+
+                        break;
                     }
                     File.Delete(_coverPath);
                 }
@@ -894,7 +884,7 @@ namespace Songify_Slim.Views
                                 await Task.Delay(1000);
                                 continue;
                             }
-                            Logger.LogStr($"COVER: Set succesfully");
+                            Logger.LogStr("COVER: Set succesfully");
                             break;
                         }
                         catch (Exception) when (i <= numberOfRetries)
@@ -1258,15 +1248,15 @@ namespace Songify_Slim.Views
             if (secondaryWindow == null)
                 secondaryWindow = new Window_Console
                 {
-                    Left = this.Left + this.Width,
-                    Top = this.Top,
+                    Left = Left + Width,
+                    Top = Top,
                     Owner = this
                 };
             if (!secondaryWindow.IsLoaded)
                 secondaryWindow = new Window_Console
                 {
-                    Left = this.Left + this.Width,
-                    Top = this.Top,
+                    Left = Left + Width,
+                    Top = Top,
                     Owner = this
                 };
             if (secondaryWindow.IsVisible)

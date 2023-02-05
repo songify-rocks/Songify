@@ -1,19 +1,13 @@
-﻿using Songify_Slim.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Threading;
 using Newtonsoft.Json;
+using Songify_Slim.Models;
 using Songify_Slim.Util.General;
-using TwitchLib.PubSub.Extensions;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify

@@ -231,6 +231,18 @@
                                                 </Grid.ColumnDefinitions>
                                                 <Label Grid.Column="0" x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Main">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Collapsed">
+                                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Visible">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
                                                     <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
                                                 </Button>
                                             </Grid>
@@ -251,6 +263,18 @@
                                                 <Label Grid.Column="0" x:Name="lblTwitchBotName" Content="Twitch Bot" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchBotLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Bot">
                                                     <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Collapsed">
+                                                                    <Setter Property="Visibility" Value="Visible"></Setter>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Visible">
+                                                                    <Setter Property="Visibility" Value="Collapsed"></Setter>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
                                                 </Button>
                                             </Grid>
                                         </StackPanel>

@@ -1,11 +1,10 @@
-﻿using System.IO;
-using System.Reflection;
-using Songify_Slim.UserControls;
-using Songify_Slim.Util.Settings;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MahApps.Metro.Controls;
+using Songify_Slim.UserControls;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim
 {
@@ -54,7 +53,7 @@ namespace Songify_Slim
         {
             Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
         }
-        private void MetroWindow_Closed(object sender, System.EventArgs e)
+        private void MetroWindow_Closed(object sender, EventArgs e)
         {
             //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
             Settings.BotCmdSongTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSong.Text) ? "song" : TextBoxTriggerSong.Text;
@@ -113,7 +112,7 @@ namespace Songify_Slim
             }
         }
 
-        private void TextBoxTrigger_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TextBoxTrigger_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)
                 e.Handled = true;

@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net.NetworkInformation;
 using Songify_Slim;
-using Songify_Slim.Properties;
-using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
 
 namespace VonRiddarn.Twitch.ImplicitOAuth
 {
@@ -19,11 +17,11 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
 
         // The URI you entered when registering your application in the twitch console.
         // Default is fine.
-        public static string redirectUri = $"http://localhost:{Songify_Slim.Util.Settings.Settings.TwitchRedirectPort}/";
+        public static string redirectUri = $"http://localhost:{Settings.TwitchRedirectPort}/";
 
         // Any URI you want to fetch results on.
         // Default is fine.
-        public static string fetchUri = $"http://localhost:{Songify_Slim.Util.Settings.Settings.TwitchFetchPort}/";
+        public static string fetchUri = $"http://localhost:{Settings.TwitchFetchPort}/";
 
         private static int GetFetchPort()
         {
@@ -48,7 +46,7 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
         private static bool PortIsFree(int port)
         {
             // Get the IP global properties for the local network
-            var properties = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties();
+            var properties = IPGlobalProperties.GetIPGlobalProperties();
 
             // Get a list of active TCP connections
             var connections = properties.GetActiveTcpConnections();

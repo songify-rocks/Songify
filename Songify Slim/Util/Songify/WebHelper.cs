@@ -1,9 +1,9 @@
-﻿using Songify_Slim.Util.General;
-using System;
+﻿using System;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Web;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -65,7 +65,7 @@ namespace Songify_Slim.Util.Songify
             catch (Exception ex)
             {
                 if (ex.Message.Contains("(403)"))
-                    Logger.LogStr($"WEB: Your key changed. Please contact us to resolve the issue.");
+                    Logger.LogStr("WEB: Your key changed. Please contact us to resolve the issue.");
 
                 Logger.LogExc(ex);
 
