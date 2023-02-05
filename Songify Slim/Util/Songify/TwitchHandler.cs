@@ -156,6 +156,9 @@ namespace Songify_Slim.Util.Songify
                             return Task.CompletedTask;
                         });
                     }
+                    ForceDisconnect = true;
+                    Client.Disconnect();
+                    Client = null;
                     BotConnect();
                     WebHelper.SendTelemetry();
                 });
@@ -1695,7 +1698,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async void SendCurrSong()
         {
-
+            if (Client == null || !Client.IsConnected || Client.JoinedChannels.Count == 0) return;
             try
             {
                 if (!CheckLiveStatus())
