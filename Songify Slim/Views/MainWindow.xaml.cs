@@ -557,11 +557,10 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            AutoUpdater.ReportErrors = true;
+            AutoUpdater.ReportErrors = false;
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects._baseUrl}/update-beta.xml"
                 : $"{GlobalObjects._baseUrl}/update.xml");
-            //AutoUpdater.Start($"{GlobalObjects._baseUrl}/update-alpha.xml");
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Player;
