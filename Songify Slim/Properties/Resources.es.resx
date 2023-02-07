@@ -389,7 +389,7 @@
     <value>Comando</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Fomato de Salida (Twitch Chat)</value>
+    <value>Fomato de Salida (Chat de Twitch)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
     <value>Crear Recompensa</value>
@@ -629,12 +629,12 @@
     <value>Sí</value>
   </data>
   <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
-    <value>Enviar notificación sin conexión al chat</value>
+    <value>Enviar notificación en el chat cuando la transmisión no está en vivo</value>
   </data>
   <data name="brw_Song" xml:space="preserve">
-    <value>Respuesta al comando !song</value>
+    <value>Respuesta del comando !song</value>
   </data>
   <data name="brw_Refund" xml:space="preserve">
-    <value>Texto que se agrega a la respuesta si se reembolsan los puntos</value>
+    <value>Texto que se le agrega a la respuesta si se reembolsan los puntos</value>
   </data>
 </root>
