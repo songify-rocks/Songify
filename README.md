@@ -21,7 +21,7 @@ Songify fetches the current playing song from Spotify, YouTube (Chrome) and many
 * and more
 
 # FAQ
-* [Guide & FAQ](https://github.com/songify-rocks/Songify/blob/master/Getting%20Started.md)
-  * [Setting up song requests](https://github.com/songify-rocks/Songify/blob/master/Getting%20Started.md#setting-up-song-requests)
-  * [Setting up the widget](https://github.com/songify-rocks/Songify/blob/master/Getting%20Started.md#setting-up-the-widget)
-  * [Troubleshooting](https://github.com/songify-rocks/Songify/blob/master/Getting%20Started.md#troubleshooting)
+* [Guide & FAQ](https://github.com/songify-rocks/Songify/wiki)
+  * [Setting up song requests](https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests)
+  * [Setting up the widget](https://github.com/songify-rocks/Songify/wiki/Setting-up-the-widget)
+  * [Troubleshooting](https://github.com/songify-rocks/Songify/wiki/Troubleshooting)
