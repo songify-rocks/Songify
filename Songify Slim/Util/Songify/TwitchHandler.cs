@@ -38,6 +38,7 @@ using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using VonRiddarn.Twitch.ImplicitOAuth;
+using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -68,7 +69,7 @@ namespace Songify_Slim.Util.Songify
         };
         public static TwitchAPI TwitchApi;
         public static TwitchAPI TwitchApiBot;
-        private static TwitchPubSub _twitchPubSub;
+        private static TwitchPubSub _twitchPubSub = null;
         private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
         private static string _userId;
         public static List<TwitchUser> Users = new List<TwitchUser>();
@@ -256,27 +257,7 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.TwitchChannelId = user.Id;
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
-                    _twitchPubSub = new TwitchPubSub();
-                    _twitchPubSub.OnListenResponse += OnListenResponse;
-                    _twitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
-                    _twitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
-                    _twitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
-
-                    _twitchPubSub.OnStreamUp += (sender, args) =>
-                    {
-                        Logger.LogStr("TWITCH API: Stream is up");
-                        Settings.Settings.IsLive = true;
-                    };
-                    _twitchPubSub.OnStreamDown += (sender, args) =>
-                    {
-                        Logger.LogStr("TWITCH API: Stream is down");
-                        Settings.Settings.IsLive = false;
-                    };
-
-                    _twitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
-                    _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
-                    _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
-                    _twitchPubSub.Connect();
+                    CreatePubSubsConnection();
                     break;
                 #endregion
                 #region Bot
@@ -303,6 +284,31 @@ namespace Songify_Slim.Util.Songify
                 default:
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
+        }
+
+        private static void CreatePubSubsConnection()
+        {
+            _twitchPubSub = null;
+            _twitchPubSub = new TwitchPubSub();
+            _twitchPubSub.OnListenResponse += OnListenResponse;
+            _twitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
+            _twitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
+            _twitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
+            _twitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
+            _twitchPubSub.OnStreamUp += (sender, args) =>
+            {
+                Logger.LogStr("TWITCH API: Stream is up");
+                Settings.Settings.IsLive = true;
+            };
+            _twitchPubSub.OnStreamDown += (sender, args) =>
+            {
+                Logger.LogStr("TWITCH API: Stream is down");
+                Settings.Settings.IsLive = false;
+            };
+
+            _twitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
+            _twitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
+            _twitchPubSub.Connect();
         }
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
@@ -594,7 +600,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
             _twitchPubSub.Disconnect();
-            _twitchPubSub.Connect();
+            CreatePubSubsConnection();
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
@@ -1636,7 +1642,7 @@ namespace Songify_Slim.Util.Songify
 
             string length = FormattedTime(track.DurationMs);
 
-            // upload tot the queue
+            // upload to the queue
             WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
         }
 

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Web;
 using Songify_Slim.Util.General;
 
@@ -50,25 +51,53 @@ namespace Songify_Slim.Util.Songify
 
         private static void DoWebRequest(string url, string operation = "")
         {
-            try
+            int maxTries = 5;
+            int currentTry = 1;
+            int waitTimeSeconds = 1;
+            // Create a new 'HttpWebRequest' object to the mentioned URL.
+            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            myHttpWebRequest.UserAgent = Settings.Settings.WebUserAgent;
+            while (currentTry <= maxTries)
             {
-                // Create a new 'HttpWebRequest' object to the mentioned URL.
-                HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                myHttpWebRequest.UserAgent = Settings.Settings.WebUserAgent;
+                try
+                {
+                    // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                    HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
 
-                // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
-                if (myHttpWebResponse.StatusCode != HttpStatusCode.OK)
-                    Logger.LogStr("WEB: " + operation + " Queue:" + myHttpWebResponse.StatusDescription);
-                myHttpWebResponse.Close();
-            }
-            catch (Exception ex)
-            {
-                if (ex.Message.Contains("(403)"))
-                    Logger.LogStr("WEB: Your key changed. Please contact us to resolve the issue.");
+                    if (myHttpWebResponse.StatusCode == HttpStatusCode.OK)
+                    {
+                        Logger.LogStr("WEB: " + operation + " Queue: " + myHttpWebResponse.StatusDescription);
+                        myHttpWebResponse.Close();
+                        break;
+                    }
+                    if (myHttpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                    {
+                        if (currentTry >= maxTries)
+                        {
+                            myHttpWebResponse.Close();
+                            // Maximum tries reached
+                            break; // Exit the while loop
+                        }
+                        Logger.LogStr("WEB: " + operation + " Queue: " + myHttpWebResponse.StatusDescription);
+                        Logger.LogStr("WEB" + operation + " Queue: " + $"Try {currentTry} of {maxTries}");
+                        // Wait for some time before retrying
+                        Thread.Sleep(waitTimeSeconds * 1000);
+                        currentTry++;
+                    }
+                    if (myHttpWebResponse.StatusCode == HttpStatusCode.Forbidden)
+                    {
+                        Logger.LogStr("WEB: Your key changed. Please contact us to resolve the issue.");
+                        myHttpWebResponse.Close();
+                        break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (ex.Message.Contains("(403)"))
 
-                Logger.LogExc(ex);
+                        Logger.LogExc(ex);
 
+                }
             }
         }
 
@@ -98,9 +127,9 @@ namespace Songify_Slim.Util.Songify
 
         public static void UploadHistory(string currSong, int unixTimestamp)
         {
-            string extras = Settings.Settings.Uuid + 
-                            "&tst=" + unixTimestamp + 
-                            "&song=" + HttpUtility.UrlEncode(currSong, Encoding.UTF8)+
+            string extras = Settings.Settings.Uuid +
+                            "&tst=" + unixTimestamp +
+                            "&song=" + HttpUtility.UrlEncode(currSong, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
             string url = $"{GlobalObjects._baseUrl}/song_history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.

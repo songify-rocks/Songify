@@ -1102,17 +1102,27 @@ namespace Songify_Slim.Views
 
                 try
                 {
-                    GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId));
-                    Application.Current.Dispatcher.Invoke(() =>
+                    if (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
                     {
-                        foreach (Window window in Application.Current.Windows)
+                        while (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
                         {
-                            if (window.GetType() != typeof(Window_Queue))
-                                continue;
-                            //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                            (window as Window_Queue)?.dgv_Queue.Items.Refresh();
+                            RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _prevId);
+                            Logger.LogStr(
+                                GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId))
+                                    ? $"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue."
+                                    : $"CORE: Couldn't remove {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    if (window.GetType() != typeof(Window_Queue))
+                                        continue;
+                                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                                    (window as Window_Queue)?.dgv_Queue.Items.Refresh();
+                                }
+                            });
                         }
-                    });
+                    }
                 }
 
                 catch (Exception)
