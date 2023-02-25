@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Automation;
 using Newtonsoft.Json;
 using Songify_Slim.Models;
@@ -24,6 +25,7 @@ namespace Songify_Slim.Util.Songify
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
         private static TrackInfo songInfo;
+        private static bool trackChanged;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -324,17 +326,46 @@ namespace Songify_Slim.Util.Songify
                 return null;
             }
 
-            // gets the current playing songinfo
+            // gets the current playing songinfo*
             songInfo = ApiHandler.GetSongInfo();
             try
             {
-                GlobalObjects.CurrentSong = songInfo;
+                if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongID != songInfo.SongID && songInfo.SongID != null)
+                {
+                    trackChanged = true;
+                    if (GlobalObjects.CurrentSong != null)
+                        Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                    Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
+                    RequestObject rq =
+                        GlobalObjects.ReqList.Find(o => o.TrackID == GlobalObjects.CurrentSong.SongID);
+                    if (rq != null)
+                    {
+                        Logger.LogStr($"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
+                        GlobalObjects.ReqList.Remove(rq);
+                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            foreach (Window window in Application.Current.Windows)
+                                            {
+                                                if (window.GetType() != typeof(Window_Queue))
+                                                    continue;
+                                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                                                (window as Window_Queue)?.dgv_Queue.Items.Refresh();
+                                            }
+                                        });
+                    }
+                }
+                if (songInfo.SongID != null)
+                    GlobalObjects.CurrentSong = songInfo;
+                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongID == GlobalObjects.ReqList.First().TrackID && trackChanged)
+                    WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
+                trackChanged = false;
                 string j = Json.Serialize(songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
                 IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
                 dictionary["Requester"] = GlobalObjects.Requester;
                 dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
                 dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
+                dictionary["Queue"] = GlobalObjects.ReqList;
                 string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
                 //Console.WriteLine(updatedJson);
 

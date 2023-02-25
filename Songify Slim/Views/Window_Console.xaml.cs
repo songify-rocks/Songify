@@ -46,5 +46,10 @@ namespace Songify_Slim.Views
             Left = Owner.Left + Owner.Width;
             Top = Owner.Top;
         }
+
+        private void BtnClearConsole_OnClick(object sender, RoutedEventArgs e)
+        {
+            GlobalObjects.ConsoleDocument.Blocks.Clear();
+        }
     }
 }

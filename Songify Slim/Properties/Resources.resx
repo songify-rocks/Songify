@@ -389,10 +389,6 @@
     <value>Chrome fetch rate (seconds)</value>
     <comment>Label content for "Chrome fetch rate (seconds)"</comment>
   </data>
-  <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
-    <value>Language</value>
-    <comment>Label content for "Language"</comment>
-  </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>minimize to system tray</value>
     <comment>Toggleswitch content for "minimize to system tray"</comment>
@@ -798,5 +794,9 @@
   <data name="brw_Refund" xml:space="preserve">
     <value>Text that gets added to the response if points are refunded</value>
     <comment>Title for the text field</comment>
+  </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Language</value>
+    <comment>Label that says "Language"</comment>
   </data>
 </root>

@@ -4,7 +4,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Threading;
+using CefSharp.DevTools.CSS;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim
@@ -92,10 +94,24 @@ namespace Songify_Slim
                     Margin = new Thickness(0),
                     Inlines = { new Run
                     {
-                        Text = $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}"
+                        Text = $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
+                        Foreground = new SolidColorBrush(GetBackgroundColor(s))
                     } }
                 });
             }));
+        }
+
+        private static Color GetBackgroundColor(string s)
+        {
+            if (s.Contains("CORE"))
+                return Colors.Coral;
+            if (s.Contains("TWITCH"))
+                return Colors.MediumPurple;
+            if (s.Contains("WEB"))
+                return Colors.LightGreen;
+            if (s.Contains("COVER"))
+                return Colors.Yellow;
+            return Colors.Transparent;
         }
 
         public static void LogStr(string s)

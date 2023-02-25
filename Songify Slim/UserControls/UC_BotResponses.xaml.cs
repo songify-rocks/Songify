@@ -75,8 +75,8 @@ namespace Songify_Slim.UserControls
             {
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() != typeof(Window_Botresponse)) continue;
-                    ((Window_Botresponse)window).lbl_Preview.Text = response;
+                    if (window.GetType() != typeof(Window_Settings)) continue;
+                    ((Window_Settings)window).lbl_Preview.Text = response;
                 }
             }));
         }

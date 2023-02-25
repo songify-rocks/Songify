@@ -637,4 +637,7 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Response for !song command</value>
   </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
 </root>

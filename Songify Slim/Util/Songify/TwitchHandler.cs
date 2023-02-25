@@ -39,6 +39,7 @@ using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using VonRiddarn.Twitch.ImplicitOAuth;
 using Songify_Slim.Util.Settings;
+using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -257,7 +258,7 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.TwitchChannelId = user.Id;
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
-                    CreatePubSubsConnection();
+                    //CreatePubSubsConnection();
                     break;
                 #endregion
                 #region Bot
@@ -411,33 +412,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
                 // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-                if (redemption.UserInput.StartsWith("spotify:track:"))
-                {
-                    // search for a track with the id
-                    trackId = redemption.UserInput.Replace("spotify:track:", "");
-                }
-                else if (redemption.UserInput.StartsWith("https://open.spotify.com/track/"))
-                {
-                    trackId = redemption.UserInput.Replace("https://open.spotify.com/track/", "");
-                    trackId = trackId.Split('?')[0];
-                }
-                else
-                {
-                    // search for a track with a search string from chat
-                    SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(redemption.UserInput));
-                    if (searchItem.HasError())
-                    {
-                        Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
-                        return;
-                    }
-
-                    if (searchItem.Tracks.Items.Count > 0)
-                    {
-                        // if a track was found convert the object to FullTrack (easier use than searchItem)
-                        FullTrack fullTrack = searchItem.Tracks.Items[0];
-                        trackId = fullTrack.Id;
-                    }
-                }
+                trackId = GetTrackIdFromInput(redemption.UserInput);
                 if (!string.IsNullOrWhiteSpace(trackId))
                 {
                     if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
@@ -600,7 +575,7 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
             _twitchPubSub.Disconnect();
-            CreatePubSubsConnection();
+            //CreatePubSubsConnection();
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
@@ -770,22 +745,36 @@ namespace Songify_Slim.Util.Songify
                 Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
 
-            if (Settings.Settings.MsgLoggingEnabled)
-                // If message logging is enabled and the reward was triggered, save it to the settings (if settings window is open, write it to the textbox)
-                if (e.ChatMessage.CustomRewardId != null)
+            if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId)
+            {
+                int userlevel = CheckUserLevel(e.ChatMessage);
+                if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
-                    Settings.Settings.TwRewardId = e.ChatMessage.CustomRewardId;
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                            if (window.GetType() == typeof(Window_Settings))
-                            {
-                                ((Window_Settings)window).txtbx_RewardID.Text = e.ChatMessage.CustomRewardId;
-                                ((Window_Settings)window).Chbx_MessageLogging.IsChecked = false;
-                            }
-                    });
+                    //Send a Message to the user, that his Userlevel is too low
+                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    return;
                 }
+                if (ApiHandler.Spotify == null)
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
+                    return;
+                }
+                // Do nothing if the user is blocked, don't even reply
+                if (IsUserBlocked(e.ChatMessage.DisplayName))
+                {
+                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
+                    return;
+                }
+
+                AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
+                return;
+            }
+
+            if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardSkipId)
+            {
+                await ApiHandler.SkipSong();
+                return;
+            }
 
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
@@ -1134,6 +1123,34 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+        private static string GetTrackIdFromInput(string input)
+        {
+            if (input.StartsWith("spotify:track:"))
+            {
+                // search for a track with the id
+                return input.Replace("spotify:track:", "");
+            }
+
+            if (input.StartsWith("https://open.spotify.com/track/"))
+            {
+                return input.Replace("https://open.spotify.com/track/", "").Split('?')[0];
+            }
+
+            // search for a track with a search string from chat
+            SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(input));
+            if (searchItem.HasError())
+            {
+                Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
+                return "";
+            }
+
+            if (searchItem.Tracks.Items.Count <= 0) return "";
+            // if a track was found convert the object to FullTrack (easier use than searchItem)
+            FullTrack fullTrack = searchItem.Tracks.Items[0];
+            return fullTrack.Id;
+
+        }
+
         private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
         {
             AnnouncementColors colors = AnnouncementColors.Purple;
@@ -1248,6 +1265,11 @@ namespace Songify_Slim.Util.Songify
 
         private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
+            if (string.IsNullOrWhiteSpace(trackId))
+            {
+                Client.SendMessage(e.ChatMessage.Channel, "No song found.");
+                return;
+            }
             if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
             {
                 Debug.WriteLine("This song is blocked");

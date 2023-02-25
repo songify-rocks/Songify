@@ -19,7 +19,7 @@ namespace Songify_Slim
         }
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Cctrl.Content = new UC_BotResponses();
+            //Cctrl.Content = new UC_BotResponses();
             tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
             tgl_botcmd_song.IsOn = Settings.BotCmdSong;
             tgl_botcmd_next.IsOn = Settings.BotCmdNext;

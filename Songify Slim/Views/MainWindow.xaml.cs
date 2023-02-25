@@ -486,7 +486,7 @@ namespace Songify_Slim.Views
 
             IconTwitchAPI.Foreground = Brushes.IndianRed;
             IconTwitchBot.Foreground = Brushes.IndianRed;
-            IconTwitchPubSub.Foreground = Brushes.IndianRed;
+            IconTwitchPubSub.Foreground = Brushes.Gray;
             IconWebServer.Foreground = Brushes.Gray;
             IconWebSpotify.Foreground = Brushes.IndianRed;
 
@@ -1100,35 +1100,35 @@ namespace Songify_Slim.Views
                     Logger.LogStr($"File {_songPath} couldn't be accessed.");
                 }
 
-                try
-                {
-                    if (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
-                    {
-                        while (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
-                        {
-                            RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _prevId);
-                            Logger.LogStr(
-                                GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId))
-                                    ? $"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue."
-                                    : $"CORE: Couldn't remove {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                foreach (Window window in Application.Current.Windows)
-                                {
-                                    if (window.GetType() != typeof(Window_Queue))
-                                        continue;
-                                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                                    (window as Window_Queue)?.dgv_Queue.Items.Refresh();
-                                }
-                            });
-                        }
-                    }
-                }
+                //try
+                //{
+                //    if (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
+                //    {
+                //        while (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
+                //        {
+                //            RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _prevId);
+                //            Logger.LogStr(
+                //                GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId))
+                //                    ? $"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue."
+                //                    : $"CORE: Couldn't remove {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
+                //            Application.Current.Dispatcher.Invoke(() =>
+                //            {
+                //                foreach (Window window in Application.Current.Windows)
+                //                {
+                //                    if (window.GetType() != typeof(Window_Queue))
+                //                        continue;
+                //                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                //                    (window as Window_Queue)?.dgv_Queue.Items.Refresh();
+                //                }
+                //            });
+                //        }
+                //    }
+                //}
 
-                catch (Exception)
-                {
-                    // ignored
-                }
+                //catch (Exception)
+                //{
+                //    // ignored
+                //}
 
                 if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
 
@@ -1201,7 +1201,7 @@ namespace Songify_Slim.Views
                 }
 
                 // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
-                if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
+                //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
                 // Send Message to Twitch if checked
                 if (Settings.AnnounceInChat)
@@ -1215,18 +1215,6 @@ namespace Songify_Slim.Views
                 //Save Album Cover
                 if (Settings.DownloadCover) DownloadCover(rCover);
 
-                //if (File.Exists(_coverPath) && new FileInfo(_coverPath).Length > 0)
-                //    img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                //        new Action(() =>
-                //        {
-                //            BitmapImage image = new BitmapImage();
-                //            image.BeginInit();
-                //            image.CacheOption = BitmapCacheOption.OnLoad;
-                //            image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                //            image.UriSource = new Uri(_coverPath);
-                //            image.EndInit();
-                //            img_cover.Source = image;
-                //        }));
             }
 
             // write song to the output label

@@ -151,8 +151,8 @@
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="IndianRed">
-                                        <Setter Property="ToolTip" Value="Twitch PubSub: Not Connected"/>
+                                    <Trigger Property="Foreground" Value="Gray">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Disabled"/>
                                     </Trigger>
                                     <Trigger Property="Foreground" Value="GreenYellow">
                                         <Setter Property="ToolTip" Value="Twitch PubSub: Connected"/>
@@ -246,7 +246,7 @@
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
                           IsEnabled="False" Click="BtnTwitch_Click" />
                 <MenuItem x:Name="mi_TwitchCheckOnlineStatus" Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}" Click="Mi_TwitchCheckOnlineStatus_OnClick"/>
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Twitch_Bot}" Click="mi_TW_BotResponses_Click">
+                <MenuItem Visibility="Collapsed" Header="{x:Static local:Resources.mw_menu_Twitch_Bot}" Click="mi_TW_BotResponses_Click">
                     <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click"/>-->
                 </MenuItem>
             </MenuItem>

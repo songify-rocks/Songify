@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Songify_Slim.Util.Songify
         public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
             string played, string o)
         {
+            Debug.WriteLine("Called Webrequest");
             string operation = "";
 
             // This switch tells the php to either add or delete one entry or clear the entire queue

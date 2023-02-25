@@ -28,17 +28,7 @@
         <controls:MetroTabControl HorizontalContentAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0">
             <TabItem Header="{x:Static local:Resources.brw_tc_Responses}">
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Content="{x:Static local:Resources.brw_Header}" HorizontalAlignment="Left" Margin="0"
-                           VerticalAlignment="Top" />
-                    <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch">
-                        <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-                    </ScrollViewer>
-                    <TextBox Grid.Row="2" x:Name="lbl_Preview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41" VerticalAlignment="Bottom" />
+                    
                 </Grid>
             </TabItem>
             <TabItem Header="{x:Static local:Resources.brw_tc_Commands}">

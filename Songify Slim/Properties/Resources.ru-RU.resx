@@ -637,4 +637,7 @@
   <data name="brw_Refund" xml:space="preserve">
     <value>Текст, который добавляется к ответу, если баллы возвращаются</value>
   </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Язык</value>
+  </data>
 </root>

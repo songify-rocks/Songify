@@ -16,10 +16,15 @@
                                           Height="22"
                                           Kind="LayoutSidebar" />
             </Button>
+            <Button ToolTip="Clear Console" x:Name="BtnClearConsole" Click="BtnClearConsole_OnClick">
+                <iconPacks:PackIconBootstrapIcons Width="22"
+                                          Height="22"
+                                          Kind="JournalX" />
+            </Button>
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
 
     <Grid>
-        <RichTextBox x:Name="richTextBox" TextChanged="richTextBox_TextChanged" IsReadOnly="True"/>
+        <RichTextBox x:Name="richTextBox" TextChanged="richTextBox_TextChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" IsReadOnly="True"/>
     </Grid>
 </mah:MetroWindow>

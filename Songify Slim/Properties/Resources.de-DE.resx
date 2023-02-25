@@ -637,4 +637,7 @@
   <data name="brw_Refund" xml:space="preserve">
     <value>Text, der der Antwort hinzugefügt wird, wenn Punkte zurückerstattet werden</value>
   </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
 </root>
