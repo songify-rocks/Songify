@@ -12,6 +12,7 @@ namespace Songify_Slim.Util.General
 {
     public static class GlobalObjects
     {
+        public static bool IsBeta = true;
         public const string _baseUrl = "https://songify.overcode.tv";
         public const string _apiUrl = "https://songify.overcode.tv/api/v1";
         public static WebServer WebServer = new WebServer();

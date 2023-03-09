@@ -582,13 +582,19 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
-            Client.SendMessage(Settings.Settings.TwChannel, "Encountered an error with the PubSub service. Reconnecting in 10 seconds...");
+            SendMessage(Settings.Settings.TwChannel, "Encountered an error with the PubSub service. Reconnecting in 10 seconds...");
             //_twitchPubSub.Disconnect();
             //if (_pubSubEnabled)
             //    _twitchPubSub.Connect();
             await Task.Delay(10000);
             CreatePubSubListenEvents();
             _twitchPubSub.Connect();
+        }
+
+        private static void SendMessage(string twChannel, string encounteredAnErrorWithThePubsubServiceReconnectingInSeconds)
+        {
+            if (Client?.JoinedChannels != null)
+                Client?.SendMessage(twChannel, encounteredAnErrorWithThePubsubServiceReconnectingInSeconds);
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)

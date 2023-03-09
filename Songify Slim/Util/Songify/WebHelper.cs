@@ -40,10 +40,10 @@ namespace Songify_Slim.Util.Songify
 
         public static async void QueueRequest(RequestMethod method, string payload = null)
         {
-            RequestObject response;
             try
             {
                 string result = "";
+                RequestObject response;
                 switch (method)
                 {
                     case RequestMethod.GET:
@@ -66,7 +66,10 @@ namespace Songify_Slim.Util.Songify
                         break;
                     case RequestMethod.CLEAR:
                         result = await apiClient.Clear("queue", payload);
+                        
                         break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(method), method, null);
                 }
             }
             catch (Exception e)

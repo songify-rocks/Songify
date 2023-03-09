@@ -575,7 +575,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = $"Songify v{_version} Copyright ©";
+            LblCopyright.Content = $"Songify v{_version}{(GlobalObjects.IsBeta ? " Beta" : "")} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -756,12 +756,7 @@ namespace Songify_Slim.Views
                 wPN.Activate();
             }
         }
-
-        private void btnUpdateOK_Click(object sender, RoutedEventArgs e)
-        {
-            grdUpdate.Visibility = Visibility.Collapsed;
-        }
-
+        
         private void SetFetchTimer()
         {
             _ = GetCurrentSongAsync();

@@ -878,15 +878,15 @@ namespace Songify_Slim
                             Content = new UC_RewardItem(null, false)
                         });
 
-                        //CbxRewardsSkip.Items.Add(new ComboBoxItem
-                        //{
-                        //    Content = new UC_RewardItem(null, false)
-                        //});
+                        CbxRewardsSkip.Items.Add(new ComboBoxItem
+                        {
+                            Content = new UC_RewardItem(null, false)
+                        });
 
-                        //ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
-                        //{
-                        //    Content = new UC_RewardItem(null, false)
-                        //});
+                        ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
+                        {
+                            Content = new UC_RewardItem(null, false)
+                        });
 
                         foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
                         {
@@ -897,14 +897,14 @@ namespace Songify_Slim
                                 Content = new UC_RewardItem(reward, managable)
                             });
 
-                            //CbxRewardsSkip.Items.Add(new ComboBoxItem
-                            //{
-                            //    Content = new UC_RewardItem(reward, managable)
-                            //});
-                            //ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
-                            //{
-                            //    Content = new UC_RewardItem(reward, managable)
-                            //});
+                            CbxRewardsSkip.Items.Add(new ComboBoxItem
+                            {
+                                Content = new UC_RewardItem(reward, managable)
+                            });
+                            ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
+                            {
+                                Content = new UC_RewardItem(reward, managable)
+                            });
                         }
 
                         CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
@@ -913,8 +913,7 @@ namespace Songify_Slim
                         ComboboxRewardGoalReward.SelectedItem = GetItemFromList(ComboboxRewardGoalReward, Settings.TwRewardGoalRewardId);
                     }
                     CbxRewards.IsEnabled = true;
-                    
-                    CbxRewardsSkip.IsEnabled = false;
+                    CbxRewardsSkip.IsEnabled = true;
                     BtnCreateNewReward.IsEnabled = true;
                 }
                 catch (Exception e)
