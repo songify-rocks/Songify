@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
@@ -63,42 +64,72 @@ namespace Songify_Slim
 
         private static void AppendConsole(string s)
         {
-            GlobalObjects.ConsoleDocument.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            try
             {
-                if (GlobalObjects.ConsoleDocument.Blocks.Count > 0)
+                GlobalObjects.ConsoleDocument.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    Paragraph lastParagraph = (Paragraph)GlobalObjects.ConsoleDocument.Blocks.LastBlock;
-                    if (lastParagraph.Inlines.Count > 0)
+                    if (GlobalObjects.ConsoleDocument.Blocks.Count > 0)
                     {
-                        Run lastRun = (Run)lastParagraph.Inlines.LastInline;
-                        if (lastRun.Text.Contains(s))
+                        Paragraph lastParagraph = (Paragraph)GlobalObjects.ConsoleDocument.Blocks.LastBlock;
+                        if (lastParagraph.Inlines.Count > 0)
                         {
-                            if (!int.TryParse(Regex.Match(lastRun.Text, @"\(([^)]*)\)").Groups[1].Value, out int tries))
+                            Run lastRun = (Run)lastParagraph.Inlines.LastInline;
+                            if (lastRun.Text.Contains(s))
                             {
-                                tries = 1;
+                                if (!int.TryParse(Regex.Match(lastRun.Text, @"\(([^)]*)\)").Groups[1].Value,
+                                        out int tries))
+                                {
+                                    tries = 1;
+                                    return;
+                                }
+
+                                tries++;
+                                string str = Regex.Replace(lastRun.Text, @"\([^)]*\)", $"({tries})");
+                                str = Regex.Replace(str, @"\[[^)]*\]",
+                                    $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}]");
+                                lastRun.Text = str;
                                 return;
                             }
-
-                            tries++;
-                            string str = Regex.Replace(lastRun.Text, @"\([^)]*\)", $"({tries})");
-                            str = Regex.Replace(str, @"\[[^)]*\]",
-                                $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}]");
-                            lastRun.Text = str;
-                            return;
                         }
                     }
-                }
 
-                GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph
-                {
-                    Margin = new Thickness(0),
-                    Inlines = { new Run
+                    GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph
                     {
-                        Text = $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
-                        Foreground = new SolidColorBrush(GetBackgroundColor(s))
-                    } }
-                });
-            }));
+                        Margin = new Thickness(0),
+                        Inlines =
+                        {
+                            new Run
+                            {
+                                Text =
+                                    $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
+                                Foreground = new SolidColorBrush(GetBackgroundColor(s))
+                            }
+                        }
+                    });
+
+
+                    // Get the current line count of the FlowDocument
+                    int lineCount = GlobalObjects.ConsoleDocument.Blocks.OfType<Paragraph>().Count();
+
+                    // If the line count is greater than 50, remove the oldest lines
+                    if (lineCount > 50)
+                    {
+                        // Calculate the number of lines to remove
+                        int linesToRemove = lineCount - 50;
+
+                        // Remove the oldest lines from the beginning of the FlowDocument
+                        for (int i = 0; i < linesToRemove; i++)
+                        {
+                            GlobalObjects.ConsoleDocument.Blocks.Remove(GlobalObjects.ConsoleDocument.Blocks
+                                .FirstBlock);
+                        }
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                LogExc(ex);
+            }
         }
 
         private static Color GetBackgroundColor(string s)
@@ -111,7 +142,9 @@ namespace Songify_Slim
                 return Colors.LightGreen;
             if (s.Contains("COVER"))
                 return Colors.Yellow;
-            return Colors.Transparent;
+            if (s.Contains("SPOTIFY"))
+                return Color.FromRgb(30, 215, 96);
+            return Colors.White;
         }
 
         public static void LogStr(string s)
@@ -124,7 +157,6 @@ namespace Songify_Slim
             {
                 File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
                 //Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
-
             }
             catch
             {

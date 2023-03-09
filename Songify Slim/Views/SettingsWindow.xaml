@@ -7,7 +7,7 @@
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:local="clr-namespace:Songify_Slim.Properties"
                       mc:Ignorable="d"
-                      Title="Settings" Height="473" MinHeight="400" Width="729" MinWidth="647" Loaded="SettingsWindow_Loaded"
+                      Title="Settings" Height="473" MinHeight="400" Width="745" MinWidth="647" Loaded="SettingsWindow_Loaded"
                       ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" Closing="MetroWindow_Closing"
                      >
     <controls:MetroWindow.Resources>
@@ -485,7 +485,7 @@
                                     </Button.Content>
                                 </Button>
                                 <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
-                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" />
+                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" />
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
                                 <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
@@ -713,7 +713,7 @@
             </TabItem>
             <TabItem x:Name="TabItemTwitchBotCommands" Header="Commands" Padding="20,0,0,0">
                 <Border Margin="10,0,0,0" BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}">
-                    <Grid  Margin="10,12,0,0">
+                    <Grid  Margin="10,16,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
@@ -812,7 +812,6 @@
             </TabItem>
             <TabItem Header="Spotify">
                 <Border Margin="10,0,0,0" BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}">
-
                     <Grid Margin="10,16,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -851,7 +850,7 @@
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_WebServer}">
                 <Border BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}" Margin="10,0,0,0">
-                    <Grid Margin="10,0,0,0">
+                    <Grid Margin="10,16,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
@@ -870,7 +869,7 @@
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Config}">
                 <Border BorderThickness="2,0,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}" Margin="10,0,0,0">
-                    <Grid Margin="10,0,0,0">
+                    <Grid Margin="10,12,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="32"/>
                             <RowDefinition Height="32"/>

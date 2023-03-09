@@ -26,6 +26,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using ContextMenu = System.Windows.Forms.ContextMenu;
@@ -311,9 +312,9 @@ namespace Songify_Slim.Views
             string albumUrl = null;
 
             if (info.albums.Count != 0) albumUrl = info.albums[0].Url;
-            if (GlobalObjects.SkipList.Find(o => o.TrackID == info.SongID) != null)
+            if (GlobalObjects.SkipList.Find(o => o.trackid == info.SongID) != null)
             {
-                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.TrackID == info.SongID));
+                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.trackid == info.SongID));
                 await ApiHandler.SkipSong();
             }
 
@@ -493,7 +494,13 @@ namespace Songify_Slim.Views
             if (Settings.AutoClearQueue)
             {
                 GlobalObjects.ReqList.Clear();
-                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+                dynamic payload = new
+                {
+                    uuid = Settings.Uuid,
+                    key = Settings.AccessKey
+                };
+                WebHelper.QueueRequest(WebHelper.RequestMethod.CLEAR, Json.Serialize(payload));
+                //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             }
 
             Settings.MsgLoggingEnabled = false;
@@ -668,8 +675,15 @@ namespace Songify_Slim.Views
                 new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult == MessageDialogResult.Affirmative)
             {
+                //GlobalObjects.ReqList.Clear();
+                //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
                 GlobalObjects.ReqList.Clear();
-                WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+                dynamic payload = new
+                {
+                    uuid = Settings.Uuid,
+                    key = Settings.AccessKey
+                };
+                WebHelper.QueueRequest(WebHelper.RequestMethod.CLEAR, Json.Serialize(payload));
             }
         }
 
@@ -977,17 +991,17 @@ namespace Songify_Slim.Views
 
                 if (GlobalObjects.ReqList.Count > 0)
                 {
-                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _currentId);
+                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.trackid == _currentId);
                     if (rq != null)
                     {
                         CurrSong = CurrSong.Replace("{{", "");
                         CurrSong = CurrSong.Replace("}}", "");
-                        CurrSong = CurrSong.Replace("{req}", rq.Requester);
+                        CurrSong = CurrSong.Replace("{req}", rq.requester);
 
                         CurrSongTwitch = CurrSongTwitch.Replace("{{", "");
                         CurrSongTwitch = CurrSongTwitch.Replace("}}", "");
-                        CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.Requester);
-                        GlobalObjects.Requester = rq.Requester;
+                        CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.requester);
+                        GlobalObjects.Requester = rq.requester;
 
                     }
                     else

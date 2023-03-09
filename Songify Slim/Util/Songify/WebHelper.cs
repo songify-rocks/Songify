@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Web;
+using System.Windows;
+using Songify_Slim.Models;
 using Songify_Slim.Util.General;
+using Unosquare.Swan;
+using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -14,6 +19,63 @@ namespace Songify_Slim.Util.Songify
         /// <summary>
         ///     This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
+
+        private static ApiClient apiClient = new ApiClient(GlobalObjects._apiUrl);
+
+        private enum RequestType
+        {
+            Queue,
+            UploadSong,
+            UploadHistory,
+            Telemetry
+        }
+
+        internal enum RequestMethod
+        {
+            GET,
+            POST,
+            PATCH,
+            CLEAR
+        }
+
+        public static async void QueueRequest(RequestMethod method, string payload = null)
+        {
+            RequestObject response;
+            try
+            {
+                string result = "";
+                switch (method)
+                {
+                    case RequestMethod.GET:
+                        result = await apiClient.Get("queue", Settings.Settings.Uuid);
+                        List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
+                        queue.ForEach(q =>
+                        {
+                            //Debug.WriteLine( q.queueid);
+                        });
+                        break;
+                    case RequestMethod.POST:
+                        result = await apiClient.Post("queue", payload);
+                        response = Json.Deserialize<RequestObject>(result);
+                        GlobalObjects.ReqList.Add(response);
+                        Debug.WriteLine(result);
+                        break;
+                    case RequestMethod.PATCH:
+                        result = await apiClient.Patch("queue", payload);
+                        response = Json.Deserialize<RequestObject>(result);
+                        break;
+                    case RequestMethod.CLEAR:
+                        result = await apiClient.Clear("queue", payload);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+
         public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
             string played, string o)
         {
@@ -48,59 +110,105 @@ namespace Songify_Slim.Util.Songify
 
             string url = $"{GlobalObjects._baseUrl}/add_queue.php/?id=" + extras;
             WebUtility.UrlEncode(url);
-            DoWebRequest(url, operation);
+
+            dynamic test = new
+            {
+                uuid = Settings.Settings.Uuid,
+                key = Settings.Settings.AccessKey,
+                queueItem =
+                    new RequestObject
+                    {
+                        trackid = trackId,
+                        artist = artist,
+                        title = title,
+                        length = length,
+                        requester = requester,
+                        albumcover = null
+                    }
+
+            };
+            Debug.WriteLine((string)Json.Serialize(test));
+
+            DoWebRequest(url, RequestType.Queue, operation);
         }
 
-        private static void DoWebRequest(string url, string operation = "")
+        private static void DoWebRequest(string url, RequestType requestType, string operation = "")
         {
-            int maxTries = 5;
-            int currentTry = 1;
-            int waitTimeSeconds = 1;
-            // Create a new 'HttpWebRequest' object to the mentioned URL.
-            HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-            myHttpWebRequest.UserAgent = Settings.Settings.WebUserAgent;
-            while (currentTry <= maxTries)
+            const int maxTries = 5;
+            const int waitTimeSeconds = 1;
+
+            for (int currentTry = 1; currentTry <= maxTries; currentTry++)
             {
                 try
                 {
-                    // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
-                    HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse();
+                    // Create a new 'HttpWebRequest' object to the mentioned URL.
+                    HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                    myHttpWebRequest.UserAgent = Settings.Settings.WebUserAgent;
 
-                    if (myHttpWebResponse.StatusCode == HttpStatusCode.OK)
+                    // Assign the response object of 'HttpWebRequest' to a 'HttpWebResponse' variable.
+                    using (HttpWebResponse myHttpWebResponse = (HttpWebResponse)myHttpWebRequest.GetResponse())
                     {
-                        Logger.LogStr("WEB: " + operation + " Queue: " + myHttpWebResponse.StatusDescription);
-                        myHttpWebResponse.Close();
-                        break;
-                    }
-                    if (myHttpWebResponse.StatusCode == HttpStatusCode.BadRequest)
-                    {
-                        if (currentTry >= maxTries)
+                        LogWebResponseStatus(requestType, operation, myHttpWebResponse.StatusDescription);
+
+                        if (myHttpWebResponse.StatusCode == HttpStatusCode.OK)
                         {
-                            myHttpWebResponse.Close();
-                            // Maximum tries reached
-                            break; // Exit the while loop
+                            break; // Exit the for loop
                         }
-                        Logger.LogStr("WEB: " + operation + " Queue: " + myHttpWebResponse.StatusDescription);
-                        Logger.LogStr("WEB" + operation + " Queue: " + $"Try {currentTry} of {maxTries}");
-                        // Wait for some time before retrying
-                        Thread.Sleep(waitTimeSeconds * 1000);
-                        currentTry++;
+                        else if (myHttpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+                        {
+                            if (currentTry >= maxTries)
+                            {
+                                // Maximum tries reached
+                                break; // Exit the for loop
+                            }
+                            LogRetryAttempt(requestType, operation, currentTry, maxTries);
+
+                            // Wait for some time before retrying
+                            int waitTimeMillis = (int)Math.Pow(2, currentTry) * waitTimeSeconds * 1000;
+                            Thread.Sleep(waitTimeMillis);
+                        }
+                        else if (myHttpWebResponse.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            Logger.LogStr("WEB: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
+                            break; // Exit the for loop
+                        }
                     }
-                    if (myHttpWebResponse.StatusCode == HttpStatusCode.Forbidden)
+                }
+                catch (WebException ex)
+                {
+                    if (ex.Response is HttpWebResponse response && response.StatusCode == HttpStatusCode.Forbidden)
                     {
-                        Logger.LogStr("WEB: Your key changed. Please contact us to resolve the issue.");
-                        myHttpWebResponse.Close();
-                        break;
+                        Logger.LogStr("WEB: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
+                        break; // Exit the for loop
                     }
+                    else if (currentTry >= maxTries)
+                    {
+                        Logger.LogExc(ex);
+                        break; // Exit the for loop
+                    }
+                    LogRetryAttempt(requestType, operation, currentTry, maxTries);
+
+                    // Wait for some time before retrying
+                    int waitTimeMillis = (int)Math.Pow(2, currentTry) * waitTimeSeconds * 1000;
+                    Thread.Sleep(waitTimeMillis);
                 }
                 catch (Exception ex)
                 {
-                    if (ex.Message.Contains("(403)"))
-
-                        Logger.LogExc(ex);
-
+                    Logger.LogExc(ex);
+                    break; // Exit the for loop
                 }
             }
+        }
+
+        private static void LogWebResponseStatus(RequestType requestType, string operation, string statusDescription)
+        {
+            string message = $"WEB: {requestType}{(string.IsNullOrWhiteSpace(operation) ? ":" : " " + operation + ":")} Status: {statusDescription}";
+            Logger.LogStr(message);
+        }
+
+        private static void LogRetryAttempt(RequestType requestType, string operation, int currentTry, int maxTries)
+        {
+            Logger.LogStr($"WEB: {requestType}{(!string.IsNullOrWhiteSpace(operation) ? " " + operation : "")}: Try {currentTry} of {maxTries}");
         }
 
         public static void SendTelemetry()
@@ -113,7 +221,7 @@ namespace Songify_Slim.Util.Songify
                             $"&tn={WebUtility.UrlEncode(Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.DisplayName)}";
             string url = $"{GlobalObjects._baseUrl}/songifydata.php/" + extras;
             WebUtility.UrlEncode(url);
-            DoWebRequest(url, "Telemetry");
+            DoWebRequest(url, RequestType.Telemetry);
         }
 
         public static void UploadSong(string currSong, string coverUrl = null)
@@ -124,7 +232,7 @@ namespace Songify_Slim.Util.Songify
                             "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
             string url = $"{GlobalObjects._baseUrl}/song.php?id=" + extras;
-            DoWebRequest(url, "Upload Song");
+            DoWebRequest(url, RequestType.UploadSong);
         }
 
         public static void UploadHistory(string currSong, int unixTimestamp)
@@ -135,7 +243,7 @@ namespace Songify_Slim.Util.Songify
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
             string url = $"{GlobalObjects._baseUrl}/song_history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.
-            DoWebRequest(url, "Upload History");
+            DoWebRequest(url, RequestType.UploadHistory);
         }
     }
 }

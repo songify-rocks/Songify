@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.General;
 
@@ -15,7 +17,7 @@ namespace Songify_Slim.Views
         {
             InitializeComponent();
         }
-
+        
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             richTextBox.Document = GlobalObjects.ConsoleDocument;
@@ -26,12 +28,10 @@ namespace Songify_Slim.Views
             e.Cancel = true;
             Hide();
         }
-
         private void richTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             richTextBox.ScrollToEnd();
         }
-
         private void MetroWindow_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;

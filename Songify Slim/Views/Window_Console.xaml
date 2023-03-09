@@ -24,7 +24,16 @@
         </mah:WindowCommands>
     </mah:MetroWindow.LeftWindowCommands>
 
-    <Grid>
-        <RichTextBox x:Name="richTextBox" TextChanged="richTextBox_TextChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" IsReadOnly="True"/>
+
+    <Grid Background="#252525">
+        <RichTextBox x:Name="richTextBox" BorderThickness="0" TextChanged="richTextBox_TextChanged" HorizontalContentAlignment="Left" VerticalContentAlignment="Top" IsReadOnly="True" Background="#252525">
+            <RichTextBox.Resources>
+                <Style TargetType="{x:Type Paragraph}">
+                    <Setter Property="Margin" Value="0"/>
+                    <Setter Property="Padding" Value="0,0,15,0"></Setter>
+                </Style>
+            </RichTextBox.Resources>
+        </RichTextBox>
+
     </Grid>
 </mah:MetroWindow>

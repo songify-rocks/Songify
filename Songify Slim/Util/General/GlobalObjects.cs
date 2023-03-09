@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Songify_Slim.Models;
@@ -11,11 +13,13 @@ namespace Songify_Slim.Util.General
     public static class GlobalObjects
     {
         public const string _baseUrl = "https://songify.overcode.tv";
+        public const string _apiUrl = "https://songify.overcode.tv/api/v1";
         public static WebServer WebServer = new WebServer();
         public static List<RequestObject> ReqList = new List<RequestObject>();
         public static List<RequestObject> SkipList = new List<RequestObject>();
         public static string APIResponse;
         public static FlowDocument ConsoleDocument = new FlowDocument();
+
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H")
             ? "HH:mm:ss"
             : "hh:mm:ss tt";
@@ -24,6 +28,7 @@ namespace Songify_Slim.Util.General
         public static TrackInfo CurrentSong;
         public static int RewardGoalCount = 0;
         public static string Requester = "";
+        public static EventHandler FlowDocumentChanged;
 
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
@@ -89,7 +94,7 @@ namespace Songify_Slim.Util.General
 
             return foundChild;
         }
+
+
     }
-
-
 }

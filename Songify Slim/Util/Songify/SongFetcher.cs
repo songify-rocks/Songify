@@ -26,6 +26,7 @@ namespace Songify_Slim.Util.Songify
         private static SongInfo _previousSonginfo;
         private static TrackInfo songInfo;
         private static bool trackChanged;
+        private static int fetchCount = 0;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -295,37 +296,22 @@ namespace Songify_Slim.Util.Songify
         ///     Returns null if unsuccessful and custom pause text is not set.
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
-        /// <returns>Returns String with currently playing NB Song Request</returns>
-
-        //public string FetchNightBot()
-        //{
-        //    // Checking if the user has set the setting for Nightbot
-        //    if (string.IsNullOrEmpty(Settings.Settings.NbUserId)) return "No NightBot ID set.";
-        //    // Getting JSON from the nightbot API
-        //    string jsn;
-        //    using (WebClient wc = new WebClient
-        //    {
-        //        Encoding = Encoding.UTF8
-        //    })
-        //    {
-        //        string url = "https://api.nightbot.tv/1/song_requests/queue/?channel="+Settings.Settings.NbUserId;
-        //        jsn = wc.DownloadString("https://api.nightbot.tv/1/song_requests/queue/?channel=" +
-        //                                Settings.Settings.NbUserId);
-        //    }
-
-        //    // Deserialize JSON and get the current song 
-        //    NBObj json = JsonConvert.DeserializeObject<NBObj>(jsn);
-        //    return json._currentsong == null ? null : (string)json._currentsong.track.title;
-        //}
 
         public TrackInfo FetchSpotifyWeb()
         {
+            fetchCount++;
             // If the spotify object hast been created (successfully authed)
             if (ApiHandler.Spotify == null)
             {
                 return null;
             }
 
+            // Get Queue Data from the server every fifth call
+            if (fetchCount == 5)
+            {
+                WebHelper.QueueRequest(WebHelper.RequestMethod.GET);
+                fetchCount = 0;
+            }
             // gets the current playing songinfo*
             songInfo = ApiHandler.GetSongInfo();
             try
@@ -335,12 +321,13 @@ namespace Songify_Slim.Util.Songify
                     trackChanged = true;
                     if (GlobalObjects.CurrentSong != null)
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
+                    if (songInfo.SongID != null)
+                        Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
                     RequestObject rq =
-                        GlobalObjects.ReqList.Find(o => o.TrackID == GlobalObjects.CurrentSong.SongID);
+                        GlobalObjects.ReqList.Find(o => o.trackid == GlobalObjects.CurrentSong.SongID);
                     if (rq != null)
                     {
-                        Logger.LogStr($"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
+                        Logger.LogStr($"CORE: Removed {rq.artist} - {rq.title} requested by {rq.requester} from the queue.");
                         GlobalObjects.ReqList.Remove(rq);
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -356,8 +343,17 @@ namespace Songify_Slim.Util.Songify
                 }
                 if (songInfo.SongID != null)
                     GlobalObjects.CurrentSong = songInfo;
-                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongID == GlobalObjects.ReqList.First().TrackID && trackChanged)
-                    WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
+                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongID == GlobalObjects.ReqList.First().trackid && trackChanged)
+                {
+                    //WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
+                    dynamic payload = new
+                    {
+                        uuid = Settings.Settings.Uuid,
+                        key = Settings.Settings.AccessKey,
+                        GlobalObjects.ReqList.First().queueid,
+                    };
+                    WebHelper.QueueRequest(WebHelper.RequestMethod.PATCH, Json.Serialize(payload));
+                }
                 trackChanged = false;
                 string j = Json.Serialize(songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);

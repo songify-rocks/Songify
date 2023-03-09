@@ -16,10 +16,11 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=Artists}"/>
-                <DataGridTextColumn IsReadOnly="True"  Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn  IsReadOnly="True" Width="75" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}"/>
-                <DataGridTextColumn IsReadOnly="True"  Width=".5*" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="auto"  Header="Queue ID" Binding="{Binding Path=queueid}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=artist}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=title}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="75" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=length}"/>
+                <DataGridTextColumn IsReadOnly="True" Width="auto" MinWidth="80" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=requester}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
