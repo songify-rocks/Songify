@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
@@ -51,7 +52,22 @@ namespace Songify_Slim.Util.Songify
                         List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
                         queue.ForEach(q =>
                         {
-                            //Debug.WriteLine( q.queueid);
+                            bool remove = false;
+
+                            if (GlobalObjects.ReqList.Count == 0)
+                                remove = true;
+                            else if (GlobalObjects.ReqList.All(o => o.queueid != q.queueid))
+                                remove = true;
+
+                            if (!remove) return;
+
+                            dynamic pL = new
+                            {
+                                uuid = Settings.Settings.Uuid,
+                                key = Settings.Settings.AccessKey,
+                                q.queueid,
+                            };
+                            QueueRequest(RequestMethod.PATCH, Json.Serialize(pL));
                         });
                         break;
                     case RequestMethod.POST:
@@ -66,7 +82,7 @@ namespace Songify_Slim.Util.Songify
                         break;
                     case RequestMethod.CLEAR:
                         result = await apiClient.Clear("queue", payload);
-                        
+
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
