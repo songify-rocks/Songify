@@ -52,20 +52,13 @@ namespace Songify_Slim.Util.Songify
                         List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
                         queue.ForEach(q =>
                         {
-                            bool remove = false;
-
-                            if (GlobalObjects.ReqList.Count == 0)
-                                remove = true;
-                            else if (GlobalObjects.ReqList.All(o => o.queueid != q.queueid))
-                                remove = true;
-
-                            if (!remove) return;
-
-                            dynamic pL = new
+                            if (GlobalObjects.ReqList.Count != 0 &&
+                                GlobalObjects.ReqList.Any(o => o.queueid == q.queueid)) return;
+                            var pL = new
                             {
                                 uuid = Settings.Settings.Uuid,
                                 key = Settings.Settings.AccessKey,
-                                q.queueid,
+                                q.queueid
                             };
                             QueueRequest(RequestMethod.PATCH, Json.Serialize(pL));
                         });
