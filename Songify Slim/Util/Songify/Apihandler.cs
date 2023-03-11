@@ -41,7 +41,7 @@ namespace Songify_Slim.Util.Songify
                     $"{GlobalObjects._baseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
+                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
             }
             else
@@ -49,7 +49,7 @@ namespace Songify_Slim.Util.Songify
                 _auth = new TokenSwapAuth(
                     $"{GlobalObjects._baseUrl}/auth/_index.php",
                     "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState
+                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
             }
 
@@ -250,6 +250,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
                 return null;
             }
 

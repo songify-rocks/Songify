@@ -616,6 +616,18 @@ namespace Songify_Slim.Util.Settings
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
         public static string BotRespRefund { get => GetBot_Resp_Refund(); set => SetBot_Resp_Refund(value); }
         public static List<TrackItem> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
+        public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
+
+        private static void SetSpotifyPlaylistId(string value)
+        {
+            currentConfig.AppConfig.SpotifyPlaylistId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+        }
+
+        private static string GetSpotifyPlaylistId()
+        {
+            return currentConfig.AppConfig.SpotifyPlaylistId;
+        }
 
         private static List<TrackItem> GetSongBlacklist()
         {
@@ -871,6 +883,7 @@ namespace Songify_Slim.Util.Settings
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 SongBlacklist = GetSongBlacklist(),
+                SpotifyPlaylistId = GetSpotifyPlaylistId(),
             };
 
             return new Configuration

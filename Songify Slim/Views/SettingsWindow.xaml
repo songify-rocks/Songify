@@ -818,6 +818,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <DockPanel x:Name="PnlSpotify" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,6">
                             <Border CornerRadius="40" Width="60" Height="60" BorderThickness="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
@@ -843,8 +844,10 @@
                                  VerticalAlignment="Top" PasswordChanged="tb_ClientSecret_PasswordChanged" HorizontalAlignment="Right" Width="270" Grid.Row="3" />
                         <Label Content="Client ID" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Margin="0,0,0,6" />
                         <Label Content="Client Secret" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" Grid.Row="3" />
+                           VerticalAlignment="Top" Grid.Row="3" Margin="0,0,0,6" />
                         <Button x:Name="btn_OwnAppHelp" Content="?" VerticalAlignment="Stretch" Click="btn_OwnAppHelp_Click" HorizontalAlignment="Right" Grid.Row="1" Width="32" Margin="0,0,0,6" />
+                        <Label Grid.Row="4" Content="Song Request Playlist"/>
+                        <ComboBox x:Name="cb_SpotifyPlaylist" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" Width="270" SelectionChanged="cb_SpotifyPlaylist_SelectionChanged" />
                     </Grid>
                 </Border>
             </TabItem>

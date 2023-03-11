@@ -535,6 +535,9 @@
     </ApplicationDefinition>
     <Compile Include="Models\BotResponseItem.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="UserControls\UC_PlaylistItem.xaml.cs">
+      <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
@@ -617,6 +620,10 @@
     <Compile Include="Views\Window_Queue.xaml.cs">
       <DependentUpon>Window_Queue.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControls\UC_PlaylistItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

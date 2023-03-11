@@ -195,6 +195,14 @@ namespace Songify_Slim
                     if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
                     bitmap.EndInit();
                     ImgSpotifyProfile.ImageSource = bitmap;
+                    cb_SpotifyPlaylist.Items.Clear();
+                    Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
+                    foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                    {
+                        cb_SpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UC_PlaylistItem(playlist) });
+                    }
+                    cb_SpotifyPlaylist.SelectedItem = cb_SpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UC_PlaylistItem)item.Content)._playlist != null && ((UC_PlaylistItem)item.Content)._playlist.Id == Settings.SpotifyPlaylistId);
+
                 }
                 catch (Exception ex)
                 {
@@ -569,6 +577,13 @@ namespace Songify_Slim
         private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
             //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
+            Settings.BotCmdSongTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSong.Text) ? "song" : TextBoxTriggerSong.Text;
+            Settings.BotCmdPosTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerPos.Text) ? "pos" : TextBoxTriggerPos.Text;
+            Settings.BotCmdNextTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerNext.Text) ? "next" : TextBoxTriggerNext.Text;
+            Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSkip.Text) ? "skip" : TextBoxTriggerSkip.Text;
+            Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerVoteskip.Text) ? "voteskip" : TextBoxTriggerVoteskip.Text;
+            Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSsr.Text) ? "ssr" : TextBoxTriggerSsr.Text;
+            
             ConfigHandler.WriteAllConfig(Settings.Export());
             if (_appIdInitialValue == Settings.UseOwnApp) return;
             e.Cancel = true;
@@ -1138,16 +1153,6 @@ namespace Songify_Slim
         {
             Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
         }
-        private void MetroWindow_Closed(object sender, EventArgs e)
-        {
-            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-            Settings.BotCmdSongTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSong.Text) ? "song" : TextBoxTriggerSong.Text;
-            Settings.BotCmdPosTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerPos.Text) ? "pos" : TextBoxTriggerPos.Text;
-            Settings.BotCmdNextTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerNext.Text) ? "next" : TextBoxTriggerNext.Text;
-            Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSkip.Text) ? "skip" : TextBoxTriggerSkip.Text;
-            Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerVoteskip.Text) ? "voteskip" : TextBoxTriggerVoteskip.Text;
-            Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSsr.Text) ? "ssr" : TextBoxTriggerSsr.Text;
-        }
 
         private void tgl_botcmd_skipvote_Toggled(object sender, RoutedEventArgs e)
         {
@@ -1207,6 +1212,16 @@ namespace Songify_Slim
         private void Tgl_botcmd_ssr_OnToggled_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.TwSrCommand = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            UC_PlaylistItem item = ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content as UC_PlaylistItem);
+            if (item == null)
+                return;
+            Settings.SpotifyPlaylistId = item._playlist.Id;
         }
     }
 }

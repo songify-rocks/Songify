@@ -255,6 +255,7 @@ namespace Songify_Slim
                                 RewardGoalSong = "",
                                 RewardGoalAmount = 0,
                                 SongBlacklist = new List<TrackItem>(),
+                                SpotifyPlaylistId = "",
                             };
                         }
                         break;
@@ -658,6 +659,7 @@ namespace Songify_Slim
         public string RewardGoalSong { get; set; } = "";
         public int RewardGoalAmount { get; set; } = 0;
         public List<TrackItem> SongBlacklist { get; set; } = new List<TrackItem>();
+        public string SpotifyPlaylistId { get; set; } = "";
     }
 
     public class Config
