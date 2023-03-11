@@ -5,7 +5,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     /// <summary>
     ///     Queue Window to display the current song queue

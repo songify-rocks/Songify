@@ -9,6 +9,7 @@ using System.Windows.Automation;
 using Newtonsoft.Json;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
+using Songify_Slim.Views;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify

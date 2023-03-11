@@ -15,6 +15,8 @@ using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Views;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api;
@@ -35,7 +37,6 @@ using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
-using VonRiddarn.Twitch.ImplicitOAuth;
 using Unosquare.Swan.Formatters;
 using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Application;
@@ -706,8 +707,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Disconnected from Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = true;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = false;
-                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
-                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
                     ((MainWindow)window).IconTwitchBot.Foreground = Brushes.IndianRed;
                     ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
 
@@ -737,8 +738,8 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).LblStatus.Content = "Connected to Twitch";
                     ((MainWindow)window).mi_TwitchConnect.IsEnabled = false;
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
-                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
-                    ((MainWindow)window).notifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
+                    ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
                     ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                     ((MainWindow)window).IconTwitchBot.Foreground = Brushes.GreenYellow;
 
@@ -1710,7 +1711,7 @@ namespace Songify_Slim.Util.Songify
                 foreach (Window window in Application.Current.Windows)
                     if (window.GetType() == typeof(MainWindow))
                     {
-                        currsong = $"{(window as MainWindow)?._artist} - {(window as MainWindow)?._title}";
+                        currsong = $"{(window as MainWindow)?.SongArtist} - {(window as MainWindow)?.SongTitle}";
                     }
             });
 

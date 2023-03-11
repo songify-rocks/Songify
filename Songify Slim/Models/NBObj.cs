@@ -1,4 +1,4 @@
-﻿namespace Songify_Slim
+﻿namespace Songify_Slim.Models
 {
     internal class NBObj
     {

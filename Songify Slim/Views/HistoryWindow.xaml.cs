@@ -11,7 +11,7 @@ using System.Xml.Linq;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     /// <summary>
     ///     Interaction logic for HistoryWindow.xaml

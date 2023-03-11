@@ -9,7 +9,7 @@ using System.Windows.Media;
 using MdXaml;
 using Octokit;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     /// <summary>
     /// Interaction logic for Window_Patchnotes.xaml

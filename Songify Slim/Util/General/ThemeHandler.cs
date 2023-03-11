@@ -1,23 +1,22 @@
 ﻿using System.Windows;
 using ControlzEx.Theming;
-using Songify_Slim.Util.Settings;
 
-namespace Songify_Slim
+namespace Songify_Slim.Util.General
 {
     internal class ThemeHandler
     {
         public static void ApplyTheme()
         {
-            if (string.IsNullOrEmpty(Settings.Theme))
-                Settings.Theme = "Light";
-            if (string.IsNullOrEmpty(Settings.Color))
-                Settings.Color = "Blue";
-            if (string.IsNullOrEmpty(Settings.Color))
-                Settings.Color = Settings.Theme + "." + Settings.Color;
+            if (string.IsNullOrEmpty(Settings.Settings.Theme))
+                Settings.Settings.Theme = "Light";
+            if (string.IsNullOrEmpty(Settings.Settings.Color))
+                Settings.Settings.Color = "Blue";
+            if (string.IsNullOrEmpty(Settings.Settings.Color))
+                Settings.Settings.Color = Settings.Settings.Theme + "." + Settings.Settings.Color;
 
             //changes the theme
-            string theme = Settings.Theme.Replace("Base", "");
-            string color = Settings.Color;
+            string theme = Settings.Settings.Theme.Replace("Base", "");
+            string color = Settings.Settings.Color;
             string themeName = theme + "." + color;
             ThemeManager.Current.ChangeTheme(Application.Current, themeName);
         }

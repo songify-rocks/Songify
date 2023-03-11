@@ -2,7 +2,7 @@
 using System.Windows;
 using MahApps.Metro.Controls;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     /// <summary>
     ///     Interaktionslogik für AboutWindow.xaml

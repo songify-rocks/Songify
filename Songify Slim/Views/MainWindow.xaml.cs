@@ -42,17 +42,16 @@ namespace Songify_Slim.Views
     public partial class MainWindow
     {
         #region Variables
-        private FileSystemWatcher _watcher;
-        private Window_Console secondaryWindow;
-        bool updated;
-        public NotifyIcon notifyIcon = new NotifyIcon();
-        public string _artist, _title;
+
+        private Window_Console _consoleWindow;
+        public NotifyIcon NotifyIcon = new NotifyIcon();
+        public string SongArtist, SongTitle;
         public string CurrSong, CurrSongTwitch;
         private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private bool _firstRun = true;
         private bool _forceClose;
-        private string _prevId, _currentId;
+        private string _currentId;
         private string _prevSong;
         private CancellationTokenSource _sCts;
         private string _selectedSource;
@@ -60,7 +59,7 @@ namespace Songify_Slim.Views
         private string _temp = "";
         private Timer _timerFetcher = new Timer();
         private readonly WebClient _webClient = new WebClient();
-        public SongFetcher sf = new SongFetcher();
+        public SongFetcher Sf = new SongFetcher();
         #endregion Variables
 
         public MainWindow()
@@ -131,11 +130,6 @@ namespace Songify_Slim.Views
                     currSong += " ";
 
             return currSong;
-        }
-
-        private static void Crash()
-        {
-            throw new NotImplementedException();
         }
 
         private static bool IsWindowOpen<T>(string name = "") where T : Window
@@ -299,7 +293,7 @@ namespace Songify_Slim.Views
 
         private async void FetchSpotifyWeb()
         {
-            TrackInfo info = sf.FetchSpotifyWeb();
+            TrackInfo info = Sf.FetchSpotifyWeb();
             if (info == null) return;
 
             if (!info.isPlaying)
@@ -350,7 +344,7 @@ namespace Songify_Slim.Views
 
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    songInfo = await sf.FetchDesktopPlayer("Spotify");
+                    songInfo = await Sf.FetchDesktopPlayer("Spotify");
                     if (songInfo != null)
                         WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
@@ -364,7 +358,7 @@ namespace Songify_Slim.Views
 
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
-                    _temp = sf.FetchBrowser("YouTube");
+                    _temp = Sf.FetchBrowser("YouTube");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, true);
@@ -393,7 +387,7 @@ namespace Songify_Slim.Views
 
                     #region VLC
 
-                    songInfo = await sf.FetchDesktopPlayer("vlc");
+                    songInfo = await Sf.FetchDesktopPlayer("vlc");
                     if (songInfo != null)
                         WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
                     break;
@@ -404,7 +398,7 @@ namespace Songify_Slim.Views
 
                     #region foobar2000
 
-                    songInfo = await sf.FetchDesktopPlayer("foobar2000");
+                    songInfo = await Sf.FetchDesktopPlayer("foobar2000");
                     if (songInfo != null)
                         WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
@@ -416,7 +410,7 @@ namespace Songify_Slim.Views
 
                     #region Deezer
 
-                    _temp = sf.FetchBrowser("Deezer");
+                    _temp = Sf.FetchBrowser("Deezer");
                     if (string.IsNullOrWhiteSpace(_temp))
                     {
                         if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
@@ -451,9 +445,9 @@ namespace Songify_Slim.Views
             // If Systray is enabled [X] minimizes to systray
             if (!Settings.Systray)
             {
-                notifyIcon.Visible = false;
-                notifyIcon?.Dispose();
-                notifyIcon = null;
+                NotifyIcon.Visible = false;
+                NotifyIcon?.Dispose();
+                NotifyIcon = null;
                 e.Cancel = false;
             }
             else
@@ -531,10 +525,10 @@ namespace Songify_Slim.Views
                 })
                 });
 
-            notifyIcon.Icon = Properties.Resources.songify;
-            notifyIcon.ContextMenu = _contextMenu;
-            notifyIcon.Visible = true;
-            notifyIcon.DoubleClick += (sender1, args1) =>
+            NotifyIcon.Icon = Properties.Resources.songify;
+            NotifyIcon.ContextMenu = _contextMenu;
+            NotifyIcon.Visible = true;
+            NotifyIcon.DoubleClick += (sender1, args1) =>
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
@@ -542,7 +536,7 @@ namespace Songify_Slim.Views
                     WindowState = WindowState.Normal;
                 }));
             };
-            notifyIcon.Text = @"Songify";
+            NotifyIcon.Text = @"Songify";
 
             // set the current theme
             ThemeHandler.ApplyTheme();
@@ -697,7 +691,7 @@ namespace Songify_Slim.Views
         {
             // if the setting is set, hide window
             Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(Hide));
-            notifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
+            NotifyIcon.ShowBalloonTip(5000, @"Songify", @"Songify is running in the background", ToolTipIcon.Info);
         }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
@@ -742,21 +736,21 @@ namespace Songify_Slim.Views
         {
             if (IsWindowOpen<Window_Patchnotes>())
             {
-                Window_Patchnotes wPN = Application.Current.Windows.OfType<Window_Patchnotes>().First();
-                wPN.Focus();
-                wPN.Activate();
+                Window_Patchnotes wPn = Application.Current.Windows.OfType<Window_Patchnotes>().First();
+                wPn.Focus();
+                wPn.Activate();
             }
             else
             {
-                Window_Patchnotes wPN = new Window_Patchnotes
+                Window_Patchnotes wPn = new Window_Patchnotes
                 {
                     Owner = (Application.Current.MainWindow),
                 };
-                wPN.Show();
-                wPN.Activate();
+                wPn.Show();
+                wPn.Activate();
             }
         }
-        
+
         private void SetFetchTimer()
         {
             _ = GetCurrentSongAsync();
@@ -816,10 +810,10 @@ namespace Songify_Slim.Views
 
         private void MetroWindow_LocationChanged(object sender, EventArgs e)
         {
-            if (secondaryWindow == null) return;
+            if (_consoleWindow == null) return;
             if (GlobalObjects.DetachConsole) return;
-            secondaryWindow.Left = Left + Width;
-            secondaryWindow.Top = Top;
+            _consoleWindow.Left = Left + Width;
+            _consoleWindow.Top = Top;
         }
 
         private void MetroWindow_GotFocus(object sender, RoutedEventArgs e)
@@ -869,38 +863,41 @@ namespace Songify_Slim.Views
             }
 
             img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new Action(async () =>
-                {
-                    const int numberOfRetries = 5;
-                    const int delayOnRetry = 1000;
+                new Action(SetCoverImage));
+        }
 
-                    for (int i = 1; i < numberOfRetries; i++)
-                        try
-                        {
-                            try
-                            {
-                                BitmapImage image = new BitmapImage();
-                                image.BeginInit();
-                                image.CacheOption = BitmapCacheOption.OnLoad;
-                                image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                                image.UriSource = new Uri(_coverPath);
-                                image.EndInit();
-                                img_cover.Source = image;
-                            }
-                            catch (Exception)
-                            {
-                                //Debug.WriteLine(ex);
-                                await Task.Delay(1000);
-                                continue;
-                            }
-                            Logger.LogStr("COVER: Set succesfully");
-                            break;
-                        }
-                        catch (Exception) when (i <= numberOfRetries)
-                        {
-                            Thread.Sleep(delayOnRetry);
-                        }
-                }));
+        private async void SetCoverImage()
+        {
+            const int numberOfRetries = 5;
+            const int delayOnRetry = 1000;
+
+            for (int i = 1; i < numberOfRetries; i++)
+                try
+                {
+                    try
+                    {
+                        BitmapImage image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                        image.UriSource = new Uri(_coverPath);
+                        image.EndInit();
+                        img_cover.Source = image;
+                    }
+                    catch (Exception)
+                    {
+                        //Debug.WriteLine(ex);
+                        await Task.Delay(1000);
+                        continue;
+                    }
+
+                    Logger.LogStr("COVER: Set succesfully");
+                    break;
+                }
+                catch (Exception) when (i <= numberOfRetries)
+                {
+                    Thread.Sleep(delayOnRetry);
+                }
         }
 
         private void WriteOutput(string songPath, string currSong)
@@ -1072,8 +1069,8 @@ namespace Songify_Slim.Views
             }
             // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
             CurrSong = CleanFormatString(CurrSong);
-            _title = rTitle;
-            _artist = rArtist;
+            SongTitle = rTitle;
+            SongArtist = rArtist;
 
             // read the text file
             if (!File.Exists(_songPath))
@@ -1219,8 +1216,6 @@ namespace Songify_Slim.Views
                 }
 
 
-                _prevId = _currentId;
-
                 //Save Album Cover
                 if (Settings.DownloadCover) DownloadCover(rCover);
 
@@ -1252,24 +1247,24 @@ namespace Songify_Slim.Views
 
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
         {
-            if (secondaryWindow == null)
-                secondaryWindow = new Window_Console
+            if (_consoleWindow == null)
+                _consoleWindow = new Window_Console
                 {
                     Left = Left + Width,
                     Top = Top,
                     Owner = this
                 };
-            if (!secondaryWindow.IsLoaded)
-                secondaryWindow = new Window_Console
+            if (!_consoleWindow.IsLoaded)
+                _consoleWindow = new Window_Console
                 {
                     Left = Left + Width,
                     Top = Top,
                     Owner = this
                 };
-            if (secondaryWindow.IsVisible)
-                secondaryWindow.Hide();
+            if (_consoleWindow.IsVisible)
+                _consoleWindow.Hide();
             else
-                secondaryWindow.Show();
+                _consoleWindow.Show();
         }
 
         private async void Mi_TwitchCheckOnlineStatus_OnClick(object sender, RoutedEventArgs e)

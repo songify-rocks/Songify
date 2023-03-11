@@ -22,10 +22,9 @@ using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
-using Songify_Slim.Views;
+using Songify_Slim.Util.Songify.TwitchOAuth;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
-using VonRiddarn.Twitch.ImplicitOAuth;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -36,7 +35,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings

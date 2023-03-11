@@ -1,10 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using Songify_Slim;
-using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.General;
 
-namespace VonRiddarn.Twitch.ImplicitOAuth
+namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
     public static class ApplicationDetails
     {
@@ -17,11 +16,11 @@ namespace VonRiddarn.Twitch.ImplicitOAuth
 
         // The URI you entered when registering your application in the twitch console.
         // Default is fine.
-        public static string redirectUri = $"http://localhost:{Settings.TwitchRedirectPort}/";
+        public static string redirectUri = $"http://localhost:{Settings.Settings.TwitchRedirectPort}/";
 
         // Any URI you want to fetch results on.
         // Default is fine.
-        public static string fetchUri = $"http://localhost:{Settings.TwitchFetchPort}/";
+        public static string fetchUri = $"http://localhost:{Settings.Settings.TwitchFetchPort}/";
 
         private static int GetFetchPort()
         {

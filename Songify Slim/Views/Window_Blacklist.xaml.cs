@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Configuration;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +10,7 @@ using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using SpotifyAPI.Web.Models;
 
-namespace Songify_Slim
+namespace Songify_Slim.Views
 {
     /// <summary>
     ///     This window dispalys and manages the blacklist
@@ -19,11 +18,6 @@ namespace Songify_Slim
     // ReSharper disable once InconsistentNaming
     public partial class Window_Blacklist
     {
-        public static string[] Blacklist;
-        public static string[] UserBlacklist;
-
-        public string Splitter = "|||";
-
         public Window_Blacklist()
         {
             InitializeComponent();
@@ -130,7 +124,7 @@ namespace Songify_Slim
                     break;
                 case 2: // Song Blacklist
                     List<FullTrack> tracks = new List<FullTrack>();
-                    string trackId = "";
+                    string trackId;
                     if (ApiHandler.Spotify == null)
                     {
                         await this.ShowMessageAsync("Notification",
@@ -178,7 +172,6 @@ namespace Songify_Slim
         private void SaveBlacklist()
         {
             //Artist Blacklist
-            string s = "";
             List<string> tempList = new List<string>();
             if (ListView_Blacklist.Items.Count > 0)
             {

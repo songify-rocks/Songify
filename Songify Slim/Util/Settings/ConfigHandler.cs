@@ -6,15 +6,15 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
-using SpotifyAPI.Web.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static System.Convert;
 using Application = System.Windows.Application;
-using Settings = Songify_Slim.Util.Settings.Settings;
 
-namespace Songify_Slim
+namespace Songify_Slim.Util.Settings
 {
     /// <summary>
     ///     This class is for writing, exporting and importing the config file

@@ -1,5 +1,6 @@
 ﻿using SpotifyAPI.Web.Models;
 using System.Collections.Generic;
+using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings

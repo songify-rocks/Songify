@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
 
-namespace VonRiddarn.Twitch.ImplicitOAuth
+namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
     public class ImplicitOAuth
     {

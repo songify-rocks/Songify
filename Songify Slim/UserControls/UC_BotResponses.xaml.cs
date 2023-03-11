@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
+using Songify_Slim.Views;
 
 namespace Songify_Slim.UserControls
 {

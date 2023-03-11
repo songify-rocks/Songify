@@ -10,7 +10,7 @@
 
 using System.Collections.Generic;
 
-namespace VonRiddarn.Twitch.ImplicitOAuth
+namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
     public static class Scopes
     {

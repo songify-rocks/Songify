@@ -69,9 +69,13 @@ namespace Songify_Slim.Util.Songify
                         AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken
                     };
                     Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
-                    (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
-                        Brushes.GreenYellow;
-                    (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    if (Application.Current.MainWindow != null)
+                    {
+                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
+                            Brushes.GreenYellow;
+                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
+                            PackIconBootstrapIconsKind.CheckCircleFill;
+                    }
                 }
                 else
                 {
@@ -109,9 +113,12 @@ namespace Songify_Slim.Util.Songify
                                     if (window.GetType() == typeof(Window_Settings))
                                         ((Window_Settings)window).SetControls();
                                 }
-                                (Application.Current.MainWindow as MainWindow).IconWebSpotify.Foreground =
+
+                                if (Application.Current.MainWindow == null) return;
+                                ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                                     Brushes.GreenYellow;
-                                (Application.Current.MainWindow as MainWindow).IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                                ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
+                                    PackIconBootstrapIconsKind.CheckCircleFill;
                             }));
 
                     }
@@ -266,6 +273,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
                 return null;
             }
 
@@ -281,14 +289,9 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
                 return null;
             }
-        }
-
-        public static bool GetPlaybackState()
-        {
-            // Returns a bool wether the playbackstate is playing or not (used for custom pause text)
-            return Spotify.GetPlayback().IsPlaying;
         }
 
         public static async Task<ErrorResponse> SkipSong()
@@ -300,13 +303,9 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
                 return null;
             }
-        }
-
-        public static void PlaySong(string trackId)
-        {
-            Spotify.ResumePlayback(Settings.Settings.SpotifyDeviceId, Spotify.GetTrack(trackId).Album.Uri, null, (int?)null);
         }
     }
 }
