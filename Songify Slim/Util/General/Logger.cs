@@ -69,7 +69,7 @@ namespace Songify_Slim.Util.General
                     if (GlobalObjects.ConsoleDocument.Blocks.Count > 0)
                     {
                         Paragraph lastParagraph = (Paragraph)GlobalObjects.ConsoleDocument.Blocks.LastBlock;
-                        if (lastParagraph.Inlines.Count > 0)
+                        if (lastParagraph != null && lastParagraph.Inlines.Count > 0)
                         {
                             Run lastRun = (Run)lastParagraph.Inlines.LastInline;
                             if (lastRun.Text.Contains(s))
@@ -77,7 +77,6 @@ namespace Songify_Slim.Util.General
                                 if (!int.TryParse(Regex.Match(lastRun.Text, @"\(([^)]*)\)").Groups[1].Value,
                                         out int tries))
                                 {
-                                    tries = 1;
                                     return;
                                 }
 

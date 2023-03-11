@@ -43,7 +43,7 @@ namespace Songify_Slim.Views
     {
         #region Variables
 
-        private Window_Console _consoleWindow;
+        private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public string SongArtist, SongTitle;
         public string CurrSong, CurrSongTwitch;
@@ -145,7 +145,7 @@ namespace Songify_Slim.Views
             string[] sourceBoxItems =
             {
                 PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.VLC, PlayerType.Youtube
+                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Vlc, PlayerType.Youtube
             };
             cbx_Source.ItemsSource = sourceBoxItems;
         }
@@ -165,7 +165,7 @@ namespace Songify_Slim.Views
 
         private void BtnFAQ_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start($"{GlobalObjects._baseUrl}/faq.html");
+            Process.Start($"{GlobalObjects.BaseUrl}/faq.html");
         }
 
         private void BtnGitHub_Click(object sender, RoutedEventArgs e)
@@ -189,7 +189,7 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Tag.ToString().Contains("Browser"))
             {
-                Process.Start($"{GlobalObjects._baseUrl}/history.php?id=" + Settings.Uuid);
+                Process.Start($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
             }
         }
 
@@ -296,7 +296,7 @@ namespace Songify_Slim.Views
             TrackInfo info = Sf.FetchSpotifyWeb();
             if (info == null) return;
 
-            if (!info.isPlaying)
+            if (!info.IsPlaying)
             {
                 if (Settings.CustomPauseTextEnabled)
                     WriteSong("", "", "");
@@ -305,14 +305,14 @@ namespace Songify_Slim.Views
 
             string albumUrl = null;
 
-            if (info.albums.Count != 0) albumUrl = info.albums[0].Url;
-            if (GlobalObjects.SkipList.Find(o => o.trackid == info.SongID) != null)
+            if (info.Albums.Count != 0) albumUrl = info.Albums[0].Url;
+            if (GlobalObjects.SkipList.Find(o => o.Trackid == info.SongId) != null)
             {
-                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.trackid == info.SongID));
+                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.Trackid == info.SongId));
                 await ApiHandler.SkipSong();
             }
 
-            WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongID, info.url);
+            WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongId, info.Url);
         }
 
         private void FetchTimer(int ms)
@@ -383,7 +383,7 @@ namespace Songify_Slim.Views
                 #endregion YouTube
 
 
-                case PlayerType.VLC:
+                case PlayerType.Vlc:
 
                     #region VLC
 
@@ -493,7 +493,7 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey
                 };
-                WebHelper.QueueRequest(WebHelper.RequestMethod.CLEAR, Json.Serialize(payload));
+                WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
                 //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             }
 
@@ -560,8 +560,8 @@ namespace Songify_Slim.Views
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             AutoUpdater.ReportErrors = false;
             AutoUpdater.Start(Settings.BetaUpdates
-                ? $"{GlobalObjects._baseUrl}/update-beta.xml"
-                : $"{GlobalObjects._baseUrl}/update.xml");
+                ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
+                : $"{GlobalObjects.BaseUrl}/update.xml");
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Player;
@@ -657,7 +657,7 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Header.ToString().Contains("Browser"))
             {
-                Process.Start($"{GlobalObjects._baseUrl}/queue.php?id=" + Settings.Uuid);
+                Process.Start($"{GlobalObjects.BaseUrl}/queue.php?id=" + Settings.Uuid);
             }
         }
 
@@ -677,13 +677,13 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey
                 };
-                WebHelper.QueueRequest(WebHelper.RequestMethod.CLEAR, Json.Serialize(payload));
+                WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
             }
         }
 
         private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
         {
-            Window_Botresponse wBr = new Window_Botresponse();
+            WindowBotresponse wBr = new WindowBotresponse();
             wBr.Show();
         }
 
@@ -721,8 +721,8 @@ namespace Songify_Slim.Views
 
         private void OpenQueue()
         {
-            if (IsWindowOpen<Window_Queue>()) return;
-            Window_Queue wQ = new Window_Queue { Top = Top, Left = Left };
+            if (IsWindowOpen<WindowQueue>()) return;
+            WindowQueue wQ = new WindowQueue { Top = Top, Left = Left };
             wQ.Show();
         }
 
@@ -734,15 +734,15 @@ namespace Songify_Slim.Views
 
         private static void OpenPatchNotes()
         {
-            if (IsWindowOpen<Window_Patchnotes>())
+            if (IsWindowOpen<WindowPatchnotes>())
             {
-                Window_Patchnotes wPn = Application.Current.Windows.OfType<Window_Patchnotes>().First();
+                WindowPatchnotes wPn = Application.Current.Windows.OfType<WindowPatchnotes>().First();
                 wPn.Focus();
                 wPn.Activate();
             }
             else
             {
-                Window_Patchnotes wPn = new Window_Patchnotes
+                WindowPatchnotes wPn = new WindowPatchnotes
                 {
                     Owner = (Application.Current.MainWindow),
                 };
@@ -758,7 +758,7 @@ namespace Songify_Slim.Views
             switch (_selectedSource)
             {
                 case PlayerType.SpotifyLegacy:
-                case PlayerType.VLC:
+                case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
                     FetchTimer(1000);
                     break;
@@ -983,17 +983,17 @@ namespace Songify_Slim.Views
 
                 if (GlobalObjects.ReqList.Count > 0)
                 {
-                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.trackid == _currentId);
+                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.Trackid == _currentId);
                     if (rq != null)
                     {
                         CurrSong = CurrSong.Replace("{{", "");
                         CurrSong = CurrSong.Replace("}}", "");
-                        CurrSong = CurrSong.Replace("{req}", rq.requester);
+                        CurrSong = CurrSong.Replace("{req}", rq.Requester);
 
                         CurrSongTwitch = CurrSongTwitch.Replace("{{", "");
                         CurrSongTwitch = CurrSongTwitch.Replace("}}", "");
-                        CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.requester);
-                        GlobalObjects.Requester = rq.requester;
+                        CurrSongTwitch = CurrSongTwitch.Replace("{req}", rq.Requester);
+                        GlobalObjects.Requester = rq.Requester;
 
                     }
                     else
@@ -1248,14 +1248,14 @@ namespace Songify_Slim.Views
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
         {
             if (_consoleWindow == null)
-                _consoleWindow = new Window_Console
+                _consoleWindow = new WindowConsole
                 {
                     Left = Left + Width,
                     Top = Top,
                     Owner = this
                 };
             if (!_consoleWindow.IsLoaded)
-                _consoleWindow = new Window_Console
+                _consoleWindow = new WindowConsole
                 {
                     Left = Left + Width,
                     Top = Top,

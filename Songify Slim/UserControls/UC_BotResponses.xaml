@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Songify_Slim.UserControls.UC_BotResponses"
+﻿<UserControl x:Class="Songify_Slim.UserControls.UcBotResponses"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,8 +16,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="check_ArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
-                    <ComboBox x:Name="cb_ArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
+                    <CheckBox x:Name="CheckArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
+                    <ComboBox x:Name="CbArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
                         <ComboBoxItem Content="Orange"/>
                         <ComboBoxItem Content="Blue"/>
                         <ComboBoxItem Content="Purple"/>
@@ -25,7 +25,7 @@
                         <ComboBox.Style>
                             <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=check_ArtistBlocked, Path=IsChecked}" Value="False">
+                                    <DataTrigger Binding="{Binding ElementName=CheckArtistBlocked, Path=IsChecked}" Value="False">
                                         <Setter Property="SelectedIndex" Value="0"></Setter>
                                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                                     </DataTrigger>
@@ -33,7 +33,7 @@
                             </Style>
                         </ComboBox.Style>
                     </ComboBox>
-                    <TextBox Grid.Column="2" x:Name="tb_ArtistBlocked" VerticalAlignment="Center"
+                    <TextBox Grid.Column="2" x:Name="TbArtistBlocked" VerticalAlignment="Center"
                              TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
                              GotFocus="tb__GotFocus" Height="23" />
                 </Grid>
@@ -47,8 +47,8 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="check_SongInQueue" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Visibility="Collapsed"/>
-                    <ComboBox x:Name="cb_SongInQueue" SelectionChanged="Cb_SongInQueue_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
+                    <CheckBox x:Name="CheckSongInQueue" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Visibility="Collapsed"/>
+                    <ComboBox x:Name="CbSongInQueue" SelectionChanged="Cb_SongInQueue_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
                         <ComboBoxItem Content="Orange"/>
                         <ComboBoxItem Content="Blue"/>
                         <ComboBoxItem Content="Purple"/>
@@ -56,7 +56,7 @@
                         <ComboBox.Style>
                             <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=check_SongInQueue, Path=IsChecked}" Value="False">
+                                    <DataTrigger Binding="{Binding ElementName=CheckSongInQueue, Path=IsChecked}" Value="False">
                                         <Setter Property="Visibility" Value="Collapsed"></Setter>
                                         <Setter Property="SelectedIndex" Value="0"></Setter>
                                     </DataTrigger>
@@ -64,7 +64,7 @@
                             </Style>
                         </ComboBox.Style>
                     </ComboBox>
-                    <TextBox Grid.Column="2" x:Name="tb_SongInQueue" Height="23" VerticalAlignment="Top"
+                    <TextBox Grid.Column="2" x:Name="TbSongInQueue" Height="23" VerticalAlignment="Top"
                              TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
                              GotFocus="tb__GotFocus" />
                 </Grid>
@@ -72,68 +72,68 @@
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_MaxSongs}" HorizontalAlignment="Left"
                VerticalAlignment="Top" Padding="0,10,5,0" FontSize="10"/>
-                <TextBox x:Name="tb_MaxSongs" Height="23" VerticalAlignment="Top" 
+                <TextBox x:Name="TbMaxSongs" Height="23" VerticalAlignment="Top" 
                  TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_SongTooLong}" HorizontalAlignment="Left"
                VerticalAlignment="Top" FontSize="10"  Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_MaxLength" Height="23" VerticalAlignment="Top" 
+                <TextBox x:Name="TbMaxLength" Height="23" VerticalAlignment="Top" 
                  TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
                  GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_FetchError}" HorizontalAlignment="Left"
                VerticalAlignment="Top"  FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Error" Height="23" VerticalAlignment="Top" 
+                <TextBox x:Name="TbError" Height="23" VerticalAlignment="Top" 
                  TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_Success}" HorizontalAlignment="Left" VerticalAlignment="Top"
                FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Success" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbSuccess" Height="23" VerticalAlignment="Top"
                  TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel Orientation="Vertical">
                 <Label Content="{x:Static properties:Resources.brw_NoSong}" HorizontalAlignment="Left" VerticalAlignment="Top"
               FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_NoSong" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbNoSong" Height="23" VerticalAlignment="Top"
                  TextChanged="tb_NoSong_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_ModSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_ModSkip" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbModSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_VoteSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_VoteSkip" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbVoteSkip" Height="23" VerticalAlignment="Top"
                          TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Refund}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Refund" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbRefund" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Refund_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Song}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Song" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbSong" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Song_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Pos}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Pos" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbPos" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Pos_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
             <StackPanel>
                 <Label Content="{x:Static properties:Resources.brw_Next}" HorizontalAlignment="Left" VerticalAlignment="Top"
                        FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="tb_Next" Height="23" VerticalAlignment="Top"
+                <TextBox x:Name="TbNext" Height="23" VerticalAlignment="Top"
                          TextChanged="Tb_Next_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
             </StackPanel>
         </StackPanel>

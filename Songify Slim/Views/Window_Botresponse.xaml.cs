@@ -10,21 +10,21 @@ namespace Songify_Slim.Views
     /// <summary>
     ///     Interaktionslogik für Window_Botresponse.xaml
     /// </summary>
-    public partial class Window_Botresponse
+    public partial class WindowBotresponse
     {
-        public Window_Botresponse()
+        public WindowBotresponse()
         {
             InitializeComponent();
         }
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //Cctrl.Content = new UC_BotResponses();
-            tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
-            tgl_botcmd_song.IsOn = Settings.BotCmdSong;
-            tgl_botcmd_next.IsOn = Settings.BotCmdNext;
-            tgl_botcmd_skip.IsOn = Settings.BotCmdSkip;
-            tgl_botcmd_skipvote.IsOn = Settings.BotCmdSkipVote;
-            tgl_botcmd_ssr.IsOn = Settings.TwSrCommand;
+            TglBotcmdPos.IsOn = Settings.BotCmdPos;
+            TglBotcmdSong.IsOn = Settings.BotCmdSong;
+            TglBotcmdNext.IsOn = Settings.BotCmdNext;
+            TglBotcmdSkip.IsOn = Settings.BotCmdSkip;
+            TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
+            TglBotcmdSsr.IsOn = Settings.TwSrCommand;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
@@ -70,7 +70,9 @@ namespace Songify_Slim.Views
 
         private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            Settings.BotCmdSkipVoteCount = (int)((NumericUpDown)sender).Value;
+            double? value = ((NumericUpDown)sender).Value;
+            if (value != null)
+                Settings.BotCmdSkipVoteCount = (int)value;
         }
 
         private void TextBoxTrigger_TextChanged(object sender, TextChangedEventArgs e)

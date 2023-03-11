@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Songify_Slim.UserControls.UC_RewardItem"
+﻿<UserControl x:Class="Songify_Slim.UserControls.UcRewardItem"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"

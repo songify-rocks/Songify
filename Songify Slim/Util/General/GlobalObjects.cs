@@ -13,12 +13,12 @@ namespace Songify_Slim.Util.General
     public static class GlobalObjects
     {
         public static bool IsBeta = true;
-        public const string _baseUrl = "https://songify.overcode.tv";
-        public const string _apiUrl = "https://songify.overcode.tv/api/v1";
+        public const string BaseUrl = "https://songify.overcode.tv";
+        public const string ApiUrl = "https://songify.overcode.tv/api/v1";
         public static WebServer WebServer = new WebServer();
         public static List<RequestObject> ReqList = new List<RequestObject>();
         public static List<RequestObject> SkipList = new List<RequestObject>();
-        public static string APIResponse;
+        public static string ApiResponse;
         public static FlowDocument ConsoleDocument = new FlowDocument();
 
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H")

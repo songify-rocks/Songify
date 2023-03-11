@@ -242,7 +242,7 @@ namespace Songify_Slim.Views
 
         private void Btn_CpyHistoryURL_Click(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetDataObject($"{GlobalObjects._baseUrl}/history.php?id=" + Settings.Uuid);
+            Clipboard.SetDataObject($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
             Lbl_Status.Content = "History URL copied to Clipboard";
         }
 

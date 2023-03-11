@@ -38,7 +38,6 @@ using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using Unosquare.Swan.Formatters;
-using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.Songify
@@ -883,7 +882,7 @@ namespace Songify_Slim.Util.Songify
                     int? reqListCount = GlobalObjects.ReqList.Count;
                     count = (int)reqListCount;
                     if (count > 0)
-                        name = GlobalObjects.ReqList.First().requester;
+                        name = GlobalObjects.ReqList.First().Requester;
                 });
 
                 if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
@@ -1101,12 +1100,12 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
-                        o.requester == e.ChatMessage.DisplayName);
+                        o.Requester == e.ChatMessage.DisplayName);
                     if (reqObj == null) return;
-                    string tmp = $"{reqObj.artist} - {reqObj.title}";
+                    string tmp = $"{reqObj.Artist} - {reqObj.Title}";
                     GlobalObjects.SkipList.Add(reqObj);
                     GlobalObjects.ReqList.Remove(reqObj);
-                    WebHelper.UpdateWebQueue(reqObj.trackid, "", "", "", "", "1", "u");
+                    WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
                     UpdateQueueWindow();
                     Client.SendMessage(e.ChatMessage.Channel,
                         $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
@@ -1117,7 +1116,7 @@ namespace Songify_Slim.Util.Songify
                 case "!songlike":
                 {
                     ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                        $"spotify:track:{GlobalObjects.CurrentSong.SongID}"); 
+                        $"spotify:track:{GlobalObjects.CurrentSong.SongId}"); 
                     if (x.HasError() == false)
                         Client.SendMessage(Settings.Settings.TwChannel, $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
                     break;
@@ -1204,7 +1203,7 @@ namespace Songify_Slim.Util.Songify
                 return "There is no song next up.";
             }
 
-            if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.ReqList[0].trackid == GlobalObjects.CurrentSong.SongID)
+            if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.ReqList[0].Trackid == GlobalObjects.CurrentSong.SongId)
             {
                 if (GlobalObjects.ReqList.Count <= 1)
                 {
@@ -1214,7 +1213,7 @@ namespace Songify_Slim.Util.Songify
                 index = 1;
             }
 
-            return $"{GlobalObjects.ReqList[index].artist} - {GlobalObjects.ReqList[index].title}";
+            return $"{GlobalObjects.ReqList[index].Artist} - {GlobalObjects.ReqList[index].Title}";
         }
 
         private static int CheckUserLevel(ChatMessage o)
@@ -1455,11 +1454,11 @@ namespace Songify_Slim.Util.Songify
                 Window qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(Window_Queue))
+                    if (window.GetType() == typeof(WindowQueue))
                         qw = window;
                 }
 
-                (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
+                (qw as WindowQueue)?.dgv_Queue.Items.Refresh();
             });
         }
 
@@ -1590,7 +1589,7 @@ namespace Songify_Slim.Util.Songify
                 Window qw = null;
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window.GetType() == typeof(Window_Queue))
+                    if (window.GetType() == typeof(WindowQueue))
                         qw = window;
                 }
 
@@ -1604,7 +1603,7 @@ namespace Songify_Slim.Util.Songify
                 //    length = FormattedTime(track.DurationMs)
                 //});
 
-                (qw as Window_Queue)?.dgv_Queue.Items.Refresh();
+                (qw as WindowQueue)?.dgv_Queue.Items.Refresh();
             });
 
             return new ReturnObject
@@ -1678,23 +1677,23 @@ namespace Songify_Slim.Util.Songify
                 key = Settings.Settings.AccessKey,
                 queueItem = new RequestObject
                 {
-                    trackid = track.Id,
-                    artist = artists,
-                    title = track.Name,
-                    length = length,
-                    requester = displayName,
-                    albumcover = track.Album.Images[0].Url
+                    Trackid = track.Id,
+                    Artist = artists,
+                    Title = track.Name,
+                    Length = length,
+                    Requester = displayName,
+                    Albumcover = track.Album.Images[0].Url
                 }
             };
 
-            WebHelper.QueueRequest(WebHelper.RequestMethod.POST, Json.Serialize(payload));
+            WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
             UpdateQueueWindow();
         }
 
         private static bool IsInQueue(string id)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.trackid == id);
+            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.Trackid == id);
 
             return temp.Count > 0;
         }
@@ -1717,18 +1716,18 @@ namespace Songify_Slim.Util.Songify
 
             if (requester != null)
             {
-                List<RequestObject> temp2 = temp.FindAll(x => x.requester == requester);
-                temp3.AddRange(from requestObject in temp2 let pos = temp.IndexOf(requestObject) + 1 select new QueueItem { Position = pos, Title = requestObject.artist + " - " + requestObject.title, Requester = requestObject.requester });
+                List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
+                temp3.AddRange(from requestObject in temp2 let pos = temp.IndexOf(requestObject) + 1 select new QueueItem { Position = pos, Title = requestObject.Artist + " - " + requestObject.Title, Requester = requestObject.Requester });
                 return temp3;
             }
 
             if (temp.Count <= 0) return null;
-            if (temp.Count == 1 && $"{temp[0].artist} - {temp[0].title}" != currsong)
+            if (temp.Count == 1 && $"{temp[0].Artist} - {temp[0].Title}" != currsong)
             {
                 temp3.Add(new QueueItem
                 {
-                    Title = $"{temp[0].artist} - {temp[0].title}",
-                    Requester = $"{temp[0].requester}"
+                    Title = $"{temp[0].Artist} - {temp[0].Title}",
+                    Requester = $"{temp[0].Requester}"
                 });
                 return temp3;
             }
@@ -1736,8 +1735,8 @@ namespace Songify_Slim.Util.Songify
             if (temp.Count <= 1) return null;
             temp3.Add(new QueueItem
             {
-                Title = $"{temp[1].artist} - {temp[1].title}",
-                Requester = $"{temp[1].requester}"
+                Title = $"{temp[1].Artist} - {temp[1].Title}",
+                Requester = $"{temp[1].Requester}"
             });
             return temp3;
         }
@@ -1746,7 +1745,7 @@ namespace Songify_Slim.Util.Songify
         {
             int maxreq;
             // Checks if the requester already reached max songrequests
-            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.requester == requester);
+            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.Requester == requester);
 
             switch ((TwitchUserLevels)userLevel)
             {

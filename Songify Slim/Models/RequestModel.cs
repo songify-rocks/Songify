@@ -6,22 +6,22 @@ namespace Songify_Slim.Models
     public class RequestObject
     {
         [JsonProperty("queueid")]
-        public int queueid { get; set; }
+        public int Queueid { get; set; }
         [JsonProperty("uuid")]
-        public string uuid { get; set; }
+        public string Uuid { get; set; }
         [JsonProperty("trackid")]
-        public string trackid { get; set; }
+        public string Trackid { get; set; }
         [JsonProperty("artist")]
-        public string artist { get; set; }
+        public string Artist { get; set; }
         [JsonProperty("title")]
-        public string title { get; set; }
+        public string Title { get; set; }
         [JsonProperty("length")]
-        public string length { get; set; }
+        public string Length { get; set; }
         [JsonProperty("requester")]
-        public string requester { get; set; }
+        public string Requester { get; set; }
         [JsonIgnore] // ignore this field during JSON deserialization
-        public int played { get; set; }
+        public int Played { get; set; }
         [JsonProperty("albumcover")]
-        public string albumcover { get; set; }
+        public string Albumcover { get; set; }
     }
 }

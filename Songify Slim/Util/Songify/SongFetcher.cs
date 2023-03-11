@@ -25,9 +25,9 @@ namespace Songify_Slim.Util.Songify
         private AutomationElement _parent;
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
-        private static TrackInfo songInfo;
-        private static bool trackChanged;
-        private static int fetchCount = 0;
+        private static TrackInfo _songInfo;
+        private static bool _trackChanged;
+        private static int _fetchCount;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -42,7 +42,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
-                    string artist = "", title = "", extra = "";
+                    string artist = "", title = "", extra;
 
                     switch (player)
                     {
@@ -300,7 +300,7 @@ namespace Songify_Slim.Util.Songify
 
         public TrackInfo FetchSpotifyWeb()
         {
-            fetchCount++;
+            _fetchCount++;
             // If the spotify object hast been created (successfully authed)
             if (ApiHandler.Spotify == null)
             {
@@ -308,55 +308,55 @@ namespace Songify_Slim.Util.Songify
             }
 
             // Get Queue Data from the server every fifth call
-            if (fetchCount == 5)
+            if (_fetchCount == 5)
             {
-                WebHelper.QueueRequest(WebHelper.RequestMethod.GET);
-                fetchCount = 0;
+                WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
+                _fetchCount = 0;
             }
             // gets the current playing songinfo*
-            songInfo = ApiHandler.GetSongInfo();
+            _songInfo = ApiHandler.GetSongInfo();
             try
             {
-                if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongID != songInfo.SongID && songInfo.SongID != null)
+                if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null)
                 {
-                    trackChanged = true;
+                    _trackChanged = true;
                     if (GlobalObjects.CurrentSong != null)
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    if (songInfo.SongID != null)
-                        Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
+                    if (_songInfo.SongId != null)
+                        Logger.LogStr($"CORE: Now Playing {_songInfo.Artists} - {_songInfo.Title}");
                     RequestObject rq =
-                        GlobalObjects.ReqList.Find(o => o.trackid == GlobalObjects.CurrentSong.SongID);
+                        GlobalObjects.ReqList.Find(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     if (rq != null)
                     {
-                        Logger.LogStr($"CORE: Removed {rq.artist} - {rq.title} requested by {rq.requester} from the queue.");
+                        Logger.LogStr($"CORE: Removed {rq.Artist} - {rq.Title} requested by {rq.Requester} from the queue.");
                         GlobalObjects.ReqList.Remove(rq);
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             foreach (Window window in Application.Current.Windows)
                                             {
-                                                if (window.GetType() != typeof(Window_Queue))
+                                                if (window.GetType() != typeof(WindowQueue))
                                                     continue;
                                                 //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                                                (window as Window_Queue)?.dgv_Queue.Items.Refresh();
+                                                (window as WindowQueue)?.dgv_Queue.Items.Refresh();
                                             }
                                         });
                     }
                 }
-                if (songInfo.SongID != null)
-                    GlobalObjects.CurrentSong = songInfo;
-                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongID == GlobalObjects.ReqList.First().trackid && trackChanged)
+                if (_songInfo.SongId != null)
+                    GlobalObjects.CurrentSong = _songInfo;
+                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongId == GlobalObjects.ReqList.First().Trackid && _trackChanged)
                 {
                     //WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
                     dynamic payload = new
                     {
                         uuid = Settings.Settings.Uuid,
                         key = Settings.Settings.AccessKey,
-                        GlobalObjects.ReqList.First().queueid,
+                        queueid = GlobalObjects.ReqList.First().Queueid,
                     };
-                    WebHelper.QueueRequest(WebHelper.RequestMethod.PATCH, Json.Serialize(payload));
+                    WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 }
-                trackChanged = false;
-                string j = Json.Serialize(songInfo);
+                _trackChanged = false;
+                string j = Json.Serialize(_songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
                 IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
                 dictionary["Requester"] = GlobalObjects.Requester;
@@ -366,7 +366,7 @@ namespace Songify_Slim.Util.Songify
                 string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
                 //Console.WriteLine(updatedJson);
 
-                GlobalObjects.APIResponse = updatedJson;
+                GlobalObjects.ApiResponse = updatedJson;
 
                 //WriteProgressFile($"{path}/progress.txt", j);
             }
@@ -376,7 +376,7 @@ namespace Songify_Slim.Util.Songify
             }
             //Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");
             // if no song is playing and custompausetext is enabled
-            return songInfo ?? new TrackInfo { isPlaying = false };
+            return _songInfo ?? new TrackInfo { IsPlaying = false };
             // return a new stringarray containing artist, title and so on
         }
     }

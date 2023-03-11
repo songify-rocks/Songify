@@ -10,18 +10,18 @@ namespace Songify_Slim.Util.Songify
 {
     public class ApiClient
     {
-        private readonly string baseURL;
-        private readonly HttpClient httpClient;
+        private readonly string _baseUrl;
+        private readonly HttpClient _httpClient;
 
-        public ApiClient(string baseURL)
+        public ApiClient(string baseUrl)
         {
-            this.baseURL = baseURL;
-            httpClient = new HttpClient();
+            this._baseUrl = baseUrl;
+            _httpClient = new HttpClient();
         }
 
         public async Task<string> Get(string endpoint, string uuid)
         {
-            HttpResponseMessage response = await httpClient.GetAsync($"{baseURL}/{endpoint}?uuid={uuid}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}?uuid={uuid}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -29,7 +29,7 @@ namespace Songify_Slim.Util.Songify
         public async Task<string> Post(string endpoint, string payload)
         {
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await httpClient.PostAsync($"{baseURL}/{endpoint}", content);
+            HttpResponseMessage response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -38,8 +38,8 @@ namespace Songify_Slim.Util.Songify
         {
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
             HttpMethod method = new HttpMethod("PATCH");
-            HttpRequestMessage request = new HttpRequestMessage(method, $"{baseURL}/{endpoint}") { Content = content };
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpRequestMessage request = new HttpRequestMessage(method, $"{_baseUrl}/{endpoint}") { Content = content };
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
@@ -48,8 +48,8 @@ namespace Songify_Slim.Util.Songify
         {
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
             HttpMethod mehtod = new HttpMethod("CLEAR");
-            HttpRequestMessage request = new HttpRequestMessage(mehtod, $"{baseURL}/{endpoint}") { Content = content };
-            HttpResponseMessage response = await httpClient.SendAsync(request);
+            HttpRequestMessage request = new HttpRequestMessage(mehtod, $"{_baseUrl}/{endpoint}") { Content = content };
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }

@@ -8,13 +8,13 @@ namespace Songify_Slim.Models
 {
     internal class QueueItem
     {
-        public int queueid { get; set; }
-        public string uuid { get; set; }
-        public string trackid { get; set; }
-        public string artist { get; set; }
-        public string titel { get; set; }
-        public string length { get; set; }
-        public string requester { get; set; }
-        public int played { get; set; }
+        public int Queueid { get; set; }
+        public string Uuid { get; set; }
+        public string Trackid { get; set; }
+        public string Artist { get; set; }
+        public string Titel { get; set; }
+        public string Length { get; set; }
+        public string Requester { get; set; }
+        public int Played { get; set; }
     }
 }

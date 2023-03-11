@@ -14,11 +14,11 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_Patchnotes.xaml
     /// </summary>
-    public partial class Window_Patchnotes
+    public partial class WindowPatchnotes
     {
-        Markdown engine = new Markdown();
+        Markdown _engine = new Markdown();
 
-        public Window_Patchnotes()
+        public WindowPatchnotes()
         {
             InitializeComponent();
         }
@@ -29,7 +29,7 @@ namespace Songify_Slim.Views
             Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
             foreach (Release release in releases.Result)
             {
-                LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, URL = release.HtmlUrl});
+                LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl});
             }
 
             LbxVersions.SelectedIndex = 0;
@@ -39,24 +39,24 @@ namespace Songify_Slim.Views
         {
             string markdownTxt = (string)LbxVersions.SelectedValue;
             markdownTxt = markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-            FlowDocument document = engine.Transform(markdownTxt);
-            engine.HyperlinkCommand.CanExecute(true);
+            FlowDocument document = _engine.Transform(markdownTxt);
+            _engine.HyperlinkCommand?.CanExecute(true);
             document.FontFamily = new FontFamily("Sogeo UI");
             RtbPatchnotes.Document = document;
-            string uri = (LbxVersions.SelectedItem as ReleaseObject)?.URL;
-            Hyperlink.NavigateUri = new Uri(uri);
+            string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
+            if (uri != null) Hyperlink.NavigateUri = new Uri(uri);
         }
 
         private class ReleaseObject
         {
             public string Version { get; set; }
             public string Content { get; set; }
-            public string URL { get; set; }
+            public string Url { get; set; }
         }
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start((sender as Hyperlink).NavigateUri.ToString());
+            Process.Start(((Hyperlink)sender).NavigateUri.ToString());
         }
     }
 }

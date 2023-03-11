@@ -1,5 +1,4 @@
-﻿using SpotifyAPI.Web.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
@@ -10,7 +9,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        private static Configuration currentConfig = new Configuration();
+        private static Configuration _currentConfig = new Configuration();
 
 
         public static string AccessKey
@@ -21,13 +20,13 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetAccessKey(string value)
         {
-            currentConfig.AppConfig.AccessKey = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.AccessKey = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static string GetAccessKey()
         {
-            return currentConfig.AppConfig.AccessKey;
+            return _currentConfig.AppConfig.AccessKey;
         }
 
         public static bool AnnounceInChat
@@ -499,13 +498,13 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetTwitchRedirectPort(int value)
         {
-            currentConfig.AppConfig.TwitchRedirectPort = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwitchRedirectPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static int GetTwitchRedirectPort()
         {
-            return currentConfig.AppConfig.TwitchRedirectPort;
+            return _currentConfig.AppConfig.TwitchRedirectPort;
         }
 
         public static int TwitchFetchPort
@@ -516,13 +515,13 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetTwitchFetchPort(int value)
         {
-            currentConfig.AppConfig.TwitchFetchPort = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwitchFetchPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static int GetTwitchFetchPort()
         {
-            return currentConfig.AppConfig.TwitchFetchPort;
+            return _currentConfig.AppConfig.TwitchFetchPort;
         }
 
         public static string WebUserAgent => GetWebua();
@@ -532,13 +531,13 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetCmdNextTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdNextTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdNextTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdNextTrigger()
         {
-            return currentConfig.BotConfig.BotCmdNextTrigger;
+            return _currentConfig.BotConfig.BotCmdNextTrigger;
         }
 
 
@@ -546,35 +545,35 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetCmdSsrTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdSsrTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSsrTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdSsrTrigger()
         {
-            return currentConfig.BotConfig.BotCmdSsrTrigger;
+            return _currentConfig.BotConfig.BotCmdSsrTrigger;
         }
 
         private static void SetCmdSkipTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdSkipTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSkipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdSkipTrigger()
         {
-            return currentConfig.BotConfig.BotCmdSkipTrigger;
+            return _currentConfig.BotConfig.BotCmdSkipTrigger;
         }
 
         private static void SetCmdVoteskipTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdVoteskipTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdVoteskipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdVoteskipTrigger()
         {
-            return currentConfig.BotConfig.BotCmdVoteskipTrigger;
+            return _currentConfig.BotConfig.BotCmdVoteskipTrigger;
         }
 
 
@@ -592,26 +591,26 @@ namespace Songify_Slim.Util.Settings
 
         private static bool GetRewardGoalEnabled()
         {
-            return currentConfig.AppConfig.RewardGoalEnabled;
+            return _currentConfig.AppConfig.RewardGoalEnabled;
         }
 
         private static void SetRewardGoalEnabled(bool value)
         {
-            currentConfig.AppConfig.RewardGoalEnabled = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.RewardGoalEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         public static string RewardGoalSong { get => GetRewardGoalSong(); set => SetRewardGoalSong(value); }
 
         private static string GetRewardGoalSong()
         {
-            return currentConfig.AppConfig.RewardGoalSong;
+            return _currentConfig.AppConfig.RewardGoalSong;
         }
 
         private static void SetRewardGoalSong(string value)
         {
-            currentConfig.AppConfig.RewardGoalSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.RewardGoalSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
@@ -621,150 +620,150 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetSpotifyPlaylistId(string value)
         {
-            currentConfig.AppConfig.SpotifyPlaylistId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.SpotifyPlaylistId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static string GetSpotifyPlaylistId()
         {
-            return currentConfig.AppConfig.SpotifyPlaylistId;
+            return _currentConfig.AppConfig.SpotifyPlaylistId;
         }
 
         private static List<TrackItem> GetSongBlacklist()
         {
-            return currentConfig.AppConfig.SongBlacklist;
+            return _currentConfig.AppConfig.SongBlacklist;
         }
 
         private static void SetSongBlacklist(List<TrackItem> value)
         {
-            currentConfig.AppConfig.SongBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.SongBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetBot_Resp_Refund(string value)
         {
-            currentConfig.BotConfig.BotRespRefund = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespRefund = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetBot_Resp_Refund()
         {
-            return currentConfig.BotConfig.BotRespRefund;
+            return _currentConfig.BotConfig.BotRespRefund;
         }
 
         private static int GetRewardGoalAmount()
         {
-            return currentConfig.AppConfig.RewardGoalAmount;
+            return _currentConfig.AppConfig.RewardGoalAmount;
         }
 
         private static void SetRewardGoalAmount(int value)
         {
-            currentConfig.AppConfig.RewardGoalAmount = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.RewardGoalAmount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static string GetTwRewardGoalRewardId()
         {
-            return currentConfig.AppConfig.TwRewardGoalRewardId;
+            return _currentConfig.AppConfig.TwRewardGoalRewardId;
         }
 
         private static void SetTwRewardGoalRewardId(string value)
         {
-            currentConfig.AppConfig.TwRewardGoalRewardId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwRewardGoalRewardId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetBot_Resp_Song(string value)
         {
-            currentConfig.BotConfig.BotRespSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetBot_resp_Song()
         {
-            return currentConfig.BotConfig.BotRespSong;
+            return _currentConfig.BotConfig.BotRespSong;
         }
 
         private static User GetTwitchBotUser()
         {
-            return currentConfig.TwitchCredentials.BotUser;
+            return _currentConfig.TwitchCredentials.BotUser;
         }
 
         private static void SetTwitchBotUser(User value)
         {
-            currentConfig.TwitchCredentials.BotUser = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.BotUser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
 
         private static string GetTwitchBotToken()
         {
-            return currentConfig.TwitchCredentials.TwitchBotToken;
+            return _currentConfig.TwitchCredentials.TwitchBotToken;
         }
 
         private static void SetTwitchBotToken(string value)
         {
-            currentConfig.TwitchCredentials.TwitchBotToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.TwitchBotToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetChatLiveStatus(bool value)
         {
-            currentConfig.BotConfig.ChatLiveStatus = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.ChatLiveStatus = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static bool GetChatLiveStatus()
         {
-            return currentConfig.BotConfig.ChatLiveStatus;
+            return _currentConfig.BotConfig.ChatLiveStatus;
         }
 
 
         private static void SetTwRewardSkipId(string value)
         {
-            currentConfig.AppConfig.TwRewardSkipId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwRewardSkipId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
 
         }
 
         private static string GetTwRewardSkipId()
         {
-            return currentConfig.AppConfig.TwRewardSkipId;
+            return _currentConfig.AppConfig.TwRewardSkipId;
 
         }
 
         private static bool GetTwSrUnlimitedSr()
         {
-            return currentConfig.AppConfig.TwSrUnlimitedSr;
+            return _currentConfig.AppConfig.TwSrUnlimitedSr;
         }
 
         private static void SetTwSrUnlimitedSr(bool value)
         {
-            currentConfig.AppConfig.TwSrUnlimitedSr = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrUnlimitedSr = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
 
         private static void SetCmdSongTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdSongTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSongTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdSongTrigger()
         {
-            return currentConfig.BotConfig.BotCmdSongTrigger;
+            return _currentConfig.BotConfig.BotCmdSongTrigger;
         }
 
         private static void SetCmdPosTrigger(string value)
         {
-            currentConfig.BotConfig.BotCmdPosTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdPosTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static string GetCmdPosTrigger()
         {
-            return currentConfig.BotConfig.BotCmdPosTrigger;
+            return _currentConfig.BotConfig.BotCmdPosTrigger;
         }
 
         public static Configuration Export()
@@ -898,7 +897,7 @@ namespace Songify_Slim.Util.Settings
 
         public static void Import(Configuration config)
         {
-            currentConfig = config;
+            _currentConfig = config;
 
             //#region SpotifyCredential
             //SetSpotifyAccessToken(config.SpotifyCredentials.AccessToken);
@@ -986,390 +985,390 @@ namespace Songify_Slim.Util.Settings
 
         private static bool GetAnnounceInChat()
         {
-            return currentConfig.AppConfig.AnnounceInChat;
+            return _currentConfig.AppConfig.AnnounceInChat;
         }
 
         private static bool GetAppendSpaces()
         {
-            return currentConfig.AppConfig.AppendSpaces;
+            return _currentConfig.AppConfig.AppendSpaces;
         }
 
         private static List<string> GetArtistBlacklist()
         {
-            return currentConfig.AppConfig.ArtistBlacklist;
+            return _currentConfig.AppConfig.ArtistBlacklist;
         }
 
         private static bool GetAutoClearQueue()
         {
-            return currentConfig.AppConfig.AutoClearQueue;
+            return _currentConfig.AppConfig.AutoClearQueue;
         }
 
         private static bool GetAutostart()
         {
-            return currentConfig.AppConfig.Autostart;
+            return _currentConfig.AppConfig.Autostart;
         }
 
         private static bool GetAutoStartWebServer()
         {
-            return currentConfig.AppConfig.AutoStartWebServer;
+            return _currentConfig.AppConfig.AutoStartWebServer;
         }
 
         private static bool GetBetaUpdates()
         {
-            return currentConfig.AppConfig.BetaUpdates;
+            return _currentConfig.AppConfig.BetaUpdates;
         }
 
         private static string GetBot_Resp_Blacklist()
         {
-            return currentConfig.BotConfig.BotRespBlacklist;
+            return _currentConfig.BotConfig.BotRespBlacklist;
         }
 
         private static string GetBot_Resp_Error()
         {
-            return currentConfig.BotConfig.BotRespError;
+            return _currentConfig.BotConfig.BotRespError;
         }
 
         private static string GetBot_Resp_IsInQueue()
         {
-            return currentConfig.BotConfig.BotRespIsInQueue;
+            return _currentConfig.BotConfig.BotRespIsInQueue;
         }
 
         private static string GetBot_Resp_Length()
         {
-            return currentConfig.BotConfig.BotRespLength;
+            return _currentConfig.BotConfig.BotRespLength;
         }
 
         private static string GetBot_Resp_MaxReq()
         {
-            return currentConfig.BotConfig.BotRespMaxReq;
+            return _currentConfig.BotConfig.BotRespMaxReq;
         }
 
         private static string GetBot_Resp_ModSkip()
         {
-            return currentConfig.BotConfig.BotRespModSkip;
+            return _currentConfig.BotConfig.BotRespModSkip;
         }
 
         private static string GetBot_Resp_Next()
         {
-            return currentConfig.BotConfig.BotRespNext;
+            return _currentConfig.BotConfig.BotRespNext;
         }
 
         private static string GetBot_Resp_NoSong()
         {
-            return currentConfig.BotConfig.BotRespNoSong;
+            return _currentConfig.BotConfig.BotRespNoSong;
         }
 
         private static string GetBot_Resp_Pos()
         {
-            return currentConfig.BotConfig.BotRespPos;
+            return _currentConfig.BotConfig.BotRespPos;
         }
 
         private static string GetBot_Resp_Success()
         {
-            return currentConfig.BotConfig.BotRespSuccess;
+            return _currentConfig.BotConfig.BotRespSuccess;
         }
 
         private static string GetBot_Resp_VoteSkip()
         {
 
-            return currentConfig.BotConfig.BotRespVoteSkip;
+            return _currentConfig.BotConfig.BotRespVoteSkip;
         }
 
         private static bool GetBotCmdNext()
         {
-            return currentConfig.BotConfig.BotCmdNext;
+            return _currentConfig.BotConfig.BotCmdNext;
         }
 
         private static bool GetBotCmdPos()
         {
-            return currentConfig.BotConfig.BotCmdPos;
+            return _currentConfig.BotConfig.BotCmdPos;
         }
 
         private static bool GetBotCmdSkip()
         {
-            return currentConfig.BotConfig.BotCmdSkip;
+            return _currentConfig.BotConfig.BotCmdSkip;
         }
 
         private static bool GetBotCmdSkipVote()
         {
-            return currentConfig.BotConfig.BotCmdSkipVote;
+            return _currentConfig.BotConfig.BotCmdSkipVote;
         }
 
         private static int GetBotCmdSkipVoteCount()
         {
-            return currentConfig.BotConfig.BotCmdSkipVoteCount;
+            return _currentConfig.BotConfig.BotCmdSkipVoteCount;
         }
 
         private static bool GetBotCmdSong()
         {
-            return currentConfig.BotConfig.BotCmdSong;
+            return _currentConfig.BotConfig.BotCmdSong;
         }
 
         private static bool GetBotOnlyWorkWhenLive()
         {
-            return currentConfig.AppConfig.BotOnlyWorkWhenLive;
+            return _currentConfig.AppConfig.BotOnlyWorkWhenLive;
         }
 
         private static int GetChromeFetchRate()
         {
-            return currentConfig.AppConfig.ChromeFetchRate;
+            return _currentConfig.AppConfig.ChromeFetchRate;
         }
 
         private static string GetClientId()
         {
-            return currentConfig.SpotifyCredentials.ClientId;
+            return _currentConfig.SpotifyCredentials.ClientId;
         }
 
         private static string GetClientSecret()
         {
-            return currentConfig.SpotifyCredentials.ClientSecret;
+            return _currentConfig.SpotifyCredentials.ClientSecret;
         }
 
         private static string GetColor()
         {
-            return currentConfig.AppConfig.Color;
+            return _currentConfig.AppConfig.Color;
         }
 
         private static string GetCustomPauseText()
         {
-            return currentConfig.AppConfig.CustomPauseText;
+            return _currentConfig.AppConfig.CustomPauseText;
         }
 
         private static bool GetCustomPauseTextEnabled()
         {
-            return currentConfig.AppConfig.CustomPauseTextEnabled;
+            return _currentConfig.AppConfig.CustomPauseTextEnabled;
         }
 
         private static string GetDirectory()
         {
-            return currentConfig.AppConfig.Directory;
+            return _currentConfig.AppConfig.Directory;
         }
 
         private static bool GetDownloadCover()
         {
-            return currentConfig.AppConfig.DownloadCover;
+            return _currentConfig.AppConfig.DownloadCover;
         }
 
         private static string GetLanguage()
         {
-            return currentConfig.AppConfig.Language;
+            return _currentConfig.AppConfig.Language;
         }
 
         private static int GetMaxSongLength()
         {
-            return currentConfig.AppConfig.MaxSongLength;
+            return _currentConfig.AppConfig.MaxSongLength;
         }
 
         private static bool GetMsgLoggingEnabled()
         {
-            return currentConfig.AppConfig.MsgLoggingEnabled;
+            return _currentConfig.AppConfig.MsgLoggingEnabled;
         }
 
         private static bool GetOpenQueueOnStartup()
         {
-            return currentConfig.AppConfig.OpenQueueOnStartup;
+            return _currentConfig.AppConfig.OpenQueueOnStartup;
         }
 
         private static string GetOutputString()
         {
-            return currentConfig.AppConfig.OutputString;
+            return _currentConfig.AppConfig.OutputString;
         }
 
         private static string GetOutputString2()
         {
-            return currentConfig.AppConfig.OutputString2;
+            return _currentConfig.AppConfig.OutputString2;
         }
 
         private static double GetPosX()
         {
-            return currentConfig.AppConfig.PosX;
+            return _currentConfig.AppConfig.PosX;
         }
 
         private static double GetPosY()
         {
-            return currentConfig.AppConfig.PosY;
+            return _currentConfig.AppConfig.PosY;
         }
 
         private static int[] GetRefundConditons()
         {
-            return currentConfig.AppConfig.RefundConditons;
+            return _currentConfig.AppConfig.RefundConditons;
         }
 
         private static bool GetSaveHistory()
         {
-            return currentConfig.AppConfig.SaveHistory;
+            return _currentConfig.AppConfig.SaveHistory;
         }
 
         private static int GetSource()
         {
-            return currentConfig.AppConfig.Player;
+            return _currentConfig.AppConfig.Player;
         }
 
         private static int GetSpaceCount()
         {
-            return currentConfig.AppConfig.SpaceCount;
+            return _currentConfig.AppConfig.SpaceCount;
         }
 
         private static bool GetSplitOutput()
         {
-            return currentConfig.AppConfig.SplitOutput;
+            return _currentConfig.AppConfig.SplitOutput;
         }
 
         private static string GetSpotifyAccessToken()
         {
-            return currentConfig.SpotifyCredentials.AccessToken;
+            return _currentConfig.SpotifyCredentials.AccessToken;
         }
 
         private static string GetSpotifyDeviceId()
         {
-            return currentConfig.SpotifyCredentials.DeviceId;
+            return _currentConfig.SpotifyCredentials.DeviceId;
         }
 
         private static string GetSpotifyRefreshToken()
         {
-            return currentConfig.SpotifyCredentials.RefreshToken;
+            return _currentConfig.SpotifyCredentials.RefreshToken;
         }
 
         private static bool GetSystray()
         {
-            return currentConfig.AppConfig.Systray;
+            return _currentConfig.AppConfig.Systray;
         }
 
         private static bool GetTelemetry()
         {
-            return currentConfig.AppConfig.Telemetry;
+            return _currentConfig.AppConfig.Telemetry;
         }
 
         private static string GetTheme()
         {
-            return currentConfig.AppConfig.Theme;
+            return _currentConfig.AppConfig.Theme;
         }
 
         private static string GetTwAcc()
         {
-            return currentConfig.TwitchCredentials.BotAccountName;
+            return _currentConfig.TwitchCredentials.BotAccountName;
         }
 
         private static bool GetTwAutoConnect()
         {
-            return currentConfig.AppConfig.TwAutoConnect;
+            return _currentConfig.AppConfig.TwAutoConnect;
         }
 
         private static string GetTwChannel()
         {
-            return currentConfig.TwitchCredentials.ChannelName;
+            return _currentConfig.TwitchCredentials.ChannelName;
         }
 
         private static string GetTwitchAccessToken()
         {
-            return currentConfig.TwitchCredentials.AccessToken;
+            return _currentConfig.TwitchCredentials.AccessToken;
 
         }
 
         private static string GetTwitchChannelId()
         {
-            return currentConfig.TwitchCredentials.ChannelId;
+            return _currentConfig.TwitchCredentials.ChannelId;
 
         }
 
         private static User GetTwitchUser()
         {
-            return currentConfig.TwitchCredentials.TwitchUser;
+            return _currentConfig.TwitchCredentials.TwitchUser;
         }
 
         private static string GetTwOAuth()
         {
-            return currentConfig.TwitchCredentials.BotOAuthToken;
+            return _currentConfig.TwitchCredentials.BotOAuthToken;
         }
 
         private static string GetTwRewardId()
         {
-            return currentConfig.AppConfig.TwRewardId;
+            return _currentConfig.AppConfig.TwRewardId;
         }
 
         private static bool GetTwSrCommand()
         {
-            return currentConfig.AppConfig.TwSrCommand;
+            return _currentConfig.AppConfig.TwSrCommand;
         }
 
         private static int GetTwSrCooldown()
         {
-            return currentConfig.AppConfig.TwSrCooldown;
+            return _currentConfig.AppConfig.TwSrCooldown;
         }
 
         private static int GetTwSrMaxReq()
         {
-            return currentConfig.AppConfig.TwSrMaxReq;
+            return _currentConfig.AppConfig.TwSrMaxReq;
         }
 
         private static int GetTwSrMaxReqBroadcaster()
         {
-            return currentConfig.AppConfig.TwSrMaxReqBroadcaster;
+            return _currentConfig.AppConfig.TwSrMaxReqBroadcaster;
         }
 
         private static int GetTwSrMaxReqEveryone()
         {
-            return currentConfig.AppConfig.TwSrMaxReqEveryone;
+            return _currentConfig.AppConfig.TwSrMaxReqEveryone;
         }
 
         private static int GetTwSrMaxReqModerator()
         {
-            return currentConfig.AppConfig.TwSrMaxReqModerator;
+            return _currentConfig.AppConfig.TwSrMaxReqModerator;
         }
 
         private static int GetTwSrMaxReqSubscriber()
         {
-            return currentConfig.AppConfig.TwSrMaxReqSubscriber;
+            return _currentConfig.AppConfig.TwSrMaxReqSubscriber;
         }
 
         private static int GetTwSrMaxReqVip()
         {
-            return currentConfig.AppConfig.TwSrMaxReqVip;
+            return _currentConfig.AppConfig.TwSrMaxReqVip;
         }
 
         private static bool GetTwSrReward()
         {
-            return currentConfig.AppConfig.TwSrReward;
+            return _currentConfig.AppConfig.TwSrReward;
         }
 
         private static int GetTwSrUserLevel()
         {
-            return currentConfig.AppConfig.TwSrUserLevel;
+            return _currentConfig.AppConfig.TwSrUserLevel;
         }
 
         private static bool GetUpdateRequired()
         {
-            return currentConfig.AppConfig.UpdateRequired;
+            return _currentConfig.AppConfig.UpdateRequired;
         }
 
         private static bool GetUpload()
         {
-            return currentConfig.AppConfig.Upload;
+            return _currentConfig.AppConfig.Upload;
         }
 
         private static bool GetUploadHistory()
         {
-            return currentConfig.AppConfig.UploadHistory;
+            return _currentConfig.AppConfig.UploadHistory;
         }
 
         private static bool GetUseOwnApp()
         {
-            return currentConfig.AppConfig.UseOwnApp;
+            return _currentConfig.AppConfig.UseOwnApp;
         }
 
         private static List<string> GetUserBlacklist()
         {
-            return currentConfig.AppConfig.UserBlacklist;
+            return _currentConfig.AppConfig.UserBlacklist;
         }
 
         private static string GetUuid()
         {
-            return currentConfig.AppConfig.Uuid;
+            return _currentConfig.AppConfig.Uuid;
         }
 
         private static int GetWebServerPort()
         {
-            return currentConfig.AppConfig.WebServerPort;
+            return _currentConfig.AppConfig.WebServerPort;
         }
 
         private static string GetWebua()
@@ -1379,468 +1378,468 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetAnnounceInChat(bool value)
         {
-            currentConfig.AppConfig.AnnounceInChat = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.AnnounceInChat = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetAppendSpaces(bool value)
         {
-            currentConfig.AppConfig.AppendSpaces = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.AppendSpaces = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetArtistBlacklist(List<string> value)
         {
-            currentConfig.AppConfig.ArtistBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.ArtistBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetAutoClearQueue(bool value)
         {
-            currentConfig.AppConfig.AutoClearQueue = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.AutoClearQueue = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetAutostart(bool autostart)
         {
-            currentConfig.AppConfig.Autostart = autostart;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Autostart = autostart;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetAutoStartWebServer(bool value)
         {
-            currentConfig.AppConfig.AutoStartWebServer = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.AutoStartWebServer = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetBetaUpdates(bool value)
         {
-            currentConfig.AppConfig.BetaUpdates = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.BetaUpdates = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetBot_Resp_Blacklist(string value)
         {
-            currentConfig.BotConfig.BotRespBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Error(string value)
         {
-            currentConfig.BotConfig.BotRespError = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespError = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_IsInQueue(string value)
         {
-            currentConfig.BotConfig.BotRespIsInQueue = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespIsInQueue = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Length(string value)
         {
-            currentConfig.BotConfig.BotRespLength = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespLength = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_MaxReq(string value)
         {
-            currentConfig.BotConfig.BotRespMaxReq = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespMaxReq = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_ModSkip(string value)
         {
-            currentConfig.BotConfig.BotRespModSkip = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespModSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Next(string value)
         {
-            currentConfig.BotConfig.BotRespNext = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespNext = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_NoSong(string value)
         {
-            currentConfig.BotConfig.BotRespNoSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespNoSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Pos(string value)
         {
-            currentConfig.BotConfig.BotRespPos = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespPos = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_Success(string value)
         {
-            currentConfig.BotConfig.BotRespSuccess = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespSuccess = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBot_Resp_VoteSkip(string value)
         {
-            currentConfig.BotConfig.BotRespVoteSkip = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotRespVoteSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdNext(bool value)
         {
-            currentConfig.BotConfig.BotCmdNext = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdNext = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdPos(bool value)
         {
-            currentConfig.BotConfig.BotCmdPos = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdPos = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkip(bool value)
         {
-            currentConfig.BotConfig.BotCmdSkip = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSkip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkipVote(bool value)
         {
-            currentConfig.BotConfig.BotCmdSkipVote = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSkipVote = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSkipVoteCount(int value)
         {
-            currentConfig.BotConfig.BotCmdSkipVoteCount = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSkipVoteCount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotCmdSong(bool value)
         {
-            currentConfig.BotConfig.BotCmdSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, currentConfig.BotConfig);
+            _currentConfig.BotConfig.BotCmdSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetBotOnlyWorkWhenLive(bool value)
         {
-            currentConfig.AppConfig.BotOnlyWorkWhenLive = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.BotOnlyWorkWhenLive = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
         private static void SetChromeFetchRate(int value)
         {
-            currentConfig.AppConfig.ChromeFetchRate = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.ChromeFetchRate = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetClientId(string value)
         {
-            currentConfig.SpotifyCredentials.ClientId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
+            _currentConfig.SpotifyCredentials.ClientId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
         }
 
         private static void SetClientSecret(string value)
         {
-            currentConfig.SpotifyCredentials.ClientSecret = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
+            _currentConfig.SpotifyCredentials.ClientSecret = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
         }
 
         private static void SetColor(string value)
         {
-            currentConfig.AppConfig.Color = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Color = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetCustomPauseText(string value)
         {
-            currentConfig.AppConfig.CustomPauseText = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.CustomPauseText = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetCustomPauseTextEnabled(bool value)
         {
-            currentConfig.AppConfig.CustomPauseTextEnabled = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.CustomPauseTextEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetDirectory(string value)
         {
-            currentConfig.AppConfig.Directory = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Directory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetDownloadCover(bool value)
         {
-            currentConfig.AppConfig.DownloadCover = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.DownloadCover = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetLangauge(string value)
         {
-            currentConfig.AppConfig.Language = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Language = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetMaxSongLength(int value)
         {
-            currentConfig.AppConfig.MaxSongLength = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.MaxSongLength = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetMsgLoggingEnabled(bool value)
         {
-            currentConfig.AppConfig.MsgLoggingEnabled = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.MsgLoggingEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetOpenQueueOnStartup(bool value)
         {
-            currentConfig.AppConfig.OpenQueueOnStartup = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.OpenQueueOnStartup = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetOutputString(string value)
         {
-            currentConfig.AppConfig.OutputString = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.OutputString = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetOutputString2(string value)
         {
-            currentConfig.AppConfig.OutputString2 = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.OutputString2 = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetPosX(double value)
         {
-            currentConfig.AppConfig.PosX = (int)value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.PosX = (int)value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetPosY(double value)
         {
-            currentConfig.AppConfig.PosY = (int)value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.PosY = (int)value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetRefundConditons(int[] value)
         {
-            currentConfig.AppConfig.RefundConditons = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.RefundConditons = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSaveHistory(bool value)
         {
-            currentConfig.AppConfig.SaveHistory = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.SaveHistory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSource(int value)
         {
-            currentConfig.AppConfig.Player = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Player = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSpaceCount(int value)
         {
-            currentConfig.AppConfig.SpaceCount = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.SpaceCount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSplitOutput(bool value)
         {
-            currentConfig.AppConfig.SplitOutput = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.SplitOutput = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSpotifyAccessToken(string value)
         {
-            currentConfig.SpotifyCredentials.AccessToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
+            _currentConfig.SpotifyCredentials.AccessToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
         }
 
         private static void SetSpotifyDeviceId(string value)
         {
-            currentConfig.SpotifyCredentials.DeviceId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
+            _currentConfig.SpotifyCredentials.DeviceId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
         }
 
         private static void SetSpotifyRefreshToken(string value)
         {
-            currentConfig.SpotifyCredentials.RefreshToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, currentConfig.SpotifyCredentials);
+            _currentConfig.SpotifyCredentials.RefreshToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
         }
 
         private static void SetSystray(bool value)
         {
-            currentConfig.AppConfig.Systray = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Systray = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTelemetry(bool value)
         {
-            currentConfig.AppConfig.Systray = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Systray = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTheme(string value)
         {
-            currentConfig.AppConfig.Theme = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Theme = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwAcc(string value)
         {
-            currentConfig.TwitchCredentials.BotAccountName = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.BotAccountName = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwAutoConnect(bool value)
         {
-            currentConfig.AppConfig.TwAutoConnect = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwAutoConnect = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwChannel(string value)
         {
-            currentConfig.TwitchCredentials.ChannelName = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.ChannelName = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchAccessToken(string value)
         {
-            currentConfig.TwitchCredentials.AccessToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.AccessToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchChannelId(string value)
         {
-            currentConfig.TwitchCredentials.ChannelId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.ChannelId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwitchUser(User value)
         {
-            currentConfig.TwitchCredentials.TwitchUser = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.TwitchUser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwOAuth(string value)
         {
-            currentConfig.TwitchCredentials.BotOAuthToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, currentConfig.TwitchCredentials);
+            _currentConfig.TwitchCredentials.BotOAuthToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
         private static void SetTwRewardId(string value)
         {
-            currentConfig.AppConfig.TwRewardId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwRewardId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrCommand(bool value)
         {
-            currentConfig.AppConfig.TwSrCommand = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrCommand = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrCooldown(int value)
         {
-            currentConfig.AppConfig.TwSrCooldown = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrCooldown = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReq(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReq = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReq = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqBroadcaster(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqBroadcaster = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReqBroadcaster = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqEveryone(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqEveryone = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReqEveryone = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqModerator(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqModerator = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReqModerator = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqSubscriber(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqSubscriber = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReqSubscriber = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrMaxReqVip(int value)
         {
-            currentConfig.AppConfig.TwSrMaxReqVip = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrMaxReqVip = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrReward(bool value)
         {
-            currentConfig.AppConfig.TwSrReward = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrReward = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetTwSrUserLevel(int value)
         {
-            currentConfig.AppConfig.TwSrUserLevel = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.TwSrUserLevel = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetUpdateRequired(bool value)
         {
-            currentConfig.AppConfig.UpdateRequired = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.UpdateRequired = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
 
         }
         private static void SetUpload(bool value)
         {
-            currentConfig.AppConfig.Upload = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Upload = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetUploadHistory(bool value)
         {
-            currentConfig.AppConfig.UploadHistory = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.UploadHistory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetUseOwnApp(bool value)
         {
-            currentConfig.AppConfig.UseOwnApp = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.UseOwnApp = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetUserBlacklist(List<string> value)
         {
-            currentConfig.AppConfig.UserBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.UserBlacklist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetUuid(string value)
         {
-            currentConfig.AppConfig.Uuid = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.Uuid = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetWebServerPort(int value)
         {
-            currentConfig.AppConfig.WebServerPort = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, currentConfig.AppConfig);
+            _currentConfig.AppConfig.WebServerPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         public static void ResetConfig()
         {
-            currentConfig = new Configuration();
+            _currentConfig = new Configuration();
         }
     }
 }

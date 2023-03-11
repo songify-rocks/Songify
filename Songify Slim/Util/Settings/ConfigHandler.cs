@@ -43,19 +43,19 @@ namespace Songify_Slim.Util.Settings
             {
                 case ConfigTypes.SpotifyCredentials:
                     path += "/SpotifyCredentials.yaml";
-                    yaml = serializer.Serialize(o as SpotifyCredentials);
+                    yaml = serializer.Serialize(o as SpotifyCredentials ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.TwitchCredentials:
                     path += "/TwitchCredentials.yaml";
-                    yaml = serializer.Serialize(o as TwitchCredentials);
+                    yaml = serializer.Serialize(o as TwitchCredentials ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.BotConfig:
                     path += "/BotConfig.yaml";
-                    yaml = serializer.Serialize(o as BotConfig);
+                    yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.AppConfig:
                     path += "/AppConfig.yaml";
-                    yaml = serializer.Serialize(o as AppConfig);
+                    yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(configType), configType, null);
@@ -72,9 +72,9 @@ namespace Songify_Slim.Util.Settings
 
             Configuration config = new Configuration();
 
-            foreach (ConfigTypes ConfigType in (ConfigTypes[])Enum.GetValues(typeof(ConfigTypes)))
+            foreach (ConfigTypes configType in (ConfigTypes[])Enum.GetValues(typeof(ConfigTypes)))
             {
-                switch (ConfigType)
+                switch (configType)
                 {
                     case ConfigTypes.SpotifyCredentials:
                         if (File.Exists($@"{path}\SpotifyCredentials.yaml"))
@@ -657,7 +657,7 @@ namespace Songify_Slim.Util.Settings
         public string TwRewardGoalRewardId { get; set; } = "";
         public bool RewardGoalEnabled { get; set; }
         public string RewardGoalSong { get; set; } = "";
-        public int RewardGoalAmount { get; set; } = 0;
+        public int RewardGoalAmount { get; set; }
         public List<TrackItem> SongBlacklist { get; set; } = new List<TrackItem>();
         public string SpotifyPlaylistId { get; set; } = "";
     }
@@ -685,7 +685,6 @@ namespace Songify_Slim.Util.Settings
         public bool TwAutoConnect { get; set; }
         public bool TwSrCommand { get; set; }
         public bool TwSrReward { get; set; }
-
         public bool Upload { get; set; }
         public bool UploadHistory { get; set; }
         public bool UseOwnApp { get; set; }
@@ -704,7 +703,6 @@ namespace Songify_Slim.Util.Settings
         public int TwSrUserLevel { get; set; }
         public string AccessToken { get; set; }
         public List<string> ArtistBlacklist { get; set; }
-
         public string BotRespBlacklist { get; set; }
         public string BotRespError { get; set; }
         public string BotRespIsInQueue { get; set; }
@@ -720,8 +718,6 @@ namespace Songify_Slim.Util.Settings
         public string CustomPauseText { get; set; }
         public string Directory { get; set; }
         public string Language { get; set; }
-        public string NbUser { get; set; }
-        public string NbUserId { get; set; }
         public string OutputString { get; set; }
         public string OutputString2 { get; set; }
         public string RefreshToken { get; set; }

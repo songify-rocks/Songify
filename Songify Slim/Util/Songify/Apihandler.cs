@@ -38,7 +38,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.UseOwnApp)
             {
                 _auth = new TokenSwapAuth(
-                    $"{GlobalObjects._baseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
+                    $"{GlobalObjects.BaseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
@@ -47,7 +47,7 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 _auth = new TokenSwapAuth(
-                    $"{GlobalObjects._baseUrl}/auth/_index.php",
+                    $"{GlobalObjects.BaseUrl}/auth/_index.php",
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
@@ -212,11 +212,11 @@ namespace Songify_Slim.Util.Songify
             {
                 Artists = artists,
                 Title = context.Item.Name,
-                albums = albums,
-                SongID = context.Item.Id,
-                DurationMS = context.Item.DurationMs - context.ProgressMs,
-                isPlaying = context.IsPlaying,
-                url = "https://open.spotify.com/track/" + context.Item.Id,
+                Albums = albums,
+                SongId = context.Item.Id,
+                DurationMs = context.Item.DurationMs - context.ProgressMs,
+                IsPlaying = context.IsPlaying,
+                Url = "https://open.spotify.com/track/" + context.Item.Id,
                 DurationPercentage = (int)percentage,
                 DurationTotal = context.Item.DurationMs,
                 Progress = context.ProgressMs

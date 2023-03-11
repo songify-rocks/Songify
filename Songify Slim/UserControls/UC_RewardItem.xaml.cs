@@ -9,12 +9,12 @@ namespace Songify_Slim.UserControls
     /// <summary>
     /// Interaction logic for UC_RewardItem.xaml
     /// </summary>
-    public partial class UC_RewardItem
+    public partial class UcRewardItem
     {
         public CustomReward Reward;
         public bool IsManagable;
 
-        public UC_RewardItem(CustomReward customReward, bool managable)
+        public UcRewardItem(CustomReward customReward, bool managable)
         {
             InitializeComponent();
             Reward = customReward;

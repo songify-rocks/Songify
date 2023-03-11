@@ -43,11 +43,11 @@ namespace Songify_Slim
             }
             else
             {
-                Settings.Uuid = registryKey.GetValue("UUID").ToString();
+                Settings.Uuid = registryKey?.GetValue("UUID").ToString();
             }
-            if (registryKey.GetValue("AccessKey") == null)
+            if (registryKey?.GetValue("AccessKey") == null)
             {
-                registryKey.SetValue("AccessKey", Settings.AccessKey);
+                registryKey?.SetValue("AccessKey", Settings.AccessKey);
             }
             else
             {

@@ -13,13 +13,13 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 
         #region Variables
         // Privates
-        string twitchAuthUrl = "https://id.twitch.tv/oauth2/authorize";
-        int salt;
+        private const string TwitchAuthUrl = "https://id.twitch.tv/oauth2/authorize";
+        private readonly int _salt;
 
         // Listener for twitch redirect.
-        HttpListener redirectListener = new HttpListener();
+        private readonly HttpListener _redirectListener = new HttpListener();
         // Listener for fetching info from the redirect listener.
-        HttpListener fetchListeneer = new HttpListener();
+        private readonly HttpListener _fetchListeneer = new HttpListener();
 
         // Events
         public delegate void UpdatedValuesEvent(string state, string token);
@@ -36,7 +36,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         #region Public Methods
         public ImplicitOAuth(int stateSalt = 42)
         {
-            salt = stateSalt;
+            _salt = stateSalt;
         }
 
         /// <summary>
@@ -49,13 +49,13 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         public string RequestClientAuthorization()
         {
             // Create a "random" number to use as verification.
-            string authStateVerify = ((Int64)(DateTime.UtcNow.AddYears(salt).Subtract(new DateTime(1939, 11, 30))).TotalSeconds).ToString();
+            string authStateVerify = ((Int64)(DateTime.UtcNow.AddYears(_salt).Subtract(new DateTime(1939, 11, 30))).TotalSeconds).ToString();
 
             // Assign value to string
             string queryParams =
             "response_type=token" + "&" +
-            "client_id=" + ApplicationDetails.twitchClientId + "&" +
-            "redirect_uri=" + ApplicationDetails.redirectUri + "&" +
+            "client_id=" + ApplicationDetails.TwitchClientId + "&" +
+            "redirect_uri=" + ApplicationDetails.RedirectUri + "&" +
             "state=" + authStateVerify + "&" +
             "scope=" + string.Join("+", Scopes.GetScopes());
             // End
@@ -69,7 +69,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             process.StartInfo = new ProcessStartInfo
             {
                 FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                Arguments = $"--inprivate {twitchAuthUrl}?{queryParams}"
+                Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
             };
             process.Start();
             return authStateVerify;
@@ -80,42 +80,41 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// <summary>
         /// Start 2 local HttpListeners and have them wait for data
         /// </summary>
-        void InitializeLocalWebServers()
+        private void InitializeLocalWebServers()
         {
-            if (ApplicationDetails.redirectUri == null || ApplicationDetails.redirectUri.Length == 0)
+            if (string.IsNullOrEmpty(ApplicationDetails.RedirectUri))
             {
-                Console.WriteLine("URI may not be empty!");
+                Console.WriteLine(@"URI may not be empty!");
                 return;
             }
 
 
-            if (!redirectListener.IsListening)
+            if (!_redirectListener.IsListening)
             {
-                redirectListener.Prefixes.Add(ApplicationDetails.redirectUri);
-                redirectListener.Start();
-                redirectListener.BeginGetContext(IncommingTwitchRequest, redirectListener);
+                _redirectListener.Prefixes.Add(ApplicationDetails.RedirectUri);
+                _redirectListener.Start();
+                _redirectListener.BeginGetContext(IncommingTwitchRequest, _redirectListener);
             }
 
-            if (!fetchListeneer.IsListening)
+            if (!_fetchListeneer.IsListening)
             {
-                fetchListeneer.Prefixes.Add(ApplicationDetails.fetchUri);
-                fetchListeneer.Start();
-                fetchListeneer.BeginGetContext(IncommingLocalRequest, fetchListeneer);
+                _fetchListeneer.Prefixes.Add(ApplicationDetails.FetchUri);
+                _fetchListeneer.Start();
+                _fetchListeneer.BeginGetContext(IncommingLocalRequest, _fetchListeneer);
             }
         }
 
         /// <summary>
         /// Recieve the data from the other HttpListener and send it through the OnJsonObjectUpdate event.
         /// </summary>
-        void IncommingLocalRequest(IAsyncResult result)
+        private void IncommingLocalRequest(IAsyncResult result)
         {
             HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
             HttpListenerRequest httpRequest = httpContext.Request;
 
-            string jsonObjectString = null;
             var reader = new StreamReader(httpRequest.InputStream, httpRequest.ContentEncoding);
-            jsonObjectString = reader.ReadToEnd();
+            string jsonObjectString = reader.ReadToEnd();
 
             // Fix errors in the string and send it through
             // Probably caused by the fetch not knowing that they are supposed to send JSON data.
@@ -124,7 +123,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             jsonObjectString = jsonObjectString.Remove(0, 1);
             JObject jo = JObject.Parse(jsonObjectString);
 
-            OnRevcievedValues?.Invoke(jo.GetValue("state").ToString(), jo.GetValue("access_token").ToString());
+            OnRevcievedValues?.Invoke(jo.GetValue("state")?.ToString(), jo.GetValue("access_token")?.ToString());
 
             httpListener.Stop();
         }
@@ -136,15 +135,12 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         {
             HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
-            HttpListenerRequest httpRequest = httpContext.Request;
             HttpListenerResponse httpResponse = httpContext.Response;
 
-            string responseString = "";
-
-            // Create manual html and js code in here to get the URL, scrape the jsondata, then send it back to us via "IncommingLocalRequest".
-            // TODO: Separate this data into it's own file.
-            responseString =
-            @"
+            string responseString =
+                // Create manual html and js code in here to get the URL, scrape the jsondata, then send it back to us via "IncommingLocalRequest".
+                // TODO: Separate this data into it's own file.
+                @"
 				<html>
                     <style>
                         body {
@@ -217,7 +213,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 					</body>
 				</html>
 			";
-            responseString = responseString.Replace("VARIABLE_FETCHURI", ApplicationDetails.fetchUri);
+            responseString = responseString.Replace("VARIABLE_FETCHURI", ApplicationDetails.FetchUri);
 
 
             // Save html to buffer and send to browser

@@ -14,7 +14,7 @@ namespace Songify_Slim.Util.General
 {
     public class WebServer
     {
-        public bool run;
+        public bool Run;
         private readonly HttpListener _listener = new HttpListener();
 
         public void StartWebServer(int port)
@@ -25,7 +25,7 @@ namespace Songify_Slim.Util.General
             // Listen on the specified port.
             _listener.Prefixes.Add($"http://localhost:{port}/");
             _listener.Start();
-            run = true;
+            Run = true;
             Task.Run(() =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
@@ -38,7 +38,7 @@ namespace Songify_Slim.Util.General
                 });
                 Logger.LogStr($"WebServer: Started on port {port}");
 
-                while (run)
+                while (Run)
                 {
                     try
                     {
@@ -58,7 +58,7 @@ namespace Songify_Slim.Util.General
         public void StopWebServer()
         {
 
-            run = false;
+            Run = false;
             Logger.LogStr("WebServer: Started stopped");
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -95,10 +95,10 @@ namespace Songify_Slim.Util.General
             //responseString += "<p>Current time: " + DateTime.Now.ToString() + "</p>";
             //responseString += "</body></html>";
 
-            if (string.IsNullOrWhiteSpace(GlobalObjects.APIResponse))
+            if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
                 return;
             // Convert the response string to a byte array.
-            byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.APIResponse);
+            byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.ApiResponse);
 
             // Get the response output stream and write the response to it.
             HttpListenerResponse response = context.Response;

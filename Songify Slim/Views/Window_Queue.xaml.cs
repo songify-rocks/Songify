@@ -10,10 +10,10 @@ namespace Songify_Slim.Views
     /// <summary>
     ///     Queue Window to display the current song queue
     /// </summary>
-    public partial class Window_Queue
+    public partial class WindowQueue
     {
         private readonly DispatcherTimer _timer = new DispatcherTimer();
-        public Window_Queue()
+        public WindowQueue()
         {
             InitializeComponent();
             _timer.Interval = TimeSpan.FromSeconds(5);
@@ -39,7 +39,7 @@ namespace Songify_Slim.Views
 
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
             GlobalObjects.ReqList.Remove(req);
-            WebHelper.UpdateWebQueue(req.trackid, "", "", "", "", "1", "u");
+            WebHelper.UpdateWebQueue(req.Trackid, "", "", "", "", "1", "u");
             dgv_Queue.Items.Refresh();
         }
     }

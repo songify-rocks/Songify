@@ -20,7 +20,7 @@
                        Text="{DynamicResource LicenseUsing}" Margin="5,0,0,0" />
         </ScrollViewer>
         <StackPanel Grid.Column="1" Orientation="Vertical">
-            <TextBlock Grid.Column="1" TextWrapping="Wrap" TextAlignment="Center" Height="83" Margin="30,6">
+            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Height="83" Margin="30,6">
                 <Run Text="This Project is a free time project and licensed under the GNU General Public License v3.0." />
                 <LineBreak /><Run /><LineBreak />
                 <Run Text="If you want to support this project feel free to" /><Run Text=" " />

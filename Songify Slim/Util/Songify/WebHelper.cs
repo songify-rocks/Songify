@@ -21,7 +21,7 @@ namespace Songify_Slim.Util.Songify
         ///     This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
 
-        private static ApiClient apiClient = new ApiClient(GlobalObjects._apiUrl);
+        private static ApiClient _apiClient = new ApiClient(GlobalObjects.ApiUrl);
 
         private enum RequestType
         {
@@ -33,10 +33,10 @@ namespace Songify_Slim.Util.Songify
 
         internal enum RequestMethod
         {
-            GET,
-            POST,
-            PATCH,
-            CLEAR
+            Get,
+            Post,
+            Patch,
+            Clear
         }
 
         public static async void QueueRequest(RequestMethod method, string payload = null)
@@ -47,34 +47,34 @@ namespace Songify_Slim.Util.Songify
                 RequestObject response;
                 switch (method)
                 {
-                    case RequestMethod.GET:
-                        result = await apiClient.Get("queue", Settings.Settings.Uuid);
+                    case RequestMethod.Get:
+                        result = await _apiClient.Get("queue", Settings.Settings.Uuid);
                         List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
                         queue.ForEach(q =>
                         {
                             if (GlobalObjects.ReqList.Count != 0 &&
-                                GlobalObjects.ReqList.Any(o => o.queueid == q.queueid)) return;
+                                GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) return;
                             var pL = new
                             {
                                 uuid = Settings.Settings.Uuid,
                                 key = Settings.Settings.AccessKey,
-                                q.queueid
+                                queueid = q.Queueid
                             };
-                            QueueRequest(RequestMethod.PATCH, Json.Serialize(pL));
+                            QueueRequest(RequestMethod.Patch, Json.Serialize(pL));
                         });
                         break;
-                    case RequestMethod.POST:
-                        result = await apiClient.Post("queue", payload);
+                    case RequestMethod.Post:
+                        result = await _apiClient.Post("queue", payload);
                         response = Json.Deserialize<RequestObject>(result);
                         GlobalObjects.ReqList.Add(response);
                         Debug.WriteLine(result);
                         break;
-                    case RequestMethod.PATCH:
-                        result = await apiClient.Patch("queue", payload);
+                    case RequestMethod.Patch:
+                        result = await _apiClient.Patch("queue", payload);
                         response = Json.Deserialize<RequestObject>(result);
                         break;
-                    case RequestMethod.CLEAR:
-                        result = await apiClient.Clear("queue", payload);
+                    case RequestMethod.Clear:
+                        result = await _apiClient.Clear("queue", payload);
 
                         break;
                     default:
@@ -120,7 +120,7 @@ namespace Songify_Slim.Util.Songify
                             "&o=" + WebUtility.UrlEncode(o) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
 
-            string url = $"{GlobalObjects._baseUrl}/add_queue.php/?id=" + extras;
+            string url = $"{GlobalObjects.BaseUrl}/add_queue.php/?id=" + extras;
             WebUtility.UrlEncode(url);
 
             dynamic test = new
@@ -130,12 +130,12 @@ namespace Songify_Slim.Util.Songify
                 queueItem =
                     new RequestObject
                     {
-                        trackid = trackId,
-                        artist = artist,
-                        title = title,
-                        length = length,
-                        requester = requester,
-                        albumcover = null
+                        Trackid = trackId,
+                        Artist = artist,
+                        Title = title,
+                        Length = length,
+                        Requester = requester,
+                        Albumcover = null
                     }
 
             };
@@ -231,7 +231,7 @@ namespace Songify_Slim.Util.Songify
                             $"&key={WebUtility.UrlEncode(Settings.Settings.AccessKey)}" +
                             $"&tid={WebUtility.UrlEncode(Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.Id)}" +
                             $"&tn={WebUtility.UrlEncode(Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.DisplayName)}";
-            string url = $"{GlobalObjects._baseUrl}/songifydata.php/" + extras;
+            string url = $"{GlobalObjects.BaseUrl}/songifydata.php/" + extras;
             WebUtility.UrlEncode(url);
             DoWebRequest(url, RequestType.Telemetry);
         }
@@ -243,7 +243,7 @@ namespace Songify_Slim.Util.Songify
                             "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
                             "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            string url = $"{GlobalObjects._baseUrl}/song.php?id=" + extras;
+            string url = $"{GlobalObjects.BaseUrl}/song.php?id=" + extras;
             DoWebRequest(url, RequestType.UploadSong);
         }
 
@@ -253,7 +253,7 @@ namespace Songify_Slim.Util.Songify
                             "&tst=" + unixTimestamp +
                             "&song=" + HttpUtility.UrlEncode(currSong, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            string url = $"{GlobalObjects._baseUrl}/song_history.php/?id=" + extras;
+            string url = $"{GlobalObjects.BaseUrl}/song_history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.
             DoWebRequest(url, RequestType.UploadHistory);
         }

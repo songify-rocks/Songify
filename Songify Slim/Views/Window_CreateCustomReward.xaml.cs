@@ -12,16 +12,16 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_CreateCustomReward.xaml
     /// </summary>
-    public partial class Window_CreateCustomReward
+    public partial class WindowCreateCustomReward
     {
-        public Window_CreateCustomReward()
+        public WindowCreateCustomReward()
         {
             InitializeComponent();
         }
 
         public async Task<CreateCustomRewardsResponse> CreateReward(string name, string prompt, int cost)
         {
-            CreateCustomRewardsResponse response = null;
+            CreateCustomRewardsResponse response;
             try
             {
                 response = await TwitchHandler.TwitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
@@ -63,7 +63,7 @@ namespace Songify_Slim.Views
             foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(Window_Settings))
                 {
-                    await (window as Window_Settings).LoadRewards();
+                    await ((Window_Settings)window).LoadRewards();
                     (window as Window_Settings).CbxRewards.SelectedItem = (window as Window_Settings).GetItemFromList((window as Window_Settings).CbxRewards, response.Data[0].Id);
                 }
         }

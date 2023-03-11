@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
@@ -11,17 +12,17 @@ namespace Songify_Slim.UserControls
     /// <summary>
     ///     Interaktionslogik für UC_BotResponses.xaml
     /// </summary>
-    public partial class UC_BotResponses : UserControl
+    public partial class UcBotResponses
     {
-        public UC_BotResponses()
+        public UcBotResponses()
         {
             InitializeComponent();
         }
 
         private static string GetStringAndColor(string response, string newColor)
         {
-            int startIndex = 9;
-            int endIndex = response.IndexOf("]", startIndex);
+            const int startIndex = 9;
+            int endIndex = response.IndexOf("]", startIndex, StringComparison.Ordinal);
             string colorName = response.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
             response = response.Replace($"[announce {colorName}]", $"[announce {newColor}]").Trim();
             return response;
@@ -29,16 +30,17 @@ namespace Songify_Slim.UserControls
 
         private void AnnounceCheck_Checked(object sender, RoutedEventArgs e)
         {
-            ComboBox cbx = GlobalObjects.FindChild<ComboBox>(this, (sender as CheckBox).Name.Replace("check", "cb"));
-            TextBox tbx = GlobalObjects.FindChild<TextBox>(this, (sender as CheckBox).Name.Replace("check", "tb"));
-            if ((bool)!(sender as CheckBox).IsChecked)
+            ComboBox cbx = GlobalObjects.FindChild<ComboBox>(this, ((CheckBox)sender).Name.Replace("check", "cb"));
+            TextBox tbx = GlobalObjects.FindChild<TextBox>(this, ((CheckBox)sender).Name.Replace("check", "tb"));
+            bool? isChecked = ((CheckBox)sender)?.IsChecked;
+            if (isChecked != null && (bool)!isChecked)
             {
 
                 if (cbx == null) return;
                 if (!tbx.Text.StartsWith("[announce ")) return;
                 cbx.SelectedIndex = 0;
                 const int startIndex = 9;
-                int endIndex = tbx.Text.IndexOf("]", startIndex);
+                int endIndex = tbx.Text.IndexOf("]", startIndex, StringComparison.Ordinal);
                 string colorName = tbx.Text.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
                 tbx.Text = tbx.Text.Replace($"[announce {colorName}]", string.Empty).Trim();
             }
@@ -50,19 +52,19 @@ namespace Songify_Slim.UserControls
 
         private void Cb_ArtistBlocked_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            setTextBoxText(tb_ArtistBlocked, cb_ArtistBlocked, check_ArtistBlocked);
+            SetTextBoxText(TbArtistBlocked, CbArtistBlocked, CheckArtistBlocked);
         }
 
         private void Cb_SongInQueue_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            setTextBoxText(tb_SongInQueue, cb_SongInQueue, check_SongInQueue);
+            SetTextBoxText(TbSongInQueue, CbSongInQueue, CheckSongInQueue);
         }
 
-        private void SetPreview(TextBox tb)
+        private static void SetPreview(TextBox tb)
         {
-            string response;
-            // if no track has been found inform the requester
-            response = tb.Text;
+            string response =
+                // if no track has been found inform the requester
+                tb.Text;
             response = response.Replace("{user}", Settings.TwAcc);
             response = response.Replace("{artist}", "Rick Astley");
             response = response.Replace("{title}", "Never Gonna Give You Up");
@@ -82,7 +84,7 @@ namespace Songify_Slim.UserControls
             }));
         }
 
-        private void setTextBoxText(TextBox tb, ComboBox cb, CheckBox check)
+        private static void SetTextBoxText(TextBox tb, Selector cb, ToggleButton check)
         {
             if (check.IsChecked != null && !(bool)check.IsChecked) return;
             if (tb.Text.StartsWith("[announce "))
@@ -99,94 +101,94 @@ namespace Songify_Slim.UserControls
 
         private void tb_ArtistBlocked_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespBlacklist = tb_ArtistBlocked.Text;
+            Settings.BotRespBlacklist = TbArtistBlocked.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_Error_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespError = tb_Error.Text;
+            Settings.BotRespError = TbError.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_MaxLength_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespLength = tb_MaxLength.Text;
+            Settings.BotRespLength = TbMaxLength.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_MaxSongs_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespMaxReq = tb_MaxSongs.Text;
+            Settings.BotRespMaxReq = TbMaxSongs.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_ModSkip_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespModSkip = tb_ModSkip.Text;
+            Settings.BotRespModSkip = TbModSkip.Text;
             SetPreview(sender as TextBox);
         }
 
         private void Tb_Next_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespNext = tb_Next.Text;
+            Settings.BotRespNext = TbNext.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_NoSong_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespNoSong = tb_NoSong.Text;
+            Settings.BotRespNoSong = TbNoSong.Text;
             SetPreview(sender as TextBox);
         }
 
         private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespPos = tb_Pos.Text;
+            Settings.BotRespPos = TbPos.Text;
             SetPreview(sender as TextBox);
         }
 
         private void Tb_Refund_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespRefund = tb_Refund.Text;
+            Settings.BotRespRefund = TbRefund.Text;
             SetPreview(sender as TextBox);
         }
 
         private void Tb_Song_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespSong = tb_Song.Text;
+            Settings.BotRespSong = TbSong.Text;
             SetPreview(sender as TextBox);
         }
 
         private void tb_SongInQueue_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespIsInQueue = tb_SongInQueue.Text;
+            Settings.BotRespIsInQueue = TbSongInQueue.Text;
             SetPreview(sender as TextBox);
         }
         private void tb_Success_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespSuccess = tb_Success.Text;
+            Settings.BotRespSuccess = TbSuccess.Text;
             SetPreview(sender as TextBox);
         }
         private void tb_VoteSkip_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.BotRespVoteSkip = tb_VoteSkip.Text;
+            Settings.BotRespVoteSkip = TbVoteSkip.Text;
             SetPreview(sender as TextBox);
         }
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            tb_ArtistBlocked.Text = Settings.BotRespBlacklist;
-            tb_SongInQueue.Text = Settings.BotRespIsInQueue;
-            tb_MaxSongs.Text = Settings.BotRespMaxReq;
-            tb_MaxLength.Text = Settings.BotRespLength;
-            tb_Error.Text = Settings.BotRespError;
-            tb_Success.Text = Settings.BotRespSuccess;
-            tb_NoSong.Text = Settings.BotRespNoSong;
-            tb_ModSkip.Text = Settings.BotRespModSkip;
-            tb_VoteSkip.Text = Settings.BotRespVoteSkip;
-            tb_Pos.Text = Settings.BotRespPos;
-            tb_Next.Text = Settings.BotRespNext;
-            tb_Song.Text = Settings.BotRespSong;
-            tb_Refund.Text = Settings.BotRespRefund;
+            TbArtistBlocked.Text = Settings.BotRespBlacklist;
+            TbSongInQueue.Text = Settings.BotRespIsInQueue;
+            TbMaxSongs.Text = Settings.BotRespMaxReq;
+            TbMaxLength.Text = Settings.BotRespLength;
+            TbError.Text = Settings.BotRespError;
+            TbSuccess.Text = Settings.BotRespSuccess;
+            TbNoSong.Text = Settings.BotRespNoSong;
+            TbModSkip.Text = Settings.BotRespModSkip;
+            TbVoteSkip.Text = Settings.BotRespVoteSkip;
+            TbPos.Text = Settings.BotRespPos;
+            TbNext.Text = Settings.BotRespNext;
+            TbSong.Text = Settings.BotRespSong;
+            TbRefund.Text = Settings.BotRespRefund;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {

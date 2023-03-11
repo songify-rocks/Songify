@@ -11,9 +11,9 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_Console.xaml
     /// </summary>
-    public partial class Window_Console
+    public partial class WindowConsole
     {
-        public Window_Console()
+        public WindowConsole()
         {
             InitializeComponent();
         }
