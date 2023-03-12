@@ -47,7 +47,6 @@ namespace Songify_Slim.Views
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public string SongArtist, SongTitle;
         public string CurrSong, CurrSongTwitch;
-        private static string _version;
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private bool _firstRun = true;
         private bool _forceClose;
@@ -544,7 +543,7 @@ namespace Songify_Slim.Views
             // get the software version from assembly
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            _version = fvi.FileVersion;
+            GlobalObjects.AppVersion = fvi.FileVersion;
 
             // generate UUID if not exists
             if (Settings.Uuid == "")
@@ -569,7 +568,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = $"Songify v{_version}{(GlobalObjects.IsBeta ? " Beta" : "")} Copyright ©";
+            LblCopyright.Content = $"Songify v{GlobalObjects.AppVersion}{(GlobalObjects.IsBeta ? " Beta" : "")} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {

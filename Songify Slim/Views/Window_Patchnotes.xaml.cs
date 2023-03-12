@@ -8,6 +8,8 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using MdXaml;
 using Octokit;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 
 namespace Songify_Slim.Views
 {
@@ -23,14 +25,27 @@ namespace Songify_Slim.Views
             InitializeComponent();
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
             Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
             foreach (Release release in releases.Result)
             {
-                LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl});
+                LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
             }
+
+            if (GlobalObjects.IsBeta)
+            {
+                string patchnotes = await WebHelper.GetBetaPatchNotes("https://songify.overcode.tv/beta_update.md");
+
+                LbxVersions.Items.Insert(0, new ReleaseObject
+                {
+                    Version = $"{GlobalObjects.AppVersion}_beta",
+                    Content = patchnotes,
+                    Url = ""
+                });
+            }
+
 
             LbxVersions.SelectedIndex = 0;
             LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
@@ -44,7 +59,15 @@ namespace Songify_Slim.Views
             document.FontFamily = new FontFamily("Sogeo UI");
             RtbPatchnotes.Document = document;
             string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
-            if (uri != null) Hyperlink.NavigateUri = new Uri(uri);
+            if (!string.IsNullOrWhiteSpace(uri))
+            {
+                Hyperlink.IsEnabled = true;
+                Hyperlink.NavigateUri = new Uri(uri);
+            }
+            else
+            {
+                Hyperlink.IsEnabled = false;
+            }
         }
 
         private class ReleaseObject

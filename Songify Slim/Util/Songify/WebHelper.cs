@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
-using System.Windows;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
-using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
@@ -21,7 +21,7 @@ namespace Songify_Slim.Util.Songify
         ///     This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
 
-        private static ApiClient _apiClient = new ApiClient(GlobalObjects.ApiUrl);
+        private static readonly ApiClient ApiClient = new ApiClient(GlobalObjects.ApiUrl);
 
         private enum RequestType
         {
@@ -43,12 +43,12 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                string result = "";
+                string result;
                 RequestObject response;
                 switch (method)
                 {
                     case RequestMethod.Get:
-                        result = await _apiClient.Get("queue", Settings.Settings.Uuid);
+                        result = await ApiClient.Get("queue", Settings.Settings.Uuid);
                         List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
                         queue.ForEach(q =>
                         {
@@ -64,18 +64,17 @@ namespace Songify_Slim.Util.Songify
                         });
                         break;
                     case RequestMethod.Post:
-                        result = await _apiClient.Post("queue", payload);
+                        result = await ApiClient.Post("queue", payload);
                         response = Json.Deserialize<RequestObject>(result);
                         GlobalObjects.ReqList.Add(response);
                         Debug.WriteLine(result);
                         break;
                     case RequestMethod.Patch:
-                        result = await _apiClient.Patch("queue", payload);
-                        response = Json.Deserialize<RequestObject>(result);
+                        result = await ApiClient.Patch("queue", payload);
+                        Json.Deserialize<RequestObject>(result);
                         break;
                     case RequestMethod.Clear:
-                        result = await _apiClient.Clear("queue", payload);
-
+                        await ApiClient.Clear("queue", payload);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
@@ -256,6 +255,17 @@ namespace Songify_Slim.Util.Songify
             string url = $"{GlobalObjects.BaseUrl}/song_history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.
             DoWebRequest(url, RequestType.UploadHistory);
+        }
+
+       public static async Task<string> GetBetaPatchNotes(string url)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                var response = await httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+                return content;
+            }
         }
     }
 }
