@@ -1110,11 +1110,17 @@ namespace Songify_Slim.Util.Songify
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
+                if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel,
+                        "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
+                    return;
+                }
+
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
                 if (x.HasError() == false)
-                    Client.SendMessage(Settings.Settings.TwChannel,
-                        $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
+                    Client.SendMessage(Settings.Settings.TwChannel, $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
             }
         }
 
