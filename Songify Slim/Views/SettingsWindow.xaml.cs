@@ -43,7 +43,7 @@ namespace Songify_Slim.Views
         private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
         private Window _mW;
         private readonly List<int> _refundConditons = new List<int>();
-        
+
         public Window_Settings()
         {
             InitializeComponent();
@@ -144,6 +144,7 @@ namespace Songify_Slim.Views
             TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
             TglBotcmdSsr.IsOn = Settings.TwSrCommand;
             TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
+            TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
@@ -151,6 +152,8 @@ namespace Songify_Slim.Views
             TextBoxTriggerSkip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSkipTrigger) ? "skip" : Settings.BotCmdSkipTrigger;
             TextBoxTriggerVoteskip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdVoteskipTrigger) ? "voteskip" : Settings.BotCmdVoteskipTrigger;
             TextBoxTriggerSsr.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
+            TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
+            TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
 
             if (ApiHandler.Spotify != null)
             {
@@ -541,7 +544,7 @@ namespace Songify_Slim.Views
             Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSkip.Text) ? "skip" : TextBoxTriggerSkip.Text;
             Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerVoteskip.Text) ? "voteskip" : TextBoxTriggerVoteskip.Text;
             Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerSsr.Text) ? "ssr" : TextBoxTriggerSsr.Text;
-            
+
             ConfigHandler.WriteAllConfig(Settings.Export());
             if (_appIdInitialValue == Settings.UseOwnApp) return;
             e.Cancel = true;
@@ -1160,6 +1163,16 @@ namespace Songify_Slim.Views
                         ? "ssr"
                         : ((TextBox)sender).Text;
                     break;
+                case "remove":
+                    Settings.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
+                        ? "remove"
+                        : ((TextBox)sender).Text;
+                    break;
+                case "like":
+                    Settings.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
+                        ? "like"
+                        : ((TextBox)sender).Text;
+                    break;
             }
         }
 
@@ -1188,6 +1201,12 @@ namespace Songify_Slim.Views
         private void Tgl_botcmd_remove_OnToggled_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdRemove = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void Tgl_botcmd_songlike_OnToggled_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdSonglike = ((ToggleSwitch)sender).IsOn;
+
         }
     }
 }

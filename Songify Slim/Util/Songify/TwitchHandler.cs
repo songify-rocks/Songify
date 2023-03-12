@@ -764,7 +764,7 @@ namespace Songify_Slim.Util.Songify
             {
                 Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
-            
+
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
             {
@@ -1081,7 +1081,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 Client.SendMessage(e.ChatMessage.Channel, response);
             }
-            else if (e.ChatMessage.Message == "!remove" && Settings.Settings.BotCmdRemove)
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" && Settings.Settings.BotCmdRemove)
             {
                 try
                 {
@@ -1108,12 +1108,7 @@ namespace Songify_Slim.Util.Songify
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
             }
-            else if (e.ChatMessage.Message == "!songlike" &&
-                     (!e.ChatMessage.IsBroadcaster && !e.ChatMessage.IsModerator))
-            {
-                return;
-            }
-            else if (e.ChatMessage.Message == "!songlike")
+            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{GlobalObjects.CurrentSong.SongId}");

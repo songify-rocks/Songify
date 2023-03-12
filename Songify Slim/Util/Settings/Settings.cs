@@ -534,6 +534,33 @@ namespace Songify_Slim.Util.Settings
         public static string WebUserAgent => GetWebua();
         public static string BotCmdRemoveTrigger { get => GetCmdRemoveTrigger(); set => SetCmdRemoveTrigger(value); }
 
+        public static string BotCmdSonglikeTrigger { get => GetCmdSonglikeTrigger(); set => SetCmdSonglikeTrigger(value); }
+
+        private static string GetCmdSonglikeTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdSonglikeTrigger;
+        }
+
+        private static void SetCmdSonglikeTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdSonglikeTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        public static bool BotCmdSonglike { get => GetBotCmdSonglike(); set => SetBotCmdSonglike(value); }
+
+        private static bool GetBotCmdSonglike()
+        {
+            return _currentConfig.BotConfig.BotCmdSonglike;
+        }
+
+
+        private static void SetBotCmdSonglike(bool value)
+        {
+            _currentConfig.BotConfig.BotCmdSonglike = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
         private static void SetCmdRemoveTrigger(string value)
         {
             _currentConfig.BotConfig.BotCmdRemoveTrigger = value;
@@ -600,6 +627,8 @@ namespace Songify_Slim.Util.Settings
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 ChatLiveStatus = GetChatLiveStatus(),
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+                BotCmdSonglike = GetBotCmdSonglike(),
+                BotCmdSonglikeTrigger = GetCmdSonglikeTrigger(),
             };
 
             AppConfig appConfig = new AppConfig

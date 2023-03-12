@@ -141,6 +141,7 @@ namespace Songify_Slim.Util.Settings
                             config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
                             config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
                             config.BotConfig.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdRemoveTrigger) ? "remove" : config.BotConfig.BotCmdRemoveTrigger;
+                            config.BotConfig.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSonglikeTrigger) ? "songlike" : config.BotConfig.BotCmdSonglikeTrigger;
                             config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
                         }
                         else
@@ -153,6 +154,8 @@ namespace Songify_Slim.Util.Settings
                                 BotCmdPosTrigger = "pos",
                                 BotCmdRemove = false,
                                 BotCmdRemoveTrigger = "remove",
+                                BotCmdSonglike = false,
+                                BotCmdSonglikeTrigger = "songlike",
                                 BotCmdSkip = false,
                                 BotCmdSkipTrigger = "skip",
                                 BotCmdSkipVote = false,
@@ -161,10 +164,13 @@ namespace Songify_Slim.Util.Settings
                                 BotCmdSongTrigger = "song",
                                 BotCmdSsrTrigger = "ssr",
                                 BotCmdVoteskipTrigger = "voteskip",
-                                BotRespBlacklist = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
-                                BotRespError = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
+                                BotRespBlacklist =
+                                    "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
+                                BotRespError =
+                                    "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
                                 BotRespIsInQueue = "@{user} this song is already in the queue.",
-                                BotRespLength = "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
+                                BotRespLength =
+                                    "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
                                 BotRespMaxReq = "@{user} maximum number of songs in queue reached ({maxreq}).",
                                 BotRespModSkip = "@{user} skipped the current song.",
                                 BotRespNext = "@{user} {song}",
@@ -594,6 +600,8 @@ namespace Songify_Slim.Util.Settings
         public string BotRespRefund { get; set; } = "Your points have been refunded.";
         public bool BotCmdRemove { get; set; }
         public string BotCmdRemoveTrigger { get; set; } = "remove";
+        public bool BotCmdSonglike { get; set; }
+        public string BotCmdSonglikeTrigger { get; set; } = "songlike";
     }
 
     public class AppConfig

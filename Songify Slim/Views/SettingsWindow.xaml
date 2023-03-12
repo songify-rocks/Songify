@@ -730,7 +730,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="80"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"  Grid.Row="0" Grid.Column="0" Margin="6,0,0,0" Padding="0,0,0,0"/>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"
@@ -821,6 +821,18 @@
                         </DockPanel>
                         <TextBlock Text="{x:Static local:Resources.brw_cmd_remove}" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdRemove" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_remove_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="8" Grid.Column="2" MinWidth="0"/>
+
+                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="9" >
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                        </Border>
+                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="9" VerticalAlignment="Center" >
+                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                            <TextBox x:Name="TextBoxTriggerSonglike" Tag="like" Text="songlike" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
+                        </DockPanel>
+                        <TextBlock Text="Adds the current song to the playlist selected in Spotify config" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdSonglike" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_songlike_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="9" Grid.Column="2" MinWidth="0"/>
 
                     </Grid>
                 </Border>
