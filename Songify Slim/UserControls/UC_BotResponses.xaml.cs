@@ -73,6 +73,11 @@ namespace Songify_Slim.UserControls
             response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
             response = response.Replace("{votes}", "3/5");
             response = response.Replace("{song}", "Rick Astley - Never Gonna Give You Up");
+            response = response.Replace("{req}", "John Doe");
+            response = response.Replace("{{", "");
+            response = response.Replace("}}", "");
+            response = response.Replace("{url}",
+                "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce");
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {

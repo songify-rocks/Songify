@@ -97,8 +97,8 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoUpdater.NET, Version=1.7.6.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Autoupdater.NET.Official.1.7.6\lib\net45\AutoUpdater.NET.dll</HintPath>
+    <Reference Include="AutoUpdater.NET, Version=1.7.7.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autoupdater.NET.Official.1.7.7\lib\net45\AutoUpdater.NET.dll</HintPath>
     </Reference>
     <Reference Include="CefSharp, Version=110.0.300.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138, processorArchitecture=MSIL">
       <HintPath>..\packages\CefSharp.Common.110.0.300\lib\net452\CefSharp.dll</HintPath>
@@ -275,13 +275,13 @@
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NHttp, Version=0.1.9.0, Culture=neutral, PublicKeyToken=156364e4f7b202d9, processorArchitecture=MSIL">
       <HintPath>..\packages\NHttp.0.1.9.0\lib\net20\NHttp.dll</HintPath>
     </Reference>
-    <Reference Include="Octokit, Version=5.0.0.0, Culture=neutral, PublicKeyToken=0be8860aee462442, processorArchitecture=MSIL">
-      <HintPath>..\packages\Octokit.5.0.0\lib\netstandard2.0\Octokit.dll</HintPath>
+    <Reference Include="Octokit, Version=5.0.2.0, Culture=neutral, PublicKeyToken=0be8860aee462442, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.5.0.2\lib\netstandard2.0\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="SpotifyAPI.Web, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpotifyAPI.Web.5.1.1\lib\netstandard2.0\SpotifyAPI.Web.dll</HintPath>
@@ -504,8 +504,8 @@
     <Reference Include="TwitchLib.Communication, Version=1.0.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TwitchLib.Communication.1.0.6\lib\netstandard2.0\TwitchLib.Communication.dll</HintPath>
     </Reference>
-    <Reference Include="TwitchLib.EventSub.Core, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\TwitchLib.EventSub.Core.2.3.0\lib\netstandard2.0\TwitchLib.EventSub.Core.dll</HintPath>
+    <Reference Include="TwitchLib.EventSub.Core, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TwitchLib.EventSub.Core.2.3.1\lib\netstandard2.0\TwitchLib.EventSub.Core.dll</HintPath>
     </Reference>
     <Reference Include="TwitchLib.EventSub.Websockets, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TwitchLib.EventSub.Websockets.0.3.0\lib\netstandard2.0\TwitchLib.EventSub.Websockets.dll</HintPath>
@@ -525,7 +525,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="YamlDotNet, Version=13.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
-      <HintPath>..\packages\YamlDotNet.13.0.1\lib\net47\YamlDotNet.dll</HintPath>
+      <HintPath>..\packages\YamlDotNet.13.0.2\lib\net47\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -1117,6 +1117,20 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
+                var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+                do
+                {
+                    if (tracks.Items.Any(t => t.Track.Id == GlobalObjects.CurrentSong.SongId))
+                    {
+                        Client.SendMessage(Settings.Settings.TwChannel,
+                            $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                        return;
+                    }
+
+                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
+                        100, tracks.Offset + tracks.Limit);
+                } while (tracks.HasNextPage());
+
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
                 if (x.HasError() == false)

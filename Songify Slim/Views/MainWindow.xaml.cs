@@ -42,7 +42,6 @@ namespace Songify_Slim.Views
     public partial class MainWindow
     {
         #region Variables
-
         private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public string SongArtist, SongTitle;
