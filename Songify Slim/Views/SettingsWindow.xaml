@@ -47,7 +47,7 @@
                         </Grid.RowDefinitions>
                         <Label Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}" Padding="0,5,5,5" HorizontalAlignment="Left" VerticalAlignment="Top" />
                         <Label Grid.Row="0" Content="{x:Static local:Resources.sw_tcSystem_translated}" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="9" FontStyle="Italic" Margin="0,13,0,0" />
-                        <ComboBox Grid.Row="0" x:Name="cbx_Language" HorizontalAlignment="Right" VerticalAlignment="Center" Width="220" SelectionChanged="ComboBox_SelectionChanged">
+                        <ComboBox Grid.Row="0" x:Name="CbxLanguage" HorizontalAlignment="Right" VerticalAlignment="Center" Width="220" SelectionChanged="ComboBox_SelectionChanged">
                             <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
@@ -126,17 +126,18 @@
                         </Grid.ColumnDefinitions>
                         <Label Grid.Column="0" Content="{x:Static local:Resources.sw_tcOutput_Directory}" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Height="32" Width="99" />
-                        <TextBox Grid.Column="1" x:Name="TxtbxOutputdirectory" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,64,0" />
+                        <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtbxOutputdirectory" Height="26" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,64,0" />
                         <Button x:Name="BtnOutputdirectory" Content="..."
                             VerticalAlignment="Center" Click="BtnOutputdirectoryClick"
-                            RenderTransformOrigin="-1.138,0.407" Grid.Column="1" Margin="0,0,32,0" Height="26" HorizontalAlignment="Right" Width="26" />
+                            RenderTransformOrigin="-1.138,0.407" Grid.Row="0" Grid.Column="1" Margin="0,0,32,0" Height="26" HorizontalAlignment="Right" Width="26" />
                         <Button x:Name="BtnCopyToClip"
                             VerticalAlignment="Center" Click="BtnCopyToClipClick" Padding="5"
-                            Focusable="False" ToolTip="Copy to Clipboard" Height="26" Grid.Column="1" HorizontalAlignment="Right" Width="26">
+                            Focusable="False" ToolTip="Copy to Clipboard" Height="26" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Width="26">
 
                             <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" Margin="-1,-1,-1,-1" />
                         </Button>
-                        <Label Content="{x:Static local:Resources.sw_tcOutput_Format}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Height="32" />
+                        <Label Content="{x:Static local:Resources.sw_tcOutput_Format}" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1"
+                               Grid.Column="0" Height="32" />
                         <TextBox x:Name="TxtbxOutputformat" Height="26"
                              TextWrapping="NoWrap" VerticalAlignment="Center"
                              TextChanged="TxtbxOutputformat_TextChanged" Grid.Row="1" Grid.Column="1">
@@ -169,7 +170,7 @@
                                            FontSize="12"
                                            ContentPadding="0"
                                            Toggled="ChbxCover_Checked" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" Height="32" />
-                        <Button x:Name="BtnCopyURL" HorizontalAlignment="Left" VerticalAlignment="Center"
+                        <Button x:Name="BtnCopyUrl" HorizontalAlignment="Left" VerticalAlignment="Center"
                             Width="26" Click="BtnCopyURL_Click" Grid.Row="5" Grid.Column="1" Height="26">
                             <iconPacks:PackIconFontAwesome Width="15" Height="15" Kind="LinkSolid" Margin="-1,-2,-1,-2" />
                         </Button>
@@ -182,7 +183,7 @@
                         <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
                               HorizontalAlignment="Left" VerticalAlignment="Center"
                               Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" RenderTransformOrigin="0.47,1.039" Grid.Column="1" Grid.Row="3" Height="18" />
-                        <controls:NumericUpDown Grid.Row="3" Grid.Column="1" x:Name="nud_Spaces" Minimum="1" Maximum="10" Interval="1"
+                        <controls:NumericUpDown Grid.Row="3" Grid.Column="1" x:Name="NudSpaces" Minimum="1" Maximum="10" Interval="1"
                                             NumericInputMode="Numbers"
                                             ValueChanged="nud_Spaces_ValueChanged" Height="26"
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="121"
@@ -243,7 +244,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" x:Name="lblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <Label Grid.Column="0" x:Name="LblTwitchName" Content="{x:Static local:Resources.sw_Integration_Twitch}" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                         <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Main">
                                             <Button.Style>
                                                 <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -262,7 +263,7 @@
                                     </Grid>
                                 </StackPanel>
                             </DockPanel>
-                            <DockPanel x:Name="PnlTwichBot" Margin="0,6,0,6" Grid.Column="1">
+                            <DockPanel x:Name="PnlTwichBot" Margin="0,6,0,6" Grid.Row="0" Grid.Column="1">
                                 <Border CornerRadius="40" Width="60" Height="60" BorderThickness="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
                                     <Border.Background>
                                         <ImageBrush x:Name="ImgTwitchBotProfile" Stretch="Fill" ImageSource="/songify.ico"/>
@@ -274,7 +275,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" x:Name="lblTwitchBotName" Content="Twitch Bot" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                        <Label Grid.Column="0" x:Name="LblTwitchBotName" Content="Twitch Bot" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                         <Button Grid.Column="1" Margin="16,0,0,0"  x:Name="BtnTwitchBotLogout" VerticalAlignment="Center" Click="BtnTwitchLogout_OnClick" ToolTip="{x:Static local:Resources.sw_Twitch_LogOut}" Tag="Bot">
                                             <iconPacks:ForkAwesome Width="15" Height="15" Kind="SignOut"/>
                                             <Button.Style>
@@ -337,40 +338,40 @@
                             </Grid.RowDefinitions>
                             <Label Margin="0,4"  Content="Account name" HorizontalAlignment="Left" VerticalAlignment="Top"
                                    Padding="0,5,5,5" Grid.Row="0" Grid.Column="0" />
-                            <TextBox Margin="0,4" x:Name="txtbx_twUser" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""
+                            <TextBox Margin="0,4" x:Name="TxtbxTwUser" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text=""
                                                  VerticalAlignment="Top"
                                                  controls:TextBoxHelper.Watermark="Account" TextChanged="txtbx_twUser_TextChanged"
                                                  Grid.Row="0" Grid.Column="1" />
                             <Label Margin="0,4" Content="oAuth Token" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="1"
                                        Grid.Column="0" />
                             <Grid Margin="0,4" Grid.Row="1" Grid.Column="1">
-                                <PasswordBox x:Name="txtbx_twOAuth" HorizontalAlignment="Stretch"
+                                <PasswordBox x:Name="TxtbxTwOAuth" HorizontalAlignment="Stretch"
                                          controls:TextBoxHelper.Watermark="oAuth Token" VerticalAlignment="Stretch"
-                                         PasswordChanged="txtbx_twOAuth_PasswordChanged" Grid.Row="1" Grid.Column="1" Margin="0,0,30,0" />
+                                         PasswordChanged="txtbx_twOAuth_PasswordChanged" Margin="0,0,30,0" />
                                 <Button Content="?" HorizontalAlignment="Right" VerticalAlignment="Top"
-                           Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27" Grid.Row="1" Grid.Column="1" />
+                           Click="Button_Click" ToolTip="Click here to get the oAuth token." Width="27"/>
                             </Grid>
                             <Label Margin="0,4" Content="Channel to join" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="0,5,5,5" Grid.Row="2"
                                        Grid.Column="0" />
-                            <TextBox Margin="0,4" x:Name="txtbx_twChannel" HorizontalAlignment="Stretch" TextWrapping="Wrap"
+                            <TextBox Margin="0,4" x:Name="TxtbxTwChannel" HorizontalAlignment="Stretch" TextWrapping="Wrap"
                                      controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_Integration_TwitchChWatermark}"
                                      VerticalAlignment="Top"
                                      TextChanged="txtbx_twChannel_TextChanged" Grid.Row="2" Grid.Column="1" />
                         </Grid>
                         <!--#endregion-->
 
-                        <controls:ToggleSwitch Margin="0,4" x:Name="Chbx_TwAutoconnect"
+                        <controls:ToggleSwitch Margin="0,4" x:Name="ChbxTwAutoconnect"
                                                    Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
                                                    Toggled="Chbx_TwAutoconnect_Checked" VerticalAlignment="Top" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"
                                                    HorizontalAlignment="Stretch" />
-                        <controls:ToggleSwitch x:Name="tgl_AnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
+                        <controls:ToggleSwitch x:Name="TglAnnounceInChat" VerticalAlignment="Top" Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}" Toggled="tgl_AnnounceInChat_Toggled" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,4,0,4" Grid.ColumnSpan="2" />
                         <StackPanel Orientation="Vertical" Grid.ColumnSpan="2"  Grid.Row="6" Grid.Column="0" >
-                            <controls:ToggleSwitch x:Name="tgl_OnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center">
+                            <controls:ToggleSwitch x:Name="TglOnlyWorkWhenLive" VerticalAlignment="Top" Toggled="Tgl_OnlyWorkWhenLive_OnToggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center">
                                 <controls:ToggleSwitch.Content>
                                     <TextBlock Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                 </controls:ToggleSwitch.Content>
                             </controls:ToggleSwitch>
-                            <controls:ToggleSwitch x:Name="tgl_InformChat" VerticalAlignment="Top" Toggled="tgl_InformChat_Toggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center" ToolTip="Enabling this will send a message to chat if an action has been cancelled due to the stream being offline.">
+                            <controls:ToggleSwitch x:Name="TglInformChat" VerticalAlignment="Top" Toggled="tgl_InformChat_Toggled" HorizontalAlignment="Stretch" Margin="0,4,0,4" Height="32" VerticalContentAlignment="Center" ToolTip="Enabling this will send a message to chat if an action has been cancelled due to the stream being offline.">
                                 <controls:ToggleSwitch.Content>
                                     <TextBlock Text="{x:Static local:Resources.Sw_Integration_StreamNotLifeNotification}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                 </controls:ToggleSwitch.Content>
@@ -378,7 +379,7 @@
 
                         </StackPanel>
 
-                        <Button Visibility="Collapsed" Margin="0,4" Grid.Row="7" x:Name="btn_Botresponse"
+                        <Button Visibility="Collapsed" Margin="0,4" Grid.Row="7" x:Name="BtnBotresponse"
                                     Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}" Click="btn_Botresponse_Click" FontSize="14" Grid.ColumnSpan="2"
                                     Grid.Column="0" />
                     </Grid>
@@ -469,10 +470,10 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox IsReadOnly="True" x:Name="txtbx_RewardID" HorizontalAlignment="Left" Height="23" Text=""
+                                <TextBox IsReadOnly="True" x:Name="TxtbxRewardId" HorizontalAlignment="Left" Height="23" Text=""
                                 VerticalAlignment="Center" controls:TextBoxHelper.Watermark="Reward ID" TextChanged="txtbx_RewardID_TextChanged" Grid.Row="2"
                                 Grid.Column="0" Grid.ColumnSpan="2" Width="264" Visibility="Collapsed" />
-                                <CheckBox x:Name="Chbx_MessageLogging"
+                                <CheckBox x:Name="ChbxMessageLogging"
                                 Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
                                 HorizontalAlignment="Left" VerticalAlignment="Top"
                                 Checked="Chbx_MessageLogging_Checked" Unchecked="Chbx_MessageLogging_Checked" Grid.Row="2" Margin="0,4,0,0" Visibility="Hidden" Grid.Column="0"  />
@@ -587,7 +588,7 @@
                         <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                             <StackPanel Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Stretch">
                                 <DockPanel LastChildFill="True">
-                                    <controls:ToggleSwitch x:Name="Chbx_TwReward"
+                                    <controls:ToggleSwitch x:Name="ChbxTwReward"
                                                    Content="{x:Static local:Resources.sw_SpotifySR_SRReward}"
                                                    HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="Chbx_TwReward_Checked"
                                                    Focusable="False" FontFamily="Segoe UI"
@@ -597,7 +598,7 @@
                                     <Button x:Name="BtnFocusRewards" Content="{x:Static local:Resources.Sw_Integration_ManageRewards}" Click="BtnFocusRewards_Click"></Button>
                                 </DockPanel>
                                 <Grid>
-                                    <controls:ToggleSwitch IsEnabled="False" x:Name="Chbx_TwCommand"
+                                    <controls:ToggleSwitch IsEnabled="False" x:Name="ChbxTwCommand"
                                            Content="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
                                            HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="Chbx_TwCommand_Checked"
                                            Focusable="False" FontFamily="Segoe UI"
@@ -606,7 +607,7 @@
                                            Width="470" Height="36" Opacity="0.1" />
                                     <Label Content="{x:Static local:Resources.sw_SpotifySR_SsrMovedToBotConfig}" Margin="50,0,0,4" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
                                 </Grid>
-                                <controls:ToggleSwitch x:Name="Chbx_AutoClear"
+                                <controls:ToggleSwitch x:Name="ChbxAutoClear"
                                                                Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
                                                                Focusable="False" FontFamily="Segoe UI"
                                                                FontSize="12"
@@ -627,10 +628,10 @@
                                             <ComboBox.Style>
                                                 <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="True">
+                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
                                                             <Setter Property="IsEnabled" Value="False"></Setter>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="False">
+                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
                                                             <Setter Property="IsEnabled" Value="True"></Setter>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -644,10 +645,10 @@
                                             <controls:NumericUpDown.Style>
                                                 <Style TargetType="controls:NumericUpDown">
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="True">
+                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
                                                             <Setter Property="IsEnabled" Value="False"></Setter>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSR, Path=IsOn}" Value="False">
+                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
                                                             <Setter Property="IsEnabled" Value="True"></Setter>
                                                         </DataTrigger>
                                                     </Style.Triggers>
@@ -670,7 +671,7 @@
                                         </Button>
                                     </StackPanel>
                                 </DockPanel>
-                                <controls:ToggleSwitch x:Name="ToggleSwitchUnlimitedSR" Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}" HorizontalAlignment="Right" Toggled="ToggleSwitchUnlimitedSR_Toggled"/>
+                                <controls:ToggleSwitch x:Name="ToggleSwitchUnlimitedSr" Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}" HorizontalAlignment="Right" Toggled="ToggleSwitchUnlimitedSR_Toggled"/>
                                 <DockPanel Margin="0,6,0,0">
                                     <Label Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" HorizontalAlignment="Left"
                            VerticalAlignment="Center" Margin="0,0,0,0" />
@@ -706,7 +707,7 @@
                             <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                         </ScrollViewer>
                         <Border Grid.Row="2" Margin="-10,5,-10,0" VerticalAlignment="Bottom" BorderThickness="0,2,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}">
-                            <TextBox  x:Name="lbl_Preview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41"  />
+                            <TextBox  x:Name="LblPreview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41"  />
                         </Border>
                     </Grid>
                 </Border>
@@ -721,6 +722,7 @@
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -728,6 +730,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="80"/>
                         </Grid.RowDefinitions>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_trigger}" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="10"  Grid.Row="0" Grid.Column="0" Margin="6,0,0,0" Padding="0,0,0,0"/>
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_description}" VerticalAlignment="Top" Width="341" FontStyle="Italic" FontSize="10"
@@ -736,17 +739,6 @@
                                    Grid.Row="0" Grid.Column="2" Width="106"/>
 
 
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
-                            <Border.BorderBrush>
-                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
-                            </Border.BorderBrush>
-                        </Border>
-                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="1" VerticalAlignment="Center" >
-                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                            <TextBox x:Name="TextBoxTriggerSong" Tag="song" Text="song" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
-                        </DockPanel>
-                        <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_song" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="1" Grid.Column="2" MinWidth="0"/>
                         <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="3" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -754,11 +746,10 @@
                         </Border>
                         <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="2" VerticalAlignment="Center" >
                             <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"  x:Name="TextBoxTriggerPos" Tag="pos" Text="pos" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}"/>
+                            <TextBox x:Name="TextBoxTriggerSong" Tag="song" Text="song" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
                         </DockPanel>
-                        <!--<TextBlock Grid.Column="0"  Text="!pos" Width="70" VerticalAlignment="Center" Grid.Row="2" Margin="6,0,0,0"/>-->
-                        <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_pos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="2" Grid.Column="2" MinWidth="0" />
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdSong" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="2" Grid.Column="2" MinWidth="0"/>
                         <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="4" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -766,11 +757,11 @@
                         </Border>
                         <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="3" VerticalAlignment="Center" >
                             <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerNext" Tag="next" Text="next" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"  x:Name="TextBoxTriggerPos" Tag="pos" Text="pos" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}"/>
                         </DockPanel>
-                        <!--<TextBlock Grid.Column="0" Text="!next" Width="70" VerticalAlignment="Center" Grid.Row="3" Margin="6,0,0,0"/>-->
-                        <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_next" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="3" Grid.Column="2" MinWidth="0"/>
+                        <!--<TextBlock Grid.Column="0"  Text="!pos" Width="70" VerticalAlignment="Center" Grid.Row="2" Margin="6,0,0,0"/>-->
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdPos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="3" Grid.Column="2" MinWidth="0" />
                         <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="5" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
@@ -778,35 +769,59 @@
                         </Border>
                         <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="4" VerticalAlignment="Center" >
                             <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerSkip" Tag="skip" Text="skip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerNext" Tag="next" Text="next" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
                         </DockPanel>
-                        <!--<TextBlock Grid.Column="0" Text="!skip" Width="70" VerticalAlignment="Center" Grid.Row="4" Margin="6,0,0,0"/>-->
-
-                        <TextBlock Text="{x:Static local:Resources.brw_cmd_skip}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_skip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="4" Grid.Column="2"/>
-
-                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="5" VerticalAlignment="Center" >
-                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
-                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerVoteskip" Tag="voteskip" Text="voteskip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
-                        </DockPanel>
-                        <!--<TextBlock Grid.Column="0" Text="!voteskip" Width="70" VerticalAlignment="Center" Grid.Row="5" Margin="6,0,0,0" Grid.RowSpan="2"/>-->
-                        <TextBlock Text="{x:Static local:Resources.brw_cmd_skipvote}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_skipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="5" Grid.Column="2"/>
-
-                        <Label Content="{x:Static local:Resources.brw_cmd_skipvotecount}" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
-                        <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="6" Grid.Column="2" Height="26" Margin="0,0,0,6" />
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="7" >
+                        <!--<TextBlock Grid.Column="0" Text="!next" Width="70" VerticalAlignment="Center" Grid.Row="3" Margin="6,0,0,0"/>-->
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdNext" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="4" Grid.Column="2" MinWidth="0"/>
+                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="6" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
                         </Border>
+                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="5" VerticalAlignment="Center" >
+                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerSkip" Tag="skip" Text="skip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                        </DockPanel>
+                        <!--<TextBlock Grid.Column="0" Text="!skip" Width="70" VerticalAlignment="Center" Grid.Row="4" Margin="6,0,0,0"/>-->
 
-                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="7" VerticalAlignment="Center" >
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_skip}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdSkip" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skip_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="5" Grid.Column="2"/>
+
+                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="6" VerticalAlignment="Center" >
+                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                            <TextBox PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" x:Name="TextBoxTriggerVoteskip" Tag="voteskip" Text="voteskip" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" VerticalAlignment="Top" />
+                        </DockPanel>
+                        <!--<TextBlock Grid.Column="0" Text="!voteskip" Width="70" VerticalAlignment="Center" Grid.Row="5" Margin="6,0,0,0" Grid.RowSpan="2"/>-->
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_skipvote}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" Grid.RowSpan="2"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdSkipvote" HorizontalAlignment="Left" VerticalAlignment="Center" Toggled="tgl_botcmd_skipvote_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" MinWidth="0" Grid.Row="6" Grid.Column="2"/>
+
+                        <Label Content="{x:Static local:Resources.brw_cmd_skipvotecount}" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
+                        <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="7" Grid.Column="2" Height="26" Margin="0,0,0,6" />
+                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                        </Border>
+                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="1" VerticalAlignment="Center" >
                             <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
                             <TextBox x:Name="TextBoxTriggerSsr" Tag="ssr" Text="ssr" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
                         </DockPanel>
-                        <TextBlock Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" VerticalAlignment="Center" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left"/>
-                        <controls:ToggleSwitch x:Name="tgl_botcmd_ssr" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="7" Grid.Column="2" MinWidth="0"/>
+                        <TextBlock Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdSsr" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="1" Grid.Column="2" MinWidth="0"/>
+
+                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="8" >
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
+                            </Border.BorderBrush>
+                        </Border>
+                        <DockPanel LastChildFill="True" Grid.Column="0"  Grid.Row="8" VerticalAlignment="Center" >
+                            <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
+                            <TextBox x:Name="TextBoxTriggerRemove" Tag="remove" Text="remove" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
+                        </DockPanel>
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_remove}" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <controls:ToggleSwitch x:Name="TglBotcmdRemove" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_remove_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="8" Grid.Column="2" MinWidth="0"/>
+
                     </Grid>
                 </Border>
             </TabItem>
@@ -826,28 +841,28 @@
                                     <ImageBrush x:Name="ImgSpotifyProfile" Stretch="Fill" ImageSource="/songify.ico" Opacity="1"/>
                                 </Border.Background>
                             </Border>
-                            <Label x:Name="lbl_SpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
+                            <Label x:Name="LblSpotifyAcc" Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
                                            HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0" />
                         </DockPanel>
-                        <Button Grid.Row="0" x:Name="btn_spotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" VerticalAlignment="Center"
+                        <Button Grid.Row="0" x:Name="BtnSpotifyLink" Content="{x:Static local:Resources.sw_Integration_btnLink}" VerticalAlignment="Center"
                                         Click="btn_spotifyLink_Click" HorizontalAlignment="Right" Width="90" />
-                        <controls:ToggleSwitch x:Name="Tglsw_Spotify" FontFamily="Segoe UI"
+                        <controls:ToggleSwitch x:Name="TglswSpotify" FontFamily="Segoe UI"
                                            FontSize="12"
                                            ContentPadding="0" VerticalAlignment="Top"
                                            Padding="5,0,0,0" Toggled="Tglsw_Spotify_IsCheckedChanged"
                                            OffContent="{x:Static local:Resources.sw_tcSpotify_UseSongifyApp}"
                                            OnContent="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}" Grid.Row="1" Margin="0,0,0,6" />
-                        <TextBox x:Name="tb_ClientID" Height="23"
+                        <TextBox x:Name="TbClientId" Height="23"
                              TextWrapping="Wrap" VerticalAlignment="Top"
                              TextChanged="tb_ClientID_TextChanged" HorizontalAlignment="Right" Width="270" Grid.Row="2" />
-                        <PasswordBox x:Name="tb_ClientSecret" Height="23"
+                        <PasswordBox x:Name="TbClientSecret" Height="23"
                                  VerticalAlignment="Top" PasswordChanged="tb_ClientSecret_PasswordChanged" HorizontalAlignment="Right" Width="270" Grid.Row="3" />
                         <Label Content="Client ID" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Margin="0,0,0,6" />
                         <Label Content="Client Secret" HorizontalAlignment="Left"
                            VerticalAlignment="Top" Grid.Row="3" Margin="0,0,0,6" />
-                        <Button x:Name="btn_OwnAppHelp" Content="?" VerticalAlignment="Stretch" Click="btn_OwnAppHelp_Click" HorizontalAlignment="Right" Grid.Row="1" Width="32" Margin="0,0,0,6" />
+                        <Button x:Name="BtnOwnAppHelp" Content="?" VerticalAlignment="Stretch" Click="btn_OwnAppHelp_Click" HorizontalAlignment="Right" Grid.Row="1" Width="32" Margin="0,0,0,6" />
                         <Label Grid.Row="4" Content="Song Request Playlist"/>
-                        <ComboBox x:Name="cb_SpotifyPlaylist" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" Width="270" SelectionChanged="cb_SpotifyPlaylist_SelectionChanged" />
+                        <ComboBox x:Name="CbSpotifyPlaylist" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="4" Width="270" SelectionChanged="cb_SpotifyPlaylist_SelectionChanged" />
                     </Grid>
                 </Border>
             </TabItem>
@@ -886,12 +901,13 @@
                         <controls:ToggleSwitch x:Name="TglBetaUpdates"
                                                Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0"
                                                HorizontalAlignment="Stretch" Toggled="TglBetaUpdates_Toggled" />
-                        <Button x:Name="Btn_ExportConfig" Content="{x:Static local:Resources.sw_Config_Export}"
-                                HorizontalAlignment="Right" VerticalAlignment="Top" Width="170" Click="Btn_ExportConfig_Click" Grid.Column="1" />
-                        <Button x:Name="Btn_ImportConfig" Content="{x:Static local:Resources.sw_Config_Import}"
+                        <Button x:Name="BtnExportConfig" Content="{x:Static local:Resources.sw_Config_Export}"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Width="170" Click="Btn_ExportConfig_Click"
+                                Grid.Row="0" Grid.Column="1" />
+                        <Button x:Name="BtnImportConfig" Content="{x:Static local:Resources.sw_Config_Import}"
                             HorizontalAlignment="Right" VerticalAlignment="Top" Width="170"
                             Click="Btn_ImportConfig_Click" Grid.Row="1" Grid.Column="1" Visibility="Collapsed" />
-                        <Button x:Name="Btn_ResetConfig" Content="{x:Static local:Resources.sw_Config_ResetConfig}" HorizontalAlignment="Right"
+                        <Button x:Name="BtnResetConfig" Content="{x:Static local:Resources.sw_Config_ResetConfig}" HorizontalAlignment="Right"
                             VerticalAlignment="Top" Width="170" Click="Btn_ResetConfig_Click" Grid.Row="1" Grid.Column="1" />
                         <Label Grid.Column="0" Content="Twitch Auth Ports" Grid.Row="2"/>
                         <StackPanel Grid.Row="3" Grid.Column="0" Orientation="Vertical">

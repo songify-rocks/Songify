@@ -18,17 +18,6 @@ namespace Songify_Slim.Util.Settings
             set => SetAccessKey(value);
         }
 
-        private static void SetAccessKey(string value)
-        {
-            _currentConfig.AppConfig.AccessKey = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static string GetAccessKey()
-        {
-            return _currentConfig.AppConfig.AccessKey;
-        }
-
         public static bool AnnounceInChat
         {
             get => GetAnnounceInChat();
@@ -77,17 +66,25 @@ namespace Songify_Slim.Util.Settings
             set => SetBotCmdNext(value);
         }
 
+        public static string BotCmdNextTrigger { get => GetCmdNextTrigger(); set => SetCmdNextTrigger(value); }
+
         public static bool BotCmdPos
         {
             get => GetBotCmdPos();
             set => SetBotCmdPos(value);
         }
 
+        public static string BotCmdPosTrigger { get => GetCmdPosTrigger(); set => SetCmdPosTrigger(value); }
+
+        public static bool BotCmdRemove { get => GetBotCmdRemove(); set => SetBotCmdRemove(value); }
+
         public static bool BotCmdSkip
         {
             get => GetBotCmdSkip();
             set => SetBotCmdSkip(value);
         }
+
+        public static string BotCmdSkipTrigger { get => GetCmdSkipTrigger(); set => SetCmdSkipTrigger(value); }
 
         public static bool BotCmdSkipVote
         {
@@ -106,6 +103,12 @@ namespace Songify_Slim.Util.Settings
             get => GetBotCmdSong();
             set => SetBotCmdSong(value);
         }
+
+        public static string BotCmdSongTrigger { get => GetCmdSongTrigger(); set => SetCmdSongTrigger(value); }
+
+        public static string BotCmdSsrTrigger { get => GetCmdSsrTrigger(); set => SetCmdSsrTrigger(value); }
+
+        public static string BotCmdVoteskipTrigger { get => GetCmdVoteskipTrigger(); set => SetCmdVoteskipTrigger(value); }
 
         public static bool BotOnlyWorkWhenLive
         {
@@ -167,6 +170,10 @@ namespace Songify_Slim.Util.Settings
             set => SetBot_Resp_Pos(value);
         }
 
+        public static string BotRespRefund { get => GetBot_Resp_Refund(); set => SetBot_Resp_Refund(value); }
+
+        public static string BotRespSong { get => GetBot_resp_Song(); set => SetBot_Resp_Song(value); }
+
         public static string BotRespSuccess
         {
             get => GetBot_Resp_Success();
@@ -178,6 +185,8 @@ namespace Songify_Slim.Util.Settings
             get => GetBot_Resp_VoteSkip();
             set => SetBot_Resp_VoteSkip(value);
         }
+
+        public static bool ChatLiveStatus { get => GetChatLiveStatus(); set => SetChatLiveStatus(value); }
 
         public static int ChromeFetchRate
         {
@@ -290,11 +299,19 @@ namespace Songify_Slim.Util.Settings
             set => SetRefundConditons(value);
         }
 
+        public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
+
+        public static bool RewardGoalEnabled { get => GetRewardGoalEnabled(); set => SetRewardGoalEnabled(value); }
+
+        public static string RewardGoalSong { get => GetRewardGoalSong(); set => SetRewardGoalSong(value); }
+
         public static bool SaveHistory
         {
             get => GetSaveHistory();
             set => SetSaveHistory(value);
         }
+
+        public static List<TrackItem> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
 
         public static int SpaceCount
         {
@@ -319,6 +336,8 @@ namespace Songify_Slim.Util.Settings
             get => GetSpotifyDeviceId();
             set => SetSpotifyDeviceId(value);
         }
+
+        public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
 
         public static string SpotifyRefreshToken
         {
@@ -368,10 +387,26 @@ namespace Songify_Slim.Util.Settings
             set => SetTwitchAccessToken(value);
         }
 
+        public static string TwitchBotToken { get => GetTwitchBotToken(); set => SetTwitchBotToken(value); }
+
+        public static User TwitchBotUser { get => GetTwitchBotUser(); set => SetTwitchBotUser(value); }
+
         public static string TwitchChannelId
         {
             get => GetTwitchChannelId();
             set => SetTwitchChannelId(value);
+        }
+
+        public static int TwitchFetchPort
+        {
+            get => GetTwitchFetchPort();
+            set => SetTwitchFetchPort(value);
+        }
+
+        public static int TwitchRedirectPort
+        {
+            get => GetTwitchRedirectPort();
+            set => SetTwitchRedirectPort(value);
         }
 
         public static User TwitchUser
@@ -386,11 +421,15 @@ namespace Songify_Slim.Util.Settings
             set => SetTwOAuth(value);
         }
 
+        public static string TwRewardGoalRewardId { get => GetTwRewardGoalRewardId(); set => SetTwRewardGoalRewardId(value); }
+
         public static string TwRewardId
         {
             get => GetTwRewardId();
             set => SetTwRewardId(value);
         }
+
+        public static string TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
 
         public static bool TwSrCommand
         {
@@ -446,6 +485,8 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrReward(value);
         }
 
+        public static bool TwSrUnlimitedSr { get => GetTwSrUnlimitedSr(); set => SetTwSrUnlimitedSr(value); }
+
         public static int TwSrUserLevel
         {
             get => GetTwSrUserLevel();
@@ -490,280 +531,18 @@ namespace Songify_Slim.Util.Settings
             set => SetWebServerPort(value);
         }
 
-        public static int TwitchRedirectPort
-        {
-            get => GetTwitchRedirectPort();
-            set => SetTwitchRedirectPort(value);
-        }
-
-        private static void SetTwitchRedirectPort(int value)
-        {
-            _currentConfig.AppConfig.TwitchRedirectPort = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static int GetTwitchRedirectPort()
-        {
-            return _currentConfig.AppConfig.TwitchRedirectPort;
-        }
-
-        public static int TwitchFetchPort
-        {
-            get => GetTwitchFetchPort();
-            set => SetTwitchFetchPort(value);
-        }
-
-        private static void SetTwitchFetchPort(int value)
-        {
-            _currentConfig.AppConfig.TwitchFetchPort = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static int GetTwitchFetchPort()
-        {
-            return _currentConfig.AppConfig.TwitchFetchPort;
-        }
-
         public static string WebUserAgent => GetWebua();
-        public static string BotCmdPosTrigger { get => GetCmdPosTrigger(); set => SetCmdPosTrigger(value); }
-        public static string BotCmdSongTrigger { get => GetCmdSongTrigger(); set => SetCmdSongTrigger(value); }
-        public static string BotCmdNextTrigger { get => GetCmdNextTrigger(); set => SetCmdNextTrigger(value); }
+        public static string BotCmdRemoveTrigger { get => GetCmdRemoveTrigger(); set => SetCmdRemoveTrigger(value); }
 
-        private static void SetCmdNextTrigger(string value)
+        private static void SetCmdRemoveTrigger(string value)
         {
-            _currentConfig.BotConfig.BotCmdNextTrigger = value;
+            _currentConfig.BotConfig.BotCmdRemoveTrigger = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
-        private static string GetCmdNextTrigger()
+        private static string GetCmdRemoveTrigger()
         {
-            return _currentConfig.BotConfig.BotCmdNextTrigger;
-        }
-
-
-        public static string BotCmdSsrTrigger { get => GetCmdSsrTrigger(); set => SetCmdSsrTrigger(value); }
-
-        private static void SetCmdSsrTrigger(string value)
-        {
-            _currentConfig.BotConfig.BotCmdSsrTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetCmdSsrTrigger()
-        {
-            return _currentConfig.BotConfig.BotCmdSsrTrigger;
-        }
-
-        private static void SetCmdSkipTrigger(string value)
-        {
-            _currentConfig.BotConfig.BotCmdSkipTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetCmdSkipTrigger()
-        {
-            return _currentConfig.BotConfig.BotCmdSkipTrigger;
-        }
-
-        private static void SetCmdVoteskipTrigger(string value)
-        {
-            _currentConfig.BotConfig.BotCmdVoteskipTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetCmdVoteskipTrigger()
-        {
-            return _currentConfig.BotConfig.BotCmdVoteskipTrigger;
-        }
-
-
-
-        public static string BotCmdSkipTrigger { get => GetCmdSkipTrigger(); set => SetCmdSkipTrigger(value); }
-        public static string BotCmdVoteskipTrigger { get => GetCmdVoteskipTrigger(); set => SetCmdVoteskipTrigger(value); }
-        public static bool TwSrUnlimitedSr { get => GetTwSrUnlimitedSr(); set => SetTwSrUnlimitedSr(value); }
-        public static string TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
-        public static bool ChatLiveStatus { get => GetChatLiveStatus(); set => SetChatLiveStatus(value); }
-        public static string TwitchBotToken { get => GetTwitchBotToken(); set => SetTwitchBotToken(value); }
-        public static User TwitchBotUser { get => GetTwitchBotUser(); set => SetTwitchBotUser(value); }
-        public static string BotRespSong { get => GetBot_resp_Song(); set => SetBot_Resp_Song(value); }
-        public static string TwRewardGoalRewardId { get => GetTwRewardGoalRewardId(); set => SetTwRewardGoalRewardId(value); }
-        public static bool RewardGoalEnabled { get => GetRewardGoalEnabled(); set => SetRewardGoalEnabled(value); }
-
-        private static bool GetRewardGoalEnabled()
-        {
-            return _currentConfig.AppConfig.RewardGoalEnabled;
-        }
-
-        private static void SetRewardGoalEnabled(bool value)
-        {
-            _currentConfig.AppConfig.RewardGoalEnabled = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        public static string RewardGoalSong { get => GetRewardGoalSong(); set => SetRewardGoalSong(value); }
-
-        private static string GetRewardGoalSong()
-        {
-            return _currentConfig.AppConfig.RewardGoalSong;
-        }
-
-        private static void SetRewardGoalSong(string value)
-        {
-            _currentConfig.AppConfig.RewardGoalSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
-        public static string BotRespRefund { get => GetBot_Resp_Refund(); set => SetBot_Resp_Refund(value); }
-        public static List<TrackItem> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
-        public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
-
-        private static void SetSpotifyPlaylistId(string value)
-        {
-            _currentConfig.AppConfig.SpotifyPlaylistId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static string GetSpotifyPlaylistId()
-        {
-            return _currentConfig.AppConfig.SpotifyPlaylistId;
-        }
-
-        private static List<TrackItem> GetSongBlacklist()
-        {
-            return _currentConfig.AppConfig.SongBlacklist;
-        }
-
-        private static void SetSongBlacklist(List<TrackItem> value)
-        {
-            _currentConfig.AppConfig.SongBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static void SetBot_Resp_Refund(string value)
-        {
-            _currentConfig.BotConfig.BotRespRefund = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetBot_Resp_Refund()
-        {
-            return _currentConfig.BotConfig.BotRespRefund;
-        }
-
-        private static int GetRewardGoalAmount()
-        {
-            return _currentConfig.AppConfig.RewardGoalAmount;
-        }
-
-        private static void SetRewardGoalAmount(int value)
-        {
-            _currentConfig.AppConfig.RewardGoalAmount = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static string GetTwRewardGoalRewardId()
-        {
-            return _currentConfig.AppConfig.TwRewardGoalRewardId;
-        }
-
-        private static void SetTwRewardGoalRewardId(string value)
-        {
-            _currentConfig.AppConfig.TwRewardGoalRewardId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        private static void SetBot_Resp_Song(string value)
-        {
-            _currentConfig.BotConfig.BotRespSong = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetBot_resp_Song()
-        {
-            return _currentConfig.BotConfig.BotRespSong;
-        }
-
-        private static User GetTwitchBotUser()
-        {
-            return _currentConfig.TwitchCredentials.BotUser;
-        }
-
-        private static void SetTwitchBotUser(User value)
-        {
-            _currentConfig.TwitchCredentials.BotUser = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
-        }
-
-
-        private static string GetTwitchBotToken()
-        {
-            return _currentConfig.TwitchCredentials.TwitchBotToken;
-        }
-
-        private static void SetTwitchBotToken(string value)
-        {
-            _currentConfig.TwitchCredentials.TwitchBotToken = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
-        }
-
-        private static void SetChatLiveStatus(bool value)
-        {
-            _currentConfig.BotConfig.ChatLiveStatus = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static bool GetChatLiveStatus()
-        {
-            return _currentConfig.BotConfig.ChatLiveStatus;
-        }
-
-
-        private static void SetTwRewardSkipId(string value)
-        {
-            _currentConfig.AppConfig.TwRewardSkipId = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-
-        }
-
-        private static string GetTwRewardSkipId()
-        {
-            return _currentConfig.AppConfig.TwRewardSkipId;
-
-        }
-
-        private static bool GetTwSrUnlimitedSr()
-        {
-            return _currentConfig.AppConfig.TwSrUnlimitedSr;
-        }
-
-        private static void SetTwSrUnlimitedSr(bool value)
-        {
-            _currentConfig.AppConfig.TwSrUnlimitedSr = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-
-        private static void SetCmdSongTrigger(string value)
-        {
-            _currentConfig.BotConfig.BotCmdSongTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetCmdSongTrigger()
-        {
-            return _currentConfig.BotConfig.BotCmdSongTrigger;
-        }
-
-        private static void SetCmdPosTrigger(string value)
-        {
-            _currentConfig.BotConfig.BotCmdPosTrigger = value;
-            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
-        }
-
-        private static string GetCmdPosTrigger()
-        {
-            return _currentConfig.BotConfig.BotCmdPosTrigger;
+            return _currentConfig.BotConfig.BotCmdRemoveTrigger;
         }
 
         public static Configuration Export()
@@ -796,6 +575,8 @@ namespace Songify_Slim.Util.Settings
                 BotCmdNextTrigger = GetCmdNextTrigger(),
                 BotCmdPos = GetBotCmdPos(),
                 BotCmdPosTrigger = GetCmdPosTrigger(),
+                BotCmdRemove = GetBotCmdRemove(),
+                BotCmdRemoveTrigger = GetCmdRemoveTrigger(),
                 BotCmdSkip = GetBotCmdSkip(),
                 BotCmdSkipTrigger = GetCmdSkipTrigger(),
                 BotCmdSkipVote = GetBotCmdSkipVote(),
@@ -852,8 +633,10 @@ namespace Songify_Slim.Util.Settings
                 RewardGoalEnabled = GetRewardGoalEnabled(),
                 RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
+                SongBlacklist = GetSongBlacklist(),
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
+                SpotifyPlaylistId = GetSpotifyPlaylistId(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
@@ -882,8 +665,6 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
-                SongBlacklist = GetSongBlacklist(),
-                SpotifyPlaylistId = GetSpotifyPlaylistId(),
             };
 
             return new Configuration
@@ -983,6 +764,16 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteAllConfig(config);
         }
 
+        public static void ResetConfig()
+        {
+            _currentConfig = new Configuration();
+        }
+
+        private static string GetAccessKey()
+        {
+            return _currentConfig.AppConfig.AccessKey;
+        }
+
         private static bool GetAnnounceInChat()
         {
             return _currentConfig.AppConfig.AnnounceInChat;
@@ -1063,6 +854,16 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.BotConfig.BotRespPos;
         }
 
+        private static string GetBot_Resp_Refund()
+        {
+            return _currentConfig.BotConfig.BotRespRefund;
+        }
+
+        private static string GetBot_resp_Song()
+        {
+            return _currentConfig.BotConfig.BotRespSong;
+        }
+
         private static string GetBot_Resp_Success()
         {
             return _currentConfig.BotConfig.BotRespSuccess;
@@ -1082,6 +883,11 @@ namespace Songify_Slim.Util.Settings
         private static bool GetBotCmdPos()
         {
             return _currentConfig.BotConfig.BotCmdPos;
+        }
+
+        private static bool GetBotCmdRemove()
+        {
+            return _currentConfig.BotConfig.BotCmdRemove;
         }
 
         private static bool GetBotCmdSkip()
@@ -1109,6 +915,11 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.AppConfig.BotOnlyWorkWhenLive;
         }
 
+        private static bool GetChatLiveStatus()
+        {
+            return _currentConfig.BotConfig.ChatLiveStatus;
+        }
+
         private static int GetChromeFetchRate()
         {
             return _currentConfig.AppConfig.ChromeFetchRate;
@@ -1122,6 +933,36 @@ namespace Songify_Slim.Util.Settings
         private static string GetClientSecret()
         {
             return _currentConfig.SpotifyCredentials.ClientSecret;
+        }
+
+        private static string GetCmdNextTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdNextTrigger;
+        }
+
+        private static string GetCmdPosTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdPosTrigger;
+        }
+
+        private static string GetCmdSkipTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdSkipTrigger;
+        }
+
+        private static string GetCmdSongTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdSongTrigger;
+        }
+
+        private static string GetCmdSsrTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdSsrTrigger;
+        }
+
+        private static string GetCmdVoteskipTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdVoteskipTrigger;
         }
 
         private static string GetColor()
@@ -1194,9 +1035,29 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.AppConfig.RefundConditons;
         }
 
+        private static int GetRewardGoalAmount()
+        {
+            return _currentConfig.AppConfig.RewardGoalAmount;
+        }
+
+        private static bool GetRewardGoalEnabled()
+        {
+            return _currentConfig.AppConfig.RewardGoalEnabled;
+        }
+
+        private static string GetRewardGoalSong()
+        {
+            return _currentConfig.AppConfig.RewardGoalSong;
+        }
+
         private static bool GetSaveHistory()
         {
             return _currentConfig.AppConfig.SaveHistory;
+        }
+
+        private static List<TrackItem> GetSongBlacklist()
+        {
+            return _currentConfig.AppConfig.SongBlacklist;
         }
 
         private static int GetSource()
@@ -1222,6 +1083,11 @@ namespace Songify_Slim.Util.Settings
         private static string GetSpotifyDeviceId()
         {
             return _currentConfig.SpotifyCredentials.DeviceId;
+        }
+
+        private static string GetSpotifyPlaylistId()
+        {
+            return _currentConfig.AppConfig.SpotifyPlaylistId;
         }
 
         private static string GetSpotifyRefreshToken()
@@ -1265,10 +1131,30 @@ namespace Songify_Slim.Util.Settings
 
         }
 
+        private static string GetTwitchBotToken()
+        {
+            return _currentConfig.TwitchCredentials.TwitchBotToken;
+        }
+
+        private static User GetTwitchBotUser()
+        {
+            return _currentConfig.TwitchCredentials.BotUser;
+        }
+
         private static string GetTwitchChannelId()
         {
             return _currentConfig.TwitchCredentials.ChannelId;
 
+        }
+
+        private static int GetTwitchFetchPort()
+        {
+            return _currentConfig.AppConfig.TwitchFetchPort;
+        }
+
+        private static int GetTwitchRedirectPort()
+        {
+            return _currentConfig.AppConfig.TwitchRedirectPort;
         }
 
         private static User GetTwitchUser()
@@ -1281,9 +1167,20 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.TwitchCredentials.BotOAuthToken;
         }
 
+        private static string GetTwRewardGoalRewardId()
+        {
+            return _currentConfig.AppConfig.TwRewardGoalRewardId;
+        }
+
         private static string GetTwRewardId()
         {
             return _currentConfig.AppConfig.TwRewardId;
+        }
+
+        private static string GetTwRewardSkipId()
+        {
+            return _currentConfig.AppConfig.TwRewardSkipId;
+
         }
 
         private static bool GetTwSrCommand()
@@ -1331,6 +1228,11 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.AppConfig.TwSrReward;
         }
 
+        private static bool GetTwSrUnlimitedSr()
+        {
+            return _currentConfig.AppConfig.TwSrUnlimitedSr;
+        }
+
         private static int GetTwSrUserLevel()
         {
             return _currentConfig.AppConfig.TwSrUserLevel;
@@ -1376,6 +1278,11 @@ namespace Songify_Slim.Util.Settings
             return "Songify Data Provider";
         }
 
+        private static void SetAccessKey(string value)
+        {
+            _currentConfig.AppConfig.AccessKey = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
         private static void SetAnnounceInChat(bool value)
         {
             _currentConfig.AppConfig.AnnounceInChat = value;
@@ -1472,6 +1379,18 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
+        private static void SetBot_Resp_Refund(string value)
+        {
+            _currentConfig.BotConfig.BotRespRefund = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetBot_Resp_Song(string value)
+        {
+            _currentConfig.BotConfig.BotRespSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
         private static void SetBot_Resp_Success(string value)
         {
             _currentConfig.BotConfig.BotRespSuccess = value;
@@ -1493,6 +1412,12 @@ namespace Songify_Slim.Util.Settings
         private static void SetBotCmdPos(bool value)
         {
             _currentConfig.BotConfig.BotCmdPos = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetBotCmdRemove(bool value)
+        {
+            _currentConfig.BotConfig.BotCmdRemove = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
@@ -1525,6 +1450,13 @@ namespace Songify_Slim.Util.Settings
             _currentConfig.AppConfig.BotOnlyWorkWhenLive = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
+
+        private static void SetChatLiveStatus(bool value)
+        {
+            _currentConfig.BotConfig.ChatLiveStatus = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
         private static void SetChromeFetchRate(int value)
         {
             _currentConfig.AppConfig.ChromeFetchRate = value;
@@ -1541,6 +1473,42 @@ namespace Songify_Slim.Util.Settings
         {
             _currentConfig.SpotifyCredentials.ClientSecret = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
+        }
+
+        private static void SetCmdNextTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdNextTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetCmdPosTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdPosTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetCmdSkipTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdSkipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetCmdSongTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdSongTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetCmdSsrTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdSsrTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetCmdVoteskipTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdVoteskipTrigger = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
         }
 
         private static void SetColor(string value)
@@ -1627,9 +1595,33 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
+        private static void SetRewardGoalAmount(int value)
+        {
+            _currentConfig.AppConfig.RewardGoalAmount = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static void SetRewardGoalEnabled(bool value)
+        {
+            _currentConfig.AppConfig.RewardGoalEnabled = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static void SetRewardGoalSong(string value)
+        {
+            _currentConfig.AppConfig.RewardGoalSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
         private static void SetSaveHistory(bool value)
         {
             _currentConfig.AppConfig.SaveHistory = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static void SetSongBlacklist(List<TrackItem> value)
+        {
+            _currentConfig.AppConfig.SongBlacklist = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
@@ -1661,6 +1653,12 @@ namespace Songify_Slim.Util.Settings
         {
             _currentConfig.SpotifyCredentials.DeviceId = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
+        }
+
+        private static void SetSpotifyPlaylistId(string value)
+        {
+            _currentConfig.AppConfig.SpotifyPlaylistId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
         private static void SetSpotifyRefreshToken(string value)
@@ -1711,12 +1709,35 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
+        private static void SetTwitchBotToken(string value)
+        {
+            _currentConfig.TwitchCredentials.TwitchBotToken = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
+        }
+
+        private static void SetTwitchBotUser(User value)
+        {
+            _currentConfig.TwitchCredentials.BotUser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
+        }
+
         private static void SetTwitchChannelId(string value)
         {
             _currentConfig.TwitchCredentials.ChannelId = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
+        private static void SetTwitchFetchPort(int value)
+        {
+            _currentConfig.AppConfig.TwitchFetchPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static void SetTwitchRedirectPort(int value)
+        {
+            _currentConfig.AppConfig.TwitchRedirectPort = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
         private static void SetTwitchUser(User value)
         {
             _currentConfig.TwitchCredentials.TwitchUser = value;
@@ -1729,12 +1750,23 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.TwitchCredentials, _currentConfig.TwitchCredentials);
         }
 
+        private static void SetTwRewardGoalRewardId(string value)
+        {
+            _currentConfig.AppConfig.TwRewardGoalRewardId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
         private static void SetTwRewardId(string value)
         {
             _currentConfig.AppConfig.TwRewardId = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
+        private static void SetTwRewardSkipId(string value)
+        {
+            _currentConfig.AppConfig.TwRewardSkipId = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+
+        }
         private static void SetTwSrCommand(bool value)
         {
             _currentConfig.AppConfig.TwSrCommand = value;
@@ -1789,6 +1821,11 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
+        private static void SetTwSrUnlimitedSr(bool value)
+        {
+            _currentConfig.AppConfig.TwSrUnlimitedSr = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
         private static void SetTwSrUserLevel(int value)
         {
             _currentConfig.AppConfig.TwSrUserLevel = value;
@@ -1835,11 +1872,6 @@ namespace Songify_Slim.Util.Settings
         {
             _currentConfig.AppConfig.WebServerPort = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
-        }
-
-        public static void ResetConfig()
-        {
-            _currentConfig = new Configuration();
         }
     }
 }

@@ -799,4 +799,7 @@
     <value>Language</value>
     <comment>Label that says "Language"</comment>
   </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Removes the latest song request of the user</value>
+  </data>
 </root>

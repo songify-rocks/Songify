@@ -124,6 +124,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Removes the latest song request of the user.
+        /// </summary>
+        public static string brw_cmd_remove {
+            get {
+                return ResourceManager.GetString("brw_cmd_remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Skips the current song (Broadcaster / Mod / Requester).
         /// </summary>
         public static string brw_cmd_skip {

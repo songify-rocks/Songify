@@ -140,6 +140,7 @@ namespace Songify_Slim.Util.Settings
                             config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
                             config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
                             config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
+                            config.BotConfig.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdRemoveTrigger) ? "remove" : config.BotConfig.BotCmdRemoveTrigger;
                             config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
                         }
                         else
@@ -147,37 +148,34 @@ namespace Songify_Slim.Util.Settings
                             config.BotConfig = new BotConfig
                             {
                                 BotCmdNext = false,
+                                BotCmdNextTrigger = "next",
                                 BotCmdPos = false,
+                                BotCmdPosTrigger = "pos",
+                                BotCmdRemove = false,
+                                BotCmdRemoveTrigger = "remove",
                                 BotCmdSkip = false,
+                                BotCmdSkipTrigger = "skip",
                                 BotCmdSkipVote = false,
-                                BotCmdSong = false,
                                 BotCmdSkipVoteCount = 5,
-                                BotRespBlacklist =
-                                    "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
-                                BotRespError =
-                                    "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
+                                BotCmdSong = false,
+                                BotCmdSongTrigger = "song",
+                                BotCmdSsrTrigger = "ssr",
+                                BotCmdVoteskipTrigger = "voteskip",
+                                BotRespBlacklist = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.",
+                                BotRespError = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}",
                                 BotRespIsInQueue = "@{user} this song is already in the queue.",
-                                BotRespLength =
-                                    "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
+                                BotRespLength = "@{user} the song you requested exceeded the maximum song length ({maxlength}).",
                                 BotRespMaxReq = "@{user} maximum number of songs in queue reached ({maxreq}).",
                                 BotRespModSkip = "@{user} skipped the current song.",
+                                BotRespNext = "@{user} {song}",
                                 BotRespNoSong = "@{user} please specify a song to add to the queue.",
+                                BotRespPos = "@{user} {songs}{pos} {song}{/songs}",
+                                BotRespRefund = "Your points have been refunded.",
+                                BotRespSong = "@{user} {song}",
                                 BotRespSuccess = "{artist} - {title} requested by @{user} has been added to the queue.",
                                 BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
-                                BotRespSong = "@{user} {song}",
-                                BotRespRefund = "Your points have been refunded.",
-                                BotRespPos = "@{user} {songs}{pos} {song}{/songs}",
-                                BotRespNext = "@{user} {song}",
-                                OnlyWorkWhenLive = false,
-                                BotCmdPosTrigger = "pos",
-                                BotCmdSongTrigger = "song",
-                                BotCmdNextTrigger = "next",
-                                BotCmdSkipTrigger = "skip",
-                                BotCmdVoteskipTrigger = "voteskip",
-                                BotCmdSsrTrigger = "ssr",
                                 ChatLiveStatus = false,
-
-
+                                OnlyWorkWhenLive = false,
                             };
                         }
                         break;
@@ -594,6 +592,8 @@ namespace Songify_Slim.Util.Settings
         public bool ChatLiveStatus { get; set; }
         public string BotRespSong { get; set; } = "@{user} {song}";
         public string BotRespRefund { get; set; } = "Your points have been refunded.";
+        public bool BotCmdRemove { get; set; }
+        public string BotCmdRemoveTrigger { get; set; } = "remove";
     }
 
     public class AppConfig

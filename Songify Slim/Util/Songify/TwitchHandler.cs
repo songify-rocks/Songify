@@ -1081,46 +1081,45 @@ namespace Songify_Slim.Util.Songify
                 }
                 Client.SendMessage(e.ChatMessage.Channel, response);
             }
-            else switch (e.ChatMessage.Message)
+            else if (e.ChatMessage.Message == "!remove" && Settings.Settings.BotCmdRemove)
             {
-                case "!remove":
+                try
                 {
-                    try
+                    if (!CheckLiveStatus())
                     {
-                        if (!CheckLiveStatus())
-                        {
-                            if (Settings.Settings.ChatLiveStatus)
-                                Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                            return;
-                        }
+                        if (Settings.Settings.ChatLiveStatus)
+                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        return;
                     }
-                    catch (Exception)
-                    {
-                        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                    }
+                }
+                catch (Exception)
+                {
+                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                }
 
-                    RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
-                        o.Requester == e.ChatMessage.DisplayName);
-                    if (reqObj == null) return;
-                    string tmp = $"{reqObj.Artist} - {reqObj.Title}";
-                    GlobalObjects.SkipList.Add(reqObj);
-                    GlobalObjects.ReqList.Remove(reqObj);
-                    WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
-                    UpdateQueueWindow();
-                    Client.SendMessage(e.ChatMessage.Channel,
-                        $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
-                    break;
-                }
-                case "!songlike" when !e.ChatMessage.IsBroadcaster && !e.ChatMessage.IsModerator:
-                    return;
-                case "!songlike":
-                {
-                    ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                        $"spotify:track:{GlobalObjects.CurrentSong.SongId}"); 
-                    if (x.HasError() == false)
-                        Client.SendMessage(Settings.Settings.TwChannel, $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
-                    break;
-                }
+                RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
+                    o.Requester == e.ChatMessage.DisplayName);
+                if (reqObj == null) return;
+                string tmp = $"{reqObj.Artist} - {reqObj.Title}";
+                GlobalObjects.SkipList.Add(reqObj);
+                GlobalObjects.ReqList.Remove(reqObj);
+                WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
+                UpdateQueueWindow();
+                Client.SendMessage(e.ChatMessage.Channel,
+                    $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
+            }
+            else if (e.ChatMessage.Message == "!songlike" &&
+                     (!e.ChatMessage.IsBroadcaster && !e.ChatMessage.IsModerator))
+            {
+                return;
+            }
+            else if (e.ChatMessage.Message == "!songlike")
+            {
+                ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                    $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
+                if (x.HasError() == false)
+                    Client.SendMessage(Settings.Settings.TwChannel,
+                        $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
             }
         }
 

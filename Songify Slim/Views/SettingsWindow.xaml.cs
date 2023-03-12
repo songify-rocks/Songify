@@ -84,11 +84,11 @@ namespace Songify_Slim.Views
             //TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
-            Chbx_AutoClear.IsOn = Settings.AutoClearQueue;
-            Chbx_MessageLogging.IsChecked = Settings.MsgLoggingEnabled;
-            Chbx_TwAutoconnect.IsOn = Settings.TwAutoConnect;
-            Chbx_TwCommand.IsOn = Settings.TwSrCommand;
-            Chbx_TwReward.IsOn = Settings.TwSrReward;
+            ChbxAutoClear.IsOn = Settings.AutoClearQueue;
+            ChbxMessageLogging.IsChecked = Settings.MsgLoggingEnabled;
+            ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
+            ChbxTwCommand.IsOn = Settings.TwSrCommand;
+            ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxCover.IsOn = Settings.DownloadCover;
             ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
@@ -97,18 +97,18 @@ namespace Songify_Slim.Views
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             ChbxSplit.IsOn = Settings.SplitOutput;
             ChbxUpload.IsOn = Settings.Upload;
-            nud_Spaces.Value = Settings.SpaceCount;
+            NudSpaces.Value = Settings.SpaceCount;
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
-            tb_ClientID.Text = Settings.ClientId;
-            tb_ClientSecret.Password = Settings.ClientSecret;
-            tgl_AnnounceInChat.IsOn = Settings.AnnounceInChat;
-            Tglsw_Spotify.IsOn = Settings.UseOwnApp;
-            txtbx_RewardID.Text = Settings.TwRewardId;
-            txtbx_twChannel.Text = Settings.TwChannel;
-            txtbx_twOAuth.Password = Settings.TwOAuth;
-            txtbx_twUser.Text = Settings.TwAcc;
+            TbClientId.Text = Settings.ClientId;
+            TbClientSecret.Password = Settings.ClientSecret;
+            TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
+            TglswSpotify.IsOn = Settings.UseOwnApp;
+            TxtbxRewardId.Text = Settings.TwRewardId;
+            TxtbxTwChannel.Text = Settings.TwChannel;
+            TxtbxTwOAuth.Password = Settings.TwOAuth;
+            TxtbxTwUser.Text = Settings.TwAcc;
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             TxtbxOutputformat2.Text = Settings.OutputString2;
@@ -116,11 +116,11 @@ namespace Songify_Slim.Views
             NudServerPort.Value = Settings.WebServerPort;
             TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
-            tgl_OnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
-            tgl_InformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
+            TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
+            TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
-            ToggleSwitchUnlimitedSR.IsOn = Settings.TwSrUnlimitedSr;
-            tgl_InformChat.IsOn = Settings.ChatLiveStatus;
+            ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
+            TglInformChat.IsOn = Settings.ChatLiveStatus;
             ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
             ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.Items.Clear();
@@ -137,12 +137,13 @@ namespace Songify_Slim.Views
             NumUpDpwnRewardGoalAmount.Value = Settings.RewardGoalAmount;
             NumUpDpwnRewardGoalAmount.ValueChanged += NumUpDpwnRewardGoalAmount_ValueChanged;
             Cctrl.Content = new UcBotResponses();
-            tgl_botcmd_pos.IsOn = Settings.BotCmdPos;
-            tgl_botcmd_song.IsOn = Settings.BotCmdSong;
-            tgl_botcmd_next.IsOn = Settings.BotCmdNext;
-            tgl_botcmd_skip.IsOn = Settings.BotCmdSkip;
-            tgl_botcmd_skipvote.IsOn = Settings.BotCmdSkipVote;
-            tgl_botcmd_ssr.IsOn = Settings.TwSrCommand;
+            TglBotcmdPos.IsOn = Settings.BotCmdPos;
+            TglBotcmdSong.IsOn = Settings.BotCmdSong;
+            TglBotcmdNext.IsOn = Settings.BotCmdNext;
+            TglBotcmdSkip.IsOn = Settings.BotCmdSkip;
+            TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
+            TglBotcmdSsr.IsOn = Settings.TwSrCommand;
+            TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
@@ -156,19 +157,19 @@ namespace Songify_Slim.Views
                 try
                 {
                     PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
-                    lbl_SpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
+                    LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
                     bitmap.EndInit();
                     ImgSpotifyProfile.ImageSource = bitmap;
-                    cb_SpotifyPlaylist.Items.Clear();
+                    CbSpotifyPlaylist.Items.Clear();
                     Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
                     foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
                     {
-                        cb_SpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                     }
-                    cb_SpotifyPlaylist.SelectedItem = cb_SpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                    CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
 
                 }
                 catch (Exception ex)
@@ -179,26 +180,26 @@ namespace Songify_Slim.Views
 
 
             ThemeHandler.ApplyTheme();
-            cbx_Language.SelectionChanged -= ComboBox_SelectionChanged;
+            CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
             switch (Settings.Language)
             {
                 case "en":
-                    cbx_Language.SelectedIndex = 0;
+                    CbxLanguage.SelectedIndex = 0;
                     break;
                 case "de-DE":
-                    cbx_Language.SelectedIndex = 1;
+                    CbxLanguage.SelectedIndex = 1;
                     break;
                 case "ru-RU":
-                    cbx_Language.SelectedIndex = 2;
+                    CbxLanguage.SelectedIndex = 2;
                     break;
                 case "es":
-                    cbx_Language.SelectedIndex = 3;
+                    CbxLanguage.SelectedIndex = 3;
                     break;
                 case "fr":
-                    cbx_Language.SelectedIndex = 4;
+                    CbxLanguage.SelectedIndex = 4;
                     break;
             }
-            cbx_Language.SelectionChanged += ComboBox_SelectionChanged;
+            CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
 
             if (TwitchHandler.TokenCheck != null)
             {
@@ -207,10 +208,10 @@ namespace Songify_Slim.Views
                 if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
                 ImgTwitchProfile.ImageSource = bitmap;
-                lblTwitchName.Content = $"Main Account:\n{Settings.TwitchUser.DisplayName}";
+                LblTwitchName.Content = $"Main Account:\n{Settings.TwitchUser.DisplayName}";
                 BtnLogInTwitch.Visibility = Visibility.Collapsed;
                 await LoadRewards();
-                txtbx_twChannel.Text = Settings.TwitchUser.Login;
+                TxtbxTwChannel.Text = Settings.TwitchUser.Login;
             }
             else
             {
@@ -224,7 +225,7 @@ namespace Songify_Slim.Views
                 if (Settings.TwitchBotUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchBotUser.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
                 ImgTwitchBotProfile.ImageSource = bitmap;
-                lblTwitchBotName.Content = $"Bot Account:\n{Settings.TwitchBotUser.DisplayName}";
+                LblTwitchBotName.Content = $"Bot Account:\n{Settings.TwitchBotUser.DisplayName}";
                 BtnLogInTwitchBot.Visibility = Visibility.Collapsed;
                 await LoadRewards();
             }
@@ -373,32 +374,32 @@ namespace Songify_Slim.Views
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to clear the queue on startup or not
-            Settings.AutoClearQueue = Chbx_AutoClear.IsOn;
+            Settings.AutoClearQueue = ChbxAutoClear.IsOn;
         }
 
         private void Chbx_MessageLogging_Checked(object sender, RoutedEventArgs e)
         {
             // Sets message loggint enabled or not
-            if (Chbx_MessageLogging.IsChecked != null)
-                Settings.MsgLoggingEnabled = (bool)Chbx_MessageLogging.IsChecked;
+            if (ChbxMessageLogging.IsChecked != null)
+                Settings.MsgLoggingEnabled = (bool)ChbxMessageLogging.IsChecked;
         }
 
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
             // Sets wether to autoconnect or not
-            Settings.TwAutoConnect = Chbx_TwAutoconnect.IsOn;
+            Settings.TwAutoConnect = ChbxTwAutoconnect.IsOn;
         }
 
         private void Chbx_TwCommand_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            Settings.TwSrCommand = Chbx_TwCommand.IsOn;
+            Settings.TwSrCommand = ChbxTwCommand.IsOn;
         }
 
         private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
         {
             // enables / disables telemetry
-            Settings.TwSrReward = Chbx_TwReward.IsOn;
+            Settings.TwSrReward = ChbxTwReward.IsOn;
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
@@ -452,7 +453,7 @@ namespace Songify_Slim.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (cbx_Language.SelectedIndex)
+            switch (CbxLanguage.SelectedIndex)
             {
                 case 0:
                     // English
@@ -557,7 +558,7 @@ namespace Songify_Slim.Views
 
         private void nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (nud_Spaces.Value != null) Settings.SpaceCount = (int)nud_Spaces.Value;
+            if (NudSpaces.Value != null) Settings.SpaceCount = (int)NudSpaces.Value;
         }
 
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -647,22 +648,22 @@ namespace Songify_Slim.Views
 
         private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Settings.ClientId = tb_ClientID.Text;
+            Settings.ClientId = TbClientId.Text;
         }
 
         private void tb_ClientSecret_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            Settings.ClientSecret = tb_ClientSecret.Password;
+            Settings.ClientSecret = TbClientSecret.Password;
         }
 
         private void tgl_AnnounceInChat_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.AnnounceInChat = tgl_AnnounceInChat.IsOn;
+            Settings.AnnounceInChat = TglAnnounceInChat.IsOn;
         }
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
-            Settings.UseOwnApp = Tglsw_Spotify.IsOn;
+            Settings.UseOwnApp = TglswSpotify.IsOn;
             //if (_appIdInitialValue != Settings.UseOwnApp)
             //{
             //    btn_save.Visibility = Visibility.Visible;
@@ -687,25 +688,25 @@ namespace Songify_Slim.Views
         private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Saves the RewardID
-            Settings.TwRewardId = txtbx_RewardID.Text;
+            Settings.TwRewardId = TxtbxRewardId.Text;
         }
 
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Sets the twitch channel
-            Settings.TwChannel = txtbx_twChannel.Text.Trim();
+            Settings.TwChannel = TxtbxTwChannel.Text.Trim();
         }
 
         private void txtbx_twOAuth_PasswordChanged(object sender, RoutedEventArgs e)
         {
             // Sets the twitch oauth token
-            Settings.TwOAuth = txtbx_twOAuth.Password;
+            Settings.TwOAuth = TxtbxTwOAuth.Password;
         }
 
         private void txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Sets the twitch acc
-            Settings.TwAcc = txtbx_twUser.Text.Trim();
+            Settings.TwAcc = TxtbxTwUser.Text.Trim();
         }
 
         private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
@@ -1018,15 +1019,15 @@ namespace Songify_Slim.Views
 
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
         {
-            Settings.BotOnlyWorkWhenLive = tgl_OnlyWorkWhenLive.IsOn;
-            tgl_InformChat.IsEnabled = tgl_OnlyWorkWhenLive.IsOn;
-            if (tgl_OnlyWorkWhenLive.IsOn) return;
-            tgl_InformChat.IsOn = false;
+            Settings.BotOnlyWorkWhenLive = TglOnlyWorkWhenLive.IsOn;
+            TglInformChat.IsEnabled = TglOnlyWorkWhenLive.IsOn;
+            if (TglOnlyWorkWhenLive.IsOn) return;
+            TglInformChat.IsOn = false;
         }
 
         private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.TwSrUnlimitedSr = ToggleSwitchUnlimitedSR.IsOn;
+            Settings.TwSrUnlimitedSr = ToggleSwitchUnlimitedSr.IsOn;
         }
 
         private void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
@@ -1058,7 +1059,7 @@ namespace Songify_Slim.Views
 
         private void tgl_InformChat_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.ChatLiveStatus = tgl_InformChat.IsOn;
+            Settings.ChatLiveStatus = TglInformChat.IsOn;
         }
 
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
@@ -1182,6 +1183,11 @@ namespace Songify_Slim.Views
             if (item == null)
                 return;
             Settings.SpotifyPlaylistId = item.Playlist.Id;
+        }
+
+        private void Tgl_botcmd_remove_OnToggled_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdRemove = ((ToggleSwitch)sender).IsOn;
         }
     }
 }
