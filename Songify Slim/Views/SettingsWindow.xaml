@@ -221,7 +221,7 @@
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                             <Grid.RowDefinitions>
@@ -313,7 +313,9 @@
                         </Grid>
 
                         <!--#region Twitch Credentials (not using API) -->
-                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials"/>
+                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials" IsOn="True" Margin="0,6,0,6"/>
+                        <Label Content="Chat Account"  Grid.Row="1" Grid.Column="0" Margin="6,6,6,6" VerticalAlignment="Center"/>
+                        <ComboBox x:Name="CbAccountSelection" Grid.Row="1" Grid.Column="0" Margin="90,6,0,6" HorizontalAlignment="Left" Width="164" SelectionChanged="CbAccountSelection_SelectionChanged"/>
                         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                             <Grid.Style>
                                 <Style TargetType="Grid">

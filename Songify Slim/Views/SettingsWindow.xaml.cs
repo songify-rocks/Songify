@@ -189,7 +189,6 @@ namespace Songify_Slim.Views
                 }
             }
 
-
             ThemeHandler.ApplyTheme();
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
             switch (Settings.Language)
@@ -211,9 +210,28 @@ namespace Songify_Slim.Views
                     break;
             }
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
+            CbAccountSelection.SelectionChanged -= CbAccountSelection_SelectionChanged;
+            CbAccountSelection.Items.Clear();
+            if (Settings.TwitchUser != null)
+            {
+                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch);
+                TxtbxTwChannel.Text = Settings.TwitchUser.Login;
+                CbAccountSelection.Items.Add(new ComboBoxItem
+                {
+                    Content = new UC_AccountItem(Settings.TwitchUser.Login, Settings.TwitchAccessToken)
+                });
+            }
 
-            UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch);
-            UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot);
+            if (Settings.TwitchBotUser != null)
+            {
+                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot);
+                CbAccountSelection.Items.Add(new ComboBoxItem
+                {
+                    Content = new UC_AccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
+                });
+            }
+            CbAccountSelection.SelectedItem = CbAccountSelection.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UC_AccountItem)item.Content).Username != null && ((UC_AccountItem)item.Content).Username == Settings.TwAcc);
+            CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
             await LoadRewards();
 
             if (Settings.RefundConditons == null) return;
@@ -229,7 +247,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn)
+        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn)
         {
             if (user == null)
             {
@@ -245,7 +263,6 @@ namespace Songify_Slim.Views
             lbl.Content = lbl.Tag.ToString() == "main" ? "Main Account:\n" : "Bot Account:\n";
             lbl.Content += $"{user.DisplayName}";
             btn.Visibility = Visibility.Collapsed;
-            TxtbxTwChannel.Text = user.Login;
         }
 
         private void AppendText(string s, string text)
@@ -1205,6 +1222,18 @@ namespace Songify_Slim.Views
         {
             Settings.BotCmdSonglike = ((ToggleSwitch)sender).IsOn;
 
+        }
+
+        private void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.TwAcc = ((UC_AccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
+            Settings.TwOAuth = ((UC_AccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
+            TwitchHandler.Client.Disconnect();
+            TwitchHandler.Client = null;
+            TwitchHandler.BotConnect();
+            SetControls();
         }
     }
 }

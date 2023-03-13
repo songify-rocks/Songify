@@ -674,6 +674,7 @@ namespace Songify_Slim.Util.Songify
                 Client.OnMessageReceived += Client_OnMessageReceived;
                 Client.OnConnected += Client_OnConnected;
                 Client.OnDisconnected += Client_OnDisconnected;
+                Client.OnJoinedChannel += ClientOnOnJoinedChannel;
 
                 Client.Connect();
 
@@ -685,6 +686,11 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
+        }
+
+        private static void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
+        {
+            Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
         }
 
         private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -744,7 +750,7 @@ namespace Songify_Slim.Util.Songify
 
                 }
             });
-            Logger.LogStr("TWITCH: Connected to Twitch");
+            Logger.LogStr($"TWITCH: Connected to Twitch. User: {Client.TwitchUsername}");
         }
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
