@@ -24,12 +24,15 @@ using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Application = System.Windows.Application;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
+using Image = System.Windows.Controls.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using Label = System.Windows.Controls.Label;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
@@ -168,10 +171,15 @@ namespace Songify_Slim.Views
                     ImgSpotifyProfile.ImageSource = bitmap;
                     CbSpotifyPlaylist.Items.Clear();
                     Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
-                    foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                    do
                     {
-                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                    }
+                        foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                        {
+                            CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                        }
+                        playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
+                    } while (playlists.HasNextPage());
+
                     CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
 
                 }
@@ -204,38 +212,9 @@ namespace Songify_Slim.Views
             }
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
 
-            if (TwitchHandler.TokenCheck != null)
-            {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                if (Settings.TwitchUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchUser.ProfileImageUrl, UriKind.Absolute);
-                bitmap.EndInit();
-                ImgTwitchProfile.ImageSource = bitmap;
-                LblTwitchName.Content = $"Main Account:\n{Settings.TwitchUser.DisplayName}";
-                BtnLogInTwitch.Visibility = Visibility.Collapsed;
-                await LoadRewards();
-                TxtbxTwChannel.Text = Settings.TwitchUser.Login;
-            }
-            else
-            {
-                BtnLogInTwitch.Visibility = Visibility.Visible;
-            }
-
-            if (TwitchHandler.BotTokenCheck != null)
-            {
-                BitmapImage bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                if (Settings.TwitchBotUser.ProfileImageUrl != null) bitmap.UriSource = new Uri(Settings.TwitchBotUser.ProfileImageUrl, UriKind.Absolute);
-                bitmap.EndInit();
-                ImgTwitchBotProfile.ImageSource = bitmap;
-                LblTwitchBotName.Content = $"Bot Account:\n{Settings.TwitchBotUser.DisplayName}";
-                BtnLogInTwitchBot.Visibility = Visibility.Collapsed;
-                await LoadRewards();
-            }
-            else
-            {
-                BtnLogInTwitch.Visibility = Visibility.Visible;
-            }
+            UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch);
+            UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot);
+            await LoadRewards();
 
             if (Settings.RefundConditons == null) return;
             foreach (int conditon in Settings.RefundConditons)
@@ -248,6 +227,25 @@ namespace Songify_Slim.Views
                     }
                 }
             }
+        }
+
+        private void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn)
+        {
+            if (user == null)
+            {
+                btn.Visibility = Visibility.Visible;
+                return;
+            }
+
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            if (user.ProfileImageUrl != null) bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
+            bitmap.EndInit();
+            img.ImageSource = bitmap;
+            lbl.Content = lbl.Tag.ToString() == "main" ? "Main Account:\n" : "Bot Account:\n";
+            lbl.Content += $"{user.DisplayName}";
+            btn.Visibility = Visibility.Collapsed;
+            TxtbxTwChannel.Text = user.Login;
         }
 
         private void AppendText(string s, string text)

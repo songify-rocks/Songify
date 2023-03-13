@@ -1165,7 +1165,7 @@ namespace Songify_Slim.Util.Songify
             return fullTrack.Id;
 
         }
-
+        
         private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
         {
             AnnouncementColors colors = AnnouncementColors.Purple;
