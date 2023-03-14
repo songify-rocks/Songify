@@ -587,7 +587,7 @@ namespace Songify_Slim.Util.Songify
             //_twitchPubSub.Disconnect();
             //if (_pubSubEnabled)
             //    _twitchPubSub.Connect();
-            await Task.Delay(10000);
+            await Task.Delay(30000);
             try
             {
                 CreatePubSubListenEvents();
@@ -1473,14 +1473,15 @@ namespace Songify_Slim.Util.Songify
 
             // Upload the track and who requested it to the queue on the server
             UploadToQueue(track, e.ChatMessage.DisplayName);
+
             //GlobalObjects.ReqList.Add(new RequestObject
             //{
-            //    requester = e.ChatMessage.DisplayName,
-            //    trackid = track.Id,
-            //    albumcover = track.Album.Images[0].Url,
-            //    title = track.Name,
-            //    artist = artists,
-            //    length = FormattedTime(track.DurationMs)
+            //    Requester = e.ChatMessage.DisplayName,
+            //    Trackid = track.Id,
+            //    Albumcover = track.Album.Images[0].Url,
+            //    Title = track.Name,
+            //    Artist = artists,
+            //    Length = FormattedTime(track.DurationMs)
             //});
             UpdateQueueWindow();
         }
@@ -1634,12 +1635,12 @@ namespace Songify_Slim.Util.Songify
 
                 //GlobalObjects.ReqList.Add(new RequestObject
                 //{
-                //    requester = username,
-                //    trackid = track.Id,
-                //    albumcover = track.Album.Images[0].Url,
-                //    title = track.Name,
-                //    artist = artists,
-                //    length = FormattedTime(track.DurationMs)
+                //    Requester = username,
+                //    Trackid = track.Id,
+                //    Albumcover = track.Album.Images[0].Url,
+                //    Title = track.Name,
+                //    Artist = artists,
+                //    Length = FormattedTime(track.DurationMs)
                 //});
 
                 (qw as WindowQueue)?.dgv_Queue.Items.Refresh();

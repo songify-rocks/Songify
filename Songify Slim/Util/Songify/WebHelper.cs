@@ -44,7 +44,6 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 string result;
-                RequestObject response;
                 switch (method)
                 {
                     case RequestMethod.Get:
@@ -65,9 +64,12 @@ namespace Songify_Slim.Util.Songify
                         break;
                     case RequestMethod.Post:
                         result = await ApiClient.Post("queue", payload);
-                        response = Json.Deserialize<RequestObject>(result);
-                        GlobalObjects.ReqList.Add(response);
-                        Debug.WriteLine(result);
+                        if (result != null)
+                        {
+                            RequestObject response = Json.Deserialize<RequestObject>(result);
+                            GlobalObjects.ReqList.Add(response);
+                            Debug.WriteLine(result);
+                        }
                         break;
                     case RequestMethod.Patch:
                         result = await ApiClient.Patch("queue", payload);
@@ -257,7 +259,7 @@ namespace Songify_Slim.Util.Songify
             DoWebRequest(url, RequestType.UploadHistory);
         }
 
-       public static async Task<string> GetBetaPatchNotes(string url)
+        public static async Task<string> GetBetaPatchNotes(string url)
         {
             using (var httpClient = new HttpClient())
             {
