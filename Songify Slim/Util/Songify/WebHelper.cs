@@ -48,32 +48,49 @@ namespace Songify_Slim.Util.Songify
                 {
                     case RequestMethod.Get:
                         result = await ApiClient.Get("queue", Settings.Settings.Uuid);
-                        List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
-                        queue.ForEach(q =>
+                        if (string.IsNullOrEmpty(result))
+                            return;
+
+                        try
                         {
-                            if (GlobalObjects.ReqList.Count != 0 &&
-                                GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) return;
-                            var pL = new
+                            List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
+                            queue.ForEach(q =>
                             {
-                                uuid = Settings.Settings.Uuid,
-                                key = Settings.Settings.AccessKey,
-                                queueid = q.Queueid
-                            };
-                            QueueRequest(RequestMethod.Patch, Json.Serialize(pL));
-                        });
+                                if (GlobalObjects.ReqList.Count != 0 &&
+                                    GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) return;
+                                var pL = new
+                                {
+                                    uuid = Settings.Settings.Uuid,
+                                    key = Settings.Settings.AccessKey,
+                                    queueid = q.Queueid
+                                };
+                                QueueRequest(RequestMethod.Patch, Json.Serialize(pL));
+                            });
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                            throw;
+                        }
                         break;
                     case RequestMethod.Post:
                         result = await ApiClient.Post("queue", payload);
-                        if (result != null)
+                        if (!string.IsNullOrEmpty(result))
+                            return;
+                        try
                         {
                             RequestObject response = Json.Deserialize<RequestObject>(result);
                             GlobalObjects.ReqList.Add(response);
-                            Debug.WriteLine(result);
                         }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                            throw;
+                        }
+
                         break;
                     case RequestMethod.Patch:
-                        result = await ApiClient.Patch("queue", payload);
-                        Json.Deserialize<RequestObject>(result);
+                        await ApiClient.Patch("queue", payload);
                         break;
                     case RequestMethod.Clear:
                         await ApiClient.Clear("queue", payload);

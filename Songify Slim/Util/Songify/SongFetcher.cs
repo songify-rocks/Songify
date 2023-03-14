@@ -360,7 +360,8 @@ namespace Songify_Slim.Util.Songify
                 if (_trackChanged)
                 {
                     _trackChanged = false;
-                    GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
+                    if (_songInfo.SongId != null)
+                        GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                 }
                 string j = Json.Serialize(_songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
@@ -373,7 +374,7 @@ namespace Songify_Slim.Util.Songify
                 dictionary["Queue"] = GlobalObjects.ReqList;
                 string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
                 GlobalObjects.ApiResponse = updatedJson;
-                
+
             }
             catch (Exception e)
             {
@@ -388,6 +389,8 @@ namespace Songify_Slim.Util.Songify
         private static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
         {
             Debug.WriteLine("Check Playlist");
+            if (trackInfo.SongId == null)
+                return false;
             string id = trackInfo.SongId;
             if (string.IsNullOrEmpty(id))
             {
