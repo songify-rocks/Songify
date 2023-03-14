@@ -1152,7 +1152,14 @@ namespace Songify_Slim.Util.Songify
                 string response = Settings.Settings.BotRespSongLike;
                 response = response.Replace("{song}",
                     $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                Client.SendMessage(Settings.Settings.TwChannel, response);
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, response);
+                }
             }
         }
 
