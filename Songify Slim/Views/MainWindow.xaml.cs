@@ -291,7 +291,7 @@ namespace Songify_Slim.Views
 
         private async void FetchSpotifyWeb()
         {
-            TrackInfo info = Sf.FetchSpotifyWeb();
+            TrackInfo info = await Sf.FetchSpotifyWeb();
             if (info == null) return;
 
             if (!info.IsPlaying)
@@ -695,6 +695,7 @@ namespace Songify_Slim.Views
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             _timerFetcher.Enabled = false;
+            _timerFetcher.Elapsed -= OnTimedEvent;
             _sCts = new CancellationTokenSource();
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
@@ -704,8 +705,10 @@ namespace Songify_Slim.Views
             try
             {
                 _sCts.CancelAfter(3500);
-
-                await GetCurrentSongAsync();            // when the timer 'ticks' this code gets executed
+                _timerFetcher.Enabled = false;
+                await GetCurrentSongAsync(); 
+                _timerFetcher.Enabled = true;
+                // when the timer 'ticks' this code gets executed
             }
             catch (TaskCanceledException)
             {
@@ -714,6 +717,7 @@ namespace Songify_Slim.Views
             {
                 _sCts.Dispose();
                 _timerFetcher.Enabled = true;
+                _timerFetcher.Elapsed += OnTimedEvent;
             }
         }
 

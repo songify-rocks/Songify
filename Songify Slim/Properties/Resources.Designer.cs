@@ -169,6 +169,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config.
+        /// </summary>
+        public static string brw_cmd_songlike {
+            get {
+                return ResourceManager.GetString("brw_cmd_songlike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trigger.
         /// </summary>
         public static string brw_cmd_trigger {
@@ -264,6 +273,15 @@ namespace Songify_Slim.Properties {
         public static string brw_SongInQueue {
             get {
                 return ResourceManager.GetString("brw_SongInQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !songlike command.
+        /// </summary>
+        public static string brw_SongLike {
+            get {
+                return ResourceManager.GetString("brw_SongLike", resourceCulture);
             }
         }
         

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -587,8 +588,16 @@ namespace Songify_Slim.Util.Songify
             //if (_pubSubEnabled)
             //    _twitchPubSub.Connect();
             await Task.Delay(10000);
-            CreatePubSubListenEvents();
-            TwitchPubSub.Connect();
+            try
+            {
+                CreatePubSubListenEvents();
+                TwitchPubSub.Connect();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+                throw;
+            }
         }
 
         private static void SendMessage(string twChannel, string encounteredAnErrorWithThePubsubServiceReconnectingInSeconds)
@@ -1139,8 +1148,11 @@ namespace Songify_Slim.Util.Songify
 
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
-                if (x.HasError() == false)
-                    Client.SendMessage(Settings.Settings.TwChannel, $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" has been added to the playlist.");
+                if (x.HasError() != false) return;
+                string response = Settings.Settings.BotRespSongLike;
+                response = response.Replace("{song}",
+                    $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                Client.SendMessage(Settings.Settings.TwChannel, response);
             }
         }
 
@@ -1171,7 +1183,7 @@ namespace Songify_Slim.Util.Songify
             return fullTrack.Id;
 
         }
-        
+
         private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
         {
             AnnouncementColors colors = AnnouncementColors.Purple;

@@ -319,9 +319,6 @@
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
     <value>Tasa de búsqueda de Chrome (segundos)</value>
   </data>
-  <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
-    <value>Idioma</value>
-  </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>minimizar a la bandeja del sistema</value>
   </data>
@@ -639,5 +636,14 @@
   </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Idioma</value>
+  </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Elimina la última solicitud de canción del usuario.</value>
+  </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Respuesta al comando !songlike</value>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Agrega la canción actual a la lista de reproducción seleccionada en la configuración de Spotify</value>
   </data>
 </root>

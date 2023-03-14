@@ -322,9 +322,6 @@
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
     <value>Chrome Abholrate (Sekunden)</value>
   </data>
-  <data name="sw_tcSystem_lblLangauge" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>Ins Tray minimieren</value>
   </data>
@@ -639,5 +636,14 @@
   </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Sprache</value>
+  </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Entfernt den letzten Musikwunsch des Benutzers</value>
+  </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Antwort auf den Befehl !songlike</value>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Fügt den aktuellen Titel der in der Spotify-Konfiguration ausgewählten Playlist hinzu</value>
   </data>
 </root>

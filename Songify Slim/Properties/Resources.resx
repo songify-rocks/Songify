@@ -802,4 +802,12 @@
   <data name="brw_cmd_remove" xml:space="preserve">
     <value>Removes the latest song request of the user</value>
   </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Response for !songlike command</value>
+    <comment>Lable for the !songlike command</comment>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Adds the current song to the playlist selected in Spotify config</value>
+    <comment>Comman description</comment>
+  </data>
 </root>

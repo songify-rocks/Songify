@@ -156,6 +156,7 @@ namespace Songify_Slim.Util.Settings
                                 BotCmdRemoveTrigger = "remove",
                                 BotCmdSonglike = false,
                                 BotCmdSonglikeTrigger = "songlike",
+                                BotRespSongLike = "The Song {song} has been added to the playlist.",
                                 BotCmdSkip = false,
                                 BotCmdSkipTrigger = "skip",
                                 BotCmdSkipVote = false,
@@ -182,6 +183,7 @@ namespace Songify_Slim.Util.Settings
                                 BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
                                 ChatLiveStatus = false,
                                 OnlyWorkWhenLive = false,
+
                             };
                         }
                         break;
@@ -602,6 +604,7 @@ namespace Songify_Slim.Util.Settings
         public string BotCmdRemoveTrigger { get; set; } = "remove";
         public bool BotCmdSonglike { get; set; }
         public string BotCmdSonglikeTrigger { get; set; } = "songlike";
+        public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
     }
 
     public class AppConfig

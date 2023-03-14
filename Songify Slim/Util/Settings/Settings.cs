@@ -548,6 +548,18 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static bool BotCmdSonglike { get => GetBotCmdSonglike(); set => SetBotCmdSonglike(value); }
+        public static string BotRespSongLike { get => GetBot_Resp_SongLike(); set => SetBot_Resp_SongLike(value); }
+
+        private static string GetBot_Resp_SongLike()
+        {
+            return _currentConfig.BotConfig.BotRespSongLike;
+        }
+
+        private static void SetBot_Resp_SongLike(string value)
+        {
+            _currentConfig.BotConfig.BotRespSongLike = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
 
         private static bool GetBotCmdSonglike()
         {
@@ -629,6 +641,8 @@ namespace Songify_Slim.Util.Settings
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
                 BotCmdSonglike = GetBotCmdSonglike(),
                 BotCmdSonglikeTrigger = GetCmdSonglikeTrigger(),
+                BotRespSongLike = GetBot_Resp_SongLike(),
+
             };
 
             AppConfig appConfig = new AppConfig

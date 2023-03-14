@@ -6,22 +6,137 @@
              xmlns:properties="clr-namespace:Songify_Slim.Properties"
              mc:Ignorable="d" d:DesignWidth="800" Loaded="UserControl_Loaded">
     <Grid d:Background="White">
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
-               VerticalAlignment="Top" Margin="0" FontSize="10" Padding="0,10,5,0" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="CheckArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
-                    <ComboBox x:Name="CbArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
-                        <ComboBoxItem Content="Orange"/>
-                        <ComboBoxItem Content="Blue"/>
-                        <ComboBoxItem Content="Purple"/>
-                        <ComboBoxItem Content="Primary"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
+               VerticalAlignment="Center"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="TbArtistBlocked" VerticalAlignment="Center"
+                                 TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
+                                 GotFocus="tb__GotFocus" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True" />
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="2" Grid.Column="0"  Text="{x:Static properties:Resources.brw_SongInQueue}" HorizontalAlignment="Left"
+               VerticalAlignment="Center"  />
+        <TextBox  Grid.Row="2" Grid.Column="1"  x:Name="TbSongInQueue" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                  TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
+                  GotFocus="tb__GotFocus" />
+        <Border Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="4" Grid.Column="0"  Text="{x:Static properties:Resources.brw_MaxSongs}" HorizontalAlignment="Left"
+               VerticalAlignment="Center"  />
+        <TextBox Grid.Row="4" Grid.Column="1"  x:Name="TbMaxSongs" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center" 
+                 TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap"  Grid.Row="6" Grid.Column="0" Text="{x:Static properties:Resources.brw_SongTooLong}" HorizontalAlignment="Left"
+                VerticalAlignment="Center"   />
+        <TextBox Grid.Row="6" Grid.Column="1"  x:Name="TbMaxLength" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center" 
+                 TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
+                 GotFocus="tb__GotFocus" />
+        <Border Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="8" Grid.Column="0"  Text="{x:Static properties:Resources.brw_FetchError}" HorizontalAlignment="Left"
+               VerticalAlignment="Center"   />
+        <TextBox Grid.Row="8" Grid.Column="1"  x:Name="TbError" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center" 
+                 TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap"  Grid.Row="10" Grid.Column="0" Text="{x:Static properties:Resources.brw_Success}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                 />
+        <TextBox Grid.Row="10" Grid.Column="1"  x:Name="TbSuccess" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="11" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap"  Grid.Row="12" Grid.Column="0" Text="{x:Static properties:Resources.brw_NoSong}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                 />
+        <TextBox Grid.Row="12" Grid.Column="1"  x:Name="TbNoSong" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="tb_NoSong_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="13" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="14" Grid.Column="0"  Text="{x:Static properties:Resources.brw_ModSkip}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="14" Grid.Column="1"  x:Name="TbModSkip" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="16" Grid.Column="0"  Text="{x:Static properties:Resources.brw_VoteSkip}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="16" Grid.Column="1"  x:Name="TbVoteSkip" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="18" Grid.Column="0"  Text="{x:Static properties:Resources.brw_Refund}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="18" Grid.Column="1"  x:Name="TbRefund" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="Tb_Refund_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="19" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="20" Grid.Column="0"  Text="{x:Static properties:Resources.brw_Song}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="20" Grid.Column="1"  x:Name="TbSong" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="Tb_Song_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="21" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="22" Grid.Column="0"  Text="{x:Static properties:Resources.brw_Pos}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="22" Grid.Column="1"  x:Name="TbPos" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="Tb_Pos_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="23" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="24" Grid.Column="0"  Text="{x:Static properties:Resources.brw_Next}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                />
+        <TextBox Grid.Row="24" Grid.Column="1"  x:Name="TbNext" MinHeight="23" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="Tb_Next_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+        <Border Grid.Row="25" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="26" Grid.Column="0" Text="{x:Static properties:Resources.brw_SongLike}" HorizontalAlignment="Left" VerticalAlignment="Center"
+        />
+        <TextBox Grid.Row="26" Grid.Column="1"  x:Name="TbSongLike" MinHeight="26" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 TextChanged="Tb_SongLike_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
+
+    </Grid>
+</UserControl>
+
+<!--
+           <CheckBox x:Name="CheckArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
+                    <ComboBox x:Name="CbArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" >
+                        <ComboBoxItem Text="Orange"/>
+                        <ComboBoxItem Text="Blue"/>
+                        <ComboBoxItem Text="Purple"/>
+                        <ComboBoxItem Text="Primary"/>
                         <ComboBox.Style>
                             <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
                                 <Style.Triggers>
@@ -33,109 +148,4 @@
                             </Style>
                         </ComboBox.Style>
                     </ComboBox>
-                    <TextBox Grid.Column="2" x:Name="TbArtistBlocked" VerticalAlignment="Center"
-                             TextChanged="tb_ArtistBlocked_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
-                             GotFocus="tb__GotFocus" Height="23" />
-                </Grid>
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_SongInQueue}" HorizontalAlignment="Left"
-               VerticalAlignment="Top" FontSize="10" Padding="0,10,5,0"/>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <CheckBox x:Name="CheckSongInQueue" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Visibility="Collapsed"/>
-                    <ComboBox x:Name="CbSongInQueue" SelectionChanged="Cb_SongInQueue_OnSelectionChanged" Grid.Column="1" Width="80" Margin="0,0,6,0">
-                        <ComboBoxItem Content="Orange"/>
-                        <ComboBoxItem Content="Blue"/>
-                        <ComboBoxItem Content="Purple"/>
-                        <ComboBoxItem Content="Primary"/>
-                        <ComboBox.Style>
-                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=CheckSongInQueue, Path=IsChecked}" Value="False">
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                        <Setter Property="SelectedIndex" Value="0"></Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-                    <TextBox Grid.Column="2" x:Name="TbSongInQueue" Height="23" VerticalAlignment="Top"
-                             TextChanged="tb_SongInQueue_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
-                             GotFocus="tb__GotFocus" />
-                </Grid>
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_MaxSongs}" HorizontalAlignment="Left"
-               VerticalAlignment="Top" Padding="0,10,5,0" FontSize="10"/>
-                <TextBox x:Name="TbMaxSongs" Height="23" VerticalAlignment="Top" 
-                 TextChanged="tb_MaxSongs_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_SongTooLong}" HorizontalAlignment="Left"
-               VerticalAlignment="Top" FontSize="10"  Padding="0,10,5,0"/>
-                <TextBox x:Name="TbMaxLength" Height="23" VerticalAlignment="Top" 
-                 TextChanged="tb_MaxLength_TextChanged" ToolTip="{DynamicResource ParamTooltip}"
-                 GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_FetchError}" HorizontalAlignment="Left"
-               VerticalAlignment="Top"  FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbError" Height="23" VerticalAlignment="Top" 
-                 TextChanged="tb_Error_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_Success}" HorizontalAlignment="Left" VerticalAlignment="Top"
-               FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbSuccess" Height="23" VerticalAlignment="Top"
-                 TextChanged="tb_Success_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel Orientation="Vertical">
-                <Label Content="{x:Static properties:Resources.brw_NoSong}" HorizontalAlignment="Left" VerticalAlignment="Top"
-              FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbNoSong" Height="23" VerticalAlignment="Top"
-                 TextChanged="tb_NoSong_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_ModSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbModSkip" Height="23" VerticalAlignment="Top"
-                         TextChanged="tb_ModSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_VoteSkip}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbVoteSkip" Height="23" VerticalAlignment="Top"
-                         TextChanged="tb_VoteSkip_TextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_Refund}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbRefund" Height="23" VerticalAlignment="Top"
-                         TextChanged="Tb_Refund_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_Song}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbSong" Height="23" VerticalAlignment="Top"
-                         TextChanged="Tb_Song_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_Pos}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbPos" Height="23" VerticalAlignment="Top"
-                         TextChanged="Tb_Pos_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-            <StackPanel>
-                <Label Content="{x:Static properties:Resources.brw_Next}" HorizontalAlignment="Left" VerticalAlignment="Top"
-                       FontSize="10" Padding="0,10,5,0"/>
-                <TextBox x:Name="TbNext" Height="23" VerticalAlignment="Top"
-                         TextChanged="Tb_Next_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-            </StackPanel>
-        </StackPanel>
-    </Grid>
-</UserControl>
+              -->

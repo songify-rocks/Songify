@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
+using SpotifyAPI.Web.Models;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
@@ -298,7 +299,7 @@ namespace Songify_Slim.Util.Songify
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
 
-        public TrackInfo FetchSpotifyWeb()
+        public async Task<TrackInfo> FetchSpotifyWeb()
         {
             _fetchCount++;
             // If the spotify object hast been created (successfully authed)
@@ -317,7 +318,7 @@ namespace Songify_Slim.Util.Songify
             _songInfo = ApiHandler.GetSongInfo();
             try
             {
-                if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null)
+                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null))
                 {
                     _trackChanged = true;
                     if (GlobalObjects.CurrentSong != null)
@@ -355,20 +356,24 @@ namespace Songify_Slim.Util.Songify
                     };
                     WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 }
-                _trackChanged = false;
+                // Check if the current song is alredy in the liked playlist
+                if (_trackChanged)
+                {
+                    _trackChanged = false;
+                    GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
+                }
                 string j = Json.Serialize(_songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
                 IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
+                dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
                 dictionary["Requester"] = GlobalObjects.Requester;
                 dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
                 dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
+                dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
                 dictionary["Queue"] = GlobalObjects.ReqList;
                 string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
-                //Console.WriteLine(updatedJson);
-
                 GlobalObjects.ApiResponse = updatedJson;
-
-                //WriteProgressFile($"{path}/progress.txt", j);
+                
             }
             catch (Exception e)
             {
@@ -378,6 +383,37 @@ namespace Songify_Slim.Util.Songify
             // if no song is playing and custompausetext is enabled
             return _songInfo ?? new TrackInfo { IsPlaying = false };
             // return a new stringarray containing artist, title and so on
+        }
+
+        private static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
+        {
+            Debug.WriteLine("Check Playlist");
+            string id = trackInfo.SongId;
+            if (string.IsNullOrEmpty(id))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+            {
+                return false;
+            }
+
+            bool firstFetch = true;
+            Paging<PlaylistTrack> tracks = null;
+            do
+            {
+                tracks = firstFetch
+                    ? await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, 0)
+                    : await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
+                        tracks.Offset + tracks.Limit);
+                if (tracks.Items.Any(t => t.Track.Id == id))
+                {
+                    return true;
+                }
+                firstFetch = false;
+            } while (tracks.HasNextPage());
+            return false;
         }
     }
 }

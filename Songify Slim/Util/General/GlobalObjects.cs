@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -31,6 +32,7 @@ namespace Songify_Slim.Util.General
         public static int RewardGoalCount = 0;
         public static string Requester = "";
         public static EventHandler FlowDocumentChanged;
+        public static bool IsInPlaylist;
 
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {

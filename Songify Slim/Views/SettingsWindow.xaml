@@ -313,7 +313,7 @@
                         </Grid>
 
                         <!--#region Twitch Credentials (not using API) -->
-                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials" IsOn="True" Margin="0,6,0,6"/>
+                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials" Margin="0,6,0,6"/>
                         <Label Content="Chat Account"  Grid.Row="1" Grid.Column="0" Margin="6,6,6,6" VerticalAlignment="Center"/>
                         <ComboBox x:Name="CbAccountSelection" Grid.Row="1" Grid.Column="0" Margin="90,6,0,6" HorizontalAlignment="Left" Width="164" SelectionChanged="CbAccountSelection_SelectionChanged"/>
                         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
@@ -709,8 +709,11 @@
                             <ContentControl x:Name="Cctrl" Content="ContentControl" Margin="5,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
                         </ScrollViewer>
                         <Border Grid.Row="2" Margin="-10,5,-10,0" VerticalAlignment="Bottom" BorderThickness="0,2,0,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}">
-                            <TextBox  x:Name="LblPreview" Margin="6,6,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41"  />
-                        </Border>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Text="Preview:" Margin="6,0,20,6"/>
+                                <TextBox  x:Name="LblPreview" Margin="6,0,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41"  />
+                            </StackPanel>
+                      </Border>
                     </Grid>
                 </Border>
             </TabItem>
@@ -740,8 +743,7 @@
                         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="{x:Static local:Resources.brw_cmd_enabled}" VerticalAlignment="Top" FontStyle="Italic" FontSize="10"
                                    Grid.Row="0" Grid.Column="2" Width="106"/>
 
-
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="3" >
+                        <Border Grid.Column="0" Margin="-10,0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="3" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -752,7 +754,7 @@
                         </DockPanel>
                         <TextBlock Text="{x:Static local:Resources.brw_cmd_song}" VerticalAlignment="Center" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdSong" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_song_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="2" Grid.Column="2" MinWidth="0"/>
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="4" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="4" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -764,7 +766,7 @@
                         <!--<TextBlock Grid.Column="0"  Text="!pos" Width="70" VerticalAlignment="Center" Grid.Row="2" Margin="6,0,0,0"/>-->
                         <TextBlock Text="{x:Static local:Resources.brw_cmd_pos}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdPos" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_pos_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="3" Grid.Column="2" MinWidth="0" />
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="5" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="5" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -776,7 +778,7 @@
                         <!--<TextBlock Grid.Column="0" Text="!next" Width="70" VerticalAlignment="Center" Grid.Row="3" Margin="6,0,0,0"/>-->
                         <TextBlock Text="{x:Static local:Resources.brw_cmd_next}" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdNext" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="tgl_botcmd_next_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="4" Grid.Column="2" MinWidth="0"/>
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="6" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="6" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -800,7 +802,7 @@
 
                         <Label Content="{x:Static local:Resources.brw_cmd_skipvotecount}" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Right" Width="Auto"/>
                         <controls:NumericUpDown x:Name="NudSkipVoteCount" Width="98" HorizontalAlignment="Left" ValueChanged="NudSkipVoteCount_ValueChanged" NumericInputMode="Numbers" ParsingNumberStyle="Integer" Grid.Row="7" Grid.Column="2" Height="26" Margin="0,0,0,6" />
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="2" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -812,7 +814,7 @@
                         <TextBlock Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdSsr" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="1" Grid.Column="2" MinWidth="0"/>
 
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="8" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="8" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -824,7 +826,7 @@
                         <TextBlock Text="{x:Static local:Resources.brw_cmd_remove}" VerticalAlignment="Center" Grid.Row="8" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdRemove" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_remove_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="8" Grid.Column="2" MinWidth="0"/>
 
-                        <Border Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="9" >
+                        <Border Margin="-10,0"  Grid.Column="0" BorderThickness="0,1,0,0" Grid.ColumnSpan="3" Grid.Row="9" >
                             <Border.BorderBrush>
                                 <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}"/>
                             </Border.BorderBrush>
@@ -833,7 +835,7 @@
                             <TextBlock Text="!" VerticalAlignment="Center" Margin="6,0,0,0" HorizontalAlignment="Left"/>
                             <TextBox x:Name="TextBoxTriggerSonglike" Tag="like" Text="songlike" TextChanged="TextBoxTrigger_TextChanged" Style="{StaticResource TextBoxTextBlock}" PreviewKeyDown="TextBoxTrigger_PreviewKeyDown" />
                         </DockPanel>
-                        <TextBlock Text="Adds the current song to the playlist selected in Spotify config" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left"/>
+                        <TextBlock Text="{x:Static local:Resources.brw_cmd_songlike}" VerticalAlignment="Center" Grid.Row="9" Grid.Column="1" HorizontalAlignment="Left"/>
                         <controls:ToggleSwitch x:Name="TglBotcmdSonglike" HorizontalAlignment="Left" VerticalAlignment="Center" Height="32" Toggled="Tgl_botcmd_songlike_OnToggled_Toggled" OffContent="{x:Static local:Resources.brw_cmd_off}" OnContent="{x:Static local:Resources.brw_cmd_on}" Grid.Row="9" Grid.Column="2" MinWidth="0"/>
 
                     </Grid>

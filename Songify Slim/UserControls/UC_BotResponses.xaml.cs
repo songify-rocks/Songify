@@ -49,17 +49,7 @@ namespace Songify_Slim.UserControls
                 tbx.Text = "[announce " + ((ComboBoxItem)cbx.SelectedItem).Content.ToString().ToLower() + "]" + tbx.Text;
             }
         }
-
-        private void Cb_ArtistBlocked_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SetTextBoxText(TbArtistBlocked, CbArtistBlocked, CheckArtistBlocked);
-        }
-
-        private void Cb_SongInQueue_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SetTextBoxText(TbSongInQueue, CbSongInQueue, CheckSongInQueue);
-        }
-
+        
         private static void SetPreview(TextBox tb)
         {
             string response =
@@ -179,6 +169,12 @@ namespace Songify_Slim.UserControls
             Settings.BotRespVoteSkip = TbVoteSkip.Text;
             SetPreview(sender as TextBox);
         }
+        private void Tb_SongLike_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespSongLike = TbSongLike.Text;
+            SetPreview(sender as TextBox);
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             TbArtistBlocked.Text = Settings.BotRespBlacklist;
@@ -194,11 +190,14 @@ namespace Songify_Slim.UserControls
             TbNext.Text = Settings.BotRespNext;
             TbSong.Text = Settings.BotRespSong;
             TbRefund.Text = Settings.BotRespRefund;
+            TbSongLike.Text = Settings.BotRespSongLike;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
                 box.SelectedIndex = 0;
             }
         }
+
+
     }
 }
