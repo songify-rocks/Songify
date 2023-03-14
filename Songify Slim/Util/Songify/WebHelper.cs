@@ -75,7 +75,7 @@ namespace Songify_Slim.Util.Songify
                         break;
                     case RequestMethod.Post:
                         result = await ApiClient.Post("queue", payload);
-                        if (!string.IsNullOrEmpty(result))
+                        if (string.IsNullOrEmpty(result))
                             return;
                         try
                         {
