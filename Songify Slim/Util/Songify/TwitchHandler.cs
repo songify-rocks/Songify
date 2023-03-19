@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -10,6 +11,8 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using CefSharp.Wpf;
+using CefSharp;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
@@ -39,14 +42,18 @@ using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using Unosquare.Swan.Formatters;
+using System;
+using System.Threading.Tasks;
+using CefSharp;
 using Application = System.Windows.Application;
+using System.Net;
 
 namespace Songify_Slim.Util.Songify
 {
     // This class handles everything regarding to twitch.tv
     public static class TwitchHandler
     {
-        //create a list with Twitch UserTypes and assign int values to them 
+        //create a list with Twitch UserTypes and assign int values to them
         public enum TwitchUserLevels
         {
             Everyone = 0,
@@ -289,6 +296,14 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+        public static async void DoMakeTheThing()
+        {
+            TwitchPubSub.Disconnect();
+            await Task.Delay(10000);
+            CreatePubSubListenEvents();
+            TwitchPubSub.Connect();
+        }
+
         private static void CreatePubSubsConnection()
         {
             CreatePubSubEventHandlers();
@@ -309,16 +324,20 @@ namespace Songify_Slim.Util.Songify
             TwitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
             TwitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
             TwitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
-            TwitchPubSub.OnStreamUp += (sender, args) =>
-            {
-                Logger.LogStr("TWITCH API: Stream is up");
-                Settings.Settings.IsLive = true;
-            };
-            TwitchPubSub.OnStreamDown += (sender, args) =>
-            {
-                Logger.LogStr("TWITCH API: Stream is down");
-                Settings.Settings.IsLive = false;
-            };
+            TwitchPubSub.OnStreamUp += OnStreamUp;
+            TwitchPubSub.OnStreamDown += OnStreamDown;
+        }
+
+        private static void OnStreamDown(object sender, OnStreamDownArgs args)
+        {
+            Logger.LogStr("TWITCH API: Stream is down");
+            Settings.Settings.IsLive = false;
+        }
+
+        private static void OnStreamUp(object sender, OnStreamUpArgs args)
+        {
+            Logger.LogStr("TWITCH API: Stream is up");
+            Settings.Settings.IsLive = true;
         }
 
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender, OnChannelPointsRewardRedeemedArgs e)
@@ -422,6 +441,11 @@ namespace Songify_Slim.Util.Songify
                 }
                 // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
                 trackId = GetTrackIdFromInput(redemption.UserInput);
+                if (trackId == "shortened")
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
+                    return;
+                }
                 if (!string.IsNullOrWhiteSpace(trackId))
                 {
                     if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
@@ -583,10 +607,10 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
-            SendMessage(Settings.Settings.TwChannel, "Encountered an error with the PubSub service. Reconnecting in 10 seconds...");
-            //_twitchPubSub.Disconnect();
-            //if (_pubSubEnabled)
-            //    _twitchPubSub.Connect();
+            SendMessage(Settings.Settings.TwChannel, "Encountered an error with the PubSub service. Reconnecting...");
+            TwitchPubSub.Disconnect();
+            if (PubSubEnabled)
+                TwitchPubSub.Connect();
             await Task.Delay(30000);
             try
             {
@@ -625,6 +649,7 @@ namespace Songify_Slim.Util.Songify
 
         private static void OnPubSubServiceConnected(object sender, EventArgs e)
         {
+
             TwitchPubSub.SendTopics(Settings.Settings.TwitchAccessToken);
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -1094,7 +1119,6 @@ namespace Songify_Slim.Util.Songify
                 {
                     Client.SendMessage(e.ChatMessage.Channel, response);
                 }
-                Client.SendMessage(e.ChatMessage.Channel, response);
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" && Settings.Settings.BotCmdRemove)
             {
@@ -1165,6 +1189,11 @@ namespace Songify_Slim.Util.Songify
 
         private static string GetTrackIdFromInput(string input)
         {
+            if (input.StartsWith("https://spotify.link/"))
+            {
+                return "shortened";
+            }
+
             if (input.StartsWith("spotify:track:"))
             {
                 // search for a track with the id
@@ -1435,7 +1464,7 @@ namespace Songify_Slim.Util.Songify
             ErrorResponse error = ApiHandler.AddToQ(spotifyUri);
             if (error.Error != null)
             {
-                // if an error has been encountered, log it, inform the requester and skip 
+                // if an error has been encountered, log it, inform the requester and skip
                 Logger.LogStr("TWITCH: " + error.Error.Message + "\n" + error.Error.Status);
                 response = Settings.Settings.BotRespError;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
@@ -1595,7 +1624,7 @@ namespace Songify_Slim.Util.Songify
             ErrorResponse error = ApiHandler.AddToQ(spotifyUri);
             if (error.Error != null)
             {
-                // if an error has been encountered, log it, inform the requester and skip 
+                // if an error has been encountered, log it, inform the requester and skip
                 Logger.LogStr("TWITCH: " + error.Error.Message + "\n" + error.Error.Status);
                 response = Settings.Settings.BotRespError;
                 response = response.Replace("{user}", username);

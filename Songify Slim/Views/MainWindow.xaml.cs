@@ -706,7 +706,7 @@ namespace Songify_Slim.Views
             {
                 _sCts.CancelAfter(3500);
                 _timerFetcher.Enabled = false;
-                await GetCurrentSongAsync(); 
+                await GetCurrentSongAsync();
                 _timerFetcher.Enabled = true;
                 // when the timer 'ticks' this code gets executed
             }
@@ -1249,6 +1249,11 @@ namespace Songify_Slim.Views
 
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
         {
+
+            TwitchHandler.DoMakeTheThing();
+
+
+
             if (_consoleWindow == null)
                 _consoleWindow = new WindowConsole
                 {
@@ -1276,6 +1281,10 @@ namespace Songify_Slim.Views
             mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(live ? "Live" : "Offline")})";
             LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
             Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

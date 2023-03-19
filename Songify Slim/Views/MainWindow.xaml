@@ -13,9 +13,9 @@
                       xmlns:songifySlim="clr-namespace:Songify_Slim"
                       Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
                       StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
-                      ShowDialogsOverTitleBar="False" 
-                      Closing="MetroWindow_Closing" 
-                      KeyDown="MetroWindow_KeyDown" 
+                      ShowDialogsOverTitleBar="False"
+                      Closing="MetroWindow_Closing"
+                      KeyDown="MetroWindow_KeyDown"
                       SaveWindowPosition="True" LocationChanged="MetroWindow_LocationChanged" GotFocus="MetroWindow_GotFocus" LostFocus="MetroWindow_LostFocus">
     <controls:MetroWindow.Resources>
         <Style TargetType="{x:Type dialog:MessageDialog}"
@@ -110,6 +110,7 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
+                <MenuItem Header="Connect PubSub" Click="MenuItem_OnClick"/>
                 <MenuItem x:Name="mi_TwitchAPI" Click="mi_TwitchAPI_Click" Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}"/>
                 <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Tag="Connect" Click="BtnTwitch_Click"/>
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
@@ -171,11 +172,11 @@
                         <EventTrigger RoutedEvent="Loaded">
                             <BeginStoryboard Name="wiggle">
                                 <Storyboard RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetName="RotateTransform" 
-                                                             Storyboard.TargetProperty="Angle" 
-                                                             From="-2" To="2" Duration="0:0:1" 
-                                                             BeginTime="0:0:0" 
-                                                             RepeatBehavior="Forever" 
+                                    <DoubleAnimation Storyboard.TargetName="RotateTransform"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             From="-2" To="2" Duration="0:0:1"
+                                                             BeginTime="0:0:0"
+                                                             RepeatBehavior="Forever"
                                                              AutoReverse="True"
                                                               >
                                     </DoubleAnimation>

@@ -66,7 +66,7 @@ namespace Songify_Slim.Util.Songify
 
                                 return Task.FromResult(new SongInfo { Artist = artist, Title = title });
                             }
-                            // the win title gets changed as soon as spotify is paused, therefore I'm checking 
+                            // the win title gets changed as soon as spotify is paused, therefore I'm checking
                             //if custom pause text is enabled and if so spit out custom text
 
                             if (Settings.Settings.CustomPauseTextEnabled)
@@ -198,7 +198,7 @@ namespace Songify_Slim.Util.Songify
                                     {
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                        // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                        // Regex pattern to replace the notification in front of the tab (1) - (99+)
                                         return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                     }
 
@@ -239,7 +239,7 @@ namespace Songify_Slim.Util.Songify
                                 {
                                     //_id = element.Current.ControlType.Id;
                                     //_parent = TreeWalker.RawViewWalker.GetParent(element);
-                                    // Regex pattern to replace the notification in front of the tab (1) - (99+) 
+                                    // Regex pattern to replace the notification in front of the tab (1) - (99+)
                                     return FormattedString("YouTube",
                                         Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                 }
@@ -273,7 +273,7 @@ namespace Songify_Slim.Util.Songify
             {
                 case "YouTube":
                     index = s.LastIndexOf("- YouTube", StringComparison.Ordinal);
-                    // Remove everything after the last "-" int the string 
+                    // Remove everything after the last "-" int the string
                     // which is "- Youtube" and info that music is playing on this tab
                     if (index > 0)
                         s = s.Substring(0, index);
@@ -282,7 +282,7 @@ namespace Songify_Slim.Util.Songify
                 case "Deezer":
                     //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
                     index = s.LastIndexOf("- Deezer", StringComparison.Ordinal);
-                    // Remove everything after the last "-" int the string 
+                    // Remove everything after the last "-" int the string
                     // which is "- Youtube" and info that music is playing on this tab
                     if (index > 0)
                         s = s.Substring(0, index);
@@ -360,7 +360,7 @@ namespace Songify_Slim.Util.Songify
                 if (_trackChanged)
                 {
                     _trackChanged = false;
-                    if (_songInfo.SongId != null)
+                    if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                 }
                 string j = Json.Serialize(_songInfo);
