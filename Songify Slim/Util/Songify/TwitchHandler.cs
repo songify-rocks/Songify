@@ -1199,6 +1199,17 @@ namespace Songify_Slim.Util.Songify
                     Client.SendMessage(e.ChatMessage.Channel, response);
                 }
             }
+            else switch (e.ChatMessage.Message)
+            {
+                case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                {
+                    var response = await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                    break;
+                }
+                case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                    await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                    break;
+            }
         }
 
         private static string GetTrackIdFromInput(string input)
