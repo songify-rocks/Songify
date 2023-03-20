@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.Settings
         {
             string path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)  // see height_in_inches in sample yml 
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)  // see height_in_inches in sample yml
                 .Build();
 
             Configuration config = new Configuration();
@@ -122,27 +122,27 @@ namespace Songify_Slim.Util.Settings
                             var p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
                             config.BotConfig = p;
 
-                            config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
-                            config.BotConfig.BotRespError = string.IsNullOrWhiteSpace(config.BotConfig.BotRespError) ? "@{user} there was an error adding your Song to the queue. Error message: {errormsg}" : config.BotConfig.BotRespError;
-                            config.BotConfig.BotRespIsInQueue = string.IsNullOrWhiteSpace(config.BotConfig.BotRespIsInQueue) ? "@{user} this song is already in the queue." : config.BotConfig.BotRespIsInQueue;
-                            config.BotConfig.BotRespLength = string.IsNullOrWhiteSpace(config.BotConfig.BotRespLength) ? "@{user} the song you requested exceeded the maximum song length ({maxlength})." : config.BotConfig.BotRespLength;
-                            config.BotConfig.BotRespMaxReq = string.IsNullOrWhiteSpace(config.BotConfig.BotRespMaxReq) ? "@{user} maximum number of songs in queue reached ({maxreq})." : config.BotConfig.BotRespMaxReq;
-                            config.BotConfig.BotRespModSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespModSkip) ? "@{user} skipped the current song." : config.BotConfig.BotRespModSkip;
-                            config.BotConfig.BotRespNoSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNoSong) ? "@{user} please specify a song to add to the queue." : config.BotConfig.BotRespNoSong;
-                            config.BotConfig.BotRespSuccess = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSuccess) ? "{artist} - {title} requested by @{user} has been added to the queue." : config.BotConfig.BotRespSuccess;
-                            config.BotConfig.BotRespVoteSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespVoteSkip) ? "@{user} voted to skip the current song. ({votes})" : config.BotConfig.BotRespVoteSkip;
-                            config.BotConfig.BotRespPos = string.IsNullOrWhiteSpace(config.BotConfig.BotRespPos) ? "@{user} {songs}{pos} {song}{/songs}" : config.BotConfig.BotRespPos;
-                            config.BotConfig.BotRespSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSong) ? "@{user} {song}" : config.BotConfig.BotRespSong;
-                            config.BotConfig.BotRespNext = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNext) ? "@{user} {song}" : config.BotConfig.BotRespNext;
-                            config.BotConfig.BotCmdPosTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdPosTrigger) ? "pos" : config.BotConfig.BotCmdPosTrigger;
-                            config.BotConfig.BotCmdSongTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSongTrigger) ? "song" : config.BotConfig.BotCmdSongTrigger;
-                            config.BotConfig.BotCmdNextTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdNextTrigger) ? "next" : config.BotConfig.BotCmdNextTrigger;
-                            config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
-                            config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
-                            config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
-                            config.BotConfig.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdRemoveTrigger) ? "remove" : config.BotConfig.BotCmdRemoveTrigger;
-                            config.BotConfig.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSonglikeTrigger) ? "songlike" : config.BotConfig.BotCmdSonglikeTrigger;
-                            config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
+                            //config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
+                            //config.BotConfig.BotRespError = string.IsNullOrWhiteSpace(config.BotConfig.BotRespError) ? "@{user} there was an error adding your Song to the queue. Error message: {errormsg}" : config.BotConfig.BotRespError;
+                            //config.BotConfig.BotRespIsInQueue = string.IsNullOrWhiteSpace(config.BotConfig.BotRespIsInQueue) ? "@{user} this song is already in the queue." : config.BotConfig.BotRespIsInQueue;
+                            //config.BotConfig.BotRespLength = string.IsNullOrWhiteSpace(config.BotConfig.BotRespLength) ? "@{user} the song you requested exceeded the maximum song length ({maxlength})." : config.BotConfig.BotRespLength;
+                            //config.BotConfig.BotRespMaxReq = string.IsNullOrWhiteSpace(config.BotConfig.BotRespMaxReq) ? "@{user} maximum number of songs in queue reached ({maxreq})." : config.BotConfig.BotRespMaxReq;
+                            //config.BotConfig.BotRespModSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespModSkip) ? "@{user} skipped the current song." : config.BotConfig.BotRespModSkip;
+                            //config.BotConfig.BotRespNoSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNoSong) ? "@{user} please specify a song to add to the queue." : config.BotConfig.BotRespNoSong;
+                            //config.BotConfig.BotRespSuccess = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSuccess) ? "{artist} - {title} requested by @{user} has been added to the queue." : config.BotConfig.BotRespSuccess;
+                            //config.BotConfig.BotRespVoteSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespVoteSkip) ? "@{user} voted to skip the current song. ({votes})" : config.BotConfig.BotRespVoteSkip;
+                            //config.BotConfig.BotRespPos = string.IsNullOrWhiteSpace(config.BotConfig.BotRespPos) ? "@{user} {songs}{pos} {song}{/songs}" : config.BotConfig.BotRespPos;
+                            //config.BotConfig.BotRespSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSong) ? "@{user} {song}" : config.BotConfig.BotRespSong;
+                            //config.BotConfig.BotRespNext = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNext) ? "@{user} {song}" : config.BotConfig.BotRespNext;
+                            //config.BotConfig.BotCmdPosTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdPosTrigger) ? "pos" : config.BotConfig.BotCmdPosTrigger;
+                            //config.BotConfig.BotCmdSongTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSongTrigger) ? "song" : config.BotConfig.BotCmdSongTrigger;
+                            //config.BotConfig.BotCmdNextTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdNextTrigger) ? "next" : config.BotConfig.BotCmdNextTrigger;
+                            //config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
+                            //config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
+                            //config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
+                            //config.BotConfig.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdRemoveTrigger) ? "remove" : config.BotConfig.BotCmdRemoveTrigger;
+                            //config.BotConfig.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSonglikeTrigger) ? "songlike" : config.BotConfig.BotCmdSonglikeTrigger;
+                            //config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
                         }
                         else
                         {
@@ -433,7 +433,7 @@ namespace Songify_Slim.Util.Settings
                 // Opening the dialog and when the user hits "OK" the following code gets executed
                 if (openFileDialog.ShowDialog() == DialogResult.OK) ReadXml(openFileDialog.FileName);
 
-                // This will iterate through all windows of the software, if the window is typeof 
+                // This will iterate through all windows of the software, if the window is typeof
                 // Settingswindow (from there this class is called) it calls the method SetControls
                 Application.Current.Dispatcher.Invoke(() =>
                 {

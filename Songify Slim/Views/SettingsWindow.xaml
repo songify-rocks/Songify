@@ -491,9 +491,23 @@
                                 <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" />
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
-                                <Label Content="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></Label>
+                                <TextBlock Margin="0,6,0,6" Text="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></TextBlock>
                                 <Grid x:Name="GridNonManageable" Grid.Row="5" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.Window.Background}" Grid.RowSpan="5" Grid.ColumnSpan="2" Panel.ZIndex="1">
-                                    <TextBlock Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"/>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" x:Name="TextRefundDisclaimer" Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="1" Visibility="Collapsed" x:Name="SMILEY" Text=":)"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="27" RenderTransformOrigin="0.5,0.5" FontWeight="Bold">
+                                        <TextBlock.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="90"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
                                 </Grid>
                                 <CheckBox x:Name="ChkRefundUserLevel" Tag="0" Margin="5,0,0,4"  Grid.Row="5" Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Checked="CheckRefundChecked" Unchecked="CheckRefundUnchecked">
                                     <TextBlock Text ="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap"/>
@@ -527,8 +541,8 @@
                                 </CheckBox>
                             </Grid>
                         </TabItem>
-                        <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False"/>
-                        <TabItem Header="Reward Goal">
+                        <TabItem IsEnabled="False" Header="|" IsHitTestVisible="False" Visibility="Collapsed"/>
+                        <TabItem Header="Reward Goal"  Visibility="Collapsed">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -713,7 +727,7 @@
                                 <TextBlock Text="Preview:" Margin="6,0,20,6"/>
                                 <TextBox  x:Name="LblPreview" Margin="6,0,20,6" TextWrapping="Wrap" IsReadOnly="True" BorderBrush="White" Height="41"  />
                             </StackPanel>
-                      </Border>
+                        </Border>
                     </Grid>
                 </Border>
             </TabItem>

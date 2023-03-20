@@ -65,7 +65,7 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient Client;
         private static bool _onCooldown;
         private static bool _skipCooldown;
-        private const bool PubSubEnabled = true;
+        public const bool PubSubEnabled = false;
         public static bool ForceDisconnect;
         private static readonly List<string> SkipVotes = new List<string>();
         private static readonly Timer CooldownTimer = new Timer
@@ -386,8 +386,8 @@ namespace Songify_Slim.Util.Songify
                             msg += $" {Settings.Settings.BotRespRefund}";
                         }
                     }
-
-                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    if (!string.IsNullOrEmpty(msg))
+                        Client.SendMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
                 if (IsUserBlocked(redeemedUser.DisplayName))
@@ -403,8 +403,8 @@ namespace Songify_Slim.Util.Songify
                             msg += $" {Settings.Settings.BotRespRefund}";
                         }
                     }
-
-                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    if (!string.IsNullOrEmpty(msg))
+                        Client.SendMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
                 // checks if the user has already the max amount of songs in the queue
@@ -419,7 +419,8 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{maxreq}", $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
                         response = response.Replace("{errormsg}", "");
                         response = CleanFormatString(response);
-                        Client.SendMessage(Settings.Settings.TwChannel, response);
+                        if (!string.IsNullOrEmpty(response))
+                            Client.SendMessage(Settings.Settings.TwChannel, response);
                         return;
                     }
                 if (ApiHandler.Spotify == null)
@@ -473,14 +474,16 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
-
-                    if (msg.StartsWith("[announce "))
+                    if (!string.IsNullOrEmpty(msg))
                     {
-                        await AnnounceInChat(msg);
-                    }
-                    else
-                    {
-                        Client.SendMessage(Settings.Settings.TwChannel, msg);
+                        if (msg.StartsWith("[announce "))
+                        {
+                            await AnnounceInChat(msg);
+                        }
+                        else
+                        {
+                            Client.SendMessage(Settings.Settings.TwChannel, msg);
+                        }
                     }
                 }
                 else
@@ -510,13 +513,16 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogStr("PUBSUB: Could not refund points. Has the reward been created through the app?");
                         }
                     }
-                    if (response.StartsWith("[announce "))
+                    if (!string.IsNullOrEmpty(response))
                     {
-                        await AnnounceInChat(response);
-                    }
-                    else
-                    {
-                        Client.SendMessage(Settings.Settings.TwChannel, response);
+                        if (response.StartsWith("[announce "))
+                        {
+                            await AnnounceInChat(response);
+                        }
+                        else
+                        {
+                            Client.SendMessage(Settings.Settings.TwChannel, response);
+                        }
                     }
                 }
             }
@@ -790,6 +796,8 @@ namespace Songify_Slim.Util.Songify
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             await CheckStreamIsUp();
+
+
             if (Users.All(o => o.UserId != e.ChatMessage.UserId))
             {
                 Users.Add(new TwitchUser
@@ -805,6 +813,10 @@ namespace Songify_Slim.Util.Songify
                 Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
 
+            if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled)
+            {
+                AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
+            }
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
             {
@@ -831,66 +843,68 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-                string[] msgSplit = e.ChatMessage.Message.Split(' ');
+                AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
 
-                // Prevent crash on command without args
-                if (msgSplit.Length <= 1)
-                {
-                    string response = Settings.Settings.BotRespNoSong;
-                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                //// if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
+                //string[] msgSplit = e.ChatMessage.Message.Split(' ');
 
-                    StartCooldown();
-                    return;
-                }
+                //// Prevent crash on command without args
+                //if (msgSplit.Length <= 1)
+                //{
+                //    string response = Settings.Settings.BotRespNoSong;
+                //    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                //    Client.SendMessage(e.ChatMessage.Channel, response);
 
-                if (msgSplit[1].StartsWith("spotify:track:"))
-                {
-                    // search for a track with the id
-                    string trackId = msgSplit[1].Replace("spotify:track:", "");
-                    // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                    AddSong(trackId, e);
-                }
+                //    StartCooldown();
+                //    return;
+                //}
 
-                else if (msgSplit[1].StartsWith("https://open.spotify.com/track/"))
-                {
-                    string trackid = msgSplit[1].Replace("https://open.spotify.com/track/", "");
-                    trackid = trackid.Split('?')[0];
-                    AddSong(trackid, e);
-                }
-                else
-                {
-                    string searchString = e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger} ", "");
-                    // search for a track with a search string from chat
-                    SearchItem searchItem = ApiHandler.FindTrack(searchString);
-                    if (searchItem.Tracks.Items.Count > 0)
-                    {
-                        // if a track was found convert the object to FullTrack (easier use than searchItem)
-                        FullTrack fullTrack = searchItem.Tracks.Items[0];
-                        // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                        AddSong(fullTrack.Id, e);
-                    }
-                    else
-                    {
-                        // if no track has been found inform the requester
-                        string response = Settings.Settings.BotRespError;
-                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                        response = response.Replace("{artist}", "");
-                        response = response.Replace("{title}", "");
-                        response = response.Replace("{maxreq}", "");
-                        response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-                        if (response.StartsWith("[announce "))
-                        {
-                            await AnnounceInChat(response);
-                        }
-                        else
-                        {
-                            Client.SendMessage(e.ChatMessage.Channel, response);
-                        }
-                        return;
-                    }
-                }
+                //if (msgSplit[1].StartsWith("spotify:track:"))
+                //{
+                //    // search for a track with the id
+                //    string trackId = msgSplit[1].Replace("spotify:track:", "");
+                //    // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
+                //    AddSong(trackId, e);
+                //}
+
+                //else if (msgSplit[1].StartsWith("https://open.spotify.com/track/"))
+                //{
+                //    string trackid = msgSplit[1].Replace("https://open.spotify.com/track/", "");
+                //    trackid = trackid.Split('?')[0];
+                //    AddSong(trackid, e);
+                //}
+                //else
+                //{
+                //    string searchString = e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger} ", "");
+                //    // search for a track with a search string from chat
+                //    SearchItem searchItem = ApiHandler.FindTrack(searchString);
+                //    if (searchItem.Tracks.Items.Count > 0)
+                //    {
+                //        // if a track was found convert the object to FullTrack (easier use than searchItem)
+                //        FullTrack fullTrack = searchItem.Tracks.Items[0];
+                //        // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
+                //        AddSong(fullTrack.Id, e);
+                //    }
+                //    else
+                //    {
+                //        // if no track has been found inform the requester
+                //        string response = Settings.Settings.BotRespError;
+                //        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                //        response = response.Replace("{artist}", "");
+                //        response = response.Replace("{title}", "");
+                //        response = response.Replace("{maxreq}", "");
+                //        response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
+                //        if (response.StartsWith("[announce "))
+                //        {
+                //            await AnnounceInChat(response);
+                //        }
+                //        else
+                //        {
+                //            Client.SendMessage(e.ChatMessage.Channel, response);
+                //        }
+                //        return;
+                //    }
+                //}
 
                 // start the command cooldown
                 StartCooldown();
@@ -1066,7 +1080,7 @@ namespace Songify_Slim.Util.Songify
                     for (int i = 0; i < queueItems.Count; i++)
                     {
                         QueueItem item = queueItems[i];
-                        tmp += between.Replace("{pos}", item.Position.ToString()).Replace("{song}", item.Title);
+                        tmp += between.Replace("{pos}", "#" + item.Position).Replace("{song}", item.Title);
                         //If the song is the last one, don't add a newline
                         if (i != queueItems.Count - 1)
                             tmp += " | ";
@@ -1490,6 +1504,7 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{artist}", artists);
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
+            response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count + 1}");
             response = response.Replace("{errormsg}", "");
             if (response.StartsWith("[announce "))
             {
@@ -1533,7 +1548,6 @@ namespace Songify_Slim.Util.Songify
 
         private static ReturnObject AddSong2(string trackId, string username)
         {
-
             // loads the blacklist from settings
             string response;
             // gets the track information using spotify api

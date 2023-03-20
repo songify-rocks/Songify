@@ -803,7 +803,7 @@ namespace Songify_Slim.Views
                     {
                         if (rewardId == null) break;
                         Settings.TwRewardId = rewardId;
-                        SetCheckBoxEnabledState(item.IsManagable);
+                        SetCheckBoxEnabledState(TwitchHandler.PubSubEnabled && item.IsManagable);
                         break;
                     }
                 case "skip":
@@ -823,6 +823,15 @@ namespace Songify_Slim.Views
 
         private void SetCheckBoxEnabledState(bool itemIsManagable)
         {
+            if (!TwitchHandler.PubSubEnabled)
+            {
+                SMILEY.Visibility = Visibility.Visible;
+                TextRefundDisclaimer.Text =
+                    "Refunds are not possible because PubSub has been temporarily disabled until TwitchLib, a third party library I use for Twitch API integration, fixes the disconnect issues which crash the application.";
+            }
+            else
+                TextRefundDisclaimer.Text = Properties.Resources.sw_Integration_RefundDisclaimer;
+
             GridNonManageable.Visibility = itemIsManagable ? Visibility.Collapsed : Visibility.Visible;
             foreach (CheckBox cb in GlobalObjects.FindVisualChildren<CheckBox>(GrdTwitchReward))
             {
@@ -899,12 +908,12 @@ namespace Songify_Slim.Views
                         }
 
                         CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
-                        SetCheckBoxEnabledState(CbxRewards.SelectedItem != null && ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable);
+                        SetCheckBoxEnabledState(TwitchHandler.PubSubEnabled && CbxRewards.SelectedItem != null && ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable);
                         CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
                         ComboboxRewardGoalReward.SelectedItem = GetItemFromList(ComboboxRewardGoalReward, Settings.TwRewardGoalRewardId);
                     }
                     CbxRewards.IsEnabled = true;
-                    CbxRewardsSkip.IsEnabled = true;
+                    CbxRewardsSkip.IsEnabled = TwitchHandler.PubSubEnabled;
                     BtnCreateNewReward.IsEnabled = true;
                 }
                 catch (Exception e)
