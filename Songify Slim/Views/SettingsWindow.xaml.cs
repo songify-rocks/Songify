@@ -1230,7 +1230,6 @@ namespace Songify_Slim.Views
         private void Tgl_botcmd_songlike_OnToggled_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdSonglike = ((ToggleSwitch)sender).IsOn;
-
         }
 
         private void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1243,6 +1242,11 @@ namespace Songify_Slim.Views
             TwitchHandler.Client = null;
             TwitchHandler.BotConnect();
             SetControls();
+        }
+
+        private void Tgl_botcmd_PlayPause_OnToggled_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdPlayPause = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

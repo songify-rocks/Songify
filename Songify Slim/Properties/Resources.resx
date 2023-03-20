@@ -810,4 +810,7 @@
     <value>Adds the current song to the playlist selected in Spotify config</value>
     <comment>Comman description</comment>
   </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Resumes or pauses the current playback.</value>
+  </data>
 </root>

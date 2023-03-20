@@ -115,6 +115,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resumes or pauses the current playback..
+        /// </summary>
+        public static string brw_cmd_playpause {
+            get {
+                return ResourceManager.GetString("brw_cmd_playpause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
         /// </summary>
         public static string brw_cmd_pos {

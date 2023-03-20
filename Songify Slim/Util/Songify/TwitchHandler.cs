@@ -1201,12 +1201,12 @@ namespace Songify_Slim.Util.Songify
             }
             else switch (e.ChatMessage.Message)
             {
-                case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
                 {
                     var response = await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
                     break;
                 }
-                case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
                     await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                     break;
             }
