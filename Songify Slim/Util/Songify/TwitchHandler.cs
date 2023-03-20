@@ -1145,7 +1145,7 @@ namespace Songify_Slim.Util.Songify
                 WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
                 UpdateQueueWindow();
                 Client.SendMessage(e.ChatMessage.Channel,
-                    $"@{e.ChatMessage.DisplayName} your previous requst ({tmp}) will be skipped");
+                    $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
