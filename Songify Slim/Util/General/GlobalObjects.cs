@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Songify_Slim.Util.General
         public const string BaseUrl = "https://songify.overcode.tv";
         public const string ApiUrl = "https://songify.overcode.tv/api/v1";
         public static WebServer WebServer = new WebServer();
-        public static List<RequestObject> ReqList = new List<RequestObject>();
+        public static ObservableCollection<RequestObject> ReqList = new ObservableCollection<RequestObject>();
         public static List<RequestObject> SkipList = new List<RequestObject>();
         public static string ApiResponse;
         public static FlowDocument ConsoleDocument = new FlowDocument();
@@ -47,18 +48,18 @@ namespace Songify_Slim.Util.General
         }
 
         /// <summary>
-        /// Finds a Child of a given item in the visual tree. 
+        /// Finds a Child of a given item in the visual tree.
         /// </summary>
         /// <param name="parent">A direct parent of the queried item.</param>
         /// <typeparam name="T">The type of the queried item.</typeparam>
         /// <param name="childName">x:Name or Name of child. </param>
-        /// <returns>The first parent item that matches the submitted type parameter. 
-        /// If not matching item can be found, 
+        /// <returns>The first parent item that matches the submitted type parameter.
+        /// If not matching item can be found,
         /// a null parent is being returned.</returns>
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
         {
-            // Confirm parent and childName are valid. 
+            // Confirm parent and childName are valid.
             if (parent == null) return null;
 
             T foundChild = null;
@@ -74,7 +75,7 @@ namespace Songify_Slim.Util.General
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
 
-                    // If the child is found, break so we do not overwrite the found child. 
+                    // If the child is found, break so we do not overwrite the found child.
                     if (foundChild != null) break;
                 }
                 else if (!string.IsNullOrEmpty(childName))

@@ -1150,7 +1150,7 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
 
-                RequestObject reqObj = GlobalObjects.ReqList.FindLast(o =>
+                RequestObject reqObj = GlobalObjects.ReqList.Last(o =>
                     o.Requester == e.ChatMessage.DisplayName);
                 if (reqObj == null) return;
                 string tmp = $"{reqObj.Artist} - {reqObj.Title}";
@@ -1787,7 +1787,7 @@ namespace Songify_Slim.Util.Songify
         private static bool IsInQueue(string id)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.Trackid == id);
+            List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Trackid == id).ToList();
 
             return temp.Count > 0;
         }
@@ -1797,7 +1797,7 @@ namespace Songify_Slim.Util.Songify
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
             List<QueueItem> temp3 = new List<QueueItem>();
             string currsong = "";
-            List<RequestObject> temp = GlobalObjects.ReqList;
+            List<RequestObject> temp = new List<RequestObject>(GlobalObjects.ReqList);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -1839,7 +1839,7 @@ namespace Songify_Slim.Util.Songify
         {
             int maxreq;
             // Checks if the requester already reached max songrequests
-            List<RequestObject> temp = GlobalObjects.ReqList.FindAll(x => x.Requester == requester);
+            List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Requester == requester).ToList();
 
             switch ((TwitchUserLevels)userLevel)
             {

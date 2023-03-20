@@ -985,7 +985,7 @@ namespace Songify_Slim.Views
 
                 if (GlobalObjects.ReqList.Count > 0)
                 {
-                    RequestObject rq = GlobalObjects.ReqList.Find(x => x.Trackid == _currentId);
+                    RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == _currentId);
                     if (rq != null)
                     {
                         CurrSong = CurrSong.Replace("{{", "");

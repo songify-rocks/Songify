@@ -326,7 +326,7 @@ namespace Songify_Slim.Util.Songify
                     if (_songInfo.SongId != null)
                         Logger.LogStr($"CORE: Now Playing {_songInfo.Artists} - {_songInfo.Title}");
                     RequestObject rq =
-                        GlobalObjects.ReqList.Find(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
+                        GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     if (rq != null)
                     {
                         Logger.LogStr($"CORE: Removed {rq.Artist} - {rq.Title} requested by {rq.Requester} from the queue.");
