@@ -812,9 +812,31 @@ namespace Songify_Slim.Util.Songify
             {
                 Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
-
             if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled)
             {
+                int userlevel = CheckUserLevel(e.ChatMessage);
+                if (userlevel < Settings.Settings.TwSrUserLevel)
+                {
+                    //Send a Message to the user, that his Userlevel is too low
+                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    return;
+                }
+                // Do nothing if the user is blocked, don't even reply
+                if (IsUserBlocked(e.ChatMessage.DisplayName))
+                {
+                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
+                    return;
+                }
+
+                // if onCooldown skip
+                if (_onCooldown) return;
+
+                if (ApiHandler.Spotify == null)
+                {
+                    Client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
+                    return;
+                }
+
                 AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
             }
             // Same code from above but it reacts to a command instead of rewards
@@ -844,67 +866,6 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 AddSong(GetTrackIdFromInput(e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger}", "").Trim()), e);
-
-                //// if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-                //string[] msgSplit = e.ChatMessage.Message.Split(' ');
-
-                //// Prevent crash on command without args
-                //if (msgSplit.Length <= 1)
-                //{
-                //    string response = Settings.Settings.BotRespNoSong;
-                //    response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                //    Client.SendMessage(e.ChatMessage.Channel, response);
-
-                //    StartCooldown();
-                //    return;
-                //}
-
-                //if (msgSplit[1].StartsWith("spotify:track:"))
-                //{
-                //    // search for a track with the id
-                //    string trackId = msgSplit[1].Replace("spotify:track:", "");
-                //    // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                //    AddSong(trackId, e);
-                //}
-
-                //else if (msgSplit[1].StartsWith("https://open.spotify.com/track/"))
-                //{
-                //    string trackid = msgSplit[1].Replace("https://open.spotify.com/track/", "");
-                //    trackid = trackid.Split('?')[0];
-                //    AddSong(trackid, e);
-                //}
-                //else
-                //{
-                //    string searchString = e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger} ", "");
-                //    // search for a track with a search string from chat
-                //    SearchItem searchItem = ApiHandler.FindTrack(searchString);
-                //    if (searchItem.Tracks.Items.Count > 0)
-                //    {
-                //        // if a track was found convert the object to FullTrack (easier use than searchItem)
-                //        FullTrack fullTrack = searchItem.Tracks.Items[0];
-                //        // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                //        AddSong(fullTrack.Id, e);
-                //    }
-                //    else
-                //    {
-                //        // if no track has been found inform the requester
-                //        string response = Settings.Settings.BotRespError;
-                //        response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                //        response = response.Replace("{artist}", "");
-                //        response = response.Replace("{title}", "");
-                //        response = response.Replace("{maxreq}", "");
-                //        response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-                //        if (response.StartsWith("[announce "))
-                //        {
-                //            await AnnounceInChat(response);
-                //        }
-                //        else
-                //        {
-                //            Client.SendMessage(e.ChatMessage.Channel, response);
-                //        }
-                //        return;
-                //    }
-                //}
 
                 // start the command cooldown
                 StartCooldown();
@@ -1149,13 +1110,17 @@ namespace Songify_Slim.Util.Songify
                 {
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
-
-                RequestObject reqObj = GlobalObjects.ReqList.Last(o =>
+                RequestObject reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
                     o.Requester == e.ChatMessage.DisplayName);
-                if (reqObj == null) return;
+                if(reqObj == null)
+                    return;
                 string tmp = $"{reqObj.Artist} - {reqObj.Title}";
                 GlobalObjects.SkipList.Add(reqObj);
-                GlobalObjects.ReqList.Remove(reqObj);
+
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    GlobalObjects.ReqList.Remove(reqObj);
+                }));
                 WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
                 UpdateQueueWindow();
                 Client.SendMessage(e.ChatMessage.Channel,

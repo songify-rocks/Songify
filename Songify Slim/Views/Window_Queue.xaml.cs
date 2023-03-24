@@ -38,7 +38,10 @@ namespace Songify_Slim.Views
                 return;
 
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
-            GlobalObjects.ReqList.Remove(req);
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                GlobalObjects.ReqList.Remove(req);
+            }));
             WebHelper.UpdateWebQueue(req.Trackid, "", "", "", "", "1", "u");
             dgv_Queue.Items.Refresh();
         }

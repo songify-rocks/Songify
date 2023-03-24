@@ -12,6 +12,7 @@ using System.Web;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Unosquare.Swan.Formatters;
+using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -80,7 +81,10 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             RequestObject response = Json.Deserialize<RequestObject>(result);
-                            GlobalObjects.ReqList.Add(response);
+                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                GlobalObjects.ReqList.Add(response);
+                            }));
                         }
                         catch (Exception e)
                         {
