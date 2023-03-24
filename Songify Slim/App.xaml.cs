@@ -32,8 +32,9 @@ namespace Songify_Slim
             else
                 ConfigHandler.ReadConfig();
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
-            //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en"); 
-            // Adding the RegKey for Songify in startup (autostart with windows)
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+            //  Adding the RegKey for Songify in startup(autostart with windows)
+
             RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(
                 "SOFTWARE\\Songify",
                 true) ?? Registry.CurrentUser.CreateSubKey("SOFTWARE\\Songify");
@@ -53,7 +54,6 @@ namespace Songify_Slim
             {
                 Settings.AccessKey = registryKey.GetValue("AccessKey").ToString();
             }
-
         }
 
         protected override void OnStartup(StartupEventArgs e)

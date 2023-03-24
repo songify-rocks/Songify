@@ -646,4 +646,7 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Добавляет текущую песню в список воспроизведения, выбранный в конфигурации Spotify.</value>
   </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Возобновляет или приостанавливает текущее воспроизведение.</value>
+  </data>
 </root>

@@ -646,4 +646,7 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Ajoute la chanson actuelle à la liste de lecture sélectionnée dans la configuration de Spotify</value>
   </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Reprend ou met en pause la lecture en cours.</value>
+  </data>
 </root>

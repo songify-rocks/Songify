@@ -843,7 +843,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
+                AddSong(GetTrackIdFromInput(e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger}", "").Trim()), e);
 
                 //// if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
                 //string[] msgSplit = e.ChatMessage.Message.Split(' ');

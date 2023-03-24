@@ -646,4 +646,7 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Fügt den aktuellen Titel der in der Spotify-Konfiguration ausgewählten Playlist hinzu</value>
   </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Setzt die aktuelle Wiedergabe fort oder hält sie an.</value>
+  </data>
 </root>
