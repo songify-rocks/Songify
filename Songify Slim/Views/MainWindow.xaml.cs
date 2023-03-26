@@ -213,6 +213,7 @@ namespace Songify_Slim.Views
                 // Connects
                 case "Connect":
                     TwitchHandler.BotConnect();
+                    TwitchHandler.MainConnect();
                     break;
                 // Disconnects
                 case "Disconnect":
@@ -505,6 +506,7 @@ namespace Songify_Slim.Views
                 new System.Windows.Forms.MenuItem("Twitch", new[] {
                     new System.Windows.Forms.MenuItem("Connect", (sender1, args1) => {
                         TwitchHandler.BotConnect();
+                        TwitchHandler.MainConnect();
                     }),
                     new System.Windows.Forms.MenuItem("Disconnect", (sender1, args1) => {
                         TwitchHandler.Client.Disconnect();
@@ -584,7 +586,11 @@ namespace Songify_Slim.Views
             }
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
-            if (Settings.TwAutoConnect) TwitchHandler.BotConnect();
+            if (Settings.TwAutoConnect)
+            {
+                TwitchHandler.MainConnect();
+                TwitchHandler.BotConnect();
+            }
 
 
             // automatically start fetching songs
@@ -595,6 +601,7 @@ namespace Songify_Slim.Views
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
             WebHelper.SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
+
             if (!Settings.UpdateRequired) return;
             OpenPatchNotes();
             Settings.UpdateRequired = false;
@@ -1249,11 +1256,6 @@ namespace Songify_Slim.Views
 
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
         {
-
-            TwitchHandler.DoMakeTheThing();
-
-
-
             if (_consoleWindow == null)
                 _consoleWindow = new WindowConsole
                 {

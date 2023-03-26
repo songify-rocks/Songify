@@ -325,12 +325,12 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
                     if (_songInfo.SongId != null)
                         Logger.LogStr($"CORE: Now Playing {_songInfo.Artists} - {_songInfo.Title}");
-                    RequestObject rq =
-                        GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
+                    RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     if (rq != null)
                     {
                         do
                         {
+                            Logger.LogStr($"QUEUE: Trying to remove {rq.Artist} - {rq.Title}");
                             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 GlobalObjects.ReqList.Remove(rq);
@@ -382,10 +382,10 @@ namespace Songify_Slim.Util.Songify
                 dictionary["Queue"] = GlobalObjects.ReqList;
                 string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
                 GlobalObjects.ApiResponse = updatedJson;
-
             }
             catch (Exception e)
             {
+                await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                 Logger.LogExc(e);
             }
             //Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");
@@ -415,7 +415,7 @@ namespace Songify_Slim.Util.Songify
             do
             {
                 tracks = firstFetch
-                    ? await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, 0)
+                    ? await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
                     : await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
                         tracks.Offset + tracks.Limit);
                 if (tracks.Items.Any(t => t.Track.Id == id))

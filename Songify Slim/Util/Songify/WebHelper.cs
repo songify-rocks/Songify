@@ -109,7 +109,6 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-
         public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
             string played, string o)
         {

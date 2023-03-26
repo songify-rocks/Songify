@@ -63,6 +63,7 @@ namespace Songify_Slim.Util.Songify
             Broadcaster = 4
         }
         public static TwitchClient Client;
+        public static TwitchClient MainClient;
         private static bool _onCooldown;
         private static bool _skipCooldown;
         public const bool PubSubEnabled = false;
@@ -95,7 +96,6 @@ namespace Songify_Slim.Util.Songify
         public static void ResetVotes()
         {
             SkipVotes.Clear();
-            Logger.LogStr("TWITCH IRC: Reset votes");
         }
 
         public static void ApiConnect(TwitchAccount account)
@@ -181,7 +181,22 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogExc(e);
                         }
                     }
+
+                    if (MainClient != null)
+                    {
+                        try
+                        {
+                            MainClient.Disconnect();
+                            MainClient = null;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                        }
+                    }
+
                     BotConnect();
+                    MainConnect();
                     WebHelper.SendTelemetry();
                 });
             };
@@ -193,7 +208,6 @@ namespace Songify_Slim.Util.Songify
         public static async Task<bool> CheckStreamIsUp()
         {
             if (TokenCheck == null) return false;
-            Logger.LogStr("TWITCH API: Checking if stream is up...");
             GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                 new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
             if (x.Streams.Length != 0)
@@ -201,7 +215,6 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH API: Stream is up");
                 return x.Streams[0].Type == "live";
             }
-            Logger.LogStr("TWITCH API: Stream is down");
             return false;
         }
 
@@ -294,14 +307,6 @@ namespace Songify_Slim.Util.Songify
                 default:
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
-        }
-
-        public static async void DoMakeTheThing()
-        {
-            TwitchPubSub.Disconnect();
-            await Task.Delay(10000);
-            CreatePubSubListenEvents();
-            TwitchPubSub.Connect();
         }
 
         private static void CreatePubSubsConnection()
@@ -677,8 +682,50 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{DateTime.Now.ToShortTimeString()} PubSub: Response received: {e.Response}");
         }
 
+        public static void MainConnect()
+        {
+            if (MainClient != null && MainClient.IsConnected)
+                return;
+            if (MainClient != null && !MainClient.IsConnected)
+                MainClient.Connect();
+            try
+            {
+                // Checks if twitch credentials are present
+                if (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) || string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
+                    string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (Window window in Application.Current.Windows)
+                            if (window.GetType() == typeof(MainWindow))
+                                //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                                ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
+                    });
+                    return;
+                }
+
+                // creates new connection based on the credentials in settings
+                ConnectionCredentials credentials =
+                    new ConnectionCredentials(Settings.Settings.TwitchUser.DisplayName, $"oauth:{Settings.Settings.TwitchAccessToken}");
+                ClientOptions clientOptions = new ClientOptions
+                {
+                    MessagesAllowedInPeriod = 750,
+                    ThrottlingPeriod = TimeSpan.FromSeconds(30)
+                };
+                WebSocketClient customClient = new WebSocketClient(clientOptions);
+                MainClient = new TwitchClient(customClient);
+                MainClient.Initialize(credentials, Settings.Settings.TwChannel);
+                MainClient.Connect();
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
         public static void BotConnect()
         {
+            MainConnect();
             if (Client != null && Client.IsConnected)
                 return;
             if (Client != null && !Client.IsConnected)
@@ -796,8 +843,6 @@ namespace Songify_Slim.Util.Songify
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             await CheckStreamIsUp();
-
-
             if (Users.All(o => o.UserId != e.ChatMessage.UserId))
             {
                 Users.Add(new TwitchUser
@@ -1112,16 +1157,24 @@ namespace Songify_Slim.Util.Songify
                 }
                 RequestObject reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
                     o.Requester == e.ChatMessage.DisplayName);
-                if(reqObj == null)
+                if (reqObj == null)
                     return;
                 string tmp = $"{reqObj.Artist} - {reqObj.Title}";
                 GlobalObjects.SkipList.Add(reqObj);
-
+                dynamic payload = new
+                {
+                    uuid = Settings.Settings.Uuid,
+                    key = Settings.Settings.AccessKey,
+                    queueid = reqObj.Queueid,
+                };
+                WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     GlobalObjects.ReqList.Remove(reqObj);
                 }));
-                WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
+                //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
+
+
                 UpdateQueueWindow();
                 Client.SendMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
@@ -1165,16 +1218,16 @@ namespace Songify_Slim.Util.Songify
                 }
             }
             else switch (e.ChatMessage.Message)
-            {
-                case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
                 {
-                    var response = await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
-                    break;
+                    case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
+                        {
+                            var response = await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                            break;
+                        }
+                    case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
+                        await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        break;
                 }
-                case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
-                    await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
-                    break;
-            }
         }
 
         private static string GetTrackIdFromInput(string input)
@@ -1327,6 +1380,11 @@ namespace Songify_Slim.Util.Songify
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 Client.SendMessage(e.ChatMessage.Channel, "No song found.");
+                return;
+            }
+            if (trackId == "shortened")
+            {
+                Client.SendMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
                 return;
             }
             if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))

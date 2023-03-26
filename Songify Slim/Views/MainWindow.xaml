@@ -110,7 +110,7 @@
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
             </MenuItem>
             <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
-                <MenuItem Header="Connect PubSub" Click="MenuItem_OnClick"/>
+                <MenuItem Header="Connect PubSub" Click="MenuItem_OnClick" IsEnabled="False"/>
                 <MenuItem x:Name="mi_TwitchAPI" Click="mi_TwitchAPI_Click" Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}"/>
                 <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Tag="Connect" Click="BtnTwitch_Click"/>
                 <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
@@ -155,6 +155,19 @@
                        Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"
                        MaxWidth="400" MaxHeight="185" />
         </Grid>
+        <StackPanel Margin="0,20,0,-5" Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+            <iconPacks:PackIconForkAwesome Kind="ArrowDown" Margin="36,7,-8,0" RenderTransformOrigin="0.5,0.5">
+                <iconPacks:PackIconForkAwesome.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </iconPacks:PackIconForkAwesome.RenderTransform>
+            </iconPacks:PackIconForkAwesome>
+            <Label Content="PubSub has been disabled due to bugs"></Label>
+        </StackPanel>
         <Button Grid.Row="2" Grid.Column="1"  Cursor="Hand" BorderThickness="0" Click="BtnPaypal_Click" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,0" Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
@@ -219,7 +232,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="14" Kind="XCircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>

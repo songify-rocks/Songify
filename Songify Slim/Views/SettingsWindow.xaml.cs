@@ -1241,6 +1241,7 @@ namespace Songify_Slim.Views
             TwitchHandler.Client.Disconnect();
             TwitchHandler.Client = null;
             TwitchHandler.BotConnect();
+            TwitchHandler.MainConnect();
             SetControls();
         }
 

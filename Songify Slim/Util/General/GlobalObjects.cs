@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Media;
 using Songify_Slim.Models;
 
@@ -14,48 +14,22 @@ namespace Songify_Slim.Util.General
 {
     public static class GlobalObjects
     {
-        public static string AppVersion;
-        public static bool IsBeta = true;
-        public const string BaseUrl = "https://songify.overcode.tv";
         public const string ApiUrl = "https://songify.overcode.tv/api/v1";
-        public static WebServer WebServer = new WebServer();
-        public static ObservableCollection<RequestObject> ReqList = new ObservableCollection<RequestObject>();
-        public static List<RequestObject> SkipList = new List<RequestObject>();
+        public const string BaseUrl = "https://songify.overcode.tv";
         public static string ApiResponse;
+        public static string AppVersion;
         public static FlowDocument ConsoleDocument = new FlowDocument();
-
-        public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H")
-            ? "HH:mm:ss"
-            : "hh:mm:ss tt";
-
-        public static bool DetachConsole = false;
         public static TrackInfo CurrentSong;
-        public static int RewardGoalCount = 0;
-        public static string Requester = "";
-        public static EventHandler FlowDocumentChanged;
+        public static bool DetachConsole = false;
+        public static bool IsBeta = true;
         public static bool IsInPlaylist;
+        public static ObservableCollection<RequestObject> ReqList = new ObservableCollection<RequestObject>();
+        public static string Requester = "";
+        public static int RewardGoalCount = 0;
+        public static List<RequestObject> SkipList = new List<RequestObject>();
+        public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
+        public static WebServer WebServer = new WebServer();
 
-        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
-        {
-            if (depObj == null) yield return (T)Enumerable.Empty<T>();
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
-            {
-                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
-                if (ithChild == null) continue;
-                if (ithChild is T t) yield return t;
-                foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
-            }
-        }
-
-        /// <summary>
-        /// Finds a Child of a given item in the visual tree.
-        /// </summary>
-        /// <param name="parent">A direct parent of the queried item.</param>
-        /// <typeparam name="T">The type of the queried item.</typeparam>
-        /// <param name="childName">x:Name or Name of child. </param>
-        /// <returns>The first parent item that matches the submitted type parameter.
-        /// If not matching item can be found,
-        /// a null parent is being returned.</returns>
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
         {
@@ -100,6 +74,16 @@ namespace Songify_Slim.Util.General
             return foundChild;
         }
 
-
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
+            }
+        }
     }
 }

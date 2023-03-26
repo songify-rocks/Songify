@@ -67,8 +67,7 @@ namespace Songify_Slim.Util.Settings
         {
             string path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(CamelCaseNamingConvention.Instance)  // see height_in_inches in sample yml
-                .IgnoreUnmatchedProperties()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
             Configuration config = new Configuration();
