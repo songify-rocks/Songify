@@ -487,8 +487,10 @@
                                         <iconPacks:PackIconForkAwesome Kind="Refresh" Width="12" Height="12" />
                                     </Button.Content>
                                 </Button>
-                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6"/>
-                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" />
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Disabled due to issues with PubSub" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,6"></TextBlock>
+                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6" IsEnabled="False" Opacity="0.1"/>
+                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" Panel.ZIndex="-1" Opacity="0.1" />
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
                                 <TextBlock Margin="0,6,0,6" Text="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></TextBlock>
