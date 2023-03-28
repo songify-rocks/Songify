@@ -214,7 +214,7 @@ namespace Songify_Slim.Views
             CbAccountSelection.Items.Clear();
             if (Settings.TwitchUser != null)
             {
-                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch);
+                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0);
                 TxtbxTwChannel.Text = Settings.TwitchUser.Login;
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
@@ -224,7 +224,7 @@ namespace Songify_Slim.Views
 
             if (Settings.TwitchBotUser != null)
             {
-                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot);
+                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1);
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UC_AccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
@@ -247,7 +247,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn)
+        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn, int account)
         {
             if (user == null)
             {
@@ -255,14 +255,43 @@ namespace Songify_Slim.Views
                 return;
             }
 
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            if (user.ProfileImageUrl != null) bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
-            bitmap.EndInit();
-            img.ImageSource = bitmap;
             lbl.Content = lbl.Tag.ToString() == "main" ? "Main Account:\n" : "Bot Account:\n";
-            lbl.Content += $"{user.DisplayName}";
-            btn.Visibility = Visibility.Collapsed;
+
+            switch (account)
+            {
+                case 0 when GlobalObjects.TwitchUserTokenExpired:
+                case 1 when GlobalObjects.TwitchBotTokenExpired:
+                    btn.Visibility = Visibility.Visible;
+                    lbl.Content += $"{user.DisplayName} (Token Expired)";
+
+                    break;
+                default:
+                    btn.Visibility = Visibility.Collapsed;
+                    lbl.Content += $"{user.DisplayName}";
+
+                    break;
+            }
+
+            if (user.ProfileImageUrl != null)
+            {
+                FormatConvertedBitmap grayscaleBitmap;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
+                bitmap.EndInit();
+                switch (account)
+                {
+                    case 0 when GlobalObjects.TwitchUserTokenExpired:
+                    case 1 when GlobalObjects.TwitchBotTokenExpired:
+                        img.ImageSource = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
+                        break;
+                    default:
+                        img.ImageSource = bitmap;
+                        break;
+                }
+            }
+
+
         }
 
         private void AppendText(string s, string text)

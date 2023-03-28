@@ -47,6 +47,8 @@ using System.Threading.Tasks;
 using CefSharp;
 using Application = System.Windows.Application;
 using System.Net;
+using System.Windows.Forms;
+using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -240,7 +242,8 @@ namespace Songify_Slim.Util.Songify
 
                     if (TokenCheck == null)
                     {
-                        Application.Current.Dispatcher.Invoke(() =>
+                        GlobalObjects.TwitchUserTokenExpired = true;
+                        await Application.Current.Dispatcher.Invoke(async () =>
                         {
                             foreach (Window window in Application.Current.Windows)
                             {
@@ -248,11 +251,17 @@ namespace Songify_Slim.Util.Songify
                                     continue;
                                 ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
                                 ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                                ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
+                                MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync("Twitch Account Issues",
+                                "Your Twitch Account token has expired. Please login again with Twtich", MessageDialogStyle.AffirmativeAndNegative,
+                                    new MetroDialogSettings { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
+                                if (msgResult == MessageDialogResult.Negative) return;
+                                ApiConnect(TwitchAccount.Main);
                             }
                         });
                         return;
                     }
-
+                    GlobalObjects.TwitchUserTokenExpired = false;
                     _userId = TokenCheck.UserId;
 
                     users = await TwitchApi.Helix.Users.GetUsersAsync(new List<string> { _userId }, null, Settings.Settings.TwitchAccessToken);
@@ -269,6 +278,7 @@ namespace Songify_Slim.Util.Songify
                                 continue;
                             ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
                             ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                            // TODO: Change back to false
                             ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
 
                             Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
@@ -294,9 +304,29 @@ namespace Songify_Slim.Util.Songify
                         }
                     };
                     BotTokenCheck = await TwitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+                    if (BotTokenCheck == null)
+                    {
+                        GlobalObjects.TwitchBotTokenExpired = true;
+                        await Application.Current.Dispatcher.Invoke(async () =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                if (window.GetType() != typeof(MainWindow))
+                                    continue;
+                                MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync("Twitch Account Issues",
+                                    "Your Twitch Bot Account token has expired. Please login again with Twtich", MessageDialogStyle.AffirmativeAndNegative,
+                                    new MetroDialogSettings { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                                if (msgResult == MessageDialogResult.Negative) return;
+                                ApiConnect(TwitchAccount.Bot);
+                            }
+                        });
+                        return;
+                    }
+                    GlobalObjects.TwitchBotTokenExpired = false;
+
                     _userId = BotTokenCheck.UserId;
 
-                    users = await TwitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null, Settings.Settings.TwitchAccessToken);
+                    users = await TwitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null, Settings.Settings.TwitchBotToken);
 
                     user = users.Users.FirstOrDefault();
                     if (user == null)
@@ -353,7 +383,7 @@ namespace Songify_Slim.Util.Songify
                 if (!CheckLiveStatus())
                 {
                     if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -392,7 +422,7 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
                     if (!string.IsNullOrEmpty(msg))
-                        Client.SendMessage(Settings.Settings.TwChannel, msg);
+                        SendChatMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
                 if (IsUserBlocked(redeemedUser.DisplayName))
@@ -409,7 +439,7 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
                     if (!string.IsNullOrEmpty(msg))
-                        Client.SendMessage(Settings.Settings.TwChannel, msg);
+                        SendChatMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
                 // checks if the user has already the max amount of songs in the queue
@@ -425,7 +455,7 @@ namespace Songify_Slim.Util.Songify
                         response = response.Replace("{errormsg}", "");
                         response = CleanFormatString(response);
                         if (!string.IsNullOrEmpty(response))
-                            Client.SendMessage(Settings.Settings.TwChannel, response);
+                            SendChatMessage(Settings.Settings.TwChannel, response);
                         return;
                     }
                 if (ApiHandler.Spotify == null)
@@ -442,14 +472,14 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
-                    Client.SendMessage(Settings.Settings.TwChannel, msg);
+                    SendChatMessage(Settings.Settings.TwChannel, msg);
                     return;
                 }
                 // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
                 trackId = GetTrackIdFromInput(redemption.UserInput);
                 if (trackId == "shortened")
                 {
-                    Client.SendMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
+                    SendChatMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
                     return;
                 }
                 if (!string.IsNullOrWhiteSpace(trackId))
@@ -457,7 +487,7 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
                     {
                         Debug.WriteLine("This song is blocked");
-                        Client.SendMessage(Settings.Settings.TwChannel, "This song is blocked");
+                        SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");
                         return;
                     }
 
@@ -487,7 +517,7 @@ namespace Songify_Slim.Util.Songify
                         }
                         else
                         {
-                            Client.SendMessage(Settings.Settings.TwChannel, msg);
+                            SendChatMessage(Settings.Settings.TwChannel, msg);
                         }
                     }
                 }
@@ -526,7 +556,7 @@ namespace Songify_Slim.Util.Songify
                         }
                         else
                         {
-                            Client.SendMessage(Settings.Settings.TwChannel, response);
+                            SendChatMessage(Settings.Settings.TwChannel, response);
                         }
                     }
                 }
@@ -538,11 +568,11 @@ namespace Songify_Slim.Util.Songify
                 ErrorResponse response = await ApiHandler.SkipSong();
                 if (response.Error != null)
                 {
-                    Client.SendMessage(Settings.Settings.TwChannel, "Error: " + response.Error.Message);
+                    SendChatMessage(Settings.Settings.TwChannel, "Error: " + response.Error.Message);
                 }
                 else
                 {
-                    Client.SendMessage(Settings.Settings.TwChannel, "Skipping current song...");
+                    SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
                     _skipCooldown = true;
                     SkipCooldownTimer.Start();
                 }
@@ -556,13 +586,13 @@ namespace Songify_Slim.Util.Songify
                 if (GlobalObjects.RewardGoalCount % 10 == 0)
                 {
                     Console.WriteLine(@"Reached count " + GlobalObjects.RewardGoalCount);
-                    Client.SendMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
+                    SendChatMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
 
                 }
                 if (Settings.Settings.RewardGoalAmount - GlobalObjects.RewardGoalCount < 10)
                 {
                     Console.WriteLine(@"Reached count " + GlobalObjects.RewardGoalCount);
-                    Client.SendMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
+                    SendChatMessage(Settings.Settings.TwChannel, $"Reached {GlobalObjects.RewardGoalCount} of {Settings.Settings.RewardGoalAmount}");
 
                 }
 
@@ -570,7 +600,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     GlobalObjects.RewardGoalCount = 0;
                     Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
-                    Client.SendMessage(Settings.Settings.TwChannel, "The reward goal has been reached! " + Settings.Settings.RewardGoalAmount);
+                    SendChatMessage(Settings.Settings.TwChannel, "The reward goal has been reached! " + Settings.Settings.RewardGoalAmount);
                     string input = Settings.Settings.RewardGoalSong;
                     var match = Regex.Match(input, @"track\/([^\?]+)");
                     if (match.Success)
@@ -582,6 +612,12 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
             }
+        }
+
+        private static void SendChatMessage(string channel, string message)
+        {
+            if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
+                Client.SendMessage(channel, message);
         }
 
         private static async Task AnnounceInChat(string msg)
@@ -610,7 +646,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH API: Could not send announcement. Has the bot been created through the app?");
             }
 
-            Client.SendMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
+            SendChatMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
         }
 
         private static async void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
@@ -618,7 +654,6 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
-            SendMessage(Settings.Settings.TwChannel, "Encountered an error with the PubSub service. Reconnecting...");
             TwitchPubSub.Disconnect();
             if (PubSubEnabled)
                 TwitchPubSub.Connect();
@@ -633,12 +668,6 @@ namespace Songify_Slim.Util.Songify
                 Console.WriteLine(exception);
                 throw;
             }
-        }
-
-        private static void SendMessage(string twChannel, string encounteredAnErrorWithThePubsubServiceReconnectingInSeconds)
-        {
-            if (Client?.JoinedChannels != null)
-                Client?.SendMessage(twChannel, encounteredAnErrorWithThePubsubServiceReconnectingInSeconds);
         }
 
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
@@ -673,7 +702,7 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr("PUBSUB: Connected");
-            Client.SendMessage(Settings.Settings.TwChannel, "Connected to PubSub");
+            SendChatMessage(Settings.Settings.TwChannel, "Connected to PubSub");
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
 
@@ -863,7 +892,7 @@ namespace Songify_Slim.Util.Songify
                 if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
                     return;
                 }
                 // Do nothing if the user is blocked, don't even reply
@@ -878,7 +907,7 @@ namespace Songify_Slim.Util.Songify
 
                 if (ApiHandler.Spotify == null)
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
+                    SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
                 }
 
@@ -891,7 +920,7 @@ namespace Songify_Slim.Util.Songify
                 if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    Client.SendMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
                     return;
                 }
                 // Do nothing if the user is blocked, don't even reply
@@ -906,7 +935,7 @@ namespace Songify_Slim.Util.Songify
 
                 if (ApiHandler.Spotify == null)
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
+                    SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
                 }
 
@@ -922,7 +951,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -954,7 +983,7 @@ namespace Songify_Slim.Util.Songify
                     ErrorResponse response = await ApiHandler.SkipSong();
                     if (response.Error != null)
                     {
-                        Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
+                        SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
                     }
                     else
                     {
@@ -964,7 +993,7 @@ namespace Songify_Slim.Util.Songify
                         }
                         else
                         {
-                            Client.SendMessage(e.ChatMessage.Channel, msg);
+                            SendChatMessage(e.ChatMessage.Channel, msg);
                         }
                         _skipCooldown = true;
                         SkipCooldownTimer.Start();
@@ -978,7 +1007,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -1003,7 +1032,7 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        Client.SendMessage(e.ChatMessage.Channel, msg);
+                        SendChatMessage(e.ChatMessage.Channel, msg);
                     }
 
                     if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
@@ -1011,11 +1040,11 @@ namespace Songify_Slim.Util.Songify
                         ErrorResponse response = await ApiHandler.SkipSong();
                         if (response.Error != null)
                         {
-                            Client.SendMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
+                            SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
                         }
                         else
                         {
-                            Client.SendMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+                            SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
                             _skipCooldown = true;
                             SkipCooldownTimer.Start();
                         }
@@ -1033,7 +1062,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -1051,7 +1080,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, msg);
+                    SendChatMessage(e.ChatMessage.Channel, msg);
                 }
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
@@ -1061,7 +1090,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -1101,12 +1130,12 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        Client.SendMessage(e.ChatMessage.Channel, output);
+                        SendChatMessage(e.ChatMessage.Channel, output);
                     }
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel,
+                    SendChatMessage(e.ChatMessage.Channel,
                         $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
                 }
             }
@@ -1117,7 +1146,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -1137,7 +1166,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" && Settings.Settings.BotCmdRemove)
@@ -1147,7 +1176,7 @@ namespace Songify_Slim.Util.Songify
                     if (!CheckLiveStatus())
                     {
                         if (Settings.Settings.ChatLiveStatus)
-                            Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -1176,14 +1205,14 @@ namespace Songify_Slim.Util.Songify
 
 
                 UpdateQueueWindow();
-                Client.SendMessage(e.ChatMessage.Channel,
+                SendChatMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
             }
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" && (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
                 if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
                 {
-                    Client.SendMessage(Settings.Settings.TwChannel,
+                    SendChatMessage(Settings.Settings.TwChannel,
                         "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
                     return;
                 }
@@ -1193,7 +1222,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (tracks.Items.Any(t => t.Track.Id == GlobalObjects.CurrentSong.SongId))
                     {
-                        Client.SendMessage(Settings.Settings.TwChannel,
+                        SendChatMessage(Settings.Settings.TwChannel,
                             $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
                         return;
                     }
@@ -1214,7 +1243,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
             else switch (e.ChatMessage.Message)
@@ -1252,7 +1281,7 @@ namespace Songify_Slim.Util.Songify
             SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(input));
             if (searchItem.HasError())
             {
-                Client.SendMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
+                SendChatMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
                 return "";
             }
 
@@ -1379,18 +1408,18 @@ namespace Songify_Slim.Util.Songify
         {
             if (string.IsNullOrWhiteSpace(trackId))
             {
-                Client.SendMessage(e.ChatMessage.Channel, "No song found.");
+                SendChatMessage(e.ChatMessage.Channel, "No song found.");
                 return;
             }
             if (trackId == "shortened")
             {
-                Client.SendMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
+                SendChatMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
                 return;
             }
             if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
             {
                 Debug.WriteLine("This song is blocked");
-                Client.SendMessage(Settings.Settings.TwChannel, "This song is blocked");
+                SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");
                 return;
             }
 
@@ -1401,7 +1430,7 @@ namespace Songify_Slim.Util.Songify
             Debug.WriteLine(Json.Serialize(track));
             if (track.IsPlayable != null && (bool)!track.IsPlayable)
             {
-                Client.SendMessage(e.ChatMessage.Channel, "This track is not available in the streamers region.");
+                SendChatMessage(e.ChatMessage.Channel, "This track is not available in the streamers region.");
                 return;
             }
 
@@ -1430,7 +1459,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
                 return;
             }
@@ -1454,7 +1483,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
                 return;
             }
@@ -1477,7 +1506,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
                 return;
             }
@@ -1500,7 +1529,7 @@ namespace Songify_Slim.Util.Songify
                     }
                     else
                     {
-                        Client.SendMessage(e.ChatMessage.Channel, response);
+                        SendChatMessage(e.ChatMessage.Channel, response);
                     }
                     return;
                 }
@@ -1527,7 +1556,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Client.SendMessage(e.ChatMessage.Channel, response);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                 }
                 return;
             }
@@ -1546,7 +1575,7 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                Client.SendMessage(e.ChatMessage.Channel, response);
+                SendChatMessage(e.ChatMessage.Channel, response);
             }
 
             // Upload the track and who requested it to the queue on the server
@@ -1895,7 +1924,7 @@ namespace Songify_Slim.Util.Songify
                 if (!CheckLiveStatus())
                 {
                     if (Settings.Settings.ChatLiveStatus)
-                        Client.SendMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -1913,7 +1942,7 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                Client.SendMessage(Settings.Settings.TwChannel, msg);
+                SendChatMessage(Settings.Settings.TwChannel, msg);
             }
         }
 

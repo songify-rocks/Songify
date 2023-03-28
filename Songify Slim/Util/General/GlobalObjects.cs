@@ -29,6 +29,8 @@ namespace Songify_Slim.Util.General
         public static List<RequestObject> SkipList = new List<RequestObject>();
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new WebServer();
+        public static bool TwitchUserTokenExpired = false;
+        public static bool TwitchBotTokenExpired = false;
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
