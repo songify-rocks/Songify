@@ -1,15 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using MdXaml;
+using System.Xaml;
+using ControlzEx.Theming;
+using MahApps;
+using Markdig;
 using Octokit;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Application = System.Windows.Application;
+using Markdown = Markdig.Wpf.Markdown;
+using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace Songify_Slim.Views
 {
@@ -18,8 +28,6 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowPatchnotes
     {
-        Markdown _engine = new Markdown();
-
         public WindowPatchnotes()
         {
             InitializeComponent();
@@ -28,8 +36,8 @@ namespace Songify_Slim.Views
         private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
-            Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
-            foreach (Release release in releases.Result)
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("songify-rocks", "Songify");
+            foreach (Release release in releases)
             {
                 LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
             }
@@ -46,18 +54,31 @@ namespace Songify_Slim.Views
                 });
             }
 
-
             LbxVersions.SelectedIndex = 0;
             LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
         }
         private void LbxVersions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string markdownTxt = (string)LbxVersions.SelectedValue;
-            markdownTxt = markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-            FlowDocument document = _engine.Transform(markdownTxt);
-            _engine.HyperlinkCommand?.CanExecute(true);
-            document.FontFamily = new FontFamily("Sogeo UI");
-            RtbPatchnotes.Document = document;
+            markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var xaml = Markdown.ToXaml(markdownTxt, pipeline);
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xaml)))
+            {
+                using (var reader = new XamlXmlReader(stream, new MyXamlSchemaContext()))
+                {
+                    if (XamlReader.Load(reader) is FlowDocument document)
+                    {
+                        RtbPatchnotes.Document = document;
+                    }
+                }
+            }
+
+            foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
+            {
+                var themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
+                documentBlock.Foreground = new SolidColorBrush(themeForeground);
+            }
             string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
             if (!string.IsNullOrWhiteSpace(uri))
             {
@@ -68,6 +89,50 @@ namespace Songify_Slim.Views
             {
                 Hyperlink.IsEnabled = false;
             }
+
+            //// Define the plain text with links
+            //string plainText = markdownTxt;
+
+            //// Define the regular expression pattern to match URLs
+            //const string urlPattern = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+
+            //// Convert plain text links to hyperlinks
+            //var regex = new Regex(urlPattern, RegexOptions.IgnoreCase);
+            //var matches = regex.Matches(plainText);
+            //int index = 0;
+            //var paragraph = new Paragraph();
+            //foreach (Match match in matches)
+            //{
+            //    // Add plain text before the match
+            //    paragraph.Inlines.Add(new Run(plainText.Substring(index, match.Index - index)));
+
+            //    // Add hyperlink for the match
+            //    var hyperlink = new Hyperlink(new Run(match.Value))
+            //    {
+            //        NavigateUri = new Uri(match.Value),
+            //        TextDecorations = TextDecorations.Underline
+            //    };
+            //    hyperlink.RequestNavigate += (o, args) =>
+            //    {
+            //        Process.Start(args.Uri.ToString());
+            //        args.Handled = true;
+            //    };
+            //    paragraph.Inlines.Add(hyperlink);
+
+            //    // Update index for next iteration
+            //    index = match.Index + match.Length;
+            //}
+
+            //// Add remaining plain text after the last match
+            //if (index < plainText.Length)
+            //{
+            //    paragraph.Inlines.Add(new Run(plainText.Substring(index)));
+            //}
+
+            //// Set the paragraph as the content of the RichTextBox
+            //RtbPatchnotes.Document.Blocks.Clear();
+            //RtbPatchnotes.Document.Blocks.Add(paragraph);
+            //RtbPatchnotes.IsDocumentEnabled = true;
         }
 
         private class ReleaseObject
@@ -80,6 +145,24 @@ namespace Songify_Slim.Views
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(((Hyperlink)sender).NavigateUri.ToString());
+        }
+
+        private void OpenHyperlink(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+        {
+            Process.Start(e.Parameter.ToString());
+        }
+
+        class MyXamlSchemaContext : XamlSchemaContext
+        {
+            public override bool TryGetCompatibleXamlNamespace(string xamlNamespace, out string compatibleNamespace)
+            {
+                if (xamlNamespace.Equals("clr-namespace:Markdig.Wpf", StringComparison.Ordinal))
+                {
+                    compatibleNamespace = $"clr-namespace:Markdig.Wpf;assembly={Assembly.GetAssembly(typeof(Markdig.Wpf.Styles)).FullName}";
+                    return true;
+                }
+                return base.TryGetCompatibleXamlNamespace(xamlNamespace, out compatibleNamespace);
+            }
         }
     }
 }

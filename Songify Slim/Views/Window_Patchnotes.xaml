@@ -7,8 +7,13 @@
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:mdXaml="clr-namespace:MdXaml;assembly=MdXaml"
+        xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
         WindowStartupLocation="CenterOwner"
         Title="Patch Notes" Height="450" Width="800" ShowMaxRestoreButton="False" ShowMinButton="False" Loaded="MetroWindow_Loaded">
+    <FrameworkElement.CommandBindings>
+        <CommandBinding Command="{x:Static markdig:Commands.Hyperlink}" Executed="OpenHyperlink" />
+    </FrameworkElement.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -27,9 +32,9 @@
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
-            <ScrollViewer Margin="6,0,6,6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
-                <RichTextBox BorderThickness="0" x:Name="RtbPatchnotes"  IsReadOnly="True" Margin="6" VerticalAlignment="Stretch" FontFamily="Segoe UI"></RichTextBox>
-            </ScrollViewer>
+            <WebBrowser x:Name="Browser" Visibility="Collapsed"/>
+            <FlowDocumentScrollViewer x:Name="RtbPatchnotes" Margin="6,0,6,6" VerticalAlignment="Stretch" DockPanel.Dock="Bottom">
+            </FlowDocumentScrollViewer>
         </DockPanel>
     </Grid>
 </controls:MetroWindow>
