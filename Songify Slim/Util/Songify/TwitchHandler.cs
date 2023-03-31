@@ -889,10 +889,10 @@ namespace Songify_Slim.Util.Songify
             if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled)
             {
                 int userlevel = CheckUserLevel(e.ChatMessage);
-                if (userlevel < Settings.Settings.TwSrUserLevel)
+                if (!Settings.Settings.UserLevelsReward.Contains(userlevel) && !Settings.Settings.UserLevelsReward.Contains(0))
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel)}s are not allowed to request songs.");
                     return;
                 }
                 // Do nothing if the user is blocked, don't even reply
@@ -917,10 +917,10 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.TwSrCommand && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
             {
                 int userlevel = CheckUserLevel(e.ChatMessage);
-                if (userlevel < Settings.Settings.TwSrUserLevel)
+                if (!Settings.Settings.UserLevelsCommand.Contains(userlevel) && !Settings.Settings.UserLevelsCommand.Contains(0))
                 {
                     //Send a Message to the user, that his Userlevel is too low
-                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher are allowed request songs.");
+                    SendChatMessage(e.ChatMessage.Channel, $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel)}s are not allowed to request songs.");
                     return;
                 }
                 // Do nothing if the user is blocked, don't even reply

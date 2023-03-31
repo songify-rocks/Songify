@@ -615,25 +615,75 @@
                                                    Width="355" Height="36" />
                                     <Button x:Name="BtnFocusRewards" Content="{x:Static local:Resources.Sw_Integration_ManageRewards}" Click="BtnFocusRewards_Click"></Button>
                                 </DockPanel>
-                                <Grid>
-                                    <controls:ToggleSwitch IsEnabled="False" x:Name="ChbxTwCommand"
-                                           Content="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
-                                           HorizontalAlignment="Left" VerticalAlignment="Top" Toggled="Chbx_TwCommand_Checked"
-                                           Focusable="False" FontFamily="Segoe UI"
-                                           FontSize="12"
-                                           ContentPadding="0"
-                                           Width="470" Height="36" Opacity="0.1" />
-                                    <Label Content="{x:Static local:Resources.sw_SpotifySR_SsrMovedToBotConfig}" Margin="50,0,0,4" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
-                                </Grid>
                                 <controls:ToggleSwitch x:Name="ChbxAutoClear"
-                                                               Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
-                                                               Focusable="False" FontFamily="Segoe UI"
-                                                               FontSize="12"
-                                                               ContentPadding="0"
-                                                               Width="470" Height="36" />
+                                                       Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}" VerticalAlignment="Top" Toggled="Chbx_AutoClear_Checked"
+                                                       Focusable="False" FontFamily="Segoe UI"
+                                                       FontSize="12"
+                                                       ContentPadding="0"
+                                                       Width="470" Height="36" />
                             </StackPanel>
                             <StackPanel Orientation="Vertical" VerticalAlignment="Top">
-                                <DockPanel>
+                                <DockPanel LastChildFill="True">
+                                    <Label Content="Allowed user levels for SR command" Padding="0,5,5,5" VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="CbxAllowedUserLevelsCommand" SelectionChanged="Selector_OnSelectionChanged" IsReadOnly="True" SelectedIndex="0" HorizontalAlignment="Right" Width="185">
+                                        <ComboBox.Items>
+                                            <ComboBoxItem Content="User Levels (Command)">
+                                                <ComboBoxItem.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsCommand}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ComboBoxItem.Style>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="0" Content="Viewer (everyone)" x:Name="ChckULCommandViewer" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="2" Content="Subscriber" x:Name="ChckULCommandSub" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="1" Content="VIP" x:Name="ChckULCommandVip" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="3" Content="Moderator" x:Name="ChckULCommandMod" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                </DockPanel>
+                                <DockPanel LastChildFill="True" Margin="0,6,0,0">
+                                    <Label Content="Allowed user levels for SR reward" Padding="0,5,5,5" VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="CbxAllowedUserLevelsReward" SelectionChanged="Selector_OnSelectionChanged" IsReadOnly="True" SelectedIndex="0" HorizontalAlignment="Right" Width="185">
+                                        <ComboBox.Items>
+                                            <ComboBoxItem Content="User Levels (Reward)">
+                                                <ComboBoxItem.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsReward}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ComboBoxItem.Style>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="0" Content="Viewer (everyone)" x:Name="ChckULRewardViewer" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="2" Content="Subscriber" x:Name="ChckULRewardSub" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="1" Content="VIP" x:Name="ChckULRewardVip" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox Tag="3" Content="Moderator" x:Name="ChckULRewardMod" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                            </ComboBoxItem>
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                </DockPanel>
+                                <DockPanel Margin="0,6,0,0" Visibility="Collapsed">
                                     <Label Content="{x:Static local:Resources.Sw_Integration_MinUserLevel}" HorizontalAlignment="Left"
                                    VerticalAlignment="Center" Padding="0,5,5,5" />
                                     <ComboBox x:Name="CbxUserLevels" Width="151" HorizontalAlignment="Right" VerticalAlignment="Top" SelectionChanged="CbxUserLevels_SelectionChanged" DockPanel.Dock="Right" />

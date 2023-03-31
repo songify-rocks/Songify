@@ -6,8 +6,6 @@
         xmlns:local="clr-namespace:Songify_Slim"
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:mdXaml="clr-namespace:MdXaml;assembly=MdXaml"
         xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
         WindowStartupLocation="CenterOwner"
         Title="Patch Notes" Height="450" Width="800" ShowMaxRestoreButton="False" ShowMinButton="False" Loaded="MetroWindow_Loaded">

@@ -493,6 +493,41 @@ namespace Songify_Slim.Util.Settings
             set => SetTwSrUserLevel(value);
         }
 
+
+        public static List<int> UserLevelsReward
+        {
+            get => GetUserLevelsReward();
+            set => SetUserLevelsReward(value);
+        }
+
+        private static void SetUserLevelsReward(List<int> value)
+        {
+            _currentConfig.AppConfig.UserLevelsReward = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static List<int> GetUserLevelsReward()
+        {
+            return _currentConfig.AppConfig.UserLevelsReward;
+        }
+
+        public static List<int> UserLevelsCommand
+        {
+            get => GetUserLevelsCommand();
+            set => SetUserLevelsCommand(value);
+        }
+
+        private static void SetUserLevelsCommand(List<int> value)
+        {
+            _currentConfig.AppConfig.UserLevelsCommand = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static List<int> GetUserLevelsCommand()
+        {
+            return _currentConfig.AppConfig.UserLevelsCommand;
+        }
+
         public static bool UpdateRequired { get => GetUpdateRequired(); set => SetUpdateRequired(value); }
 
         public static bool Upload
@@ -720,6 +755,8 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
+                UserLevelsCommand = GetUserLevelsCommand(),
+                UserLevelsReward = GetUserLevelsReward(),
             };
 
             return new Configuration

@@ -674,6 +674,8 @@ namespace Songify_Slim.Util.Settings
         public int RewardGoalAmount { get; set; }
         public List<TrackItem> SongBlacklist { get; set; } = new List<TrackItem>();
         public string SpotifyPlaylistId { get; set; } = "";
+        public List<int> UserLevelsReward { get; set; } = new List<int>();
+        public List<int> UserLevelsCommand { get; set; } = new List<int>();
     }
 
     public class Config

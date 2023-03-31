@@ -90,7 +90,6 @@ namespace Songify_Slim.Views
             ChbxAutoClear.IsOn = Settings.AutoClearQueue;
             ChbxMessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
-            ChbxTwCommand.IsOn = Settings.TwSrCommand;
             ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxCover.IsOn = Settings.DownloadCover;
@@ -157,6 +156,26 @@ namespace Songify_Slim.Views
             TextBoxTriggerSsr.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
             TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
             TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
+
+            if (Settings.UserLevelsCommand == null)
+            {
+                Settings.UserLevelsCommand = new List<int>();
+            }
+
+            if (Settings.UserLevelsReward == null)
+            {
+                Settings.UserLevelsReward = new List<int>();
+            }
+
+            ChckULCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
+            ChckULCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(1);
+            ChckULCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
+            ChckULCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
+
+            ChckULRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
+            ChckULRewardVip.IsChecked = Settings.UserLevelsReward.Contains(1);
+            ChckULRewardSub.IsChecked = Settings.UserLevelsReward.Contains(2);
+            ChckULRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
 
             if (ApiHandler.Spotify != null)
             {
@@ -435,12 +454,6 @@ namespace Songify_Slim.Views
         {
             // Sets wether to autoconnect or not
             Settings.TwAutoConnect = ChbxTwAutoconnect.IsOn;
-        }
-
-        private void Chbx_TwCommand_Checked(object sender, RoutedEventArgs e)
-        {
-            // enables / disables telemetry
-            Settings.TwSrCommand = ChbxTwCommand.IsOn;
         }
 
         private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
@@ -1277,6 +1290,49 @@ namespace Songify_Slim.Views
         private void Tgl_botcmd_PlayPause_OnToggled_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdPlayPause = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            e.Handled = true;
+            ((ComboBox)sender).SelectedIndex = 0;
+        }
+
+        private void CbxUserLevelsRewardChecked(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is CheckBox checkBox)) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.UserLevelsReward.Contains(value)) return;
+            List<int> list = new List<int>(Settings.UserLevelsReward) { value };
+            Settings.UserLevelsReward = list;
+        }
+
+        private void CbxUserLevelsRewardUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is CheckBox checkBox)) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.UserLevelsReward.Contains(value)) return;
+            List<int> list = new List<int>(Settings.UserLevelsReward);
+            list.Remove(value);
+            Settings.UserLevelsReward = list;
+        }
+        private void CbxUserLevelsCommandChecked(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is CheckBox checkBox)) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.UserLevelsCommand.Contains(value)) return;
+            List<int> list = new List<int>(Settings.UserLevelsCommand) { value };
+            Settings.UserLevelsCommand = list;
+        }
+
+        private void CbxUserLevelsCommandUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (!(sender is CheckBox checkBox)) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.UserLevelsCommand.Contains(value)) return;
+            List<int> list = new List<int>(Settings.UserLevelsCommand);
+            list.Remove(value);
+            Settings.UserLevelsCommand = list;
         }
     }
 }

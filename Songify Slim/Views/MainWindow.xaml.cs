@@ -441,7 +441,8 @@ namespace Songify_Slim.Views
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            // If Systray is enabled [X] minimizes to systray
+            if (_forceClose)
+                return;
             if (!Settings.Systray)
             {
                 NotifyIcon.Visible = false;
@@ -603,6 +604,16 @@ namespace Songify_Slim.Views
             await TwitchHandler.CheckStreamIsUp();
 
             if (!Settings.UpdateRequired) return;
+
+            List<int> userLevels = new List<int>();
+            for (int i = 0; i <= Settings.TwSrUserLevel; i++)
+            {
+                userLevels.Add(i);
+            }
+
+            if (Settings.UserLevelsCommand.Count == 0) Settings.UserLevelsCommand = userLevels;
+            if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
+
             OpenPatchNotes();
             Settings.UpdateRequired = false;
         }
@@ -648,6 +659,7 @@ namespace Songify_Slim.Views
 
         private void mi_Exit_Click(object sender, RoutedEventArgs e)
         {
+            _forceClose = true;
             Application.Current.Shutdown();
         }
 
