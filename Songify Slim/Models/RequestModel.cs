@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.Models
 {

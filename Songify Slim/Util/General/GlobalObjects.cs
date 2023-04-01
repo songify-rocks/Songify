@@ -2,11 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Media;
 using Songify_Slim.Models;
 
@@ -79,13 +76,40 @@ namespace Songify_Slim.Util.General
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            if (depObj == null) yield break;
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
             {
                 DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
-                if (ithChild == null) continue;
-                if (ithChild is T t) yield return t;
+                switch (ithChild)
+                {
+                    case T t:
+                        yield return t;
+                        break;
+                }
+
                 foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
             }
+        }
+
+        public static string GetReadablePlayer()
+        {
+            switch (Settings.Settings.Player)
+            {
+                case 0:
+                    return "Spotify API";
+                case 1:
+                    return "Spotify Legacy";
+                case 2:
+                    return "Deezer";
+                case 3:
+                    return "Foobar2000";
+                case 4:
+                    return "VLC";
+                case 5:
+                    return "YouTube";
+            }
+
+            return "";
         }
     }
 }

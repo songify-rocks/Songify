@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {

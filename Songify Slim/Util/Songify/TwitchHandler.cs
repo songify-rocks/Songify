@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -11,8 +9,6 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using CefSharp.Wpf;
-using CefSharp;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
@@ -41,13 +37,9 @@ using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
+using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
-using System;
-using System.Threading.Tasks;
-using CefSharp;
 using Application = System.Windows.Application;
-using System.Net;
-using System.Windows.Forms;
 using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify
@@ -199,7 +191,16 @@ namespace Songify_Slim.Util.Songify
 
                     BotConnect();
                     MainConnect();
-                    WebHelper.SendTelemetry();
+                    dynamic telemetryPayload = new
+                    {
+                        uuid = Settings.Settings.Uuid,
+                        tst = DateTime.Now.ToUnixEpochDate(),
+                        twitch_id = Settings.Settings.TwitchUser.Id,
+                        twitch_name = Settings.Settings.TwitchUser.DisplayName,
+                        vs = GlobalObjects.AppVersion,
+                        playertype = GlobalObjects.GetReadablePlayer(),
+                    };
+                    WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
                 });
             };
 
@@ -278,7 +279,6 @@ namespace Songify_Slim.Util.Songify
                                 continue;
                             ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
                             ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                            // TODO: Change back to false
                             ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
 
                             Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
@@ -289,8 +289,11 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.TwitchChannelId = user.Id;
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
-                    if (PubSubEnabled)
-                        CreatePubSubsConnection();
+
+                    //TODO: Enable PubSub when it's fixed in TwitchLib
+                    //if (PubSubEnabled)
+                    //    CreatePubSubsConnection();
+
                     break;
                 #endregion
                 #region Bot
@@ -655,8 +658,9 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr("PUBSUB: Error");
             Logger.LogExc(e.Exception);
             TwitchPubSub.Disconnect();
-            if (PubSubEnabled)
-                TwitchPubSub.Connect();
+            //TODO: Enable this again once the PubSub issues are fixed
+            //if (PubSubEnabled)
+            //    TwitchPubSub.Connect();
             await Task.Delay(30000);
             try
             {
@@ -1233,7 +1237,7 @@ namespace Songify_Slim.Util.Songify
 
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
-                if (x.HasError() != false) return;
+                if (x.HasError()) return;
                 string response = Settings.Settings.BotRespSongLike;
                 response = response.Replace("{song}",
                     $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
@@ -1247,13 +1251,14 @@ namespace Songify_Slim.Util.Songify
                 }
             }
             else switch (e.ChatMessage.Message)
-                {
-                    case "!play" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
-                        {
-                            var response = await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
-                            break;
-                        }
-                    case "!pause" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdPlayPause:
+                // ReSharper disable once BadChildStatementIndent
+            {
+                    case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
+                                   Settings.Settings.BotCmdPlayPause):
+                        await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                        break;
+                    case "!pause" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
+                                    Settings.Settings.BotCmdPlayPause):
                         await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                         break;
                 }
@@ -1416,7 +1421,7 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(Settings.Settings.TwChannel, "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
                 return;
             }
-            if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
+            if (Settings.Settings.SongBlacklist != null && Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
             {
                 Debug.WriteLine("This song is blocked");
                 SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");

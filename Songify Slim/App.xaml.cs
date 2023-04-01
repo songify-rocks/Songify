@@ -32,7 +32,7 @@ namespace Songify_Slim
             else
                 ConfigHandler.ReadConfig();
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
-            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             //  Adding the RegKey for Songify in startup(autostart with windows)
 
             RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(

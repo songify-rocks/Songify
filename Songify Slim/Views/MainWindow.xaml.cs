@@ -26,6 +26,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
@@ -58,28 +59,39 @@ namespace Songify_Slim.Views
         private Timer _timerFetcher = new Timer();
         private readonly WebClient _webClient = new WebClient();
         public SongFetcher Sf = new SongFetcher();
+        private static readonly Timer _timer = new Timer(TimeSpan.FromMinutes(5).TotalMilliseconds);
+
         #endregion Variables
+
+        private static async void TelemetryTask(object sender, ElapsedEventArgs e)
+        {
+            await SendTelemetry();
+        }
+
+        private static Task SendTelemetry()
+        {
+            dynamic telemetryPayload = new
+            {
+                uuid = Settings.Uuid,
+                tst = DateTime.Now.ToUnixEpochDate(),
+                twitch_id = Settings.TwitchUser.Id,
+                twitch_name = Settings.TwitchUser.DisplayName,
+                vs = GlobalObjects.AppVersion,
+                playertype = GlobalObjects.GetReadablePlayer(),
+            };
+
+            WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
+
+            return Task.CompletedTask;
+        }
 
         public MainWindow()
         {  // start minimized in systray (hide)
             InitializeComponent();
             if (Settings.Systray) MinimizeToSysTray();
-
             _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
-
-            //GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
-            //Task<IReadOnlyList<Release>> releases = client.Repository.Release.GetAll("songify-rocks", "Songify");
-            //Release release = releases.Result[0];
-            //string markdownTxt = releases.Result[0].Body.Split(new[] { "Checksum" }, StringSplitOptions.None)[0];
-            //Markdown engine = new Markdown();
-            //FlowDocument document = engine.Transform(markdownTxt);
-            //document.FontFamily = new FontFamily("Sogeo UI");
-            //document.LineHeight = 30;
-            //document.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
-            //document.FontSize = 16;
-            //rtbPatchnotes.Document = document;
-            //tbVersion.Text = $"Songify Update {release.TagName}";
-            //grdUpdate.Visibility = Visibility.Visible;
+            _timer.Elapsed += TelemetryTask;
+            _timer.Start();
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -142,8 +154,12 @@ namespace Songify_Slim.Views
         {
             string[] sourceBoxItems =
             {
-                PlayerType.SpotifyWeb, PlayerType.SpotifyLegacy,
-                PlayerType.Deezer, PlayerType.FooBar2000, PlayerType.Vlc, PlayerType.Youtube
+                PlayerType.SpotifyWeb,
+                PlayerType.SpotifyLegacy,
+                PlayerType.Deezer,
+                PlayerType.FooBar2000,
+                PlayerType.Vlc,
+                PlayerType.Youtube
             };
             cbx_Source.ItemsSource = sourceBoxItems;
         }
@@ -600,7 +616,7 @@ namespace Songify_Slim.Views
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Main);
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
-            WebHelper.SendTelemetry();
+            await SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
 
             if (!Settings.UpdateRequired) return;
@@ -1295,10 +1311,6 @@ namespace Songify_Slim.Views
             mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(live ? "Live" : "Offline")})";
             LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
             Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
-        }
-
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

@@ -30,8 +30,13 @@ namespace Songify_Slim.Util.General
 
             CreateLogDirectory();
 
-            if (!File.Exists(fileName)) File.Create(fileName);
-
+            if (File.Exists(fileName)) return fileName;
+            File.Create(fileName).Close();
+            File.AppendAllText(fileName, @"Songify Log File" + Environment.NewLine);
+            File.AppendAllText(fileName, @"====================" + Environment.NewLine);
+            File.AppendAllText(fileName, @"Version: " + GlobalObjects.AppVersion + Environment.NewLine);
+            File.AppendAllText(fileName, @"Date: " + date + Environment.NewLine);
+            File.AppendAllText(fileName, @"====================" + Environment.NewLine);
             return fileName;
         }
 

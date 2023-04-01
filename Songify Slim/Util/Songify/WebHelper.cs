@@ -109,6 +109,12 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+        public static async void TelemetryRequest(RequestMethod method, string payload)
+        {
+            if(method == RequestMethod.Post)
+                await ApiClient.Post("telemetry", payload);
+        }
+
         public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
             string played, string o)
         {
@@ -246,6 +252,7 @@ namespace Songify_Slim.Util.Songify
 
         public static void SendTelemetry()
         {
+
             string extras = $"?id={Settings.Settings.Uuid}" +
                             $"&tst={WebUtility.UrlEncode(((int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString())}" +
                             $"&v={WebUtility.UrlEncode(Assembly.GetExecutingAssembly().GetName().Version.ToString())}" +

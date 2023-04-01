@@ -28,8 +28,12 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Post(string endpoint, string payload)
         {
+            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            {
+                Query = $"api_key={Settings.Settings.AccessKey}"
+            };
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _httpClient.PostAsync($"{_baseUrl}/{endpoint}", content);
+            HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }
