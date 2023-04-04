@@ -328,9 +328,9 @@ namespace Songify_Slim.Util.Songify
                     RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     if (rq != null)
                     {
+                        Logger.LogStr($"QUEUE: Trying to remove {rq.Artist} - {rq.Title}");
                         do
                         {
-                            Logger.LogStr($"QUEUE: Trying to remove {rq.Artist} - {rq.Title}");
                             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 GlobalObjects.ReqList.Remove(rq);

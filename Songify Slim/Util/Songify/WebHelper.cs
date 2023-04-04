@@ -51,7 +51,6 @@ namespace Songify_Slim.Util.Songify
                         result = await ApiClient.Get("queue", Settings.Settings.Uuid);
                         if (string.IsNullOrEmpty(result))
                             return;
-
                         try
                         {
                             List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
@@ -71,7 +70,6 @@ namespace Songify_Slim.Util.Songify
                         catch (Exception e)
                         {
                             Logger.LogExc(e);
-                            throw;
                         }
                         break;
                     case RequestMethod.Post:
@@ -89,7 +87,6 @@ namespace Songify_Slim.Util.Songify
                         catch (Exception e)
                         {
                             Logger.LogExc(e);
-                            throw;
                         }
 
                         break;

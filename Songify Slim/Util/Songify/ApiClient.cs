@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -28,14 +29,22 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Post(string endpoint, string payload)
         {
-            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            try
             {
-                Query = $"api_key={Settings.Settings.AccessKey}"
-            };
-            StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+                var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+                {
+                    Query = $"api_key={Settings.Settings.AccessKey}"
+                };
+                StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+            return null;
         }
 
         public async Task<string> Patch(string endpoint, string payload)

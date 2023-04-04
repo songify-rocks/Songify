@@ -720,8 +720,14 @@ namespace Songify_Slim.Util.Songify
             if (MainClient != null && MainClient.IsConnected)
                 return;
             if (MainClient != null && !MainClient.IsConnected)
+            {
                 MainClient.Connect();
+                MainClient.JoinChannel(Settings.Settings.TwChannel);
+                return;
+            }
+
             try
+
             {
                 // Checks if twitch credentials are present
                 if (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) || string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
@@ -762,7 +768,11 @@ namespace Songify_Slim.Util.Songify
             if (Client != null && Client.IsConnected)
                 return;
             if (Client != null && !Client.IsConnected)
+            {
                 Client.Connect();
+                Client.JoinChannel(Settings.Settings.TwChannel);
+                return;
+            }
             try
             {
                 // Checks if twitch credentials are present
@@ -1252,7 +1262,7 @@ namespace Songify_Slim.Util.Songify
             }
             else switch (e.ChatMessage.Message)
                 // ReSharper disable once BadChildStatementIndent
-            {
+                {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                    Settings.Settings.BotCmdPlayPause):
                         await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
