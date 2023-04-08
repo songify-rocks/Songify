@@ -70,18 +70,25 @@ namespace Songify_Slim.Views
 
         private static Task SendTelemetry()
         {
-            dynamic telemetryPayload = new
+            try
             {
-                uuid = Settings.Uuid,
-                tst = DateTime.Now.ToUnixEpochDate(),
-                twitch_id = Settings.TwitchUser.Id,
-                twitch_name = Settings.TwitchUser.DisplayName,
-                vs = GlobalObjects.AppVersion,
-                playertype = GlobalObjects.GetReadablePlayer(),
-            };
+                dynamic telemetryPayload = new
+                {
+                    uuid = Settings.Uuid,
+                    tst = DateTime.Now.ToUnixEpochDate(),
+                    twitch_id = Settings.TwitchUser.Id == null ? "" : Settings.TwitchUser.Id,
+                    twitch_name = Settings.TwitchUser.DisplayName == null ? "" : Settings.TwitchUser.DisplayName,
+                    vs = GlobalObjects.AppVersion,
+                    playertype = GlobalObjects.GetReadablePlayer(),
+                };
 
-            WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
+                WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
 
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
             return Task.CompletedTask;
         }
 

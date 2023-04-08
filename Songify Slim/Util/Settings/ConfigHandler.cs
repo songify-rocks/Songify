@@ -663,7 +663,7 @@ namespace Songify_Slim.Util.Settings
         public string WebUserAgent = "Songify Data Provider";
         public bool UpdateRequired { get; set; } = true;
         public bool BotOnlyWorkWhenLive { get; set; }
-        public bool TwSrUnlimitedSr { get; set; }
+        public bool TwSrUnlimitedSr { get; set; } = false;
         public string TwRewardSkipId { get; set; } = "";
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public int TwitchFetchPort { get; set; } = 4004;
