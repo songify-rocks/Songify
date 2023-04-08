@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Views;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -6,10 +10,6 @@ using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using Microsoft.Win32;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Views;
 
 namespace Songify_Slim
 {

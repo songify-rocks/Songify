@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoUpdaterDotNET;
+using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -19,13 +26,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Xml.Linq;
-using AutoUpdaterDotNET;
-using MahApps.Metro.Controls.Dialogs;
-using Microsoft.Win32;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
@@ -752,8 +752,9 @@ namespace Songify_Slim.Views
                 _timerFetcher.Enabled = true;
                 // when the timer 'ticks' this code gets executed
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
+                Logger.LogExc(ex);
             }
             finally
             {
@@ -858,16 +859,6 @@ namespace Songify_Slim.Views
             if (GlobalObjects.DetachConsole) return;
             _consoleWindow.Left = Left + Width;
             _consoleWindow.Top = Top;
-        }
-
-        private void MetroWindow_GotFocus(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MetroWindow_LostFocus(object sender, RoutedEventArgs e)
-        {
-
         }
 
         private void WebClient_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)

@@ -1,4 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using SpotifyAPI.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,11 +11,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
-using Newtonsoft.Json;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
-using SpotifyAPI.Web.Models;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
@@ -70,7 +70,7 @@ namespace Songify_Slim.Util.Songify
                             //if custom pause text is enabled and if so spit out custom text
 
                             if (Settings.Settings.CustomPauseTextEnabled)
-                                return Task.FromResult(new SongInfo { Artist = "", Title = "", Extra = "" }); // (Settings.GetCustomPauseText(), "", "");
+                                return Task.FromResult(new SongInfo { Artist = "", Title = "", Extra = "" });
                             break;
 
                         case "vlc":
@@ -331,7 +331,7 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"QUEUE: Trying to remove {rq.Artist} - {rq.Title}");
                         do
                         {
-                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 GlobalObjects.ReqList.Remove(rq);
                             }));

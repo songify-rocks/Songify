@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,8 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 
@@ -79,7 +79,7 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             RequestObject response = Json.Deserialize<RequestObject>(result);
-                            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
                                 GlobalObjects.ReqList.Add(response);
                             }));
@@ -108,7 +108,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async void TelemetryRequest(RequestMethod method, string payload)
         {
-            if(method == RequestMethod.Post)
+            if (method == RequestMethod.Post)
                 await ApiClient.Post("telemetry", payload);
         }
 

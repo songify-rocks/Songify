@@ -1,4 +1,14 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
+using Songify_Slim.Properties;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify.TwitchOAuth;
+using Songify_Slim.Views;
+using SpotifyAPI.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,16 +19,6 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Properties;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify.TwitchOAuth;
-using Songify_Slim.Views;
-using SpotifyAPI.Web.Models;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -56,7 +56,6 @@ namespace Songify_Slim.Util.Songify
             Moderator = 3,
             Broadcaster = 4
         }
-
         public static TwitchClient Client;
         public static TwitchClient MainClient;
         private static bool _onCooldown;
@@ -108,7 +107,6 @@ namespace Songify_Slim.Util.Songify
                     Console.WriteLine(@"State does not match up. Possible CSRF attack or other error.");
                     return;
                 }
-
 
                 switch (account)
                 {
@@ -232,15 +230,23 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<bool> CheckStreamIsUp()
         {
-            if (TokenCheck == null) return false;
-            GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
-                new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
-            if (x.Streams.Length != 0)
+            try
             {
-                return x.Streams[0].Type == "live";
-            }
+                if (TokenCheck == null) return false;
+                GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
+                    new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
+                if (x.Streams.Length != 0)
+                {
+                    return x.Streams[0].Type == "live";
+                }
 
-            return false;
+                return false;
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+                return false;
+            }
         }
 
         public static async Task InitializeApi(TwitchAccount twitchAccount)
@@ -281,7 +287,7 @@ namespace Songify_Slim.Util.Songify
                                     "Your Twitch Account token has expired. Please login again with Twtich",
                                     MessageDialogStyle.AffirmativeAndNegative,
                                     new MetroDialogSettings
-                                        { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
+                                    { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
                                 ApiConnect(TwitchAccount.Main);
                             }
@@ -352,7 +358,7 @@ namespace Songify_Slim.Util.Songify
                                     "Your Twitch Bot Account token has expired. Please login again with Twtich",
                                     MessageDialogStyle.AffirmativeAndNegative,
                                     new MetroDialogSettings
-                                        { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                                    { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
                                 ApiConnect(TwitchAccount.Bot);
                             }
@@ -463,7 +469,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -486,7 +492,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -499,22 +505,21 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // checks if the user has already the max amount of songs in the queue
-                if (!Settings.Settings.TwSrUnlimitedSr)
-                    if (MaxQueueItems(redeemedUser.DisplayName, userlevel))
-                    {
-                        // if the user reached max requests in the queue skip and inform requester
-                        string response = Settings.Settings.BotRespMaxReq;
-                        response = response.Replace("{user}", redeemedUser.DisplayName);
-                        response = response.Replace("{artist}", "");
-                        response = response.Replace("{title}", "");
-                        response = response.Replace("{maxreq}",
-                            $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
-                        response = response.Replace("{errormsg}", "");
-                        response = CleanFormatString(response);
-                        if (!string.IsNullOrEmpty(response))
-                            SendChatMessage(Settings.Settings.TwChannel, response);
-                        return;
-                    }
+                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(redeemedUser.DisplayName, userlevel))
+                {
+                    // if the user reached max requests in the queue skip and inform requester
+                    string response = Settings.Settings.BotRespMaxReq;
+                    response = response.Replace("{user}", redeemedUser.DisplayName);
+                    response = response.Replace("{artist}", "");
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}",
+                        $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
+                    response = response.Replace("{errormsg}", "");
+                    response = CleanFormatString(response);
+                    if (!string.IsNullOrEmpty(response))
+                        SendChatMessage(Settings.Settings.TwChannel, response);
+                    return;
+                }
 
                 if (ApiHandler.Spotify == null)
                 {
@@ -527,7 +532,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -567,7 +572,7 @@ namespace Songify_Slim.Util.Songify
                                     Settings.Settings.TwitchUser.Id, reward.Id,
                                     new List<string> { e.RewardRedeemed.Redemption.Id },
                                     new UpdateCustomRewardRedemptionStatusRequest
-                                        { Status = CustomRewardRedemptionStatus.CANCELED },
+                                    { Status = CustomRewardRedemptionStatus.CANCELED },
                                     Settings.Settings.TwitchAccessToken);
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
@@ -613,7 +618,7 @@ namespace Songify_Slim.Util.Songify
                                     Settings.Settings.TwitchUser.Id, reward.Id,
                                     new List<string> { e.RewardRedeemed.Redemption.Id },
                                     new UpdateCustomRewardRedemptionStatusRequest
-                                        { Status = CustomRewardRedemptionStatus.CANCELED });
+                                    { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
                                 response += $" {Settings.Settings.BotRespRefund}";
@@ -698,7 +703,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void SendChatMessage(string channel, string message)
         {
-            if(message.StartsWith("[announce "))
+            if (message.StartsWith("[announce "))
             {
                 await AnnounceInChat(message);
                 return;
@@ -1330,7 +1335,7 @@ namespace Songify_Slim.Util.Songify
                     queueid = reqObj.Queueid,
                 };
                 WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
 
 
@@ -1379,7 +1384,7 @@ namespace Songify_Slim.Util.Songify
             }
             else
                 switch (e.ChatMessage.Message)
-                    // ReSharper disable once BadChildStatementIndent
+                // ReSharper disable once BadChildStatementIndent
                 {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                        Settings.Settings.BotCmdPlayPause):
@@ -1646,20 +1651,17 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                if (!Settings.Settings.TwSrUnlimitedSr)
+                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
                 {
-                    if (MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
-                    {
-                        response = Settings.Settings.BotRespMaxReq;
-                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
-                        response = response.Replace("{artist}", "");
-                        response = response.Replace("{title}", "");
-                        response = response.Replace("{maxreq}",
-                            $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
-                        response = response.Replace("{errormsg}", "");
-                        response = CleanFormatString(response);
-                        return true;
-                    }
+                    response = Settings.Settings.BotRespMaxReq;
+                    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                    response = response.Replace("{artist}", "");
+                    response = response.Replace("{title}", "");
+                    response = response.Replace("{maxreq}",
+                        $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
+                    response = response.Replace("{errormsg}", "");
+                    response = CleanFormatString(response);
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -1732,8 +1734,6 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                string artists = string.Join(", ", track.Artists.Select(o => o.Name).ToList());
-
                 foreach (string s in Settings.Settings.ArtistBlacklist.Where(s =>
                              Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
                 {
@@ -2052,12 +2052,13 @@ namespace Songify_Slim.Util.Songify
             {
                 List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
                 temp3.AddRange(from requestObject in temp2
-                    let pos = temp.IndexOf(requestObject) + 1
-                    select new QueueItem
-                    {
-                        Position = pos, Title = requestObject.Artist + " - " + requestObject.Title,
-                        Requester = requestObject.Requester
-                    });
+                               let pos = temp.IndexOf(requestObject) + 1
+                               select new QueueItem
+                               {
+                                   Position = pos,
+                                   Title = requestObject.Artist + " - " + requestObject.Title,
+                                   Requester = requestObject.Requester
+                               });
                 return temp3;
             }
 
@@ -2131,6 +2132,8 @@ namespace Songify_Slim.Util.Songify
             string msg = GetCurrentSong();
             msg = Regex.Replace(msg, @"(@)?\{user\}", "");
             msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+            msg = msg.Replace("{artist}", $"{GlobalObjects.CurrentSong.Artists}");
+            msg = msg.Replace("{title}", $"{GlobalObjects.CurrentSong.Title}");
 
             if (msg.StartsWith("[announce "))
             {

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,8 +8,6 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;

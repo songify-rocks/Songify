@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Views;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Views;
 
 namespace Songify_Slim.UserControls
 {
@@ -49,7 +49,7 @@ namespace Songify_Slim.UserControls
                 tbx.Text = "[announce " + ((ComboBoxItem)cbx.SelectedItem).Content.ToString().ToLower() + "]" + tbx.Text;
             }
         }
-        
+
         private static void SetPreview(TextBox tb)
         {
             string response =

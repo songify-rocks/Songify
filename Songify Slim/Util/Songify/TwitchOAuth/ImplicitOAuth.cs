@@ -1,9 +1,9 @@
+using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json.Linq;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {

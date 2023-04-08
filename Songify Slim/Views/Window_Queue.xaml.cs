@@ -1,11 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-using System.Windows.Threading;
-using Songify_Slim.Models;
+﻿using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using System;
+using System.Windows;
+using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Views
@@ -24,7 +23,7 @@ namespace Songify_Slim.Views
             {
                 dgv_Queue.Items.Refresh();
             };
-            _timer.IsEnabled= true;
+            _timer.IsEnabled = true;
         }
 
         // This window shows the current Queue in a DataGrid

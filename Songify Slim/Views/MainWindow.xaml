@@ -16,7 +16,7 @@
                       ShowDialogsOverTitleBar="False"
                       Closing="MetroWindow_Closing"
                       KeyDown="MetroWindow_KeyDown"
-                      SaveWindowPosition="True" LocationChanged="MetroWindow_LocationChanged" GotFocus="MetroWindow_GotFocus" LostFocus="MetroWindow_LostFocus">
+                      SaveWindowPosition="True" LocationChanged="MetroWindow_LocationChanged">
     <controls:MetroWindow.Resources>
         <Style TargetType="{x:Type dialog:MessageDialog}"
                x:Key="NewCustomMessageDialogStyle"

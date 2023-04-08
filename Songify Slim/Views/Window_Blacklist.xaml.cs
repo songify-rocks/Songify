@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify;
+using SpotifyAPI.Web.Models;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
-using SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.Views
 {

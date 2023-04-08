@@ -1,10 +1,8 @@
-﻿using System;
+﻿using MahApps.Metro.IconPacks;
+using Songify_Slim.Util.General;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Views
 {
@@ -17,7 +15,7 @@ namespace Songify_Slim.Views
         {
             InitializeComponent();
         }
-        
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             richTextBox.Document = GlobalObjects.ConsoleDocument;

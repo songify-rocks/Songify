@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MahApps.Metro.Controls;
+using Songify_Slim.Util.Settings;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using MahApps.Metro.Controls;
-using Songify_Slim.Util.Settings;
 
 namespace Songify_Slim.Views
 {

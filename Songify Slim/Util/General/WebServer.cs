@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MahApps.Metro.IconPacks;
+using Songify_Slim.Views;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,8 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Views;
 
 namespace Songify_Slim.Util.General
 {
@@ -19,7 +19,7 @@ namespace Songify_Slim.Util.General
 
         public void StartWebServer(int port)
         {
-            if(port < 1025 || port > 65535)
+            if (port < 1025 || port > 65535)
                 return;
             if (!PortIsFree(port)) return;
             // Listen on the specified port.

@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using Songify_Slim.Util.General;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify
 {

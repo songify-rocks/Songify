@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Songify_Slim.Views;
+﻿using Songify_Slim.Views;
+using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings

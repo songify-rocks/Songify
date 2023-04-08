@@ -23,7 +23,7 @@ namespace Songify_Slim.UserControls
             {
                 TbRewardCost.Text = "";
                 TbRewardName.Text = "";
-                ImgBorder.Background = new SolidColorBrush(Color.FromArgb(0,0,0,0));
+                ImgBorder.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 RewardImage.Source = null;
                 return;
             }

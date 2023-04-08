@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Songify_Slim.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Songify_Slim.Models;
 
 namespace Songify_Slim.Util.General
 {
