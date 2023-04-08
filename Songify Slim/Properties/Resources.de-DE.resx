@@ -649,4 +649,10 @@
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Setzt die aktuelle Wiedergabe fort oder hält sie an.</value>
   </data>
+  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+    <value>Userlevel für SR-Befehl</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+    <value>Userlevel für SR-Kanalbelohnung</value>
+  </data>
 </root>

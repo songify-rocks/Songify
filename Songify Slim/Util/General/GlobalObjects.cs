@@ -18,7 +18,7 @@ namespace Songify_Slim.Util.General
         public static FlowDocument ConsoleDocument = new FlowDocument();
         public static TrackInfo CurrentSong;
         public static bool DetachConsole = false;
-        public static bool IsBeta = true;
+        public static bool IsBeta = false;
         public static bool IsInPlaylist;
         public static ObservableCollection<RequestObject> ReqList = new ObservableCollection<RequestObject>();
         public static string Requester = "";

@@ -626,14 +626,14 @@ namespace Songify_Slim.Views
             await SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
 
-            if (!Settings.UpdateRequired) return;
+            ApiHandler.DoAuthAsync();
 
+            if (!Settings.UpdateRequired) return;
             List<int> userLevels = new List<int>();
             for (int i = 0; i <= Settings.TwSrUserLevel; i++)
             {
                 userLevels.Add(i);
             }
-
             if (Settings.UserLevelsCommand.Count == 0) Settings.UserLevelsCommand = userLevels;
             if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
 

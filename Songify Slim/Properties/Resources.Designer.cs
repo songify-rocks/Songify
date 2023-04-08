@@ -1286,6 +1286,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels for SR command.
+        /// </summary>
+        public static string sw_SpotifySR_Userlevel_command {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_Userlevel_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels for SR reward.
+        /// </summary>
+        public static string sw_SpotifySR_Userlevel_reward {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_Userlevel_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to open queue window on startup.
         /// </summary>
         public static string Sw_System_OpenQueueOnStartup {

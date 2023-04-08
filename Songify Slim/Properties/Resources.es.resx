@@ -649,4 +649,10 @@
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Reanuda o pausa la reproducción actual.</value>
   </data>
+  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+    <value>Niveles de usuario permitidos para el comando SR</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+    <value>Niveles de usuario permitidos para la recompensa SR</value>
+  </data>
 </root>

@@ -31,8 +31,14 @@ namespace Songify_Slim
                 ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
             else
                 ConfigHandler.ReadConfig();
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+            try
+            {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
+            }
+            catch (Exception e)
+            {
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+            }
             //  Adding the RegKey for Songify in startup(autostart with windows)
 
             RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(

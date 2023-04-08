@@ -624,7 +624,7 @@
                             </StackPanel>
                             <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                 <DockPanel LastChildFill="True">
-                                    <Label Content="Allowed user levels for SR command" Padding="0,5,5,5" VerticalAlignment="Center"/>
+                                    <Label Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_command}" Padding="0,5,5,5" VerticalAlignment="Center"/>
                                     <ComboBox x:Name="CbxAllowedUserLevelsCommand" SelectionChanged="Selector_OnSelectionChanged" IsReadOnly="True" SelectedIndex="0" HorizontalAlignment="Right" Width="185">
                                         <ComboBox.Items>
                                             <ComboBoxItem Content="User Levels (Command)">
@@ -654,7 +654,7 @@
                                     </ComboBox>
                                 </DockPanel>
                                 <DockPanel LastChildFill="True" Margin="0,6,0,0">
-                                    <Label Content="Allowed user levels for SR reward" Padding="0,5,5,5" VerticalAlignment="Center"/>
+                                    <Label Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_reward}" Padding="0,5,5,5" VerticalAlignment="Center"/>
                                     <ComboBox x:Name="CbxAllowedUserLevelsReward" SelectionChanged="Selector_OnSelectionChanged" IsReadOnly="True" SelectedIndex="0" HorizontalAlignment="Right" Width="185">
                                         <ComboBox.Items>
                                             <ComboBoxItem Content="User Levels (Reward)">

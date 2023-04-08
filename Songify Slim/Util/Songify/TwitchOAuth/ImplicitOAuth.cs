@@ -9,8 +9,6 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
     public class ImplicitOAuth
     {
-
-
         #region Variables
         // Privates
         private const string TwitchAuthUrl = "https://id.twitch.tv/oauth2/authorize";
@@ -64,14 +62,21 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             InitializeLocalWebServers();
 
             // Open the browser and send the user to the implicit autentication page on Twitch.
-            //Process.Start($"{twitchAuthUrl}?{queryParams}");
-            var process = new Process();
-            process.StartInfo = new ProcessStartInfo
+            try
             {
-                FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
-            };
-            process.Start();
+                var process = new Process();
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge1.exe",
+                    Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
+                };
+                process.Start();
+            }
+            catch (Exception e)
+            {
+                Process.Start($"{TwitchAuthUrl}?{queryParams}");
+            }
+
             return authStateVerify;
         }
         #endregion
@@ -186,12 +191,12 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                               <img src=""https://songify.overcode.tv/img/ms-icon-310x310.png"" style="" height: 50px;""/> + <img src=""https://songify.overcode.tv/img/TwitchGlitchPurple.png"" style="" height: 50px;""/>
                           </div>
                         </div>
-                          <h1>Success</h1> 
+                          <h1>Success</h1>
                           <p>Twitch and Songify are now connected!<br/>This page closes itself in 5 seconds.</p>
                         </div>
 
 						<script>
-							let values = 
+							let values =
 							{
 								access_token:""TOKEN"",
 								state: ""STATE""
@@ -208,7 +213,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                             setTimeout(function () {
                                 window.close();
                                 }, 5000);
-                            
+
 						</script>
 					</body>
 				</html>
