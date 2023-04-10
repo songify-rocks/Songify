@@ -307,13 +307,6 @@ namespace Songify_Slim.Util.Songify
             {
                 return null;
             }
-
-            // Get Queue Data from the server every fifth call
-            if (_fetchCount == 5)
-            {
-                WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
-                _fetchCount = 0;
-            }
             // gets the current playing songinfo*
             _songInfo = ApiHandler.GetSongInfo();
             try
@@ -370,6 +363,7 @@ namespace Songify_Slim.Util.Songify
                     _trackChanged = false;
                     if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
+                    WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                 }
                 string j = Json.Serialize(_songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);

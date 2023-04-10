@@ -626,8 +626,6 @@ namespace Songify_Slim.Views
             await SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
 
-            ApiHandler.DoAuthAsync();
-
             if (!Settings.UpdateRequired) return;
             List<int> userLevels = new List<int>();
             for (int i = 0; i <= Settings.TwSrUserLevel; i++)
