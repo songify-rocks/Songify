@@ -8,9 +8,11 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using Newtonsoft.Json.Linq;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 
@@ -75,7 +77,22 @@ namespace Songify_Slim.Util.Songify
                     case RequestMethod.Post:
                         result = await ApiClient.Post("queue", payload);
                         if (string.IsNullOrEmpty(result))
+                        {
+                            JObject x = JObject.Parse(payload);
+                            GlobalObjects.ReqList.Add(new RequestObject
+                            {
+                                Queueid = GlobalObjects.ReqList.Count + 1,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = (string)x["queueItem"]["Trackid"],
+                                Artist = (string)x["queueItem"]["Artist"],
+                                Title = (string)x["queueItem"]["Title"],
+                                Length = (string)x["queueItem"]["Length"],
+                                Requester = (string)x["queueItem"]["Requester"],
+                                Played = 0,
+                                Albumcover = (string)x["queueItem"]["Albumcover"]
+                            });
                             return;
+                        }
                         try
                         {
                             RequestObject response = Json.Deserialize<RequestObject>(result);

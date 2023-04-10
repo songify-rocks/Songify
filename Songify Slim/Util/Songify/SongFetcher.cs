@@ -332,6 +332,12 @@ namespace Songify_Slim.Util.Songify
 
                         Logger.LogStr($"CORE: Removed {rq.Artist} - {rq.Title} requested by {rq.Requester} from the queue.");
 
+                        //Update indexes of the queue
+                        for (int i = 0; i < GlobalObjects.ReqList.Count; i++)
+                        {
+                            GlobalObjects.ReqList[i].Queueid = i + 1;
+                        }
+
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
                                             foreach (Window window in Application.Current.Windows)
