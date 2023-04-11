@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -129,60 +128,13 @@ namespace Songify_Slim.Util.Songify
                 await ApiClient.Post("telemetry", payload);
         }
 
-        public static void UpdateWebQueue(string trackId, string artist, string title, string length, string requester,
-            string played, string o)
+        public static async void SongRequest(RequestMethod method, string payload)
         {
-            Debug.WriteLine("Called Webrequest");
-            string operation = "";
-
-            // This switch tells the php to either add or delete one entry or clear the entire queue
-            switch (o)
+            if (method == RequestMethod.Post)
             {
-                case "i":
-                    operation = "Add";
-                    break;
-                case "u":
-                    operation = "Delete";
-                    break;
-                case "c":
-                    operation = "Clear";
-                    break;
+                var response = await ApiClient.Post("song", payload);
+                Debug.WriteLine(response);
             }
-
-            // Here a URL is being created to call the website and insert the values to the db
-
-            string extras = Settings.Settings.Uuid +
-                            "&trackid=" + WebUtility.UrlEncode(trackId) +
-                            "&artist=" + WebUtility.UrlEncode(artist.Replace("\"", "\\\"")) +
-                            "&title=" + WebUtility.UrlEncode(title.Replace("\"", "\\\"")) +
-                            "&length=" + WebUtility.UrlEncode(length) +
-                            "&requester=" + WebUtility.UrlEncode(requester) +
-                            "&played=" + WebUtility.UrlEncode(played) +
-                            "&o=" + WebUtility.UrlEncode(o) +
-                            "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-
-            string url = $"{GlobalObjects.BaseUrl}/add_queue.php/?id=" + extras;
-            WebUtility.UrlEncode(url);
-
-            dynamic test = new
-            {
-                uuid = Settings.Settings.Uuid,
-                key = Settings.Settings.AccessKey,
-                queueItem =
-                    new RequestObject
-                    {
-                        Trackid = trackId,
-                        Artist = artist,
-                        Title = title,
-                        Length = length,
-                        Requester = requester,
-                        Albumcover = null
-                    }
-
-            };
-            Debug.WriteLine((string)Json.Serialize(test));
-
-            DoWebRequest(url, RequestType.Queue, operation);
         }
 
         private static void DoWebRequest(string url, RequestType requestType, string operation = "")
@@ -264,38 +216,34 @@ namespace Songify_Slim.Util.Songify
             Logger.LogStr($"WEB: {requestType}{(!string.IsNullOrWhiteSpace(operation) ? " " + operation : "")}: Try {currentTry} of {maxTries}");
         }
 
-        public static void SendTelemetry()
-        {
-
-            string extras = $"?id={Settings.Settings.Uuid}" +
-                            $"&tst={WebUtility.UrlEncode(((int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds).ToString())}" +
-                            $"&v={WebUtility.UrlEncode(Assembly.GetExecutingAssembly().GetName().Version.ToString())}" +
-                            $"&key={WebUtility.UrlEncode(Settings.Settings.AccessKey)}" +
-                            $"&tid={WebUtility.UrlEncode(Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.Id)}" +
-                            $"&tn={WebUtility.UrlEncode(Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.DisplayName)}";
-            string url = $"{GlobalObjects.BaseUrl}/songifydata.php/" + extras;
-            WebUtility.UrlEncode(url);
-            DoWebRequest(url, RequestType.Telemetry);
-        }
-
         public static void UploadSong(string currSong, string coverUrl = null)
         {
-            // extras are UUID and Songinfo
-            string extras = Settings.Settings.Uuid +
-                            "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
-                            "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
-                            "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            string url = $"{GlobalObjects.BaseUrl}/song.php?id=" + extras;
-            DoWebRequest(url, RequestType.UploadSong);
+
+            dynamic paylod = new
+            {
+                uuid = Settings.Settings.Uuid,
+                key = Settings.Settings.AccessKey,
+                song = currSong,
+                cover = coverUrl
+            };
+            SongRequest(RequestMethod.Post, Json.Serialize(paylod));
+
+            //// extras are UUID and Songinfo
+            //string extras = Settings.Settings.Uuid +
+            //                "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
+            //                "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
+            //                "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
+            //string url = $"{GlobalObjects.BaseUrl}/song.php?id=" + extras;
+            //DoWebRequest(url, RequestType.UploadSong);
         }
 
         public static void UploadHistory(string currSong, int unixTimestamp)
         {
             string extras = Settings.Settings.Uuid +
                             "&tst=" + unixTimestamp +
-                            "&song=" + HttpUtility.UrlEncode(currSong, Encoding.UTF8) +
+                            "&song=" + HttpUtility.UrlEncode($"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}", Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            string url = $"{GlobalObjects.BaseUrl}/song_history.php/?id=" + extras;
+            string url = $"{GlobalObjects.ApiUrl}/history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.
             DoWebRequest(url, RequestType.UploadHistory);
         }

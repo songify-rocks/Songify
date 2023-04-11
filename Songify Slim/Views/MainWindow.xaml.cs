@@ -75,6 +75,7 @@ namespace Songify_Slim.Views
                 dynamic telemetryPayload = new
                 {
                     uuid = Settings.Uuid,
+                    key = Settings.AccessKey,
                     tst = DateTime.Now.ToUnixEpochDate(),
                     twitch_id = Settings.TwitchUser.Id == null ? "" : Settings.TwitchUser.Id,
                     twitch_name = Settings.TwitchUser.DisplayName == null ? "" : Settings.TwitchUser.DisplayName,
@@ -1109,14 +1110,7 @@ namespace Songify_Slim.Views
             if (!File.Exists(_songPath))
             {
                 File.Create(_songPath).Close();
-                try
-                {
-                    WriteOutput(_songPath, CurrSong);
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr($"File {_songPath} couldn't be accessed.");
-                }
+
             }
 
             //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);

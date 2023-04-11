@@ -20,7 +20,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Get(string endpoint, string uuid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}?uuid={uuid}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}.php?uuid={uuid}");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.InternalServerError:
@@ -37,7 +37,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+                var builder = new UriBuilder($"{_baseUrl}/{endpoint}.php")
                 {
                     Query = $"api_key={Settings.Settings.AccessKey}"
                 };
@@ -50,6 +50,15 @@ namespace Songify_Slim.Util.Songify
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
                     case HttpStatusCode.OK:
+                        switch (endpoint)
+                        {
+                            case "song":
+                                Logger.LogStr("WEB: Upload Song: success");
+                                break;
+                            case "telemetry":
+                                Logger.LogStr("WEB: Telemetry: success");
+                                break;
+                        }
                         return await response.Content.ReadAsStringAsync();
                 }
                 return null;
@@ -65,7 +74,7 @@ namespace Songify_Slim.Util.Songify
         {
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
             HttpMethod method = new HttpMethod("PATCH");
-            HttpRequestMessage request = new HttpRequestMessage(method, $"{_baseUrl}/{endpoint}") { Content = content };
+            HttpRequestMessage request = new HttpRequestMessage(method, $"{_baseUrl}/{endpoint}.php") { Content = content };
             HttpResponseMessage response = await _httpClient.SendAsync(request);
 
             switch (response.StatusCode)
@@ -84,7 +93,7 @@ namespace Songify_Slim.Util.Songify
         {
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
             HttpMethod mehtod = new HttpMethod("CLEAR");
-            HttpRequestMessage request = new HttpRequestMessage(mehtod, $"{_baseUrl}/{endpoint}") { Content = content };
+            HttpRequestMessage request = new HttpRequestMessage(mehtod, $"{_baseUrl}/{endpoint}.php") { Content = content };
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             switch (response.StatusCode)
             {
