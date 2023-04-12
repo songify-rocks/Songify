@@ -104,7 +104,7 @@ namespace Songify_Slim.Util.General
                             {
                                 Text =
                                     $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
-                                Foreground = new SolidColorBrush(GetBackgroundColor(s))
+                                Foreground = new SolidColorBrush(GetForegroundColor(s))
                             }
                         }
                     });
@@ -134,13 +134,13 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        private static Color GetBackgroundColor(string s)
+        private static Color GetForegroundColor(string s)
         {
             if (s.Contains("CORE"))
                 return Colors.Coral;
             if (s.Contains("TWITCH"))
                 return Colors.MediumPurple;
-            if (s.Contains("WEB"))
+            if (s.Contains("API"))
                 return Colors.LightGreen;
             if (s.Contains("COVER"))
                 return Colors.Yellow;

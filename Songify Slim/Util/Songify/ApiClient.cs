@@ -53,10 +53,10 @@ namespace Songify_Slim.Util.Songify
                         switch (endpoint)
                         {
                             case "song":
-                                Logger.LogStr("WEB: Upload Song: success");
+                                Logger.LogStr("API: Upload Song: success");
                                 break;
                             case "telemetry":
-                                Logger.LogStr("WEB: Telemetry: success");
+                                Logger.LogStr("API: Telemetry: success");
                                 break;
                         }
                         return await response.Content.ReadAsStringAsync();

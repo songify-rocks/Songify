@@ -854,18 +854,18 @@ namespace Songify_Slim.Util.Songify
 
         public static void BotConnect()
         {
-            MainConnect();
-            if (Client != null && Client.IsConnected)
-                return;
-            if (Client != null && !Client.IsConnected)
-            {
-                Client.Connect();
-                Client.JoinChannel(Settings.Settings.TwChannel);
-                return;
-            }
-
             try
             {
+                MainConnect();
+                if (Client != null && Client.IsConnected)
+                    return;
+                if (Client != null && !Client.IsConnected)
+                {
+                    Client.Connect();
+                    Client.JoinChannel(Settings.Settings.TwChannel);
+                    return;
+                }
+
                 // Checks if twitch credentials are present
                 if (string.IsNullOrEmpty(Settings.Settings.TwAcc) || string.IsNullOrEmpty(Settings.Settings.TwOAuth) ||
                     string.IsNullOrEmpty(Settings.Settings.TwChannel))

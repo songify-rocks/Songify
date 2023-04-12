@@ -90,6 +90,11 @@ namespace Songify_Slim.Util.Songify
                                 Played = 0,
                                 Albumcover = (string)x["queueItem"]["Albumcover"]
                             });
+                            //Update indexes of the queue
+                            for (int i = 0; i < GlobalObjects.ReqList.Count; i++)
+                            {
+                                GlobalObjects.ReqList[i].Queueid = i + 1;
+                            }
                             return;
                         }
                         try
@@ -159,7 +164,8 @@ namespace Songify_Slim.Util.Songify
                         {
                             break; // Exit the for loop
                         }
-                        else if (myHttpWebResponse.StatusCode == HttpStatusCode.BadRequest)
+
+                        if (myHttpWebResponse.StatusCode == HttpStatusCode.BadRequest)
                         {
                             if (currentTry >= maxTries)
                             {
@@ -174,7 +180,7 @@ namespace Songify_Slim.Util.Songify
                         }
                         else if (myHttpWebResponse.StatusCode == HttpStatusCode.Forbidden)
                         {
-                            Logger.LogStr("WEB: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
+                            Logger.LogStr("API: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
                             break; // Exit the for loop
                         }
                     }
@@ -183,7 +189,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (ex.Response is HttpWebResponse response && response.StatusCode == HttpStatusCode.Forbidden)
                     {
-                        Logger.LogStr("WEB: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
+                        Logger.LogStr("API: PLEASE CONTACT US ON THE DISCORD -> https://discord.com/invite/H8nd4T4");
                         break; // Exit the for loop
                     }
                     else if (currentTry >= maxTries)
@@ -207,13 +213,13 @@ namespace Songify_Slim.Util.Songify
 
         private static void LogWebResponseStatus(RequestType requestType, string operation, string statusDescription)
         {
-            string message = $"WEB: {requestType}{(string.IsNullOrWhiteSpace(operation) ? ":" : " " + operation + ":")} Status: {statusDescription}";
+            string message = $"API: {requestType}{(string.IsNullOrWhiteSpace(operation) ? ":" : " " + operation + ":")} Status: {statusDescription}";
             Logger.LogStr(message);
         }
 
         private static void LogRetryAttempt(RequestType requestType, string operation, int currentTry, int maxTries)
         {
-            Logger.LogStr($"WEB: {requestType}{(!string.IsNullOrWhiteSpace(operation) ? " " + operation : "")}: Try {currentTry} of {maxTries}");
+            Logger.LogStr($"API: {requestType}{(!string.IsNullOrWhiteSpace(operation) ? " " + operation : "")}: Try {currentTry} of {maxTries}");
         }
 
         public static void UploadSong(string currSong, string coverUrl = null)
