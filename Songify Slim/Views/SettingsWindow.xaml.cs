@@ -183,7 +183,13 @@ namespace Songify_Slim.Views
                     LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
-                    if (profile.Images[0].Url != null) bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+
+                    if (profile.Images.Count > 0)
+                    {
+                        if (!string.IsNullOrEmpty(profile.Images[0].Url))
+                            bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                    }
+
                     bitmap.EndInit();
                     ImgSpotifyProfile.ImageSource = bitmap;
                     CbSpotifyPlaylist.Items.Clear();

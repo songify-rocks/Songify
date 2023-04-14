@@ -65,17 +65,24 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             // Open the browser and send the user to the implicit autentication page on Twitch.
             try
             {
-                var process = new Process();
-                process.StartInfo = new ProcessStartInfo
+                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"))
                 {
-                    FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge1.exe",
-                    Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
-                };
-                process.Start();
+                    var process = new Process();
+                    process.StartInfo = new ProcessStartInfo
+                    {
+                        FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                        Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
+                    };
+                    process.Start();
+                }
+                else
+                {
+                    Process.Start($"{TwitchAuthUrl}?{queryParams}");
+                }
             }
             catch (Exception e)
             {
-                Process.Start($"{TwitchAuthUrl}?{queryParams}");
+                Logger.LogExc(e);
             }
 
             return authStateVerify;
