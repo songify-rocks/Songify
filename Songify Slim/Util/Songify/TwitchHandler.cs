@@ -220,7 +220,8 @@ namespace Songify_Slim.Util.Songify
                         vs = GlobalObjects.AppVersion,
                         playertype = GlobalObjects.GetReadablePlayer(),
                     };
-                    WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
+                    string json = Json.Serialize(telemetryPayload);
+                    WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, json);
                 });
             };
 
@@ -1352,34 +1353,42 @@ namespace Songify_Slim.Util.Songify
                         "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
                     return;
                 }
-
-                var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-                do
+                string response;
+                try
                 {
-                    if (tracks.Items.Any(t => t.Track.Id == GlobalObjects.CurrentSong.SongId))
+                    var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+                    do
                     {
-                        SendChatMessage(Settings.Settings.TwChannel,
-                            $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
-                        return;
+                        if (tracks.Items.Any(t => t.Track.Id == GlobalObjects.CurrentSong.SongId))
+                        {
+                            SendChatMessage(Settings.Settings.TwChannel,
+                                $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                            return;
+                        }
+
+                        tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
+                            100, tracks.Offset + tracks.Limit);
+                    } while (tracks.HasNextPage());
+
+                    ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                        $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
+                    if (x.HasError()) return;
+                    response = Settings.Settings.BotRespSongLike;
+                    response = response.Replace("{song}",
+                        $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                    if (response.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(response);
                     }
-
-                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
-                        100, tracks.Offset + tracks.Limit);
-                } while (tracks.HasNextPage());
-
-                ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                    $"spotify:track:{GlobalObjects.CurrentSong.SongId}");
-                if (x.HasError()) return;
-                string response = Settings.Settings.BotRespSongLike;
-                response = response.Replace("{song}",
-                    $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                if (response.StartsWith("[announce "))
-                {
-                    await AnnounceInChat(response);
+                    else
+                    {
+                        SendChatMessage(e.ChatMessage.Channel, response);
+                    }
                 }
-                else
+                catch (Exception exception)
                 {
-                    SendChatMessage(e.ChatMessage.Channel, response);
+                    Logger.LogStr("SPOTIFY: Error while adding song to playlist");
+                    Logger.LogExc(exception);
                 }
             }
             else

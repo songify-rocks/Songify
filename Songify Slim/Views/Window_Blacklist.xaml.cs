@@ -70,7 +70,7 @@ namespace Songify_Slim.Views
 
         private void btn_Add_Click(object sender, RoutedEventArgs e)
         {
-            //This adds to the blacklist. 
+            //This adds to the blacklist.
             AddToBlacklist(tb_Blacklist.Text);
             tb_Blacklist.Text = "";
         }
