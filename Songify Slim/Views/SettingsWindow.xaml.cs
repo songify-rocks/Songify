@@ -121,6 +121,7 @@ namespace Songify_Slim.Views
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
             TglInformChat.IsOn = Settings.ChatLiveStatus;
+            TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
             ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
             ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.Items.Clear();
@@ -192,19 +193,7 @@ namespace Songify_Slim.Views
 
                     bitmap.EndInit();
                     ImgSpotifyProfile.ImageSource = bitmap;
-                    CbSpotifyPlaylist.Items.Clear();
-                    Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
-                    do
-                    {
-                        foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
-                        {
-                            CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                        }
-                        playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
-                    } while (playlists.HasNextPage());
-
-                    CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
-
+                    await LoadSpotifyPlaylists();
                 }
                 catch (Exception ex)
                 {
@@ -1336,6 +1325,34 @@ namespace Songify_Slim.Views
             List<int> list = new List<int>(Settings.UserLevelsCommand);
             list.Remove(value);
             Settings.UserLevelsCommand = list;
+        }
+
+        private void TglAddToPlaylist_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.AddSrToPlaylist = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadSpotifyPlaylists();
+        }
+
+        private async Task LoadSpotifyPlaylists()
+        {
+            if (ApiHandler.Spotify == null) return;
+            PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
+            CbSpotifyPlaylist.Items.Clear();
+            Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
+            do
+            {
+                foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                {
+                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                }
+                playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
+            } while (playlists.HasNextPage());
+
+            CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
         }
     }
 }

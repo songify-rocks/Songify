@@ -585,6 +585,18 @@ namespace Songify_Slim.Util.Settings
         public static bool BotCmdSonglike { get => GetBotCmdSonglike(); set => SetBotCmdSonglike(value); }
         public static string BotRespSongLike { get => GetBot_Resp_SongLike(); set => SetBot_Resp_SongLike(value); }
         public static bool BotCmdPlayPause { get => GetBotCmdPlayPause(); set => SetBotCmdPlayPause(value); }
+        public static bool AddSrToPlaylist { get => GetAddSrToPlaylist(); set => SetAddSrToPlaylist(value); }
+
+        private static bool GetAddSrToPlaylist()
+        {
+            return _currentConfig.AppConfig.AddSrToPlaylist;
+        }
+
+        private static void SetAddSrToPlaylist(bool value)
+        {
+            _currentConfig.AppConfig.AddSrToPlaylist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
 
         private static bool GetBotCmdPlayPause()
         {
@@ -756,6 +768,7 @@ namespace Songify_Slim.Util.Settings
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 UserLevelsCommand = GetUserLevelsCommand(),
+                AddSrToPlaylist = GetAddSrToPlaylist(),
                 UserLevelsReward = GetUserLevelsReward(),
             };
 

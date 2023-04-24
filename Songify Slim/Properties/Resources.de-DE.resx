@@ -655,4 +655,13 @@
   <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
     <value>Userlevel für SR-Kanalbelohnung</value>
   </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Liked-Songs Playlist</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>Die Playlist, der Songs hinzugefügt werden, wenn der Befehl !songlike verwendet wird, oder mit der Option, Songs automatisch zur Wiedergabeliste hinzuzufügen.</value>
+  </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Füge alle Musikwünsche zur Playlist hinzu</value>
+  </data>
 </root>

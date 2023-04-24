@@ -655,4 +655,13 @@
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Allowed user levels for SR command</value>
   </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Add all song requests to the playlist</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>The playlist that songs get added when using the !songlike command or with the option to automatically add songs to the playlist.</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Liked Songs Playlist</value>
+  </data>
 </root>

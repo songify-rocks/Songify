@@ -1367,6 +1367,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add all song requests to the playlist.
+        /// </summary>
+        public static string sw_tc_Spotify_AddSongsToPlaylist {
+            get {
+                return ResourceManager.GetString("sw_tc_Spotify_AddSongsToPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to System.
         /// </summary>
         public static string sw_tc_System {
@@ -1471,6 +1480,24 @@ namespace Songify_Slim.Properties {
         public static string sw_tcSpotify_SaveButton {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_SaveButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Liked Songs Playlist.
+        /// </summary>
+        public static string sw_tcSpotify_SongLikeLabel {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_SongLikeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The playlist that songs get added when using the !songlike command or with the option to automatically add songs to the playlist..
+        /// </summary>
+        public static string sw_tcSpotify_SongLikeLabelTooltip {
+            get {
+                return ResourceManager.GetString("sw_tcSpotify_SongLikeLabelTooltip", resourceCulture);
             }
         }
         

@@ -264,6 +264,9 @@ namespace Songify_Slim.Util.Settings
                                 RewardGoalAmount = 0,
                                 SongBlacklist = new List<TrackItem>(),
                                 SpotifyPlaylistId = "",
+                                UserLevelsReward = null,
+                                UserLevelsCommand = null,
+                                AddSrToPlaylist = false,
                             };
                         }
                         break;
@@ -676,6 +679,7 @@ namespace Songify_Slim.Util.Settings
         public string SpotifyPlaylistId { get; set; } = "";
         public List<int> UserLevelsReward { get; set; } = new List<int>();
         public List<int> UserLevelsCommand { get; set; } = new List<int>();
+        public bool AddSrToPlaylist { get; set; } = false;
     }
 
     public class Config

@@ -655,4 +655,13 @@
   <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
     <value>Разрешенные уровни пользователей для вознаграждения SR</value>
   </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Плейлист понравившихся песен</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>Список воспроизведения, в который добавляются песни при использовании команды !songlike или с возможностью автоматического добавления песен в список воспроизведения.</value>
+  </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Добавить все запросы песен в плейлист</value>
+  </data>
 </root>
