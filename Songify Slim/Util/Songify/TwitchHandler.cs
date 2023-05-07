@@ -51,8 +51,8 @@ namespace Songify_Slim.Util.Songify
         public enum TwitchUserLevels
         {
             Everyone = 0,
-            Vip = 1,
-            Subscriber = 2,
+            Subscriber = 1,
+            Vip = 2,
             Moderator = 3,
             Broadcaster = 4
         }
@@ -1516,8 +1516,8 @@ namespace Songify_Slim.Util.Songify
         {
             if (o.IsBroadcaster) return 4;
             if (o.IsModerator) return 3;
-            if (o.IsSubscriber) return 2;
-            return o.IsVip ? 1 : 0;
+            if (o.IsVip) return 2;
+            return o.IsSubscriber ? 1 : 0;
         }
 
         private static string GetCurrentSong()
