@@ -1302,5 +1302,11 @@ namespace Songify_Slim.Views
             LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
             Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
         }
+
+        private void BtnWebServerUrl_Click(object sender, RoutedEventArgs e)
+        {
+            if (GlobalObjects.WebServer.Run)
+                Process.Start($"http://localhost:{Settings.WebServerPort}");
+        }
     }
 }

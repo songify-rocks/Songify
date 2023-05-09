@@ -139,6 +139,7 @@
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
                 <MenuItem Header="{x:Static local:Resources.mw_menu_Console}" Click="BtnMenuViewConsole_Click"></MenuItem>
+                <MenuItem Header="Web Server URL" Click="BtnWebServerUrl_Click"></MenuItem>
             </MenuItem>
         </Menu>
         <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbx_Source" HorizontalAlignment="Right" VerticalAlignment="Top" Width="116" SelectedIndex="0"

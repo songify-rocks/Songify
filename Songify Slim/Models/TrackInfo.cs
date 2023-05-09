@@ -15,5 +15,15 @@ namespace Songify_Slim.Models
         public int DurationPercentage { get; set; }
         public int DurationTotal { get; set; }
         public int Progress { get; set; }
+        public PlaylistInfo Playlist { get; set; }
+    }
+
+    public class PlaylistInfo
+    {
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public string Owner { get; set; }
+        public string Url { get; set; }
+        public string Image { get; set; }
     }
 }

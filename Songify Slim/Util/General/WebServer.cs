@@ -30,11 +30,9 @@ namespace Songify_Slim.Util.General
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (Application.Current.MainWindow != null)
-                    {
-                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
-                        ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                    }
+                    if (Application.Current.MainWindow == null) return;
+                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
+                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 });
                 Logger.LogStr($"WebServer: Started on port {port}");
 
@@ -46,9 +44,9 @@ namespace Songify_Slim.Util.General
                         HttpListenerContext context = _listener.GetContext();
                         ProcessRequest(context);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-
+                        Logger.LogExc(e);
                     }
                 }
 
@@ -62,13 +60,9 @@ namespace Songify_Slim.Util.General
             Logger.LogStr("WebServer: Started stopped");
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (Application.Current.MainWindow != null)
-                {
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Gray;
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
-                }
-
-
+                if (Application.Current.MainWindow == null) return;
+                ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Gray;
+                ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
             });
             _listener.Stop();
         }
@@ -90,11 +84,6 @@ namespace Songify_Slim.Util.General
 
         private void ProcessRequest(HttpListenerContext context)
         {
-            // Generate the HTML response.
-            //string responseString = "<html><body><h1>Dynamic Values</h1>";
-            //responseString += "<p>Current time: " + DateTime.Now.ToString() + "</p>";
-            //responseString += "</body></html>";
-
             if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
                 return;
             // Convert the response string to a byte array.
@@ -105,6 +94,8 @@ namespace Songify_Slim.Util.General
             response.ContentLength64 = responseBytes.Length;
             response.Headers.Add("Access-Control-Allow-Origin", "*");
             response.Headers.Add("Access-Control-Allow-Methods", "POST, GET");
+            response.ContentType = "application/json; charset=utf-8";
+            response.ContentEncoding = Encoding.UTF8;
             using (Stream output = response.OutputStream)
             {
                 output.Write(responseBytes, 0, responseBytes.Length);

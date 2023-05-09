@@ -642,10 +642,10 @@
                                                 <CheckBox Tag="0" Content="Viewer (everyone)" x:Name="ChckULCommandViewer" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
-                                                <CheckBox Tag="2" Content="Subscriber" x:Name="ChckULCommandSub" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                                <CheckBox Tag="1" Content="Subscriber" x:Name="ChckULCommandSub" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
-                                                <CheckBox Tag="1" Content="VIP" x:Name="ChckULCommandVip" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                                <CheckBox Tag="2" Content="VIP" x:Name="ChckULCommandVip" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox Tag="3" Content="Moderator" x:Name="ChckULCommandMod" Checked="CbxUserLevelsCommandChecked" Unchecked="CbxUserLevelsCommandUnchecked" Width="180" Height="22" Margin="1,0,0,0"/>
@@ -672,10 +672,10 @@
                                                 <CheckBox Tag="0" Content="Viewer (everyone)" x:Name="ChckULRewardViewer" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
-                                                <CheckBox Tag="2" Content="Subscriber" x:Name="ChckULRewardSub" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                                <CheckBox Tag="1" Content="Subscriber" x:Name="ChckULRewardSub" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
-                                                <CheckBox Tag="1" Content="VIP" x:Name="ChckULRewardVip" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
+                                                <CheckBox Tag="2" Content="VIP" x:Name="ChckULRewardVip" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox Tag="3" Content="Moderator" x:Name="ChckULRewardMod" Unchecked="CbxUserLevelsRewardUnchecked" Checked="CbxUserLevelsRewardChecked" Width="180" Height="22" Margin="1,0,0,0"/>

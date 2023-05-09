@@ -82,7 +82,7 @@ namespace Songify_Slim.Util.Songify
                     Authed = false;
                 }
 
-                // if the auth was successful save the new tokens and 
+                // if the auth was successful save the new tokens and
                 _auth.AuthReceived += async (sender, response) =>
                 {
                     if (Authed)
@@ -170,7 +170,7 @@ namespace Songify_Slim.Util.Songify
 
         public static TrackInfo GetSongInfo()
         {
-            // returns the trackinfo of the current playback (used in the fetch timer) 
+            // returns the trackinfo of the current playback (used in the fetch timer)
 
             PlaybackContext context;
             try
@@ -207,6 +207,20 @@ namespace Songify_Slim.Util.Songify
             double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;
             double currentDuration = TimeSpan.FromMilliseconds(context.ProgressMs).TotalSeconds;
             double percentage = 100 / totalSeconds * currentDuration;
+            PlaylistInfo playlistInfo = null;
+
+            if (context.Context != null && context.Context.Type == "playlist")
+            {
+                var playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
+                playlistInfo = new PlaylistInfo
+                {
+                    Name = playlist.Name,
+                    Id = playlist.Id,
+                    Owner = playlist.Owner.DisplayName,
+                    Url = playlist.Uri,
+                    Image = playlist.Images[0].Url
+                };
+            }
 
             return new TrackInfo
             {
@@ -219,7 +233,8 @@ namespace Songify_Slim.Util.Songify
                 Url = "https://open.spotify.com/track/" + context.Item.Id,
                 DurationPercentage = (int)percentage,
                 DurationTotal = context.Item.DurationMs,
-                Progress = context.ProgressMs
+                Progress = context.ProgressMs,
+                Playlist = playlistInfo
             };
         }
 
@@ -243,7 +258,7 @@ namespace Songify_Slim.Util.Songify
                 // Tries to add a song to the current playback queue
                 ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
 
-                // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times. 
+                // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times.
                 if (!error.HasError()) return error;
                 if (error.Error.Status != 503) return error;
                 for (int i = 0; i < 5; i++)

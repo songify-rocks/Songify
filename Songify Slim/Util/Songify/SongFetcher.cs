@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -365,6 +367,7 @@ namespace Songify_Slim.Util.Songify
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                     WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                 }
+
                 string j = Json.Serialize(_songInfo);
                 dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
                 IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
@@ -374,7 +377,11 @@ namespace Songify_Slim.Util.Songify
                 dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
                 dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
                 dictionary["Queue"] = GlobalObjects.ReqList;
-                string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+                string updatedJson = JsonConvert.SerializeObject(dictionary, new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+
+                });
                 GlobalObjects.ApiResponse = updatedJson;
             }
             catch (Exception e)
