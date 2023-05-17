@@ -386,7 +386,6 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                 Logger.LogExc(e);
             }
             //Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");

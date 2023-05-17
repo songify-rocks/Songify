@@ -976,9 +976,11 @@ namespace Songify_Slim.Util.Songify
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             await CheckStreamIsUp();
+            var usersToAddOrUpdate = new List<TwitchUser>();
+
             if (Users.All(o => o.UserId != e.ChatMessage.UserId))
             {
-                Users.Add(new TwitchUser
+                usersToAddOrUpdate.Add(new TwitchUser
                 {
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
@@ -988,8 +990,14 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                Users.Find(o => o.UserId == e.ChatMessage.UserId).Update(e.ChatMessage.Username,
-                    e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
+                var existingUser = Users.Find(o => o.UserId == e.ChatMessage.UserId);
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
+                usersToAddOrUpdate.Add(existingUser);
+            }
+
+            foreach (TwitchUser user in usersToAddOrUpdate.Where(user => Users.All(o => o.UserId != user.UserId)))
+            {
+                Users.Add(user);
             }
 
             if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled)
