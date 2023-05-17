@@ -1000,7 +1000,7 @@ namespace Songify_Slim.Util.Songify
                 Users.Add(user);
             }
 
-            if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled)
+            if (e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled && Settings.Settings.TwSrReward)
             {
                 int userlevel = CheckUserLevel(e.ChatMessage);
                 if (userlevel < 4 || !e.ChatMessage.IsBroadcaster)
