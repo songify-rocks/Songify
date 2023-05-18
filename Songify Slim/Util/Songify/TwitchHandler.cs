@@ -39,6 +39,7 @@ using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
+using static System.Windows.Forms.LinkLabel;
 using Application = System.Windows.Application;
 using Timer = System.Timers.Timer;
 
@@ -1434,9 +1435,17 @@ namespace Songify_Slim.Util.Songify
                 return input.Replace("spotify:track:", "");
             }
 
-            if (input.StartsWith("https://open.spotify.com/track/"))
+            if (input.StartsWith("https://open.spotify.com/"))
             {
-                return input.Replace("https://open.spotify.com/track/", "").Split('?')[0];
+                // Extract the ID using regular expressions
+                Match match = Regex.Match(input, @"/track/([^/?]+)");
+
+                if (match.Success)
+                {
+                    string trackId = match.Groups[1].Value;
+                    return trackId;
+                }
+                //return input.Replace("https://open.spotify.com/track/", "").Split('?')[0];
             }
 
             // search for a track with a search string from chat
