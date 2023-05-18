@@ -77,8 +77,8 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey,
                     tst = DateTime.Now.ToUnixEpochDate(),
-                    twitch_id = Settings.TwitchUser.Id == null ? "" : Settings.TwitchUser.Id,
-                    twitch_name = Settings.TwitchUser.DisplayName == null ? "" : Settings.TwitchUser.DisplayName,
+                    twitch_id = Settings.TwitchUser == null ? "" : Settings.TwitchUser.Id,
+                    twitch_name = Settings.TwitchUser == null ? "" : Settings.TwitchUser.DisplayName,
                     vs = GlobalObjects.AppVersion,
                     playertype = GlobalObjects.GetReadablePlayer(),
                 };

@@ -377,11 +377,7 @@ namespace Songify_Slim.Util.Songify
                 dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
                 dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
                 dictionary["Queue"] = GlobalObjects.ReqList;
-                string updatedJson = JsonConvert.SerializeObject(dictionary, new JsonSerializerSettings
-                {
-                    Formatting = Formatting.Indented,
-
-                });
+                string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
                 GlobalObjects.ApiResponse = updatedJson;
             }
             catch (Exception e)
