@@ -1402,24 +1402,34 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task<bool> AddToPlaylist(string trackId, bool sendResponse = false)
         {
-            var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-            do
+            try
             {
-                if (tracks.Items.Any(t => t.Track.Id == trackId))
+                var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+                do
                 {
-                    if (sendResponse)
-                        SendChatMessage(Settings.Settings.TwChannel,
-                        $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
-                    return true;
-                }
+                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    {
+                        if (sendResponse)
+                            SendChatMessage(Settings.Settings.TwChannel,
+                            $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                        return true;
+                    }
 
-                tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
-                    100, tracks.Offset + tracks.Limit);
-            } while (tracks.HasNextPage());
+                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
+                        100, tracks.Offset + tracks.Limit);
+                } while (tracks != null && tracks.HasNextPage());
 
-            ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                $"spotify:track:{trackId}");
-            return x.HasError();
+                ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                    $"spotify:track:{trackId}");
+                if (x != null)
+                    return x.HasError();
+                return true;
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("Error adding song to playlist");
+                return true;
+            }
         }
 
         private static string GetTrackIdFromInput(string input)
