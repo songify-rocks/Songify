@@ -1035,7 +1035,7 @@ namespace Songify_Slim.Util.Songify
 
             // Same code from above but it reacts to a command instead of rewards
             if (Settings.Settings.TwSrCommand &&
-                e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger}"))
+                e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger} "))
             {
                 try
                 {
