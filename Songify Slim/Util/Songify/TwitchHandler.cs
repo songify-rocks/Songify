@@ -976,6 +976,10 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            Debug.WriteLine("----------------------------------------");
+            Debug.WriteLine(e.ChatMessage.RawIrcMessage);
+            Debug.WriteLine($"{e.ChatMessage.DisplayName}: {e.ChatMessage.Message}");
+            Debug.WriteLine("----------------------------------------");
             await CheckStreamIsUp();
             var usersToAddOrUpdate = new List<TwitchUser>();
 

@@ -41,9 +41,7 @@ namespace Songify_Slim
             }
             //  Adding the RegKey for Songify in startup(autostart with windows)
 
-            RegistryKey registryKey = Registry.LocalMachine.OpenSubKey(
-                "SOFTWARE\\Songify",
-                true) ?? Registry.CurrentUser.CreateSubKey("SOFTWARE\\Songify");
+            RegistryKey registryKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Songify");
             if (registryKey != null && registryKey.GetValue("UUID") == null)
             {
                 registryKey.SetValue("UUID", Settings.Uuid);

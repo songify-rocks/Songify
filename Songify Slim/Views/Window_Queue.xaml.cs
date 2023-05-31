@@ -3,7 +3,10 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
 
@@ -31,6 +34,19 @@ namespace Songify_Slim.Views
         {
             // This loads in all the requestobjects
             dgv_Queue.ItemsSource = GlobalObjects.ReqList;
+            foreach (DataGridColumn dataGridColumn in dgv_Queue.Columns)
+            {
+                dataGridColumn.Visibility = Visibility.Collapsed;
+            }
+            foreach (int queueWindowColumn in Settings.QueueWindowColumns)
+            {
+                foreach (CheckBox child in GlobalObjects.FindVisualChildren<CheckBox>(stackCols))
+                {
+                    if (child.Tag.ToString() == queueWindowColumn.ToString())
+                        child.IsChecked = true;
+                }
+                dgv_Queue.Columns[queueWindowColumn].Visibility = Visibility.Visible;
+            }
         }
 
         private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
@@ -52,6 +68,17 @@ namespace Songify_Slim.Views
                 GlobalObjects.ReqList.Remove(req);
             }));
             dgv_Queue.Items.Refresh();
+        }
+
+        private void ColVisChecked(object sender, RoutedEventArgs e)
+        {
+            if(!IsLoaded)return;
+            int index = int.Parse((sender as CheckBox)?.Tag.ToString() ?? "-1");
+            if(index < 0) return;
+            bool? isChecked = (sender as CheckBox)?.IsChecked;
+            dgv_Queue.Columns[index].Visibility = isChecked != null && (bool)isChecked ? Visibility.Visible : Visibility.Collapsed;
+            List<int> cols = (from UIElement item in stackCols.Children where (bool)(item as CheckBox).IsChecked select int.Parse((item as CheckBox)?.Tag.ToString())).ToList();
+            Settings.QueueWindowColumns = cols;
         }
     }
 }

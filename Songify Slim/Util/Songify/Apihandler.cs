@@ -52,7 +52,6 @@ namespace Songify_Slim.Util.Songify
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
             }
-
             try
             {
                 // Execute the authentication flow and subscribe the timer elapsed event
@@ -143,6 +142,11 @@ namespace Songify_Slim.Util.Songify
                 if (Authed)
                 {
                     AuthRefresh.Start();
+                    if (Application.Current.MainWindow == null) return;
+                    ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
+                        Brushes.GreenYellow;
+                    ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
+                        PackIconBootstrapIconsKind.CheckCircleFill;
                     return;
                 }
 

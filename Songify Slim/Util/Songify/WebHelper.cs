@@ -245,9 +245,11 @@ namespace Songify_Slim.Util.Songify
 
         public static void UploadHistory(string currSong, int unixTimestamp)
         {
+            string song = GlobalObjects.CurrentSong == null ? currSong : $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}";
+
             string extras = Settings.Settings.Uuid +
                             "&tst=" + unixTimestamp +
-                            "&song=" + HttpUtility.UrlEncode($"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}", Encoding.UTF8) +
+                            "&song=" + HttpUtility.UrlEncode(song, Encoding.UTF8) +
                             "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
             string url = $"{GlobalObjects.ApiUrl}/history.php/?id=" + extras;
             // Create a new 'HttpWebRequest' object to the mentioned URL.

@@ -5,23 +5,42 @@
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
                       xmlns:properties="clr-namespace:Songify_Slim.Properties"
+                      xmlns:util="clr-namespace:Songify_Slim.Util"
                       mc:Ignorable="d"
                       Title="{x:Static properties:Resources.WinTitle_Queue}" Height="444.318" Width="489.772" WindowStyle="SingleBorderWindow"
                       Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip">
+    <controls:MetroWindow.Resources>
+        <util:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+    </controls:MetroWindow.Resources>
     <Grid>
-        <DataGrid x:Name="dgv_Queue" Margin="10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Expander Background="{StaticResource MahApps.Brushes.Control.Background}" Grid.Row="0" Grid.RowSpan="2" x:Name="DropDownCols" Margin="0,10,10,10" Width="107" HorizontalAlignment="Right" Header="Columns" Panel.ZIndex="6" VerticalAlignment="Top">
+            <StackPanel x:Name="stackCols" Orientation="Vertical">
+                <CheckBox Margin="3" Tag="0" x:Name="CheckColQueueID" Content="QueueId" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+                <CheckBox Margin="3" Tag="1" x:Name="CheckColArtist" Content="Artist" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+                <CheckBox Margin="3" Tag="2" x:Name="CheckColTitle" Content="Title" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+                <CheckBox Margin="3" Tag="3" x:Name="CheckColLength" Content="Length" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+                <CheckBox Margin="3" Tag="4" x:Name="CheckColRequester" Content="Requester" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+            </StackPanel>
+        </Expander>
+        <DataGrid Grid.Row="1" x:Name="dgv_Queue" Margin="10,45,10,10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Delete" Click="DgvItemDelete_Click" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn IsReadOnly="True" Width="auto"  Header="Queue ID" Binding="{Binding Path=Queueid}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="*"  Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=Artist}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=Title}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="75" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}"/>
-                <DataGridTextColumn IsReadOnly="True" Width="auto" MinWidth="80" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}"/>
+                <DataGridTextColumn  Visibility="Visible" x:Name="ColQueueId" Width="*" Header="Queue ID" Binding="{Binding Path=Queueid}" />
+                <DataGridTextColumn  Visibility="Visible" x:Name="ColArtist" Width="*" Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=Artist}" />
+                <DataGridTextColumn  Visibility="Visible" x:Name="ColTitle" Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=Title}" />
+                <DataGridTextColumn  Visibility="Visible" x:Name="ColLength" Width="*" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}" />
+                <DataGridTextColumn  Visibility="Visible" x:Name="ColRequester" Width="*" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}" />
             </DataGrid.Columns>
         </DataGrid>
+
     </Grid>
 </controls:MetroWindow>

@@ -586,6 +586,18 @@ namespace Songify_Slim.Util.Settings
         public static string BotRespSongLike { get => GetBot_Resp_SongLike(); set => SetBot_Resp_SongLike(value); }
         public static bool BotCmdPlayPause { get => GetBotCmdPlayPause(); set => SetBotCmdPlayPause(value); }
         public static bool AddSrToPlaylist { get => GetAddSrToPlaylist(); set => SetAddSrToPlaylist(value); }
+        public static List<int> QueueWindowColumns { get => GetQueueWindowColumns(); set => SetQueueWindowColumns(value); }
+
+        private static void SetQueueWindowColumns(List<int> value)
+        {
+            _currentConfig.AppConfig.QueueWindowColumns = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static List<int> GetQueueWindowColumns()
+        {
+            return _currentConfig.AppConfig.QueueWindowColumns;
+        }
 
         private static bool GetAddSrToPlaylist()
         {
@@ -769,6 +781,7 @@ namespace Songify_Slim.Util.Settings
                 WebUserAgent = GetWebua(),
                 UserLevelsCommand = GetUserLevelsCommand(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
+                QueueWindowColumns = GetQueueWindowColumns(),
                 UserLevelsReward = GetUserLevelsReward(),
             };
 

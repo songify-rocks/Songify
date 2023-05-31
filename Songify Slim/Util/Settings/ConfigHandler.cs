@@ -54,8 +54,16 @@ namespace Songify_Slim.Util.Settings
                     yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.AppConfig:
-                    path += "/AppConfig.yaml";
-                    yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
+                    try
+                    {
+                        path += "/AppConfig.yaml";
+                        yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return;
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(configType), configType, null);
@@ -267,6 +275,7 @@ namespace Songify_Slim.Util.Settings
                                 UserLevelsReward = null,
                                 UserLevelsCommand = null,
                                 AddSrToPlaylist = false,
+                                QueueWindowColumns = new List<int>(),
                             };
                         }
                         break;
@@ -680,6 +689,7 @@ namespace Songify_Slim.Util.Settings
         public List<int> UserLevelsReward { get; set; } = new List<int>();
         public List<int> UserLevelsCommand { get; set; } = new List<int>();
         public bool AddSrToPlaylist { get; set; } = false;
+        public List<int> QueueWindowColumns { get; set; } = new List<int>();
     }
 
     public class Config
