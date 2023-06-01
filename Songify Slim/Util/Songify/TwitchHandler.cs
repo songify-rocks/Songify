@@ -27,6 +27,7 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
 using TwitchLib.Api.Helix.Models.Chat;
+using TwitchLib.Api.Helix.Models.Soundtrack;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
@@ -64,17 +65,14 @@ namespace Songify_Slim.Util.Songify
         public const bool PubSubEnabled = false;
         public static bool ForceDisconnect;
         private static readonly List<string> SkipVotes = new List<string>();
-
         private static readonly Timer CooldownTimer = new Timer
         {
             Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
         };
-
         private static readonly Timer SkipCooldownTimer = new Timer
         {
             Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
         };
-
         public static TwitchAPI TwitchApi;
         public static TwitchAPI TwitchApiBot;
         private static readonly TwitchPubSub TwitchPubSub = new TwitchPubSub();
@@ -976,10 +974,6 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            Debug.WriteLine("----------------------------------------");
-            Debug.WriteLine(e.ChatMessage.RawIrcMessage);
-            Debug.WriteLine($"{e.ChatMessage.DisplayName}: {e.ChatMessage.Message}");
-            Debug.WriteLine("----------------------------------------");
             await CheckStreamIsUp();
             var usersToAddOrUpdate = new List<TwitchUser>();
 
@@ -2216,6 +2210,7 @@ namespace Songify_Slim.Util.Songify
 
             return rewardsResponse?.Data.ToList();
         }
+
     }
 
     internal class ReturnObject

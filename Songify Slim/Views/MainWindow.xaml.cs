@@ -46,7 +46,7 @@ namespace Songify_Slim.Views
         private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new NotifyIcon();
         public string SongArtist, SongTitle;
-        public string CurrSong, CurrSongTwitch;
+        public string CurrSong = "", CurrSongTwitch = "";
         private readonly ContextMenu _contextMenu = new ContextMenu();
         private bool _firstRun = true;
         private bool _forceClose;

@@ -7,8 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.Encodings.Web;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +28,6 @@ namespace Songify_Slim.Util.Songify
         private static SongInfo _previousSonginfo;
         private static TrackInfo _songInfo;
         private static bool _trackChanged;
-        private static int _fetchCount;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -355,7 +352,6 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<TrackInfo> FetchSpotifyWeb()
         {
-            _fetchCount++;
             // If the spotify object hast been created (successfully authed)
             if (ApiHandler.Spotify == null)
             {
