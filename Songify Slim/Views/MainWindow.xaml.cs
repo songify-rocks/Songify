@@ -1229,7 +1229,7 @@ namespace Songify_Slim.Views
                         // Writing to the statusstrip label
                         LblStatus.Dispatcher.Invoke(
                             DispatcherPriority.Normal,
-                            new Action(() => { LblStatus.Content = "Error uploading Songinformation"; }));
+                            new Action(() => { LblStatus.Content = "Error uploading history"; }));
                     }
                 }
 

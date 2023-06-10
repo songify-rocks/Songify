@@ -417,8 +417,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
                     if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+                    {
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
-                    WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
+                        WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
+                    }
                 }
 
                 UpdateWebServerResponse();

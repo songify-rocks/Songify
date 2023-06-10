@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -115,7 +116,7 @@ namespace Songify_Slim.Util.Songify
                         await ApiClient.Patch("queue", payload);
                         break;
                     case RequestMethod.Clear:
-                        await ApiClient.Clear("queue", payload);
+                        await ApiClient.Clear("queue_delete", payload);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
@@ -139,6 +140,24 @@ namespace Songify_Slim.Util.Songify
             {
                 var response = await ApiClient.Post("song", payload);
                 Debug.WriteLine(response);
+            }
+        }
+
+        public static async void HistoryRequest(RequestMethod method, string payload)
+        {
+            switch (method)
+            {
+                case RequestMethod.Get:
+                    break;
+                case RequestMethod.Post:
+                    var response = await ApiClient.Post("history", payload);
+                    break;
+                case RequestMethod.Patch:
+                    break;
+                case RequestMethod.Clear:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(method), method, null);
             }
         }
 
@@ -224,7 +243,6 @@ namespace Songify_Slim.Util.Songify
 
         public static void UploadSong(string currSong, string coverUrl = null)
         {
-
             dynamic paylod = new
             {
                 uuid = Settings.Settings.Uuid,
@@ -233,27 +251,20 @@ namespace Songify_Slim.Util.Songify
                 cover = coverUrl
             };
             SongRequest(RequestMethod.Post, Json.Serialize(paylod));
-
-            //// extras are UUID and Songinfo
-            //string extras = Settings.Settings.Uuid +
-            //                "&song=" + HttpUtility.UrlEncode(currSong.Trim().Replace("\"", ""), Encoding.UTF8) +
-            //                "&cover=" + HttpUtility.UrlEncode(coverUrl, Encoding.UTF8) +
-            //                "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            //string url = $"{GlobalObjects.BaseUrl}/song.php?id=" + extras;
-            //DoWebRequest(url, RequestType.UploadSong);
         }
 
         public static void UploadHistory(string currSong, int unixTimestamp)
         {
             string song = GlobalObjects.CurrentSong == null ? currSong : $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}";
-
-            string extras = Settings.Settings.Uuid +
-                            "&tst=" + unixTimestamp +
-                            "&song=" + HttpUtility.UrlEncode(song, Encoding.UTF8) +
-                            "&key=" + WebUtility.UrlEncode(Settings.Settings.AccessKey);
-            string url = $"{GlobalObjects.ApiUrl}/history.php/?id=" + extras;
-            // Create a new 'HttpWebRequest' object to the mentioned URL.
-            DoWebRequest(url, RequestType.UploadHistory);
+            
+            dynamic payload = new
+            {
+                id = Settings.Settings.Uuid,
+                tst = unixTimestamp,
+                song = song,
+                key = Settings.Settings.AccessKey
+            };
+            HistoryRequest(RequestMethod.Post, Json.Serialize(payload));
         }
 
         public static async Task<string> GetBetaPatchNotes(string url)

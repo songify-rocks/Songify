@@ -1,5 +1,6 @@
 ﻿using Songify_Slim.Util.General;
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -20,7 +21,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Get(string endpoint, string uuid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}.php?uuid={uuid}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}?uuid={uuid}");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.InternalServerError:
@@ -37,12 +38,13 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                var builder = new UriBuilder($"{_baseUrl}/{endpoint}.php")
+                var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
                 {
                     Query = $"api_key={Settings.Settings.AccessKey}"
                 };
                 StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+                Debug.WriteLine(response.StatusCode);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
@@ -72,9 +74,13 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Patch(string endpoint, string payload)
         {
+            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            {
+                Query = $"api_key={Settings.Settings.AccessKey}"
+            };
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
             HttpMethod method = new HttpMethod("PATCH");
-            HttpRequestMessage request = new HttpRequestMessage(method, $"{_baseUrl}/{endpoint}.php") { Content = content };
+            HttpRequestMessage request = new HttpRequestMessage(method, builder.ToString()) { Content = content };
             HttpResponseMessage response = await _httpClient.SendAsync(request);
 
             switch (response.StatusCode)
@@ -91,10 +97,13 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Clear(string endpoint, string payload)
         {
+            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            {
+                Query = $"api_key={Settings.Settings.AccessKey}"
+            };
             StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
-            HttpMethod mehtod = new HttpMethod("CLEAR");
-            HttpRequestMessage request = new HttpRequestMessage(mehtod, $"{_baseUrl}/{endpoint}.php") { Content = content };
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+
             switch (response.StatusCode)
             {
                 case HttpStatusCode.InternalServerError:

@@ -1342,6 +1342,7 @@ namespace Songify_Slim.Util.Songify
                     key = Settings.Settings.AccessKey,
                     queueid = reqObj.Queueid,
                 };
+
                 WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
@@ -2065,7 +2066,8 @@ namespace Songify_Slim.Util.Songify
                     Title = track.Name,
                     Length = length,
                     Requester = displayName,
-                    Albumcover = track.Album.Images[0].Url
+                    Played = 0,
+                    Albumcover = track.Album.Images[0].Url,
                 }
             };
 
