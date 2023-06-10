@@ -210,12 +210,14 @@ namespace Songify_Slim.Util.Songify
 
                     BotConnect();
                     MainConnect();
+
                     dynamic telemetryPayload = new
                     {
                         uuid = Settings.Settings.Uuid,
+                        key = Settings.Settings.AccessKey,
                         tst = DateTime.Now.ToUnixEpochDate(),
-                        twitch_id = Settings.Settings.TwitchUser.Id,
-                        twitch_name = Settings.Settings.TwitchUser.DisplayName,
+                        twitch_id = Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.Id,
+                        twitch_name = Settings.Settings.TwitchUser == null ? "" : Settings.Settings.TwitchUser.DisplayName,
                         vs = GlobalObjects.AppVersion,
                         playertype = GlobalObjects.GetReadablePlayer(),
                     };
