@@ -222,7 +222,7 @@ namespace Songify_Slim.Util.Songify
                         playertype = GlobalObjects.GetReadablePlayer(),
                     };
                     string json = Json.Serialize(telemetryPayload);
-                    WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, json);
+                    await WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, json);
                 });
             };
 
@@ -1216,8 +1216,10 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 string msg = GetCurrentSong();
+                string artist = GlobalObjects.CurrentSong.Artists;
+                string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title) ? GlobalObjects.CurrentSong.Title : "";
                 msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
                 if (msg.StartsWith("[announce "))
                 {
                     await AnnounceInChat(msg);
@@ -1345,7 +1347,7 @@ namespace Songify_Slim.Util.Songify
                     queueid = reqObj.Queueid,
                 };
 
-                WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
 
@@ -2038,7 +2040,7 @@ namespace Songify_Slim.Util.Songify
             return minutes + ":" + seconds;
         }
 
-        private static void UploadToQueue(FullTrack track, string displayName)
+        private static async Task UploadToQueue(FullTrack track, string displayName)
         {
             string artists = "";
             int counter = 0;
@@ -2073,7 +2075,7 @@ namespace Songify_Slim.Util.Songify
                 }
             };
 
-            WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
+            await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
             UpdateQueueWindow();
         }
 
@@ -2184,7 +2186,7 @@ namespace Songify_Slim.Util.Songify
 
             string msg = GetCurrentSong();
             msg = Regex.Replace(msg, @"(@)?\{user\}", "");
-            msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+            msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} {(GlobalObjects.CurrentSong.Title != "" ? " - " + GlobalObjects.CurrentSong.Title : "")}");
             msg = msg.Replace("{artist}", $"{GlobalObjects.CurrentSong.Artists}");
             msg = msg.Replace("{title}", $"{GlobalObjects.CurrentSong.Title}");
 

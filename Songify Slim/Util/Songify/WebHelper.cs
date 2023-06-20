@@ -42,7 +42,7 @@ namespace Songify_Slim.Util.Songify
             Clear
         }
 
-        public static async void QueueRequest(RequestMethod method, string payload = null)
+        public static async Task QueueRequest(RequestMethod method, string payload = null)
         {
             try
             {
@@ -50,24 +50,27 @@ namespace Songify_Slim.Util.Songify
                 switch (method)
                 {
                     case RequestMethod.Get:
-                        result = await ApiClient.Get("queue", Settings.Settings.Uuid);
+                        result = await ApiClient.Get("queue", Settings.Settings.Uuid).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(result))
                             return;
+
                         try
                         {
                             List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
-                            queue.ForEach(q =>
+                            var tasks = new List<Task>();
+                            foreach (var q in queue)
                             {
                                 if (GlobalObjects.ReqList.Count != 0 &&
-                                    GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) return;
+                                    GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) continue;
                                 var pL = new
                                 {
                                     uuid = Settings.Settings.Uuid,
                                     key = Settings.Settings.AccessKey,
                                     queueid = q.Queueid
                                 };
-                                QueueRequest(RequestMethod.Patch, Json.Serialize(pL));
-                            });
+                                tasks.Add(QueueRequest(RequestMethod.Patch, Json.Serialize(pL)));
+                            }
+                            await Task.WhenAll(tasks).ConfigureAwait(false);
                         }
                         catch (Exception e)
                         {
@@ -128,7 +131,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static async void TelemetryRequest(RequestMethod method, string payload)
+        public static async Task TelemetryRequest(RequestMethod method, string payload)
         {
             if (method == RequestMethod.Post)
                 await ApiClient.Post("telemetry", payload);

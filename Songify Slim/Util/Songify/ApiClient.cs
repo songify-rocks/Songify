@@ -44,7 +44,6 @@ namespace Songify_Slim.Util.Songify
                 };
                 StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
-                Debug.WriteLine(response.StatusCode);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:

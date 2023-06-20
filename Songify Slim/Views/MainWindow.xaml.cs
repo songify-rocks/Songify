@@ -68,7 +68,7 @@ namespace Songify_Slim.Views
             await SendTelemetry();
         }
 
-        private static Task SendTelemetry()
+        private static async Task SendTelemetry()
         {
             try
             {
@@ -83,14 +83,13 @@ namespace Songify_Slim.Views
                     playertype = GlobalObjects.GetReadablePlayer(),
                 };
 
-                WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
+                await WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
 
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
             }
-            return Task.CompletedTask;
         }
 
         public MainWindow()
@@ -503,23 +502,7 @@ namespace Songify_Slim.Views
                 Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             }
 
-            IconTwitchAPI.Foreground = Brushes.IndianRed;
-            IconTwitchBot.Foreground = Brushes.IndianRed;
-            IconTwitchPubSub.Foreground = Brushes.Gray;
-            IconWebServer.Foreground = Brushes.Gray;
-            IconWebSpotify.Foreground = Brushes.IndianRed;
-
-            if (Settings.AutoClearQueue)
-            {
-                GlobalObjects.ReqList.Clear();
-                dynamic payload = new
-                {
-                    uuid = Settings.Uuid,
-                    key = Settings.AccessKey
-                };
-                WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
-                //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
-            }
+            SetIconColors();
 
             Settings.MsgLoggingEnabled = false;
 
@@ -527,41 +510,7 @@ namespace Songify_Slim.Views
             AddSourcesToSourceBox();
 
             // Create systray menu and icon and show it
-            _contextMenu.MenuItems.AddRange(new[] {
-                new System.Windows.Forms.MenuItem("Twitch", new[] {
-                    new System.Windows.Forms.MenuItem("Connect", (sender1, args1) => {
-                        TwitchHandler.BotConnect();
-                        TwitchHandler.MainConnect();
-                    }),
-                    new System.Windows.Forms.MenuItem("Disconnect", (sender1, args1) => {
-                        TwitchHandler.Client.Disconnect();
-                    })
-                }),
-                new System.Windows.Forms.MenuItem("Show", (sender1, args1) => {
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        Show();
-                        WindowState = WindowState.Normal;
-                    }));
-                }),
-                new System.Windows.Forms.MenuItem("Exit", (sender1, args1) => {
-                    _forceClose = true;
-                    Close();
-                })
-                });
-
-            NotifyIcon.Icon = Properties.Resources.songify;
-            NotifyIcon.ContextMenu = _contextMenu;
-            NotifyIcon.Visible = true;
-            NotifyIcon.DoubleClick += (sender1, args1) =>
-            {
-                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    Show();
-                    WindowState = WindowState.Normal;
-                }));
-            };
-            NotifyIcon.Text = @"Songify";
+            CreateSystrayIcon();
 
             // set the current theme
             ThemeHandler.ApplyTheme();
@@ -577,16 +526,9 @@ namespace Songify_Slim.Views
                 Settings.Uuid = Guid.NewGuid().ToString();
                 Settings.Telemetry = false;
             }
+
             // check for update
-            AutoUpdater.Mandatory = false;
-            AutoUpdater.UpdateMode = Mode.Normal;
-            AutoUpdater.AppTitle = "Songify";
-            AutoUpdater.RunUpdateAsAdmin = false;
-            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            AutoUpdater.ReportErrors = false;
-            AutoUpdater.Start(Settings.BetaUpdates
-                ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
-                : $"{GlobalObjects.BaseUrl}/update.xml");
+            CheckForUpdates();
 
             // set the cbx index to the correct source
             cbx_Source.SelectedIndex = Settings.Player;
@@ -616,17 +558,27 @@ namespace Songify_Slim.Views
                 TwitchHandler.MainConnect();
                 TwitchHandler.BotConnect();
             }
+            if (Settings.AutoClearQueue)
+            {
+                GlobalObjects.ReqList.Clear();
+                dynamic payload = new
+                {
+                    uuid = Settings.Uuid,
+                    key = Settings.AccessKey
+                };
+                await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
+                //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
+            }
 
 
-            // automatically start fetching songs
-            SetFetchTimer();
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Main);
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
             await SendTelemetry();
             await TwitchHandler.CheckStreamIsUp();
-
+            // automatically start fetching songs
+            SetFetchTimer();
             if (!Settings.UpdateRequired) return;
             List<int> userLevels = new List<int>();
             for (int i = 0; i <= Settings.TwSrUserLevel; i++)
@@ -638,6 +590,69 @@ namespace Songify_Slim.Views
 
             OpenPatchNotes();
             Settings.UpdateRequired = false;
+        }
+
+        private void CheckForUpdates()
+        {
+            AutoUpdater.Mandatory = false;
+            AutoUpdater.UpdateMode = Mode.Normal;
+            AutoUpdater.AppTitle = "Songify";
+            AutoUpdater.RunUpdateAsAdmin = false;
+            AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
+            AutoUpdater.ReportErrors = false;
+            AutoUpdater.Start(Settings.BetaUpdates
+                ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
+                : $"{GlobalObjects.BaseUrl}/update.xml");
+        }
+
+        private void CreateSystrayIcon()
+        {
+            _contextMenu.MenuItems.AddRange(new[]
+            {
+                new System.Windows.Forms.MenuItem("Twitch", new[]
+                {
+                    new System.Windows.Forms.MenuItem("Connect", (sender1, args1) =>
+                    {
+                        TwitchHandler.BotConnect();
+                        TwitchHandler.MainConnect();
+                    }),
+                    new System.Windows.Forms.MenuItem("Disconnect", (sender1, args1) => { TwitchHandler.Client.Disconnect(); })
+                }),
+                new System.Windows.Forms.MenuItem("Show", (sender1, args1) =>
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        Show();
+                        WindowState = WindowState.Normal;
+                    }));
+                }),
+                new System.Windows.Forms.MenuItem("Exit", (sender1, args1) =>
+                {
+                    _forceClose = true;
+                    Close();
+                })
+            });
+            NotifyIcon.Icon = Properties.Resources.songify;
+            NotifyIcon.ContextMenu = _contextMenu;
+            NotifyIcon.Visible = true;
+            NotifyIcon.DoubleClick += (sender1, args1) =>
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    Show();
+                    WindowState = WindowState.Normal;
+                }));
+            };
+            NotifyIcon.Text = @"Songify";
+        }
+
+        private void SetIconColors()
+        {
+            IconTwitchAPI.Foreground = Brushes.IndianRed;
+            IconTwitchBot.Foreground = Brushes.IndianRed;
+            IconTwitchPubSub.Foreground = Brushes.Gray;
+            IconWebServer.Foreground = Brushes.Gray;
+            IconWebSpotify.Foreground = Brushes.IndianRed;
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -716,7 +731,7 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey
                 };
-                WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
+                await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
             }
         }
 

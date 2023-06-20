@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
+using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
@@ -76,6 +77,26 @@ namespace Songify_Slim.Util.Songify
                                 {
                                     Logger.LogExc(ex);
                                 }
+                                if (wintitle.Contains(" - "))
+                                {
+                                    artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
+                                    title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
+                                }
+
+                                GlobalObjects.CurrentSong = new TrackInfo
+                                {
+                                    Artists = artist,
+                                    Title = title,
+                                    Albums = null,
+                                    SongId = null,
+                                    DurationMs = 0,
+                                    IsPlaying = false,
+                                    Url = null,
+                                    DurationPercentage = 0,
+                                    DurationTotal = 0,
+                                    Progress = 0,
+                                    Playlist = null
+                                };
                                 UpdateWebServerResponse();
                                 return Task.FromResult(new SongInfo { Artist = artist, Title = title });
                             }
@@ -117,10 +138,28 @@ namespace Songify_Slim.Util.Songify
                             }
 
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-
-
-
+                            
                             _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
+                            if (wintitle.Contains(" - "))
+                            {
+                                artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
+                                title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
+                            }
+
+                            GlobalObjects.CurrentSong = new TrackInfo
+                            {
+                                Artists = artist,
+                                Title = title,
+                                Albums = null,
+                                SongId = null,
+                                DurationMs = 0,
+                                IsPlaying = false,
+                                Url = null,
+                                DurationPercentage = 0,
+                                DurationTotal = 0,
+                                Progress = 0,
+                                Playlist = null
+                            };
                             UpdateWebServerResponse();
 
                             return Task.FromResult(_previousSonginfo);
@@ -136,12 +175,6 @@ namespace Songify_Slim.Util.Songify
                                         Title = "",
                                         Extra = ""
                                     });
-                                return Task.FromResult(new SongInfo
-                                {
-                                    Artist = "",
-                                    Title = "",
-                                    Extra = ""
-                                });
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -163,8 +196,27 @@ namespace Songify_Slim.Util.Songify
                                 extra = "";
                             }
                             _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
-                            UpdateWebServerResponse();
+                            if (wintitle.Contains(" - "))
+                            {
+                                artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
+                                title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
+                            }
 
+                            GlobalObjects.CurrentSong = new TrackInfo
+                            {
+                                Artists = artist,
+                                Title = title,
+                                Albums = null,
+                                SongId = null,
+                                DurationMs = 0,
+                                IsPlaying = false,
+                                Url = null,
+                                DurationPercentage = 0,
+                                DurationTotal = 0,
+                                Progress = 0,
+                                Playlist = null
+                            };
+                            UpdateWebServerResponse();
                             return Task.FromResult(_previousSonginfo);
                     }
                 }
@@ -362,7 +414,7 @@ namespace Songify_Slim.Util.Songify
                 }
                 return null;
             }
-            // gets the current playing songinfo*
+            // gets the current playing songinfo
             _songInfo = ApiHandler.GetSongInfo();
             try
             {
@@ -373,19 +425,60 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
                     if (_songInfo.SongId != null)
                         Logger.LogStr($"CORE: Now Playing {_songInfo.Artists} - {_songInfo.Title}");
-                    RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
-                    if (rq != null)
+
+                    RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
+                    RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == _songInfo.SongId);
+
+                    //if current is not null, mark it as played in the web-queue
+                    if (current != null)
                     {
-                        Logger.LogStr($"QUEUE: Trying to remove {rq.Artist} - {rq.Title}");
+                        dynamic payload = new
+                        {
+                            uuid = Settings.Settings.Uuid,
+                            key = Settings.Settings.AccessKey,
+                            queueid = current.Queueid,
+                        };
+                        await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                    }
+
+                    
+                    if (previous != null)
+                    {
+                        if (GlobalObjects.ReqList.Count > 0)
+                        {
+                            int index2 = GlobalObjects.ReqList.IndexOf(previous);
+                            Debug.WriteLine(index2);
+
+                            for (int i = 0; i <= index2; i++)
+                            {
+                                dynamic payload = new
+                                {
+                                    uuid = Settings.Settings.Uuid,
+                                    key = Settings.Settings.AccessKey,
+                                    queueid = GlobalObjects.ReqList[i].Queueid,
+                                };
+                                await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                            }
+                            for (int i = index2; i >= 0; i--)
+                            {
+                                await Application.Current.Dispatcher.InvokeAsync(new Action(() =>
+                                {
+                                    GlobalObjects.ReqList.RemoveAt(i);
+                                }));
+                            }
+
+                        }
+
+                        Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
                         do
                         {
                             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                             {
-                                GlobalObjects.ReqList.Remove(rq);
+                                GlobalObjects.ReqList.Remove(previous);
                             }));
-                        } while (GlobalObjects.ReqList.Contains(rq));
+                        } while (GlobalObjects.ReqList.Contains(previous));
 
-                        Logger.LogStr($"CORE: Removed {rq.Artist} - {rq.Title} requested by {rq.Requester} from the queue.");
+                        Logger.LogStr($"CORE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
 
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -399,19 +492,23 @@ namespace Songify_Slim.Util.Songify
                                         });
                     }
                 }
+                
                 if (_songInfo.SongId != null)
                     GlobalObjects.CurrentSong = _songInfo;
-                if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongId == GlobalObjects.ReqList.First().Trackid && _trackChanged)
-                {
-                    //WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
-                    dynamic payload = new
-                    {
-                        uuid = Settings.Settings.Uuid,
-                        key = Settings.Settings.AccessKey,
-                        queueid = GlobalObjects.ReqList.First().Queueid,
-                    };
-                    WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                }
+
+                //if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongId == GlobalObjects.ReqList.First().Trackid && _trackChanged)
+                //{
+                //    Logger.LogStr($"QUEUE: Sending status of '1' to q-id {GlobalObjects.ReqList.First().Queueid}. ({GlobalObjects.ReqList.First().Artist} - {GlobalObjects.ReqList.First().Title})");
+
+                //    //WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
+                //    dynamic payload = new
+                //    {
+                //        uuid = Settings.Settings.Uuid,
+                //        key = Settings.Settings.AccessKey,
+                //        queueid = GlobalObjects.ReqList.First().Queueid,
+                //    };
+                //    WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                //}
                 // Check if the current song is alredy in the liked playlist
                 if (_trackChanged)
                 {
@@ -419,7 +516,7 @@ namespace Songify_Slim.Util.Songify
                     if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
-                        WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
+                        await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                     }
                 }
 

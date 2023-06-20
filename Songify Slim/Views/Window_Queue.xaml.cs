@@ -49,7 +49,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void DgvItemDelete_Click(object sender, RoutedEventArgs e)
+        private async void DgvItemDelete_Click(object sender, RoutedEventArgs e)
         {
             // This deletes the selected requestobject
             if (dgv_Queue.SelectedItem == null)
@@ -62,7 +62,7 @@ namespace Songify_Slim.Views
                 key = Settings.AccessKey,
                 queueid = req.Queueid,
             };
-            WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);

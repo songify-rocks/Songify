@@ -217,14 +217,17 @@ namespace Songify_Slim.Util.Songify
                 if (context.Context != null && context.Context.Type == "playlist")
                 {
                     var playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
-                    playlistInfo = new PlaylistInfo
+                    if (playlist != null)
                     {
-                        Name = playlist.Name,
-                        Id = playlist.Id,
-                        Owner = playlist.Owner.DisplayName,
-                        Url = playlist.Uri,
-                        Image = playlist.Images[0].Url
-                    };
+                        playlistInfo = new PlaylistInfo
+                        {
+                            Name = playlist.Name,
+                            Id = playlist.Id,
+                            Owner = playlist.Owner.DisplayName,
+                            Url = playlist.Uri,
+                            Image = playlist.Images[0].Url
+                        };
+                    }
                 }
             }
             catch (Exception)
