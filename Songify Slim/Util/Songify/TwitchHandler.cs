@@ -1034,7 +1034,8 @@ namespace Songify_Slim.Util.Songify
             }
 
             // Same code from above but it reacts to a command instead of rewards
-            if (Settings.Settings.TwSrCommand &&
+            // Songrequst Command (!ssr)
+            if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
                 e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger} "))
             {
                 try
@@ -1085,8 +1086,8 @@ namespace Songify_Slim.Util.Songify
                 // start the command cooldown
                 StartCooldown();
             }
-
-            if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
+            // Skip Command for mods (!skip)
+            if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" && Settings.Settings.BotCmdSkip)
             {
                 try
                 {
@@ -1144,7 +1145,8 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
             }
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" &&
+            // Voteskip command (!voteskip)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" &&
                      Settings.Settings.BotCmdSkipVote)
             {
                 try
@@ -1199,6 +1201,7 @@ namespace Songify_Slim.Util.Songify
                     SkipCooldownTimer.Start();
                 }
             }
+            // Song command (!song)
             else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSongTrigger}" && Settings.Settings.BotCmdSong)
             {
                 try
@@ -1229,7 +1232,8 @@ namespace Songify_Slim.Util.Songify
                     SendChatMessage(e.ChatMessage.Channel, msg);
                 }
             }
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
+            // Pos command (!pos)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
             {
                 try
                 {
@@ -1286,7 +1290,8 @@ namespace Songify_Slim.Util.Songify
                         $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
                 }
             }
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
+            // Next command (!next)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
             {
                 try
                 {
@@ -1317,7 +1322,8 @@ namespace Songify_Slim.Util.Songify
                     SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" &&
+            // Remove command (!remove)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" &&
                      Settings.Settings.BotCmdRemove)
             {
                 try
@@ -1356,7 +1362,8 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
             }
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" &&
+            // Songlike command (!songlike)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" &&
                      (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
                 if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
@@ -1388,6 +1395,7 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogExc(exception);
                 }
             }
+            // Play / Pause command (!play; !pause)
             else
                 switch (e.ChatMessage.Message)
                 // ReSharper disable once BadChildStatementIndent
