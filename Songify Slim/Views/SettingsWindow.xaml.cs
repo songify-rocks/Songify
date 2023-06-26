@@ -167,13 +167,13 @@ namespace Songify_Slim.Views
             }
 
             ChckULCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
-            ChckULCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(1);
-            ChckULCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
+            ChckULCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
+            ChckULCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
             ChckULCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
 
             ChckULRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
-            ChckULRewardVip.IsChecked = Settings.UserLevelsReward.Contains(1);
-            ChckULRewardSub.IsChecked = Settings.UserLevelsReward.Contains(2);
+            ChckULRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
+            ChckULRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
             ChckULRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
 
             if (ApiHandler.Spotify != null)

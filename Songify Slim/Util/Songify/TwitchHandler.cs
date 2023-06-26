@@ -62,7 +62,7 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient MainClient;
         private static bool _onCooldown;
         private static bool _skipCooldown;
-        public const bool PubSubEnabled = false;
+        public const bool PubSubEnabled = true;
         public static bool ForceDisconnect;
         private static readonly List<string> SkipVotes = new List<string>();
         private static readonly Timer CooldownTimer = new Timer
@@ -327,8 +327,8 @@ namespace Songify_Slim.Util.Songify
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
 
                     //TODO: Enable PubSub when it's fixed in TwitchLib
-                    //if (PubSubEnabled)
-                    //    CreatePubSubsConnection();
+                    if (PubSubEnabled)
+                        CreatePubSubsConnection();
 
                     break;
 
@@ -751,8 +751,8 @@ namespace Songify_Slim.Util.Songify
             Logger.LogExc(e.Exception);
             TwitchPubSub.Disconnect();
             //TODO: Enable this again once the PubSub issues are fixed
-            //if (PubSubEnabled)
-            //    TwitchPubSub.Connect();
+            if (PubSubEnabled)
+                TwitchPubSub.Connect();
             await Task.Delay(30000);
             try
             {
