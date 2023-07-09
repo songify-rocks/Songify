@@ -246,14 +246,15 @@ namespace Songify_Slim.Util.Songify
 
         public static void UploadSong(string currSong, string coverUrl = null)
         {
-            dynamic paylod = new
+            dynamic payload = new
             {
                 uuid = Settings.Settings.Uuid,
                 key = Settings.Settings.AccessKey,
                 song = currSong,
-                cover = coverUrl
+                cover = coverUrl,
+                song_id = GlobalObjects.CurrentSong == null ? null : GlobalObjects.CurrentSong.SongId
             };
-            SongRequest(RequestMethod.Post, Json.Serialize(paylod));
+            SongRequest(RequestMethod.Post, Json.Serialize(payload));
         }
 
         public static void UploadHistory(string currSong, int unixTimestamp)

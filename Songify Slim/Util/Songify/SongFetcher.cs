@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
@@ -138,7 +139,7 @@ namespace Songify_Slim.Util.Songify
                             }
 
                             _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-                            
+
                             _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
                             if (wintitle.Contains(" - "))
                             {
@@ -410,7 +411,7 @@ namespace Songify_Slim.Util.Songify
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
                     !string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
                 {
-                    ApiHandler.DoAuthAsync();
+                    await ApiHandler.DoAuthAsync();
                 }
                 return null;
             }
@@ -429,7 +430,7 @@ namespace Songify_Slim.Util.Songify
                     RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == _songInfo.SongId);
 
-                    //if current is not null, mark it as played in the web-queue
+                    //if current is not null, mark it as played in the database
                     if (current != null)
                     {
                         dynamic payload = new
@@ -441,44 +442,17 @@ namespace Songify_Slim.Util.Songify
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                     }
 
-                    
+                    //if Previous is not null then try to remove it from the internal queue (ReqList)
                     if (previous != null)
                     {
-                        if (GlobalObjects.ReqList.Count > 0)
-                        {
-                            int index2 = GlobalObjects.ReqList.IndexOf(previous);
-                            Debug.WriteLine(index2);
-
-                            for (int i = 0; i <= index2; i++)
-                            {
-                                dynamic payload = new
-                                {
-                                    uuid = Settings.Settings.Uuid,
-                                    key = Settings.Settings.AccessKey,
-                                    queueid = GlobalObjects.ReqList[i].Queueid,
-                                };
-                                await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                            }
-                            for (int i = index2; i >= 0; i--)
-                            {
-                                await Application.Current.Dispatcher.InvokeAsync(new Action(() =>
-                                {
-                                    GlobalObjects.ReqList.RemoveAt(i);
-                                }));
-                            }
-
-                        }
-
                         Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
                         do
                         {
-                            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                            {
-                                GlobalObjects.ReqList.Remove(previous);
-                            }));
+                            GlobalObjects.ReqList.Remove(previous);
+                            Thread.Sleep(250);
                         } while (GlobalObjects.ReqList.Contains(previous));
 
-                        Logger.LogStr($"CORE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
+                        Logger.LogStr($"QUEUE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
 
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -492,24 +466,10 @@ namespace Songify_Slim.Util.Songify
                                         });
                     }
                 }
-                
+
                 if (_songInfo.SongId != null)
                     GlobalObjects.CurrentSong = _songInfo;
 
-                //if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.CurrentSong?.SongId == GlobalObjects.ReqList.First().Trackid && _trackChanged)
-                //{
-                //    Logger.LogStr($"QUEUE: Sending status of '1' to q-id {GlobalObjects.ReqList.First().Queueid}. ({GlobalObjects.ReqList.First().Artist} - {GlobalObjects.ReqList.First().Title})");
-
-                //    //WebHelper.UpdateWebQueue(songInfo.SongID, "", "", "", "", "1", "u");
-                //    dynamic payload = new
-                //    {
-                //        uuid = Settings.Settings.Uuid,
-                //        key = Settings.Settings.AccessKey,
-                //        queueid = GlobalObjects.ReqList.First().Queueid,
-                //    };
-                //    WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                //}
-                // Check if the current song is alredy in the liked playlist
                 if (_trackChanged)
                 {
                     _trackChanged = false;
@@ -526,10 +486,7 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogExc(e);
             }
-            //Console.WriteLine($"{songInfo.Progress} / {songInfo.DurationTotal} ({songInfo.DurationPercentage}%)");
-            // if no song is playing and custompausetext is enabled
             return _songInfo ?? new TrackInfo { IsPlaying = false };
-            // return a new stringarray containing artist, title and so on
         }
 
         private static void UpdateWebServerResponse()

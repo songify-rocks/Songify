@@ -22,6 +22,16 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 "channel:read:redemptions",
                 "chat:edit",
                 "chat:read",
+                "moderator:manage:banned_users",
+                "moderator:read:blocked_terms",
+                "moderator:manage:blocked_terms",
+                "moderator:manage:automod",
+                "moderator:read:automod_settings",
+                "moderator:manage:automod_settings",
+                "moderator:read:chat_settings",
+                "moderator:manage:chat_settings",
+                "moderator:manage:announcements",
+                "channel:moderate"                   
                 //s.Add("user:read:follows");
                 //s.Add("user:read:subscriptions");
                 //s.Add("analytics:read:extensions");
@@ -44,22 +54,12 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 //s.Add("channel:read:subscriptions");
                 //s.Add("clips:edit");
                 //s.Add("moderation:read");
-                "moderator:manage:banned_users",
-                "moderator:read:blocked_terms",
-                "moderator:manage:blocked_terms",
-                "moderator:manage:automod",
-                "moderator:read:automod_settings",
-                "moderator:manage:automod_settings",
-                "moderator:read:chat_settings",
-                "moderator:manage:chat_settings",
-                "moderator:manage:announcements",
-                //s.Add("user:edit");
+                ////s.Add("user:edit");
                 //s.Add("user:edit:follows");
                 //s.Add("user:manage:blocked_users");
                 //s.Add("user:read:blocked_users");
                 //s.Add("user:read:broadcast");
                 //s.Add("user:read:email");
-                "channel:moderate"
             };
 
             //s.Add("whispers:read");

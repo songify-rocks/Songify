@@ -33,7 +33,9 @@ namespace Songify_Slim.Util.Songify
         // Spotify Authentication flow with the webserver
         private static TokenSwapAuth _auth;
 
-        public static async void DoAuthAsync()
+        public static async 
+        Task
+DoAuthAsync()
         {
             if (Settings.Settings.UseOwnApp)
             {

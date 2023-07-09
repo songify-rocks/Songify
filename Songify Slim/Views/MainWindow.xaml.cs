@@ -44,10 +44,10 @@ namespace Songify_Slim.Views
     {
         #region Variables
         private WindowConsole _consoleWindow;
-        public NotifyIcon NotifyIcon = new NotifyIcon();
+        public NotifyIcon NotifyIcon = new();
         public string SongArtist, SongTitle;
         public string CurrSong = "", CurrSongTwitch = "";
-        private readonly ContextMenu _contextMenu = new ContextMenu();
+        private readonly ContextMenu _contextMenu = new();
         private bool _firstRun = true;
         private bool _forceClose;
         private string _currentId;
@@ -56,10 +56,10 @@ namespace Songify_Slim.Views
         private string _selectedSource;
         private string _songPath, _coverPath, _root, _coverTemp;
         private string _temp = "";
-        private Timer _timerFetcher = new Timer();
-        private readonly WebClient _webClient = new WebClient();
-        public SongFetcher Sf = new SongFetcher();
-        private static readonly Timer _timer = new Timer(TimeSpan.FromMinutes(5).TotalMilliseconds);
+        private Timer _timerFetcher = new();
+        private readonly WebClient _webClient = new();
+        public SongFetcher Sf = new();
+        private static readonly Timer _timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
 
         #endregion Variables
 
@@ -137,7 +137,7 @@ namespace Songify_Slim.Views
         private static string CleanFormatString(string currSong)
         {
             RegexOptions options = RegexOptions.None;
-            Regex regex = new Regex("[ ]{2,}", options);
+            Regex regex = new("[ ]{2,}", options);
             currSong = regex.Replace(currSong, " ");
             currSong = currSong.Trim();
 
@@ -174,7 +174,7 @@ namespace Songify_Slim.Views
         private void BtnAboutClick(object sender, RoutedEventArgs e)
         {
             // Opens the 'About'-Window
-            AboutWindow aW = new AboutWindow { Top = Top, Left = Left };
+            AboutWindow aW = new() { Top = Top, Left = Left };
             aW.ShowDialog();
         }
 
@@ -203,7 +203,7 @@ namespace Songify_Slim.Views
                 if (!IsWindowOpen<HistoryWindow>())
                 {
                     // Opens the 'History'-Window
-                    HistoryWindow hW = new HistoryWindow { Top = Top, Left = Left };
+                    HistoryWindow hW = new() { Top = Top, Left = Left };
                     hW.ShowDialog();
                 }
             }
@@ -223,7 +223,7 @@ namespace Songify_Slim.Views
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
             // Opens the 'Settings'-Window
-            Window_Settings sW = new Window_Settings { Top = Top, Left = Left };
+            Window_Settings sW = new() { Top = Top, Left = Left };
             sW.ShowDialog();
         }
 
@@ -292,7 +292,7 @@ namespace Songify_Slim.Views
                 if (cover == null)
                 {
                     // create Empty png file
-                    Bitmap bmp = new Bitmap(640, 640);
+                    Bitmap bmp = new(640, 640);
                     Graphics g = Graphics.FromImage(bmp);
 
                     g.Clear(Color.Transparent);
@@ -302,7 +302,7 @@ namespace Songify_Slim.Views
 
                 else
                 {
-                    Uri uri = new Uri(cover);
+                    Uri uri = new(cover);
                     // Downloads the album cover to the filesystem
                     await _webClient.DownloadFileTaskAsync(uri, _coverTemp);
                 }
@@ -580,7 +580,7 @@ namespace Songify_Slim.Views
             // automatically start fetching songs
             SetFetchTimer();
             if (!Settings.UpdateRequired) return;
-            List<int> userLevels = new List<int>();
+            List<int> userLevels = new();
             for (int i = 0; i <= Settings.TwSrUserLevel; i++)
             {
                 userLevels.Add(i);
@@ -689,7 +689,7 @@ namespace Songify_Slim.Views
             // Opens the Blacklist Window
             if (!IsWindowOpen<Window_Blacklist>())
             {
-                Window_Blacklist wB = new Window_Blacklist { Top = Top, Left = Left };
+                Window_Blacklist wB = new() { Top = Top, Left = Left };
                 wB.Show();
             }
         }
@@ -737,7 +737,7 @@ namespace Songify_Slim.Views
 
         private void mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
         {
-            WindowBotresponse wBr = new WindowBotresponse();
+            WindowBotresponse wBr = new();
             wBr.Show();
         }
 
@@ -781,7 +781,7 @@ namespace Songify_Slim.Views
         private void OpenQueue()
         {
             if (IsWindowOpen<WindowQueue>()) return;
-            WindowQueue wQ = new WindowQueue { Top = Top, Left = Left };
+            WindowQueue wQ = new() { Top = Top, Left = Left };
             wQ.Show();
         }
 
@@ -801,7 +801,7 @@ namespace Songify_Slim.Views
             }
             else
             {
-                WindowPatchnotes wPn = new WindowPatchnotes
+                WindowPatchnotes wPn = new()
                 {
                     Owner = (Application.Current.MainWindow),
                 };
@@ -925,7 +925,7 @@ namespace Songify_Slim.Views
                 {
                     try
                     {
-                        BitmapImage image = new BitmapImage();
+                        BitmapImage image = new();
                         image.BeginInit();
                         image.CacheOption = BitmapCacheOption.OnLoad;
                         image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
@@ -1124,8 +1124,15 @@ namespace Songify_Slim.Views
             // read the text file
             if (!File.Exists(_songPath))
             {
-                File.Create(_songPath).Close();
-
+                try
+                {
+                    File.Create(_songPath).Close();
+                }
+                catch (Exception e)
+                {
+                   Logger.LogExc(e);
+                   return;
+                }
             }
 
             //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, CurrSong);
@@ -1218,7 +1225,7 @@ namespace Songify_Slim.Views
                         doc.Descendants("History").FirstOrDefault()
                             ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
 
-                    XElement elem = new XElement("Song", CurrSong.Trim());
+                    XElement elem = new("Song", CurrSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
                     XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
                     x?.Add(elem);

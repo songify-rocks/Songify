@@ -62,7 +62,7 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient MainClient;
         private static bool _onCooldown;
         private static bool _skipCooldown;
-        public const bool PubSubEnabled = true;
+        public const bool PubSubEnabled = false;
         public static bool ForceDisconnect;
         private static readonly List<string> SkipVotes = new List<string>();
         private static readonly Timer CooldownTimer = new Timer
@@ -1212,24 +1212,23 @@ namespace Songify_Slim.Util.Songify
                             SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
+                    string msg = GetCurrentSong();
+                    string artist = GlobalObjects.CurrentSong.Artists;
+                    string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title) ? GlobalObjects.CurrentSong.Title : "";
+                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+                    if (msg.StartsWith("[announce "))
+                    {
+                        await AnnounceInChat(msg);
+                    }
+                    else
+                    {
+                        SendChatMessage(e.ChatMessage.Channel, msg);
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                string msg = GetCurrentSong();
-                string artist = GlobalObjects.CurrentSong.Artists;
-                string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title) ? GlobalObjects.CurrentSong.Title : "";
-                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
-                if (msg.StartsWith("[announce "))
-                {
-                    await AnnounceInChat(msg);
-                }
-                else
-                {
-                    SendChatMessage(e.ChatMessage.Channel, msg);
+                    Logger.LogStr("Error sending song info.");
                 }
             }
             // Pos command (!pos)
@@ -1675,7 +1674,7 @@ namespace Songify_Slim.Util.Songify
                 await AddToPlaylist(track.Id);
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
             SendChatMessage(e.ChatMessage.Channel, response);
-            UploadToQueue(track, e.ChatMessage.DisplayName);
+            await UploadToQueue(track, e.ChatMessage.DisplayName);
             UpdateQueueWindow();
         }
 
