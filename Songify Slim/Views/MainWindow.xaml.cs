@@ -543,7 +543,7 @@ namespace Songify_Slim.Views
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
                 else
-                    ApiHandler.DoAuthAsync();
+                   await ApiHandler.DoAuthAsync();
 
                 img_cover.Visibility = Visibility.Visible;
             }
@@ -576,7 +576,7 @@ namespace Songify_Slim.Views
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
                 await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
             await SendTelemetry();
-            await TwitchHandler.CheckStreamIsUp();
+            Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
             // automatically start fetching songs
             SetFetchTimer();
             if (!Settings.UpdateRequired) return;
@@ -1296,13 +1296,12 @@ namespace Songify_Slim.Views
 
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
         {
-            if (_consoleWindow == null)
-                _consoleWindow = new WindowConsole
-                {
-                    Left = Left + Width,
-                    Top = Top,
-                    Owner = this
-                };
+            _consoleWindow ??= new WindowConsole
+            {
+                Left = Left + Width,
+                Top = Top,
+                Owner = this
+            };
             if (!_consoleWindow.IsLoaded)
                 _consoleWindow = new WindowConsole
                 {
@@ -1318,11 +1317,10 @@ namespace Songify_Slim.Views
 
         private async void Mi_TwitchCheckOnlineStatus_OnClick(object sender, RoutedEventArgs e)
         {
-            bool live = await TwitchHandler.CheckStreamIsUp();
-            Settings.IsLive = live;
-            mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(live ? "Live" : "Offline")})";
-            LblStatus.Content = live ? "Stream is Up!" : "Stream is offline.";
-            Logger.LogStr($"TWITCH: Stream is {(live ? "Live" : "Offline")}");
+            Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
+            mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(Settings.IsLive ? "Live" : "Offline")})";
+            LblStatus.Content = Settings.IsLive ? "Stream is Up!" : "Stream is offline.";
+            Logger.LogStr($"TWITCH: Stream is {(Settings.IsLive ? "Live" : "Offline")}");
         }
 
         private void BtnWebServerUrl_Click(object sender, RoutedEventArgs e)
