@@ -587,6 +587,36 @@ namespace Songify_Slim.Util.Settings
         public static bool BotCmdPlayPause { get => GetBotCmdPlayPause(); set => SetBotCmdPlayPause(value); }
         public static bool AddSrToPlaylist { get => GetAddSrToPlaylist(); set => SetAddSrToPlaylist(value); }
         public static List<int> QueueWindowColumns { get => GetQueueWindowColumns(); set => SetQueueWindowColumns(value); }
+        public static string SpotifySongLimitPlaylist { get => GetSpotifySongLimitPlaylist(); set => SetSpotifySongLimitPlaylist(value); }
+
+        public static bool LimitSrToPlaylist
+        {
+            get => GetLimitSrToPlaylist();
+            set => SetLimitSrToPlaylist(value);
+        }
+
+        private static void SetLimitSrToPlaylist(bool value)
+        {
+            _currentConfig.AppConfig.LimitSrToPlaylist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static bool GetLimitSrToPlaylist()
+        {
+            return _currentConfig.AppConfig.LimitSrToPlaylist;
+        }
+
+
+        private static void SetSpotifySongLimitPlaylist(string value)
+        {
+            _currentConfig.AppConfig.SpotifySongLimitPlaylist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static string GetSpotifySongLimitPlaylist()
+        {
+            return _currentConfig.AppConfig.SpotifySongLimitPlaylist;
+        }
 
         private static void SetQueueWindowColumns(List<int> value)
         {
@@ -783,6 +813,8 @@ namespace Songify_Slim.Util.Settings
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 QueueWindowColumns = GetQueueWindowColumns(),
                 UserLevelsReward = GetUserLevelsReward(),
+                SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
+                LimitSrToPlaylist = GetLimitSrToPlaylist(),
             };
 
             return new Configuration
@@ -797,87 +829,6 @@ namespace Songify_Slim.Util.Settings
         public static void Import(Configuration config)
         {
             _currentConfig = config;
-
-            //#region SpotifyCredential
-            //SetSpotifyAccessToken(config.SpotifyCredentials.AccessToken);
-            //SetClientId(config.SpotifyCredentials.ClientId);
-            //SetClientSecret(config.SpotifyCredentials.ClientSecret);
-            //SetSpotifyRefreshToken(config.SpotifyCredentials.RefreshToken);
-            //SetSpotifyDeviceId(config.SpotifyCredentials.DeviceId);
-            //#endregion
-
-            //#region BotConfig
-            //SetBot_Resp_ModSkip(config.BotConfig.BotRespModSkip);
-            //SetBot_Resp_VoteSkip(config.BotConfig.BotRespVoteSkip);
-            //SetBot_Resp_Pos(config.BotConfig.BotRespPos);
-            //SetBot_Resp_Next(config.BotConfig.BotRespNext);
-            //SetBot_Resp_MaxReq(config.BotConfig.BotRespMaxReq);
-            //SetBot_Resp_IsInQueue(config.BotConfig.BotRespIsInQueue);
-            //SetBot_Resp_Length(config.BotConfig.BotRespLength);
-            //SetBot_Resp_Blacklist(config.BotConfig.BotRespBlacklist);
-            //SetBot_Resp_Error(config.BotConfig.BotRespError);
-            //SetBot_Resp_Success(config.BotConfig.BotRespSuccess);
-            //SetBot_Resp_NoSong(config.BotConfig.BotRespNoSong);
-            //SetBotCmdNext(config.BotConfig.BotCmdNext);
-            //SetBotCmdPos(config.BotConfig.BotCmdPos);
-            //SetBotCmdSkip(config.BotConfig.BotCmdSkip);
-            //SetBotCmdSkipVote(config.BotConfig.BotCmdSkipVote);
-            //SetBotCmdSkipVoteCount(config.BotConfig.BotCmdSkipVoteCount);
-            //SetBotCmdSong(config.BotConfig.BotCmdSong);
-            //#endregion
-
-            //#region TwitchCredentials
-            //SetTwAcc(config.TwitchCredentials.BotAccountName);
-            //SetTwChannel(config.TwitchCredentials.ChannelName);
-            //SetTwOAuth(config.TwitchCredentials.BotOAuthToken);
-            //#endregion
-
-            //#region AppConfig
-            //SetAnnounceInChat(config.AppConfig.AnnounceInChat);
-            //SetAppendSpaces(config.AppConfig.AppendSpaces);
-            //SetArtistBlacklist(config.AppConfig.ArtistBlacklist);
-            //SetAutoClearQueue(config.AppConfig.AutoClearQueue);
-            //SetAutostart(config.AppConfig.Autostart);
-            //SetColor(config.AppConfig.Color);
-            //SetCustomPauseText(config.AppConfig.CustomPauseText);
-            //SetCustomPauseTextEnabled(config.AppConfig.CustomPauseTextEnabled);
-            //SetDirectory(config.AppConfig.Directory);
-            //SetDownloadCover(config.AppConfig.DownloadCover);
-            //SetLangauge(config.AppConfig.Language);
-            //SetMaxSongLength(config.AppConfig.MaxSongLength);
-            //SetMsgLoggingEnabled(config.AppConfig.MsgLoggingEnabled);
-            //SetOpenQueueOnStartup(config.AppConfig.OpenQueueOnStartup);
-            //SetOutputString(config.AppConfig.OutputString);
-            //SetOutputString2(config.AppConfig.OutputString2);
-            //SetPosX(config.AppConfig.PosX);
-            //SetPosY(config.AppConfig.PosY);
-            //SetSaveHistory(config.AppConfig.SaveHistory);
-            //SetSpaceCount(config.AppConfig.SpaceCount);
-            //SetSplitOutput(config.AppConfig.SplitOutput);
-            //SetSystray(config.AppConfig.Systray);
-            //SetTelemetry(config.AppConfig.Telemetry);
-            //SetTheme(config.AppConfig.Theme);
-            //SetTwAutoConnect(config.AppConfig.TwAutoConnect);
-            //SetTwRewardId(config.AppConfig.TwRewardId);
-            //SetTwSrCommand(config.AppConfig.TwSrCommand);
-            //SetTwSrCooldown(config.AppConfig.TwSrCooldown);
-            //SetTwSrMaxReq(config.AppConfig.TwSrMaxReq);
-            //SetTwSrMaxReqBroadcaster(config.AppConfig.TwSrMaxReqBroadcaster);
-            //SetTwSrMaxReqEveryone(config.AppConfig.TwSrMaxReqEveryone);
-            //SetTwSrMaxReqModerator(config.AppConfig.TwSrMaxReqModerator);
-            //SetTwSrMaxReqSubscriber(config.AppConfig.TwSrMaxReqSubscriber);
-            //SetTwSrMaxReqVip(config.AppConfig.TwSrMaxReqVip);
-            //SetTwSrReward(config.AppConfig.TwSrReward);
-            //SetTwSrUserLevel(config.AppConfig.TwSrUserLevel);
-            //SetUpload(config.AppConfig.Upload);
-            //SetUploadHistory(config.AppConfig.UploadHistory);
-            //SetUseOwnApp(config.AppConfig.UseOwnApp);
-            //SetUserBlacklist(config.AppConfig.UserBlacklist);
-            //SetUuid(config.AppConfig.Uuid);
-            //SetRefundConditons(config.AppConfig.RefundConditons);
-            //SetWebServerPort(config.AppConfig.WebServerPort);
-            //SetBetaUpdates(config.AppConfig.BetaUpdates);
-            //#endregion
 
             ConfigHandler.WriteAllConfig(config);
         }

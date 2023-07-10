@@ -156,15 +156,8 @@ namespace Songify_Slim.Views
             TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
             TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
 
-            if (Settings.UserLevelsCommand == null)
-            {
-                Settings.UserLevelsCommand = new List<int>();
-            }
-
-            if (Settings.UserLevelsReward == null)
-            {
-                Settings.UserLevelsReward = new List<int>();
-            }
+            Settings.UserLevelsCommand ??= new List<int>();
+            Settings.UserLevelsReward ??= new List<int>();
 
             ChckULCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckULCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
@@ -175,6 +168,9 @@ namespace Songify_Slim.Views
             ChckULRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
             ChckULRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
             ChckULRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
+
+            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
+            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
 
             if (ApiHandler.Spotify != null)
             {
@@ -203,24 +199,15 @@ namespace Songify_Slim.Views
 
             ThemeHandler.ApplyTheme();
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
-            switch (Settings.Language)
+            CbxLanguage.SelectedIndex = Settings.Language switch
             {
-                case "en":
-                    CbxLanguage.SelectedIndex = 0;
-                    break;
-                case "de-DE":
-                    CbxLanguage.SelectedIndex = 1;
-                    break;
-                case "ru-RU":
-                    CbxLanguage.SelectedIndex = 2;
-                    break;
-                case "es":
-                    CbxLanguage.SelectedIndex = 3;
-                    break;
-                case "fr":
-                    CbxLanguage.SelectedIndex = 4;
-                    break;
-            }
+                "en" => 0,
+                "de-DE" => 1,
+                "ru-RU" => 2,
+                "es" => 3,
+                "fr" => 4,
+                _ => CbxLanguage.SelectedIndex
+            };
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
             CbAccountSelection.SelectionChanged -= CbAccountSelection_SelectionChanged;
             CbAccountSelection.Items.Clear();
@@ -1250,8 +1237,7 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded)
                 return;
-            UcPlaylistItem item = ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content as UcPlaylistItem);
-            if (item == null)
+            if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
                 return;
             Settings.SpotifyPlaylistId = item.Playlist.Id;
         }
@@ -1342,17 +1328,35 @@ namespace Songify_Slim.Views
             if (ApiHandler.Spotify == null) return;
             PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
             CbSpotifyPlaylist.Items.Clear();
+            CbSpotifySongLimitPlaylist.Items.Clear();
             Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
             do
             {
                 foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
                 {
                     CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                    CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                 }
                 playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
             } while (playlists.HasNextPage());
 
             CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+            CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
+
+        }
+
+        private void TglLimitSrPlaylist_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.LimitSrToPlaylist = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void CbSpotifySongLimitPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
+                return;
+            Settings.SpotifySongLimitPlaylist = item.Playlist.Id;
         }
     }
 }

@@ -575,6 +575,19 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
+
+            if (Settings.Settings.LimitSrToPlaylist &&
+                !string.IsNullOrEmpty(Settings.Settings.SpotifySongLimitPlaylist))
+            {
+                Tuple<bool, FullPlaylist> isAllowedSong = await CheckIsSongAllowed(trackId, Settings.Settings.SpotifySongLimitPlaylist);
+                if (!isAllowedSong.Item1)
+                {
+                    SendChatMessage(e.ChatMessage.Channel, $"This song was not found in the allowed playlist.({isAllowedSong.Item2.Name} https://open.spotify.com/playlist/{isAllowedSong.Item2.Id})");
+                    return;
+                }
+            }
+
+
             if (IsSongBlacklisted(trackId))
             {
                 SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");
@@ -638,6 +651,24 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             UpdateQueueWindow();
+        }
+
+        private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId, string spotifySongLimitPlaylist)
+        {
+            FullPlaylist playlist = await ApiHandler.Spotify.GetPlaylistAsync(spotifySongLimitPlaylist);
+            var tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(spotifySongLimitPlaylist);
+            do
+            {
+                if (tracks.Items.Any(t => t.Track.Id == trackId))
+                {
+                    return new Tuple<bool, FullPlaylist>(true, playlist);
+                }
+
+                tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
+                    100, tracks.Offset + tracks.Limit);
+            } while (tracks != null && tracks.HasNextPage());
+
+            return new Tuple<bool, FullPlaylist>(false, playlist);
         }
 
         private static async Task<ReturnObject> AddSong2(string trackId, string username)
@@ -1430,6 +1461,7 @@ namespace Songify_Slim.Util.Songify
             CreatePubSubListenEvents();
             TwitchPubSub.Connect();
         }
+
         private static string CreateSuccessResponse(FullTrack track, string displayName)
         {
             string artists = string.Join(", ", track.Artists.Select(o => o.Name).ToList());

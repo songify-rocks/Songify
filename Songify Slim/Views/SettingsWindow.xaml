@@ -929,6 +929,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <DockPanel x:Name="PnlSpotify" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0,0,0,6">
                             <Border CornerRadius="40" Width="60" Height="60" BorderThickness="3" BorderBrush="{DynamicResource MahApps.Brushes.Accent}">
@@ -967,7 +968,12 @@
                         </StackPanel>
                         <StackPanel Grid.Row="5" HorizontalAlignment="Right" Orientation="Horizontal">
                             <TextBlock TextWrapping="Wrap" Text="{x:Static local:Resources.sw_tc_Spotify_AddSongsToPlaylist}" Width="223" Padding="0,5,5,5"/>
-                            <controls:ToggleSwitch x:Name="TglAddToPlaylist" VerticalAlignment="Center" Width="19" MinWidth="46" OffContent="" OnContent="" Toggled="TglAddToPlaylist_Toggled"/>
+                            <controls:ToggleSwitch x:Name="TglAddToPlaylist" VerticalAlignment="Center" Width="46" MinWidth="46" OffContent="" OnContent="" Toggled="TglAddToPlaylist_Toggled"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="6" Text="Allow only songs from this playlist (SR)" Width="250" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <StackPanel Grid.Row="6"  Orientation="Horizontal" HorizontalAlignment="Right">
+                            <ComboBox x:Name="CbSpotifySongLimitPlaylist" HorizontalAlignment="Right" Width="217" VerticalAlignment="Center" Margin="0,0,6,0" SelectionChanged="CbSpotifySongLimitPlaylist_SelectionChanged" />
+                            <controls:ToggleSwitch x:Name="TglLimitSrPlaylist" OffContent="" OnContent="" Width="46" MinWidth="46" Toggled="TglLimitSrPlaylist_Toggled"></controls:ToggleSwitch>
                         </StackPanel>
                     </Grid>
                 </Border>

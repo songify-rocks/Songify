@@ -690,6 +690,8 @@ namespace Songify_Slim.Util.Settings
         public List<int> UserLevelsCommand { get; set; } = new List<int>();
         public bool AddSrToPlaylist { get; set; } = false;
         public List<int> QueueWindowColumns { get; set; } = new List<int>();
+        public string SpotifySongLimitPlaylist { get; set; } = "";
+        public bool LimitSrToPlaylist { get; set; } = false;
     }
 
     public class Config
