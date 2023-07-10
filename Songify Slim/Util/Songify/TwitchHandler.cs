@@ -855,7 +855,22 @@ namespace Songify_Slim.Util.Songify
 
         private static bool CheckLiveStatus()
         {
-            if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive) return true;
+            if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive)
+            {
+                Logger.LogStr("STREAM: Stream is live.");
+                Application.Current.BeginInvoke(
+                    () =>
+                    {
+                        (Application.Current.MainWindow as MainWindow)?.Invoke(() =>
+                        {
+                            ((MainWindow)Application.Current.MainWindow).LblStatus.Content =
+                                "Command accepted. Stream is up.";
+                        });
+                    }, DispatcherPriority.Normal);
+                return true;
+            }
+
+            Logger.LogStr("STREAM: Stream is down.");
             Application.Current.BeginInvoke(
                 () =>
                 {

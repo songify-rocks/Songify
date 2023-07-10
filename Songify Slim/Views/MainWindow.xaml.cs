@@ -1154,37 +1154,7 @@ namespace Songify_Slim.Views
                 {
                     Logger.LogStr($"File {_songPath} couldn't be accessed.");
                 }
-
-                //try
-                //{
-                //    if (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
-                //    {
-                //        while (GlobalObjects.ReqList.Find(x => x.TrackID == _prevId) != null)
-                //        {
-                //            RequestObject rq = GlobalObjects.ReqList.Find(x => x.TrackID == _prevId);
-                //            Logger.LogStr(
-                //                GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Find(x => x.TrackID == _prevId))
-                //                    ? $"CORE: Removed {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue."
-                //                    : $"CORE: Couldn't remove {rq.Artists} - {rq.Title} requested by {rq.Requester} from the queue.");
-                //            Application.Current.Dispatcher.Invoke(() =>
-                //            {
-                //                foreach (Window window in Application.Current.Windows)
-                //                {
-                //                    if (window.GetType() != typeof(Window_Queue))
-                //                        continue;
-                //                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                //                    (window as Window_Queue)?.dgv_Queue.Items.Refresh();
-                //                }
-                //            });
-                //        }
-                //    }
-                //}
-
-                //catch (Exception)
-                //{
-                //    // ignored
-                //}
-
+                
                 if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
 
                 // if upload is enabled
