@@ -1198,7 +1198,9 @@ namespace Songify_Slim.Views
                     XElement elem = new("Song", CurrSong.Trim());
                     elem.Add(new XAttribute("Time", unixTimestamp));
                     XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
-                    x?.Add(elem);
+                    XNode lastNode = x.LastNode;
+                    if (CurrSong.Trim() != ((XElement)lastNode).Value)
+                        x?.Add(elem);
                     doc.Save(historyPath);
                 }
 

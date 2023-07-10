@@ -120,14 +120,12 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_SongRequests}">
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Queue}">
-                    <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}"
-                              Click="Mi_Queue_Click" Tag="Window" />
-                    <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click"
+                <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}"
+                          Click="Mi_Queue_Click" Tag="Window" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click"
                               Tag="Browser" />
-                    <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}"
+                <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}"
                               Click="Mi_QueueClear_Click" />
-                </MenuItem>
                 <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}"
                           Click="Mi_Blacklist_Click" />
             </MenuItem>
