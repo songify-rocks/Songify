@@ -89,7 +89,7 @@ namespace Songify_Slim.Util.General
             response.Headers.Add("Access-Control-Allow-Origin", "*");
             response.Headers.Add("Access-Control-Allow-Methods", "GET");
             response.ContentType = mimeType;
-            if (mimeType.StartsWith("text/"))
+            if (mimeType == "text/html")
             {
                 response.ContentType += "; charset=utf-8";
                 response.ContentEncoding = Encoding.UTF8;
