@@ -5,8 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Media;
 
@@ -84,7 +86,7 @@ namespace Songify_Slim.Util.General
 
         private void ProcessRequest(HttpListenerContext context)
         {
-            if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
+            if (WebModuleServer.ProcessModule(context) || string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
                 return;
             // Convert the response string to a byte array.
             byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.ApiResponse);

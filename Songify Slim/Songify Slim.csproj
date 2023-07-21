@@ -541,6 +541,7 @@
       <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\General\WebModuleServer.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
