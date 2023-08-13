@@ -543,7 +543,7 @@ namespace Songify_Slim.Views
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
                 else
-                   await ApiHandler.DoAuthAsync();
+                    await ApiHandler.DoAuthAsync();
 
                 img_cover.Visibility = Visibility.Visible;
             }
@@ -1130,8 +1130,8 @@ namespace Songify_Slim.Views
                 }
                 catch (Exception e)
                 {
-                   Logger.LogExc(e);
-                   return;
+                    Logger.LogExc(e);
+                    return;
                 }
             }
 
@@ -1154,7 +1154,7 @@ namespace Songify_Slim.Views
                 {
                     Logger.LogStr($"File {_songPath} couldn't be accessed.");
                 }
-                
+
                 if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
 
                 // if upload is enabled
@@ -1199,8 +1199,15 @@ namespace Songify_Slim.Views
                     elem.Add(new XAttribute("Time", unixTimestamp));
                     XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
                     XNode lastNode = x.LastNode;
-                    if (CurrSong.Trim() != ((XElement)lastNode).Value)
+                    if (lastNode != null)
+                    {
+                        if (CurrSong.Trim() != ((XElement)lastNode).Value)
+                            x?.Add(elem);
+                    }
+                    else
+                    {
                         x?.Add(elem);
+                    }
                     doc.Save(historyPath);
                 }
 

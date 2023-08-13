@@ -488,18 +488,18 @@
                                     </Button.Content>
                                 </Button>
 
-                                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Disabled due to issues with PubSub" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,6"></TextBlock>
-                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6" IsEnabled="False" Opacity="0.1"/>
-                                <ComboBox Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" Panel.ZIndex="-1" Opacity="0.1" />
+                                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Disabled due to issues with PubSub" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed"  Margin="0,0,0,6"></TextBlock>
+                                <TextBlock Text="{x:Static local:Resources.sw_Spotify_RewardSkip}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,0,6" IsEnabled="False" Visibility="Collapsed"/>
+                                <ComboBox Visibility="Collapsed" Grid.Row="2" Grid.Column="1" SelectionChanged="CbxRewards_OnSelectionChanged" x:Name="CbxRewardsSkip" VerticalAlignment="Center" Height="23" Margin="0,0,0,6" Tag="skip" IsEnabled="False" Panel.ZIndex="-1" Opacity="0.1" />
 
                                 <Button x:Name="BtnCreateNewReward" Grid.Column="1" Grid.Row="11" Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}" Margin="4,0,4,4" VerticalAlignment="Bottom" Click="BtnCreateNewReward_Click" IsEnabled="False"></Button>
-                                <TextBlock Margin="0,6,0,6" Text="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></TextBlock>
+                                <TextBlock Visibility="Collapsed" Margin="0,6,0,6" Text="{x:Static local:Resources.Sw_Integration_RefundOn}" Grid.Row="4" Grid.ColumnSpan="2" Grid.Column="0"></TextBlock>
                                 <Grid x:Name="GridNonManageable" Grid.Row="5" Grid.Column="0" Background="{DynamicResource MahApps.Brushes.Window.Background}" Grid.RowSpan="5" Grid.ColumnSpan="2" Panel.ZIndex="1">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Row="0" x:Name="TextRefundDisclaimer" Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Row="0" Visibility="Collapsed"  x:Name="TextRefundDisclaimer" Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"  HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Width="329" VerticalAlignment="Center"/>
                                     <TextBlock Grid.Row="1" Visibility="Collapsed" x:Name="SMILEY" Text=":)"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="27" RenderTransformOrigin="0.5,0.5" FontWeight="Bold">
                                         <TextBlock.RenderTransform>
                                             <TransformGroup>

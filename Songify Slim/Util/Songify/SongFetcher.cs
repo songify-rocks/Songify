@@ -439,7 +439,7 @@ namespace Songify_Slim.Util.Songify
                             key = Settings.Settings.AccessKey,
                             queueid = current.Queueid,
                         };
-                        await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                        //await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                     }
 
                     //if Previous is not null then try to remove it from the internal queue (ReqList)
@@ -448,7 +448,9 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
                         do
                         {
-                            GlobalObjects.ReqList.Remove(previous);
+                            //GlobalObjects.ReqList.Remove(previous);
+                            GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Select(o => o).Where(o => o.Trackid == previous.Trackid).First());
+
                             Thread.Sleep(250);
                         } while (GlobalObjects.ReqList.Contains(previous));
 

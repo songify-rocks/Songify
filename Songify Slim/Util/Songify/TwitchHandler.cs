@@ -527,6 +527,7 @@ namespace Songify_Slim.Util.Songify
         {
             SkipVotes.Clear();
         }
+
         public static async void SendCurrSong()
         {
             if (Client == null || !Client.IsConnected || Client.JoinedChannels.Count == 0) return;
@@ -575,7 +576,6 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-
             if (Settings.Settings.LimitSrToPlaylist &&
                 !string.IsNullOrEmpty(Settings.Settings.SpotifySongLimitPlaylist))
             {
@@ -586,7 +586,6 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
             }
-
 
             if (IsSongBlacklisted(trackId))
             {

@@ -153,7 +153,7 @@
                        Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"
                        MaxWidth="400" MaxHeight="185" />
         </Grid>
-        <StackPanel Margin="0,20,0,-5" Grid.Row="2" Grid.Column="0" Orientation="Horizontal">
+        <StackPanel Margin="0,20,0,-5" Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Visibility="Collapsed">
             <iconPacks:PackIconForkAwesome Kind="ArrowDown" Margin="36,7,-8,0" RenderTransformOrigin="0.5,0.5">
                 <iconPacks:PackIconForkAwesome.RenderTransform>
                     <TransformGroup>
@@ -202,7 +202,7 @@
                    ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False" Background="{DynamicResource MahApps.Brushes.Control.Background}">
             <StatusBarItem Padding="3,0,0,0" Background="{DynamicResource MahApps.Brushes.Control.Background}">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0" >
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -216,7 +216,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -230,7 +230,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchPubSub" Width="14" Kind="XCircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons Visibility="Collapsed" x:Name="IconTwitchPubSub" Width="14" Kind="XCircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -244,7 +244,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebSpotify" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebSpotify" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
@@ -258,8 +258,7 @@
                             </Style>
                         </iconPacks:PackIconBootstrapIcons.Style>
                     </iconPacks:PackIconBootstrapIcons>
-
-                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebServer" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0">
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebServer" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>

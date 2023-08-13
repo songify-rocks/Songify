@@ -846,7 +846,8 @@ namespace Songify_Slim.Views
         {
             if (!TwitchHandler.PubSubEnabled)
             {
-                SMILEY.Visibility = Visibility.Visible;
+                SMILEY.Visibility = Visibility.Hidden;
+                
                 TextRefundDisclaimer.Text =
                     "Refunds are not possible because PubSub has been temporarily disabled until TwitchLib, a third party library I use for Twitch API integration, fixes the disconnect issues which crash the application.";
             }
@@ -1348,6 +1349,7 @@ namespace Songify_Slim.Views
         private void TglLimitSrPlaylist_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.LimitSrToPlaylist = ((ToggleSwitch)sender).IsOn;
+            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
         }
 
         private void CbSpotifySongLimitPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
