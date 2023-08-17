@@ -313,7 +313,7 @@
                         </Grid>
 
                         <!--#region Twitch Credentials (not using API) -->
-                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials" Margin="0,6,0,6"/>
+                        <controls:ToggleSwitch x:Name="CheckShowCred" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" Content="Show Credentials" Margin="0,6,0,6" IsOn="True"/>
                         <Label Content="Chat Account"  Grid.Row="1" Grid.Column="0" Margin="6,6,6,6" VerticalAlignment="Center"/>
                         <ComboBox x:Name="CbAccountSelection" Grid.Row="1" Grid.Column="0" Margin="90,6,0,6" HorizontalAlignment="Left" Width="164" SelectionChanged="CbAccountSelection_SelectionChanged"/>
                         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">

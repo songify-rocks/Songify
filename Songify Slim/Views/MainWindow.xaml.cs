@@ -520,13 +520,6 @@ namespace Songify_Slim.Views
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
             GlobalObjects.AppVersion = fvi.FileVersion;
 
-            // generate UUID if not exists
-            if (Settings.Uuid == "")
-            {
-                Settings.Uuid = Guid.NewGuid().ToString();
-                Settings.Telemetry = false;
-            }
-
             // check for update
             CheckForUpdates();
 
