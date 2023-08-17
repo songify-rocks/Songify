@@ -487,7 +487,7 @@ namespace Songify_Slim.Views
         {
             // enables / disables upload
             Settings.Upload = ChbxUpload.IsOn;
-            ((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
+            //((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
