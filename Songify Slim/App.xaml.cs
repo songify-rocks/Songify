@@ -39,6 +39,12 @@ namespace Songify_Slim
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             }
+
+            if (string.IsNullOrEmpty(Settings.Uuid))
+            {
+                Settings.Uuid = Guid.NewGuid().ToString();
+            }
+
             //  Adding the RegKey for Songify in startup(autostart with windows)
 
             // Check if the UUI is set, if not generate a new UUID
