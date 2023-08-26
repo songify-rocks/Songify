@@ -395,7 +395,7 @@ namespace Songify_Slim.Views
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            Clipboard.SetDataObject($"{GlobalObjects.ApiUrl}/getsong.php?id=" + Settings.Uuid);
+            Clipboard.SetDataObject($"{GlobalObjects.ApiUrl}/getsong.php?uuid=" + Settings.Uuid);
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
