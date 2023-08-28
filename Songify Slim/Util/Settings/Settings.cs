@@ -1,4 +1,5 @@
 ﻿using Songify_Slim.Views;
+using System;
 using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
@@ -11,6 +12,22 @@ namespace Songify_Slim.Util.Settings
     {
         private static Configuration _currentConfig = new Configuration();
 
+        public static string BotRespPlaylist
+        {
+            get => GetBot_Resp_Playlist();
+            set => SetBot_Resp_Playlist(value);
+        }
+
+        private static void SetBot_Resp_Playlist(string value)
+        {
+            _currentConfig.BotConfig.BotRespPlaylist = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static string GetBot_Resp_Playlist()
+        {
+            return _currentConfig.BotConfig.BotRespPlaylist;
+        }
 
         public static string AccessKey
         {
@@ -744,6 +761,7 @@ namespace Songify_Slim.Util.Settings
                 BotCmdSonglikeTrigger = GetCmdSonglikeTrigger(),
                 BotRespSongLike = GetBot_Resp_SongLike(),
                 BotCmdPlayPause = GetBotCmdPlayPause(),
+                BotRespPlaylist = GetBot_Resp_Playlist(),
             };
 
             AppConfig appConfig = new AppConfig

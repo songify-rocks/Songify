@@ -39,6 +39,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
                VerticalAlignment="Center"/>
@@ -126,26 +127,10 @@
         />
         <TextBox Grid.Row="26" Grid.Column="1"  x:Name="TbSongLike" MinHeight="26" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
                  TextChanged="Tb_SongLike_OnTextChanged" ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" />
-
+        <Border Grid.Row="27" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="28" Grid.Column="0" Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}" HorizontalAlignment="Left" VerticalAlignment="Center"
+        />
+        <TextBox Grid.Row="28" Grid.Column="1"  x:Name="TbNotFoundInPlaylist" MinHeight="27" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" TextChanged="TbNotFoundInPlaylist_TextChanged" />
     </Grid>
 </UserControl>
-
-<!--
-           <CheckBox x:Name="CheckArtistBlocked" Grid.Column="0" VerticalAlignment="Center" ToolTip="Send as Announcement" Checked="AnnounceCheck_Checked" Unchecked="AnnounceCheck_Checked" Visibility="Collapsed"/>
-                    <ComboBox x:Name="CbArtistBlocked" SelectionChanged="Cb_ArtistBlocked_OnSelectionChanged" Grid.Column="1" Width="80" >
-                        <ComboBoxItem Text="Orange"/>
-                        <ComboBoxItem Text="Blue"/>
-                        <ComboBoxItem Text="Purple"/>
-                        <ComboBoxItem Text="Primary"/>
-                        <ComboBox.Style>
-                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=CheckArtistBlocked, Path=IsChecked}" Value="False">
-                                        <Setter Property="SelectedIndex" Value="0"></Setter>
-                                        <Setter Property="Visibility" Value="Collapsed"></Setter>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ComboBox.Style>
-                    </ComboBox>
-              -->

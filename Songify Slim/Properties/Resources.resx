@@ -828,4 +828,8 @@
   <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
     <value>Add all song requests to the playlist</value>
   </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Response when the song was not found in the allowed songs playlist</value>
+    <comment>Response when the song was not found in the allowed songs playlist</comment>
+  </data>
 </root>

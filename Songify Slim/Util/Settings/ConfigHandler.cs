@@ -192,7 +192,7 @@ namespace Songify_Slim.Util.Settings
                                 BotRespVoteSkip = "@{user} voted to skip the current song. ({votes})",
                                 ChatLiveStatus = false,
                                 OnlyWorkWhenLive = false,
-
+                                BotRespPlaylist = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})",
 
                             };
                         }
@@ -620,6 +620,7 @@ namespace Songify_Slim.Util.Settings
         public string BotCmdSonglikeTrigger { get; set; } = "songlike";
         public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
         public bool BotCmdPlayPause { get; set; }
+        public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
     }
 
     public class AppConfig

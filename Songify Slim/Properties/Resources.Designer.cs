@@ -295,6 +295,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response when the song was not found in the allowed songs playlist.
+        /// </summary>
+        public static string brw_SongNotFoundInPlaylist {
+            get {
+                return ResourceManager.GetString("brw_SongNotFoundInPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Song too long.
         /// </summary>
         public static string brw_SongTooLong {

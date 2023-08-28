@@ -664,4 +664,7 @@
   <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
     <value>Liked Songs Playlist</value>
   </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Response when the song was not found in the allowed songs playlist</value>
+  </data>
 </root>

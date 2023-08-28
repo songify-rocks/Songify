@@ -38,6 +38,7 @@ using TwitchLib.Communication.Events;
 using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
+using TwitchLib.PubSub.Models.Responses;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using static System.Windows.Forms.LinkLabel;
@@ -563,6 +564,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
+            string response;
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 SendChatMessage(e.ChatMessage.Channel, "No song found.");
@@ -579,10 +581,10 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.LimitSrToPlaylist &&
                 !string.IsNullOrEmpty(Settings.Settings.SpotifySongLimitPlaylist))
             {
-                Tuple<bool, FullPlaylist> isAllowedSong = await CheckIsSongAllowed(trackId, Settings.Settings.SpotifySongLimitPlaylist);
-                if (!isAllowedSong.Item1)
+                Tuple<bool, string> result = await IsInAllowedPlaylist(trackId);
+                if (!result.Item1)
                 {
-                    SendChatMessage(e.ChatMessage.Channel, $"This song was not found in the allowed playlist.({isAllowedSong.Item2.Name} https://open.spotify.com/playlist/{isAllowedSong.Item2.Id})");
+                    SendChatMessage(e.ChatMessage.Channel, result.Item2);
                     return;
                 }
             }
@@ -606,7 +608,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (IsArtistBlacklisted(track, e, out string response))
+            if (IsArtistBlacklisted(track, e, out response))
             {
                 SendChatMessage(e.ChatMessage.Channel, response);
                 return;
@@ -650,6 +652,20 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             UpdateQueueWindow();
+        }
+
+        private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
+        {
+            string response = string.Empty;
+            Tuple<bool, FullPlaylist> isAllowedSong = await CheckIsSongAllowed(trackId, Settings.Settings.SpotifySongLimitPlaylist);
+            if (!isAllowedSong.Item1)
+            {
+                response = Settings.Settings.BotRespPlaylist;
+                response = response.Replace("{playlist_name}", isAllowedSong.Item2.Name);
+                response = response.Replace("{playlist_url}", $"https://open.spotify.com/playlist/{isAllowedSong.Item2.Id}");
+                return Tuple.Create(false, response);
+            }
+            return Tuple.Create(true, response);
         }
 
         private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId, string spotifySongLimitPlaylist)

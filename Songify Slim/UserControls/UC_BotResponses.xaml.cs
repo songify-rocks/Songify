@@ -2,6 +2,7 @@
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -52,22 +53,47 @@ namespace Songify_Slim.UserControls
 
         private static void SetPreview(TextBox tb)
         {
-            string response =
-                // if no track has been found inform the requester
-                tb.Text;
-            response = response.Replace("{user}", Settings.TwAcc);
-            response = response.Replace("{artist}", "Rick Astley");
-            response = response.Replace("{title}", "Never Gonna Give You Up");
-            response = response.Replace("{maxreq}", Settings.TwSrMaxReq.ToString());
-            response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-            response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
-            response = response.Replace("{votes}", "3/5");
-            response = response.Replace("{song}", "Rick Astley - Never Gonna Give You Up");
-            response = response.Replace("{req}", "John Doe");
-            response = response.Replace("{{", "");
-            response = response.Replace("}}", "");
-            response = response.Replace("{url}",
-                "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce");
+            string response = tb.Text;
+
+
+            Dictionary<string, string> replacements = new()
+            {
+                {"{user}", "SomeUser"},
+                {"{artist}", "Rick Astley"},
+                {"{title}", "Never Gonna Give You Up"},
+                {"{maxreq}", "5"},
+                {"{errormsg}", "Couldn't find a song matching your request."},
+                {"{maxlength}", "300"},
+                {"{votes}", "3/5"},
+                {"{song}", "Rick Astley - Never Gonna Give You Up"},
+                {"{req}", "John Doe"},
+                {"{{", ""},
+                {"}}", ""},
+                {"{url}", "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce"},
+                {"{playlist_name}", "My Super Cool Playlist"},
+                {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"}
+            };
+            foreach (var pair in replacements)
+            {
+                response = response.Replace(pair.Key, pair.Value);
+            }
+
+            //response = response.Replace("{user}", Settings.TwAcc);
+            //response = response.Replace("{artist}", "Rick Astley");
+            //response = response.Replace("{title}", "Never Gonna Give You Up");
+            //response = response.Replace("{maxreq}", Settings.TwSrMaxReq.ToString());
+            //response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
+            //response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
+            //response = response.Replace("{votes}", "3/5");
+            //response = response.Replace("{song}", "Rick Astley - Never Gonna Give You Up");
+            //response = response.Replace("{req}", "John Doe");
+            //response = response.Replace("{{", "");
+            //response = response.Replace("}}", "");
+            //response = response.Replace("{url}",
+            //    "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce");
+            //response = response.Replace("{playlist_name}", "My Super Cool Playlist");
+            //response = response.Replace("{playlist_link}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c");
+
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
@@ -191,6 +217,7 @@ namespace Songify_Slim.UserControls
             TbSong.Text = Settings.BotRespSong;
             TbRefund.Text = Settings.BotRespRefund;
             TbSongLike.Text = Settings.BotRespSongLike;
+            TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -198,6 +225,10 @@ namespace Songify_Slim.UserControls
             }
         }
 
-
+        private void TbNotFoundInPlaylist_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespPlaylist = TbNotFoundInPlaylist.Text;
+            SetPreview(sender as TextBox);
+        }
     }
 }

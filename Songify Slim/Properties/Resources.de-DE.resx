@@ -664,4 +664,7 @@
   <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
     <value>Füge alle Musikwünsche zur Playlist hinzu</value>
   </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Antwort, wenn das Lied nicht in der Wiedergabeliste der zulässigen Lieder gefunden wurde</value>
+  </data>
 </root>
