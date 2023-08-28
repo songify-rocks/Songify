@@ -946,14 +946,21 @@ namespace Songify_Slim.Views
         {
             try
             {
-                File.WriteAllText(songPath, currSong);
+                string interpretedText = InterpretEscapeCharacters(currSong);
+                File.WriteAllText(songPath, interpretedText);
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
             }
         }
-
+        public static string InterpretEscapeCharacters(string input)
+        {
+            return input
+                .Replace(@"\t", "\t")
+                .Replace(@"\n", Environment.NewLine)
+                .Replace(@"\r", "\r");
+        }
         private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
                     bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
         {
