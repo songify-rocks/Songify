@@ -638,13 +638,13 @@
     <value>Language</value>
   </data>
   <data name="brw_cmd_remove" xml:space="preserve">
-    <value>Removes the latest song request of the user</value>
+    <value>Removes the latest song request of the user.</value>
   </data>
   <data name="brw_SongLike" xml:space="preserve">
     <value>Response for !songlike command</value>
   </data>
   <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Adds the current song to the playlist selected in Spotify config</value>
+    <value>Adds the current song to the playlist selected in Spotify config.</value>
   </data>
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Resumes or pauses the current playback.</value>

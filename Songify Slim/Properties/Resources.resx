@@ -749,7 +749,7 @@
   </data>
   <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
     <value>!ssr command moved to bot config</value>
-    <comment>Label that states "!ssr command moved to bot config"</comment>
+    <comment>Label that states "!ssr command moved to bot config"@MutedRule(PunctuationLead)</comment>
   </data>
   <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
     <value>Minimum user level required for SR</value>
@@ -800,14 +800,14 @@
     <comment>Label that says "Language"</comment>
   </data>
   <data name="brw_cmd_remove" xml:space="preserve">
-    <value>Removes the latest song request of the user</value>
+    <value>Removes the latest song request of the user.</value>
   </data>
   <data name="brw_SongLike" xml:space="preserve">
     <value>Response for !songlike command</value>
     <comment>Lable for the !songlike command</comment>
   </data>
   <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Adds the current song to the playlist selected in Spotify config</value>
+    <value>Adds the current song to the playlist selected in Spotify config.</value>
     <comment>Comman description</comment>
   </data>
   <data name="brw_cmd_playpause" xml:space="preserve">

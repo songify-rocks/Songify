@@ -1244,7 +1244,7 @@ namespace Songify_Slim.Util.Songify
                         SendChatMessage(e.ChatMessage.Channel, msg);
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
                     Logger.LogStr("Error sending song info.");
                 }

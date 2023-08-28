@@ -644,7 +644,7 @@
     <value>Respuesta al comando !songlike</value>
   </data>
   <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Agrega la canción actual a la lista de reproducción seleccionada en la configuración de Spotify</value>
+    <value>Agrega la canción actual a la lista de reproducción seleccionada en la configuración de Spotify.</value>
   </data>
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Reanuda o pausa la reproducción actual.</value>

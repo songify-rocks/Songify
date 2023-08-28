@@ -366,13 +366,13 @@ namespace Songify_Slim.Views
             Application.Current.Shutdown();
         }
 
-        private void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
+        private async void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
             // Links Spotify
             Settings.SpotifyRefreshToken = "";
             try
             {
-                ApiHandler.DoAuthAsync();
+                await ApiHandler.DoAuthAsync();
                 SetControls();
             }
             catch (Exception ex)

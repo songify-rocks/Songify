@@ -133,7 +133,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Removes the latest song request of the user.
+        ///   Looks up a localized string similar to Removes the latest song request of the user..
         /// </summary>
         public static string brw_cmd_remove {
             get {
@@ -178,7 +178,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config.
+        ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config..
         /// </summary>
         public static string brw_cmd_songlike {
             get {

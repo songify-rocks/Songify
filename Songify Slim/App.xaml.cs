@@ -37,6 +37,8 @@ namespace Songify_Slim
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
+                Logger.LogStr("SYSTEM: Couldn't set language, reverting to english");
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             }
 

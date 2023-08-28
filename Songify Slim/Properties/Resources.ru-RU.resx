@@ -638,7 +638,7 @@
     <value>Язык</value>
   </data>
   <data name="brw_cmd_remove" xml:space="preserve">
-    <value>Удаляет последний запрос песни пользователя</value>
+    <value>Удаляет последний запрос песни пользователя.</value>
   </data>
   <data name="brw_SongLike" xml:space="preserve">
     <value>Ответ на команду !songlike</value>

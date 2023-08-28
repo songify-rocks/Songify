@@ -599,7 +599,7 @@
     <value>Récompense pour le saut de chanson</value>
   </data>
   <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
-    <value>! Commande ssr déplacée vers la configuration du bot</value>
+    <value>Commande !ssr déplacée vers la configuration du bot</value>
   </data>
   <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
     <value>Niveau d'utilisateur minimum requis pour SR</value>
@@ -638,13 +638,13 @@
     <value>Langue</value>
   </data>
   <data name="brw_cmd_remove" xml:space="preserve">
-    <value>Supprime la dernière demande de chanson de l'utilisateur</value>
+    <value>Supprime la dernière demande de chanson de l'utilisateur.</value>
   </data>
   <data name="brw_SongLike" xml:space="preserve">
     <value>Réponse pour la commande !songlike</value>
   </data>
   <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Ajoute la chanson actuelle à la liste de lecture sélectionnée dans la configuration de Spotify</value>
+    <value>Ajoute la chanson actuelle à la liste de lecture sélectionnée dans la configuration de Spotify.</value>
   </data>
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Reprend ou met en pause la lecture en cours.</value>
