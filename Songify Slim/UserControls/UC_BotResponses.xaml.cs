@@ -201,6 +201,7 @@ namespace Songify_Slim.UserControls
             TbRefund.Text = Settings.BotRespRefund;
             TbSongLike.Text = Settings.BotRespSongLike;
             TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
+            TbRemove.Text = Settings.BotRespRemove;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {

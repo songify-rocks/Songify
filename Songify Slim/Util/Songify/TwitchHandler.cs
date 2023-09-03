@@ -1376,8 +1376,9 @@ namespace Songify_Slim.Util.Songify
                 UpdateQueueWindow();
 
                 string response = Settings.Settings.BotRespRemove;
-                response = response.Replace("{song}",
-                    $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                response = response
+                    .Replace("{song}", tmp)
+                    .Replace("{user}", e.ChatMessage.DisplayName);
                 if (response.StartsWith("[announce "))
                 {
                     await AnnounceInChat(response);
@@ -1386,10 +1387,6 @@ namespace Songify_Slim.Util.Songify
                 {
                     SendChatMessage(e.ChatMessage.Channel, response);
                 }
-
-
-                SendChatMessage(e.ChatMessage.Channel,
-                    $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
             }
             // Songlike command (!songlike)
             else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" &&
