@@ -193,7 +193,7 @@ namespace Songify_Slim.Util.Settings
                                 ChatLiveStatus = false,
                                 OnlyWorkWhenLive = false,
                                 BotRespPlaylist = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})",
-
+                                BotRespRemove = "{user} your previous request ({song}) will be skipped.",
                             };
                         }
                         break;
@@ -621,6 +621,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
         public bool BotCmdPlayPause { get; set; }
         public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
+        public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
     }
 
     public class AppConfig

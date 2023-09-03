@@ -40,6 +40,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="0" Grid.Column="0" Text="{x:Static properties:Resources.brw_ArtistBlocked}" HorizontalAlignment="Left"
                VerticalAlignment="Center"/>
@@ -132,5 +134,12 @@
         />
         <TextBox Grid.Row="28" Grid.Column="1"  x:Name="TbNotFoundInPlaylist" MinHeight="27" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
                  ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" TextChanged="TbNotFoundInPlaylist_TextChanged" />
+        <Border Grid.Row="29" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0,6" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"></Border>
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap" Grid.Row="30" Grid.Column="0" Text="{x:Static properties:Resources.brw_Remove}" HorizontalAlignment="Left" VerticalAlignment="Center"
+        />
+        <TextBox Grid.Row="30" Grid.Column="1"  x:Name="TbRemove" MinHeight="27" TextWrapping="Wrap" AcceptsReturn="True"  VerticalAlignment="Center"
+                 ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" TextChanged="TbRemove_TextChanged"/>
+
+
     </Grid>
 </UserControl>

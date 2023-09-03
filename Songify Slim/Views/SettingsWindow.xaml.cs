@@ -146,6 +146,7 @@ namespace Songify_Slim.Views
             TglBotcmdSsr.IsOn = Settings.TwSrCommand;
             TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
             TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
+            TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;

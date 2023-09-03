@@ -611,6 +611,19 @@ namespace Songify_Slim.Util.Settings
             get => GetLimitSrToPlaylist();
             set => SetLimitSrToPlaylist(value);
         }
+        public static string BotRespRemove { get => GetBot_Resp_Remove(); set => SetBot_Resp_Remove(value); }
+
+        private static void SetBot_Resp_Remove(string value)
+        {
+            _currentConfig.BotConfig.BotRespRemove = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+
+        private static string GetBot_Resp_Remove()
+        {
+            return _currentConfig.BotConfig.BotRespRemove;
+        }
 
         private static void SetLimitSrToPlaylist(bool value)
         {
@@ -762,6 +775,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespSongLike = GetBot_Resp_SongLike(),
                 BotCmdPlayPause = GetBotCmdPlayPause(),
                 BotRespPlaylist = GetBot_Resp_Playlist(),
+                BotRespRemove = GetBot_Resp_Remove(),
             };
 
             AppConfig appConfig = new AppConfig

@@ -1373,9 +1373,21 @@ namespace Songify_Slim.Util.Songify
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
-
-
                 UpdateQueueWindow();
+
+                string response = Settings.Settings.BotRespRemove;
+                response = response.Replace("{song}",
+                    $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                if (response.StartsWith("[announce "))
+                {
+                    await AnnounceInChat(response);
+                }
+                else
+                {
+                    SendChatMessage(e.ChatMessage.Channel, response);
+                }
+
+
                 SendChatMessage(e.ChatMessage.Channel,
                     $"@{e.ChatMessage.DisplayName} your previous request ({tmp}) will be skipped");
             }

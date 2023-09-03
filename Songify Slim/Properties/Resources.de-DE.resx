@@ -667,4 +667,7 @@
   <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
     <value>Antwort, wenn das Lied nicht in der Wiedergabeliste der zulässigen Lieder gefunden wurde</value>
   </data>
+  <data name="brw_Remove" xml:space="preserve">
+    <value>Antwort für den Befehl !remove</value>
+  </data>
 </root>

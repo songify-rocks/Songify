@@ -832,4 +832,8 @@
     <value>Response when the song was not found in the allowed songs playlist</value>
     <comment>Response when the song was not found in the allowed songs playlist</comment>
   </data>
+  <data name="brw_Remove" xml:space="preserve">
+    <value>Response for !remove command</value>
+    <comment>Response for !remove</comment>
+  </data>
 </root>
