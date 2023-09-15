@@ -148,6 +148,7 @@
                                     <MenuItem Tag="1" x:Name="MenuBtnExtra" Header="Extra" Click="MenuBtnExtra_Click" />
                                     <MenuItem Tag="1" x:Name="MenuBtnReq" Header="Requester" Click="MenuBtnReq_Click" />
                                     <MenuItem Tag="1" x:Name="MenuBtnUrl" Header="URL" Click="MenuBtnUrl_Click" />
+                                    <MenuItem Tag="1" x:Name="MenuBtnReturn" Header="New Line" Click="MenuBtnReturn_Click"/>
                                 </ContextMenu>
                             </TextBox.ContextMenu>
                         </TextBox>
@@ -183,7 +184,7 @@
                         <CheckBox x:Name="ChbxSpaces" Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
                               HorizontalAlignment="Left" VerticalAlignment="Center"
                               Checked="ChbxSpaces_Checked" Unchecked="ChbxSpaces_Checked" RenderTransformOrigin="0.47,1.039" Grid.Column="1" Grid.Row="3" Height="18" />
-                        <controls:NumericUpDown Grid.Row="3" Grid.Column="1" x:Name="NudSpaces" Minimum="1" Maximum="10" Interval="1"
+                        <controls:NumericUpDown Grid.Row="3" Grid.Column="1" x:Name="NudSpaces" Minimum="1" Interval="1"
                                             NumericInputMode="Numbers"
                                             ValueChanged="nud_Spaces_ValueChanged" Height="26"
                                             Padding="0" HorizontalAlignment="Right" VerticalAlignment="Center" Width="121"

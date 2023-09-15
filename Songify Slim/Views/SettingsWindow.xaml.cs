@@ -306,9 +306,26 @@ namespace Songify_Slim.Views
                     break;
             }
 
-            // Appends Rightclick-Text from the output text box (parameters)
-            tb?.AppendText(text);
-            tb?.Select(TxtbxOutputformat.Text.Length, 0);
+            // Get the current caret position and the length of the selected text
+            int selectionStart = tb.SelectionStart;
+            int selectionLength = tb.SelectionLength;
+
+            // Remove any selected text (if any)
+            if (selectionLength > 0)
+            {
+                tb.Text = tb.Text.Remove(selectionStart, selectionLength);
+            }
+
+            // Insert the new text at the caret position
+            tb.Text = tb.Text.Insert(selectionStart, text);
+
+            // Place the caret after the inserted text
+            tb.SelectionStart = selectionStart + text.Length;
+            tb.SelectionLength = 0;
+
+            //// Appends Rightclick-Text from the output text box (parameters)
+            //tb?.AppendText(text);
+            //tb?.Select(TxtbxOutputformat.Text.Length, 0);
             if (tb?.ContextMenu != null) tb.ContextMenu.IsOpen = false;
         }
 
@@ -547,6 +564,10 @@ namespace Songify_Slim.Views
         {
             AppendText((sender as MenuItem)?.Tag.ToString(), "{artist}");
             // appends text
+        }
+        private void MenuBtnReturn_Click(object sender, RoutedEventArgs e)
+        {
+            AppendText((sender as MenuItem)?.Tag.ToString(), @"\n");
         }
 
         private void MenuBtnExtra_Click(object sender, RoutedEventArgs e)
@@ -1361,5 +1382,7 @@ namespace Songify_Slim.Views
                 return;
             Settings.SpotifySongLimitPlaylist = item.Playlist.Id;
         }
+
+
     }
 }

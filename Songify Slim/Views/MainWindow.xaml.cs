@@ -143,8 +143,7 @@ namespace Songify_Slim.Views
 
             // Add trailing spaces for better scroll
             if (Settings.AppendSpaces)
-                for (int i = 0; i < Settings.SpaceCount; i++)
-                    currSong += " ";
+                currSong = currSong.PadRight(currSong.Length + Settings.SpaceCount);
 
             return currSong;
         }
