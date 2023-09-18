@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -564,7 +565,6 @@ namespace Songify_Slim.Util.Songify
 
         private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
-            string response;
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 SendChatMessage(e.ChatMessage.Channel, "No song found.");
@@ -608,7 +608,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (IsArtistBlacklisted(track, e, out response))
+            if (IsArtistBlacklisted(track, e, out string response))
             {
                 SendChatMessage(e.ChatMessage.Channel, response);
                 return;
@@ -663,6 +663,8 @@ namespace Songify_Slim.Util.Songify
                 response = Settings.Settings.BotRespPlaylist;
                 response = response.Replace("{playlist_name}", isAllowedSong.Item2.Name);
                 response = response.Replace("{playlist_url}", $"https://open.spotify.com/playlist/{isAllowedSong.Item2.Id}");
+                GlobalObjects.AllowedPlaylistName = isAllowedSong.Item2.Name;
+                GlobalObjects.AllowedPlaylistUrl = $"https://open.spotify.com/playlist/{isAllowedSong.Item2.Id}";
                 return Tuple.Create(false, response);
             }
             return Tuple.Create(true, response);
@@ -870,6 +872,65 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+        private static string GetFormattedRespone(string response, string username = "", string errormsg = "", string votes = "")
+        {
+            string returnString = response;
+            Dictionary<string, string> replacements = new()
+            {
+                {"{user}", username },
+                {"{artist}", GlobalObjects.CurrentSong.Artists },
+                {"{title}", GlobalObjects.CurrentSong.Title },
+                {"{maxreq}", Settings.Settings.TwSrMaxReq.ToString() },
+                {"{errormsg}", errormsg},
+                {"{maxlength}", Settings.Settings.MaxSongLength.ToString()},
+                {"{votes}", votes},
+                {"{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}"},
+                {"{req}", GlobalObjects.Requester},
+                {"{url}", GlobalObjects.CurrentSong.Url},
+                {"{playlist_name}", GlobalObjects.AllowedPlaylistName},
+                {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"}
+            };
+            foreach (var pair in replacements)
+            {
+                returnString = returnString.Replace(pair.Key, pair.Value);
+            }
+            RequestObject rq = null;
+
+            if (GlobalObjects.ReqList.Count > 0)
+            {
+                rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == GlobalObjects.CurrentSong.SongId);
+                if (rq != null)
+                {
+                    returnString = returnString.Replace("{{", "")
+                               .Replace("}}", "")
+                               .Replace("{req}", rq.Requester);
+                }
+                else
+                {
+                    RemoveDelimitedSubstring(ref returnString, "{{", "}}");
+                }
+            }
+
+            return returnString;
+        }
+
+        private static void RemoveDelimitedSubstring(ref string input, string startDelimiter, string endDelimiter)
+        {
+            try
+            {
+                int start = input.IndexOf(startDelimiter, StringComparison.Ordinal);
+                int end = input.LastIndexOf(endDelimiter, StringComparison.Ordinal) + endDelimiter.Length;
+                if (start >= 0)
+                {
+                    input = input.Remove(start, end - start);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
         private static async Task AnnounceInChat(string msg)
         {
             Tuple<string, AnnouncementColors> tup = GetStringAndColor(msg);
@@ -1048,7 +1109,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                AddSong(GetTrackIdFromInput(e.ChatMessage.Message), e);
+                AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e);
             }
 
             // Same code from above but it reacts to a command instead of rewards
@@ -1098,7 +1159,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 AddSong(
-                    GetTrackIdFromInput(e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger}", "")
+                    await GetTrackIdFromInput(e.ChatMessage.Message.Replace($"!{Settings.Settings.BotCmdSsrTrigger}", "")
                         .Trim()), e);
 
                 // start the command cooldown
@@ -1657,11 +1718,12 @@ namespace Songify_Slim.Util.Songify
             return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
         }
 
-        private static string GetTrackIdFromInput(string input)
+        private static async Task<string> GetTrackIdFromInput(string input)
         {
             if (input.StartsWith("https://spotify.link/"))
             {
-                return "shortened";
+                input = await GetFullSpotifyUrl(input);
+                //return "shortened";
             }
 
             if (input.StartsWith("spotify:track:"))
@@ -1695,6 +1757,16 @@ namespace Songify_Slim.Util.Songify
             // if a track was found convert the object to FullTrack (easier use than searchItem)
             FullTrack fullTrack = searchItem.Tracks.Items[0];
             return fullTrack.Id;
+        }
+
+        private static async Task<string> GetFullSpotifyUrl(string input)
+        {
+            using HttpClient httpClient = new();
+            HttpRequestMessage request = new(HttpMethod.Get, input);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
+            if (response.RequestMessage.RequestUri != null)
+                return response.RequestMessage.RequestUri.AbsoluteUri;
+            return "";
         }
 
         private static bool IsArtistBlacklisted(FullTrack track, OnMessageReceivedArgs e, out string response)
@@ -2071,7 +2143,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-                trackId = GetTrackIdFromInput(redemption.UserInput);
+                trackId = await GetTrackIdFromInput(redemption.UserInput);
                 if (trackId == "shortened")
                 {
                     SendChatMessage(Settings.Settings.TwChannel,
