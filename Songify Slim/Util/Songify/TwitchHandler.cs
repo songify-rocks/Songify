@@ -1555,7 +1555,7 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{artist}", artists);
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
-            response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count + 1}");
+            response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
             response = response.Replace("{errormsg}", "");
             response = CleanFormatString(response);
 
