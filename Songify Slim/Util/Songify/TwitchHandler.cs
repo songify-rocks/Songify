@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
+using Octokit;
 using Songify_Slim.Models;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
@@ -1100,7 +1101,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                // if onCooldown skip
+                // if onCooldown skips
                 if (_onCooldown) return;
 
                 if (ApiHandler.Spotify == null)
@@ -1190,10 +1191,15 @@ namespace Songify_Slim.Util.Songify
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    int? reqListCount = GlobalObjects.ReqList.Count;
-                    count = (int)reqListCount;
+                    count = GlobalObjects.ReqList.Count;
                     if (count > 0)
-                        name = GlobalObjects.ReqList.First().Requester;
+                    {
+                        RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
+                        if (firstRequest != null && firstRequest.Trackid == GlobalObjects.CurrentSong.SongId)
+                        {
+                            name = firstRequest.Requester;
+                        }
+                    }
                 });
 
                 if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
