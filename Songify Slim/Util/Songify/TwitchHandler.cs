@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
-using Octokit;
 using Songify_Slim.Models;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
@@ -553,6 +552,7 @@ namespace Songify_Slim.Util.Songify
             msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} {(GlobalObjects.CurrentSong.Title != "" ? " - " + GlobalObjects.CurrentSong.Title : "")}");
             msg = msg.Replace("{artist}", $"{GlobalObjects.CurrentSong.Artists}");
             msg = msg.Replace("{title}", $"{GlobalObjects.CurrentSong.Title}");
+            msg = msg.Replace(@"\n", " - ").Replace("  ", " ");
 
             if (msg.StartsWith("[announce "))
             {

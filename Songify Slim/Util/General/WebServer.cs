@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,7 +25,16 @@ namespace Songify_Slim.Util.General
                 return;
             if (!PortIsFree(port)) return;
             // Listen on the specified port.
-            _listener.Prefixes.Add($"http://localhost:{port}/");
+            _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
+            //If the app is running as admin also add the current IP as a prefix
+            if (IsRunningAsAdministrator())
+            {
+                string localIP = GetLocalIPAddress();
+                if (!string.IsNullOrWhiteSpace(localIP))
+                {
+                    _listener.Prefixes.Add($"http://{localIP}:{port}/");
+                }
+            }
             _listener.Start();
             Run = true;
             Task.Run(() =>
@@ -51,6 +62,32 @@ namespace Songify_Slim.Util.General
                 }
 
             });
+        }
+        public static string GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            return null;
+        }
+
+        public static bool IsRunningAsAdministrator()
+        {
+            try
+            {
+                WindowsIdentity identity = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public void StopWebServer()

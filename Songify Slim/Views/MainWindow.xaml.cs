@@ -958,10 +958,24 @@ namespace Songify_Slim.Views
         }
         public static string InterpretEscapeCharacters(string input)
         {
-            return input
+            string replacedInput = input
                 .Replace(@"\t", "\t")
                 .Replace(@"\n", Environment.NewLine)
                 .Replace(@"\r", "\r");
+
+            // Split the replaced input into lines
+            string[] lines = replacedInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+
+            // Trim the leading spaces from each line
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[i] = lines[i].TrimStart(' ');
+            }
+
+            // Join the lines back into a single string
+            string result = string.Join(Environment.NewLine, lines);
+
+            return result;
         }
         private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
                     bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
@@ -1160,7 +1174,7 @@ namespace Songify_Slim.Views
                 if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
 
                 // if upload is enabled
-                if (Settings.Upload) UploadSong(CurrSong.Trim(), rCover);
+                if (Settings.Upload) UploadSong(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), rCover);
 
                 if (_firstRun)
                 {
@@ -1224,7 +1238,7 @@ namespace Songify_Slim.Views
                     // Upload Song
                     try
                     {
-                        WebHelper.UploadHistory(CurrSong.Trim(), unixTimestamp);
+                        WebHelper.UploadHistory(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
                     }
                     catch (Exception ex)
                     {
@@ -1254,7 +1268,7 @@ namespace Songify_Slim.Views
             // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(
                 DispatcherPriority.Normal,
-                new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim(); }));
+                new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "); }));
         }
         private void WriteSplitOutput(string artist, string title, string extra)
         {
