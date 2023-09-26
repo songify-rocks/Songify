@@ -529,7 +529,7 @@ namespace Songify_Slim.Views
 
             // text in the bottom right
             if (GlobalObjects.IsBeta)
-                LblCopyright.Content = $"Songify v1.5.2.beta_1 Copyright ©";
+                LblCopyright.Content = $"Songify v1.5.2.beta_2 Copyright ©";
             else
                 LblCopyright.Content = $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
