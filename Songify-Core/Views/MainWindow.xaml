@@ -1,0 +1,312 @@
+﻿<controls:MetroWindow x:Class="Songify_Slim.Views.MainWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
+                      xmlns:local="clr-namespace:Songify_Slim.Properties"
+                      mc:Ignorable="d"
+                      TextOptions.TextFormattingMode="Display"
+                      RenderOptions.BitmapScalingMode="NearestNeighbor"
+                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:songifySlim="clr-namespace:Songify_Slim"
+                      Title="Songify" Height="285" Width="588" Loaded="MetroWindowLoaded"
+                      StateChanged="MetroWindowStateChanged" ResizeMode="CanMinimize" Closed="MetroWindowClosed"
+                      ShowDialogsOverTitleBar="False"
+                      Closing="MetroWindow_Closing"
+                      KeyDown="MetroWindow_KeyDown"
+                      SaveWindowPosition="True" LocationChanged="MetroWindow_LocationChanged">
+    <controls:MetroWindow.Resources>
+        <Style TargetType="{x:Type dialog:MessageDialog}"
+               x:Key="NewCustomMessageDialogStyle"
+               BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="DialogShownStoryboard">
+                                <DoubleAnimation AccelerationRatio=".9"
+                                                 BeginTime="0:0:0"
+                                                 Duration="0:0:0.2"
+                                                 Storyboard.TargetProperty="Opacity"
+                                                 To="1" />
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <Grid Background="{TemplateBinding Background}">
+                            <Border FocusVisualStyle="{x:Null}"
+                                    Focusable="False">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <ContentPresenter Grid.Row="0"
+                                                      Content="{TemplateBinding DialogTop}" />
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="10*" />
+                                            <ColumnDefinition Width="80*" />
+                                            <ColumnDefinition Width="10*" />
+                                        </Grid.ColumnDefinitions>
+                                        <!--  Content area  -->
+                                        <Grid Grid.Column="1"
+                                              Margin="0 10 0 0">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Grid.Row="0"
+                                                       FontSize="{DynamicResource DialogTitleFontSize}"
+                                                       Foreground="{TemplateBinding Foreground}"
+                                                       Text="{TemplateBinding Title}"
+                                                       TextWrapping="Wrap" />
+                                            <ContentPresenter Grid.Row="1"
+                                                              Content="{TemplateBinding Content}" />
+                                        </Grid>
+                                    </Grid>
+                                    <ContentPresenter Grid.Row="2"
+                                                      Content="{TemplateBinding DialogBottom}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}" />
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="{x:Type dialog:MessageDialog}" BasedOn="{StaticResource NewCustomMessageDialogStyle}" />
+    </controls:MetroWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" VerticalAlignment="Top" Padding="0" Margin="0,0,0,0" Background="Transparent">
+            <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Settings}" Click="BtnSettings_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Widget}" Click="BtnWidget_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_PatchNotes}" Click="BtnPatchNotes_Click" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                    <MenuItem Header="FAQ" Click="BtnFAQ_Click" />
+                    <MenuItem Header="GitHub" Click="BtnGitHub_Click" />
+                    <MenuItem Header="Discord" Click="BtnDiscord_Click" />
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Help_LogFolder}" Click="BtnLogFolderClick" />
+                    <MenuItem Header="{x:Static local:Resources.mw_menu_Help_About}" Click="BtnAboutClick" />
+                </MenuItem>
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Exit}" x:Name="mi_Exit" Click="mi_Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="Twitch" ToolTip="Connect to Twitch" IsTabStop="False">
+                <MenuItem x:Name="mi_TwitchAPI" Click="mi_TwitchAPI_Click" Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}"/>
+                <MenuItem x:Name="mi_TwitchConnect" Header="{x:Static local:Resources.mw_menu_Connect}" Tag="Connect" Click="BtnTwitch_Click"/>
+                <MenuItem x:Name="mi_TwitchDisconnect" Header="{x:Static local:Resources.mw_menu_Disconnect}" Tag="Disconnect"
+                          IsEnabled="False" Click="BtnTwitch_Click" />
+                <MenuItem x:Name="mi_TwitchCheckOnlineStatus" Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}" Click="Mi_TwitchCheckOnlineStatus_OnClick"/>
+                <MenuItem Visibility="Collapsed" Header="{x:Static local:Resources.mw_menu_Twitch_Bot}" Click="mi_TW_BotResponses_Click">
+                    <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click"/>-->
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="{x:Static local:Resources.mw_menu_SongRequests}">
+                <MenuItem x:Name="mi_Queue" Header="{x:Static local:Resources.mw_menu_Queue_Window}"
+                          Click="Mi_Queue_Click" Tag="Window" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Queue_Browser}" Click="Mi_Queue_Click"
+                              Tag="Browser" />
+                <MenuItem x:Name="mi_QueueClear" Header="{x:Static local:Resources.mw_menu_Queue_Clear}"
+                              Click="Mi_QueueClear_Click" />
+                <MenuItem x:Name="mi_Blacklist" Header="{x:Static local:Resources.mw_menu_Blacklist}"
+                          Click="Mi_Blacklist_Click" />
+            </MenuItem>
+            <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Window}" Tag="Window"
+                          Click="BtnHistory_Click" />
+                <MenuItem Header="{x:Static local:Resources.mw_menu_History_Browser}" Tag="Browser"
+                          Click="BtnHistory_Click" />
+            </MenuItem>
+            <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
+                <MenuItem Header="{x:Static local:Resources.mw_menu_Console}" Click="BtnMenuViewConsole_Click"></MenuItem>
+                <MenuItem Header="Web Server URL" Click="BtnWebServerUrl_Click"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="cbx_Source" HorizontalAlignment="Right" VerticalAlignment="Top" Width="116" SelectedIndex="0"
+                  IsTabStop="False" Padding="2" Margin="0,3,6,0" />
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image x:Name="img_cover" Grid.Column="0" HorizontalAlignment="Left" Height="175" VerticalAlignment="Top" Width="175"
+                   Margin="10,0,0,0" Visibility="Hidden" />
+            <TextBlock Grid.Column="1" x:Name="TxtblockLiveoutput" FontSize="22" Padding="10"
+                       Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap"
+                       MaxWidth="400" MaxHeight="185" />
+        </Grid>
+        <StackPanel Margin="0,20,0,-5" Grid.Row="2" Grid.Column="0" Orientation="Horizontal" Visibility="Collapsed">
+            <iconPacks:PackIconForkAwesome Kind="ArrowDown" Margin="36,7,-8,0" RenderTransformOrigin="0.5,0.5">
+                <iconPacks:PackIconForkAwesome.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </iconPacks:PackIconForkAwesome.RenderTransform>
+            </iconPacks:PackIconForkAwesome>
+            <Label Content="PubSub has been disabled due to bugs"></Label>
+        </StackPanel>
+        <Button Grid.Row="2" Grid.Column="1"  Cursor="Hand" BorderThickness="0" Click="BtnPaypal_Click" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,16,0" Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <iconPacks:PackIconForkAwesome Kind="Buymeacoffee" Margin="0,0,5,0"/>
+                    <TextBlock Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" VerticalAlignment="Center"/>
+                    <StackPanel.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="50" CenterY="9"/>
+                            <TranslateTransform X="0" Y="0"/>
+                        </TransformGroup>
+                    </StackPanel.RenderTransform>
+                    <StackPanel.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Name="wiggle">
+                                <Storyboard RepeatBehavior="Forever">
+                                    <DoubleAnimation Storyboard.TargetName="RotateTransform"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             From="-2" To="2" Duration="0:0:1"
+                                                             BeginTime="0:0:0"
+                                                             RepeatBehavior="Forever"
+                                                             AutoReverse="True"
+                                                              >
+                                    </DoubleAnimation>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </StackPanel.Triggers>
+                </StackPanel>
+            </Button.Content>
+        </Button>
+        <StatusBar Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3" x:Name="sb_Main" Height="20" VerticalAlignment="Bottom" Padding="0"
+                   ScrollViewer.CanContentScroll="True" Margin="0" UseLayoutRounding="False" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+            <StatusBarItem Padding="3,0,0,0" Background="{DynamicResource MahApps.Brushes.Control.Background}">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0" >
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchBot" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="IndianRed">
+                                        <Setter Property="ToolTip" Value="Twitch Chat Bot: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch Chat Bot: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconTwitchAPI" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="IndianRed">
+                                        <Setter Property="ToolTip" Value="Twitch API: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch API: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons Visibility="Collapsed" x:Name="IconTwitchPubSub" Width="14" Kind="XCircleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Gray">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Disabled"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Twitch PubSub: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebSpotify" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,8,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="IndianRed">
+                                        <Setter Property="ToolTip" Value="Spotify: Not Connected"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="Spotify: Connected"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                    <iconPacks:PackIconBootstrapIcons x:Name="IconWebServer" Width="14" Kind="ExclamationTriangleFill" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0">
+                        <iconPacks:PackIconBootstrapIcons.Style>
+                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
+                                <Style.Triggers>
+                                    <Trigger Property="Foreground" Value="Gray">
+                                        <Setter Property="ToolTip" Value="WebServer: Not Running"/>
+                                    </Trigger>
+                                    <Trigger Property="Foreground" Value="GreenYellow">
+                                        <Setter Property="ToolTip" Value="WebServer: Running"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </iconPacks:PackIconBootstrapIcons.Style>
+                    </iconPacks:PackIconBootstrapIcons>
+                </StackPanel>
+            </StatusBarItem>
+            <Border Padding="3,0,6,0" Height="20" Margin="0,-4,-4,-4" BorderThickness="1,0,0,0" CornerRadius="10,0,0,10">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsActive,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=IsActive,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <DockPanel LastChildFill="False" Width="490">
+                    <StatusBarItem x:Name="LblStatus">
+                        <StatusBar/>
+                    </StatusBarItem>
+                    <StatusBarItem HorizontalAlignment="Right" Padding="0" Margin="0,-2,0,-2" DockPanel.Dock="Right">
+                        <StackPanel Orientation="Horizontal">
+                            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©"/>
+                            <StatusBarItem x:Name="LblCopyrightLink" FontStyle="Italic">
+                                <Hyperlink  NavigateUri="https://songify.overcode.tv" RequestNavigate="Hyperlink_RequestNavigate"
+                                    FontStyle="Normal">
+                                    <Hyperlink.Foreground>
+                                        <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}"/>
+                                    </Hyperlink.Foreground>
+                                    Songify.Rocks
+                                </Hyperlink>
+                            </StatusBarItem>
+                        </StackPanel>
+                    </StatusBarItem>
+                </DockPanel>
+            </Border>
+        </StatusBar>
+    </Grid>
+</controls:MetroWindow>
