@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using System.Xml;
 using System.Xml.Linq;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
@@ -958,6 +959,8 @@ namespace Songify_Slim.Views
         }
         public static string InterpretEscapeCharacters(string input)
         {
+            if(input == null)
+                return null;
             string replacedInput = input
                 .Replace(@"\t", "\t")
                 .Replace(@"\n", Environment.NewLine)
@@ -980,6 +983,7 @@ namespace Songify_Slim.Views
         private void WriteSong(string rArtist, string rTitle, string rExtra, string rCover = null,
                     bool forceUpdate = false, string rTrackId = null, string rTrackUrl = null)
         {
+            RequestObject rq = null;
             _currentId = rTrackId;
 
             //if(rTrackUrl != null)
@@ -1048,7 +1052,7 @@ namespace Songify_Slim.Views
 
                 if (GlobalObjects.ReqList.Count > 0)
                 {
-                    RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == _currentId);
+                    rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == _currentId);
                     if (rq != null)
                     {
                         CurrSong = CurrSong.Replace("{{", "");
@@ -1171,7 +1175,7 @@ namespace Songify_Slim.Views
                     Logger.LogStr($"File {_songPath} couldn't be accessed.");
                 }
 
-                if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra);
+                if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra, rq?.Requester);
 
                 // if upload is enabled
                 if (Settings.Upload) UploadSong(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), rCover);
@@ -1270,7 +1274,7 @@ namespace Songify_Slim.Views
                 DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "); }));
         }
-        private void WriteSplitOutput(string artist, string title, string extra)
+        private void WriteSplitOutput(string artist, string title, string extra, string requester = "")
         {
             // Writes the output to 2 different text files
 
@@ -1280,8 +1284,12 @@ namespace Songify_Slim.Views
             if (!File.Exists(_root + "/Title.txt"))
                 File.Create(_root + "/Title.txt").Close();
 
+            if (!File.Exists(_root + "/Requester.txt"))
+                File.Create(_root + "/Requester.txt").Close();
+
             WriteOutput(_root + "/Artist.txt", artist);
             WriteOutput(_root + "/Title.txt", title + extra);
+            WriteOutput(_root + "/Requester.txt", requester);
         }
 
         private void BtnLogFolderClick(object sender, RoutedEventArgs e)
