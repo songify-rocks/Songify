@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
+using Songify_Core.Models;
+using Songify_Core.Util.General;
+using Songify_Core.Views;
 using SpotifyAPI.Web;
 using Swan.Formatters;
 using System;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Core.Util.Songify
 {
     /// <summary>
     ///     This class is for retrieving data of currently playing songs
@@ -427,7 +427,7 @@ namespace Songify_Slim.Util.Songify
                 DurationMs = 0,
                 DurationPercentage = 0,
                 DurationTotal = track.DurationMs,
-            }
+            };
 
             try
             {
@@ -539,19 +539,24 @@ namespace Songify_Slim.Util.Songify
             }
 
             bool firstFetch = true;
-            Paging<PlaylistTrack> tracks = null;
-            do
+
+
+
+            FullPlaylist? playlist = await ApiHandler.GetPlaylistAsync(Settings.Settings.SpotifyPlaylistId);
+            List<FullTrack> tracks = new();
+
+            foreach (PlaylistTrack<IPlayableItem> item in playlist.Tracks.Items)
             {
-                tracks = firstFetch
-                    ? await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
-                    : await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
-                        tracks.Offset + tracks.Limit);
-                if (tracks.Items.Any(t => t.Track.Id == id))
+                if (item.Track.Type == ItemType.Track)
                 {
-                    return true;
+                    tracks.Add((FullTrack)item.Track);
                 }
-                firstFetch = false;
-            } while (tracks.HasNextPage());
+            }
+
+            if (tracks.Any(t => t.Id == id))
+            {
+                return true;
+            }
             return false;
         }
     }

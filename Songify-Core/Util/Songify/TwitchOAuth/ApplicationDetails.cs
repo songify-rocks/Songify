@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Songify_Slim.Util.Songify.TwitchOAuth
+namespace Songify_Core.Util.Songify.TwitchOAuth
 {
     public static class ApplicationDetails
     {

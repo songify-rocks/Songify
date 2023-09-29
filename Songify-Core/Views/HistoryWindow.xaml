@@ -1,14 +1,14 @@
-﻿<controls:MetroWindow x:Class="Songify_Slim.Views.HistoryWindow"
+﻿<controls:MetroWindow x:Class="Songify_Core.Views.HistoryWindow"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+                      xmlns:Properties="clr-namespace:Songify_Core.Properties"
                       mc:Ignorable="d"
                       xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
-
-                      Title="{x:Static properties:Resources.WinTitle_History}" Height="247.9" Width="588" Loaded="MetroWindow_Loaded"
+                      Height="247.9" Width="588" Loaded="MetroWindow_Loaded"
+                      Title="History"
                       WindowStartupLocation="CenterOwner" Closed="MetroWindow_Closed">
 
     <controls:MetroWindow.RightWindowCommands>
@@ -35,8 +35,8 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="{x:Static properties:Resources.s_Time}" IsReadOnly="True" Binding="{Binding Path=Time}" />
-                <DataGridTextColumn Header="{x:Static properties:Resources.s_Name}" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" />
+                <DataGridTextColumn Header="{x:Static Properties:Resources.s_Time }" IsReadOnly="True" Binding="{Binding Path=Time}" />
+                <DataGridTextColumn Header="{x:Static Properties:Resources.s_Name}" IsReadOnly="True" Binding="{Binding Path=Name}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 

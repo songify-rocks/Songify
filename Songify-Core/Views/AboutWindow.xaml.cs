@@ -1,4 +1,4 @@
-﻿namespace Songify_Slim.Views
+﻿namespace Songify_Core.Views
 {
     /// <summary>
     ///     Interaktionslogik für AboutWindow.xaml

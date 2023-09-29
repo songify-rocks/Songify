@@ -1,10 +1,10 @@
 ﻿using MahApps.Metro.IconPacks;
-using Songify_Slim.Util.General;
+using Songify_Core.Util.General;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     /// Interaction logic for Window_Console.xaml

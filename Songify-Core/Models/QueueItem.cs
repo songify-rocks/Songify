@@ -1,4 +1,4 @@
-﻿namespace Songify_Slim.Models
+﻿namespace Songify_Core.Models
 {
     internal class QueueItem
     {

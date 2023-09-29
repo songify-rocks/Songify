@@ -1,11 +1,11 @@
 ﻿using MahApps.Metro.Controls;
-using Songify_Slim.Util.Settings;
+using Songify_Core.Util.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     ///     Interaktionslogik für Window_Botresponse.xaml

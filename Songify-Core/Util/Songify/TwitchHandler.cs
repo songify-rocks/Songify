@@ -2,11 +2,11 @@
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Songify_Core.Properties;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify.TwitchOAuth;
-using Songify_Slim.Views;
+using Songify_Core.Models;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify.TwitchOAuth;
+using Songify_Core.Views;
 using SpotifyAPI.Web;
 using Swan;
 using Swan.Formatters;
@@ -43,7 +43,7 @@ using TwitchLib.PubSub.Events;
 using Application = System.Windows.Application;
 using Timer = System.Timers.Timer;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Core.Util.Songify
 {
     // This class handles everything regarding to twitch.tv
     public static class TwitchHandler

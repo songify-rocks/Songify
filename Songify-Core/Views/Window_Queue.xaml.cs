@@ -1,8 +1,8 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
+using Songify_Core.Models;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     ///     Queue Window to display the current song queue

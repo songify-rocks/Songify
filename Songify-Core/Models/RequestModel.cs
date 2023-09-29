@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Songify_Slim.Models
+namespace Songify_Core.Models
 {
     public class RequestObject
     {

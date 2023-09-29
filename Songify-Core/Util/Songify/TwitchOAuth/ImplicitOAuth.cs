@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
-using Songify_Slim.Util.General;
+using Songify_Core.Util.General;
 
-namespace Songify_Slim.Util.Songify.TwitchOAuth
+namespace Songify_Core.Util.Songify.TwitchOAuth
 {
     public class ImplicitOAuth
     {

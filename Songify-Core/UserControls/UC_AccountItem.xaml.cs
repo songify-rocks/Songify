@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Songify_Slim.UserControls
+namespace Songify_Core.UserControls
 {
     /// <summary>
     /// Interaction logic for UC_AccountItem.xaml

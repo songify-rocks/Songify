@@ -1,10 +1,10 @@
 ﻿using AutoUpdaterDotNET;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
+using Songify_Core.Models;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify;
 using Swan;
 using Swan.Formatters;
 using System;
@@ -37,7 +37,7 @@ using Timer = System.Timers.Timer;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     public partial class MainWindow
     {

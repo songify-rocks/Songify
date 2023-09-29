@@ -1,5 +1,5 @@
-﻿using Songify_Slim.Util.General;
-using Songify_Slim.Views;
+﻿using Songify_Core.Util.General;
+using Songify_Core.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +14,7 @@ using YamlDotNet.Serialization.NamingConventions;
 using static System.Convert;
 using Application = System.Windows.Application;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Core.Util.Settings
 {
     /// <summary>
     ///     This class is for writing, exporting and importing the config file

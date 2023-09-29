@@ -1,11 +1,11 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.UserControls;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
-using Songify_Slim.Util.Songify.TwitchOAuth;
+using Songify_Core.UserControls;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify;
+using Songify_Core.Util.Songify.TwitchOAuth;
 using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings

@@ -1,6 +1,6 @@
-﻿using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Views;
+﻿using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Views;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 
-namespace Songify_Slim.UserControls
+namespace Songify_Core.UserControls
 {
     /// <summary>
     ///     Interaktionslogik für UC_BotResponses.xaml

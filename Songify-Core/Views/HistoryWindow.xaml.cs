@@ -1,5 +1,5 @@
-﻿using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
+﻿using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Linq;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     ///     Interaction logic for HistoryWindow.xaml
@@ -35,9 +35,9 @@ namespace Songify_Slim.Views
                 Tglbtn_Save.IsChecked = Settings.SaveHistory;
                 Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
-                Tglbtn_Save.Content = Settings.SaveHistory ? $"{Properties.Resources.s_Save} ✔️" : $"{Properties.Resources.s_Save} ❌";
+                Tglbtn_Save.Content = Settings.SaveHistory ? $"{Songify_Core.Properties.Resources.s_Save} ✔️" : $"{Songify_Core.Properties.Resources.s_Save} ❌";
 
-                Tglbtn_Upload.Content = Settings.UploadHistory ? $"{Properties.Resources.s_Upload} ✔️" : $"{Properties.Resources.s_Upload} ❌";
+                Tglbtn_Upload.Content = Settings.UploadHistory ? $"{Songify_Core.Properties.Resources.s_Upload} ✔️" : $"{Songify_Core.Properties.Resources.s_Upload} ❌";
 
                 // listen to changes made to the history.shr file
                 _watcher = new FileSystemWatcher

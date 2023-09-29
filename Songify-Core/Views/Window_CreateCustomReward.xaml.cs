@@ -1,5 +1,5 @@
-﻿using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
+﻿using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     /// Interaction logic for Window_CreateCustomReward.xaml

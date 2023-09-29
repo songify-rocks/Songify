@@ -1,12 +1,12 @@
-﻿<mah:MetroWindow x:Class="Songify_Slim.Views.WindowConsole"
+﻿<mah:MetroWindow x:Class="Songify_Core.Views.WindowConsole"
                       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:local="clr-namespace:Songify_Slim.Views"
+                      xmlns:local="clr-namespace:Songify_Core.Views"
                       xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
+                      xmlns:properties="clr-namespace:Songify_Core.Properties"
                       mc:Ignorable="d"
                       Title="{x:Static properties:Resources.mw_menu_Console}" ShowMinButton="False" ShowMaxRestoreButton="False" Height="285" MinHeight="285" MaxHeight="285" Width="285" ResizeMode="CanResize" ShowActivated="False" Loaded="MetroWindow_Loaded" Closing="MetroWindow_Closing" IsWindowDraggable="False" LostFocus="MetroWindow_LostFocus">
     <mah:MetroWindow.LeftWindowCommands>

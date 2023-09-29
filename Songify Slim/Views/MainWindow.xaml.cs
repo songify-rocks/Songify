@@ -1159,7 +1159,7 @@ namespace Songify_Slim.Views
             string temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
-            if (temp.Trim() != CurrSong.Trim() || forceUpdate || _firstRun)
+            if (temp.Replace("\n","").Replace("\r","").Trim() != Regex.Replace(CurrSong.Replace("\\n", "").Replace("\\r", "").Trim(), "\\s+", " ") || forceUpdate || _firstRun)
             {
                 if (temp.Trim() != CurrSong.Trim())
                     // Clear the SkipVotes list in TwitchHandler Class

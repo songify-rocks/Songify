@@ -1,9 +1,9 @@
-﻿using Songify_Slim.Views;
+﻿using Songify_Core.Views;
 using System;
 using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Core.Util.Settings
 {
     /// <summary>
     ///     This class is a getter and setter for Settings

@@ -1,8 +1,8 @@
 using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Views;
+using Songify_Core.Models;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Settings;
+using Songify_Core.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
@@ -17,7 +17,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Timer = System.Timers.Timer;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Core.Util.Songify
 {
     // This class handles everything regarding Spotify-API integration
     public static class ApiHandler

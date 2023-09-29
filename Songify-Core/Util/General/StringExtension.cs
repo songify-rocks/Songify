@@ -3,7 +3,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Core.Util.General
 {
     public static class StringExtension
     {

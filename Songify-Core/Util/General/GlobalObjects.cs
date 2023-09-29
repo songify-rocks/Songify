@@ -1,4 +1,4 @@
-﻿using Songify_Slim.Models;
+﻿using Songify_Core.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Core.Util.General
 {
     public static class GlobalObjects
     {

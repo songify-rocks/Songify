@@ -1,7 +1,7 @@
 ﻿using Markdig;
 using Octokit;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Songify;
+using Songify_Core.Util.General;
+using Songify_Core.Util.Songify;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +17,7 @@ using Application = System.Windows.Application;
 using Markdown = Markdig.Wpf.Markdown;
 using XamlReader = System.Windows.Markup.XamlReader;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     /// Interaction logic for Window_Patchnotes.xaml

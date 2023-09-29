@@ -1,7 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
+using Songify_Core.Util.Settings;
+using Songify_Core.Util.Songify;
 using SpotifyAPI.Web.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Songify_Slim.Views
+namespace Songify_Core.Views
 {
     /// <summary>
     ///     This window dispalys and manages the blacklist

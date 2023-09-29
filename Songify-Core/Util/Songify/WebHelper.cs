@@ -1,5 +1,5 @@
-﻿using Songify_Slim.Models;
-using Songify_Slim.Util.General;
+﻿using Songify_Core.Models;
+using Songify_Core.Util.General;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Core.Util.Songify
 {
     internal static class WebHelper
     {

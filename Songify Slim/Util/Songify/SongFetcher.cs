@@ -448,9 +448,10 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
                         do
                         {
-                            //GlobalObjects.ReqList.Remove(previous);
-                            GlobalObjects.ReqList.Remove(GlobalObjects.ReqList.Select(o => o).Where(o => o.Trackid == previous.Trackid).First());
-
+                            Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                GlobalObjects.ReqList.Remove(previous);
+                            });
                             Thread.Sleep(250);
                         } while (GlobalObjects.ReqList.Contains(previous));
 

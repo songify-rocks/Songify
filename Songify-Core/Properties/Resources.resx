@@ -451,6 +451,9 @@
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
+  <data name="String1" xml:space="preserve">
+    <value>asdasd</value>
+  </data>
   <data name="sw_Appearance_Color" xml:space="preserve">
     <value>Color:</value>
     <comment>Label content for "Color"</comment>

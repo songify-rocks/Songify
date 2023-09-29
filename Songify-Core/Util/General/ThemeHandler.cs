@@ -1,7 +1,7 @@
 ﻿using ControlzEx.Theming;
 using System.Windows;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Core.Util.General
 {
     internal class ThemeHandler
     {

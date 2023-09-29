@@ -8,7 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Core.Util.General
 {
     internal class Logger
     {

@@ -3,7 +3,7 @@ using System.Windows;
 using System;
 using System.Windows.Data;
 
-namespace Songify_Slim.Util
+namespace Songify_Core.Util
 {
     public class BooleanToVisibilityConverter : IValueConverter
     {

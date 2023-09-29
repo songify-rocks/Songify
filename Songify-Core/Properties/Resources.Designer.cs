@@ -22,7 +22,7 @@ namespace Songify_Core.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Songify_Core.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Songify_Core.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Songify_Core.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Artist is blocked.
         /// </summary>
-        internal static string brw_ArtistBlocked {
+        public static string brw_ArtistBlocked {
             get {
                 return ResourceManager.GetString("brw_ArtistBlocked", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
-        internal static string brw_cmd_description {
+        public static string brw_cmd_description {
             get {
                 return ResourceManager.GetString("brw_cmd_description", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enabled.
         /// </summary>
-        internal static string brw_cmd_enabled {
+        public static string brw_cmd_enabled {
             get {
                 return ResourceManager.GetString("brw_cmd_enabled", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Displays the next song in queue.
         /// </summary>
-        internal static string brw_cmd_next {
+        public static string brw_cmd_next {
             get {
                 return ResourceManager.GetString("brw_cmd_next", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Off.
         /// </summary>
-        internal static string brw_cmd_off {
+        public static string brw_cmd_off {
             get {
                 return ResourceManager.GetString("brw_cmd_off", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to On.
         /// </summary>
-        internal static string brw_cmd_on {
+        public static string brw_cmd_on {
             get {
                 return ResourceManager.GetString("brw_cmd_on", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Resumes or pauses the current playback..
         /// </summary>
-        internal static string brw_cmd_playpause {
+        public static string brw_cmd_playpause {
             get {
                 return ResourceManager.GetString("brw_cmd_playpause", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
         /// </summary>
-        internal static string brw_cmd_pos {
+        public static string brw_cmd_pos {
             get {
                 return ResourceManager.GetString("brw_cmd_pos", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Removes the latest song request of the user..
         /// </summary>
-        internal static string brw_cmd_remove {
+        public static string brw_cmd_remove {
             get {
                 return ResourceManager.GetString("brw_cmd_remove", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Skips the current song (Broadcaster / Mod / Requester).
         /// </summary>
-        internal static string brw_cmd_skip {
+        public static string brw_cmd_skip {
             get {
                 return ResourceManager.GetString("brw_cmd_skip", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Starts a vote to skip the current song.
         /// </summary>
-        internal static string brw_cmd_skipvote {
+        public static string brw_cmd_skipvote {
             get {
                 return ResourceManager.GetString("brw_cmd_skipvote", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Number of votes needed.
         /// </summary>
-        internal static string brw_cmd_skipvotecount {
+        public static string brw_cmd_skipvotecount {
             get {
                 return ResourceManager.GetString("brw_cmd_skipvotecount", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Displays the current song.
         /// </summary>
-        internal static string brw_cmd_song {
+        public static string brw_cmd_song {
             get {
                 return ResourceManager.GetString("brw_cmd_song", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config..
         /// </summary>
-        internal static string brw_cmd_songlike {
+        public static string brw_cmd_songlike {
             get {
                 return ResourceManager.GetString("brw_cmd_songlike", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Trigger.
         /// </summary>
-        internal static string brw_cmd_trigger {
+        public static string brw_cmd_trigger {
             get {
                 return ResourceManager.GetString("brw_cmd_trigger", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Error fetching songdata.
         /// </summary>
-        internal static string brw_FetchError {
+        public static string brw_FetchError {
             get {
                 return ResourceManager.GetString("brw_FetchError", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Configure the bot responses for the following scenarios:.
         /// </summary>
-        internal static string brw_Header {
+        public static string brw_Header {
             get {
                 return ResourceManager.GetString("brw_Header", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Max songs in queue.
         /// </summary>
-        internal static string brw_MaxSongs {
+        public static string brw_MaxSongs {
             get {
                 return ResourceManager.GetString("brw_MaxSongs", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Broadcaster / Moderator / Requester skipped the song.
         /// </summary>
-        internal static string brw_ModSkip {
+        public static string brw_ModSkip {
             get {
                 return ResourceManager.GetString("brw_ModSkip", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response for !next command.
         /// </summary>
-        internal static string brw_Next {
+        public static string brw_Next {
             get {
                 return ResourceManager.GetString("brw_Next", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No song has been specified (empty request).
         /// </summary>
-        internal static string brw_NoSong {
+        public static string brw_NoSong {
             get {
                 return ResourceManager.GetString("brw_NoSong", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response for !pos command.
         /// </summary>
-        internal static string brw_Pos {
+        public static string brw_Pos {
             get {
                 return ResourceManager.GetString("brw_Pos", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Text that gets added to the response if points are refunded.
         /// </summary>
-        internal static string brw_Refund {
+        public static string brw_Refund {
             get {
                 return ResourceManager.GetString("brw_Refund", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response for !remove command.
         /// </summary>
-        internal static string brw_Remove {
+        public static string brw_Remove {
             get {
                 return ResourceManager.GetString("brw_Remove", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response for !song command.
         /// </summary>
-        internal static string brw_Song {
+        public static string brw_Song {
             get {
                 return ResourceManager.GetString("brw_Song", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song already in queue.
         /// </summary>
-        internal static string brw_SongInQueue {
+        public static string brw_SongInQueue {
             get {
                 return ResourceManager.GetString("brw_SongInQueue", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response for !songlike command.
         /// </summary>
-        internal static string brw_SongLike {
+        public static string brw_SongLike {
             get {
                 return ResourceManager.GetString("brw_SongLike", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Response when the song was not found in the allowed songs playlist.
         /// </summary>
-        internal static string brw_SongNotFoundInPlaylist {
+        public static string brw_SongNotFoundInPlaylist {
             get {
                 return ResourceManager.GetString("brw_SongNotFoundInPlaylist", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song too long.
         /// </summary>
-        internal static string brw_SongTooLong {
+        public static string brw_SongTooLong {
             get {
                 return ResourceManager.GetString("brw_SongTooLong", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song added successfully.
         /// </summary>
-        internal static string brw_Success {
+        public static string brw_Success {
             get {
                 return ResourceManager.GetString("brw_Success", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Commands.
         /// </summary>
-        internal static string brw_tc_Commands {
+        public static string brw_tc_Commands {
             get {
                 return ResourceManager.GetString("brw_tc_Commands", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Responses.
         /// </summary>
-        internal static string brw_tc_Responses {
+        public static string brw_tc_Responses {
             get {
                 return ResourceManager.GetString("brw_tc_Responses", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to User voted to skip the current song.
         /// </summary>
-        internal static string brw_VoteSkip {
+        public static string brw_VoteSkip {
             get {
                 return ResourceManager.GetString("brw_VoteSkip", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
-        internal static string bw_btnAdd {
+        public static string bw_btnAdd {
             get {
                 return ResourceManager.GetString("bw_btnAdd", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
-        internal static string bw_btnClear {
+        public static string bw_btnClear {
             get {
                 return ResourceManager.GetString("bw_btnClear", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Artist.
         /// </summary>
-        internal static string bw_cbArtist {
+        public static string bw_cbArtist {
             get {
                 return ResourceManager.GetString("bw_cbArtist", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to User.
         /// </summary>
-        internal static string bw_cbUser {
+        public static string bw_cbUser {
             get {
                 return ResourceManager.GetString("bw_cbUser", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Blocked Artists.
         /// </summary>
-        internal static string bw_lblBlockedArtists {
+        public static string bw_lblBlockedArtists {
             get {
                 return ResourceManager.GetString("bw_lblBlockedArtists", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Blocked Users.
         /// </summary>
-        internal static string bw_lblBlockedUsers {
+        public static string bw_lblBlockedUsers {
             get {
                 return ResourceManager.GetString("bw_lblBlockedUsers", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        internal static string bw_menu_Delete {
+        public static string bw_menu_Delete {
             get {
                 return ResourceManager.GetString("bw_menu_Delete", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create Reward.
         /// </summary>
-        internal static string crw_CreateReward {
+        public static string crw_CreateReward {
             get {
                 return ResourceManager.GetString("crw_CreateReward", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to There was an issue creating the reward. Make sure you don&apos;t have a reward with the same name already..
         /// </summary>
-        internal static string crw_CreateRewardError {
+        public static string crw_CreateRewardError {
             get {
                 return ResourceManager.GetString("crw_CreateRewardError", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The reward &quot;{name}&quot; has been created..
         /// </summary>
-        internal static string crw_CreateRewardSuccess {
+        public static string crw_CreateRewardSuccess {
             get {
                 return ResourceManager.GetString("crw_CreateRewardSuccess", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Cost.
         /// </summary>
-        internal static string crw_RewardCost {
+        public static string crw_RewardCost {
             get {
                 return ResourceManager.GetString("crw_RewardCost", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Prompt.
         /// </summary>
-        internal static string crw_RewardPrompt {
+        public static string crw_RewardPrompt {
             get {
                 return ResourceManager.GetString("crw_RewardPrompt", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        internal static string crw_RewardTitle {
+        public static string crw_RewardTitle {
             get {
                 return ResourceManager.GetString("crw_RewardTitle", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to German.
         /// </summary>
-        internal static string lang_deDE {
+        public static string lang_deDE {
             get {
                 return ResourceManager.GetString("lang_deDE", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
-        internal static string lang_en {
+        public static string lang_en {
             get {
                 return ResourceManager.GetString("lang_en", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spanish.
         /// </summary>
-        internal static string lang_es {
+        public static string lang_es {
             get {
                 return ResourceManager.GetString("lang_es", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to French.
         /// </summary>
-        internal static string lang_fr {
+        public static string lang_fr {
             get {
                 return ResourceManager.GetString("lang_fr", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
-        internal static string lang_ru {
+        public static string lang_ru {
             get {
                 return ResourceManager.GetString("lang_ru", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Bot Account.
         /// </summary>
-        internal static string msgbx_BotAccount {
+        public static string msgbx_BotAccount {
             get {
                 return ResourceManager.GetString("msgbx_BotAccount", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No.
         /// </summary>
-        internal static string msgbx_No {
+        public static string msgbx_No {
             get {
                 return ResourceManager.GetString("msgbx_No", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Successfully linked to {account}. Would you also like to use this account as the chat bot?.
         /// </summary>
-        internal static string msgbx_UseAsBotAccount {
+        public static string msgbx_UseAsBotAccount {
             get {
                 return ResourceManager.GetString("msgbx_UseAsBotAccount", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
-        internal static string msgbx_Yes {
+        public static string msgbx_Yes {
             get {
                 return ResourceManager.GetString("msgbx_Yes", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
         /// </summary>
-        internal static string mw_LiveOutputLinkSpotify {
+        public static string mw_LiveOutputLinkSpotify {
             get {
                 return ResourceManager.GetString("mw_LiveOutputLinkSpotify", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Artist - Title.
         /// </summary>
-        internal static string mw_LiveOutputPlaceholder {
+        public static string mw_LiveOutputPlaceholder {
             get {
                 return ResourceManager.GetString("mw_LiveOutputPlaceholder", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Blocklist.
         /// </summary>
-        internal static string mw_menu_Blacklist {
+        public static string mw_menu_Blacklist {
             get {
                 return ResourceManager.GetString("mw_menu_Blacklist", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Buy Us A Coffee.
         /// </summary>
-        internal static string mw_menu_BuyUsACoffee {
+        public static string mw_menu_BuyUsACoffee {
             get {
                 return ResourceManager.GetString("mw_menu_BuyUsACoffee", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Connect.
         /// </summary>
-        internal static string mw_menu_Connect {
+        public static string mw_menu_Connect {
             get {
                 return ResourceManager.GetString("mw_menu_Connect", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Console.
         /// </summary>
-        internal static string mw_menu_Console {
+        public static string mw_menu_Console {
             get {
                 return ResourceManager.GetString("mw_menu_Console", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
-        internal static string mw_menu_Disconnect {
+        public static string mw_menu_Disconnect {
             get {
                 return ResourceManager.GetString("mw_menu_Disconnect", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Exit.
         /// </summary>
-        internal static string mw_menu_Exit {
+        public static string mw_menu_Exit {
             get {
                 return ResourceManager.GetString("mw_menu_Exit", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
-        internal static string mw_menu_File {
+        public static string mw_menu_File {
             get {
                 return ResourceManager.GetString("mw_menu_File", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
-        internal static string mw_menu_Help {
+        public static string mw_menu_Help {
             get {
                 return ResourceManager.GetString("mw_menu_Help", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to About.
         /// </summary>
-        internal static string mw_menu_Help_About {
+        public static string mw_menu_Help_About {
             get {
                 return ResourceManager.GetString("mw_menu_Help_About", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Log-Folder.
         /// </summary>
-        internal static string mw_menu_Help_LogFolder {
+        public static string mw_menu_Help_LogFolder {
             get {
                 return ResourceManager.GetString("mw_menu_Help_LogFolder", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to History.
         /// </summary>
-        internal static string mw_menu_History {
+        public static string mw_menu_History {
             get {
                 return ResourceManager.GetString("mw_menu_History", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to History Browser.
         /// </summary>
-        internal static string mw_menu_History_Browser {
+        public static string mw_menu_History_Browser {
             get {
                 return ResourceManager.GetString("mw_menu_History_Browser", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to History Window.
         /// </summary>
-        internal static string mw_menu_History_Window {
+        public static string mw_menu_History_Window {
             get {
                 return ResourceManager.GetString("mw_menu_History_Window", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Patch notes.
         /// </summary>
-        internal static string mw_menu_PatchNotes {
+        public static string mw_menu_PatchNotes {
             get {
                 return ResourceManager.GetString("mw_menu_PatchNotes", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Queue.
         /// </summary>
-        internal static string mw_menu_Queue {
+        public static string mw_menu_Queue {
             get {
                 return ResourceManager.GetString("mw_menu_Queue", resourceCulture);
             }
@@ -711,7 +711,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Queue Browser.
         /// </summary>
-        internal static string mw_menu_Queue_Browser {
+        public static string mw_menu_Queue_Browser {
             get {
                 return ResourceManager.GetString("mw_menu_Queue_Browser", resourceCulture);
             }
@@ -720,7 +720,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Clear Queue.
         /// </summary>
-        internal static string mw_menu_Queue_Clear {
+        public static string mw_menu_Queue_Clear {
             get {
                 return ResourceManager.GetString("mw_menu_Queue_Clear", resourceCulture);
             }
@@ -729,7 +729,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Queue Window.
         /// </summary>
-        internal static string mw_menu_Queue_Window {
+        public static string mw_menu_Queue_Window {
             get {
                 return ResourceManager.GetString("mw_menu_Queue_Window", resourceCulture);
             }
@@ -738,7 +738,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
-        internal static string mw_menu_Settings {
+        public static string mw_menu_Settings {
             get {
                 return ResourceManager.GetString("mw_menu_Settings", resourceCulture);
             }
@@ -747,7 +747,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song Requests.
         /// </summary>
-        internal static string mw_menu_SongRequests {
+        public static string mw_menu_SongRequests {
             get {
                 return ResourceManager.GetString("mw_menu_SongRequests", resourceCulture);
             }
@@ -756,7 +756,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Support Us.
         /// </summary>
-        internal static string mw_menu_Support {
+        public static string mw_menu_Support {
             get {
                 return ResourceManager.GetString("mw_menu_Support", resourceCulture);
             }
@@ -765,7 +765,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Bot Config.
         /// </summary>
-        internal static string mw_menu_Twitch_Bot {
+        public static string mw_menu_Twitch_Bot {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_Bot", resourceCulture);
             }
@@ -774,7 +774,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Check Online Status.
         /// </summary>
-        internal static string mw_menu_Twitch_CheckOnlineStatus {
+        public static string mw_menu_Twitch_CheckOnlineStatus {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_CheckOnlineStatus", resourceCulture);
             }
@@ -783,7 +783,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Logged in with Twitch.
         /// </summary>
-        internal static string mw_menu_Twitch_TwitchLoggedIn {
+        public static string mw_menu_Twitch_TwitchLoggedIn {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_TwitchLoggedIn", resourceCulture);
             }
@@ -792,7 +792,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Login with Twitch.
         /// </summary>
-        internal static string mw_menu_Twitch_TwitchLogin {
+        public static string mw_menu_Twitch_TwitchLogin {
             get {
                 return ResourceManager.GetString("mw_menu_Twitch_TwitchLogin", resourceCulture);
             }
@@ -801,7 +801,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to View.
         /// </summary>
-        internal static string mw_menu_View {
+        public static string mw_menu_View {
             get {
                 return ResourceManager.GetString("mw_menu_View", resourceCulture);
             }
@@ -810,7 +810,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Widget.
         /// </summary>
-        internal static string mw_menu_Widget {
+        public static string mw_menu_Widget {
             get {
                 return ResourceManager.GetString("mw_menu_Widget", resourceCulture);
             }
@@ -819,7 +819,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Length.
         /// </summary>
-        internal static string s_Length {
+        public static string s_Length {
             get {
                 return ResourceManager.GetString("s_Length", resourceCulture);
             }
@@ -828,7 +828,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        internal static string s_Name {
+        public static string s_Name {
             get {
                 return ResourceManager.GetString("s_Name", resourceCulture);
             }
@@ -837,7 +837,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Requester.
         /// </summary>
-        internal static string s_Requester {
+        public static string s_Requester {
             get {
                 return ResourceManager.GetString("s_Requester", resourceCulture);
             }
@@ -846,7 +846,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string s_Save {
+        public static string s_Save {
             get {
                 return ResourceManager.GetString("s_Save", resourceCulture);
             }
@@ -855,7 +855,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
-        internal static string s_Time {
+        public static string s_Time {
             get {
                 return ResourceManager.GetString("s_Time", resourceCulture);
             }
@@ -864,16 +864,25 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Upload.
         /// </summary>
-        internal static string s_Upload {
+        public static string s_Upload {
             get {
                 return ResourceManager.GetString("s_Upload", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to asdasd.
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Color:.
         /// </summary>
-        internal static string sw_Appearance_Color {
+        public static string sw_Appearance_Color {
             get {
                 return ResourceManager.GetString("sw_Appearance_Color", resourceCulture);
             }
@@ -882,7 +891,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Dark Theme.
         /// </summary>
-        internal static string sw_Appearance_ThemeDark {
+        public static string sw_Appearance_ThemeDark {
             get {
                 return ResourceManager.GetString("sw_Appearance_ThemeDark", resourceCulture);
             }
@@ -891,7 +900,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Light Theme.
         /// </summary>
-        internal static string sw_Appearance_ThemeLight {
+        public static string sw_Appearance_ThemeLight {
             get {
                 return ResourceManager.GetString("sw_Appearance_ThemeLight", resourceCulture);
             }
@@ -900,7 +909,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to EXPORT CONFIG.
         /// </summary>
-        internal static string sw_Config_Export {
+        public static string sw_Config_Export {
             get {
                 return ResourceManager.GetString("sw_Config_Export", resourceCulture);
             }
@@ -909,7 +918,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to get beta updates.
         /// </summary>
-        internal static string sw_Config_GetBetaUpdates {
+        public static string sw_Config_GetBetaUpdates {
             get {
                 return ResourceManager.GetString("sw_Config_GetBetaUpdates", resourceCulture);
             }
@@ -918,7 +927,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to IMPORT CONFIG.
         /// </summary>
-        internal static string sw_Config_Import {
+        public static string sw_Config_Import {
             get {
                 return ResourceManager.GetString("sw_Config_Import", resourceCulture);
             }
@@ -927,7 +936,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reset Config.
         /// </summary>
-        internal static string sw_Config_ResetConfig {
+        public static string sw_Config_ResetConfig {
             get {
                 return ResourceManager.GetString("sw_Config_ResetConfig", resourceCulture);
             }
@@ -936,7 +945,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to autoconnect.
         /// </summary>
-        internal static string sw_Integration_Autoconnect {
+        public static string sw_Integration_Autoconnect {
             get {
                 return ResourceManager.GetString("sw_Integration_Autoconnect", resourceCulture);
             }
@@ -945,7 +954,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to LINK.
         /// </summary>
-        internal static string sw_Integration_btnLink {
+        public static string sw_Integration_btnLink {
             get {
                 return ResourceManager.GetString("sw_Integration_btnLink", resourceCulture);
             }
@@ -954,7 +963,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Configure Bot Responses &amp; Commands.
         /// </summary>
-        internal static string sw_Integration_ConfigureResponses {
+        public static string sw_Integration_ConfigureResponses {
             get {
                 return ResourceManager.GetString("sw_Integration_ConfigureResponses", resourceCulture);
             }
@@ -963,7 +972,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Manage Rewards.
         /// </summary>
-        internal static string Sw_Integration_ManageRewards {
+        public static string Sw_Integration_ManageRewards {
             get {
                 return ResourceManager.GetString("Sw_Integration_ManageRewards", resourceCulture);
             }
@@ -972,7 +981,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Max SR / User (based on user level).
         /// </summary>
-        internal static string Sw_Integration_MaxSrUser {
+        public static string Sw_Integration_MaxSrUser {
             get {
                 return ResourceManager.GetString("Sw_Integration_MaxSrUser", resourceCulture);
             }
@@ -981,7 +990,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Minimum user level required for SR.
         /// </summary>
-        internal static string Sw_Integration_MinUserLevel {
+        public static string Sw_Integration_MinUserLevel {
             get {
                 return ResourceManager.GetString("Sw_Integration_MinUserLevel", resourceCulture);
             }
@@ -990,7 +999,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to NB Username (Twitch Username).
         /// </summary>
-        internal static string sw_Integration_NBWatermark {
+        public static string sw_Integration_NBWatermark {
             get {
                 return ResourceManager.GetString("sw_Integration_NBWatermark", resourceCulture);
             }
@@ -999,7 +1008,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Limit Twitch activity to only work when stream is live (needs Twitch login).
         /// </summary>
-        internal static string Sw_Integration_OnlyWorkWhenLive {
+        public static string Sw_Integration_OnlyWorkWhenLive {
             get {
                 return ResourceManager.GetString("Sw_Integration_OnlyWorkWhenLive", resourceCulture);
             }
@@ -1008,7 +1017,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to always (make SR free).
         /// </summary>
-        internal static string Sw_Integration_RefundAlways {
+        public static string Sw_Integration_RefundAlways {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundAlways", resourceCulture);
             }
@@ -1017,7 +1026,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song contains blocked artist(s).
         /// </summary>
-        internal static string Sw_Integration_RefundArtistBlocked {
+        public static string Sw_Integration_RefundArtistBlocked {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundArtistBlocked", resourceCulture);
             }
@@ -1026,7 +1035,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one..
         /// </summary>
-        internal static string sw_Integration_RefundDisclaimer {
+        public static string sw_Integration_RefundDisclaimer {
             get {
                 return ResourceManager.GetString("sw_Integration_RefundDisclaimer", resourceCulture);
             }
@@ -1035,7 +1044,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to No song was found.
         /// </summary>
-        internal static string Sw_Integration_RefundNoSongFound {
+        public static string Sw_Integration_RefundNoSongFound {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundNoSongFound", resourceCulture);
             }
@@ -1044,7 +1053,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Refund when.
         /// </summary>
-        internal static string Sw_Integration_RefundOn {
+        public static string Sw_Integration_RefundOn {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundOn", resourceCulture);
             }
@@ -1053,7 +1062,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song has been added to the queue.
         /// </summary>
-        internal static string Sw_Integration_RefundSongAdded {
+        public static string Sw_Integration_RefundSongAdded {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSongAdded", resourceCulture);
             }
@@ -1062,7 +1071,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song is already in queue.
         /// </summary>
-        internal static string Sw_Integration_RefundSongAlreadyInQueue {
+        public static string Sw_Integration_RefundSongAlreadyInQueue {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSongAlreadyInQueue", resourceCulture);
             }
@@ -1071,7 +1080,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song is not available in region.
         /// </summary>
-        internal static string Sw_Integration_RefundSongNotAvailable {
+        public static string Sw_Integration_RefundSongNotAvailable {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSongNotAvailable", resourceCulture);
             }
@@ -1080,7 +1089,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song duration is too long.
         /// </summary>
-        internal static string Sw_Integration_RefundSongTooLong {
+        public static string Sw_Integration_RefundSongTooLong {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSongTooLong", resourceCulture);
             }
@@ -1089,7 +1098,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Spotify is not connected.
         /// </summary>
-        internal static string Sw_Integration_RefundSpotifyNotConnected {
+        public static string Sw_Integration_RefundSpotifyNotConnected {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSpotifyNotConnected", resourceCulture);
             }
@@ -1098,7 +1107,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to User is blocked from SR.
         /// </summary>
-        internal static string Sw_Integration_RefundUSerBlocked {
+        public static string Sw_Integration_RefundUSerBlocked {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundUSerBlocked", resourceCulture);
             }
@@ -1107,7 +1116,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to User level is too low.
         /// </summary>
-        internal static string Sw_Integration_RefundUserLevelLow {
+        public static string Sw_Integration_RefundUserLevelLow {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundUserLevelLow", resourceCulture);
             }
@@ -1116,7 +1125,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Linked account:.
         /// </summary>
-        internal static string sw_Integration_SpotifyLinked {
+        public static string sw_Integration_SpotifyLinked {
             get {
                 return ResourceManager.GetString("sw_Integration_SpotifyLinked", resourceCulture);
             }
@@ -1125,7 +1134,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Send offline notification to chat.
         /// </summary>
-        internal static string Sw_Integration_StreamNotLifeNotification {
+        public static string Sw_Integration_StreamNotLifeNotification {
             get {
                 return ResourceManager.GetString("Sw_Integration_StreamNotLifeNotification", resourceCulture);
             }
@@ -1134,7 +1143,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Twitch account.
         /// </summary>
-        internal static string sw_Integration_Twitch {
+        public static string sw_Integration_Twitch {
             get {
                 return ResourceManager.GetString("sw_Integration_Twitch", resourceCulture);
             }
@@ -1143,7 +1152,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Channel to join.
         /// </summary>
-        internal static string sw_Integration_TwitchChWatermark {
+        public static string sw_Integration_TwitchChWatermark {
             get {
                 return ResourceManager.GetString("sw_Integration_TwitchChWatermark", resourceCulture);
             }
@@ -1152,7 +1161,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Accounts.
         /// </summary>
-        internal static string Sw_Integtation_Tc_Accounts {
+        public static string Sw_Integtation_Tc_Accounts {
             get {
                 return ResourceManager.GetString("Sw_Integtation_Tc_Accounts", resourceCulture);
             }
@@ -1161,7 +1170,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Rewards.
         /// </summary>
-        internal static string Sw_Integtation_Tc_Rewards {
+        public static string Sw_Integtation_Tc_Rewards {
             get {
                 return ResourceManager.GetString("Sw_Integtation_Tc_Rewards", resourceCulture);
             }
@@ -1170,7 +1179,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song Requests.
         /// </summary>
-        internal static string Sw_Integtation_Tc_SongRequests {
+        public static string Sw_Integtation_Tc_SongRequests {
             get {
                 return ResourceManager.GetString("Sw_Integtation_Tc_SongRequests", resourceCulture);
             }
@@ -1179,7 +1188,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Automatically Announce Song To Chat.
         /// </summary>
-        internal static string Sw_intergration_AutoAnnounce {
+        public static string Sw_intergration_AutoAnnounce {
             get {
                 return ResourceManager.GetString("Sw_intergration_AutoAnnounce", resourceCulture);
             }
@@ -1188,7 +1197,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reward for Song Skip.
         /// </summary>
-        internal static string sw_Spotify_RewardSkip {
+        public static string sw_Spotify_RewardSkip {
             get {
                 return ResourceManager.GetString("sw_Spotify_RewardSkip", resourceCulture);
             }
@@ -1197,7 +1206,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Reward for Song Requests.
         /// </summary>
-        internal static string sw_Spotify_RewardSR {
+        public static string sw_Spotify_RewardSR {
             get {
                 return ResourceManager.GetString("sw_Spotify_RewardSR", resourceCulture);
             }
@@ -1206,7 +1215,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Channel Points Reward ID.
         /// </summary>
-        internal static string sw_SpotifySR_ChannelPoints {
+        public static string sw_SpotifySR_ChannelPoints {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_ChannelPoints", resourceCulture);
             }
@@ -1215,7 +1224,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Clear Queue on Startup.
         /// </summary>
-        internal static string sw_SpotifySR_ClearQ {
+        public static string sw_SpotifySR_ClearQ {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_ClearQ", resourceCulture);
             }
@@ -1224,7 +1233,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Command Cooldown (seconds).
         /// </summary>
-        internal static string sw_SpotifySR_CommandCD {
+        public static string sw_SpotifySR_CommandCD {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_CommandCD", resourceCulture);
             }
@@ -1233,7 +1242,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Max song length (in minutes).
         /// </summary>
-        internal static string sw_SpotifySR_MaxLength {
+        public static string sw_SpotifySR_MaxLength {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_MaxLength", resourceCulture);
             }
@@ -1242,7 +1251,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Max Requests per User.
         /// </summary>
-        internal static string sw_SpotifySR_MaxReq {
+        public static string sw_SpotifySR_MaxReq {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_MaxReq", resourceCulture);
             }
@@ -1251,7 +1260,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enable Message Logging.
         /// </summary>
-        internal static string sw_SpotifySR_MessageLogging {
+        public static string sw_SpotifySR_MessageLogging {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_MessageLogging", resourceCulture);
             }
@@ -1260,7 +1269,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enable SR (Command).
         /// </summary>
-        internal static string sw_SpotifySR_SRCommand {
+        public static string sw_SpotifySR_SRCommand {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SRCommand", resourceCulture);
             }
@@ -1269,7 +1278,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Enable SR (Channel Rewards).
         /// </summary>
-        internal static string sw_SpotifySR_SRReward {
+        public static string sw_SpotifySR_SRReward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SRReward", resourceCulture);
             }
@@ -1278,7 +1287,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to !ssr command moved to bot config.
         /// </summary>
-        internal static string sw_SpotifySR_SsrMovedToBotConfig {
+        public static string sw_SpotifySR_SsrMovedToBotConfig {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_SsrMovedToBotConfig", resourceCulture);
             }
@@ -1287,7 +1296,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to unlimited song requests.
         /// </summary>
-        internal static string Sw_SpotifySR_UnlimitedSRs {
+        public static string Sw_SpotifySR_UnlimitedSRs {
             get {
                 return ResourceManager.GetString("Sw_SpotifySR_UnlimitedSRs", resourceCulture);
             }
@@ -1296,7 +1305,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Allowed user levels for SR command.
         /// </summary>
-        internal static string sw_SpotifySR_Userlevel_command {
+        public static string sw_SpotifySR_Userlevel_command {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_Userlevel_command", resourceCulture);
             }
@@ -1305,7 +1314,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Allowed user levels for SR reward.
         /// </summary>
-        internal static string sw_SpotifySR_Userlevel_reward {
+        public static string sw_SpotifySR_Userlevel_reward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_Userlevel_reward", resourceCulture);
             }
@@ -1314,7 +1323,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to open queue window on startup.
         /// </summary>
-        internal static string Sw_System_OpenQueueOnStartup {
+        public static string Sw_System_OpenQueueOnStartup {
             get {
                 return ResourceManager.GetString("Sw_System_OpenQueueOnStartup", resourceCulture);
             }
@@ -1323,7 +1332,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Hide account names and profile pictures.
         /// </summary>
-        internal static string Sw_System_Privacy {
+        public static string Sw_System_Privacy {
             get {
                 return ResourceManager.GetString("Sw_System_Privacy", resourceCulture);
             }
@@ -1332,7 +1341,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Privacy.
         /// </summary>
-        internal static string Sw_System_PrivacyHeader {
+        public static string Sw_System_PrivacyHeader {
             get {
                 return ResourceManager.GetString("Sw_System_PrivacyHeader", resourceCulture);
             }
@@ -1341,7 +1350,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Appearance.
         /// </summary>
-        internal static string sw_tc_Appearance {
+        public static string sw_tc_Appearance {
             get {
                 return ResourceManager.GetString("sw_tc_Appearance", resourceCulture);
             }
@@ -1350,7 +1359,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Config.
         /// </summary>
-        internal static string sw_tc_Config {
+        public static string sw_tc_Config {
             get {
                 return ResourceManager.GetString("sw_tc_Config", resourceCulture);
             }
@@ -1359,7 +1368,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Twitch.
         /// </summary>
-        internal static string sw_tc_Integration {
+        public static string sw_tc_Integration {
             get {
                 return ResourceManager.GetString("sw_tc_Integration", resourceCulture);
             }
@@ -1368,7 +1377,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Output.
         /// </summary>
-        internal static string sw_tc_Output {
+        public static string sw_tc_Output {
             get {
                 return ResourceManager.GetString("sw_tc_Output", resourceCulture);
             }
@@ -1377,7 +1386,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Add all song requests to the playlist.
         /// </summary>
-        internal static string sw_tc_Spotify_AddSongsToPlaylist {
+        public static string sw_tc_Spotify_AddSongsToPlaylist {
             get {
                 return ResourceManager.GetString("sw_tc_Spotify_AddSongsToPlaylist", resourceCulture);
             }
@@ -1386,7 +1395,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to System.
         /// </summary>
-        internal static string sw_tc_System {
+        public static string sw_tc_System {
             get {
                 return ResourceManager.GetString("sw_tc_System", resourceCulture);
             }
@@ -1395,7 +1404,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Web Server.
         /// </summary>
-        internal static string sw_tc_WebServer {
+        public static string sw_tc_WebServer {
             get {
                 return ResourceManager.GetString("sw_tc_WebServer", resourceCulture);
             }
@@ -1404,7 +1413,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to append spaces.
         /// </summary>
-        internal static string sw_tcOutput_AddSpaces {
+        public static string sw_tcOutput_AddSpaces {
             get {
                 return ResourceManager.GetString("sw_tcOutput_AddSpaces", resourceCulture);
             }
@@ -1413,7 +1422,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Output Directory.
         /// </summary>
-        internal static string sw_tcOutput_Directory {
+        public static string sw_tcOutput_Directory {
             get {
                 return ResourceManager.GetString("sw_tcOutput_Directory", resourceCulture);
             }
@@ -1422,7 +1431,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Download album cover (only works with API).
         /// </summary>
-        internal static string sw_tcOutput_DownloadAlbum {
+        public static string sw_tcOutput_DownloadAlbum {
             get {
                 return ResourceManager.GetString("sw_tcOutput_DownloadAlbum", resourceCulture);
             }
@@ -1431,7 +1440,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Output Format (Text file &amp; Widget).
         /// </summary>
-        internal static string sw_tcOutput_Format {
+        public static string sw_tcOutput_Format {
             get {
                 return ResourceManager.GetString("sw_tcOutput_Format", resourceCulture);
             }
@@ -1440,7 +1449,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Output Format (Twitch Chat).
         /// </summary>
-        internal static string sw_tcOutput_Format2 {
+        public static string sw_tcOutput_Format2 {
             get {
                 return ResourceManager.GetString("sw_tcOutput_Format2", resourceCulture);
             }
@@ -1449,7 +1458,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Pause Text.
         /// </summary>
-        internal static string sw_tcOutput_PauseText {
+        public static string sw_tcOutput_PauseText {
             get {
                 return ResourceManager.GetString("sw_tcOutput_PauseText", resourceCulture);
             }
@@ -1458,7 +1467,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Custom pause text (blank for emtpy text file).
         /// </summary>
-        internal static string sw_tcOutput_PauseWatermark {
+        public static string sw_tcOutput_PauseWatermark {
             get {
                 return ResourceManager.GetString("sw_tcOutput_PauseWatermark", resourceCulture);
             }
@@ -1467,7 +1476,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Split Artist and Title.
         /// </summary>
-        internal static string sw_tcOutput_SplitArtist {
+        public static string sw_tcOutput_SplitArtist {
             get {
                 return ResourceManager.GetString("sw_tcOutput_SplitArtist", resourceCulture);
             }
@@ -1476,7 +1485,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Upload song info.
         /// </summary>
-        internal static string sw_tcOutput_UploadSongInfo {
+        public static string sw_tcOutput_UploadSongInfo {
             get {
                 return ResourceManager.GetString("sw_tcOutput_UploadSongInfo", resourceCulture);
             }
@@ -1485,7 +1494,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
-        internal static string sw_tcSpotify_SaveButton {
+        public static string sw_tcSpotify_SaveButton {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_SaveButton", resourceCulture);
             }
@@ -1494,7 +1503,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Liked Songs Playlist.
         /// </summary>
-        internal static string sw_tcSpotify_SongLikeLabel {
+        public static string sw_tcSpotify_SongLikeLabel {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_SongLikeLabel", resourceCulture);
             }
@@ -1503,7 +1512,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to The playlist that songs get added when using the !songlike command or with the option to automatically add songs to the playlist..
         /// </summary>
-        internal static string sw_tcSpotify_SongLikeLabelTooltip {
+        public static string sw_tcSpotify_SongLikeLabelTooltip {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_SongLikeLabelTooltip", resourceCulture);
             }
@@ -1512,7 +1521,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use Own AppID.
         /// </summary>
-        internal static string sw_tcSpotify_UseOwnApp {
+        public static string sw_tcSpotify_UseOwnApp {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_UseOwnApp", resourceCulture);
             }
@@ -1521,7 +1530,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Use Songify AppID.
         /// </summary>
-        internal static string sw_tcSpotify_UseSongifyApp {
+        public static string sw_tcSpotify_UseSongifyApp {
             get {
                 return ResourceManager.GetString("sw_tcSpotify_UseSongifyApp", resourceCulture);
             }
@@ -1530,7 +1539,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to autostart with windows.
         /// </summary>
-        internal static string sw_tcSystem_Autostart {
+        public static string sw_tcSystem_Autostart {
             get {
                 return ResourceManager.GetString("sw_tcSystem_Autostart", resourceCulture);
             }
@@ -1539,7 +1548,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Behavior.
         /// </summary>
-        internal static string sw_tcSystem_Behavior {
+        public static string sw_tcSystem_Behavior {
             get {
                 return ResourceManager.GetString("sw_tcSystem_Behavior", resourceCulture);
             }
@@ -1548,7 +1557,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to CHECK FOR UPDATES.
         /// </summary>
-        internal static string sw_tcSystem_CheckButton {
+        public static string sw_tcSystem_CheckButton {
             get {
                 return ResourceManager.GetString("sw_tcSystem_CheckButton", resourceCulture);
             }
@@ -1557,7 +1566,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Chrome fetch rate (seconds).
         /// </summary>
-        internal static string sw_tcSystem_ChromeFetchRate {
+        public static string sw_tcSystem_ChromeFetchRate {
             get {
                 return ResourceManager.GetString("sw_tcSystem_ChromeFetchRate", resourceCulture);
             }
@@ -1566,7 +1575,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
-        internal static string sw_tcSystem_lblLanguage {
+        public static string sw_tcSystem_lblLanguage {
             get {
                 return ResourceManager.GetString("sw_tcSystem_lblLanguage", resourceCulture);
             }
@@ -1575,7 +1584,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to minimize to system tray.
         /// </summary>
-        internal static string sw_tcSystem_Minimize {
+        public static string sw_tcSystem_Minimize {
             get {
                 return ResourceManager.GetString("sw_tcSystem_Minimize", resourceCulture);
             }
@@ -1584,7 +1593,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to send anonymous data.
         /// </summary>
-        internal static string sw_tcSystem_SendAnonData {
+        public static string sw_tcSystem_SendAnonData {
             get {
                 return ResourceManager.GetString("sw_tcSystem_SendAnonData", resourceCulture);
             }
@@ -1593,7 +1602,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Telemetry.
         /// </summary>
-        internal static string sw_tcSystem_Telemetry {
+        public static string sw_tcSystem_Telemetry {
             get {
                 return ResourceManager.GetString("sw_tcSystem_Telemetry", resourceCulture);
             }
@@ -1602,7 +1611,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to (translated using DeepL).
         /// </summary>
-        internal static string sw_tcSystem_translated {
+        public static string sw_tcSystem_translated {
             get {
                 return ResourceManager.GetString("sw_tcSystem_translated", resourceCulture);
             }
@@ -1611,7 +1620,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Logout.
         /// </summary>
-        internal static string sw_Twitch_LogOut {
+        public static string sw_Twitch_LogOut {
             get {
                 return ResourceManager.GetString("sw_Twitch_LogOut", resourceCulture);
             }
@@ -1620,7 +1629,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Create New Reward.
         /// </summary>
-        internal static string sw_Twitch_Rewards_CreateNewReward {
+        public static string sw_Twitch_Rewards_CreateNewReward {
             get {
                 return ResourceManager.GetString("sw_Twitch_Rewards_CreateNewReward", resourceCulture);
             }
@@ -1629,7 +1638,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Automatically start the web server.
         /// </summary>
-        internal static string sw_WebServer_AutoStart {
+        public static string sw_WebServer_AutoStart {
             get {
                 return ResourceManager.GetString("sw_WebServer_AutoStart", resourceCulture);
             }
@@ -1638,7 +1647,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Open Website.
         /// </summary>
-        internal static string sw_WebServer_OpenWebsite {
+        public static string sw_WebServer_OpenWebsite {
             get {
                 return ResourceManager.GetString("sw_WebServer_OpenWebsite", resourceCulture);
             }
@@ -1647,7 +1656,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Web server Port.
         /// </summary>
-        internal static string sw_WebServer_Port {
+        public static string sw_WebServer_Port {
             get {
                 return ResourceManager.GetString("sw_WebServer_Port", resourceCulture);
             }
@@ -1656,7 +1665,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Start Web Server.
         /// </summary>
-        internal static string sw_WebServer_StartWebServer {
+        public static string sw_WebServer_StartWebServer {
             get {
                 return ResourceManager.GetString("sw_WebServer_StartWebServer", resourceCulture);
             }
@@ -1665,7 +1674,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Stop Web Server.
         /// </summary>
-        internal static string sw_WebServer_StopWebServer {
+        public static string sw_WebServer_StopWebServer {
             get {
                 return ResourceManager.GetString("sw_WebServer_StopWebServer", resourceCulture);
             }
@@ -1674,7 +1683,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Blacklist.
         /// </summary>
-        internal static string WinTitle_Blocklist {
+        public static string WinTitle_Blocklist {
             get {
                 return ResourceManager.GetString("WinTitle_Blocklist", resourceCulture);
             }
@@ -1683,7 +1692,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Bot Responses &amp; Commands.
         /// </summary>
-        internal static string WinTitle_BotResponsesCommands {
+        public static string WinTitle_BotResponsesCommands {
             get {
                 return ResourceManager.GetString("WinTitle_BotResponsesCommands", resourceCulture);
             }
@@ -1692,7 +1701,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song History.
         /// </summary>
-        internal static string WinTitle_History {
+        public static string WinTitle_History {
             get {
                 return ResourceManager.GetString("WinTitle_History", resourceCulture);
             }
@@ -1701,7 +1710,7 @@ namespace Songify_Core.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Song Queue.
         /// </summary>
-        internal static string WinTitle_Queue {
+        public static string WinTitle_Queue {
             get {
                 return ResourceManager.GetString("WinTitle_Queue", resourceCulture);
             }

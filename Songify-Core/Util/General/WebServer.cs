@@ -1,5 +1,5 @@
 ﻿using MahApps.Metro.IconPacks;
-using Songify_Slim.Views;
+using Songify_Core.Views;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Core.Util.General
 {
     public class WebServer
     {

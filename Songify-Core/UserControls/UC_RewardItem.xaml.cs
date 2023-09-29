@@ -4,7 +4,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
-namespace Songify_Slim.UserControls
+namespace Songify_Core.UserControls
 {
     /// <summary>
     /// Interaction logic for UC_RewardItem.xaml
