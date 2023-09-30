@@ -685,7 +685,7 @@
     <comment>Button content for "Stop Web Server"</comment>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>get beta updates</value>
+    <value>Get Beta Updates</value>
     <comment>Toggleswitch Content for "get beta updates"</comment>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">

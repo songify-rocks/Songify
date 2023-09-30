@@ -869,7 +869,7 @@ namespace Songify_Slim.Views
             if (!TwitchHandler.PubSubEnabled)
             {
                 SMILEY.Visibility = Visibility.Hidden;
-                
+
                 TextRefundDisclaimer.Text =
                     "Refunds are not possible because PubSub has been temporarily disabled until TwitchLib, a third party library I use for Twitch API integration, fixes the disconnect issues which crash the application.";
             }
@@ -1349,23 +1349,37 @@ namespace Songify_Slim.Views
         private async Task LoadSpotifyPlaylists()
         {
             if (ApiHandler.Spotify == null) return;
-            PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
-            CbSpotifyPlaylist.Items.Clear();
-            CbSpotifySongLimitPlaylist.Items.Clear();
-            Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
-            do
+            try
             {
-                foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
+                if (profile == null) return;
+
+                CbSpotifyPlaylist.Items.Clear();
+                CbSpotifySongLimitPlaylist.Items.Clear();
+
+                Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
+                if (playlists == null) return;
+
+                do
                 {
-                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                    CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                }
-                playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
-            } while (playlists.HasNextPage());
+                    foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                    {
+                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                        CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                    }
+                    playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
+                } while (playlists.HasNextPage());
 
-            CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
-            CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
-
+                if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+                    CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
+                    CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                return;
+            }
         }
 
         private void TglLimitSrPlaylist_Toggled(object sender, RoutedEventArgs e)

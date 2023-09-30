@@ -917,7 +917,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to get beta updates.
+        ///   Looks up a localized string similar to Get Beta Updates.
         /// </summary>
         public static string sw_Config_GetBetaUpdates {
             get {

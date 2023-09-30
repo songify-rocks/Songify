@@ -563,7 +563,7 @@
     <value>Reset Config</value>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>get beta updates</value>
+    <value>Get Beta Updates</value>
   </data>
   <data name="s_Save" xml:space="preserve">
     <value>Save</value>
