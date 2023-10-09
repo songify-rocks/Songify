@@ -23,7 +23,12 @@ namespace Songify_Slim.Util.General
         {
             if (port < 1025 || port > 65535)
                 return;
-            if (!PortIsFree(port)) return;
+            if (!PortIsFree(port))
+            {
+                Logger.LogStr($"Webserver: The Port {port} is blocked. Can't start webserver.");
+                return;
+            }
+
             // Listen on the specified port.
             _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
             //If the app is running as admin also add the current IP as a prefix
