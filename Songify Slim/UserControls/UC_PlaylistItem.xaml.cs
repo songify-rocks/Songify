@@ -1,8 +1,8 @@
-﻿using SpotifyAPI.Web.Models;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.UserControls
 {

@@ -2,10 +2,6 @@ using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
-using SpotifyAPI.Web;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web.Enums;
-using SpotifyAPI.Web.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +9,10 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Enums;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Songify
@@ -241,11 +241,11 @@ namespace Songify_Slim.Util.Songify
                 Title = context.Item.Name,
                 Albums = albums,
                 SongId = context.Item.Id,
-                DurationMs = context.Item.DurationMs - context.ProgressMs,
+                DurationMs = (int)context.Item.DurationMs - context.ProgressMs,
                 IsPlaying = context.IsPlaying,
                 Url = "https://open.spotify.com/track/" + context.Item.Id,
                 DurationPercentage = (int)percentage,
-                DurationTotal = context.Item.DurationMs,
+                DurationTotal = (int)context.Item.DurationMs,
                 Progress = context.ProgressMs,
                 Playlist = playlistInfo
             };

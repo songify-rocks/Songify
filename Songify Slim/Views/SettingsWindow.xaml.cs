@@ -6,7 +6,6 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
-using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +22,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Application = System.Windows.Application;
@@ -413,7 +413,7 @@ namespace Songify_Slim.Views
         private void BtnCopyURL_Click(object sender, RoutedEventArgs e)
         {
             // Copies the song info URL to the clipboard and shows notification
-            Clipboard.SetDataObject($"{GlobalObjects.ApiUrl}/getsong.php?uuid=" + Settings.Uuid);
+            Clipboard.SetDataObject($"{GlobalObjects.ApiUrl}/getsong?uuid=" + Settings.Uuid);
         }
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)

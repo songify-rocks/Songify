@@ -7,7 +7,6 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Views;
-using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +19,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -2358,7 +2358,7 @@ namespace Songify_Slim.Util.Songify
             // remove the last ", "
             artists = artists.Remove(artists.Length - 2, 2);
 
-            string length = FormattedTime(track.DurationMs);
+            string length = FormattedTime((int)track.DurationMs);
 
             // upload to the queue
             //WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");

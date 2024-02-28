@@ -2,7 +2,6 @@
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
-using SpotifyAPI.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 
