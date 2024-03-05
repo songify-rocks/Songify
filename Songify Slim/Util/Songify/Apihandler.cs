@@ -214,7 +214,7 @@ namespace Songify_Slim.Util.Songify
             PlaylistInfo playlistInfo = null;
             try
             {
-                if (context.Context != null && context.Context.Type == "playlist")
+                if (context.Context is { Type: "playlist" })
                 {
                     var playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
                     if (playlist != null)
@@ -334,6 +334,11 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(e);
                 return null;
             }
+        }
+
+        public static SimpleQueue GetQueueInfo()
+        {
+            return Spotify.GetQueue();
         }
     }
 }

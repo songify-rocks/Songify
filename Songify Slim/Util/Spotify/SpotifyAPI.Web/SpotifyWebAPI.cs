@@ -2171,6 +2171,11 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
       return DownloadData<FullTrack>(_builder.GetTrack(id, market));
     }
 
+    public SimpleQueue GetQueue()
+    {
+        return DownloadData<SimpleQueue>(_builder.GetQueue());
+    }
+
     /// <summary>
     ///     Get Spotify catalog information for a single track identified by its unique Spotify ID asynchronously.
     /// </summary>

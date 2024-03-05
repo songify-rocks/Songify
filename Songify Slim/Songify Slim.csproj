@@ -591,6 +591,7 @@
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleAlbum.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleArtist.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimplePlaylist.cs" />
+    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleQueue.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleTrack.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Snapshot.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Token.cs" />

@@ -938,13 +938,18 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
       return string.IsNullOrEmpty(market) ? $"{APIBase}/tracks/{id}" : $"{APIBase}/tracks/{id}?market={market}";
     }
 
-    /// <summary>
-    ///     Get a detailed audio analysis for a single track identified by its unique Spotify ID.
-    /// </summary>
-    /// <param name="id">The Spotify ID for the track.</param>
-    /// <returns></returns>
-    /// <remarks>AUTH NEEDED</remarks>
-    public string GetAudioAnalysis(string id)
+    public string GetQueue()
+    {
+        return $"{APIBase}/me/player/queue";
+    }
+
+/// <summary>
+        ///     Get a detailed audio analysis for a single track identified by its unique Spotify ID.
+        /// </summary>
+        /// <param name="id">The Spotify ID for the track.</param>
+        /// <returns></returns>
+        /// <remarks>AUTH NEEDED</remarks>
+        public string GetAudioAnalysis(string id)
     {
       return $"{APIBase}/audio-analysis/{id}";
     }
@@ -1131,5 +1136,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         $"{APIBase}/me/player/queue?uri={uri}&device_id={deviceId}";
     }
     #endregion
+
+
   }
 }

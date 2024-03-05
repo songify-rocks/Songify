@@ -417,6 +417,7 @@ namespace Songify_Slim.Util.Songify
             }
             // gets the current playing songinfo
             _songInfo = ApiHandler.GetSongInfo();
+            SimpleQueue queue = ApiHandler.GetQueueInfo();
             try
             {
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null))
@@ -480,6 +481,43 @@ namespace Songify_Slim.Util.Songify
                     {
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
+                    }
+                    //Remove all songs from the web queue that are not in the current playback queue
+                    if (GlobalObjects.ReqList.Count > 0)
+                    {
+                        List<RequestObject> itemsToRemove = [];
+
+                        foreach (RequestObject requestObject in GlobalObjects.ReqList)
+                        {
+                            if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
+                            dynamic payload = new
+                            {
+                                uuid = Settings.Settings.Uuid,
+                                key = Settings.Settings.AccessKey,
+                                queueid = requestObject.Queueid,
+                            };
+                            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                            itemsToRemove.Add(requestObject);
+                        }
+
+                        foreach (var item in itemsToRemove)
+                        {
+                            await Application.Current.Dispatcher.BeginInvoke(() =>
+                             {
+                                 GlobalObjects.ReqList.Remove(item);
+                             });
+                        }
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            foreach (Window window in Application.Current.Windows)
+                            {
+                                if (window.GetType() != typeof(WindowQueue))
+                                    continue;
+                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                                (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                            }
+                        });
                     }
                 }
 
