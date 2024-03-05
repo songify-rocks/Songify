@@ -336,9 +336,9 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static SimpleQueue GetQueueInfo()
+        public static async Task<SimpleQueue> GetQueueInfo()
         {
-            return Spotify.GetQueue();
+            return await Spotify.GetQueueAsync();
         }
     }
 }

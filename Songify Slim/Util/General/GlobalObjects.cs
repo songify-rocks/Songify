@@ -1,4 +1,5 @@
 ﻿using Songify_Slim.Models;
+using Songify_Slim.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -75,6 +76,19 @@ namespace Songify_Slim.Util.General
             return foundChild;
         }
 
+        public static string MsToMmSsConverter(int milliseconds)
+        {
+            // Convert milliseconds to seconds
+            int totalSeconds = milliseconds / 1000;
+
+            // Calculate minutes and seconds
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+
+            // Format and return the time in "mm:ss" format
+            return $"{minutes:D1}:{seconds:D2}";
+        }
+
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj == null) yield return (T)Enumerable.Empty<T>();
@@ -92,6 +106,20 @@ namespace Songify_Slim.Util.General
                 foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
             }
         }
+
+        public static void UpdateQueueWindow() =>
+            // Add the song to the internal queue and update the queue window if its open
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Window qw = null;
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() == typeof(WindowQueue))
+                        qw = window;
+                }
+
+                (qw as WindowQueue)?.dgv_Queue.Items.Refresh();
+            });
 
         public static string GetReadablePlayer()
         {

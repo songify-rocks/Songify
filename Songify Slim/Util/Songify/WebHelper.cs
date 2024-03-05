@@ -15,6 +15,10 @@ using System.Web;
 using Newtonsoft.Json.Linq;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using Songify_Slim.Views;
+using System.Collections;
+using System.Windows;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -99,6 +103,9 @@ namespace Songify_Slim.Util.Songify
                             {
                                 GlobalObjects.ReqList[i].Queueid = i + 1;
                             }
+
+                            UpdateQueueWindow();
+
                             return;
                         }
                         try
@@ -108,7 +115,9 @@ namespace Songify_Slim.Util.Songify
                             {
                                 GlobalObjects.ReqList.Add(response);
                             }));
+                            UpdateQueueWindow();
                         }
+
                         catch (Exception e)
                         {
                             Logger.LogExc(e);
@@ -129,6 +138,46 @@ namespace Songify_Slim.Util.Songify
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private static async void UpdateQueueWindow()
+        {
+            SimpleQueue queue = await ApiHandler.GetQueueInfo();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(WindowQueue))
+                        continue;
+                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                    ((WindowQueue)window).dgv_Queue.ItemsSource = null;
+                    ((WindowQueue)window).dgv_Queue.Items.Clear();
+                    foreach (FullTrack fullTrack in queue.Queue)
+                    {
+                        if (GlobalObjects.ReqList.Any(o => o.Trackid == fullTrack.Id))
+                        {
+                            RequestObject reqObj = GlobalObjects.ReqList.First(o => o.Trackid == fullTrack.Id);
+                            (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
+                        }
+                        else
+                        {
+                            (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
+                            {
+                                Queueid = 0,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = fullTrack.Id,
+                                Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                Title = fullTrack.Name,
+                                Length = GlobalObjects.MsToMmSsConverter((int)fullTrack.DurationMs),
+                                Requester = "Spotify",
+                                Played = 0,
+                                Albumcover = null
+                            });
+                        }
+                    }
+                    (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                }
+            });
         }
 
         public static async Task TelemetryRequest(RequestMethod method, string payload)

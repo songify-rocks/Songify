@@ -328,11 +328,7 @@ namespace Songify_Slim.Views
             string albumUrl = null;
 
             if (info.Albums.Count != 0) albumUrl = info.Albums[0].Url;
-            if (GlobalObjects.SkipList.Find(o => o.Trackid == info.SongId) != null)
-            {
-                GlobalObjects.SkipList.Remove(GlobalObjects.SkipList.Find(o => o.Trackid == info.SongId));
-                await ApiHandler.SkipSong();
-            }
+
 
             WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongId, info.Url);
         }

@@ -22,19 +22,13 @@ namespace Songify_Slim.Views
         public WindowQueue()
         {
             InitializeComponent();
-            _timer.Interval = TimeSpan.FromSeconds(5);
-            _timer.Tick += (sender, args) =>
-            {
-                dgv_Queue.Items.Refresh();
-            };
-            _timer.IsEnabled = true;
         }
 
         // This window shows the current Queue in a DataGrid
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // This loads in all the requestobjects
-            dgv_Queue.ItemsSource = GlobalObjects.ReqList;
+            GlobalObjects.UpdateQueueWindow();
+
             foreach (DataGridColumn dataGridColumn in dgv_Queue.Columns)
             {
                 dataGridColumn.Visibility = Visibility.Collapsed;
@@ -57,6 +51,7 @@ namespace Songify_Slim.Views
                 return;
 
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            if (req.Queueid == 0 || req.Requester == "Spotify") return;
             dynamic payload = new
             {
                 uuid = Settings.Uuid,
@@ -69,13 +64,14 @@ namespace Songify_Slim.Views
                 GlobalObjects.ReqList.Remove(req);
             }));
             dgv_Queue.Items.Refresh();
+
         }
 
         private void ColVisChecked(object sender, RoutedEventArgs e)
         {
-            if(!IsLoaded)return;
+            if (!IsLoaded) return;
             int index = int.Parse((sender as CheckBox)?.Tag.ToString() ?? "-1");
-            if(index < 0) return;
+            if (index < 0) return;
             bool? isChecked = (sender as CheckBox)?.IsChecked;
             dgv_Queue.Columns[index].Visibility = isChecked != null && (bool)isChecked ? Visibility.Visible : Visibility.Collapsed;
             List<int> cols = (from UIElement item in stackCols.Children where (bool)(item as CheckBox).IsChecked select int.Parse((item as CheckBox)?.Tag.ToString())).ToList();
@@ -100,7 +96,7 @@ namespace Songify_Slim.Views
                 };
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
             }
-            dgv_Queue.Items.Refresh();
+            GlobalObjects.UpdateQueueWindow();
         }
     }
 }

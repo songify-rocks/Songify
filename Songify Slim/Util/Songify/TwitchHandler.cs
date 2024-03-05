@@ -652,7 +652,8 @@ namespace Songify_Slim.Util.Songify
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
-            UpdateQueueWindow();
+            GlobalObjects.UpdateQueueWindow();
+
         }
 
         private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
@@ -1407,7 +1408,7 @@ namespace Songify_Slim.Util.Songify
                 }
             }
             // Remove command (!remove)
-            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdRemoveTrigger}" &&
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger}") &&
                      Settings.Settings.BotCmdRemove)
             {
                 try
@@ -1424,8 +1425,31 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
 
-                RequestObject reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                    o.Requester == e.ChatMessage.DisplayName);
+                bool modAction = false;
+                RequestObject reqObj = null;
+
+                if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster)
+                {
+                    if (e.ChatMessage.Message.Split(' ').Length > 1)
+                    {
+                        if (int.TryParse(e.ChatMessage.Message.Split(' ')[1], out int queueId))
+                        {
+                            modAction = true;
+                            reqObj = GlobalObjects.ReqList.FirstOrDefault(o => o.Queueid == queueId);
+                        }
+                    }
+                    else
+                    {
+                        reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+                            o.Requester == e.ChatMessage.DisplayName);
+                    }
+                }
+                else
+                {
+                    reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+                        o.Requester == e.ChatMessage.DisplayName);
+                }
+
                 if (reqObj == null)
                     return;
                 string tmp = $"{reqObj.Artist} - {reqObj.Title}";
@@ -1440,9 +1464,9 @@ namespace Songify_Slim.Util.Songify
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
-                UpdateQueueWindow();
+                GlobalObjects.UpdateQueueWindow();
 
-                string response = Settings.Settings.BotRespRemove;
+                string response = modAction ? $"The request {tmp} requested by @{reqObj.Requester} will be skipped." : Settings.Settings.BotRespRemove;
                 response = response
                     .Replace("{song}", tmp)
                     .Replace("{user}", e.ChatMessage.DisplayName);
@@ -2329,21 +2353,7 @@ namespace Songify_Slim.Util.Songify
             CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
             CooldownTimer.Start();
         }
-        private static void UpdateQueueWindow()
-        {
-            // Add the song to the internal queue and update the queue window if its open
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Window qw = null;
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() == typeof(WindowQueue))
-                        qw = window;
-                }
 
-                (qw as WindowQueue)?.dgv_Queue.Items.Refresh();
-            });
-        }
         private static async Task UploadToQueue(FullTrack track, string displayName)
         {
             string artists = "";
@@ -2380,7 +2390,7 @@ namespace Songify_Slim.Util.Songify
             };
 
             await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
-            UpdateQueueWindow();
+            GlobalObjects.UpdateQueueWindow();
         }
     }
 
