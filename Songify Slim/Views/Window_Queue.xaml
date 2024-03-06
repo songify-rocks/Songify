@@ -27,7 +27,7 @@
                 <CheckBox Margin="3" Tag="4" x:Name="CheckColRequester" Content="Requester" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
             </StackPanel>
         </Expander>
-        <DataGrid Grid.Row="1" x:Name="dgv_Queue" Margin="10,10,10,10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled">
+        <DataGrid Grid.Row="1" x:Name="dgv_Queue" Margin="10,10,10,10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled" BeginningEdit="dgv_Queue_BeginningEdit">
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Delete" Click="DgvItemDelete_Click" />

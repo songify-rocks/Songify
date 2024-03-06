@@ -98,5 +98,10 @@ namespace Songify_Slim.Views
             }
             GlobalObjects.UpdateQueueWindow();
         }
+
+        private void dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            e.Cancel = true;
+        }
     }
 }

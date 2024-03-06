@@ -525,10 +525,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            if (GlobalObjects.IsBeta)
-                LblCopyright.Content = $"Songify v1.5.2.beta_3 Copyright ©";
-            else
-                LblCopyright.Content = $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.beta_1 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -955,7 +952,7 @@ namespace Songify_Slim.Views
         }
         public static string InterpretEscapeCharacters(string input)
         {
-            if(input == null)
+            if (input == null)
                 return null;
             string replacedInput = input
                 .Replace(@"\t", "\t")
@@ -1155,7 +1152,7 @@ namespace Songify_Slim.Views
             string temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
-            if (temp.Replace("\n","").Replace("\r","").Trim() != Regex.Replace(CurrSong.Replace("\\n", "").Replace("\\r", "").Trim(), "\\s+", " ") || forceUpdate || _firstRun)
+            if (temp.Replace("\n", "").Replace("\r", "").Trim() != Regex.Replace(CurrSong.Replace("\\n", "").Replace("\\r", "").Trim(), "\\s+", " ") || forceUpdate || _firstRun)
             {
                 if (temp.Trim() != CurrSong.Trim())
                     // Clear the SkipVotes list in TwitchHandler Class
