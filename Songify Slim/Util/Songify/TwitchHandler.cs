@@ -1794,9 +1794,7 @@ namespace Songify_Slim.Util.Songify
             using HttpClient httpClient = new();
             HttpRequestMessage request = new(HttpMethod.Get, input);
             HttpResponseMessage response = await httpClient.SendAsync(request);
-            if (response.RequestMessage.RequestUri != null)
-                return response.RequestMessage.RequestUri.AbsoluteUri;
-            return "";
+            return response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.AbsoluteUri : "";
         }
 
         private static bool IsArtistBlacklisted(FullTrack track, OnMessageReceivedArgs e, out string response)

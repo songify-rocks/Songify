@@ -1,4 +1,6 @@
 ﻿using Songify_Slim.Models;
+using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Songify_Slim.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.General
 {
@@ -107,19 +110,84 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        public static void UpdateQueueWindow() =>
-            // Add the song to the internal queue and update the queue window if its open
-            Application.Current.Dispatcher.Invoke(() =>
+        public static async void UpdateQueueWindow()
+        {
+            SimpleQueue queue = await ApiHandler.GetQueueInfo();
+
+            //Remove all songs from the web queue that are not in the current playback queue
+            if (ReqList.Count > 0)
             {
-                Window qw = null;
-                foreach (Window window in Application.Current.Windows)
+                List<RequestObject> itemsToRemove = [];
+
+                foreach (RequestObject requestObject in ReqList)
                 {
-                    if (window.GetType() == typeof(WindowQueue))
-                        qw = window;
+                    if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
+                    dynamic payload = new
+                    {
+                        uuid = Settings.Settings.Uuid,
+                        key = Settings.Settings.AccessKey,
+                        queueid = requestObject.Queueid,
+                    };
+                    await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                    itemsToRemove.Add(requestObject);
                 }
 
-                (qw as WindowQueue)?.dgv_Queue.Items.Refresh();
+                foreach (var item in itemsToRemove)
+                {
+                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        ReqList.Remove(item);
+                    });
+                }
+            }
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Dictionary to keep track of replacements
+                Dictionary<string, bool> replacementTracker = [];
+
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window.GetType() != typeof(WindowQueue))
+                        continue;
+
+                    ((WindowQueue)window).dgv_Queue.ItemsSource = null;
+                    ((WindowQueue)window).dgv_Queue.Items.Clear();
+
+                    foreach (FullTrack fullTrack in queue.Queue)
+                    {
+                        // Determine if we have a matching request object that hasn't been used for replacement yet
+                        RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId );
+
+                        if (reqObj != null)
+                        {
+                            // If we found a request object, and it hasn't been used for replacement, add it and mark as used
+                            (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
+                            replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                        }
+                        else
+                        {
+                            // Otherwise, just add the song information from the queue as a new request object
+                            (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
+                            {
+                                Queueid = 0,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = fullTrack.Id,
+                                Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                Title = fullTrack.Name,
+                                Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                Requester = "Spotify",
+                                Played = 0,
+                                Albumcover = null
+                            });
+                        }
+                    }
+
+                    (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                }
+
             });
+
+        }
 
         public static string GetReadablePlayer()
         {

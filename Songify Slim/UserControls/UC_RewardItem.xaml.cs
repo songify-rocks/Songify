@@ -28,13 +28,33 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
-            TbRewardName.Text = customReward.Title;
-            TbRewardCost.Text = customReward.Cost.ToString();
-            ImgBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(customReward.BackgroundColor));
-            if (customReward.Image != null)
-                RewardImage.Source = new BitmapImage(new Uri(customReward.Image.Url1x));
+            TbRewardName.Text = Reward.Title;
+            TbRewardCost.Text = Reward.Cost.ToString();
+            if (Reward.BackgroundColor != null)
+            {
+                try
+                {
+                    ImgBorder.Background = Reward is { BackgroundColor: not null } ? new SolidColorBrush((Color)ColorConverter.ConvertFromString(Reward.BackgroundColor)!) : GetRandomSolidColorBrush();
+                }
+                catch (Exception)
+                {
+                    ImgBorder.Background = GetRandomSolidColorBrush();
+                }
+            }
+
+            if (Reward.Image != null)
+                RewardImage.Source = new BitmapImage(new Uri(Reward.Image.Url1x));
             if (managable)
                 IconManagable.Visibility = Visibility.Visible;
+        }
+
+        public static SolidColorBrush GetRandomSolidColorBrush()
+        {
+            Random random = new();
+            byte r = (byte)random.Next(256);
+            byte g = (byte)random.Next(256);
+            byte b = (byte)random.Next(256);
+            return new SolidColorBrush(Color.FromRgb(r, g, b));
         }
     }
 }

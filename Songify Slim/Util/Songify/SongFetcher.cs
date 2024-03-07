@@ -458,31 +458,31 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     //if Previous is not null then try to remove it from the internal queue (ReqList)
-                    //if (previous != null)
-                    //{
-                    //    Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
-                    //    do
-                    //    {
-                    //        Application.Current.Dispatcher.BeginInvoke(() =>
-                    //        {
-                    //            GlobalObjects.ReqList.Remove(previous);
-                    //        });
-                    //        Thread.Sleep(250);
-                    //    } while (GlobalObjects.ReqList.Contains(previous));
+                    if (previous != null)
+                    {
+                        Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
+                        do
+                        {
+                            Application.Current.Dispatcher.BeginInvoke(() =>
+                            {
+                                GlobalObjects.ReqList.Remove(previous);
+                            });
+                            Thread.Sleep(250);
+                        } while (GlobalObjects.ReqList.Contains(previous));
 
-                    //    Logger.LogStr($"QUEUE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
+                        Logger.LogStr($"QUEUE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
 
-                    //    Application.Current.Dispatcher.Invoke(() =>
-                    //                    {
-                    //                        foreach (Window window in Application.Current.Windows)
-                    //                        {
-                    //                            if (window.GetType() != typeof(WindowQueue))
-                    //                                continue;
-                    //                            //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                    //                            (window as WindowQueue)?.dgv_Queue.Items.Refresh();
-                    //                        }
-                    //                    });
-                    //}
+                        Application.Current.Dispatcher.Invoke(() =>
+                                        {
+                                            foreach (Window window in Application.Current.Windows)
+                                            {
+                                                if (window.GetType() != typeof(WindowQueue))
+                                                    continue;
+                                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
+                                                (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                                            }
+                                        });
+                    }
                 }
 
                 if (_songInfo.SongId != null)
@@ -492,75 +492,14 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
 
-                    SimpleQueue queue = await ApiHandler.GetQueueInfo();
-
                     if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                     }
-                    //Remove all songs from the web queue that are not in the current playback queue
-                    if (GlobalObjects.ReqList.Count > 0)
-                    {
-                        List<RequestObject> itemsToRemove = [];
 
-                        foreach (RequestObject requestObject in GlobalObjects.ReqList)
-                        {
-                            if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
-                            dynamic payload = new
-                            {
-                                uuid = Settings.Settings.Uuid,
-                                key = Settings.Settings.AccessKey,
-                                queueid = requestObject.Queueid,
-                            };
-                            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                            itemsToRemove.Add(requestObject);
-                        }
-
-                        foreach (var item in itemsToRemove)
-                        {
-                            await Application.Current.Dispatcher.BeginInvoke(() =>
-                             {
-                                 GlobalObjects.ReqList.Remove(item);
-                             });
-                        }
-                    }
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() != typeof(WindowQueue))
-                                continue;
-                            //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                            ((WindowQueue)window).dgv_Queue.ItemsSource = null;
-                            ((WindowQueue)window).dgv_Queue.Items.Clear();
-                            foreach (FullTrack fullTrack in queue.Queue)
-                            {
-                                if (GlobalObjects.ReqList.Any(o => o.Trackid == fullTrack.Id))
-                                {
-                                    RequestObject reqObj = GlobalObjects.ReqList.First(o => o.Trackid == fullTrack.Id);
-                                    (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
-                                }
-                                else
-                                {
-                                    (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
-                                    {
-                                        Queueid = 0,
-                                        Uuid = Settings.Settings.Uuid,
-                                        Trackid = fullTrack.Id,
-                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                        Title = fullTrack.Name,
-                                        Length = GlobalObjects.MsToMmSsConverter((int)fullTrack.DurationMs),
-                                        Requester = "Spotify",
-                                        Played = 0,
-                                        Albumcover = null
-                                    });
-                                }
-                            }
-                            (window as WindowQueue)?.dgv_Queue.Items.Refresh();
-                        }
-                    });
-
+                    GlobalObjects.UpdateQueueWindow();
+                    
                 }
 
                 UpdateWebServerResponse();
