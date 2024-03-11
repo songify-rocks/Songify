@@ -652,7 +652,7 @@ namespace Songify_Slim.Util.Songify
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
-            GlobalObjects.UpdateQueueWindow();
+            GlobalObjects.QueueUpdateQueueWindow();
 
         }
 
@@ -1057,33 +1057,32 @@ namespace Songify_Slim.Util.Songify
 
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            Settings.Settings.IsLive = await CheckStreamIsUp();
-            var usersToAddOrUpdate = new List<TwitchUser>();
 
-            if (Users.All(o => o.UserId != e.ChatMessage.UserId))
+            // Attempt to find the user in the existing list.
+            var existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
+
+            if (existingUser == null)
             {
-                usersToAddOrUpdate.Add(new TwitchUser
+                // If the user doesn't exist, add them.
+                var newUser = new TwitchUser
                 {
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
                     DisplayName = e.ChatMessage.DisplayName,
                     UserLevel = CheckUserLevel(e.ChatMessage)
-                });
+                };
+                Users.Add(newUser);
             }
             else
             {
-                var existingUser = Users.Find(o => o.UserId == e.ChatMessage.UserId);
+                // If the user exists, update their information.
                 existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
-                usersToAddOrUpdate.Add(existingUser);
-            }
-
-            foreach (TwitchUser user in usersToAddOrUpdate.Where(user => Users.All(o => o.UserId != user.UserId)))
-            {
-                Users.Add(user);
             }
 
             if (!string.IsNullOrEmpty(Settings.Settings.TwRewardId) && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled && Settings.Settings.TwSrReward)
             {
+                Settings.Settings.IsLive = await CheckStreamIsUp();
+
                 int userlevel = CheckUserLevel(e.ChatMessage);
                 if (userlevel < 4 || !e.ChatMessage.IsBroadcaster)
                     if (!Settings.Settings.UserLevelsReward.Contains(userlevel) &&
@@ -1464,7 +1463,7 @@ namespace Songify_Slim.Util.Songify
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() => { GlobalObjects.ReqList.Remove(reqObj); }));
                 //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
-                GlobalObjects.UpdateQueueWindow();
+                GlobalObjects.QueueUpdateQueueWindow();
 
                 string response = modAction ? $"The request {tmp} requested by @{reqObj.Requester} will be skipped." : Settings.Settings.BotRespRemove;
                 response = response
@@ -2388,7 +2387,7 @@ namespace Songify_Slim.Util.Songify
             };
 
             await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
-            GlobalObjects.UpdateQueueWindow();
+            GlobalObjects.QueueUpdateQueueWindow();
         }
     }
 

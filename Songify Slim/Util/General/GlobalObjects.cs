@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -34,6 +35,9 @@ namespace Songify_Slim.Util.General
         public static bool TwitchBotTokenExpired = false;
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
+        private static readonly TaskQueue updateQueueWindowTasks = new TaskQueue();
+
+
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
@@ -110,7 +114,12 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        public static async void UpdateQueueWindow()
+        public static void QueueUpdateQueueWindow()
+        {
+            updateQueueWindowTasks.Enqueue(UpdateQueueWindow);
+        }
+
+        public static async Task UpdateQueueWindow()
         {
             SimpleQueue queue = await ApiHandler.GetQueueInfo();
 

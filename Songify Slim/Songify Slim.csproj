@@ -535,6 +535,7 @@
       <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\General\TaskQueue.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthorizationCodeAuth.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthUtil.cs" />

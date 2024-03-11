@@ -27,7 +27,7 @@ namespace Songify_Slim.Views
         // This window shows the current Queue in a DataGrid
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            GlobalObjects.UpdateQueueWindow();
+            GlobalObjects.QueueUpdateQueueWindow();
 
             foreach (DataGridColumn dataGridColumn in dgv_Queue.Columns)
             {
@@ -96,7 +96,7 @@ namespace Songify_Slim.Views
                 };
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
             }
-            GlobalObjects.UpdateQueueWindow();
+            GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private void dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)

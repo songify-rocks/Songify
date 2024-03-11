@@ -498,8 +498,7 @@ namespace Songify_Slim.Util.Songify
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                     }
 
-                    GlobalObjects.UpdateQueueWindow();
-                    
+                    GlobalObjects.QueueUpdateQueueWindow();
                 }
 
                 UpdateWebServerResponse();
