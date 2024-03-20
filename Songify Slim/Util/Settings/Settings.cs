@@ -440,7 +440,7 @@ namespace Songify_Slim.Util.Settings
 
         public static string TwRewardGoalRewardId { get => GetTwRewardGoalRewardId(); set => SetTwRewardGoalRewardId(value); }
 
-        public static string TwRewardId
+        public static List<string> TwRewardId
         {
             get => GetTwRewardId();
             set => SetTwRewardId(value);
@@ -1273,7 +1273,7 @@ namespace Songify_Slim.Util.Settings
             return _currentConfig.AppConfig.TwRewardGoalRewardId;
         }
 
-        private static string GetTwRewardId()
+        private static List<string> GetTwRewardId()
         {
             return _currentConfig.AppConfig.TwRewardId;
         }
@@ -1856,7 +1856,7 @@ namespace Songify_Slim.Util.Settings
             _currentConfig.AppConfig.TwRewardGoalRewardId = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
-        private static void SetTwRewardId(string value)
+        private static void SetTwRewardId(List<string> value)
         {
             _currentConfig.AppConfig.TwRewardId = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);

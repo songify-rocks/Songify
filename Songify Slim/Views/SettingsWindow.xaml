@@ -958,6 +958,7 @@
                                     Text=""
                                     TextChanged="txtbx_RewardID_TextChanged"
                                     Visibility="Collapsed" />
+
                                 <CheckBox
                                     x:Name="ChbxMessageLogging"
                                     Grid.Row="2"
@@ -973,16 +974,45 @@
                                     Grid.Row="1"
                                     Grid.Column="0"
                                     Margin="0,0,0,6"
-                                    VerticalAlignment="Center"
+                                    VerticalAlignment="Top"
                                     Text="{x:Static local:Resources.sw_Spotify_RewardSR}" />
-                                <ComboBox
-                                    x:Name="CbxRewards"
+                                <StackPanel
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Height="23"
-                                    Margin="0,0,0,6"
-                                    SelectionChanged="CbxRewards_OnSelectionChanged"
-                                    Tag="sr" />
+                                    Orientation="Vertical">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <ComboBox
+                                            x:Name="CbxRewards"
+                                            Grid.Column="0"
+                                            Height="23"
+                                            Margin="3"
+                                            SelectionChanged="CbxRewards_OnSelectionChanged"
+                                            Tag="sr" />
+                                        <Button
+                                            x:Name="BtnAddReward"
+                                            Grid.Column="1"
+                                            Width="23"
+                                            Height="23"
+                                            Margin="3"
+                                            Click="BtnAddReward_Click"
+                                            Content="+" />
+                                        <Button
+                                            x:Name="BtnRemoveReward"
+                                            Grid.Column="2"
+                                            Width="23"
+                                            Height="23"
+                                            Margin="3"
+                                            Content="-" Click="BtnRemoveReward_Click" />
+                                    </Grid>
+
+                                    <ListBox x:Name="LbRewards" />
+                                </StackPanel>
+
                                 <Button
                                     x:Name="BtnUpdateRewards"
                                     Grid.Row="0"
@@ -1071,7 +1101,7 @@
                                         TextWrapping="Wrap"
                                         Visibility="Collapsed" />
                                     <TextBlock
-                                        x:Name="SMILEY"
+                                        x:Name="Smiley"
                                         Grid.Row="1"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
@@ -1385,7 +1415,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULCommandViewer"
+                                                    x:Name="ChckUlCommandViewer"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1396,7 +1426,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULCommandSub"
+                                                    x:Name="ChckUlCommandSub"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1407,7 +1437,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULCommandVip"
+                                                    x:Name="ChckUlCommandVip"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1418,7 +1448,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULCommandMod"
+                                                    x:Name="ChckUlCommandMod"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1456,7 +1486,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULRewardViewer"
+                                                    x:Name="ChckUlRewardViewer"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1467,7 +1497,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULRewardSub"
+                                                    x:Name="ChckUlRewardSub"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1478,7 +1508,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULRewardVip"
+                                                    x:Name="ChckUlRewardVip"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
@@ -1489,7 +1519,7 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
-                                                    x:Name="ChckULRewardMod"
+                                                    x:Name="ChckUlRewardMod"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"

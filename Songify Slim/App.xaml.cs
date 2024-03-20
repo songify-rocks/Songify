@@ -9,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Threading;
 
 namespace Songify_Slim
@@ -46,35 +47,6 @@ namespace Songify_Slim
             {
                 Settings.Uuid = Guid.NewGuid().ToString();
             }
-
-            //  Adding the RegKey for Songify in startup(autostart with windows)
-
-            // Check if the UUI is set, if not generate a new UUID
-
-            // Removed since it caused issues
-            //RegistryKey registryKey = Registry.CurrentUser.CreateSubKey("SOFTWARE\\Songify");
-            //if (registryKey != null && registryKey.GetValue("UUID") == null)
-            //{
-            //    // generate UUID if not exists
-            //    if (string.IsNullOrEmpty(Settings.Uuid))
-            //    {
-            //        Settings.Uuid = Guid.NewGuid().ToString();
-            //    }
-
-            //    registryKey.SetValue("UUID", Settings.Uuid);
-            //}
-            //else
-            //{
-            //    Settings.Uuid = registryKey?.GetValue("UUID").ToString();
-            //}
-            //if (registryKey?.GetValue("AccessKey") == null)
-            //{
-            //    registryKey?.SetValue("AccessKey", Settings.AccessKey);
-            //}
-            //else
-            //{
-            //    Settings.AccessKey = registryKey.GetValue("AccessKey").ToString();
-            //}
         }
 
         protected override void OnStartup(StartupEventArgs e)

@@ -96,7 +96,7 @@ namespace Songify_Slim.Views
         public MainWindow()
         {  // start minimized in systray (hide)
             InitializeComponent();
-            if (Settings.Systray) MinimizeToSysTray();
+            //if (Settings.Systray) MinimizeToSysTray();
             _webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
             _timer.Elapsed += TelemetryTask;
             _timer.Start();
@@ -525,7 +525,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.beta_3 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.dev_1 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -568,6 +568,28 @@ namespace Songify_Slim.Views
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
             // automatically start fetching songs
             SetFetchTimer();
+
+            Logger.LogStr($"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
+            // if location is in AppData\Local\Temp or location contains Songify.zip or is in a System folder, Notify the user
+
+            if (Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains("Songify.zip"))
+            {
+                MessageBox.Show(
+                    "Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Application.Current.Shutdown();
+            }
+            if (Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains(@"C:\Program Files") ||
+                Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains(@"C:\Program Files (x86)") ||
+                Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains(@"C:\ProgramData"))
+            {
+                MessageBox.Show(
+                    "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Application.Current.Shutdown();
+            }
+
+
             if (!Settings.UpdateRequired) return;
             List<int> userLevels = new();
             for (int i = 0; i <= Settings.TwSrUserLevel; i++)
@@ -576,7 +598,6 @@ namespace Songify_Slim.Views
             }
             if (Settings.UserLevelsCommand.Count == 0) Settings.UserLevelsCommand = userLevels;
             if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
-
             OpenPatchNotes();
             Settings.UpdateRequired = false;
         }
@@ -767,10 +788,10 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void OpenQueue()
+        private static void OpenQueue()
         {
             if (IsWindowOpen<WindowQueue>()) return;
-            WindowQueue wQ = new() { Top = Top, Left = Left };
+            WindowQueue wQ = new();
             wQ.Show();
         }
 

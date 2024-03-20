@@ -105,7 +105,7 @@ namespace Songify_Slim.Util.Songify
                         Authed = true;
                         AuthRefresh.Start();
                         await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                            new Action(() =>
+                            new Action(async () =>
                             {
                                 foreach (Window window in Application.Current.Windows)
                                 {
@@ -118,6 +118,16 @@ namespace Songify_Slim.Util.Songify
                                     Brushes.GreenYellow;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
                                     PackIconBootstrapIconsKind.CheckCircleFill;
+                                PrivateProfile x = await Spotify.GetPrivateProfileAsync();
+
+                                Logger.LogStr($"SPOTIFY: Connected Account: {x.DisplayName}");
+                                Logger.LogStr($"SPOTIFY: Account Type: {x.Product}");
+                                if (x.Product == "premium") return;
+                                ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
+                                    Brushes.DarkOrange;
+                                MessageBox.Show(
+                                    "Spotify Premium is required to perform song requests. This is a limtiation by Spotify, not by us.",
+                                    "Spotify Premium required", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }));
 
                     }
@@ -147,6 +157,14 @@ namespace Songify_Slim.Util.Songify
                         Brushes.GreenYellow;
                     ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
                         PackIconBootstrapIconsKind.CheckCircleFill;
+                    PrivateProfile x = await Spotify.GetPrivateProfileAsync();
+
+                    Logger.LogStr($"SPOTIFY: Connected Account: {x.DisplayName}");
+                    Logger.LogStr($"SPOTIFY: Account Type: {x.Product}");
+
+                    if (x.Product == "premium") return;
+                    ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
+                        Brushes.DarkOrange;
                     return;
                 }
 

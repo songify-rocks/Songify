@@ -8,7 +8,7 @@
                       xmlns:util="clr-namespace:Songify_Slim.Util"
                       mc:Ignorable="d"
                       Title="{x:Static properties:Resources.WinTitle_Queue}" Height="444.318" Width="489.772" WindowStyle="SingleBorderWindow"
-                      Loaded="MetroWindow_Loaded" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip">
+                      Loaded="MetroWindow_Loaded" WindowStartupLocation="Manual" ResizeMode="CanResizeWithGrip">
     <controls:MetroWindow.Resources>
         <util:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
     </controls:MetroWindow.Resources>

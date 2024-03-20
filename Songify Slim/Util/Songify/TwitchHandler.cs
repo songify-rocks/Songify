@@ -653,7 +653,6 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
-
         }
 
         private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
@@ -1078,8 +1077,8 @@ namespace Songify_Slim.Util.Songify
                 // If the user exists, update their information.
                 existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
             }
-
-            if (!string.IsNullOrEmpty(Settings.Settings.TwRewardId) && e.ChatMessage.CustomRewardId == Settings.Settings.TwRewardId && !PubSubEnabled && Settings.Settings.TwSrReward)
+            
+            if (Settings.Settings.TwRewardId.Count > 0 && Settings.Settings.TwRewardId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled && Settings.Settings.TwSrReward)
             {
                 Settings.Settings.IsLive = await CheckStreamIsUp();
 
@@ -1111,6 +1110,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e);
+                return;
             }
 
             // Same code from above but it reacts to a command instead of rewards
@@ -2076,7 +2076,7 @@ namespace Songify_Slim.Util.Songify
             List<CustomReward> managableRewards = await GetChannelRewards(true);
             bool isManagable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
-            if (reward.Id == Settings.Settings.TwRewardId)
+            if (Settings.Settings.TwRewardId.Any(o => o == reward.Id))
             {
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
                 int userlevel = Users.Find(o => o.UserId == redeemedUser.Id).UserLevel;

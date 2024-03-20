@@ -200,6 +200,10 @@ namespace Songify_Slim.Util.Settings
                     case ConfigTypes.AppConfig:
                         if (File.Exists($@"{path}\AppConfig.yaml"))
                         {
+                            deserializer = new DeserializerBuilder()
+                                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                                .WithTypeConverter(new YamlTypeConverters.SingleStringToListConverter())
+                                .Build();
                             var p = deserializer.Deserialize<AppConfig>(File.ReadAllText($@"{path}\AppConfig.yaml"));
                             config.AppConfig = p;
                             config.AppConfig.AccessKey = string.IsNullOrWhiteSpace(config.AppConfig.AccessKey) ? GenerateAccessKey() : config.AppConfig.AccessKey;
@@ -238,7 +242,7 @@ namespace Songify_Slim.Util.Settings
                                 TwSrMaxReqSubscriber = 1,
                                 TwSrMaxReqVip = 1,
                                 TwSrUserLevel = 1,
-                                TwRewardId = "",
+                                TwRewardId = new(),
                                 RefundConditons = new int[]
                                 {
                                 },
@@ -656,7 +660,7 @@ namespace Songify_Slim.Util.Settings
         public int TwSrMaxReqSubscriber { get; set; } = 3;
         public int TwSrMaxReqVip { get; set; } = 3;
         public int TwSrUserLevel { get; set; } = 1;
-        public string TwRewardId { get; set; } = "";
+        public List<string> TwRewardId { get; set; } = new();
         public int[] RefundConditons { get; set; } = Array.Empty<int>();
         public List<string> ArtistBlacklist { get; set; } = new List<string>();
         public string Color { get; set; } = "Blue";

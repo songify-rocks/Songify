@@ -2,9 +2,12 @@
 using Songify_Slim.Util.Songify;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using Songify_Slim.UserControls;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace Songify_Slim.Views
@@ -64,7 +67,13 @@ namespace Songify_Slim.Views
                 if (window.GetType() == typeof(Window_Settings))
                 {
                     await ((Window_Settings)window).LoadRewards();
-                    (window as Window_Settings).CbxRewards.SelectedItem = (window as Window_Settings).GetItemFromList((window as Window_Settings).CbxRewards, response.Data[0].Id);
+                    //(window as Window_Settings).CbxRewards.SelectedItem = (window as Window_Settings).GetItemFromList((window as Window_Settings).CbxRewards, response.Data[0].Id);
+                    ((Window_Settings)window).LbRewards.Items.Add(new ListBoxItem
+                    {
+                        Content = new UcRewardItem(response.Data[0], true)
+                    });
+                    Settings.TwRewardId.Add(response.Data[0].Id);
+                    Settings.TwRewardId = Settings.TwRewardId;
                 }
         }
     }

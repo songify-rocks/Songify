@@ -105,7 +105,7 @@ namespace Songify_Slim.Views
             TbClientSecret.Password = Settings.ClientSecret;
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
             TglswSpotify.IsOn = Settings.UseOwnApp;
-            TxtbxRewardId.Text = Settings.TwRewardId;
+            //TxtbxRewardId.Text = Settings.TwRewardId;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -160,15 +160,15 @@ namespace Songify_Slim.Views
             Settings.UserLevelsCommand ??= new List<int>();
             Settings.UserLevelsReward ??= new List<int>();
 
-            ChckULCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
-            ChckULCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
-            ChckULCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
-            ChckULCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
+            ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
+            ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
+            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
+            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
 
-            ChckULRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
-            ChckULRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
-            ChckULRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
-            ChckULRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
+            ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
+            ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
+            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
+            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
 
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
@@ -379,7 +379,6 @@ namespace Songify_Slim.Views
             File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/TwitchCredentials.yaml");
             File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/SpotifyCredentials.yaml");
             Settings.ResetConfig();
-            Properties.Settings.Default.Reset();
             Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
@@ -749,7 +748,7 @@ namespace Songify_Slim.Views
         private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Saves the RewardID
-            Settings.TwRewardId = TxtbxRewardId.Text;
+            //Settings.TwRewardId = TxtbxRewardId.Text;
         }
 
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
@@ -845,7 +844,7 @@ namespace Songify_Slim.Views
                 case "sr":
                     {
                         if (rewardId == null) break;
-                        Settings.TwRewardId = rewardId;
+                        //Settings.TwRewardId = rewardId;
                         SetCheckBoxEnabledState(TwitchHandler.PubSubEnabled && item.IsManagable);
                         break;
                     }
@@ -868,7 +867,7 @@ namespace Songify_Slim.Views
         {
             if (!TwitchHandler.PubSubEnabled)
             {
-                SMILEY.Visibility = Visibility.Hidden;
+                Smiley.Visibility = Visibility.Hidden;
 
                 TextRefundDisclaimer.Text =
                     "Refunds are not possible because PubSub has been temporarily disabled until TwitchLib, a third party library I use for Twitch API integration, fixes the disconnect issues which crash the application.";
@@ -909,30 +908,40 @@ namespace Songify_Slim.Views
             ComboboxRewardGoalReward.SelectionChanged -= CbxRewards_OnSelectionChanged;
             CbxRewards.Items.Clear();
             CbxRewardsSkip.Items.Clear();
+            LbRewards.Items.Clear();
             ComboboxRewardGoalReward.Items.Clear();
             if (Settings.TwitchUser.BroadcasterType != "")
                 try
                 {
                     List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
                     List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
+
+                    //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
+                    List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
+                    foreach (string s in idsToRemove)
+                    {
+                        Settings.TwRewardId.Remove(s);
+                    }
+
                     if (rewards.Count > 0)
                     {
-                        CbxRewards.Items.Add(new ComboBoxItem
-                        {
-                            Content = new UcRewardItem(null, false)
-                        });
 
-                        CbxRewardsSkip.Items.Add(new ComboBoxItem
-                        {
-                            Content = new UcRewardItem(null, false)
-                        });
+                        //CbxRewards.Items.Add(new ComboBoxItem
+                        //{
+                        //    Content = new UcRewardItem(null, false)
+                        //});
 
-                        ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
-                        {
-                            Content = new UcRewardItem(null, false)
-                        });
+                        //CbxRewardsSkip.Items.Add(new ComboBoxItem
+                        //{
+                        //    Content = new UcRewardItem(null, false)
+                        //});
 
-                        foreach (CustomReward reward in await TwitchHandler.GetChannelRewards(false))
+                        //ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
+                        //{
+                        //    Content = new UcRewardItem(null, false)
+                        //});
+
+                        foreach (CustomReward reward in rewards)
                         {
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
@@ -949,12 +958,20 @@ namespace Songify_Slim.Views
                             {
                                 Content = new UcRewardItem(reward, managable)
                             });
+
+                            if (Settings.TwRewardId.Any(o => o == reward.Id))
+                            {
+                                LbRewards.Items.Add(new ListBoxItem
+                                {
+                                    Content = new UcRewardItem(reward, managable)
+                                });
+                            }
                         }
 
-                        CbxRewards.SelectedItem = GetItemFromList(CbxRewards, Settings.TwRewardId);
+                        CbxRewards.SelectedIndex = 0;
                         SetCheckBoxEnabledState(TwitchHandler.PubSubEnabled && CbxRewards.SelectedItem != null && ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable);
-                        CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
-                        ComboboxRewardGoalReward.SelectedItem = GetItemFromList(ComboboxRewardGoalReward, Settings.TwRewardGoalRewardId);
+                        //CbxRewardsSkip.SelectedItem = GetItemFromList(CbxRewardsSkip, Settings.TwRewardSkipId);
+                        //ComboboxRewardGoalReward.SelectedItem = GetItemFromList(ComboboxRewardGoalReward, Settings.TwRewardGoalRewardId);
                     }
                     CbxRewards.IsEnabled = true;
                     CbxRewardsSkip.IsEnabled = TwitchHandler.PubSubEnabled;
@@ -1397,6 +1414,32 @@ namespace Songify_Slim.Views
             Settings.SpotifySongLimitPlaylist = item.Playlist.Id;
         }
 
+        private void BtnAddReward_Click(object sender, RoutedEventArgs e)
+        {
+            if (CbxRewards.SelectedItem == null)
+                return;
 
+            if (LbRewards.Items.Cast<ListBoxItem>().Any(lbRewardsItem => ((UcRewardItem)(lbRewardsItem.Content)).Reward.Id == ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward.Id))
+            {
+                return;
+            }
+
+            LbRewards.Items.Add(new ListBoxItem
+            {
+                Content = new UcRewardItem(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward, ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable)
+            });
+            Settings.TwRewardId.Add(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward.Id);
+            Settings.TwRewardId = Settings.TwRewardId;
+
+        }
+
+        private void BtnRemoveReward_Click(object sender, RoutedEventArgs e)
+        {
+            if (LbRewards.SelectedItem == null)
+                return;
+            Settings.TwRewardId.Remove(((UcRewardItem)((ListBoxItem)LbRewards.SelectedItem).Content).Reward.Id);
+            Settings.TwRewardId = Settings.TwRewardId;
+            LbRewards.Items.Remove(LbRewards.SelectedItem);
+        }
     }
 }
