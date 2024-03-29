@@ -1,16 +1,25 @@
 ﻿using MahApps.Metro.IconPacks;
 using Songify_Slim.Views;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Threading;
+using Songify_Slim.Models;
+using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 
 namespace Songify_Slim.Util.General
 {
@@ -22,63 +31,238 @@ namespace Songify_Slim.Util.General
         public void StartWebServer(int port)
         {
             if (port < 1025 || port > 65535)
+            {
+                Logger.LogStr($"Webserver: Invalid port number {port}.");
                 return;
+            }
+
             if (!PortIsFree(port))
             {
                 Logger.LogStr($"Webserver: The Port {port} is blocked. Can't start webserver.");
                 return;
             }
 
-            // Listen on the specified port.
+            // Setup listener
             _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
-            //If the app is running as admin also add the current IP as a prefix
             if (IsRunningAsAdministrator())
             {
-                string localIP = GetLocalIPAddress();
-                if (!string.IsNullOrWhiteSpace(localIP))
+                string localIp = GetLocalIpAddress();
+                if (!string.IsNullOrWhiteSpace(localIp))
                 {
-                    _listener.Prefixes.Add($"http://{localIP}:{port}/");
+                    _listener.Prefixes.Add($"http://{localIp}:{port}/");
                 }
             }
-            _listener.Start();
+
+            try
+            {
+                _listener.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogStr($"WebServer: Failed to start on port {port}. Exception: {ex.Message}");
+                return;
+            }
+
             Run = true;
             Task.Run(() =>
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (Application.Current.MainWindow == null) return;
+                    // Assuming these UI elements and methods exist in your MainWindow
                     ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
                     ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 });
+
                 Logger.LogStr($"WebServer: Started on port {port}");
+                Logger.LogStr($"WebSocket: Started on ws://127.0.0.1:{port}");
 
                 while (Run)
                 {
                     try
                     {
-                        // Wait for a request.
                         HttpListenerContext context = _listener.GetContext();
-                        ProcessRequest(context);
+                        // Here you could inspect the request to determine if it's a WebSocket request
+                        // and call a different method to handle it.
+                        if (IsWebSocketRequest(context.Request))
+                        {
+                            ProcessWebSocketRequest(context);
+                        }
+                        else
+                        {
+                            ProcessHttpRequest(context);
+                        }
                     }
                     catch (Exception e)
                     {
                         Logger.LogExc(e);
                     }
                 }
-
             });
         }
-        public static string GetLocalIPAddress()
+
+        private async void ProcessWebSocketRequest(HttpListenerContext context)
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
+            WebSocketContext webSocketContext = null;
+            try
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                // Check for an Authorization header (or any other header as needed)
+                var authHeader = context.Request.Headers["Authorization"];
+
+                // Implement your authentication logic here.
+                // For example, verify a token extracted from the authHeader.
+                //bool isAuthenticated = ValidateAuthToken(authHeader); // You need to implement ValidateAuthToken
+
+                //if (!isAuthenticated)
+                //{
+                //    // If authentication fails, respond with an appropriate status code and close the connection.
+                //    Debug.WriteLine("Unauthorized");
+                //    context.Response.StatusCode = 401; // Unauthorized
+                //    context.Response.StatusDescription = "Unauthorized";
+                //    context.Response.Close();
+                //    return;
+                //}
+
+                webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
+                var webSocket = webSocketContext.WebSocket;
+
+                while (webSocket.State == WebSocketState.Open)
                 {
-                    return ip.ToString();
+                    var buffer = new ArraySegment<byte>(new byte[4096]);
+                    WebSocketReceiveResult result;
+                    do
+                    {
+                        result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
+
+                        // Decode the received message
+                        string message = System.Text.Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
+
+                        // Process the command
+                        ProcessCommand(message);
+
+                    } while (!result.EndOfMessage);
                 }
             }
-            return null;
+            catch (Exception e)
+            {
+                // Handle exception
+                Console.WriteLine("Exception: {0}", e);
+            }
+            finally
+            {
+                webSocketContext?.WebSocket?.Dispose();
+            }
+        }
+
+        private static bool ValidateAuthToken(string authHeader)
+        {
+            return authHeader == "123456";
+        }
+
+        private async void ProcessCommand(string message)
+        {
+            Logger.LogStr($"WEBSOCKET: Command '{message}' received");
+            // Here, we're assuming commands are simple text commands. Adjust parsing logic as necessary.
+            switch (message.ToLower())
+            {
+                case "block_artist":
+                    BlockArtist();
+                    break;
+                case "block_all_artists":
+                    BlockAllArtists();
+                    break;
+                case "block_song":
+                    BlockSong();
+                    break;
+                case "block_user":
+                    BlockUser();
+                    break;
+                case "skip":
+                case "next":
+                    await ApiHandler.SkipSong();
+                    break;
+                case "pause":
+                    await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                    break;
+                case "play":
+                    await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                    break;
+                case "stop_sr_reward":
+                    foreach (string s in Settings.Settings.TwRewardId)
+                    {
+                        await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
+                            Settings.Settings.TwitchUser.Id, s, new UpdateCustomRewardRequest
+                            {
+                                IsPaused = true
+                            }, Settings.Settings.TwitchAccessToken);
+                    }
+                    break;
+                default:
+                    Console.WriteLine($"Unknown command: {message}");
+                    break;
+            }
+        }
+
+        private static void BlockUser()
+        {
+            if (GlobalObjects.ReqList.All(o => o.Trackid != GlobalObjects.CurrentSong.SongId)) return;
+            {
+                RequestObject req =
+                    GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
+                if (req == null) return;
+                Settings.Settings.UserBlacklist.Add(req.Requester);
+                Settings.Settings.UserBlacklist = Settings.Settings.UserBlacklist;
+            }
+        }
+
+        private static async void BlockSong()
+        {
+            FullTrack result = ApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
+            if (result != null)
+                Settings.Settings.SongBlacklist.Add(new TrackItem
+                {
+                    Artists = string.Join(", ", result.Artists.Select(o => o.Name).ToList()),
+                    TrackName = result.Name,
+                    TrackId = result.Id,
+                    TrackUri = result.Uri,
+                    ReadableName = string.Join(", ", result.Artists.Select(o => o.Name).ToList()) + " - " + result.Name
+                });
+            Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+            await ApiHandler.SkipSong();
+            // If Window_Blacklist is open, call LoadBlacklists();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                    if (window.GetType() == typeof(Window_Blacklist))
+                        ((Window_Blacklist)window).LoadBlacklists();
+            });
+        }
+
+        private static void BlockAllArtists()
+        {
+            foreach (SimpleArtist currentSongFullArtist in GlobalObjects.CurrentSong.FullArtists)
+            {
+                Settings.Settings.ArtistBlacklist.Add(currentSongFullArtist.Name);
+            }
+            Settings.Settings.ArtistBlacklist = Settings.Settings.ArtistBlacklist;
+        }
+
+        private static void BlockArtist()
+        {
+            Settings.Settings.ArtistBlacklist.Add(GlobalObjects.CurrentSong.FullArtists[0].Name);
+            Settings.Settings.ArtistBlacklist = Settings.Settings.ArtistBlacklist;
+        }
+
+        private static bool IsWebSocketRequest(HttpListenerRequest request)
+        {
+            return request.IsWebSocketRequest;
+        }
+
+
+        public static string GetLocalIpAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).FirstOrDefault();
         }
 
         public static bool IsRunningAsAdministrator()
@@ -86,7 +270,7 @@ namespace Songify_Slim.Util.General
             try
             {
                 WindowsIdentity identity = WindowsIdentity.GetCurrent();
-                WindowsPrincipal principal = new WindowsPrincipal(identity);
+                WindowsPrincipal principal = new(identity);
                 return principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
             catch (Exception)
@@ -124,7 +308,7 @@ namespace Songify_Slim.Util.General
             return isBlocked;
         }
 
-        private void ProcessRequest(HttpListenerContext context)
+        private void ProcessHttpRequest(HttpListenerContext context)
         {
             if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
                 return;

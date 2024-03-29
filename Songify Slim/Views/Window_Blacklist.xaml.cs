@@ -28,7 +28,7 @@ namespace Songify_Slim.Views
             LoadBlacklists();
         }
 
-        private void LoadBlacklists()
+        public void LoadBlacklists()
         {
             LoadAritstBlacklist();
             LoadUserBlacklist();
@@ -95,29 +95,35 @@ namespace Songify_Slim.Views
 
                     // Perform a search via the spotify API
                     SearchItem searchItem = ApiHandler.GetArtist(search);
-                    if (searchItem.Artists.Items.Count <= 0)
-                        return;
-                    if (searchItem.Artists.Items.Count > 1)
+                    switch (searchItem.Artists.Items.Count)
                     {
-                        dgv_Artists.Items.Clear();
-                        int count = 1;
-                        foreach (FullArtist artist in searchItem.Artists.Items)
-                        {
-                            dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
-                            count++;
-                        }
-                        cc_Content.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        FullArtist fullartist = searchItem.Artists.Items[0];
-
-                        if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
-                        {
+                        case <= 0:
                             return;
+                        case > 1:
+                        {
+                            dgv_Artists.Items.Clear();
+                            int count = 1;
+                            foreach (FullArtist artist in searchItem.Artists.Items)
+                            {
+                                dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
+                                count++;
+                            }
+                            cc_Content.Visibility = Visibility.Visible;
+                            break;
                         }
-                        ListView_Blacklist.Items.Add(fullartist.Name);
+                        default:
+                        {
+                            FullArtist fullartist = searchItem.Artists.Items[0];
+
+                            if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
+                            {
+                                return;
+                            }
+                            ListView_Blacklist.Items.Add(fullartist.Name);
+                            break;
+                        }
                     }
+
                     break;
                 case 1:
                     ListView_UserBlacklist.Items.Add(search);
@@ -169,7 +175,7 @@ namespace Songify_Slim.Views
             SaveBlacklist();
         }
 
-        private void SaveBlacklist()
+        public void SaveBlacklist()
         {
             //Artist Blacklist
             List<string> tempList = new List<string>();

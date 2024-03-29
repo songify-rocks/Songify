@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web;
@@ -126,7 +127,7 @@ namespace Songify_Slim.Util.Songify
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                                     Brushes.DarkOrange;
                                 MessageBox.Show(
-                                    "Spotify Premium is required to perform song requests. This is a limtiation by Spotify, not by us.",
+                                    "Spotify Premium is required to perform song requests. This is a limitation by Spotify, not by us.",
                                     "Spotify Premium required", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }));
 
@@ -265,7 +266,8 @@ namespace Songify_Slim.Util.Songify
                 DurationPercentage = (int)percentage,
                 DurationTotal = (int)context.Item.DurationMs,
                 Progress = context.ProgressMs,
-                Playlist = playlistInfo
+                Playlist = playlistInfo,
+                FullArtists = context.Item.Artists
             };
         }
 

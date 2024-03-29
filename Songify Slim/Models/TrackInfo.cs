@@ -16,6 +16,7 @@ namespace Songify_Slim.Models
         public int DurationTotal { get; set; }
         public int Progress { get; set; }
         public PlaylistInfo Playlist { get; set; }
+        public List<SimpleArtist> FullArtists { get; set; }
     }
 
     public class PlaylistInfo
