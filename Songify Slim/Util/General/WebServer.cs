@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Models;
@@ -20,16 +21,19 @@ using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
+using TwitchLib.PubSub.Models.Responses;
+using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.General
 {
     public class WebServer
     {
         public bool Run;
-        private readonly HttpListener _listener = new HttpListener();
+        private HttpListener _listener = new();
 
         public void StartWebServer(int port)
         {
+            _listener = new HttpListener();
             if (port < 1025 || port > 65535)
             {
                 Logger.LogStr($"Webserver: Invalid port number {port}.");
@@ -42,8 +46,11 @@ namespace Songify_Slim.Util.General
                 return;
             }
 
-            // Setup listener
+            // Setup listener for localhost only
             _listener.Prefixes.Add($"http://127.0.0.1:{port}/");
+            // Optionally, support IPv6 localhost
+            _listener.Prefixes.Add($"http://[::1]:{port}/");
+
             if (IsRunningAsAdministrator())
             {
                 string localIp = GetLocalIpAddress();
@@ -138,7 +145,25 @@ namespace Songify_Slim.Util.General
                         string message = System.Text.Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
 
                         // Process the command
-                        ProcessCommand(message);
+                        string response = await ProcessCommand(message);
+
+                        if (response == "")
+                        {
+                            // If the command is not recognized, send an appropriate response
+                            response = "Unknown command: " + response;
+                        }
+                        else if (!string.IsNullOrEmpty(response))
+                        {
+                            // If the command is recognized but has no response, send an appropriate response
+                            response = "Command executed: " + response;
+                        }
+
+                        // Encode the response message to byte array
+                        var responseBytes = System.Text.Encoding.UTF8.GetBytes(response);
+                        var responseBuffer = new ArraySegment<byte>(responseBytes);
+
+                        // Send the response back to the client
+                        await webSocket.SendAsync(responseBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
 
                     } while (!result.EndOfMessage);
                 }
@@ -159,34 +184,64 @@ namespace Songify_Slim.Util.General
             return authHeader == "123456";
         }
 
-        private async void ProcessCommand(string message)
+        private async Task<string> ProcessCommand(string message)
         {
+            string command = message.ToLower();
             Logger.LogStr($"WEBSOCKET: Command '{message}' received");
             // Here, we're assuming commands are simple text commands. Adjust parsing logic as necessary.
-            switch (message.ToLower())
+            Device device;
+
+            // Check if the command starts with "vol_set-"
+            if (command.StartsWith("vol_set-"))
+            {
+                // Extract the numeric part of the command
+                string valuePart = command.Substring("vol_set-".Length);
+
+                // Attempt to parse the numeric value
+                if (int.TryParse(valuePart, out int value))
+                {
+                    // Clamp the value between 0 and 100
+                    int clampedValue = MathUtils.Clamp(value, 0, 100); // For .NET Framework versions that don't have Math.Clamp, use your custom Clamp method
+
+                    // Now, apply the clamped value
+                    await ApiHandler.Spotify.SetVolumeAsync(clampedValue);
+                    return "Volume set to " + clampedValue + "%";
+                }
+
+                // Handle invalid value part
+                Console.WriteLine("Invalid value for volume set command.");
+                return "Invalid value for volume set command.";
+            }
+
+            switch (command)
             {
                 case "block_artist":
                     BlockArtist();
-                    break;
+                    return "Artist blocked";
                 case "block_all_artists":
                     BlockAllArtists();
-                    break;
+                    return "All artists blocked";
                 case "block_song":
                     BlockSong();
-                    break;
+                    return "Song blocked";
                 case "block_user":
-                    BlockUser();
-                    break;
+                    string user = BlockUser();
+                    return !string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block";
                 case "skip":
                 case "next":
                     await ApiHandler.SkipSong();
-                    break;
+                    return "Song skipped";
                 case "pause":
-                    await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
-                    break;
                 case "play":
+                    PlaybackContext playbackContext = await ApiHandler.Spotify.GetPlaybackAsync();
+                    if (playbackContext.IsPlaying)
+                    {
+                        await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        return "Playback paused";
+                    }
                     await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
-                    break;
+                    return "Playback resumed";
+
                 case "stop_sr_reward":
                     foreach (string s in Settings.Settings.TwRewardId)
                     {
@@ -197,22 +252,44 @@ namespace Songify_Slim.Util.General
                             }, Settings.Settings.TwitchAccessToken);
                     }
                     break;
+                case "vol_up":
+                    device = (await ApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
+                    if (device == null)
+                    {
+                        return "No device found";
+                    }
+
+                    await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent + 5, 0, 100), device.Id);
+                    return "Volume set to " + MathUtils.Clamp(device.VolumePercent + 5, 0, 100) + "%";
+                case "vol_down":
+                    device = (await ApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
+                    if (device == null)
+                    {
+                        return "No device found";
+                    }
+
+                    await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
+                    return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
                 default:
                     Console.WriteLine($"Unknown command: {message}");
-                    break;
+                    return $"Unknown command: {message}";
             }
+
+            return "";
         }
 
-        private static void BlockUser()
+        private static string BlockUser()
         {
-            if (GlobalObjects.ReqList.All(o => o.Trackid != GlobalObjects.CurrentSong.SongId)) return;
+            if (GlobalObjects.ReqList.All(o => o.Trackid != GlobalObjects.CurrentSong.SongId)) return "";
             {
                 RequestObject req =
                     GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
-                if (req == null) return;
+                if (req == null) return "";
                 Settings.Settings.UserBlacklist.Add(req.Requester);
                 Settings.Settings.UserBlacklist = Settings.Settings.UserBlacklist;
+                return req.Requester;
             }
+            return "";
         }
 
         private static async void BlockSong()
@@ -258,7 +335,6 @@ namespace Songify_Slim.Util.General
             return request.IsWebSocketRequest;
         }
 
-
         public static string GetLocalIpAddress()
         {
             var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -295,18 +371,21 @@ namespace Songify_Slim.Util.General
 
         public static bool PortIsFree(int port)
         {
-            // Get the IP global properties for the local network
             var properties = IPGlobalProperties.GetIPGlobalProperties();
 
-            // Get a list of active TCP connections
-            var connections = properties.GetActiveTcpConnections();
+            // Check active TCP connections
+            var isTcpPortUsed = properties.GetActiveTcpConnections().Any(c => c.LocalEndPoint.Port == port);
 
-            // Check if the specified port is blocked
-            bool isBlocked = connections.All(connection => connection.LocalEndPoint.Port != port);
+            // Check TCP listeners
+            var isTcpListenerUsed = properties.GetActiveTcpListeners().Any(l => l.Port == port);
 
-            //Debug.WriteLine($"PortFree: {isBlocked}");
-            return isBlocked;
+            // Check UDP listeners
+            var isUdpListenerUsed = properties.GetActiveUdpListeners().Any(l => l.Port == port);
+
+            // If any of these checks return true, the port is in use
+            return !(isTcpPortUsed || isTcpListenerUsed || isUdpListenerUsed);
         }
+
 
         private void ProcessHttpRequest(HttpListenerContext context)
         {

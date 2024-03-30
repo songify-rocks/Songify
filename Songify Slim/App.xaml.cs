@@ -96,7 +96,5 @@ namespace Songify_Slim
             MainWindow main = new MainWindow();
             main.Show();
         }
-
-
     }
 }
