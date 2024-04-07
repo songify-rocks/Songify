@@ -16,7 +16,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
     {
         public static string[] GetScopes()
         {
-            List<string> s = new List<string>
+            List<string> s = new()
             {
                 "channel:manage:redemptions",
                 "channel:read:redemptions",

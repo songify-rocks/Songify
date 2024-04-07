@@ -27,7 +27,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
     public delegate void OnAuthReceived(object sender, T payload);
     public event OnAuthReceived AuthReceived;
 
-    internal static readonly Dictionary<string, SpotifyAuthServer<T>> Instances = new Dictionary<string, SpotifyAuthServer<T>>();
+    internal static readonly Dictionary<string, SpotifyAuthServer<T>> Instances = new();
 
     internal SpotifyAuthServer(string type, string folder, string redirectUri, string serverUri, Scope scope = Scope.None, string state = "")
     {
@@ -55,7 +55,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
     public virtual string GetUri()
     {
-      StringBuilder builder = new StringBuilder("https://accounts.spotify.com/authorize/?");
+      StringBuilder builder = new("https://accounts.spotify.com/authorize/?");
       builder.Append("client_id=" + ClientId);
       builder.Append($"&response_type={_type}");
       builder.Append("&redirect_uri=" + RedirectUri);

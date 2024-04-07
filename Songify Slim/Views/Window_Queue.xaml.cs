@@ -18,7 +18,7 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowQueue
     {
-        private readonly DispatcherTimer _timer = new DispatcherTimer();
+        private readonly DispatcherTimer _timer = new();
         public WindowQueue()
         {
             InitializeComponent();

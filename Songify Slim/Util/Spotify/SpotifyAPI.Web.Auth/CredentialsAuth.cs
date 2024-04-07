@@ -26,12 +26,12 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
     {
       string auth = Convert.ToBase64String(Encoding.UTF8.GetBytes(ClientId + ":" + ClientSecret));
 
-      List<KeyValuePair<string, string>> args = new List<KeyValuePair<string, string>>
+      List<KeyValuePair<string, string>> args = new()
       {new KeyValuePair<string, string>("grant_type", "client_credentials")
       };
 
       HttpClientHandler handler = ProxyConfig.CreateClientHandler(ProxyConfig);
-      HttpClient client = new HttpClient(handler);
+      HttpClient client = new(handler);
       client.DefaultRequestHeaders.Add("Authorization", $"Basic {auth}");
       HttpContent content = new FormUrlEncodedContent(args);
 

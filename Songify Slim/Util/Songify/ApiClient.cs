@@ -1,6 +1,5 @@
 ﻿using Songify_Slim.Util.General;
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -38,11 +37,11 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+                UriBuilder builder = new($"{_baseUrl}/{endpoint}")
                 {
                     Query = $"api_key={Settings.Settings.AccessKey}"
                 };
-                StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+                StringContent content = new(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
                 switch (response.StatusCode)
                 {
@@ -73,13 +72,13 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Patch(string endpoint, string payload)
         {
-            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            UriBuilder builder = new($"{_baseUrl}/{endpoint}")
             {
                 Query = $"api_key={Settings.Settings.AccessKey}"
             };
-            StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
-            HttpMethod method = new HttpMethod("PATCH");
-            HttpRequestMessage request = new HttpRequestMessage(method, builder.ToString()) { Content = content };
+            StringContent content = new(payload, Encoding.UTF8, "application/json");
+            HttpMethod method = new("PATCH");
+            HttpRequestMessage request = new(method, builder.ToString()) { Content = content };
             HttpResponseMessage response = await _httpClient.SendAsync(request);
 
             switch (response.StatusCode)
@@ -96,11 +95,11 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Clear(string endpoint, string payload)
         {
-            var builder = new UriBuilder($"{_baseUrl}/{endpoint}")
+            UriBuilder builder = new($"{_baseUrl}/{endpoint}")
             {
                 Query = $"api_key={Settings.Settings.AccessKey}"
             };
-            StringContent content = new StringContent(payload, Encoding.UTF8, "application/json");
+            StringContent content = new(payload, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
 
             switch (response.StatusCode)

@@ -1,7 +1,6 @@
 ﻿using MahApps.Metro.IconPacks;
 using Songify_Slim.Views;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,15 +12,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
-using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
-using TwitchLib.PubSub.Models.Responses;
 using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.General
@@ -114,7 +109,7 @@ namespace Songify_Slim.Util.General
             try
             {
                 // Check for an Authorization header (or any other header as needed)
-                var authHeader = context.Request.Headers["Authorization"];
+                string authHeader = context.Request.Headers["Authorization"];
 
                 // Implement your authentication logic here.
                 // For example, verify a token extracted from the authHeader.
@@ -131,11 +126,11 @@ namespace Songify_Slim.Util.General
                 //}
 
                 webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
-                var webSocket = webSocketContext.WebSocket;
+                WebSocket webSocket = webSocketContext.WebSocket;
 
                 while (webSocket.State == WebSocketState.Open)
                 {
-                    var buffer = new ArraySegment<byte>(new byte[4096]);
+                    ArraySegment<byte> buffer = new(new byte[4096]);
                     WebSocketReceiveResult result;
                     do
                     {
@@ -159,8 +154,8 @@ namespace Songify_Slim.Util.General
                         }
 
                         // Encode the response message to byte array
-                        var responseBytes = System.Text.Encoding.UTF8.GetBytes(response);
-                        var responseBuffer = new ArraySegment<byte>(responseBytes);
+                        byte[] responseBytes = System.Text.Encoding.UTF8.GetBytes(response);
+                        ArraySegment<byte> responseBuffer = new(responseBytes);
 
                         // Send the response back to the client
                         await webSocket.SendAsync(responseBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
@@ -191,11 +186,11 @@ namespace Songify_Slim.Util.General
             // Here, we're assuming commands are simple text commands. Adjust parsing logic as necessary.
             Device device;
 
-            // Check if the command starts with "vol_set-"
-            if (command.StartsWith("vol_set-"))
+            // Check if the command starts with "vol_set_"
+            if (command.StartsWith("vol_set_"))
             {
                 // Extract the numeric part of the command
-                string valuePart = command.Substring("vol_set-".Length);
+                string valuePart = command.Substring("vol_set_".Length);
 
                 // Attempt to parse the numeric value
                 if (int.TryParse(valuePart, out int value))
@@ -231,6 +226,7 @@ namespace Songify_Slim.Util.General
                 case "next":
                     await ApiHandler.SkipSong();
                     return "Song skipped";
+                case "play_pause":
                 case "pause":
                 case "play":
                     PlaybackContext playbackContext = await ApiHandler.Spotify.GetPlaybackAsync();
@@ -241,7 +237,6 @@ namespace Songify_Slim.Util.General
                     }
                     await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
                     return "Playback resumed";
-
                 case "stop_sr_reward":
                     foreach (string s in Settings.Settings.TwRewardId)
                     {
@@ -289,7 +284,6 @@ namespace Songify_Slim.Util.General
                 Settings.Settings.UserBlacklist = Settings.Settings.UserBlacklist;
                 return req.Requester;
             }
-            return "";
         }
 
         private static async void BlockSong()
@@ -337,7 +331,7 @@ namespace Songify_Slim.Util.General
 
         public static string GetLocalIpAddress()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).FirstOrDefault();
         }
 
@@ -371,16 +365,16 @@ namespace Songify_Slim.Util.General
 
         public static bool PortIsFree(int port)
         {
-            var properties = IPGlobalProperties.GetIPGlobalProperties();
+            IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
 
             // Check active TCP connections
-            var isTcpPortUsed = properties.GetActiveTcpConnections().Any(c => c.LocalEndPoint.Port == port);
+            bool isTcpPortUsed = properties.GetActiveTcpConnections().Any(c => c.LocalEndPoint.Port == port);
 
             // Check TCP listeners
-            var isTcpListenerUsed = properties.GetActiveTcpListeners().Any(l => l.Port == port);
+            bool isTcpListenerUsed = properties.GetActiveTcpListeners().Any(l => l.Port == port);
 
             // Check UDP listeners
-            var isUdpListenerUsed = properties.GetActiveUdpListeners().Any(l => l.Port == port);
+            bool isUdpListenerUsed = properties.GetActiveUdpListeners().Any(l => l.Port == port);
 
             // If any of these checks return true, the port is in use
             return !(isTcpPortUsed || isTcpListenerUsed || isUdpListenerUsed);

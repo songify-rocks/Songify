@@ -88,8 +88,8 @@ namespace Songify_Slim.Views
                     new Action(() => { LbxHistory.Items.Clear(); }));
 
                 _doc = XDocument.Load(_path);
-                var list = new List<DateTime>();
-                var dateList = new List<string>();
+                List<DateTime> list = new();
+                List<string> dateList = new();
 
                 if (_doc.Root != null)
                     foreach (XElement elem in _doc.Root.Elements())
@@ -99,7 +99,7 @@ namespace Songify_Slim.Views
                         dateList.Clear();
                     }
 
-                var orderedList = list.OrderByDescending(time => time.Date);
+                IOrderedEnumerable<DateTime> orderedList = list.OrderByDescending(time => time.Date);
                 foreach (DateTime time in orderedList)
                     LbxHistory.Dispatcher.Invoke(
                         DispatcherPriority.Normal,
@@ -131,7 +131,7 @@ namespace Songify_Slim.Views
             dgvHistorySongs.Items.Clear();
             XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
 
-            var nodes = new List<XElement>();
+            List<XElement> nodes = new();
 
             if (root != null) nodes.AddRange(root.Elements());
 
@@ -140,7 +140,7 @@ namespace Songify_Slim.Views
             foreach (XElement node in nodes)
                 if (node.Name == "Song")
                 {
-                    Song data = new Song
+                    Song data = new()
                     {
                         Time = UnixTimeStampToDateTime(double.Parse(node.Attribute("Time")?.Value ??
                                                                     throw new InvalidOperationException()))
@@ -157,7 +157,7 @@ namespace Songify_Slim.Views
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dtDateTime = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }

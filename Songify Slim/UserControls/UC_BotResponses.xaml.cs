@@ -73,7 +73,7 @@ namespace Songify_Slim.UserControls
                 {"{playlist_name}", "My Super Cool Playlist"},
                 {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"}
             };
-            foreach (var pair in replacements)
+            foreach (KeyValuePair<string, string> pair in replacements)
             {
                 response = response.Replace(pair.Key, pair.Value);
             }

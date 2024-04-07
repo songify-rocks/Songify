@@ -20,22 +20,22 @@ namespace Songify_Slim.Util.General
         public const string BaseUrl = "https://songify.overcode.tv";
         public static string ApiResponse;
         public static string AppVersion;
-        public static FlowDocument ConsoleDocument = new FlowDocument();
+        public static FlowDocument ConsoleDocument = new();
         public static TrackInfo CurrentSong;
         public static bool DetachConsole = false;
         public static bool IsBeta = true;
         public static bool IsInPlaylist;
-        public static ObservableCollection<RequestObject> ReqList = new ObservableCollection<RequestObject>();
+        public static ObservableCollection<RequestObject> ReqList = new();
         public static string Requester = "";
         public static int RewardGoalCount = 0;
-        public static List<RequestObject> SkipList = new List<RequestObject>();
+        public static List<RequestObject> SkipList = new();
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
-        public static WebServer WebServer = new WebServer();
+        public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
         public static bool TwitchBotTokenExpired = false;
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
-        private static readonly TaskQueue updateQueueWindowTasks = new TaskQueue();
+        private static readonly TaskQueue updateQueueWindowTasks = new();
 
 
 
@@ -50,7 +50,7 @@ namespace Songify_Slim.Util.General
             int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
             for (int i = 0; i < childrenCount; i++)
             {
-                var child = VisualTreeHelper.GetChild(parent, i);
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
                 T childType = child as T;
                 if (childType == null)
@@ -63,7 +63,7 @@ namespace Songify_Slim.Util.General
                 }
                 else if (!string.IsNullOrEmpty(childName))
                 {
-                    var frameworkElement = child as FrameworkElement;
+                    FrameworkElement frameworkElement = child as FrameworkElement;
                     // If the child's name is set for search
                     if (frameworkElement != null && frameworkElement.Name == childName)
                     {
@@ -141,7 +141,7 @@ namespace Songify_Slim.Util.General
                     itemsToRemove.Add(requestObject);
                 }
 
-                foreach (var item in itemsToRemove)
+                foreach (RequestObject item in itemsToRemove)
                 {
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {

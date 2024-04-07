@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -20,18 +17,18 @@ namespace Songify_Slim.Util.Settings
 
             public object ReadYaml(IParser parser, Type type)
             {
-                if (parser.TryConsume<Scalar>(out var scalar))
+                if (parser.TryConsume<Scalar>(out Scalar scalar))
                 {
                     // If the node is a scalar (single string), return it as a single-item list
                     return new List<string> { scalar.Value };
                 }
-                else if (parser.TryConsume<SequenceStart>(out var _))
+                else if (parser.TryConsume<SequenceStart>(out SequenceStart _))
                 {
                     // If the node is a sequence, deserialize it as a list of strings
-                    var list = new List<string>();
-                    while (!parser.TryConsume<SequenceEnd>(out var _))
+                    List<string> list = new();
+                    while (!parser.TryConsume<SequenceEnd>(out SequenceEnd _))
                     {
-                        var item = parser.Consume<Scalar>().Value;
+                        string item = parser.Consume<Scalar>().Value;
                         list.Add(item);
                     }
                     return list;

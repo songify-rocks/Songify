@@ -654,8 +654,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse Follow(FollowType followType, List<string> ids)
         {
-            JObject ob = new JObject
-      { { "ids", new JArray(ids) }
+            JObject ob = new()
+            { { "ids", new JArray(ids) }
       };
             return UploadData<ErrorResponse>(_builder.Follow(followType), ob.ToString(Formatting.None), "PUT") ?? new ErrorResponse();
         }
@@ -669,8 +669,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> FollowAsync(FollowType followType, List<string> ids)
         {
-            JObject ob = new JObject
-      { { "ids", new JArray(ids) }
+            JObject ob = new()
+            { { "ids", new JArray(ids) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.Follow(followType),
               ob.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
@@ -709,8 +709,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse Unfollow(FollowType followType, List<string> ids)
         {
-            JObject ob = new JObject
-      { { "ids", new JArray(ids) }
+            JObject ob = new()
+            { { "ids", new JArray(ids) }
       };
             return UploadData<ErrorResponse>(_builder.Unfollow(followType), ob.ToString(Formatting.None), "DELETE") ?? new ErrorResponse();
         }
@@ -724,8 +724,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> UnfollowAsync(FollowType followType, List<string> ids)
         {
-            JObject ob = new JObject
-      { { "ids", new JArray(ids) }
+            JObject ob = new()
+            { { "ids", new JArray(ids) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.Unfollow(followType), ob.ToString(Formatting.None), "DELETE").ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -825,8 +825,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse FollowPlaylist(string ownerId, string playlistId, bool showPublic = true)
         {
-            JObject body = new JObject
-      { { "public", showPublic }
+            JObject body = new()
+            { { "public", showPublic }
       };
             return UploadData<ErrorResponse>(_builder.FollowPlaylist(playlistId), body.ToString(Formatting.None), "PUT");
         }
@@ -846,8 +846,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public Task<ErrorResponse> FollowPlaylistAsync(string playlistId, bool showPublic = true)
         {
-            JObject body = new JObject
-      { { "public", showPublic }
+            JObject body = new()
+            { { "public", showPublic }
       };
             return UploadDataAsync<ErrorResponse>(_builder.FollowPlaylist(playlistId), body.ToString(Formatting.None), "PUT");
         }
@@ -943,7 +943,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse SaveTracks(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return UploadData<ErrorResponse>(_builder.SaveTracks(), array.ToString(Formatting.None), "PUT") ?? new ErrorResponse();
         }
 
@@ -955,7 +955,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> SaveTracksAsync(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return await UploadDataAsync<ErrorResponse>(_builder.SaveTracks(), array.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
         }
 
@@ -1019,7 +1019,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse RemoveSavedTracks(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return UploadData<ErrorResponse>(_builder.RemoveSavedTracks(), array.ToString(Formatting.None), "DELETE") ?? new ErrorResponse();
         }
 
@@ -1031,7 +1031,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> RemoveSavedTracksAsync(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return await UploadDataAsync<ErrorResponse>(_builder.RemoveSavedTracks(), array.ToString(Formatting.None), "DELETE").ConfigureAwait(false) ?? new ErrorResponse();
         }
 
@@ -1072,7 +1072,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse SaveAlbums(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return UploadData<ErrorResponse>(_builder.SaveAlbums(), array.ToString(Formatting.None), "PUT") ?? new ErrorResponse();
         }
 
@@ -1084,7 +1084,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> SaveAlbumsAsync(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return await UploadDataAsync<ErrorResponse>(_builder.SaveAlbums(), array.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
         }
 
@@ -1148,7 +1148,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse RemoveSavedAlbums(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return UploadData<ErrorResponse>(_builder.RemoveSavedAlbums(), array.ToString(Formatting.None), "DELETE") ?? new ErrorResponse();
         }
 
@@ -1160,7 +1160,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> RemoveSavedAlbumsAsync(List<string> ids)
         {
-            JArray array = new JArray(ids);
+            JArray array = new(ids);
             return await UploadDataAsync<ErrorResponse>(_builder.RemoveSavedAlbums(), array.ToString(Formatting.None), "DELETE").ConfigureAwait(false) ?? new ErrorResponse();
         }
 
@@ -1498,8 +1498,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public FullPlaylist CreatePlaylist(string userId, string playlistName, bool isPublic = true, bool isCollaborative = false, string playlistDescription = "")
         {
-            JObject body = new JObject
-      { { "name", playlistName }, { "public", isPublic }, { "collaborative", isCollaborative }, { "description", playlistDescription }
+            JObject body = new()
+            { { "name", playlistName }, { "public", isPublic }, { "collaborative", isCollaborative }, { "description", playlistDescription }
       };
             return UploadData<FullPlaylist>(_builder.CreatePlaylist(userId, playlistName, isPublic), body.ToString(Formatting.None));
         }
@@ -1523,8 +1523,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public Task<FullPlaylist> CreatePlaylistAsync(string userId, string playlistName, bool isPublic = true, bool isCollaborative = false, string playlistDescription = "")
         {
-            JObject body = new JObject
-      { { "name", playlistName }, { "public", isPublic }, { "collaborative", isCollaborative }, { "description", playlistDescription }
+            JObject body = new()
+            { { "name", playlistName }, { "public", isPublic }, { "collaborative", isCollaborative }, { "description", playlistDescription }
       };
             return UploadDataAsync<FullPlaylist>(_builder.CreatePlaylist(userId, playlistName, isPublic), body.ToString(Formatting.None));
         }
@@ -1544,7 +1544,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling UpdatePlaylist with a userId is deprecated, remove the parameter")]
         public ErrorResponse UpdatePlaylist(string userId, string playlistId, string newName = null, bool? newPublic = null, bool? newCollaborative = null, string newDescription = null)
         {
-            JObject body = new JObject();
+            JObject body = new();
             if (newName != null)
                 body.Add("name", newName);
             if (newPublic != null)
@@ -1569,7 +1569,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse UpdatePlaylist(string playlistId, string newName = null, bool? newPublic = null, bool? newCollaborative = null, string newDescription = null)
         {
-            JObject body = new JObject();
+            JObject body = new();
             if (newName != null)
                 body.Add("name", newName);
             if (newPublic != null)
@@ -1595,7 +1595,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling UpdatePlaylist with a userId is deprecated, remove the parameter")]
         public async Task<ErrorResponse> UpdatePlaylistAsync(string userId, string playlistId, string newName = null, bool? newPublic = null, bool? newCollaborative = null, string newDescription = null)
         {
-            JObject body = new JObject();
+            JObject body = new();
             if (newName != null)
                 body.Add("name", newName);
             if (newPublic != null)
@@ -1619,7 +1619,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> UpdatePlaylistAsync(string playlistId, string newName = null, bool? newPublic = null, bool? newCollaborative = null, string newDescription = null)
         {
-            JObject body = new JObject();
+            JObject body = new();
             if (newName != null)
                 body.Add("name", newName);
             if (newPublic != null)
@@ -1694,8 +1694,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling ReplacePlaylistTracks with a userId is deprecated, remove the parameter")]
         public ErrorResponse ReplacePlaylistTracks(string userId, string playlistId, List<string> uris)
         {
-            JObject body = new JObject
-      { { "uris", new JArray(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", new JArray(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.ReplacePlaylistTracks(userId, playlistId), body.ToString(Formatting.None), "PUT") ?? new ErrorResponse();
         }
@@ -1710,8 +1710,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse ReplacePlaylistTracks(string playlistId, List<string> uris)
         {
-            JObject body = new JObject
-      { { "uris", new JArray(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", new JArray(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.ReplacePlaylistTracks(playlistId), body.ToString(Formatting.None), "PUT") ?? new ErrorResponse();
         }
@@ -1728,8 +1728,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling ReplacePlaylistTracks with a userId is deprecated, remove the parameter")]
         public async Task<ErrorResponse> ReplacePlaylistTracksAsync(string userId, string playlistId, List<string> uris)
         {
-            JObject body = new JObject
-      { { "uris", new JArray(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", new JArray(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.ReplacePlaylistTracks(userId, playlistId), body.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -1744,8 +1744,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> ReplacePlaylistTracksAsync(string playlistId, List<string> uris)
         {
-            JObject body = new JObject
-      { { "uris", new JArray(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", new JArray(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.ReplacePlaylistTracks(playlistId), body.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -1764,8 +1764,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling RemovePlaylistTracks with a userId is deprecated, remove the parameter")]
         public ErrorResponse RemovePlaylistTracks(string userId, string playlistId, List<DeleteTrackUri> uris)
         {
-            JObject body = new JObject
-      { { "tracks", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "tracks", JArray.FromObject(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.RemovePlaylistTracks(userId, playlistId, uris), body.ToString(Formatting.None), "DELETE") ?? new ErrorResponse();
         }
@@ -1782,8 +1782,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse RemovePlaylistTracks(string playlistId, List<DeleteTrackUri> uris)
         {
-            JObject body = new JObject
-      { { "tracks", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "tracks", JArray.FromObject(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.RemovePlaylistTracks(playlistId, uris), body.ToString(Formatting.None), "DELETE") ?? new ErrorResponse();
         }
@@ -1802,8 +1802,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling RemovePlaylistTracks with a userId is deprecated, remove the parameter")]
         public async Task<ErrorResponse> RemovePlaylistTracksAsync(string userId, string playlistId, List<DeleteTrackUri> uris)
         {
-            JObject body = new JObject
-      { { "tracks", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "tracks", JArray.FromObject(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.RemovePlaylistTracks(userId, playlistId, uris), body.ToString(Formatting.None), "DELETE").ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -1820,8 +1820,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> RemovePlaylistTracksAsync(string playlistId, List<DeleteTrackUri> uris)
         {
-            JObject body = new JObject
-      { { "tracks", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "tracks", JArray.FromObject(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.RemovePlaylistTracks(playlistId, uris), body.ToString(Formatting.None), "DELETE").ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -1890,8 +1890,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling AddPlaylistTracks with a userId is deprecated, remove the parameter")]
         public ErrorResponse AddPlaylistTracks(string userId, string playlistId, List<string> uris, int? position = null)
         {
-            JObject body = new JObject
-      { { "uris", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", JArray.FromObject(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.AddPlaylistTracks(userId, playlistId, uris, position), body.ToString(Formatting.None)) ?? new ErrorResponse();
         }
@@ -1906,8 +1906,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public ErrorResponse AddPlaylistTracks(string playlistId, List<string> uris, int? position = null)
         {
-            JObject body = new JObject
-      { { "uris", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", JArray.FromObject(uris.Take(100)) }
       };
             return UploadData<ErrorResponse>(_builder.AddPlaylistTracks(playlistId, uris, position), body.ToString(Formatting.None)) ?? new ErrorResponse();
         }
@@ -1924,8 +1924,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling AddPlaylistTracks with a userId is deprecated, remove the parameter")]
         public async Task<ErrorResponse> AddPlaylistTracksAsync(string userId, string playlistId, List<string> uris, int? position = null)
         {
-            JObject body = new JObject
-      { { "uris", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", JArray.FromObject(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.AddPlaylistTracks(userId, playlistId, uris, position), body.ToString(Formatting.None)).ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -1940,8 +1940,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> AddPlaylistTracksAsync(string playlistId, List<string> uris, int? position = null)
         {
-            JObject body = new JObject
-      { { "uris", JArray.FromObject(uris.Take(100)) }
+            JObject body = new()
+            { { "uris", JArray.FromObject(uris.Take(100)) }
       };
             return await UploadDataAsync<ErrorResponse>(_builder.AddPlaylistTracks(playlistId, uris, position), body.ToString(Formatting.None)).ConfigureAwait(false) ?? new ErrorResponse();
         }
@@ -2016,8 +2016,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling ReorderPlaylist with a userId is deprecated, remove the parameter")]
         public Snapshot ReorderPlaylist(string userId, string playlistId, int rangeStart, int insertBefore, int rangeLength = 1, string snapshotId = "")
         {
-            JObject body = new JObject
-      { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }
+            JObject body = new()
+            { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }
       };
             if (!string.IsNullOrEmpty(snapshotId))
                 body.Add("snapshot_id", snapshotId);
@@ -2036,8 +2036,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public Snapshot ReorderPlaylist(string playlistId, int rangeStart, int insertBefore, int rangeLength = 1, string snapshotId = "")
         {
-            JObject body = new JObject
-      { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }
+            JObject body = new()
+            { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }
       };
             if (!string.IsNullOrEmpty(snapshotId))
                 body.Add("snapshot_id", snapshotId);
@@ -2058,8 +2058,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         [Obsolete("Calling ReorderPlaylist with a userId is deprecated, remove the parameter")]
         public Task<Snapshot> ReorderPlaylistAsync(string userId, string playlistId, int rangeStart, int insertBefore, int rangeLength = 1, string snapshotId = "")
         {
-            JObject body = new JObject
-      { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }, { "snapshot_id", snapshotId }
+            JObject body = new()
+            { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }, { "snapshot_id", snapshotId }
       };
             if (!string.IsNullOrEmpty(snapshotId))
                 body.Add("snapshot_id", snapshotId);
@@ -2078,8 +2078,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public Task<Snapshot> ReorderPlaylistAsync(string playlistId, int rangeStart, int insertBefore, int rangeLength = 1, string snapshotId = "")
         {
-            JObject body = new JObject
-      { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }, { "snapshot_id", snapshotId }
+            JObject body = new()
+            { { "range_start", rangeStart }, { "range_length", rangeLength }, { "insert_before", insertBefore }, { "snapshot_id", snapshotId }
       };
             if (!string.IsNullOrEmpty(snapshotId))
                 body.Add("snapshot_id", snapshotId);
@@ -2356,8 +2356,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public ErrorResponse TransferPlayback(List<string> deviceIds, bool play = false)
         {
-            JObject ob = new JObject
-      { { "play", play }, { "device_ids", new JArray(deviceIds) }
+            JObject ob = new()
+            { { "play", play }, { "device_ids", new JArray(deviceIds) }
       };
             return UploadData<ErrorResponse>(_builder.TransferPlayback(), ob.ToString(Formatting.None), "PUT");
         }
@@ -2374,8 +2374,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public Task<ErrorResponse> TransferPlaybackAsync(List<string> deviceIds, bool play = false)
         {
-            JObject ob = new JObject
-      { { "play", play }, { "device_ids", new JArray(deviceIds) }
+            JObject ob = new()
+            { { "play", play }, { "device_ids", new JArray(deviceIds) }
       };
             return UploadDataAsync<ErrorResponse>(_builder.TransferPlayback(), ob.ToString(Formatting.None), "PUT");
         }
@@ -2393,7 +2393,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public ErrorResponse ResumePlayback(string deviceId = "", string contextUri = "", List<string> uris = null,
           int? offset = null, int positionMs = 0)
         {
-            JObject ob = new JObject();
+            JObject ob = new();
             if (!string.IsNullOrEmpty(contextUri))
                 ob.Add("context_uri", contextUri);
             if (uris != null)
@@ -2418,7 +2418,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public Task<ErrorResponse> ResumePlaybackAsync(string deviceId = "", string contextUri = "", List<string> uris = null,
           int? offset = null, int positionMs = 0)
         {
-            JObject ob = new JObject();
+            JObject ob = new();
             if (!string.IsNullOrEmpty(contextUri))
                 ob.Add("context_uri", contextUri);
             if (uris != null)
@@ -2443,7 +2443,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public ErrorResponse ResumePlayback(string deviceId = "", string contextUri = "", List<string> uris = null,
           string offset = "", int positionMs = 0)
         {
-            JObject ob = new JObject();
+            JObject ob = new();
             if (!string.IsNullOrEmpty(contextUri))
                 ob.Add("context_uri", contextUri);
             if (uris != null)
@@ -2468,7 +2468,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public Task<ErrorResponse> ResumePlaybackAsync(string deviceId = "", string contextUri = "", List<string> uris = null,
           string offset = "", int positionMs = 0)
         {
-            JObject ob = new JObject();
+            JObject ob = new();
             if (!string.IsNullOrEmpty(contextUri))
                 ob.Add("context_uri", contextUri);
             if (uris != null)
@@ -2807,8 +2807,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             Tuple<ResponseInfo, T> response = null;
             do
             {
-                Dictionary<string, string> headers = new Dictionary<string, string>
-        { { "Authorization", TokenType + " " + AccessToken },
+                Dictionary<string, string> headers = new()
+                { { "Authorization", TokenType + " " + AccessToken },
           { "Content-Type", "application/json" }
         };
 
@@ -2835,8 +2835,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             Tuple<ResponseInfo, T> response = null;
             do
             {
-                Dictionary<string, string> headers = new Dictionary<string, string>
-        { { "Authorization", TokenType + " " + AccessToken },
+                Dictionary<string, string> headers = new()
+                { { "Authorization", TokenType + " " + AccessToken },
           { "Content-Type", "application/json" }
         };
 
@@ -2932,7 +2932,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
         private Tuple<ResponseInfo, T> DownloadDataAlt<T>(string url)
         {
-            Dictionary<string, string> headers = new Dictionary<string, string>();
+            Dictionary<string, string> headers = new();
             if (UseAuth)
                 headers.Add("Authorization", TokenType + " " + AccessToken);
             return WebClient.DownloadJson<T>(url, headers);
@@ -2940,7 +2940,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
         private Task<Tuple<ResponseInfo, T>> DownloadDataAltAsync<T>(string url)
         {
-            Dictionary<string, string> headers = new Dictionary<string, string>();
+            Dictionary<string, string> headers = new();
             if (UseAuth)
                 headers.Add("Authorization", TokenType + " " + AccessToken);
             return WebClient.DownloadJsonAsync<T>(url, headers);

@@ -1,5 +1,4 @@
 ﻿using Songify_Slim.Views;
-using System;
 using System.Collections.Generic;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
@@ -10,7 +9,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class Settings
     {
-        private static Configuration _currentConfig = new Configuration();
+        private static Configuration _currentConfig = new();
 
         public static string BotRespPlaylist
         {
@@ -612,6 +611,18 @@ namespace Songify_Slim.Util.Settings
             set => SetLimitSrToPlaylist(value);
         }
         public static string BotRespRemove { get => GetBot_Resp_Remove(); set => SetBot_Resp_Remove(value); }
+        public static string BotRespUnavailable { get => GetBot_Resp_SongUnavailable(); set => SetBot_Resp_SongUnavailable(value); }
+
+        private static void SetBot_Resp_SongUnavailable(string value)
+        {
+            _currentConfig.BotConfig.BotRespUnavailable = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static string GetBot_Resp_SongUnavailable()
+        {
+            return _currentConfig.BotConfig.BotRespUnavailable;
+        }
 
         private static void SetBot_Resp_Remove(string value)
         {
@@ -717,7 +728,7 @@ namespace Songify_Slim.Util.Settings
 
         public static Configuration Export()
         {
-            SpotifyCredentials spotifyCredentials = new SpotifyCredentials
+            SpotifyCredentials spotifyCredentials = new()
             {
                 AccessToken = GetSpotifyAccessToken(),
                 ClientId = GetClientId(),
@@ -727,7 +738,7 @@ namespace Songify_Slim.Util.Settings
 
             };
 
-            TwitchCredentials twitchCredentials = new TwitchCredentials
+            TwitchCredentials twitchCredentials = new()
             {
                 AccessToken = GetTwitchAccessToken(),
                 BotAccountName = GetTwAcc(),
@@ -739,7 +750,7 @@ namespace Songify_Slim.Util.Settings
                 TwitchUser = GetTwitchUser(),
             };
 
-            BotConfig botConfig = new BotConfig
+            BotConfig botConfig = new()
             {
                 BotCmdNext = GetBotCmdNext(),
                 BotCmdNextTrigger = GetCmdNextTrigger(),
@@ -778,7 +789,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespRemove = GetBot_Resp_Remove(),
             };
 
-            AppConfig appConfig = new AppConfig
+            AppConfig appConfig = new()
             {
                 AccessKey = GetAccessKey(),
                 AnnounceInChat = GetAnnounceInChat(),

@@ -129,7 +129,7 @@ namespace Songify_Slim.Views
                     ListView_UserBlacklist.Items.Add(search);
                     break;
                 case 2: // Song Blacklist
-                    List<FullTrack> tracks = new List<FullTrack>();
+                    List<FullTrack> tracks = new();
                     string trackId;
                     if (ApiHandler.Spotify == null)
                     {
@@ -153,7 +153,7 @@ namespace Songify_Slim.Views
                     }
                     else
                     {
-                        var result = ApiHandler.FindTrack(search);
+                        SearchItem result = ApiHandler.FindTrack(search);
                         if (result.Tracks != null)
                             tracks.AddRange(result.Tracks.Items);
                     }
@@ -178,7 +178,7 @@ namespace Songify_Slim.Views
         public void SaveBlacklist()
         {
             //Artist Blacklist
-            List<string> tempList = new List<string>();
+            List<string> tempList = new();
             if (ListView_Blacklist.Items.Count > 0)
             {
                 tempList.AddRange(from object item in ListView_Blacklist.Items where (string)item != "" select (string)item);

@@ -41,9 +41,9 @@ namespace Songify_Slim.Views
     public partial class Window_Settings
     {
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
-        private readonly FolderBrowserDialog _fbd = new FolderBrowserDialog();
+        private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
-        private readonly List<int> _refundConditons = new List<int>();
+        private readonly List<int> _refundConditons = new();
 
         public Window_Settings()
         {
@@ -60,7 +60,7 @@ namespace Songify_Slim.Views
             CbxUserLevels.Items.Clear();
             CbxUserLevelsMaxReq.Items.Clear();
             Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
-            foreach (var value in values)
+            foreach (object value in values)
             {
                 switch (value.ToString())
                 {
@@ -179,7 +179,7 @@ namespace Songify_Slim.Views
                 {
                     PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
                     LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
-                    BitmapImage bitmap = new BitmapImage();
+                    BitmapImage bitmap = new();
                     bitmap.BeginInit();
 
                     if (profile.Images.Count > 0)
@@ -274,7 +274,7 @@ namespace Songify_Slim.Views
 
             if (user.ProfileImageUrl != null)
             {
-                BitmapImage bitmap = new BitmapImage();
+                BitmapImage bitmap = new();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
                 bitmap.EndInit();
@@ -331,7 +331,7 @@ namespace Songify_Slim.Views
 
         private void btn_Botresponse_Click(object sender, RoutedEventArgs e)
         {
-            WindowBotresponse wBr = new WindowBotresponse();
+            WindowBotresponse wBr = new();
             wBr.Show();
         }
 
@@ -339,7 +339,7 @@ namespace Songify_Slim.Views
         {
             // calls confighandler
 
-            FolderBrowserDialog fbd = new FolderBrowserDialog
+            FolderBrowserDialog fbd = new()
             {
                 Site = null,
                 Tag = null,
@@ -679,15 +679,15 @@ namespace Songify_Slim.Views
             // add colors to the combobox
             foreach (string s in ThemeManager.Current.ColorSchemes)
             {
-                ComboBoxItem i = new ComboBoxItem
+                ComboBoxItem i = new()
                 {
                     Content = s,
                 };
 
-                var x = ThemeManager.Current.GetTheme(Settings.Theme + "." + s);
+                Theme x = ThemeManager.Current.GetTheme(Settings.Theme + "." + s);
                 if (x != null)
                 {
-                    SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(x.PrimaryAccentColor.R, x.PrimaryAccentColor.G, x.PrimaryAccentColor.B));
+                    SolidColorBrush brush = new(Color.FromRgb(x.PrimaryAccentColor.R, x.PrimaryAccentColor.G, x.PrimaryAccentColor.B));
                     i.BorderThickness = new Thickness(0, 0, 0, 2);
                     i.BorderBrush = brush;
                 }
@@ -1087,7 +1087,7 @@ namespace Songify_Slim.Views
 
         private void BtnCreateNewReward_Click(object sender, RoutedEventArgs e)
         {
-            WindowCreateCustomReward createCustomReward = new WindowCreateCustomReward
+            WindowCreateCustomReward createCustomReward = new()
             {
                 Owner = this
             };
@@ -1321,7 +1321,7 @@ namespace Songify_Slim.Views
             if (!(sender is CheckBox checkBox)) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (Settings.UserLevelsReward.Contains(value)) return;
-            List<int> list = new List<int>(Settings.UserLevelsReward) { value };
+            List<int> list = new(Settings.UserLevelsReward) { value };
             Settings.UserLevelsReward = list;
         }
 
@@ -1330,7 +1330,7 @@ namespace Songify_Slim.Views
             if (!(sender is CheckBox checkBox)) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (!Settings.UserLevelsReward.Contains(value)) return;
-            List<int> list = new List<int>(Settings.UserLevelsReward);
+            List<int> list = new(Settings.UserLevelsReward);
             list.Remove(value);
             Settings.UserLevelsReward = list;
         }
@@ -1339,7 +1339,7 @@ namespace Songify_Slim.Views
             if (!(sender is CheckBox checkBox)) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (Settings.UserLevelsCommand.Contains(value)) return;
-            List<int> list = new List<int>(Settings.UserLevelsCommand) { value };
+            List<int> list = new(Settings.UserLevelsCommand) { value };
             Settings.UserLevelsCommand = list;
         }
 
@@ -1348,7 +1348,7 @@ namespace Songify_Slim.Views
             if (!(sender is CheckBox checkBox)) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (!Settings.UserLevelsCommand.Contains(value)) return;
-            List<int> list = new List<int>(Settings.UserLevelsCommand);
+            List<int> list = new(Settings.UserLevelsCommand);
             list.Remove(value);
             Settings.UserLevelsCommand = list;
         }

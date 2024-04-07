@@ -11,9 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Threading;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
-using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
@@ -24,8 +22,8 @@ namespace Songify_Slim.Util.Songify
     public class SongFetcher
     {
         private static int _id;
-        private readonly List<string> _browsers = new List<string> { "chrome", "msedge", "opera" };
-        private readonly List<string> _audioFileyTypes = new List<string> { ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf", ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg", ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma", ".wv", ".webm", ".8svx", ".cda" };
+        private readonly List<string> _browsers = new() { "chrome", "msedge", "opera" };
+        private readonly List<string> _audioFileyTypes = new() { ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf", ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg", ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma", ".wv", ".webm", ".8svx", ".cda" };
         private AutomationElement _parent;
         private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
@@ -39,7 +37,7 @@ namespace Songify_Slim.Util.Songify
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
         internal Task<SongInfo> FetchDesktopPlayer(string player)
         {
-            var processes = Process.GetProcessesByName(player);
+            Process[] processes = Process.GetProcessesByName(player);
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
@@ -244,7 +242,7 @@ namespace Songify_Slim.Util.Songify
                 break;
             }
 
-            var procsBrowser = Process.GetProcessesByName(browser);
+            Process[] procsBrowser = Process.GetProcessesByName(browser);
 
             foreach (Process procBrowser in procsBrowser)
             {
@@ -463,7 +461,7 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
                         do
                         {
-                            Application.Current.Dispatcher.BeginInvoke(() =>
+                            await Application.Current.Dispatcher.BeginInvoke(() =>
                             {
                                 GlobalObjects.ReqList.Remove(previous);
                             });

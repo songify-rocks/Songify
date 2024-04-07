@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,9 +7,9 @@ namespace Songify_Slim.Util.General
 {
     internal class TaskQueue
     {
-        private readonly ConcurrentQueue<Func<Task>> tasks = new ConcurrentQueue<Func<Task>>();
-        private readonly SemaphoreSlim signal = new SemaphoreSlim(0);
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly ConcurrentQueue<Func<Task>> tasks = new();
+        private readonly SemaphoreSlim signal = new(0);
+        private readonly CancellationTokenSource cancellationTokenSource = new();
         private bool isProcessing = false;
 
         public TaskQueue()
@@ -37,15 +34,15 @@ namespace Songify_Slim.Util.General
             {
                 await signal.WaitAsync(cancellationToken);
 
-                while (tasks.TryDequeue(out var taskGenerator))
+                while (tasks.TryDequeue(out Func<Task> taskGenerator))
                 {
                     isProcessing = true;
                     try
                     {
-                        var task = taskGenerator.Invoke();
+                        Task task = taskGenerator.Invoke();
                         await task;
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         // Log or handle exceptions
                     }

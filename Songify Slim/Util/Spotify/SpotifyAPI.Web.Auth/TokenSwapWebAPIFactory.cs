@@ -122,7 +122,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
     // They don't even need to be constructed for their associated events to be invoked - just pass the static Empty property.
     public class AccessTokenExpiredEventArgs : EventArgs
     {
-      public static new AccessTokenExpiredEventArgs Empty { get; } = new AccessTokenExpiredEventArgs();
+      public static new AccessTokenExpiredEventArgs Empty { get; } = new();
 
       public AccessTokenExpiredEventArgs()
       { }
@@ -134,7 +134,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
     public class AuthSuccessEventArgs : EventArgs
     {
-      public static new AuthSuccessEventArgs Empty { get; } = new AuthSuccessEventArgs();
+      public static new AuthSuccessEventArgs Empty { get; } = new();
 
       public AuthSuccessEventArgs()
       { }
@@ -146,7 +146,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
     public class AuthFailureEventArgs : EventArgs
     {
-      public static new AuthFailureEventArgs Empty { get; } = new AuthFailureEventArgs("");
+      public static new AuthFailureEventArgs Empty { get; } = new("");
 
       public string Error { get; }
 

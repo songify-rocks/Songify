@@ -6,18 +6,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Reflection.Emit;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using Newtonsoft.Json.Linq;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Songify_Slim.Views;
-using System.Collections;
 using System.Windows;
 
 namespace Songify_Slim.Util.Songify
@@ -28,7 +23,7 @@ namespace Songify_Slim.Util.Songify
         ///     This Class is a helper class to reduce repeatedly used code across multiple classes
         /// </summary>
 
-        private static readonly ApiClient ApiClient = new ApiClient(GlobalObjects.ApiUrl);
+        private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
 
         private enum RequestType
         {
@@ -61,8 +56,8 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
-                            var tasks = new List<Task>();
-                            foreach (var q in queue)
+                            List<Task> tasks = new();
+                            foreach (Models.QueueItem q in queue)
                             {
                                 if (GlobalObjects.ReqList.Count != 0 &&
                                     GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) continue;
@@ -190,7 +185,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (method == RequestMethod.Post)
             {
-                var response = await ApiClient.Post("song", payload);
+                string response = await ApiClient.Post("song", payload);
                 Debug.WriteLine(response);
             }
         }
@@ -202,7 +197,7 @@ namespace Songify_Slim.Util.Songify
                 case RequestMethod.Get:
                     break;
                 case RequestMethod.Post:
-                    var response = await ApiClient.Post("history", payload);
+                    string response = await ApiClient.Post("history", payload);
                     break;
                 case RequestMethod.Patch:
                     break;
@@ -322,11 +317,11 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<string> GetBetaPatchNotes(string url)
         {
-            using (var httpClient = new HttpClient())
+            using (HttpClient httpClient = new())
             {
-                var response = await httpClient.GetAsync(url);
+                HttpResponseMessage response = await httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
-                var content = await response.Content.ReadAsStringAsync();
+                string content = await response.Content.ReadAsStringAsync();
                 return content;
             }
         }

@@ -3,11 +3,11 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web;
@@ -25,7 +25,7 @@ namespace Songify_Slim.Util.Songify
         private static Token _lastToken;
         public static bool Authed;
 
-        private static readonly Timer AuthRefresh = new Timer
+        private static readonly Timer AuthRefresh = new()
         {
             // Interval for refreshing Spotify-Auth
             Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
@@ -226,7 +226,7 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.SpotifyDeviceId = context.Device.Id;
             }
 
-            var albums = context.Item.Album.Images;
+            List<Image> albums = context.Item.Album.Images;
             double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;
             double currentDuration = TimeSpan.FromMilliseconds(context.ProgressMs).TotalSeconds;
             double percentage = 100 / totalSeconds * currentDuration;
@@ -235,7 +235,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (context.Context is { Type: "playlist" })
                 {
-                    var playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
+                    FullPlaylist playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
                     if (playlist != null)
                     {
                         playlistInfo = new PlaylistInfo
@@ -315,7 +315,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                var x = Spotify.GetPrivateProfile().Country;
+                string x = Spotify.GetPrivateProfile().Country;
                 // Returns a Track-Object matching the song id
                 return Spotify.GetTrack(id, x);
             }

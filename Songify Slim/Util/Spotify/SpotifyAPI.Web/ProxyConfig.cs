@@ -43,7 +43,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     /// <returns>A URI</returns>
     public Uri GetUri()
     {
-      UriBuilder uriBuilder = new UriBuilder(Host)
+      UriBuilder uriBuilder = new(Host)
       {
         Port = Port
       };
@@ -59,7 +59,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
       if (!IsValid())
         return null;
 
-      WebProxy proxy = new WebProxy
+      WebProxy proxy = new()
       {
         Address = GetUri(),
         UseDefaultCredentials = true,
@@ -77,7 +77,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
     public static HttpClientHandler CreateClientHandler(ProxyConfig proxyConfig = null)
     {
-      HttpClientHandler clientHandler = new HttpClientHandler
+      HttpClientHandler clientHandler = new()
       {
       PreAuthenticate = false,
       UseDefaultCredentials = true,

@@ -28,7 +28,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string SearchItems(string q, SearchType type, int limit = 20, int offset = 0, string market = "")
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder(APIBase + "/search");
+      StringBuilder builder = new(APIBase + "/search");
       builder.Append("?q=" + q);
       builder.Append("&type=" + type.GetStringAttribute(","));
       builder.Append("&limit=" + limit);
@@ -54,7 +54,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetAlbumTracks(string id, int limit = 20, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/albums/" + id + "/tracks");
+      StringBuilder builder = new(APIBase + "/albums/" + id + "/tracks");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(market))
@@ -141,7 +141,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetArtistsAlbums(string id, AlbumType type = AlbumType.All, int limit = 20, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/artists/" + id + "/albums");
+      StringBuilder builder = new(APIBase + "/artists/" + id + "/albums");
       builder.Append("?album_type=" + type.GetStringAttribute(","));
       builder.Append("&limit=" + limit);
       builder.Append("&offset=" + offset);
@@ -179,7 +179,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetFeaturedPlaylists(string locale = "", string country = "", DateTime timestamp = default(DateTime), int limit = 20, int offset = 0)
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/browse/featured-playlists");
+      StringBuilder builder = new(APIBase + "/browse/featured-playlists");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(locale))
@@ -202,7 +202,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetNewAlbumReleases(string country = "", int limit = 20, int offset = 0)
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/browse/new-releases");
+      StringBuilder builder = new(APIBase + "/browse/new-releases");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(country))
@@ -228,7 +228,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetCategories(string country = "", string locale = "", int limit = 20, int offset = 0)
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder(APIBase + "/browse/categories");
+      StringBuilder builder = new(APIBase + "/browse/categories");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(country))
@@ -254,7 +254,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     /// <remarks>AUTH NEEDED</remarks>
     public string GetCategory(string categoryId, string country = "", string locale = "")
     {
-      StringBuilder builder = new StringBuilder(APIBase + "/browse/categories/" + categoryId);
+      StringBuilder builder = new(APIBase + "/browse/categories/" + categoryId);
       if (!string.IsNullOrEmpty(country))
         builder.Append("?country=" + country);
       if (!string.IsNullOrEmpty(locale))
@@ -274,7 +274,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetCategoryPlaylists(string categoryId, string country = "", int limit = 20, int offset = 0)
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder(APIBase + "/browse/categories/" + categoryId + "/playlists");
+      StringBuilder builder = new(APIBase + "/browse/categories/" + categoryId + "/playlists");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(country))
@@ -308,7 +308,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
       TuneableTrack target = null, TuneableTrack min = null, TuneableTrack max = null, int limit = 20, string market = "")
     {
       limit = Math.Min(100, limit);
-      StringBuilder builder = new StringBuilder($"{APIBase}/recommendations");
+      StringBuilder builder = new($"{APIBase}/recommendations");
       builder.Append("?limit=" + limit);
       if (artistSeed?.Count > 0)
         builder.Append("&seed_artists=" + string.Join(",", artistSeed));
@@ -352,7 +352,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     {
       limit = Math.Min(limit, 50);
       const FollowType followType = FollowType.Artist; //currently only artist is supported.
-      StringBuilder builder = new StringBuilder(APIBase + "/me/following?type=" + followType.GetStringAttribute());
+      StringBuilder builder = new(APIBase + "/me/following?type=" + followType.GetStringAttribute());
       builder.Append("&limit=" + limit);
       if (!string.IsNullOrEmpty(after))
         builder.Append("&after=" + after);
@@ -455,7 +455,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetSavedTracks(int limit = 20, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/me/tracks");
+      StringBuilder builder = new(APIBase + "/me/tracks");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(market))
@@ -505,7 +505,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetSavedAlbums(int limit = 20, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/me/albums");
+      StringBuilder builder = new(APIBase + "/me/albums");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       if (!string.IsNullOrEmpty(market))
@@ -551,7 +551,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetUsersTopTracks(TimeRangeType timeRange = TimeRangeType.MediumTerm, int limit = 20, int offest = 0)
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder($"{APIBase}/me/top/tracks");
+      StringBuilder builder = new($"{APIBase}/me/top/tracks");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offest);
       builder.Append("&time_range=" + timeRange.GetStringAttribute());
@@ -571,7 +571,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetUsersTopArtists(TimeRangeType timeRange = TimeRangeType.MediumTerm, int limit = 20, int offest = 0)
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder($"{APIBase}/me/top/artists");
+      StringBuilder builder = new($"{APIBase}/me/top/artists");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offest);
       builder.Append("&time_range=" + timeRange.GetStringAttribute());
@@ -589,7 +589,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetUsersRecentlyPlayedTracks(int limit = 20, DateTime? after = null, DateTime? before = null)
     {
       limit = Math.Min(50, limit);
-      StringBuilder builder = new StringBuilder($"{APIBase}/me/player/recently-played");
+      StringBuilder builder = new($"{APIBase}/me/player/recently-played");
       builder.Append("?limit=" + limit);
       if (after.HasValue)
         builder.Append("&after=" + after.Value.ToUnixTimeMillisecondsPoly());
@@ -613,7 +613,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetUserPlaylists(string userId, int limit = 20, int offset = 0)
     {
       limit = Math.Min(limit, 50);
-      StringBuilder builder = new StringBuilder(APIBase + "/users/" + userId + "/playlists");
+      StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists");
       builder.Append("?limit=" + limit);
       builder.Append("&offset=" + offset);
       return builder.ToString();
@@ -633,7 +633,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     /// <remarks>AUTH NEEDED</remarks>
     public string GetPlaylist(string userId, string playlistId, string fields = "", string market = "")
     {
-      StringBuilder builder = new StringBuilder(APIBase + "/users/" + userId + "/playlists/" + playlistId);
+      StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists/" + playlistId);
       builder.Append("?fields=" + fields);
       if (!string.IsNullOrEmpty(market))
         builder.Append("&market=" + market);
@@ -653,7 +653,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     /// <remarks>AUTH NEEDED</remarks>
     public string GetPlaylist(string playlistId, string fields = "", string market = "")
     {
-      StringBuilder builder = new StringBuilder(APIBase + "/playlists/" + playlistId);
+      StringBuilder builder = new(APIBase + "/playlists/" + playlistId);
       builder.Append("?fields=" + fields);
       if (!string.IsNullOrEmpty(market))
         builder.Append("&market=" + market);
@@ -677,7 +677,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetPlaylistTracks(string userId, string playlistId, string fields = "", int limit = 100, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 100);
-      StringBuilder builder = new StringBuilder(APIBase + "/users/" + userId + "/playlists/" + playlistId + "/tracks");
+      StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists/" + playlistId + "/tracks");
       builder.Append("?fields=" + fields);
       builder.Append("&limit=" + limit);
       builder.Append("&offset=" + offset);
@@ -702,7 +702,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     public string GetPlaylistTracks(string playlistId, string fields = "", int limit = 100, int offset = 0, string market = "")
     {
       limit = Math.Min(limit, 100);
-      StringBuilder builder = new StringBuilder(APIBase + "/playlists/" + playlistId + "/tracks");
+      StringBuilder builder = new(APIBase + "/playlists/" + playlistId + "/tracks");
       builder.Append("?fields=" + fields);
       builder.Append("&limit=" + limit);
       builder.Append("&offset=" + offset);

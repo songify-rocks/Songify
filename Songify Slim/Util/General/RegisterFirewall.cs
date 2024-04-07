@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Songify_Slim.Util.General
@@ -38,7 +34,7 @@ namespace Songify_Slim.Util.General
                     Process.Start(startInfo);
                     Application.Current.Shutdown();
                 }
-                catch (Exception ex)
+                catch
                 {
                     // Handle the case where the user refused the elevation request
                     // Ask the user to run the application as administrator, and 
@@ -55,7 +51,7 @@ namespace Songify_Slim.Util.General
         private static void AddFirewallRule()
         {
             string applicationPath = Assembly.GetExecutingAssembly().Location;
-            ProcessStartInfo startInfo = new ProcessStartInfo("netsh", $"advfirewall firewall add rule name=\"{ruleName}\" dir=in action=allow program=\"{applicationPath}\" enable=yes")
+            ProcessStartInfo startInfo = new("netsh", $"advfirewall firewall add rule name=\"{ruleName}\" dir=in action=allow program=\"{applicationPath}\" enable=yes")
             {
                 Verb = "runas", // Request elevation
                 CreateNoWindow = true,
@@ -77,14 +73,14 @@ namespace Songify_Slim.Util.General
         private static bool FirewallRuleExists()
         {
 
-            ProcessStartInfo procStartInfo = new ProcessStartInfo("netsh", "advfirewall firewall show rule name=all")
+            ProcessStartInfo procStartInfo = new("netsh", "advfirewall firewall show rule name=all")
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
-            Process proc = new Process { StartInfo = procStartInfo };
+            Process proc = new() { StartInfo = procStartInfo };
             proc.Start();
 
             // Read the output from netsh

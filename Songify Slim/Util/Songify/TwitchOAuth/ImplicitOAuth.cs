@@ -16,9 +16,9 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         private readonly int _salt;
 
         // Listener for twitch redirect.
-        private readonly HttpListener _redirectListener = new HttpListener();
+        private readonly HttpListener _redirectListener = new();
         // Listener for fetching info from the redirect listener.
-        private readonly HttpListener _fetchListener = new HttpListener();
+        private readonly HttpListener _fetchListener = new();
 
         // Events
         public delegate void UpdatedValuesEvent(string state, string token);
@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             {
                 if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"))
                 {
-                    var process = new Process();
+                    Process process = new();
                     process.StartInfo = new ProcessStartInfo
                     {
                         FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
@@ -132,7 +132,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
             HttpListenerRequest httpRequest = httpContext.Request;
 
-            var reader = new StreamReader(httpRequest.InputStream, httpRequest.ContentEncoding);
+            StreamReader reader = new(httpRequest.InputStream, httpRequest.ContentEncoding);
             string jsonObjectString = reader.ReadToEnd();
 
             // Fix errors in the string and send it through

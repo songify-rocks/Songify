@@ -18,7 +18,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         .Select(f => f.GetCustomAttributes(typeof(StringAttribute), false) [0])
         .Cast<StringAttribute>();
 
-      List<string> list = new List<string>();
+      List<string> list = new();
       attributes.ToList().ForEach(element => list.Add(element.Text));
       return string.Join(separator, list);
     }

@@ -59,7 +59,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
     public override string GetUri()
     {
-      StringBuilder builder = new StringBuilder(_exchangeServerUri);
+      StringBuilder builder = new(_exchangeServerUri);
       builder.Append("?");
       builder.Append("response_type=code");
       builder.Append("&state=" + State);
@@ -90,7 +90,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
     async Task<Token> GetToken(string grantType, string authorizationCode = "", string refreshToken = "",
       int currentRetries = 0)
     {
-      FormUrlEncodedContent content = new FormUrlEncodedContent(new Dictionary<string, string>
+      FormUrlEncodedContent content = new(new Dictionary<string, string>
       { { "grant_type", grantType },
         { "code", authorizationCode },
         { "refresh_token", refreshToken }
@@ -99,7 +99,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
       try
       {
         HttpClientHandler handler = ProxyConfig.CreateClientHandler(ProxyConfig);
-        HttpClient client = new HttpClient(handler);
+        HttpClient client = new(handler);
         HttpResponseMessage siteResponse = await client.PostAsync(_exchangeServerUri, content);
 
         Token token = JsonConvert.DeserializeObject<Token>(await siteResponse.Content.ReadAsStringAsync());

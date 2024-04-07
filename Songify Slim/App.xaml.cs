@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32;
-using Songify_Slim.Util.General;
+﻿using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
@@ -9,7 +8,6 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Threading;
 
 namespace Songify_Slim
@@ -93,7 +91,7 @@ namespace Songify_Slim
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow main = new MainWindow();
+            MainWindow main = new();
             main.Show();
         }
     }

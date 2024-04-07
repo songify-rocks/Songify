@@ -8,6 +8,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models
 
     public HttpStatusCode StatusCode { get; set; }
 
-    public static readonly ResponseInfo Empty = new ResponseInfo();
+    public static readonly ResponseInfo Empty = new();
   }
 }

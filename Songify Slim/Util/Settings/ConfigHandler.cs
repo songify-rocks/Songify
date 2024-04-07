@@ -34,7 +34,7 @@ namespace Songify_Slim.Util.Settings
         {
             if (path == null)
                 path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            var serializer = new SerializerBuilder()
+            ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
             string yaml;
@@ -74,11 +74,11 @@ namespace Songify_Slim.Util.Settings
         public static void ReadConfig()
         {
             string path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            var deserializer = new DeserializerBuilder()
+            IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
-            Configuration config = new Configuration();
+            Configuration config = new();
 
             foreach (ConfigTypes configType in (ConfigTypes[])Enum.GetValues(typeof(ConfigTypes)))
             {
@@ -87,7 +87,7 @@ namespace Songify_Slim.Util.Settings
                     case ConfigTypes.SpotifyCredentials:
                         if (File.Exists($@"{path}\SpotifyCredentials.yaml"))
                         {
-                            var p = deserializer.Deserialize<SpotifyCredentials>(File.ReadAllText($@"{path}\SpotifyCredentials.yaml"));
+                            SpotifyCredentials p = deserializer.Deserialize<SpotifyCredentials>(File.ReadAllText($@"{path}\SpotifyCredentials.yaml"));
                             config.SpotifyCredentials = p;
                         }
                         else
@@ -105,7 +105,7 @@ namespace Songify_Slim.Util.Settings
                     case ConfigTypes.TwitchCredentials:
                         if (File.Exists($@"{path}\TwitchCredentials.yaml"))
                         {
-                            var p = deserializer.Deserialize<TwitchCredentials>(File.ReadAllText($@"{path}\TwitchCredentials.yaml"));
+                            TwitchCredentials p = deserializer.Deserialize<TwitchCredentials>(File.ReadAllText($@"{path}\TwitchCredentials.yaml"));
                             config.TwitchCredentials = p;
                         }
                         else
@@ -127,7 +127,7 @@ namespace Songify_Slim.Util.Settings
                     case ConfigTypes.BotConfig:
                         if (File.Exists($@"{path}\BotConfig.yaml"))
                         {
-                            var p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
+                            BotConfig p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
                             config.BotConfig = p;
 
                             //config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
@@ -204,7 +204,7 @@ namespace Songify_Slim.Util.Settings
                                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                                 .WithTypeConverter(new YamlTypeConverters.SingleStringToListConverter())
                                 .Build();
-                            var p = deserializer.Deserialize<AppConfig>(File.ReadAllText($@"{path}\AppConfig.yaml"));
+                            AppConfig p = deserializer.Deserialize<AppConfig>(File.ReadAllText($@"{path}\AppConfig.yaml"));
                             config.AppConfig = p;
                             config.AppConfig.AccessKey = string.IsNullOrWhiteSpace(config.AppConfig.AccessKey) ? GenerateAccessKey() : config.AppConfig.AccessKey;
                         }
@@ -294,7 +294,7 @@ namespace Songify_Slim.Util.Settings
         public static string GenerateAccessKey()
         {
             string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
-            string key = new string(Enumerable.Repeat(allowedChars, 1)
+            string key = new(Enumerable.Repeat(allowedChars, 1)
                 .SelectMany(s => s)
                 .Take(128)
                 .OrderBy(s => Guid.NewGuid())
@@ -313,7 +313,7 @@ namespace Songify_Slim.Util.Settings
                     return;
                 }
 
-                List<string> fileList = new List<string> { "SpotifyCredentials.yaml", "TwitchCredentials.yaml", "BotConfig.yaml", "AppConfig.yaml" };
+                List<string> fileList = new() { "SpotifyCredentials.yaml", "TwitchCredentials.yaml", "BotConfig.yaml", "AppConfig.yaml" };
                 if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) +
                                 @"\SpotifyCredentials.yaml"))
                 {
@@ -347,9 +347,9 @@ namespace Songify_Slim.Util.Settings
                     return;
                 }
 
-                Config config = new Config();
+                Config config = new();
                 // reading the XML file, attributes get saved in Settings
-                XmlDocument doc = new XmlDocument();
+                XmlDocument doc = new();
                 doc.Load(path);
                 if (doc.DocumentElement == null) return;
                 foreach (XmlNode node in doc.DocumentElement.ChildNodes)
@@ -442,7 +442,7 @@ namespace Songify_Slim.Util.Settings
             else
             {
                 // OpenfileDialog with settings initialdirectory is the path were the exe is located
-                OpenFileDialog openFileDialog = new OpenFileDialog
+                OpenFileDialog openFileDialog = new()
                 {
                     InitialDirectory = AppDomain.CurrentDomain.BaseDirectory,
                     Filter = @"XML files (*.xml)|*.xml|All files (*.*)|*.*"
@@ -464,7 +464,7 @@ namespace Songify_Slim.Util.Settings
 
         public static void ConvertConfig(Config cfg)
         {
-            SpotifyCredentials sp = new SpotifyCredentials
+            SpotifyCredentials sp = new()
             {
                 AccessToken = cfg.AccessToken,
                 RefreshToken = cfg.RefreshToken,
@@ -474,7 +474,7 @@ namespace Songify_Slim.Util.Settings
             };
             WriteConfig(ConfigTypes.SpotifyCredentials, sp);
 
-            TwitchCredentials twitchCredentials = new TwitchCredentials
+            TwitchCredentials twitchCredentials = new()
             {
                 AccessToken = "",
                 ChannelName = cfg.TwChannel,
@@ -484,7 +484,7 @@ namespace Songify_Slim.Util.Settings
             };
             WriteConfig(ConfigTypes.TwitchCredentials, twitchCredentials);
 
-            BotConfig botConfig = new BotConfig
+            BotConfig botConfig = new()
             {
                 BotCmdNext = cfg.BotCmdNext,
                 BotCmdPos = cfg.BotCmdPos,
@@ -505,7 +505,7 @@ namespace Songify_Slim.Util.Settings
             };
             WriteConfig(ConfigTypes.BotConfig, botConfig);
 
-            AppConfig appConfig = new AppConfig
+            AppConfig appConfig = new()
             {
                 AnnounceInChat = cfg.AnnounceInChat,
                 AppendSpaces = cfg.AppendSpaces,
@@ -626,6 +626,7 @@ namespace Songify_Slim.Util.Settings
         public bool BotCmdPlayPause { get; set; }
         public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
         public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
+        public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
     }
 
     public class AppConfig
@@ -662,7 +663,7 @@ namespace Songify_Slim.Util.Settings
         public int TwSrUserLevel { get; set; } = 1;
         public List<string> TwRewardId { get; set; } = new();
         public int[] RefundConditons { get; set; } = Array.Empty<int>();
-        public List<string> ArtistBlacklist { get; set; } = new List<string>();
+        public List<string> ArtistBlacklist { get; set; } = new();
         public string Color { get; set; } = "Blue";
         public string CustomPauseText { get; set; } = "";
         public string Directory { get; set; } = "";
@@ -670,7 +671,7 @@ namespace Songify_Slim.Util.Settings
         public string OutputString { get; set; } = "{artist} - {title} {extra}";
         public string OutputString2 { get; set; } = "{artist} - {title} {extra}";
         public string Theme { get; set; } = "Light";
-        public List<string> UserBlacklist { get; set; } = new List<string>();
+        public List<string> UserBlacklist { get; set; } = new();
         public string Uuid { get; set; } = "";
         public int WebServerPort { get; set; } = 65530;
         public bool AutoStartWebServer { get; set; }
@@ -690,12 +691,12 @@ namespace Songify_Slim.Util.Settings
         public bool RewardGoalEnabled { get; set; }
         public string RewardGoalSong { get; set; } = "";
         public int RewardGoalAmount { get; set; }
-        public List<TrackItem> SongBlacklist { get; set; } = new List<TrackItem>();
+        public List<TrackItem> SongBlacklist { get; set; } = new();
         public string SpotifyPlaylistId { get; set; } = "";
-        public List<int> UserLevelsReward { get; set; } = new List<int>();
-        public List<int> UserLevelsCommand { get; set; } = new List<int>();
+        public List<int> UserLevelsReward { get; set; } = new();
+        public List<int> UserLevelsCommand { get; set; } = new();
         public bool AddSrToPlaylist { get; set; } = false;
-        public List<int> QueueWindowColumns { get; set; } = new List<int>();
+        public List<int> QueueWindowColumns { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public bool LimitSrToPlaylist { get; set; } = false;
     }

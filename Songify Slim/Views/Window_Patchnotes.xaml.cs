@@ -31,7 +31,7 @@ namespace Songify_Slim.Views
 
         private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            GitHubClient client = new GitHubClient(new ProductHeaderValue("SongifyInfo"));
+            GitHubClient client = new(new ProductHeaderValue("SongifyInfo"));
             IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("songify-rocks", "Songify");
             foreach (Release release in releases)
             {
@@ -57,11 +57,11 @@ namespace Songify_Slim.Views
         {
             string markdownTxt = (string)LbxVersions.SelectedValue;
             markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
-            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            var xaml = Markdown.ToXaml(markdownTxt, pipeline);
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(xaml)))
+            MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            string xaml = Markdown.ToXaml(markdownTxt, pipeline);
+            using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
             {
-                using (var reader = new XamlXmlReader(stream, new MyXamlSchemaContext()))
+                using (XamlXmlReader reader = new(stream, new MyXamlSchemaContext()))
                 {
                     if (XamlReader.Load(reader) is FlowDocument document)
                     {
@@ -72,7 +72,7 @@ namespace Songify_Slim.Views
 
             foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
             {
-                var themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
+                Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
                 documentBlock.Foreground = new SolidColorBrush(themeForeground);
             }
             string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;

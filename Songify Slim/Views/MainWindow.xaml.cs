@@ -25,7 +25,6 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
-using System.Xml;
 using System.Xml.Linq;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;

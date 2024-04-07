@@ -113,7 +113,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         AddHeaders(headers);
       }
 
-      HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), url)
+      HttpRequestMessage message = new(new HttpMethod(method), url)
       {
         Content = new StringContent(body, _encoding)
       };
@@ -134,7 +134,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         AddHeaders(headers);
       }
 
-      HttpRequestMessage message = new HttpRequestMessage(new HttpMethod(method), url)
+      HttpRequestMessage message = new(new HttpMethod(method), url)
       {
         Content = new StringContent(body, _encoding)
       };
@@ -182,7 +182,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
     private static WebHeaderCollection ConvertHeaders(HttpResponseHeaders headers)
     {
-      WebHeaderCollection newHeaders = new WebHeaderCollection();
+      WebHeaderCollection newHeaders = new();
       foreach (KeyValuePair<string, IEnumerable<string>> headerPair in headers)
       {
         foreach (string headerValue in headerPair.Value)

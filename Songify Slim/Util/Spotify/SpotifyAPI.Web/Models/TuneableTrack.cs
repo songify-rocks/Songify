@@ -50,7 +50,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models
 
     public string BuildUrlParams(string prefix)
     {
-      List<string> urlParams = new List<string>();
+      List<string> urlParams = new();
       foreach (PropertyInfo info in GetType().GetProperties())
       {
         object value = info.GetValue(this);
