@@ -315,21 +315,21 @@ namespace Songify_Slim.Views
         private async void FetchSpotifyWeb()
         {
             TrackInfo info = await Sf.FetchSpotifyWeb();
-            if (info == null) return;
+            //if (info == null) return;
 
-            if (!info.IsPlaying)
-            {
-                if (Settings.CustomPauseTextEnabled)
-                    WriteSong("", "", "");
-                return;
-            }
+            //if (!info.IsPlaying)
+            //{
+            //    if (Settings.CustomPauseTextEnabled)
+            //        WriteSong("", "", "");
+            //    return;
+            //}
 
-            string albumUrl = null;
+            //string albumUrl = null;
 
-            if (info.Albums.Count != 0) albumUrl = info.Albums[0].Url;
+            //if (info.Albums.Count != 0) albumUrl = info.Albums[0].Url;
 
 
-            WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongId, info.Url);
+            //WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongId, info.Url);
         }
 
         private void FetchTimer(int ms)
@@ -920,11 +920,10 @@ namespace Songify_Slim.Views
 
             }
 
-            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new Action(SetCoverImage));
+            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => SetCoverImage("")));
         }
 
-        private async void SetCoverImage()
+        public async void SetCoverImage(string coverPath)
         {
             const int numberOfRetries = 5;
             const int delayOnRetry = 1000;
@@ -938,7 +937,7 @@ namespace Songify_Slim.Views
                         image.BeginInit();
                         image.CacheOption = BitmapCacheOption.OnLoad;
                         image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                        image.UriSource = new Uri(_coverPath);
+                        image.UriSource = new Uri(coverPath);
                         image.EndInit();
                         img_cover.Source = image;
                     }
@@ -1107,6 +1106,7 @@ namespace Songify_Slim.Views
                     }
                 }
             }
+           
             else
             {
                 // used for Youtube and Nightbot
@@ -1343,6 +1343,14 @@ namespace Songify_Slim.Views
         {
             if (GlobalObjects.WebServer.Run)
                 Process.Start($"http://localhost:{Settings.WebServerPort}");
+        }
+
+        public void SetTextPreview(string replace)
+        {
+            TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                TxtblockLiveoutput.Text = replace;
+            }));
         }
     }
 }

@@ -5,6 +5,7 @@ using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -13,6 +14,11 @@ using System.Windows;
 using System.Windows.Automation;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Unosquare.Swan.Formatters;
+using System.Windows.Threading;
+using MahApps.Metro.Controls;
+using TwitchLib.Api.Helix.Models.Soundtrack;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -435,20 +441,19 @@ namespace Songify_Slim.Util.Songify
                     RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == _songInfo.SongId);
 
-                    if (_songInfo.SongId != null)
-                        GlobalObjects.CurrentSong = _songInfo;
+                    GlobalObjects.CurrentSong = _songInfo;
 
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == _songInfo.SongId) != null)
                     {
-                        await Application.Current.Dispatcher.Invoke(async () =>
+                        await System.Windows.Application.Current.Dispatcher.Invoke(async () =>
                         {
                             GlobalObjects.SkipList.Remove(
                                 GlobalObjects.SkipList.Find(o => o.Trackid == _songInfo.SongId));
                             await ApiHandler.SkipSong();
                         });
                     }
-                    
+
                     //if current is not null, mark it as played in the database
                     if (current != null)
                     {
@@ -500,6 +505,15 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     GlobalObjects.QueueUpdateQueueWindow();
+
+                    // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
+                    await WriteSongInfo(_songInfo);
+                }
+
+                if (GlobalObjects.ForceUpdate)
+                {
+                    await WriteSongInfo(_songInfo);
+                    GlobalObjects.ForceUpdate = false;
                 }
 
                 UpdateWebServerResponse();
@@ -511,6 +525,257 @@ namespace Songify_Slim.Util.Songify
             }
             updating = false;
             return _songInfo ?? new TrackInfo { IsPlaying = false };
+        }
+
+        private async Task WriteSongInfo(TrackInfo songInfo)
+        {
+            string artist = songInfo.Artists;
+            string title = songInfo.Title;
+            string albumUrl = _songInfo.Albums != null && _songInfo.Albums.Count != 0 ? _songInfo.Albums[0].Url : "";
+
+            if (artist.Contains("Various Artists, "))
+            {
+                artist = artist.Replace("Various Artists, ", "").Trim();
+            }
+
+            string _songPath = GlobalObjects.RootDirectory + "/Songify.txt";
+            string _coverTemp = GlobalObjects.RootDirectory + "/tmp.png";
+            string _coverPath = GlobalObjects.RootDirectory + "/cover.png";
+
+            if (!_songInfo.IsPlaying)
+            {
+                // read the text file
+                if (!File.Exists(_songPath)) File.Create(_songPath).Close();
+                IOManager.WriteOutput(_songPath, Settings.Settings.CustomPauseText);
+
+                if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, title, "");
+
+                IOManager.DownloadCover(null, _coverPath);
+
+                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action((() =>
+                {
+                    ((MainWindow)Application.Current.MainWindow).TxtblockLiveoutput.Text = Settings.Settings.CustomPauseText;
+                })));
+                return;
+            }
+
+            string currentSongOutput = Settings.Settings.OutputString;
+            string currentSongOutputTwitch = Settings.Settings.BotRespSong;
+            // this only is used for Spotify because here the artist and title are split
+            // replace parameters with actual info
+            currentSongOutput = currentSongOutput.Format(
+                artist => _songInfo.Artists,
+                title => _songInfo.Title,
+                extra => "",
+                uri => songInfo.SongId,
+                url => _songInfo.Url
+            ).Format();
+
+            currentSongOutputTwitch = currentSongOutputTwitch.Format(
+                artist => _songInfo.Artists,
+                title => _songInfo.Title,
+                extra => "",
+                uri => songInfo.SongId,
+                url => _songInfo.Url
+            ).Format();
+            RequestObject rq = null;
+
+            if (GlobalObjects.ReqList.Count > 0)
+            {
+
+                rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == _songInfo.SongId);
+                if (rq != null)
+                {
+                    currentSongOutput = currentSongOutput.Replace("{{", "");
+                    currentSongOutput = currentSongOutput.Replace("}}", "");
+                    currentSongOutput = currentSongOutput.Replace("{req}", rq.Requester);
+
+                    currentSongOutputTwitch = currentSongOutputTwitch.Replace("{{", "");
+                    currentSongOutputTwitch = currentSongOutputTwitch.Replace("}}", "");
+                    currentSongOutputTwitch = currentSongOutputTwitch.Replace("{req}", rq.Requester);
+                    GlobalObjects.Requester = rq.Requester;
+
+                }
+                else
+                {
+                    int start = currentSongOutput.IndexOf("{{", StringComparison.Ordinal);
+                    int end = currentSongOutput.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                    if (start >= 0) currentSongOutput = currentSongOutput.Remove(start, end - start);
+                    start = currentSongOutputTwitch.IndexOf("{{", StringComparison.Ordinal);
+                    end = currentSongOutputTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                    if (start >= 0) currentSongOutputTwitch = currentSongOutputTwitch.Remove(start, end - start);
+                    GlobalObjects.Requester = "";
+                }
+            }
+            else
+            {
+                try
+                {
+                    int start = currentSongOutput.IndexOf("{{", StringComparison.Ordinal);
+                    int end = currentSongOutput.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                    if (start >= 0) currentSongOutput = currentSongOutput.Remove(start, end - start);
+                    start = currentSongOutputTwitch.IndexOf("{{", StringComparison.Ordinal);
+                    end = currentSongOutputTwitch.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                    if (start >= 0) currentSongOutputTwitch = currentSongOutputTwitch.Remove(start, end - start);
+                    GlobalObjects.Requester = "";
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+            }
+
+            // Cleanup the string (remove double spaces, trim and add trailing spaces for scroll)
+            currentSongOutput = CleanFormatString(currentSongOutput);
+
+            // read the text file
+            if (!File.Exists(_songPath))
+            {
+                try
+                {
+                    File.Create(_songPath).Close();
+                }
+                catch (Exception e)
+                {
+                    Logger.LogExc(e);
+                    return;
+                }
+            }
+
+            //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, currentSongOutput);
+            string temp = File.ReadAllText(_songPath);
+
+            // if the text file is different to _currentSongOutput (fetched song) or update is forced
+            if (temp.Trim() != currentSongOutput.Trim())
+                // Clear the SkipVotes list in TwitchHandler Class
+                TwitchHandler.ResetVotes();
+
+            // write song to the text file
+            try
+            {
+                IOManager.WriteOutput(_songPath, currentSongOutput);
+            }
+            catch (Exception)
+            {
+                Logger.LogStr($"File {_songPath} couldn't be accessed.");
+            }
+
+
+            if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(_songInfo.Artists, _songInfo.Title, "", rq?.Requester);
+
+            // if upload is enabled
+            if (Settings.Settings.Upload)
+                try
+                {
+                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // if error occurs write text to the status asynchronous
+                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                    }));
+                }
+
+            //Write History
+            if (Settings.Settings.SaveHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
+                currentSongOutput.Trim() != Settings.Settings.CustomPauseText)
+            {
+
+                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+                //save the history file
+                string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
+                                     "history.shr";
+                XDocument doc;
+                if (!File.Exists(historyPath))
+                {
+                    doc = new XDocument(new XElement("History",
+                        new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
+                    doc.Save(historyPath);
+                }
+
+                doc = XDocument.Load(historyPath);
+                if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
+                    doc.Descendants("History").FirstOrDefault()
+                        ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
+
+                XElement elem = new("Song", currentSongOutput.Trim());
+                elem.Add(new XAttribute("Time", unixTimestamp));
+                XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
+                XNode lastNode = x.LastNode;
+                if (lastNode != null)
+                {
+                    if (currentSongOutput.Trim() != ((XElement)lastNode).Value)
+                        x?.Add(elem);
+                }
+                else
+                {
+                    x?.Add(elem);
+                }
+                doc.Save(historyPath);
+            }
+
+            //Upload History
+            if (Settings.Settings.UploadHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
+                currentSongOutput.Trim() != Settings.Settings.CustomPauseText)
+            {
+
+                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+                // Upload Song
+                try
+                {
+                    WebHelper.UploadHistory(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // Writing to the statusstrip label
+                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading history";
+                    }));
+                }
+            }
+
+            // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
+            //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
+
+            // Send Message to Twitch if checked
+            if (Settings.Settings.AnnounceInChat)
+            {
+                TwitchHandler.SendCurrSong();
+            }
+
+            //Save Album Cover
+            if (Settings.Settings.DownloadCover) IOManager.DownloadCover(albumUrl, _coverPath);
+
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MainWindow main = Application.Current.MainWindow as MainWindow;
+                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                }));
+            });
+        }
+
+        private static string CleanFormatString(string currentSongOutput)
+        {
+            RegexOptions options = RegexOptions.None;
+            Regex regex = new("[ ]{2,}", options);
+            currentSongOutput = regex.Replace(currentSongOutput, " ");
+            currentSongOutput = currentSongOutput.Trim();
+
+            // Add trailing spaces for better scroll
+            if (Settings.Settings.AppendSpaces)
+                currentSongOutput = currentSongOutput.PadRight(currentSongOutput.Length + Settings.Settings.SpaceCount);
+
+            return currentSongOutput;
         }
 
         private static void UpdateWebServerResponse()

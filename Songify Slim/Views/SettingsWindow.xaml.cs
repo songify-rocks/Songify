@@ -779,6 +779,7 @@ namespace Songify_Slim.Views
         {
             // write custom output format to settings
             Settings.OutputString = TxtbxOutputformat.Text;
+            GlobalObjects.ForceUpdate = true;
         }
 
         private void TxtbxOutputformat2_TextChanged(object sender, TextChangedEventArgs e)

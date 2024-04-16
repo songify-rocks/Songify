@@ -5,7 +5,9 @@ using Songify_Slim.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
@@ -36,8 +38,10 @@ namespace Songify_Slim.Util.General
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
         private static readonly TaskQueue updateQueueWindowTasks = new();
-
-
+        public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
+            ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
+            : Settings.Settings.Directory;
+        public static bool ForceUpdate;
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
