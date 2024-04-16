@@ -166,7 +166,7 @@ namespace Songify_Slim.Util.General
             catch (Exception e)
             {
                 // Handle exception
-                Console.WriteLine("Exception: {0}", e);
+                //Console.WriteLine("Exception: {0}", e);
             }
             finally
             {
@@ -204,7 +204,7 @@ namespace Songify_Slim.Util.General
                 }
 
                 // Handle invalid value part
-                Console.WriteLine("Invalid value for volume set command.");
+                //Console.WriteLine("Invalid value for volume set command.");
                 return "Invalid value for volume set command.";
             }
 
@@ -266,7 +266,7 @@ namespace Songify_Slim.Util.General
                     await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
                 default:
-                    Console.WriteLine($"Unknown command: {message}");
+                    //Console.WriteLine($"Unknown command: {message}");
                     return $"Unknown command: {message}";
             }
 

@@ -63,12 +63,13 @@ namespace Songify_Slim.Util.Songify
                     !string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken))
                 {
                     Authed = true;
+                    Token token = await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken);
                     Spotify = new SpotifyWebAPI
                     {
-                        TokenType = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).TokenType,
-                        AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken
+                        TokenType = token.TokenType,
+                        AccessToken = token.AccessToken
                     };
-                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
+                    Spotify.AccessToken = token.AccessToken;
                     if (Application.Current.MainWindow != null)
                     {
                         ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =

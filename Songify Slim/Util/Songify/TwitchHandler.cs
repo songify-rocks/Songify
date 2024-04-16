@@ -652,6 +652,7 @@ namespace Songify_Slim.Util.Songify
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
+
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
@@ -2345,7 +2346,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!Settings.Settings.RewardGoalEnabled) return;
                 GlobalObjects.RewardGoalCount++;
-                Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
+                //Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
 
                 if (GlobalObjects.RewardGoalCount % 10 == 0)
                 {
@@ -2364,7 +2365,7 @@ namespace Songify_Slim.Util.Songify
                 if (GlobalObjects.RewardGoalCount >= Settings.Settings.RewardGoalAmount)
                 {
                     GlobalObjects.RewardGoalCount = 0;
-                    Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
+                    //Debug.WriteLine($"{GlobalObjects.RewardGoalCount} / {Settings.Settings.RewardGoalAmount}");
                     SendChatMessage(Settings.Settings.TwChannel,
                         "The reward goal has been reached! " + Settings.Settings.RewardGoalAmount);
                     string input = Settings.Settings.RewardGoalSong;

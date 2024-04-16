@@ -1358,7 +1358,7 @@ namespace Songify_Slim.Views
             Settings.AddSrToPlaylist = ((ToggleSwitch)sender).IsOn;
         }
 
-        private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)
+        private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e) 
         {
             await LoadSpotifyPlaylists();
         }

@@ -145,6 +145,10 @@ namespace Songify_Slim.Util.General
                 {
                     await Application.Current.Dispatcher.BeginInvoke(() =>
                     {
+                        if (item.Trackid == CurrentSong.SongId)
+                        {
+                            return;
+                        }
                         ReqList.Remove(item);
                     });
                 }
@@ -165,7 +169,7 @@ namespace Songify_Slim.Util.General
                     foreach (FullTrack fullTrack in queue.Queue)
                     {
                         // Determine if we have a matching request object that hasn't been used for replacement yet
-                        RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId );
+                        RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
 
                         if (reqObj != null)
                         {
@@ -173,6 +177,7 @@ namespace Songify_Slim.Util.General
                             (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
                             replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
                         }
+
                         else
                         {
                             // Otherwise, just add the song information from the queue as a new request object
@@ -190,7 +195,6 @@ namespace Songify_Slim.Util.General
                             });
                         }
                     }
-
                     (window as WindowQueue)?.dgv_Queue.Items.Refresh();
                 }
 

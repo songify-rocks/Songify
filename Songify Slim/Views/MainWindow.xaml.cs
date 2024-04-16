@@ -524,7 +524,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.dev_1 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.dev_2 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -1172,121 +1172,121 @@ namespace Songify_Slim.Views
             string temp = File.ReadAllText(_songPath);
 
             // if the text file is different to _currSong (fetched song) or update is forced
-            if (temp.Replace("\n", "").Replace("\r", "").Trim() != Regex.Replace(CurrSong.Replace("\\n", "").Replace("\\r", "").Trim(), "\\s+", " ") || forceUpdate || _firstRun)
+            if (temp.Trim() != CurrSong.Trim())
+                // Clear the SkipVotes list in TwitchHandler Class
+                TwitchHandler.ResetVotes();
+
+            // write song to the text file
+            try
             {
-                if (temp.Trim() != CurrSong.Trim())
-                    // Clear the SkipVotes list in TwitchHandler Class
-                    TwitchHandler.ResetVotes();
+                WriteOutput(_songPath, CurrSong);
+            }
+            catch (Exception)
+            {
+                Logger.LogStr($"File {_songPath} couldn't be accessed.");
+            }
 
-                // write song to the text file
-                try
+
+            if (_firstRun)
+            {
+                _prevSong = GlobalObjects.CurrentSong.SongId;
+                _firstRun = false;
+            }
+            else
+            {
+                if (_prevSong == _currentId)
+                    return;
+            }
+
+            _prevSong = _currentId;
+
+            if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra, rq?.Requester);
+
+            // if upload is enabled
+            if (Settings.Upload) UploadSong(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), rCover);
+
+            //Write History
+            if (Settings.SaveHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
+                CurrSong.Trim() != Settings.CustomPauseText)
+            {
+                _prevSong = CurrSong.Trim();
+
+                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+                //save the history file
+                string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
+                                     "history.shr";
+                XDocument doc;
+                if (!File.Exists(historyPath))
                 {
-                    WriteOutput(_songPath, CurrSong);
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr($"File {_songPath} couldn't be accessed.");
-                }
-
-                if (Settings.SplitOutput) WriteSplitOutput(rArtist, rTitle, rExtra, rq?.Requester);
-
-                // if upload is enabled
-                if (Settings.Upload) UploadSong(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), rCover);
-
-                if (_firstRun)
-                {
-                    _prevSong = CurrSong.Trim();
-                    _firstRun = false;
-                }
-                else
-                {
-                    if (_prevSong == CurrSong.Trim())
-                        return;
-                }
-
-                //Write History
-                if (Settings.SaveHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
-                    CurrSong.Trim() != Settings.CustomPauseText)
-                {
-                    _prevSong = CurrSong.Trim();
-
-                    int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                    //save the history file
-                    string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
-                                         "history.shr";
-                    XDocument doc;
-                    if (!File.Exists(historyPath))
-                    {
-                        doc = new XDocument(new XElement("History",
-                            new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
-                        doc.Save(historyPath);
-                    }
-
-                    doc = XDocument.Load(historyPath);
-                    if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
-                        doc.Descendants("History").FirstOrDefault()
-                            ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
-
-                    XElement elem = new("Song", CurrSong.Trim());
-                    elem.Add(new XAttribute("Time", unixTimestamp));
-                    XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
-                    XNode lastNode = x.LastNode;
-                    if (lastNode != null)
-                    {
-                        if (CurrSong.Trim() != ((XElement)lastNode).Value)
-                            x?.Add(elem);
-                    }
-                    else
-                    {
-                        x?.Add(elem);
-                    }
+                    doc = new XDocument(new XElement("History",
+                        new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
                     doc.Save(historyPath);
                 }
 
-                //Upload History
-                if (Settings.UploadHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
-                    CurrSong.Trim() != Settings.CustomPauseText)
+                doc = XDocument.Load(historyPath);
+                if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
+                    doc.Descendants("History").FirstOrDefault()
+                        ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
+
+                XElement elem = new("Song", CurrSong.Trim());
+                elem.Add(new XAttribute("Time", unixTimestamp));
+                XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
+                XNode lastNode = x.LastNode;
+                if (lastNode != null)
                 {
-                    _prevSong = CurrSong.Trim();
-
-                    int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                    // Upload Song
-                    try
-                    {
-                        WebHelper.UploadHistory(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                        // Writing to the statusstrip label
-                        LblStatus.Dispatcher.Invoke(
-                            DispatcherPriority.Normal,
-                            new Action(() => { LblStatus.Content = "Error uploading history"; }));
-                    }
+                    if (CurrSong.Trim() != ((XElement)lastNode).Value)
+                        x?.Add(elem);
                 }
-
-                // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
-                //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
-
-                // Send Message to Twitch if checked
-                if (Settings.AnnounceInChat)
+                else
                 {
-                    TwitchHandler.SendCurrSong();
+                    x?.Add(elem);
                 }
-
-
-                //Save Album Cover
-                if (Settings.DownloadCover) DownloadCover(rCover);
-
+                doc.Save(historyPath);
             }
+
+            //Upload History
+            if (Settings.UploadHistory && !string.IsNullOrEmpty(CurrSong.Trim()) &&
+                CurrSong.Trim() != Settings.CustomPauseText)
+            {
+                _prevSong = CurrSong.Trim();
+
+                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
+                // Upload Song
+                try
+                {
+                    WebHelper.UploadHistory(CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // Writing to the statusstrip label
+                    LblStatus.Dispatcher.Invoke(
+                        DispatcherPriority.Normal,
+                        new Action(() => { LblStatus.Content = "Error uploading history"; }));
+                }
+            }
+
+            // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
+            //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
+
+            // Send Message to Twitch if checked
+            if (Settings.AnnounceInChat)
+            {
+                TwitchHandler.SendCurrSong();
+            }
+
+            //Save Album Cover
+            if (Settings.DownloadCover) DownloadCover(rCover);
+
 
             // write song to the output label
             TxtblockLiveoutput.Dispatcher.Invoke(
                 DispatcherPriority.Normal,
                 new Action(() => { TxtblockLiveoutput.Text = CurrSong.Trim().Replace(@"\n", " - ").Replace("  ", " "); }));
         }
+
         private void WriteSplitOutput(string artist, string title, string extra, string requester = "")
         {
             // Writes the output to 2 different text files

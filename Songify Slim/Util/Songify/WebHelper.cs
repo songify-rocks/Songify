@@ -131,7 +131,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                //Console.WriteLine(e);
             }
         }
 
@@ -186,7 +186,7 @@ namespace Songify_Slim.Util.Songify
             if (method == RequestMethod.Post)
             {
                 string response = await ApiClient.Post("song", payload);
-                Debug.WriteLine(response);
+                //Debug.WriteLine(response);
             }
         }
 

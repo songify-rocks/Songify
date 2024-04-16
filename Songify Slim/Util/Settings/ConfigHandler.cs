@@ -61,7 +61,7 @@ namespace Songify_Slim.Util.Settings
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e);
+                        //Console.WriteLine(e);
                         return;
                     }
                     break;

@@ -29,6 +29,7 @@ namespace Songify_Slim.Util.Songify
         private static SongInfo _previousSonginfo;
         private static TrackInfo _songInfo;
         private static bool _trackChanged;
+        private bool updating = false;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -405,6 +406,9 @@ namespace Songify_Slim.Util.Songify
         public async Task<TrackInfo> FetchSpotifyWeb()
         {
             // If the spotify object hast been created (successfully authed)
+            if (updating)
+                return null;
+            updating = true;
             if (ApiHandler.Spotify == null)
             {
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
@@ -418,6 +422,7 @@ namespace Songify_Slim.Util.Songify
             _songInfo = ApiHandler.GetSongInfo();
             try
             {
+
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null))
                 {
                     _trackChanged = true;
@@ -430,6 +435,9 @@ namespace Songify_Slim.Util.Songify
                     RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == _songInfo.SongId);
 
+                    if (_songInfo.SongId != null)
+                        GlobalObjects.CurrentSong = _songInfo;
+
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == _songInfo.SongId) != null)
                     {
@@ -440,9 +448,7 @@ namespace Songify_Slim.Util.Songify
                             await ApiHandler.SkipSong();
                         });
                     }
-
-
-
+                    
                     //if current is not null, mark it as played in the database
                     if (current != null)
                     {
@@ -483,9 +489,6 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
 
-                if (_songInfo.SongId != null)
-                    GlobalObjects.CurrentSong = _songInfo;
-
                 if (_trackChanged)
                 {
                     _trackChanged = false;
@@ -503,8 +506,10 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                updating = false;
                 Logger.LogExc(e);
             }
+            updating = false;
             return _songInfo ?? new TrackInfo { IsPlaying = false };
         }
 

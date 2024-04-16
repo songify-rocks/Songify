@@ -24,7 +24,9 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
+
             TbPlaylistName.Text = playlist.Name;
+            if (playlist.Images == null) return;
             if (playlist.Images.Count != 0)
                 PlaylistImage.Source = new BitmapImage(new Uri(playlist.Images.First().Url));
         }
