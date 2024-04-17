@@ -1369,24 +1369,27 @@ namespace Songify_Slim.Views
             if (ApiHandler.Spotify == null) return;
             try
             {
-                PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
-                if (profile == null) return;
+                GlobalObjects.SpotifyProfile ??= await ApiHandler.Spotify.GetPrivateProfileAsync();
+                if (GlobalObjects.SpotifyProfile == null) return;
 
                 CbSpotifyPlaylist.Items.Clear();
                 CbSpotifySongLimitPlaylist.Items.Clear();
 
-                Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50);
+                Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50);
                 if (playlists == null) return;
 
-                do
+                while (playlists != null)
                 {
-                    foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == profile.Id))
+                    foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == GlobalObjects.SpotifyProfile.Id))
                     {
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                         CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                     }
-                    playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(profile.Id, 50, playlists.Offset + playlists.Limit);
-                } while (playlists.HasNextPage());
+
+                    if (!playlists.HasNextPage()) break;  // Exit if no more pages
+
+                    playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50, playlists.Offset + playlists.Limit);
+                }
 
                 if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
                     CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);

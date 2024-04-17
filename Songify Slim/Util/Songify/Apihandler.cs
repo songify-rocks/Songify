@@ -120,11 +120,10 @@ namespace Songify_Slim.Util.Songify
                                     Brushes.GreenYellow;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
                                     PackIconBootstrapIconsKind.CheckCircleFill;
-                                PrivateProfile x = await Spotify.GetPrivateProfileAsync();
-
-                                Logger.LogStr($"SPOTIFY: Connected Account: {x.DisplayName}");
-                                Logger.LogStr($"SPOTIFY: Account Type: {x.Product}");
-                                if (x.Product == "premium") return;
+                                GlobalObjects.SpotifyProfile = await Spotify.GetPrivateProfileAsync();
+                                Logger.LogStr($"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                                Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
+                                if (GlobalObjects.SpotifyProfile.Product == "premium") return;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                                     Brushes.DarkOrange;
                                 MessageBox.Show(
@@ -250,9 +249,9 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.LogStr("SPOTIFY API: Couldn't fetch Playlist info, missing scope maybe?");
+                // ignored because it's not important if the playlist info can't be fetched
             }
 
             return new TrackInfo

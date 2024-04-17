@@ -44,6 +44,7 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
+using System.Web.UI.WebControls;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -378,7 +379,7 @@ namespace Songify_Slim.Util.Songify
                                     "Your Twitch Account token has expired. Please login again with Twtich",
                                     MessageDialogStyle.AffirmativeAndNegative,
                                     new MetroDialogSettings
-                                        { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
+                                    { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
                                 ApiConnect(TwitchAccount.Main);
                             }
@@ -449,7 +450,7 @@ namespace Songify_Slim.Util.Songify
                                     "Your Twitch Bot Account token has expired. Please login again with Twtich",
                                     MessageDialogStyle.AffirmativeAndNegative,
                                     new MetroDialogSettings
-                                        { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                                    { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
                                 ApiConnect(TwitchAccount.Bot);
                             }
@@ -599,6 +600,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             FullTrack track = ApiHandler.GetTrack(trackId);
+
             if (track == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, "No track was found.");
@@ -683,16 +685,23 @@ namespace Songify_Slim.Util.Songify
         {
             FullPlaylist playlist = await ApiHandler.Spotify.GetPlaylistAsync(spotifySongLimitPlaylist);
             Paging<PlaylistTrack> tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(spotifySongLimitPlaylist);
-            do
+            while (tracks != null && tracks.Items != null)
             {
+                // Check if any track matches the given ID
                 if (tracks.Items.Any(t => t.Track.Id == trackId))
                 {
                     return new Tuple<bool, FullPlaylist>(true, playlist);
                 }
 
-                tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
-                    100, tracks.Offset + tracks.Limit);
-            } while (tracks != null && tracks.HasNextPage());
+                // Check if there are more pages, if not, exit the loop
+                if (!tracks.HasNextPage())
+                {
+                    break;
+                }
+
+                // Fetch the next page of tracks
+                tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+            }
 
             return new Tuple<bool, FullPlaylist>(false, playlist);
         }
@@ -855,25 +864,30 @@ namespace Songify_Slim.Util.Songify
             {
                 Paging<PlaylistTrack> tracks =
                     await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-                do
+
+                while (tracks is { Items: not null })
                 {
                     if (tracks.Items.Any(t => t.Track.Id == trackId))
                     {
                         if (sendResponse)
+                        {
                             SendChatMessage(Settings.Settings.TwChannel,
                                 $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                        }
                         return true;
                     }
 
-                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "",
-                        100, tracks.Offset + tracks.Limit);
-                } while (tracks != null && tracks.HasNextPage());
+                    if (!tracks.HasNextPage())
+                    {
+                        break;  // Exit if no more pages
+                    }
+
+                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                }
 
                 ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{trackId}");
-                if (x != null)
-                    return x.HasError();
-                return true;
+                return x == null || x.HasError();
             }
             catch (Exception)
             {
@@ -1542,7 +1556,7 @@ namespace Songify_Slim.Util.Songify
             // Play / Pause command (!play; !pause)
             else
                 switch (e.ChatMessage.Message)
-                    // ReSharper disable once BadChildStatementIndent
+                // ReSharper disable once BadChildStatementIndent
                 {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                        Settings.Settings.BotCmdPlayPause):
@@ -1637,18 +1651,31 @@ namespace Songify_Slim.Util.Songify
 
         private static string GetCurrentSong()
         {
-            string tmp = "";
-            Application.Current.Dispatcher.Invoke(() =>
+            string currentSong = Settings.Settings.BotRespSong;
+
+            currentSong = currentSong.Format(
+                            artist => GlobalObjects.CurrentSong.Artists,
+                            title => GlobalObjects.CurrentSong.Title,
+                            extra => "",
+                            uri => GlobalObjects.CurrentSong.SongId,
+                            url => GlobalObjects.CurrentSong.Url
+                    ).Format();
+
+            RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == GlobalObjects.CurrentSong.SongId);
+            if (rq != null)
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() == typeof(MainWindow))
-                    {
-                        tmp = (window as MainWindow)?.CurrSongTwitch;
-                    }
-                }
-            });
-            return tmp;
+                currentSong = currentSong.Replace("{{", "");
+                currentSong = currentSong.Replace("}}", "");
+                currentSong = currentSong.Replace("{req}", rq.Requester);
+            }
+            else
+            {
+                int start = currentSong.IndexOf("{{", StringComparison.Ordinal);
+                int end = currentSong.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+                if (start >= 0) currentSong = currentSong.Remove(start, end - start);
+            }
+
+            return currentSong;
         }
 
         private static int GetMaxRequestsForUserlevel(int userLevel)
@@ -1714,13 +1741,13 @@ namespace Songify_Slim.Util.Songify
             {
                 List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
                 temp3.AddRange(from requestObject in temp2
-                    let pos = temp.IndexOf(requestObject) + 1
-                    select new QueueItem
-                    {
-                        Position = pos,
-                        Title = requestObject.Artist + " - " + requestObject.Title,
-                        Requester = requestObject.Requester
-                    });
+                               let pos = temp.IndexOf(requestObject) + 1
+                               select new QueueItem
+                               {
+                                   Position = pos,
+                                   Title = requestObject.Artist + " - " + requestObject.Title,
+                                   Requester = requestObject.Requester
+                               });
                 return temp3;
             }
 
@@ -1944,7 +1971,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     return false;
                 }
-                
+
                 response = Settings.Settings.BotRespUnavailable;
                 response = response.Replace("{user}", e.ChatMessage.DisplayName);
                 response = response.Replace("{artist}", "");
@@ -2149,7 +2176,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -2172,7 +2199,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -2212,7 +2239,7 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwitchUser.Id, reward.Id,
                                 new List<string> { e.RewardRedeemed.Redemption.Id },
                                 new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                                { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                         {
                             msg += $" {Settings.Settings.BotRespRefund}";
@@ -2252,7 +2279,7 @@ namespace Songify_Slim.Util.Songify
                                     Settings.Settings.TwitchUser.Id, reward.Id,
                                     new List<string> { e.RewardRedeemed.Redemption.Id },
                                     new UpdateCustomRewardRedemptionStatusRequest
-                                        { Status = CustomRewardRedemptionStatus.CANCELED },
+                                    { Status = CustomRewardRedemptionStatus.CANCELED },
                                     Settings.Settings.TwitchAccessToken);
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
@@ -2298,7 +2325,7 @@ namespace Songify_Slim.Util.Songify
                                     Settings.Settings.TwitchUser.Id, reward.Id,
                                     new List<string> { e.RewardRedeemed.Redemption.Id },
                                     new UpdateCustomRewardRedemptionStatusRequest
-                                        { Status = CustomRewardRedemptionStatus.CANCELED });
+                                    { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                             {
                                 response += $" {Settings.Settings.BotRespRefund}";

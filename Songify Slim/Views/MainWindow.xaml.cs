@@ -159,14 +159,14 @@ namespace Songify_Slim.Views
         private void AddSourcesToSourceBox()
         {
             string[] sourceBoxItems =
-            {
+            [
                 PlayerType.SpotifyWeb,
                 PlayerType.SpotifyLegacy,
                 PlayerType.Deezer,
                 PlayerType.FooBar2000,
                 PlayerType.Vlc,
                 PlayerType.Youtube
-            };
+            ];
             cbx_Source.ItemsSource = sourceBoxItems;
         }
 

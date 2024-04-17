@@ -37,11 +37,13 @@ namespace Songify_Slim.Util.General
         public static bool TwitchBotTokenExpired = false;
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
+        public static PrivateProfile SpotifyProfile;
+        public static bool ForceUpdate; 
         private static readonly TaskQueue updateQueueWindowTasks = new();
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
-        public static bool ForceUpdate;
+
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
