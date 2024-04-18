@@ -285,6 +285,7 @@ namespace Songify_Slim.Util.Settings
                                 SpotifySongLimitPlaylist = null,
                                 LimitSrToPlaylist = false,
                                 BlockAllExplicitSongs = false,
+                                RequesterPrefix = "Requested by ",
                             };
                         }
                         break;
@@ -706,6 +707,7 @@ namespace Songify_Slim.Util.Settings
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public bool LimitSrToPlaylist { get; set; } = false;
         public bool BlockAllExplicitSongs { get; set; } = false;
+        public string RequesterPrefix { get; set; } = "Requested by ";
     }
 
     public class Config

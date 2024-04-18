@@ -684,4 +684,7 @@
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Resposta quando uma música explícita for solicitada e a opção "bloquear músicas explícitas" estiver ativada</value>
   </data>
+  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+    <value>Prefixo do texto do solicitante</value>
+  </data>
 </root>

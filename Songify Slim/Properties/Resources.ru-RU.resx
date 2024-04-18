@@ -688,4 +688,7 @@
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Ответ, когда запрошена песня откровенного характера и включена функция «Блокировать песни откровенного характера».</value>
   </data>
+  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+    <value>Префикс текста запроса</value>
+  </data>
 </root>

@@ -614,6 +614,18 @@ namespace Songify_Slim.Util.Settings
         public static string BotRespUnavailable { get => GetBot_Resp_SongUnavailable(); set => SetBot_Resp_SongUnavailable(value); }
         public static bool BlockAllExplicitSongs { get=> GetBlockAllExplicitSongs(); set=> SetBlockAllExplicitSongs(value); }
         public static string BotRespTrackExplicit { get=>GetBot_Resp_ExplicitSong(); set=>SetBot_Resp_ExplicitSong(value); }
+        public static string RequesterPrefix { get=> GetRequesterPrefix(); set=>SetRequesterPrefix(value); }
+
+        private static void SetRequesterPrefix(string value)
+        {
+            _currentConfig.AppConfig.RequesterPrefix = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static string GetRequesterPrefix()
+        {
+            return _currentConfig.AppConfig.RequesterPrefix;
+        }
 
         private static string GetBot_Resp_ExplicitSong()
         {
@@ -885,6 +897,7 @@ namespace Songify_Slim.Util.Settings
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
+                RequesterPrefix = GetRequesterPrefix(),
             };
 
             return new Configuration

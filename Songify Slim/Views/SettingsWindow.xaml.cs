@@ -127,6 +127,7 @@ namespace Songify_Slim.Views
             ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.Items.Clear();
             ComboboxfetchPort.Items.Clear();
+            TbRequesterPrefix.Text = Settings.RequesterPrefix;
             ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
             ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
             ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
@@ -1462,6 +1463,11 @@ namespace Songify_Slim.Views
         private void Chbx_BlockAllExplicit_Checked(object sender, RoutedEventArgs e)
         {
             Settings.BlockAllExplicitSongs = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void TbRequesterPrefix_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.RequesterPrefix = TbRequesterPrefix.Text;
         }
     }
 }

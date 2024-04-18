@@ -222,6 +222,7 @@
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
+                            <RowDefinition Height="38" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="72*" />
@@ -360,7 +361,7 @@
                             Toggled="ChbxUpload_Checked" />
                         <controls:ToggleSwitch
                             x:Name="ChbxCover"
-                            Grid.Row="7"
+                            Grid.Row="8"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Height="32"
@@ -389,6 +390,7 @@
                         <controls:ToggleSwitch
                             x:Name="ChbxSplit"
                             Grid.Row="6"
+                            Grid.ColumnSpan="2"
                             Grid.Column="0"
                             Height="32"
                             HorizontalAlignment="Stretch"
@@ -398,6 +400,8 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxSplit_Checked" />
+                        <Label Grid.Row="7" Grid.Column="0" Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}" VerticalAlignment="Center"/>
+                        <TextBox  Grid.Row="7" Grid.Column="1" x:Name="TbRequesterPrefix" Height="26" VerticalAlignment="Center" TextChanged="TbRequesterPrefix_TextChanged"/>
                         <CheckBox
                             x:Name="ChbxSpaces"
                             Grid.Row="3"

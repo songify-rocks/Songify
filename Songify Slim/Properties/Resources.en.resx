@@ -688,4 +688,7 @@
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Response when an explicit song has been requested and 'block explicit songs' is turned on</value>
   </data>
+  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+    <value>Requester text prefix</value>
+  </data>
 </root>

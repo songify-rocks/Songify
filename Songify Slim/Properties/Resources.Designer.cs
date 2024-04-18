@@ -1529,6 +1529,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Requester text prefix.
+        /// </summary>
+        public static string sw_tcOutput_RequesterPrefix {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_RequesterPrefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Split Artist, Title and Requester.
         /// </summary>
         public static string sw_tcOutput_SplitArtist {

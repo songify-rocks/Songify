@@ -684,4 +684,7 @@
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Reakcja, gdy zażądano utworu wulgarnego i włączona jest opcja „blokuj utwory wulgarne”</value>
   </data>
+  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+    <value>Przedrostek tekstu osoby żądającej</value>
+  </data>
 </root>
