@@ -194,6 +194,8 @@ namespace Songify_Slim.Util.Settings
                                 OnlyWorkWhenLive = false,
                                 BotRespPlaylist = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})",
                                 BotRespRemove = "{user} your previous request ({song}) will be skipped.",
+                                BotRespUnavailable = "The Song {song} is not available in the streamers country.",
+                                BotRespExplicitSong = "This Song containts explicit content and is not allowed.",
                             };
                         }
                         break;
@@ -280,6 +282,9 @@ namespace Songify_Slim.Util.Settings
                                 UserLevelsCommand = null,
                                 AddSrToPlaylist = false,
                                 QueueWindowColumns = new List<int>(),
+                                SpotifySongLimitPlaylist = null,
+                                LimitSrToPlaylist = false,
+                                BlockAllExplicitSongs = false,
                             };
                         }
                         break;
@@ -627,6 +632,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
         public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
+        public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
     }
 
     public class AppConfig
@@ -699,6 +705,7 @@ namespace Songify_Slim.Util.Settings
         public List<int> QueueWindowColumns { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public bool LimitSrToPlaylist { get; set; } = false;
+        public bool BlockAllExplicitSongs { get; set; } = false;
     }
 
     public class Config

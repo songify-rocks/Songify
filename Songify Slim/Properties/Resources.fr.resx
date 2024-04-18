@@ -682,4 +682,10 @@
   <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
     <value>Autoriser uniquement les chansons de cette playlist (SR)</value>
   </data>
+  <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
+    <value>Bloquer toutes les chansons explicites</value>
+  </data>
+  <data name="brw_ExplicitSongs" xml:space="preserve">
+    <value>Réponse lorsqu'une chanson explicite a été demandée et que « bloquer les chansons explicites » est activé</value>
+  </data>
 </root>

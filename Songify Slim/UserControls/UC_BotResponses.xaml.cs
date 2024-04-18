@@ -202,6 +202,8 @@ namespace Songify_Slim.UserControls
             TbSongLike.Text = Settings.BotRespSongLike;
             TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
             TbRemove.Text = Settings.BotRespRemove;
+            TbExplicit.Text = Settings.BotRespTrackExplicit;
+
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -218,6 +220,12 @@ namespace Songify_Slim.UserControls
         private void TbRemove_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespRemove = TbRemove.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void TbExplicit_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespTrackExplicit = TbExplicit.Text;
             SetPreview(sender as TextBox);
         }
     }

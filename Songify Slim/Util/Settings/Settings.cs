@@ -612,6 +612,30 @@ namespace Songify_Slim.Util.Settings
         }
         public static string BotRespRemove { get => GetBot_Resp_Remove(); set => SetBot_Resp_Remove(value); }
         public static string BotRespUnavailable { get => GetBot_Resp_SongUnavailable(); set => SetBot_Resp_SongUnavailable(value); }
+        public static bool BlockAllExplicitSongs { get=> GetBlockAllExplicitSongs(); set=> SetBlockAllExplicitSongs(value); }
+        public static string BotRespTrackExplicit { get=>GetBot_Resp_ExplicitSong(); set=>SetBot_Resp_ExplicitSong(value); }
+
+        private static string GetBot_Resp_ExplicitSong()
+        {
+            return _currentConfig.BotConfig.BotRespExplicitSong;
+        }
+
+        private static void SetBot_Resp_ExplicitSong(string value)
+        {
+            _currentConfig.BotConfig.BotRespExplicitSong = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static void SetBlockAllExplicitSongs(bool value)
+        {
+            _currentConfig.AppConfig.BlockAllExplicitSongs = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static bool GetBlockAllExplicitSongs()
+        {
+            return _currentConfig.AppConfig.BlockAllExplicitSongs;
+        }
 
         private static void SetBot_Resp_SongUnavailable(string value)
         {
@@ -787,6 +811,8 @@ namespace Songify_Slim.Util.Settings
                 BotCmdPlayPause = GetBotCmdPlayPause(),
                 BotRespPlaylist = GetBot_Resp_Playlist(),
                 BotRespRemove = GetBot_Resp_Remove(),
+                BotRespUnavailable = GetBot_Resp_SongUnavailable(),
+                BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
             };
 
             AppConfig appConfig = new()
@@ -858,6 +884,7 @@ namespace Songify_Slim.Util.Settings
                 UserLevelsReward = GetUserLevelsReward(),
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
+                BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
             };
 
             return new Configuration

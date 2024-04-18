@@ -122,6 +122,7 @@ namespace Songify_Slim.Views
             ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
             TglInformChat.IsOn = Settings.ChatLiveStatus;
             TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
+            Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
             ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
             ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.Items.Clear();
@@ -1456,6 +1457,11 @@ namespace Songify_Slim.Views
             Settings.TwRewardId.Remove(((UcRewardItem)((ListBoxItem)LbRewards.SelectedItem).Content).Reward.Id);
             Settings.TwRewardId = Settings.TwRewardId;
             LbRewards.Items.Remove(LbRewards.SelectedItem);
+        }
+
+        private void Chbx_BlockAllExplicit_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.BlockAllExplicitSongs = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

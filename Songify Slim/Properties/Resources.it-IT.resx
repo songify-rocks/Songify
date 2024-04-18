@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,575 +117,571 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="brw_SongTooLong" xml:space="preserve">
+    <value>Canzone troppo lunga</value>
+  </data>
   <data name="brw_ArtistBlocked" xml:space="preserve">
-    <value>Künstler Blockiert</value>
+    <value>L'artista è bloccato</value>
   </data>
   <data name="brw_FetchError" xml:space="preserve">
-    <value>Fehler beim Holen der Songinformation</value>
+    <value>Errore durante il recupero dei dati del brano</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
-    <value>Konfiguriere die Antworten des Chatbots:</value>
+    <value>Configura le risposte del bot per i seguenti scenari:</value>
   </data>
   <data name="brw_MaxSongs" xml:space="preserve">
-    <value>Maximale Anzahl an Songs erreicht</value>
+    <value>Numero massimo di brani in coda</value>
   </data>
   <data name="brw_NoSong" xml:space="preserve">
-    <value>Kein Song wurde gewünscht (leerer Request)</value>
+    <value>Non è stata specificata alcuna canzone (richiesta vuota)</value>
   </data>
   <data name="brw_SongInQueue" xml:space="preserve">
-    <value>Song bereits in der Warteschlange</value>
-  </data>
-  <data name="brw_SongTooLong" xml:space="preserve">
-    <value>Lied ist zu lang</value>
+    <value>Canzone già in coda</value>
   </data>
   <data name="brw_Success" xml:space="preserve">
-    <value>Erfolgreich Song hinzugefügt</value>
+    <value>Canzone aggiunta con successo</value>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">
-    <value>Hinzufügen</value>
+    <value>Aggiungere</value>
   </data>
   <data name="bw_btnClear" xml:space="preserve">
-    <value>Leeren</value>
+    <value>Chiaro</value>
   </data>
   <data name="bw_cbArtist" xml:space="preserve">
-    <value>Künstler</value>
+    <value>Artista</value>
   </data>
   <data name="bw_cbUser" xml:space="preserve">
-    <value>Benutzer</value>
+    <value>Utente</value>
   </data>
   <data name="bw_lblBlockedArtists" xml:space="preserve">
-    <value>Blockierte Künstler</value>
+    <value>Artisti bloccati</value>
   </data>
   <data name="bw_lblBlockedUsers" xml:space="preserve">
-    <value>Blockierte Benutzer</value>
+    <value>Utenti bloccati</value>
   </data>
   <data name="bw_menu_Delete" xml:space="preserve">
-    <value>Löschen</value>
+    <value>Eliminare</value>
   </data>
   <data name="lang_deDE" xml:space="preserve">
-    <value>Deutsch</value>
+    <value>Tedesco</value>
   </data>
   <data name="lang_en" xml:space="preserve">
-    <value>Englisch</value>
+    <value>Inglese</value>
   </data>
   <data name="mw_menu_Blacklist" xml:space="preserve">
-    <value>Blockliste</value>
+    <value>Lista di Bloccati</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Verbinden</value>
+    <value>Collegare</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
-    <value>Trennen</value>
+    <value>Disconnetti</value>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
-    <value>Beenden</value>
+    <value>Uscita</value>
   </data>
   <data name="mw_menu_File" xml:space="preserve">
-    <value>Datei</value>
+    <value>File</value>
   </data>
   <data name="mw_menu_Help" xml:space="preserve">
-    <value>Hilfe</value>
+    <value>Aiuto</value>
   </data>
   <data name="mw_menu_Help_About" xml:space="preserve">
-    <value>Über</value>
+    <value>Di</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
-    <value>Historie</value>
+    <value>Storia</value>
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
-    <value>Historie Browser</value>
+    <value>Navigatore della cronologia</value>
   </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
-    <value>Historiefenster</value>
+    <value>Finestra della cronologia</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
-    <value>Warteschlange</value>
+    <value>Coda</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>Warteschlange - Browser</value>
+    <value>Browser della coda</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
-    <value>Warteschlange leeren</value>
+    <value>Cancella coda</value>
   </data>
   <data name="mw_menu_Queue_Window" xml:space="preserve">
-    <value>Warteschlange - Fenster</value>
+    <value>Finestra della coda</value>
   </data>
   <data name="mw_menu_Settings" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Impostazioni</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
-    <value>Unterstütze Uns</value>
+    <value>Supportaci</value>
   </data>
   <data name="mw_menu_Widget" xml:space="preserve">
-    <value>Widget</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Aggeggio</value>
   </data>
   <data name="sw_Appearance_Color" xml:space="preserve">
-    <value>Farbe:</value>
+    <value>Colore:</value>
   </data>
   <data name="sw_Appearance_ThemeDark" xml:space="preserve">
-    <value>Dunkles Thema</value>
+    <value>Tema scuro</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
-    <value>Helles Thema</value>
+    <value>Tema leggero</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
-    <value>Exportieren</value>
+    <value>ESPORTA CONFIG</value>
   </data>
   <data name="sw_Config_Import" xml:space="preserve">
-    <value>Importieren</value>
+    <value>IMPORTA CONFIG</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>autom. verbinden</value>
+    <value>connessione automatica</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
-    <value>Verknüpfen</value>
+    <value>COLLEGAMENTO</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Konfiguriere Bot-Antworten &amp; Befehle</value>
+    <value>Configura risposte e comandi del bot</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
-    <value>NB Benutzernamen (Twitch Benutzername)</value>
+    <value>NB Nome utente (Nome utente Twitch)</value>
   </data>
   <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
-    <value>Verknüpftes Konto:</value>
+    <value>Conto collegato:</value>
   </data>
   <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
-    <value>Channel</value>
+    <value>Canale a cui iscriversi</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Kanalpunkte Belohnung ID</value>
+    <value>ID premio punti canale</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>Warteschlange beim Start leeren</value>
+    <value>Cancella coda all'avvio</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Befehl Abklingzeit (Sekunden)</value>
+    <value>Recupero comando (secondi)</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
-    <value>Maximale Songlänge (in min)</value>
+    <value>Durata massima del brano (in minuti)</value>
   </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
-    <value>Max Songwünsche pro Benutzer</value>
+    <value>Richieste massime per utente</value>
   </data>
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
-    <value>Aktiviere Nachrichten Logging</value>
+    <value>Abilita la registrazione dei messaggi</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Aktiviere SR (Befehl)</value>
+    <value>Abilita SR (comando)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
-    <value>Aktiviere SR (Kanalpunkte)</value>
+    <value>Abilita SR (premi canale)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
-    <value>Leerzeichen anfügen</value>
+    <value>aggiungere spazi</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
-    <value>Ausgabeordner</value>
+    <value>Cartella di destinazione</value>
   </data>
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
-    <value>Albumcover Download (nur über API)</value>
+    <value>Scarica la copertina dell'album (funziona solo con API)</value>
   </data>
   <data name="sw_tcOutput_Format" xml:space="preserve">
-    <value>Ausgabeformat (Textdatei &amp; Widget)</value>
+    <value>Formato di output (file di testo e widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
-    <value>Pause Text</value>
+    <value>Metti in pausa il testo</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Eigener Pause-Text (leer für leere Textdatei)</value>
-  </data>
-  <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
-    <value>Songinfo hochladen</value>
-  </data>
-  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
-    <value>Speichern</value>
-  </data>
-  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Songifys Spotify AppID nutzen</value>
-  </data>
-  <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>Mit Windows starten</value>
-  </data>
-  <data name="sw_tcSystem_Behavior" xml:space="preserve">
-    <value>Verhalten</value>
-  </data>
-  <data name="sw_tcSystem_CheckButton" xml:space="preserve">
-    <value>Auf Updates prüfen</value>
-  </data>
-  <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
-    <value>Chrome Abholrate (Sekunden)</value>
-  </data>
-  <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>Ins Tray minimieren</value>
-  </data>
-  <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>Anonyme Daten senden</value>
-  </data>
-  <data name="sw_tcSystem_Telemetry" xml:space="preserve">
-    <value>Telemetrie</value>
-  </data>
-  <data name="sw_tc_Appearance" xml:space="preserve">
-    <value>Aussehen</value>
-  </data>
-  <data name="sw_tc_Config" xml:space="preserve">
-    <value>Konfiguration</value>
-  </data>
-  <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Twitch</value>
-  </data>
-  <data name="sw_tc_Output" xml:space="preserve">
-    <value>Ausgabe</value>
-  </data>
-  <data name="sw_tc_System" xml:space="preserve">
-    <value>Allgemein</value>
-  </data>
-  <data name="lang_ru" xml:space="preserve">
-    <value>Russisch</value>
-  </data>
-  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Eigene Spotify AppID nutzen</value>
-  </data>
-  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Bot Konfiguration</value>
-  </data>
-  <data name="lang_es" xml:space="preserve">
-    <value>Spanisch</value>
-  </data>
-  <data name="lang_fr" xml:space="preserve">
-    <value>Französisch</value>
-  </data>
-  <data name="sw_tcSystem_translated" xml:space="preserve">
-    <value>(übersetzt mit DeepL)</value>
-  </data>
-  <data name="brw_cmd_next" xml:space="preserve">
-    <value>Zeigt das nächste Lied in der Warteschlange an</value>
-  </data>
-  <data name="brw_cmd_off" xml:space="preserve">
-    <value>Aus</value>
-  </data>
-  <data name="brw_cmd_on" xml:space="preserve">
-    <value>Ein</value>
-  </data>
-  <data name="brw_cmd_pos" xml:space="preserve">
-    <value>Zeigt die Position der Songanfragen in der Warteschlange für den aktuellen Benutzer an</value>
-  </data>
-  <data name="brw_cmd_song" xml:space="preserve">
-    <value>Zeigt den aktuellen Song an</value>
-  </data>
-  <data name="brw_cmd_description" xml:space="preserve">
-    <value>Beschreibung</value>
-  </data>
-  <data name="brw_cmd_enabled" xml:space="preserve">
-    <value>Aktiviert</value>
-  </data>
-  <data name="brw_cmd_trigger" xml:space="preserve">
-    <value>Auslöser</value>
-  </data>
-  <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Ausgabeformat (Twitch Chat)</value>
-  </data>
-  <data name="crw_CreateReward" xml:space="preserve">
-    <value>Kanalpunkte Belohnung Erstellen</value>
-  </data>
-  <data name="crw_CreateRewardError" xml:space="preserve">
-    <value>Fehler beim Erstellen der Belohnung. Bitte stelle sicher, dass der Name für die Belohung nicht schon genutzt wird.</value>
-  </data>
-  <data name="crw_RewardTitle" xml:space="preserve">
-    <value>Titel</value>
-  </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Prompt</value>
-  </data>
-  <data name="crw_RewardCost" xml:space="preserve">
-    <value>Kosten</value>
-  </data>
-  <data name="crw_CreateRewardSuccess" xml:space="preserve">
-    <value>Die Belohnung "{name}" wurde erstellt.</value>
-  </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
-    <value>Update Informationen</value>
-  </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Log-Ordner</value>
-  </data>
-  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
-    <value>Twitch Login</value>
-  </data>
-  <data name="mw_menu_Console" xml:space="preserve">
-    <value>Konsole</value>
-  </data>
-  <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Überspringt den aktuellen Song (Broadcaster / Mod / Requester)</value>
-  </data>
-  <data name="brw_cmd_skipvote" xml:space="preserve">
-    <value>Startet eine Abstimmung, um den aktuellen Song zu überspringen</value>
-  </data>
-  <data name="brw_cmd_skipvotecount" xml:space="preserve">
-    <value>Anzahl der benötigten Stimmen</value>
-  </data>
-  <data name="sw_WebServer_Port" xml:space="preserve">
-    <value>Webserver-Port</value>
-  </data>
-  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
-    <value>Webserver starten</value>
-  </data>
-  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
-    <value>Webseite öffnen</value>
-  </data>
-  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
-    <value>Song wurde zur Warteschlange hinzugefügt</value>
-  </data>
-  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
-    <value>Es wurde kein Lied gefunden</value>
-  </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>immer (SR frei machen)</value>
-  </data>
-  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>Warteschlangenfenster beim Start öffnen</value>
-  </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Lied automatisch im Chat ankündigen</value>
-  </data>
-  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
-    <value>Funktion auf Live-status limitieren. (Funktioniert mit Login über Twitch)</value>
-  </data>
-  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
-    <value>Twitch Belohnungen verwalten</value>
-  </data>
-  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
-    <value>Max SR / Benutzer (basierend vom Level)</value>
-  </data>
-  <data name="Sw_Integration_RefundOn" xml:space="preserve">
-    <value>Rückerstattung wenn</value>
-  </data>
-  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
-    <value>Benutzerlevel ist zu niedrig</value>
-  </data>
-  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
-    <value>Der Benutzer ist für SR gesperrt</value>
-  </data>
-  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
-    <value>Spotify ist nicht verbunden</value>
-  </data>
-  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
-    <value>Das Lied ist in der Region nicht verfügbar</value>
-  </data>
-  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
-    <value>Song enthält blockierte Interpreten</value>
-  </data>
-  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
-    <value>Der Song ist zu lang</value>
-  </data>
-  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
-    <value>Das Lied befindet sich bereits in der Warteschlange</value>
-  </data>
-  <data name="Sw_System_Privacy" xml:space="preserve">
-    <value>Kontonamen und Profilbilder ausblenden</value>
-  </data>
-  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
-    <value>Konten</value>
-  </data>
-  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
-    <value>Belohnung</value>
-  </data>
-  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
-    <value>Songwünsche</value>
-  </data>
-  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
-    <value>Mit Twitch eingeloggt</value>
-  </data>
-  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>unbegrenzte Songwünsche</value>
-  </data>
-  <data name="mw_menu_SongRequests" xml:space="preserve">
-    <value>Songwünsche</value>
-  </data>
-  <data name="mw_menu_View" xml:space="preserve">
-    <value>Anzeige</value>
-  </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Kauf uns doch 'n Kaffee</value>
-  </data>
-  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
-    <value>Künstler - Titel</value>
-  </data>
-  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
-    <value>Live-Status prüfen</value>
-  </data>
-  <data name="WinTitle_Queue" xml:space="preserve">
-    <value>Song-Warteschlange</value>
-  </data>
-  <data name="s_Length" xml:space="preserve">
-    <value>Länge</value>
-  </data>
-  <data name="s_Requester" xml:space="preserve">
-    <value>von</value>
-  </data>
-  <data name="WinTitle_Blocklist" xml:space="preserve">
-    <value>Blockliste</value>
-  </data>
-  <data name="WinTitle_History" xml:space="preserve">
-    <value>Song Historie</value>
-  </data>
-  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
-    <value>Privatsphäre</value>
-  </data>
-  <data name="sw_tc_WebServer" xml:space="preserve">
-    <value>Webserver</value>
-  </data>
-  <data name="sw_WebServer_AutoStart" xml:space="preserve">
-    <value>Webserver automatisch starten</value>
-  </data>
-  <data name="sw_Config_ResetConfig" xml:space="preserve">
-    <value>Konfig zurücksetzen</value>
-  </data>
-  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
-    <value>Webserver stoppen</value>
-  </data>
-  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>Beta-Updates erhalten</value>
-  </data>
-  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
-    <value>Bitte verknüpfen Sie Ihr Spotify-Konto. Einstellungen -&gt; Spotify</value>
-  </data>
-  <data name="s_Save" xml:space="preserve">
-    <value>Speichern</value>
-  </data>
-  <data name="s_Upload" xml:space="preserve">
-    <value>Hochladen</value>
-  </data>
-  <data name="s_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="s_Time" xml:space="preserve">
-    <value>Zeit</value>
-  </data>
-  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
-    <value>Neue Belohnung erstellen</value>
-  </data>
-  <data name="brw_ModSkip" xml:space="preserve">
-    <value>Streamer / Moderator / Requester hat das Lied übersprungen</value>
-  </data>
-  <data name="brw_Pos" xml:space="preserve">
-    <value>Antwort auf den Befehl !pos</value>
-  </data>
-  <data name="brw_Next" xml:space="preserve">
-    <value>Antwort auf den Befehl !next</value>
-  </data>
-  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
-    <value>Bot-Antworten und -Befehle</value>
-  </data>
-  <data name="brw_tc_Responses" xml:space="preserve">
-    <value>Antworten</value>
-  </data>
-  <data name="brw_tc_Commands" xml:space="preserve">
-    <value>Befehle</value>
-  </data>
-  <data name="brw_VoteSkip" xml:space="preserve">
-    <value>Der Benutzer hat dafür gestimmt, den aktuellen Song zu überspringen</value>
-  </data>
-  <data name="sw_Spotify_RewardSR" xml:space="preserve">
-    <value>Belohnung für Songanfragen</value>
-  </data>
-  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
-    <value>Belohnung für Song-Skip</value>
-  </data>
-  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
-    <value>!ssr wurde in die Bot-Konfiguration verschoben</value>
-  </data>
-  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
-    <value>Für SR erforderliches Mindestbenutzerlevel</value>
-  </data>
-  <data name="sw_Integration_Twitch" xml:space="preserve">
-    <value>Twitch-Konto</value>
-  </data>
-  <data name="sw_Twitch_LogOut" xml:space="preserve">
-    <value>Ausloggen</value>
-  </data>
-  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
-    <value>Um Punkte erstatten zu können, muss die Belohnung über Songify erstellt werden. Wähle eine Prämie aus die von Songify verwaltet werden kann oder erstelle eine neue.</value>
-  </data>
-  <data name="msgbx_BotAccount" xml:space="preserve">
-    <value>Bot-Konto</value>
-  </data>
-  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
-    <value>Erfolgreich mit {account} verknüpft. Möchten Sie dieses Konto auch als Chatbot verwenden?</value>
-  </data>
-  <data name="msgbx_Yes" xml:space="preserve">
-    <value>Ja</value>
-  </data>
-  <data name="msgbx_No" xml:space="preserve">
-    <value>Nein</value>
-  </data>
-  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
-    <value>Sende Offline-Benachrichtigung an den Chat</value>
-  </data>
-  <data name="brw_Song" xml:space="preserve">
-    <value>Antwort auf den Befehl !song</value>
-  </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Text, der der Antwort hinzugefügt wird, wenn Punkte zurückerstattet werden</value>
-  </data>
-  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
-    <value>Sprache</value>
-  </data>
-  <data name="brw_cmd_remove" xml:space="preserve">
-    <value>Entfernt den letzten Musikwunsch des Benutzers.</value>
-  </data>
-  <data name="brw_SongLike" xml:space="preserve">
-    <value>Antwort auf den Befehl !songlike</value>
-  </data>
-  <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Fügt den aktuellen Titel der in der Spotify-Konfiguration ausgewählten Playlist hinzu.</value>
-  </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Setzt die aktuelle Wiedergabe fort oder hält sie an.</value>
-  </data>
-  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
-    <value>Userlevel für SR-Befehl</value>
-  </data>
-  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
-    <value>Userlevel für SR-Kanalbelohnung</value>
-  </data>
-  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
-    <value>Liked-Songs Playlist</value>
-  </data>
-  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
-    <value>Die Playlist, der Songs hinzugefügt werden, wenn der Befehl !songlike verwendet wird, oder mit der Option, Songs automatisch zur Wiedergabeliste hinzuzufügen.</value>
-  </data>
-  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
-    <value>Füge alle Musikwünsche zur Playlist hinzu</value>
-  </data>
-  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
-    <value>Antwort, wenn das Lied nicht in der Wiedergabeliste der zulässigen Lieder gefunden wurde</value>
-  </data>
-  <data name="brw_Remove" xml:space="preserve">
-    <value>Antwort für den Befehl !remove</value>
+    <value>Testo di pausa personalizzato (vuoto per file di testo vuoto)</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Künstler, Titel und Anforderer aufteilen</value>
+    <value>Dividere artista, titolo e richiedente</value>
   </data>
-  <data name="lang_pt" xml:space="preserve">
-    <value>Portugiesisch</value>
+  <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
+    <value>Carica informazioni sul brano</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Utilizza il tuo AppID</value>
+  </data>
+  <data name="sw_tcSystem_Autostart" xml:space="preserve">
+    <value>avvio automatico con windows</value>
+  </data>
+  <data name="sw_tcSystem_Behavior" xml:space="preserve">
+    <value>Comportamento</value>
+  </data>
+  <data name="sw_tcSystem_CheckButton" xml:space="preserve">
+    <value>CONTROLLA GLI AGGIORNAMENTI</value>
+  </data>
+  <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
+    <value>Frequenza di recupero di Chrome (secondi)</value>
+  </data>
+  <data name="sw_tcSystem_Minimize" xml:space="preserve">
+    <value>ridurre a icona nella barra delle applicazioni</value>
+  </data>
+  <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
+    <value>inviare dati anonimi</value>
+  </data>
+  <data name="sw_tcSystem_Telemetry" xml:space="preserve">
+    <value>Telemetria</value>
+  </data>
+  <data name="sw_tc_Appearance" xml:space="preserve">
+    <value>Aspetto</value>
+  </data>
+  <data name="sw_tc_Config" xml:space="preserve">
+    <value>Configurazione</value>
+  </data>
+  <data name="sw_tc_Integration" xml:space="preserve">
+    <value>Contrazione</value>
+  </data>
+  <data name="sw_tc_Output" xml:space="preserve">
+    <value>Produzione</value>
+  </data>
+  <data name="sw_tc_System" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="lang_ru" xml:space="preserve">
+    <value>russo</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Utilizza l'AppID di Songify</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Configurazione bot</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>spagnolo</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>francese</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(tradotto utilizzando DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Visualizza il brano successivo in coda</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Spento</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>SU</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Visualizza la posizione nella coda delle richieste di brani degli utenti</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Visualizza il brano corrente</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Descrizione</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Abilitato</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Grilletto</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Formato di output (chat di Twitch)</value>
+  </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Crea ricompensa</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Titolo</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Richiesta</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Costo</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Si è verificato un problema durante la creazione della ricompensa. Assicurati di non avere già un premio con lo stesso nome.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>Il premio "{name}" è stato creato.</value>
+  </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Note sulla patch</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Cartella di registro</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Accedi con Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Consolle</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Salta la canzone corrente (Broadcaster/Mod/Requester)</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Avvia una votazione per saltare il brano corrente</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Numero di voti necessari</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Porta del server Web</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Avvia il server Web</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Apri il sito web</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Nascondi i nomi degli account e le immagini del profilo</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>finestra della coda aperta all'avvio</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Annuncia automaticamente la canzone per chattare</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Limita l'attività di Twitch in modo che funzioni solo quando lo streaming è in diretta (è necessario l'accesso a Twitch)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Gestisci i premi</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>SR massimo/utente (in base al livello utente)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Rimborso quando</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>Il livello utente è troppo basso</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>L'utente è bloccato da SR</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify non è connesso</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>La canzone non è disponibile nella regione</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>Il brano contiene artisti bloccati</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>La durata del brano è troppo lunga</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>La canzone è già in coda</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>Non è stata trovata alcuna canzone</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>La canzone è stata aggiunta alla coda</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>sempre (rendere SR gratuito)</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>Conti</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Premi</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Richieste di brani</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Accedi con Twitch</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>richieste di brani illimitate</value>
+  </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Richieste di brani</value>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>Visualizzazione</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Compraci un caffè</value>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Artista - Titolo</value>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Controlla lo stato online</value>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>Coda di brani</value>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Lunghezza</value>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Richiedente</value>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Lista nera</value>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>Storia della canzone</value>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Server web</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>Avvia automaticamente il server web</value>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Ripristina config</value>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Arrestare il server Web</value>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>Ottieni aggiornamenti beta</value>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Collega il tuo account Spotify. Impostazioni -&gt; Spotify</value>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Caricamento</value>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Crea nuova ricompensa</value>
+  </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>L'emittente/moderatore/richiedente ha saltato la canzone</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Risposta per il comando !pos</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Risposta per il comando successivo</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Risposte e comandi del bot</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Risposte</value>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Comandi</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>L'utente ha votato per saltare il brano corrente</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Ricompensa per le richieste di brani</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Premio per il salto del brano</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>Il comando !ssr è stato spostato nella configurazione del bot</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Livello utente minimo richiesto per SR</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Conto Twitch</value>
+  </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Disconnettersi</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Per poter rimborsare i punti, il premio deve essere creato tramite Songify. Seleziona un premio gestibile o creane uno nuovo.</value>
+  </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Conto bot</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Collegamento a {account} riuscito. Desideri utilizzare questo account anche come bot di chat?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>SÌ</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>NO</value>
+  </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Invia una notifica offline per chattare</value>
+  </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Risposta al comando !song</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Testo che viene aggiunto alla risposta se i punti vengono rimborsati</value>
+  </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Lingua</value>
+  </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Rimuove l'ultima richiesta di brano dell'utente.</value>
+  </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Risposta al comando !Songlike</value>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Aggiunge il brano corrente alla playlist selezionata nella configurazione di Spotify.</value>
+  </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Riprende o mette in pausa la riproduzione corrente.</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+    <value>Livelli utente consentiti per il comando SR</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+    <value>Livelli utente consentiti per la ricompensa SR</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Playlist dei brani preferiti</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>La playlist in cui i brani vengono aggiunti quando si utilizza il comando !songlike o con l'opzione per aggiungere automaticamente brani alla playlist.</value>
+  </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Aggiungi tutte le richieste di brani alla playlist</value>
+  </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Risposta quando il brano non è stato trovato nella playlist dei brani consentiti</value>
+  </data>
+  <data name="brw_Remove" xml:space="preserve">
+    <value>Risposta per il comando !remove</value>
   </data>
   <data name="lang_pl" xml:space="preserve">
-    <value>Polnisch</value>
+    <value>Polacco</value>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>portoghese</value>
   </data>
   <data name="sw_Integration_ShowCreds" xml:space="preserve">
-    <value>Anmeldeinformationen anzeigen</value>
+    <value>Mostra credenziali</value>
   </data>
   <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
-    <value>Nur Lieder aus dieser Playlist zulassen (SR)</value>
+    <value>Consenti solo brani da questa playlist (SR)</value>
   </data>
   <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
-    <value>Blockiere alle expliziten Lieder</value>
+    <value>Blocca tutti i brani espliciti</value>
   </data>
   <data name="brw_ExplicitSongs" xml:space="preserve">
-    <value>Antwort wenn ein expliziter Song angefordert wurde und „Explizite Songs blockieren“ aktiviert ist</value>
+    <value>Risposta quando è stata richiesta una canzone esplicita e l'opzione "Blocca brani espliciti" è attivata</value>
   </data>
 </root>

@@ -678,4 +678,10 @@
   <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
     <value>Zezwalaj tylko na utwory z tej listy odtwarzania (SR)</value>
   </data>
+  <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
+    <value>Blokuj wszystkie wulgarne utwory</value>
+  </data>
+  <data name="brw_ExplicitSongs" xml:space="preserve">
+    <value>Reakcja, gdy zażądano utworu wulgarnego i włączona jest opcja „blokuj utwory wulgarne”</value>
+  </data>
 </root>

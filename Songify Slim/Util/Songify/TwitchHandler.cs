@@ -45,6 +45,7 @@ using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
+using TwitchLib.PubSub.Models.Responses;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -607,7 +608,13 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (IsTrackUnavailable(track, e, out string response))
+            if (IsTrackExplicit(track, e, out string response))
+            {
+                SendChatMessage(e.ChatMessage.Channel, response);
+                return;
+            }
+
+            if (IsTrackUnavailable(track, e, out response))
             {
                 SendChatMessage(e.ChatMessage.Channel, response);
                 return;
@@ -659,6 +666,34 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
+        }
+
+        private static bool IsTrackExplicit(FullTrack track, OnMessageReceivedArgs e, out string response)
+        {
+           response = string.Empty;
+            try
+            {
+                if (!track.Explicit)
+                {
+                    return false;
+                }
+
+                response = Settings.Settings.BotRespTrackExplicit;
+                response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = CleanFormatString(response);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogStr("ERROR: Issue checking Track Unavailable");
+                Logger.LogExc(ex);
+            }
+
+            return false;
         }
 
         private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)

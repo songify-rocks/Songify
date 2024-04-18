@@ -196,6 +196,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response when an explicit song has been requested and &apos;block explicit songs&apos; is turned on.
+        /// </summary>
+        public static string brw_ExplicitSongs {
+            get {
+                return ResourceManager.GetString("brw_ExplicitSongs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error fetching songdata.
         /// </summary>
         public static string brw_FetchError {
@@ -1237,6 +1246,15 @@ namespace Songify_Slim.Properties {
         public static string sw_Spotify_RewardSR {
             get {
                 return ResourceManager.GetString("sw_Spotify_RewardSR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block all explicit songs.
+        /// </summary>
+        public static string sw_SpotifySR_BlockAllExplicit {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_BlockAllExplicit", resourceCulture);
             }
         }
         
