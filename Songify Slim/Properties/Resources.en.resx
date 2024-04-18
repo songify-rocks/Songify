@@ -299,7 +299,7 @@
     <value>Custom pause text (blank for emtpy text file)</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Split Artist and Title</value>
+    <value>Split Artist, Title and Requester</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Upload song info</value>

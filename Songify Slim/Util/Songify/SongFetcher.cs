@@ -28,22 +28,27 @@ namespace Songify_Slim.Util.Songify
     public class SongFetcher
     {
         private static int _id;
-        private readonly List<string> _browsers = new() { "chrome", "msedge", "opera" };
-        private readonly List<string> _audioFileyTypes = new() { ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf", ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg", ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma", ".wv", ".webm", ".8svx", ".cda" };
+        private readonly List<string> _browsers = ["chrome", "msedge", "opera"];
+        private static readonly List<string> AudioFileyTypes =
+        [
+            ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf",
+            ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg",
+            ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma",
+            ".wv", ".webm", ".8svx", ".cda"
+        ];
         private AutomationElement _parent;
-        private static string[] _songinfo;
         private static SongInfo _previousSonginfo;
-        private static TrackInfo _songInfo;
         private static bool _trackChanged;
-        private bool updating = false;
+        private bool _updating = false;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
         ///     returns null if unsuccessful and custom pause text is not set.
         /// </summary>
         /// <returns>Returns String-Array with Artist, Title, Extra</returns>
-        internal Task<SongInfo> FetchDesktopPlayer(string player)
+        public Task FetchDesktopPlayer(string player)
         {
+            TrackInfo trackinfo = null;
             Process[] processes = Process.GetProcessesByName(player);
             foreach (Process process in processes)
                 if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
@@ -60,12 +65,12 @@ namespace Songify_Slim.Util.Songify
                                 wintitle != "Drag")
                             {
                                 // Splitting the win title which is always Artist - Title
-                                _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
+                                string[] windowTitleSplits = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
                                 try
                                 {
-                                    artist = _songinfo[0].Trim();
-                                    title = _songinfo[1].Trim();
-                                    _songInfo = GlobalObjects.CurrentSong = new TrackInfo
+                                    artist = windowTitleSplits[0].Trim();
+                                    title = windowTitleSplits[1].Trim();
+                                    trackinfo = new TrackInfo
                                     {
                                         Artists = artist,
                                         Title = title,
@@ -84,51 +89,27 @@ namespace Songify_Slim.Util.Songify
                                 {
                                     Logger.LogExc(ex);
                                 }
-                                if (wintitle.Contains(" - "))
-                                {
-                                    artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
-                                    title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
-                                }
-
-                                GlobalObjects.CurrentSong = new TrackInfo
-                                {
-                                    Artists = artist,
-                                    Title = title,
-                                    Albums = null,
-                                    SongId = null,
-                                    DurationMs = 0,
-                                    IsPlaying = false,
-                                    Url = null,
-                                    DurationPercentage = 0,
-                                    DurationTotal = 0,
-                                    Progress = 0,
-                                    Playlist = null
-                                };
-                                UpdateWebServerResponse();
-                                return Task.FromResult(new SongInfo { Artist = artist, Title = title });
                             }
-                            // the win title gets changed as soon as spotify is paused, therefore I'm checking
-                            //if custom pause text is enabled and if so spit out custom text
-
-                            if (Settings.Settings.CustomPauseTextEnabled)
-                                return Task.FromResult(new SongInfo { Artist = "", Title = "", Extra = "" });
                             break;
 
                         case "vlc":
                             //Splitting the win title which is always Artist - Title
                             if (string.IsNullOrEmpty(wintitle) || wintitle == "vlc")
-                                return Task.FromResult(_previousSonginfo);
+                                return Task.CompletedTask;
 
                             if (!wintitle.Contains(" - VLC media player"))
-                                return Task.FromResult(Settings.Settings.CustomPauseTextEnabled
-                                    ? new SongInfo { Artist = Settings.Settings.CustomPauseText, Title = "", Extra = "" }
-                                    : new SongInfo { Artist = "", Title = "", Extra = "" });
+                            {
+                                trackinfo = Settings.Settings.CustomPauseTextEnabled
+                                    ? new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" }
+                                    : new TrackInfo { Artists = "", Title = "" };
+                            }
+
 
                             wintitle = wintitle.Replace(" - VLC media player", "");
 
                             try
                             {
-                                foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
+                                foreach (string item in AudioFileyTypes.Where(item => wintitle.Contains(item)))
                                 {
                                     wintitle = wintitle.Replace(item, "");
                                 }
@@ -144,50 +125,27 @@ namespace Songify_Slim.Util.Songify
                                 extra = "";
                             }
 
-                            _songinfo = wintitle.Split(new[] { " - " }, StringSplitOptions.None);
-
-                            _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
                             if (wintitle.Contains(" - "))
                             {
                                 artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
                                 title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
                             }
 
-                            GlobalObjects.CurrentSong = new TrackInfo
-                            {
-                                Artists = artist,
-                                Title = title,
-                                Albums = null,
-                                SongId = null,
-                                DurationMs = 0,
-                                IsPlaying = false,
-                                Url = null,
-                                DurationPercentage = 0,
-                                DurationTotal = 0,
-                                Progress = 0,
-                                Playlist = null
-                            };
-                            UpdateWebServerResponse();
+                            trackinfo = new TrackInfo { Artists = artist, Title = title };
 
-                            return Task.FromResult(_previousSonginfo);
-
+                            break;
                         case "foobar2000":
                             // Splitting the win title which is always Artist - Title
                             if (wintitle.StartsWith("foobar2000"))
                             {
                                 if (Settings.Settings.CustomPauseTextEnabled)
-                                    return Task.FromResult(new SongInfo
-                                    {
-                                        Artist = Settings.Settings.CustomPauseText,
-                                        Title = "",
-                                        Extra = ""
-                                    });
+                                    trackinfo = new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" };
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
                             try
                             {
-                                foreach (string item in _audioFileyTypes.Where(item => wintitle.Contains(item)))
+                                foreach (string item in AudioFileyTypes.Where(item => wintitle.Contains(item)))
                                 {
                                     wintitle = wintitle.Replace(item, "");
                                 }
@@ -202,33 +160,60 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-                            _previousSonginfo = new SongInfo { Artist = artist, Title = title, Extra = extra };
                             if (wintitle.Contains(" - "))
                             {
                                 artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
                                 title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
                             }
-
-                            GlobalObjects.CurrentSong = new TrackInfo
-                            {
-                                Artists = artist,
-                                Title = title,
-                                Albums = null,
-                                SongId = null,
-                                DurationMs = 0,
-                                IsPlaying = false,
-                                Url = null,
-                                DurationPercentage = 0,
-                                DurationTotal = 0,
-                                Progress = 0,
-                                Playlist = null
-                            };
-                            UpdateWebServerResponse();
-                            return Task.FromResult(_previousSonginfo);
+                            trackinfo = new TrackInfo { Artists = artist, Title = title };
+                            break;
                     }
                 }
 
-            return Task.FromResult<SongInfo>(null);
+            if (trackinfo == null || trackinfo == GlobalObjects.CurrentSong)
+            {
+                return Task.CompletedTask;
+            }
+            GlobalObjects.CurrentSong = trackinfo;
+            UpdateWebServerResponse();
+
+            string output = Settings.Settings.OutputString;
+
+            int start = output.IndexOf("{{", StringComparison.Ordinal);
+            int end = output.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+            if (start >= 0) output = output.Remove(start, end - start);
+
+            output = output.Format(
+                artist => trackinfo.Artists ?? "",
+                title => trackinfo.Title ?? "",
+                extra => "",
+                uri => trackinfo.SongId ?? "",
+                url => trackinfo.Url ?? ""
+            ).Format();
+
+            if (output.Trim().EndsWith("-"))
+            {
+                // Remove the trailing "-" if it exists
+                output = output.Trim().Substring(0, output.Length - 1);
+            }
+
+            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
+
+            if (Settings.Settings.SplitOutput)
+            {
+                IOManager.WriteSplitOutput(trackinfo?.Artists, trackinfo?.Title, "");
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MainWindow main = Application.Current.MainWindow as MainWindow;
+                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    main.SetTextPreview(output);
+                }));
+            });
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -238,10 +223,10 @@ namespace Songify_Slim.Util.Songify
         /// </summary>
         /// <param name="website"></param>
         /// <returns>Returns String with Youtube Video Title</returns>
-        public string FetchBrowser(string website)
+        public Task FetchBrowser(string website)
         {
             string browser = "";
-
+            TrackInfo songInfo = null;
             // chrome, opera, msedge
             foreach (string s in _browsers.Where(s => Process.GetProcessesByName(s).Length > 0))
             {
@@ -257,8 +242,9 @@ namespace Songify_Slim.Util.Songify
                 if (procBrowser.MainWindowHandle == IntPtr.Zero) continue;
 
                 AutomationElement elm =
-                    _parent == null ? AutomationElement.FromHandle(procBrowser.MainWindowHandle) : _parent;
+                    _parent ?? AutomationElement.FromHandle(procBrowser.MainWindowHandle);
 
+                string formattedString = "";
                 if (_id == 0)
                     // find the automation element
                     try
@@ -274,9 +260,24 @@ namespace Songify_Slim.Util.Songify
                                     {
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                        UpdateWebServerResponse();
+                                        //UpdateWebServerResponse();
                                         // Regex pattern to replace the notification in front of the tab (1) - (99+)
-                                        return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+                                        //return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+                                        formattedString = FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+                                        songInfo = new TrackInfo
+                                        {
+                                            Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
+                                            Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
+                                            Albums = null,
+                                            SongId = null,
+                                            DurationMs = 0,
+                                            IsPlaying = false,
+                                            Url = null,
+                                            DurationPercentage = 0,
+                                            DurationTotal = 0,
+                                            Progress = 0,
+                                            Playlist = null
+                                        };
                                     }
 
                                     break;
@@ -286,8 +287,23 @@ namespace Songify_Slim.Util.Songify
                                     {
                                         _id = elem.Current.ControlType.Id;
                                         _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                        UpdateWebServerResponse();
-                                        return FormattedString("Deezer", elem.Current.Name);
+                                        //UpdateWebServerResponse();
+                                        //return FormattedString("Deezer", elem.Current.Name);
+                                        formattedString = FormattedString("Deezer", elem.Current.Name);
+                                        songInfo = new TrackInfo
+                                        {
+                                            Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
+                                            Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
+                                            Albums = null,
+                                            SongId = null,
+                                            DurationMs = 0,
+                                            IsPlaying = false,
+                                            Url = null,
+                                            DurationPercentage = 0,
+                                            DurationTotal = 0,
+                                            Progress = 0,
+                                            Playlist = null
+                                        };
                                     }
                                     break;
                             }
@@ -317,9 +333,9 @@ namespace Songify_Slim.Util.Songify
                                     //_id = element.Current.ControlType.Id;
                                     //_parent = TreeWalker.RawViewWalker.GetParent(element);
                                     // Regex pattern to replace the notification in front of the tab (1) - (99+)
-                                    string formattedString = FormattedString("YouTube", Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
+                                    formattedString = FormattedString("YouTube", Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
                                     //try splitting the formatted string to Artist and Title
-                                    _songInfo = GlobalObjects.CurrentSong = new TrackInfo
+                                    songInfo = new TrackInfo
                                     {
                                         Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
                                         Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
@@ -333,8 +349,6 @@ namespace Songify_Slim.Util.Songify
                                         Progress = 0,
                                         Playlist = null
                                     };
-                                    UpdateWebServerResponse();
-                                    return formattedString;
                                 }
 
                                 break;
@@ -344,9 +358,9 @@ namespace Songify_Slim.Util.Songify
                                 {
                                     _id = element.Current.ControlType.Id;
                                     _parent = TreeWalker.RawViewWalker.GetParent(element);
-                                    string formattedString = FormattedString("Deezer", element.Current.Name);
+                                    formattedString = FormattedString("Deezer", element.Current.Name);
                                     //try splitting the formatted string to Artist and Title
-                                    _songInfo = GlobalObjects.CurrentSong = new TrackInfo
+                                    songInfo = GlobalObjects.CurrentSong = new TrackInfo
                                     {
                                         Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
                                         Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
@@ -360,8 +374,6 @@ namespace Songify_Slim.Util.Songify
                                         Progress = 0,
                                         Playlist = null
                                     };
-                                    UpdateWebServerResponse();
-                                    return formattedString;
                                 }
                                 break;
                         }
@@ -372,7 +384,43 @@ namespace Songify_Slim.Util.Songify
                     }
             }
 
-            return "";
+
+            if (songInfo == null || songInfo == GlobalObjects.CurrentSong)
+            {
+                return Task.CompletedTask;
+            }
+            GlobalObjects.CurrentSong = songInfo;
+            UpdateWebServerResponse();
+
+            string output = Settings.Settings.OutputString;
+
+            int start = output.IndexOf("{{", StringComparison.Ordinal);
+            int end = output.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+            if (start >= 0) output = output.Remove(start, end - start);
+
+
+            output = output.Format(
+                artist => songInfo.Artists ?? "",
+                title => songInfo.Title ?? "",
+                extra => "",
+                uri => songInfo.SongId ?? "",
+                url => songInfo.Url ?? ""
+            ).Format();
+
+            if (output.Trim().EndsWith("-"))
+            {
+                // Remove the trailing "-" if it exists
+                output = output.Trim().Substring(0, output.Length - 1);
+            }
+
+            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
+
+            if (Settings.Settings.SplitOutput)
+            {
+                IOManager.WriteSplitOutput(songInfo?.Artists, songInfo?.Title, "");
+            }
+
+            return Task.CompletedTask;
         }
 
         private static string FormattedString(string player, string temp)
@@ -412,9 +460,9 @@ namespace Songify_Slim.Util.Songify
         public async Task<TrackInfo> FetchSpotifyWeb()
         {
             // If the spotify object hast been created (successfully authed)
-            if (updating)
+            if (_updating)
                 return null;
-            updating = true;
+            _updating = true;
             if (ApiHandler.Spotify == null)
             {
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
@@ -426,31 +474,31 @@ namespace Songify_Slim.Util.Songify
             }
 
             // gets the current playing song info
-            _songInfo = ApiHandler.GetSongInfo();
+            TrackInfo songInfo = ApiHandler.GetSongInfo();
             try
             {
 
-                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != _songInfo.SongId && _songInfo.SongId != null))
+                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null))
                 {
                     _trackChanged = true;
 
                     if (GlobalObjects.CurrentSong != null)
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    if (_songInfo.SongId != null)
-                        Logger.LogStr($"CORE: Now Playing {_songInfo.Artists} - {_songInfo.Title}");
+                    if (songInfo.SongId != null)
+                        Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
 
                     RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
-                    RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == _songInfo.SongId);
+                    RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
-                    GlobalObjects.CurrentSong = _songInfo;
+                    GlobalObjects.CurrentSong = songInfo;
 
                     //if current track is on skiplist, skip it
-                    if (GlobalObjects.SkipList.Find(o => o.Trackid == _songInfo.SongId) != null)
+                    if (GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId) != null)
                     {
                         await System.Windows.Application.Current.Dispatcher.Invoke(async () =>
                         {
                             GlobalObjects.SkipList.Remove(
-                                GlobalObjects.SkipList.Find(o => o.Trackid == _songInfo.SongId));
+                                GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId));
                             await ApiHandler.SkipSong();
                         });
                     }
@@ -499,7 +547,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
 
-                    if (_songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
                         GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
@@ -508,12 +556,12 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.QueueUpdateQueueWindow();
 
                     // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
-                    await WriteSongInfo(_songInfo);
+                    await WriteSongInfo(songInfo);
                 }
 
                 if (GlobalObjects.ForceUpdate)
                 {
-                    await WriteSongInfo(_songInfo);
+                    await WriteSongInfo(songInfo);
                     GlobalObjects.ForceUpdate = false;
                 }
 
@@ -521,14 +569,14 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                updating = false;
+                _updating = false;
                 Logger.LogExc(e);
             }
-            updating = false;
-            return _songInfo ?? new TrackInfo { IsPlaying = false };
+            _updating = false;
+            return songInfo ?? new TrackInfo { IsPlaying = false };
         }
 
-        private Task WriteSongInfo(TrackInfo songInfo)
+        private static Task WriteSongInfo(TrackInfo songInfo)
         {
 
             if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
@@ -782,11 +830,7 @@ namespace Songify_Slim.Util.Songify
 
         private static void UpdateWebServerResponse()
         {
-            if (_songInfo == null)
-            {
-                _songInfo = GlobalObjects.CurrentSong ?? new TrackInfo();
-            }
-            string j = Json.Serialize(_songInfo);
+            string j = Json.Serialize(GlobalObjects.CurrentSong ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
             IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;

@@ -292,9 +292,6 @@
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
     <value>Собственный текст во врема перерива (пусто для пустого текстового файла)</value>
   </data>
-  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Поделиться исполнителем и титул</value>
-  </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Загрузить информацию о песне</value>
   </data>
@@ -669,5 +666,8 @@
   </data>
   <data name="brw_Remove" xml:space="preserve">
     <value>Ответ на команду !remove</value>
+  </data>
+  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+    <value>Разделить исполнителя, название и отправителя запроса</value>
   </data>
 </root>

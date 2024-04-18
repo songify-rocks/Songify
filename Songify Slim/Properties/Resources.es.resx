@@ -295,9 +295,6 @@
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
     <value>Texto de pausa personalizado (dejar en blanco para que el archivo de texto quede vacío)</value>
   </data>
-  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>dividir Artista y Título</value>
-  </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>compartir información de la canción</value>
   </data>
@@ -669,5 +666,8 @@
   </data>
   <data name="brw_Remove" xml:space="preserve">
     <value>Respuesta al comando !remove</value>
+  </data>
+  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+    <value>Dividir artista, título y solicitante</value>
   </data>
 </root>

@@ -358,7 +358,7 @@
     <comment>Watermark content for the pause text textbox</comment>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Split Artist and Title</value>
+    <value>Split Artist, Title and Requester</value>
     <comment>Toggleswitch content for "Split Artist and Title"</comment>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">

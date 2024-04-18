@@ -361,9 +361,7 @@ namespace Songify_Slim.Views
 
                     // Fetching the song thats currently playing on spotify
                     // and updating the output on success
-                    songInfo = await Sf.FetchDesktopPlayer("Spotify");
-                    if (songInfo != null)
-                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
+                    await Sf.FetchDesktopPlayer("Spotify");
 
                     break;
 
@@ -375,25 +373,25 @@ namespace Songify_Slim.Views
 
                     // Fetching the song thats currently playing on youtube
                     // and updating the output on success
-                    _temp = Sf.FetchBrowser("YouTube");
-                    if (string.IsNullOrWhiteSpace(_temp))
-                    {
-                        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, true);
+                    await Sf.FetchBrowser("YouTube");
+                    //if (string.IsNullOrWhiteSpace(_temp))
+                    //{
+                    //    if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, true);
 
-                        break;
-                    }
-                    if (_temp.Contains(" - "))
-                    {
-                        List<string> x = _temp.Split(new[] { " - " }, StringSplitOptions.None).ToList();
-                        string brArtists = x[0];
-                        x.Remove(x[0]);
-                        string brTitle = string.Join(" - ", x);
-                        WriteSong(brArtists, brTitle, "", null, _firstRun);
+                    //    break;
+                    //}
+                    //if (_temp.Contains(" - "))
+                    //{
+                    //    List<string> x = _temp.Split(new[] { " - " }, StringSplitOptions.None).ToList();
+                    //    string brArtists = x[0];
+                    //    x.Remove(x[0]);
+                    //    string brTitle = string.Join(" - ", x);
+                    //    WriteSong(brArtists, brTitle, "", null, _firstRun);
 
-                        break;
-                    }
+                    //    break;
+                    //}
 
-                    WriteSong("", _temp, "", null, _firstRun);
+                    //WriteSong("", _temp, "", null, _firstRun);
 
                     break;
 
@@ -404,9 +402,9 @@ namespace Songify_Slim.Views
 
                     #region VLC
 
-                    songInfo = await Sf.FetchDesktopPlayer("vlc");
-                    if (songInfo != null)
-                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
+                    await Sf.FetchDesktopPlayer("vlc");
+                    //if (songInfo != null)
+                    //    WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
                     break;
 
                 #endregion VLC
@@ -415,9 +413,9 @@ namespace Songify_Slim.Views
 
                     #region foobar2000
 
-                    songInfo = await Sf.FetchDesktopPlayer("foobar2000");
-                    if (songInfo != null)
-                        WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
+                    await Sf.FetchDesktopPlayer("foobar2000");
+                    //if (songInfo != null)
+                    //    WriteSong(songInfo.Artist, songInfo.Title, songInfo.Extra, null, _firstRun);
 
                     break;
 
@@ -427,15 +425,15 @@ namespace Songify_Slim.Views
 
                     #region Deezer
 
-                    _temp = Sf.FetchBrowser("Deezer");
-                    if (string.IsNullOrWhiteSpace(_temp))
-                    {
-                        if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
+                    await Sf.FetchBrowser("Deezer");
+                    //if (string.IsNullOrWhiteSpace(_temp))
+                    //{
+                    //    if (!string.IsNullOrWhiteSpace(_prevSong)) WriteSong(_prevSong, "", "", null, _firstRun);
 
-                        break;
-                    }
+                    //    break;
+                    //}
 
-                    WriteSong(_temp, "", "", null, _firstRun);
+                    //WriteSong(_temp, "", "", null, _firstRun);
                     break;
 
                 #endregion Deezer

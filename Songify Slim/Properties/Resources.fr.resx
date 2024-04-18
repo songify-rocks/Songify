@@ -298,9 +298,6 @@
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
     <value>Texte de pause personnalisé (vide pour le fichier texte emtpy)</value>
   </data>
-  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Séparation de l'artiste et du titre</value>
-  </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Télécharger les informations sur la chanson</value>
   </data>
@@ -669,5 +666,8 @@
   </data>
   <data name="brw_Remove" xml:space="preserve">
     <value>Réponse à la commande !remove</value>
+  </data>
+  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+    <value>Diviser l'artiste, le titre et le demandeur</value>
   </data>
 </root>
