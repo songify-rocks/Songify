@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="brw_ArtistBlocked" xml:space="preserve">
+    <value>O artista está bloqueado</value>
+  </data>
+  <data name="brw_FetchError" xml:space="preserve">
+    <value>Erro ao buscar dados da música</value>
+  </data>
+  <data name="brw_Header" xml:space="preserve">
+    <value>Configure as respostas do bot para os seguintes cenários:</value>
+  </data>
+  <data name="brw_MaxSongs" xml:space="preserve">
+    <value>Máximo de músicas na fila</value>
+  </data>
+  <data name="brw_NoSong" xml:space="preserve">
+    <value>Nenhuma música foi especificada (solicitação vazia)</value>
+  </data>
+  <data name="brw_SongInQueue" xml:space="preserve">
+    <value>A música já está na fila</value>
+  </data>
+  <data name="brw_SongTooLong" xml:space="preserve">
+    <value>Música muito longa</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Música adicionada com sucesso</value>
+  </data>
+  <data name="bw_btnAdd" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
+  <data name="bw_btnClear" xml:space="preserve">
+    <value>Claro</value>
+  </data>
+  <data name="bw_cbArtist" xml:space="preserve">
+    <value>Artista</value>
+  </data>
+  <data name="bw_cbUser" xml:space="preserve">
+    <value>Do utilizador</value>
+  </data>
+  <data name="bw_lblBlockedArtists" xml:space="preserve">
+    <value>Artistas bloqueados</value>
+  </data>
+  <data name="bw_lblBlockedUsers" xml:space="preserve">
+    <value>Usuários bloqueados</value>
+  </data>
+  <data name="bw_menu_Delete" xml:space="preserve">
+    <value>Excluir</value>
+  </data>
+  <data name="lang_deDE" xml:space="preserve">
+    <value>Alemão</value>
+  </data>
+  <data name="lang_en" xml:space="preserve">
+    <value>Inglês</value>
+  </data>
+  <data name="mw_menu_Blacklist" xml:space="preserve">
+    <value>Lista de bloqueio</value>
+  </data>
+  <data name="mw_menu_Connect" xml:space="preserve">
+    <value>Conectar</value>
+  </data>
+  <data name="mw_menu_Disconnect" xml:space="preserve">
+    <value>desconectar</value>
+  </data>
+  <data name="mw_menu_Exit" xml:space="preserve">
+    <value>Saída</value>
+  </data>
+  <data name="mw_menu_File" xml:space="preserve">
+    <value>Arquivo</value>
+  </data>
+  <data name="mw_menu_Help" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="mw_menu_Help_About" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="mw_menu_History" xml:space="preserve">
+    <value>História</value>
+  </data>
+  <data name="mw_menu_History_Browser" xml:space="preserve">
+    <value>Navegador de histórico</value>
+  </data>
+  <data name="mw_menu_History_Window" xml:space="preserve">
+    <value>Janela Histórico</value>
+  </data>
+  <data name="mw_menu_Queue" xml:space="preserve">
+    <value>Fila</value>
+  </data>
+  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+    <value>Navegador de filas</value>
+  </data>
+  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+    <value>Limpar fila</value>
+  </data>
+  <data name="mw_menu_Queue_Window" xml:space="preserve">
+    <value>Janela de fila</value>
+  </data>
+  <data name="mw_menu_Settings" xml:space="preserve">
+    <value>Configurações</value>
+  </data>
+  <data name="mw_menu_Support" xml:space="preserve">
+    <value>Apoie-nos</value>
+  </data>
+  <data name="mw_menu_Widget" xml:space="preserve">
+    <value>Ferramenta</value>
+  </data>
+  <data name="sw_Appearance_Color" xml:space="preserve">
+    <value>Cor:</value>
+  </data>
+  <data name="sw_Appearance_ThemeDark" xml:space="preserve">
+    <value>Tema escuro</value>
+  </data>
+  <data name="sw_Appearance_ThemeLight" xml:space="preserve">
+    <value>Tema claro</value>
+  </data>
+  <data name="sw_Config_Export" xml:space="preserve">
+    <value>EXPORTAR CONFIGURAÇÃO</value>
+  </data>
+  <data name="sw_Config_Import" xml:space="preserve">
+    <value>IMPORTAR CONFIGURAÇÃO</value>
+  </data>
+  <data name="sw_Integration_Autoconnect" xml:space="preserve">
+    <value>conexão automática</value>
+  </data>
+  <data name="sw_Integration_btnLink" xml:space="preserve">
+    <value>LINK</value>
+  </data>
+  <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
+    <value>Configurar respostas e comandos do bot</value>
+  </data>
+  <data name="sw_Integration_NBWatermark" xml:space="preserve">
+    <value>Nome de usuário do NB (nome de usuário Twitch)</value>
+  </data>
+  <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
+    <value>Conta vinculada:</value>
+  </data>
+  <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
+    <value>Canal para participar</value>
+  </data>
+  <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
+    <value>ID de recompensa de pontos do canal</value>
+  </data>
+  <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
+    <value>Limpar fila na inicialização</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Tempo de espera do comando (segundos)</value>
+  </data>
+  <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
+    <value>Duração máxima da música (em minutos)</value>
+  </data>
+  <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
+    <value>Máximo de solicitações por usuário</value>
+  </data>
+  <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
+    <value>Habilitar registro de mensagens</value>
+  </data>
+  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+    <value>Habilitar SR (comando)</value>
+  </data>
+  <data name="sw_SpotifySR_SRReward" xml:space="preserve">
+    <value>Ativar SR (recompensas do canal)</value>
+  </data>
+  <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
+    <value>acrescentar espaços</value>
+  </data>
+  <data name="sw_tcOutput_Directory" xml:space="preserve">
+    <value>Diretório de saída</value>
+  </data>
+  <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
+    <value>Baixe a capa do álbum (só funciona com API)</value>
+  </data>
+  <data name="sw_tcOutput_Format" xml:space="preserve">
+    <value>Formato de saída (arquivo de texto e widget)</value>
+  </data>
+  <data name="sw_tcOutput_PauseText" xml:space="preserve">
+    <value>Pausar texto</value>
+  </data>
+  <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
+    <value>Texto de pausa personalizado (em branco para arquivo de texto vazio)</value>
+  </data>
+  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+    <value>Dividir Artista, Título e Solicitante</value>
+  </data>
+  <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
+    <value>Carregar informações da música</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Use o próprio AppID</value>
+  </data>
+  <data name="sw_tcSystem_Autostart" xml:space="preserve">
+    <value>inicialização automática com windows</value>
+  </data>
+  <data name="sw_tcSystem_Behavior" xml:space="preserve">
+    <value>Comportamento</value>
+  </data>
+  <data name="sw_tcSystem_CheckButton" xml:space="preserve">
+    <value>VERIFIQUE AS ATUALIZAÇÕES</value>
+  </data>
+  <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
+    <value>Taxa de busca do Chrome (segundos)</value>
+  </data>
+  <data name="sw_tcSystem_Minimize" xml:space="preserve">
+    <value>minimizar para a bandeja do sistema</value>
+  </data>
+  <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
+    <value>enviar dados anônimos</value>
+  </data>
+  <data name="sw_tcSystem_Telemetry" xml:space="preserve">
+    <value>Telemetria</value>
+  </data>
+  <data name="sw_tc_Appearance" xml:space="preserve">
+    <value>Aparência</value>
+  </data>
+  <data name="sw_tc_Config" xml:space="preserve">
+    <value>Configuração</value>
+  </data>
+  <data name="sw_tc_Integration" xml:space="preserve">
+    <value>Contração muscular</value>
+  </data>
+  <data name="sw_tc_Output" xml:space="preserve">
+    <value>Saída</value>
+  </data>
+  <data name="sw_tc_System" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="lang_ru" xml:space="preserve">
+    <value>russo</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Use Songify AppID</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Configuração do bot</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>Espanhol</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>Francês</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(traduzido usando DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Exibe a próxima música na fila</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Desligado</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>Sobre</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Exibe a posição na fila das solicitações de músicas dos usuários</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Exibe a música atual</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Habilitado</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Acionar</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Formato de saída (Twitch Chat)</value>
+  </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Criar recompensa</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Título</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Incitar</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Custo</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Ocorreu um problema ao criar a recompensa. Certifique-se de que você ainda não tenha uma recompensa com o mesmo nome.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>A recompensa "{name}" foi criada.</value>
+  </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Notas de atualização</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Pasta de registro</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Faça login com Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Console</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Ignora a música atual (Broadcaster/Mod/Requester)</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Inicia uma votação para pular a música atual</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Número de votos necessários</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Porta do servidor web</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Iniciar servidor web</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Abrir site</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Ocultar nomes de contas e fotos de perfil</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>abrir janela de fila na inicialização</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Anuncie automaticamente uma música para conversar</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Gerenciar recompensas</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Max SR/Usuário (com base no nível do usuário)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Reembolsar quando</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>O nível do usuário é muito baixo</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>O usuário está bloqueado no SR</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify não está conectado</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>A música não está disponível na região</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>A música contém artistas bloqueados</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>A duração da música é muito longa</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>A música já está na fila</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>Nenhuma música foi encontrada</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>A música foi adicionada à fila</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>sempre (tornar SR gratuito)</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>Contas</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Recompensas</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Solicitações de músicas</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Logado com Twitch</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>pedidos de músicas ilimitados</value>
+  </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Solicitações de músicas</value>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>Visualizar</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Compre-nos um café</value>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Artista - Título</value>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Verifique o status on-line</value>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>Fila de músicas</value>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Comprimento</value>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Solicitante</value>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Lista negra</value>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>História da música</value>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Privacidade</value>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Servidor web</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>Iniciar automaticamente o servidor web</value>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Redefinir configuração</value>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Pare o servidor web</value>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>Obtenha atualizações beta</value>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Por favor, vincule sua conta do Spotify. Configurações -&gt; Spotify</value>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Carregar</value>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Criar nova recompensa</value>
+  </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>Emissora/Moderador/Solicitante pulou a música</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Resposta para o comando !pos</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Resposta para !next comando</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Respostas e comandos do bot</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Respostas</value>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Comandos</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>O usuário votou para pular a música atual</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Recompensa por solicitações de músicas</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Recompensa por pular música</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>Comando !ssr movido para configuração do bot</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Nível mínimo de usuário exigido para SR</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Conta Twitch</value>
+  </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Sair</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Para poder reembolsar pontos, a recompensa deve ser criada através do Songify. Selecione uma recompensa que seja administrável ou crie uma nova.</value>
+  </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Conta de bot</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Vinculado com sucesso a {account}. Você também gostaria de usar esta conta como bot de bate-papo?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Enviar notificação off-line para bate-papo</value>
+  </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Resposta para o comando !song</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Texto que será adicionado à resposta se os pontos forem reembolsados</value>
+  </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Linguagem</value>
+  </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Remove a última solicitação de música do usuário.</value>
+  </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Resposta para o comando !songlike</value>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Adiciona a música atual à lista de reprodução selecionada na configuração do Spotify.</value>
+  </data>
+  <data name="brw_cmd_playpause" xml:space="preserve">
+    <value>Retoma ou pausa a reprodução atual.</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+    <value>Níveis de usuário permitidos para comando SR</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+    <value>Níveis de usuário permitidos para recompensa SR</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Lista de reprodução de músicas favoritas</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>A lista de reprodução à qual as músicas são adicionadas ao usar o comando !songlike ou com a opção de adicionar músicas automaticamente à lista de reprodução.</value>
+  </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Adicione todos os pedidos de música à lista de reprodução</value>
+  </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Resposta quando a música não foi encontrada na playlist de músicas permitidas</value>
+  </data>
+  <data name="brw_Remove" xml:space="preserve">
+    <value>Resposta para o comando !remove</value>
+  </data>
+</root>
