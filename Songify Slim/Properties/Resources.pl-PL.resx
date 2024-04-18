@@ -666,4 +666,16 @@
   <data name="brw_Remove" xml:space="preserve">
     <value>Odpowiedź na polecenie !remove</value>
   </data>
+  <data name="lang_pl" xml:space="preserve">
+    <value>Polski</value>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>portugalski</value>
+  </data>
+  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+    <value>Pokaż dane uwierzytelniające</value>
+  </data>
+  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+    <value>Zezwalaj tylko na utwory z tej listy odtwarzania (SR)</value>
+  </data>
 </root>

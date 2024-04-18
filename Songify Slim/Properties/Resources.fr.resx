@@ -670,4 +670,16 @@
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
     <value>Diviser l'artiste, le titre et le demandeur</value>
   </data>
+  <data name="lang_pl" xml:space="preserve">
+    <value>polonais</value>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>Portugais</value>
+  </data>
+  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+    <value>Afficher les informations d'identification</value>
+  </data>
+  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+    <value>Autoriser uniquement les chansons de cette playlist (SR)</value>
+  </data>
 </root>

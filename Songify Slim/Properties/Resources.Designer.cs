@@ -511,6 +511,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Polish.
+        /// </summary>
+        public static string lang_pl {
+            get {
+                return ResourceManager.GetString("lang_pl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Portuguese.
+        /// </summary>
+        public static string lang_pt {
+            get {
+                return ResourceManager.GetString("lang_pt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
         public static string lang_ru {
@@ -1124,6 +1142,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Credentials.
+        /// </summary>
+        public static string sw_Integration_ShowCreds {
+            get {
+                return ResourceManager.GetString("sw_Integration_ShowCreds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Linked account:.
         /// </summary>
         public static string sw_Integration_SpotifyLinked {
@@ -1394,6 +1421,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow only songs from this playlist (SR).
+        /// </summary>
+        public static string sw_tc_Spotify_OnlyAllowFromPlaylist {
+            get {
+                return ResourceManager.GetString("sw_tc_Spotify_OnlyAllowFromPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to System.
         /// </summary>
         public static string sw_tc_System {
@@ -1475,7 +1511,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Artist and Title.
+        ///   Looks up a localized string similar to Split Artist, Title and Requester.
         /// </summary>
         public static string sw_tcOutput_SplitArtist {
             get {

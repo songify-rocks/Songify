@@ -207,6 +207,8 @@ namespace Songify_Slim.Views
                 "ru-RU" => 2,
                 "es" => 3,
                 "fr" => 4,
+                "pl-PL" => 5,
+                "pt-PT" => 6,
                 _ => CbxLanguage.SelectedIndex
             };
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
@@ -535,6 +537,16 @@ namespace Songify_Slim.Views
                     // Spansih
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr");
                     Settings.Language = "fr";
+                    break;
+                case 5:
+                    // Polish
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("pl-PL");
+                    Settings.Language = "pl-PL";
+                    break;
+                case 6:
+                    // Portuguese
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-PT");
+                    Settings.Language = "pt-PT";
                     break;
             }
 

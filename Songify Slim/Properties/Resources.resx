@@ -714,7 +714,7 @@
   </data>
   <data name="brw_ModSkip" xml:space="preserve">
     <value>Broadcaster / Moderator / Requester skipped the song</value>
-      <comment>Header for the textbox when the Broadcaster / Mod / Requester skipped the song</comment>
+    <comment>Header for the textbox when the Broadcaster / Mod / Requester skipped the song</comment>
   </data>
   <data name="brw_Pos" xml:space="preserve">
     <value>Response for !pos command</value>
@@ -738,7 +738,7 @@
   </data>
   <data name="brw_VoteSkip" xml:space="preserve">
     <value>User voted to skip the current song</value>
-      <comment>Header for the textbox when the !voteskip command has been executed</comment>
+    <comment>Header for the textbox when the !voteskip command has been executed</comment>
   </data>
   <data name="sw_Spotify_RewardSR" xml:space="preserve">
     <value>Reward for Song Requests</value>
@@ -835,5 +835,19 @@
   <data name="brw_Remove" xml:space="preserve">
     <value>Response for !remove command</value>
     <comment>Response for !remove</comment>
+  </data>
+  <data name="lang_pl" xml:space="preserve">
+    <value>Polish</value>
+    <comment>Language name for "Polish"</comment>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>Portuguese</value>
+    <comment>Language name for "Portuguese"</comment>
+  </data>
+  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+    <value>Show Credentials</value>
+  </data>
+  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+    <value>Allow only songs from this playlist (SR)</value>
   </data>
 </root>

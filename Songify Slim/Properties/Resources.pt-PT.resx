@@ -666,4 +666,16 @@
   <data name="brw_Remove" xml:space="preserve">
     <value>Resposta para o comando !remove</value>
   </data>
+  <data name="lang_pl" xml:space="preserve">
+    <value>polonês</value>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+    <value>Mostrar credenciais</value>
+  </data>
+  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+    <value>Permitir apenas músicas desta playlist (SR)</value>
+  </data>
 </root>

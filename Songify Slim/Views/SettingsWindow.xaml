@@ -83,6 +83,8 @@
                             <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_es}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_fr}" />
+                            <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
+                            <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
                         </ComboBox>
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
@@ -664,7 +666,7 @@
                             Grid.Column="1"
                             Margin="0,6,0,6"
                             HorizontalAlignment="Right"
-                            Content="Show Credentials"
+                            Content="{x:Static local:Resources.sw_Integration_ShowCreds}"
                             IsOn="False" />
                         <Label
                             Grid.Row="1"
@@ -2372,7 +2374,7 @@
                             Width="250"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Text="Allow only songs from this playlist (SR)" />
+                            Text="{x:Static local:Resources.sw_tc_Spotify_OnlyAllowFromPlaylist}" />
                         <StackPanel
                             Grid.Row="6"
                             HorizontalAlignment="Right"
