@@ -670,7 +670,9 @@ namespace Songify_Slim.Util.Songify
 
         private static bool IsTrackExplicit(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
-           response = string.Empty;
+            response = string.Empty;
+            if (!Settings.Settings.BlockAllExplicitSongs)
+                return false;
             try
             {
                 if (!track.Explicit)
