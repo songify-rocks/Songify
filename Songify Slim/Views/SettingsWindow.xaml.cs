@@ -211,6 +211,7 @@ namespace Songify_Slim.Views
                 "fr" => 4,
                 "pl-PL" => 5,
                 "pt-PT" => 6,
+                "it-IT" => 7,   
                 _ => CbxLanguage.SelectedIndex
             };
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
@@ -549,6 +550,11 @@ namespace Songify_Slim.Views
                     // Portuguese
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-PT");
                     Settings.Language = "pt-PT";
+                    break;
+                case 7:
+                    // Italian
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("it-IT");
+                    Settings.Language = "it-IT";
                     break;
             }
 

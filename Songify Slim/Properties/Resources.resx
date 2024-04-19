@@ -859,4 +859,8 @@
   <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
     <value>Requester text prefix</value>
   </data>
+  <data name="lang_it" xml:space="preserve">
+    <value>Italian</value>
+    <comment>Language name for "Italian"</comment>
+  </data>
 </root>

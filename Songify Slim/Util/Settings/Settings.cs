@@ -258,7 +258,7 @@ namespace Songify_Slim.Util.Settings
         {
             get => GetLanguage();
 
-            set => SetLangauge(value);
+            set => SetLanguage(value);
         }
 
         public static int MaxSongLength
@@ -1693,7 +1693,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
         }
 
-        private static void SetLangauge(string value)
+        private static void SetLanguage(string value)
         {
             _currentConfig.AppConfig.Language = value;
             ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);

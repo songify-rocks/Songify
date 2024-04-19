@@ -687,4 +687,7 @@
   <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
     <value>Prefisso del testo del richiedente</value>
   </data>
+  <data name="lang_it" xml:space="preserve">
+    <value>Italiano</value>
+  </data>
 </root>

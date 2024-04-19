@@ -520,6 +520,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Italian.
+        /// </summary>
+        public static string lang_it {
+            get {
+                return ResourceManager.GetString("lang_it", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Polish.
         /// </summary>
         public static string lang_pl {

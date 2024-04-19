@@ -85,6 +85,7 @@
                             <ComboBoxItem Content="{x:Static local:Resources.lang_fr}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
+                            <ComboBoxItem Content="{x:Static local:Resources.lang_it}" />
                         </ComboBox>
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
