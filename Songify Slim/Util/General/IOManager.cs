@@ -69,7 +69,7 @@ namespace Songify_Slim.Util.General
 
             WriteOutput(GlobalObjects.RootDirectory + "/Artist.txt", artist);
             WriteOutput(GlobalObjects.RootDirectory + "/Title.txt", title + extra);
-            WriteOutput(GlobalObjects.RootDirectory + "/Requester.txt", Settings.Settings.RequesterPrefix + requester);
+            WriteOutput(GlobalObjects.RootDirectory + "/Requester.txt", string.IsNullOrEmpty(requester) ? "" : Settings.Settings.RequesterPrefix + requester);
         }
 
         public static async void DownloadCover(string cover, string coverPath)
