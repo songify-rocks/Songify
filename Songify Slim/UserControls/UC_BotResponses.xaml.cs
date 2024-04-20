@@ -206,6 +206,7 @@ namespace Songify_Slim.UserControls
             TbRemove.Text = Settings.BotRespRemove;
             TbExplicit.Text = Settings.BotRespTrackExplicit;
             TbSrCooldown.Text = Settings.BotRespCooldown;
+            TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -234,6 +235,12 @@ namespace Songify_Slim.UserControls
         private void TbSrCooldown_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespCooldown = TbSrCooldown.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void TbnoTrackFound_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespNoTrackFound = TbnoTrackFound.Text;
             SetPreview(sender as TextBox);
         }
     }

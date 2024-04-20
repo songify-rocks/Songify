@@ -178,6 +178,7 @@ namespace Songify_Slim.Util.Settings
                                 BotRespUnavailable = "The Song {song} is not available in the streamers country.",
                                 BotRespExplicitSong = "This Song containts explicit content and is not allowed.",
                                 BotRespCooldown = "The command is on cooldown. Try again in {cd} seconds.",
+                                BotRespNoTrackFound = "No track found.",
                             };
                         }
                         break;
@@ -619,6 +620,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
         public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
+        public string BotRespNoTrackFound { get; set; } = "No track found.";
     }
 
     public class AppConfig

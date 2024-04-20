@@ -700,4 +700,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Реакция, когда команда sr находится на кулдауне</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Ответ, когда трек не найден</value>
+  </data>
 </root>

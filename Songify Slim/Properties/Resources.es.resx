@@ -700,4 +700,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Respuesta cuando el comando sr está en tiempo de reutilización</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Respuesta cuando no se encontró ninguna pista</value>
+  </data>
 </root>

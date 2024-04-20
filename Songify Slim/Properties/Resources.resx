@@ -871,4 +871,8 @@
     <value>Response wehen the sr command is on cooldown</value>
     <comment>Command on Cooldown Response</comment>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Response when no track was found</value>
+    <comment>No Track Found response</comment>
+  </data>
 </root>

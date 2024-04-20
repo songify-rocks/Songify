@@ -44,6 +44,8 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
+using TwitchLib.Api.Helix.Models.Soundtrack;
+using TwitchLib.PubSub.Models.Responses;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -604,7 +606,7 @@ namespace Songify_Slim.Util.Songify
 
             if (track == null)
             {
-                SendChatMessage(Settings.Settings.TwChannel, "No track was found.");
+                SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
                 return;
             }
 
@@ -666,6 +668,18 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
+        }
+
+        private static string CreateNoTrackFoundResponse(OnMessageReceivedArgs e)
+        {
+            string response = Settings.Settings.BotRespNoTrackFound;
+            response = response.Replace("{user}", e.ChatMessage.DisplayName);
+            response = response.Replace("{artist}", "");
+            response = response.Replace("{title}", "");
+            response = response.Replace("{maxreq}", "");
+            response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
+            response = response.Replace("{errormsg}", "");
+            return response;
         }
 
         private static bool IsTrackExplicit(FullTrack track, OnMessageReceivedArgs e, out string response)

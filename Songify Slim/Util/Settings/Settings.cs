@@ -619,6 +619,18 @@ namespace Songify_Slim.Util.Settings
         public static PrivateProfile SpotifyProfile { get => GetSpotifyProfile(); set => SetSpotifyProfile(value); }
         public static bool UseDefaultBrowser { get => GetUseDefaultBrowser(); set => SetUseDefaultBrowser(value); }
         public static string BotRespCooldown { get => GetBot_Resp_Cooldown(); set => SetBot_Resp_Cooldown(value); }
+        public static string BotRespNoTrackFound { get => GetBot_Resp_NoTrackFound(); set => SetBot_Resp_NoTrackFound(value); }
+
+        private static void SetBot_Resp_NoTrackFound(string value)
+        {
+            _currentConfig.BotConfig.BotRespNoTrackFound = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static string GetBot_Resp_NoTrackFound()
+        {
+            return _currentConfig.BotConfig.BotRespNoTrackFound;
+        }
 
         private static void SetBot_Resp_Cooldown(string value)
         {
@@ -863,6 +875,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespUnavailable = GetBot_Resp_SongUnavailable(),
                 BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
                 BotRespCooldown = GetBot_Resp_Cooldown(),
+                BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
             };
 
             AppConfig appConfig = new()

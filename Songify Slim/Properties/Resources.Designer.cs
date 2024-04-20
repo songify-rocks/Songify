@@ -268,6 +268,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response when no track was found.
+        /// </summary>
+        public static string brw_NoTrackFound {
+            get {
+                return ResourceManager.GetString("brw_NoTrackFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response for !pos command.
         /// </summary>
         public static string brw_Pos {

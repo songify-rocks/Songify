@@ -700,4 +700,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Réponse lorsque la commande sr est en temps de recharge</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Réponse lorsqu'aucune piste n'a été trouvée</value>
+  </data>
 </root>

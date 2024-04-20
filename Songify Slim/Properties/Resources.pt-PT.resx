@@ -696,4 +696,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Resposta quando o comando sr está em espera</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Resposta quando nenhuma trilha foi encontrada</value>
+  </data>
 </root>

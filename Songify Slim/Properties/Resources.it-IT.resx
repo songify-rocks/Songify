@@ -696,4 +696,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Risposta quando il comando sr è in fase di recupero</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Risposta quando non è stata trovata alcuna traccia</value>
+  </data>
 </root>

@@ -700,4 +700,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Response wehen the sr command is on cooldown</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Response when no track was found</value>
+  </data>
 </root>

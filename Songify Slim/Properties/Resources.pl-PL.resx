@@ -696,4 +696,7 @@
   <data name="brw_CommandOnCooldown" xml:space="preserve">
     <value>Reakcja, gdy komenda sr jest w trakcie odnowienia</value>
   </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Odpowiedź, gdy nie znaleziono żadnego utworu</value>
+  </data>
 </root>
