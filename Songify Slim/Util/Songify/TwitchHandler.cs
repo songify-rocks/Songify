@@ -2508,41 +2508,48 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task UploadToQueue(FullTrack track, string displayName)
         {
-            string artists = "";
-            int counter = 0;
-            // put all artists from the song in one string
-            foreach (SimpleArtist artist in track.Artists.Where(artist => counter <= 3))
+            try
             {
-                artists += artist.Name + ", ";
-                counter++;
-            }
-
-            // remove the last ", "
-            artists = artists.Remove(artists.Length - 2, 2);
-
-            string length = FormattedTime((int)track.DurationMs);
-
-            // upload to the queue
-            //WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
-
-            dynamic payload = new
-            {
-                uuid = Settings.Settings.Uuid,
-                key = Settings.Settings.AccessKey,
-                queueItem = new RequestObject
+                string artists = "";
+                int counter = 0;
+                // put all artists from the song in one string
+                foreach (SimpleArtist artist in track.Artists.Where(artist => counter <= 3))
                 {
-                    Trackid = track.Id,
-                    Artist = artists,
-                    Title = track.Name,
-                    Length = length,
-                    Requester = displayName,
-                    Played = 0,
-                    Albumcover = track.Album.Images[0].Url,
+                    artists += artist.Name + ", ";
+                    counter++;
                 }
-            };
 
-            await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
-            GlobalObjects.QueueUpdateQueueWindow();
+                // remove the last ", "
+                artists = artists.Remove(artists.Length - 2, 2);
+
+                string length = FormattedTime((int)track.DurationMs);
+
+                // upload to the queue
+                //WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
+
+                dynamic payload = new
+                {
+                    uuid = Settings.Settings.Uuid,
+                    key = Settings.Settings.AccessKey,
+                    queueItem = new RequestObject
+                    {
+                        Trackid = track.Id,
+                        Artist = artists,
+                        Title = track.Name,
+                        Length = length,
+                        Requester = displayName,
+                        Played = 0,
+                        Albumcover = track.Album.Images[0].Url,
+                    }
+                };
+
+                await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
+                GlobalObjects.QueueUpdateQueueWindow();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
     }
 
