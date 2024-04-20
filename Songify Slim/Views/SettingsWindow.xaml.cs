@@ -1475,5 +1475,10 @@ namespace Songify_Slim.Views
         {
             Settings.RequesterPrefix = TbRequesterPrefix.Text;
         }
+
+        private void TglUseDefaultBrowser_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.UseDefaultBrowser = ((ToggleSwitch)sender).IsOn;
+        }
     }
 }

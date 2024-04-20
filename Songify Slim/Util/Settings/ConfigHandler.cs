@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Forms;
 using System.Xml;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -99,6 +100,7 @@ namespace Songify_Slim.Util.Settings
                                 DeviceId = "",
                                 ClientId = "",
                                 ClientSecret = "",
+                                Profile = new PrivateProfile()
                             };
                         }
                         break;
@@ -130,27 +132,6 @@ namespace Songify_Slim.Util.Settings
                             BotConfig p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
                             config.BotConfig = p;
 
-                            //config.BotConfig.BotRespBlacklist = string.IsNullOrWhiteSpace(config.BotConfig.BotRespBlacklist) ? "@{user} the Artist: {artist} has been blacklisted by the broadcaster." : config.BotConfig.BotRespBlacklist;
-                            //config.BotConfig.BotRespError = string.IsNullOrWhiteSpace(config.BotConfig.BotRespError) ? "@{user} there was an error adding your Song to the queue. Error message: {errormsg}" : config.BotConfig.BotRespError;
-                            //config.BotConfig.BotRespIsInQueue = string.IsNullOrWhiteSpace(config.BotConfig.BotRespIsInQueue) ? "@{user} this song is already in the queue." : config.BotConfig.BotRespIsInQueue;
-                            //config.BotConfig.BotRespLength = string.IsNullOrWhiteSpace(config.BotConfig.BotRespLength) ? "@{user} the song you requested exceeded the maximum song length ({maxlength})." : config.BotConfig.BotRespLength;
-                            //config.BotConfig.BotRespMaxReq = string.IsNullOrWhiteSpace(config.BotConfig.BotRespMaxReq) ? "@{user} maximum number of songs in queue reached ({maxreq})." : config.BotConfig.BotRespMaxReq;
-                            //config.BotConfig.BotRespModSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespModSkip) ? "@{user} skipped the current song." : config.BotConfig.BotRespModSkip;
-                            //config.BotConfig.BotRespNoSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNoSong) ? "@{user} please specify a song to add to the queue." : config.BotConfig.BotRespNoSong;
-                            //config.BotConfig.BotRespSuccess = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSuccess) ? "{artist} - {title} requested by @{user} has been added to the queue." : config.BotConfig.BotRespSuccess;
-                            //config.BotConfig.BotRespVoteSkip = string.IsNullOrWhiteSpace(config.BotConfig.BotRespVoteSkip) ? "@{user} voted to skip the current song. ({votes})" : config.BotConfig.BotRespVoteSkip;
-                            //config.BotConfig.BotRespPos = string.IsNullOrWhiteSpace(config.BotConfig.BotRespPos) ? "@{user} {songs}{pos} {song}{/songs}" : config.BotConfig.BotRespPos;
-                            //config.BotConfig.BotRespSong = string.IsNullOrWhiteSpace(config.BotConfig.BotRespSong) ? "@{user} {song}" : config.BotConfig.BotRespSong;
-                            //config.BotConfig.BotRespNext = string.IsNullOrWhiteSpace(config.BotConfig.BotRespNext) ? "@{user} {song}" : config.BotConfig.BotRespNext;
-                            //config.BotConfig.BotCmdPosTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdPosTrigger) ? "pos" : config.BotConfig.BotCmdPosTrigger;
-                            //config.BotConfig.BotCmdSongTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSongTrigger) ? "song" : config.BotConfig.BotCmdSongTrigger;
-                            //config.BotConfig.BotCmdNextTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdNextTrigger) ? "next" : config.BotConfig.BotCmdNextTrigger;
-                            //config.BotConfig.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSkipTrigger) ? "skip" : config.BotConfig.BotCmdSkipTrigger;
-                            //config.BotConfig.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdVoteskipTrigger) ? "voteskip" : config.BotConfig.BotCmdVoteskipTrigger;
-                            //config.BotConfig.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSsrTrigger) ? "ssr" : config.BotConfig.BotCmdSsrTrigger;
-                            //config.BotConfig.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdRemoveTrigger) ? "remove" : config.BotConfig.BotCmdRemoveTrigger;
-                            //config.BotConfig.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(config.BotConfig.BotCmdSonglikeTrigger) ? "songlike" : config.BotConfig.BotCmdSonglikeTrigger;
-                            //config.BotConfig.ChatLiveStatus = config.BotConfig.ChatLiveStatus;
                         }
                         else
                         {
@@ -196,6 +177,7 @@ namespace Songify_Slim.Util.Settings
                                 BotRespRemove = "{user} your previous request ({song}) will be skipped.",
                                 BotRespUnavailable = "The Song {song} is not available in the streamers country.",
                                 BotRespExplicitSong = "This Song containts explicit content and is not allowed.",
+                                BotRespCooldown = "The command is on cooldown. Try again in {cd} seconds.",
                             };
                         }
                         break;
@@ -286,6 +268,7 @@ namespace Songify_Slim.Util.Settings
                                 LimitSrToPlaylist = false,
                                 BlockAllExplicitSongs = false,
                                 RequesterPrefix = "Requested by ",
+                                UseDefaultBrowser = false
                             };
                         }
                         break;
@@ -581,6 +564,7 @@ namespace Songify_Slim.Util.Settings
         public string DeviceId { get; set; } = "";
         public string ClientId { get; set; } = "";
         public string ClientSecret { get; set; } = "";
+        public PrivateProfile Profile { get; set; } = new();
     }
 
     public class TwitchCredentials
@@ -634,6 +618,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
+        public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
     }
 
     public class AppConfig
@@ -708,6 +693,7 @@ namespace Songify_Slim.Util.Settings
         public bool LimitSrToPlaylist { get; set; } = false;
         public bool BlockAllExplicitSongs { get; set; } = false;
         public string RequesterPrefix { get; set; } = "Requested by ";
+        public bool UseDefaultBrowser { get; set; } = false;
     }
 
     public class Config

@@ -694,4 +694,10 @@
   <data name="lang_it" xml:space="preserve">
     <value>italien</value>
   </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Utiliser le navigateur Web par défaut</value>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Réponse lorsque la commande sr est en temps de recharge</value>
+  </data>
 </root>

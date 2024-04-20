@@ -863,4 +863,12 @@
     <value>Italian</value>
     <comment>Language name for "Italian"</comment>
   </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Use default web browser</value>
+    <comment>Use Default Web Browser</comment>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Response wehen the sr command is on cooldown</value>
+    <comment>Command on Cooldown Response</comment>
+  </data>
 </root>

@@ -44,8 +44,6 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
-using System.Web.UI.WebControls;
-using TwitchLib.PubSub.Models.Responses;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -81,6 +79,8 @@ namespace Songify_Slim.Util.Songify
         {
             Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
         };
+
+        private static readonly Stopwatch CooldownStopwatch = new();
 
         private static readonly List<string> SkipVotes = new();
 
@@ -614,11 +614,11 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (IsTrackUnavailable(track, e, out response))
-            {
-                SendChatMessage(e.ChatMessage.Channel, response);
-                return;
-            }
+            //if (IsTrackUnavailable(track, e, out response))
+            //{
+            //    SendChatMessage(e.ChatMessage.Channel, response);
+            //    return;
+            //}
 
             if (IsArtistBlacklisted(track, e, out response))
             {
@@ -1164,7 +1164,11 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // if onCooldown skips
-                if (_onCooldown) return;
+                //if (_onCooldown)
+                //{
+                //    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e));
+                //    return;
+                //}
 
                 if (ApiHandler.Spotify == null)
                 {
@@ -1213,8 +1217,12 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                // if onCooldown skip
-                if (_onCooldown) return;
+                // if onCooldown skips
+                if (_onCooldown)
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e));
+                    return;
+                }
 
                 if (ApiHandler.Spotify == null)
                 {
@@ -1606,6 +1614,19 @@ namespace Songify_Slim.Util.Songify
                 }
         }
 
+        private static string CreateCooldownResponse(OnMessageReceivedArgs e)
+        {
+            string response = Settings.Settings.BotRespCooldown;
+            response = response.Replace("{user}", e.ChatMessage.DisplayName);
+            response = response.Replace("{artist}", "");
+            response = response.Replace("{title}", "");
+            response = response.Replace("{maxreq}", "");
+            response = response.Replace("{errormsg}", "");
+            int time = (int)((CooldownTimer.Interval / 1000) - CooldownStopwatch.Elapsed.TotalSeconds);
+            response = response.Replace("{cd}", time.ToString());
+            return response;
+        }
+
         private static void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
@@ -1615,6 +1636,8 @@ namespace Songify_Slim.Util.Songify
         {
             // Resets the cooldown for the !ssr command
             _onCooldown = false;
+            CooldownStopwatch.Stop();
+            CooldownStopwatch.Reset();
             CooldownTimer.Stop();
         }
 
@@ -1657,8 +1680,18 @@ namespace Songify_Slim.Util.Songify
 
         private static string CreateSuccessResponse(FullTrack track, string displayName)
         {
-            string artists = string.Join(", ", track.Artists.Select(o => o.Name).ToList());
             string response = Settings.Settings.BotRespSuccess;
+            string artists = "";
+            try
+            {
+                artists = string.Join(", ", track.Artists.Select(o => o.Name).ToList());
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+                IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/dev_log.txt", Json.Serialize(track));
+            }
+
             response = response.Replace("{user}", displayName);
             response = response.Replace("{artist}", artists);
             response = response.Replace("{title}", track.Name);
@@ -2469,6 +2502,8 @@ namespace Songify_Slim.Util.Songify
             _onCooldown = true;
             CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
             CooldownTimer.Start();
+            CooldownStopwatch.Reset();
+            CooldownStopwatch.Start();
         }
 
         private static async Task UploadToQueue(FullTrack track, string displayName)

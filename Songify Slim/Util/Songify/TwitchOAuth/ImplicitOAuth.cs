@@ -65,7 +65,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             // Open the browser and send the user to the implicit autentication page on Twitch.
             try
             {
-                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"))
+                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") && !Settings.Settings.UseDefaultBrowser)
                 {
                     Process process = new();
                     process.StartInfo = new ProcessStartInfo

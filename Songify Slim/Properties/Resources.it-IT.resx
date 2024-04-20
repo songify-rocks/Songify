@@ -690,4 +690,10 @@
   <data name="lang_it" xml:space="preserve">
     <value>Italiano</value>
   </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Utilizza il browser Web predefinito</value>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Risposta quando il comando sr è in fase di recupero</value>
+  </data>
 </root>

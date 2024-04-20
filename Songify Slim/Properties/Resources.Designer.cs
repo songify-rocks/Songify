@@ -196,6 +196,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response wehen the sr command is on cooldown.
+        /// </summary>
+        public static string brw_CommandOnCooldown {
+            get {
+                return ResourceManager.GetString("brw_CommandOnCooldown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response when an explicit song has been requested and &apos;block explicit songs&apos; is turned on.
         /// </summary>
         public static string brw_ExplicitSongs {
@@ -1687,6 +1696,15 @@ namespace Songify_Slim.Properties {
         public static string sw_tcSystem_translated {
             get {
                 return ResourceManager.GetString("sw_tcSystem_translated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use default web browser.
+        /// </summary>
+        public static string sw_tcSystem_UseDefaultBrowser {
+            get {
+                return ResourceManager.GetString("sw_tcSystem_UseDefaultBrowser", resourceCulture);
             }
         }
         

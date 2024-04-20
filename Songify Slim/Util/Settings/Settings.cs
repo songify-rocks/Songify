@@ -1,5 +1,6 @@
 ﻿using Songify_Slim.Views;
 using System.Collections.Generic;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings
@@ -612,9 +613,45 @@ namespace Songify_Slim.Util.Settings
         }
         public static string BotRespRemove { get => GetBot_Resp_Remove(); set => SetBot_Resp_Remove(value); }
         public static string BotRespUnavailable { get => GetBot_Resp_SongUnavailable(); set => SetBot_Resp_SongUnavailable(value); }
-        public static bool BlockAllExplicitSongs { get=> GetBlockAllExplicitSongs(); set=> SetBlockAllExplicitSongs(value); }
-        public static string BotRespTrackExplicit { get=>GetBot_Resp_ExplicitSong(); set=>SetBot_Resp_ExplicitSong(value); }
-        public static string RequesterPrefix { get=> GetRequesterPrefix(); set=>SetRequesterPrefix(value); }
+        public static bool BlockAllExplicitSongs { get => GetBlockAllExplicitSongs(); set => SetBlockAllExplicitSongs(value); }
+        public static string BotRespTrackExplicit { get => GetBot_Resp_ExplicitSong(); set => SetBot_Resp_ExplicitSong(value); }
+        public static string RequesterPrefix { get => GetRequesterPrefix(); set => SetRequesterPrefix(value); }
+        public static PrivateProfile SpotifyProfile { get => GetSpotifyProfile(); set => SetSpotifyProfile(value); }
+        public static bool UseDefaultBrowser { get => GetUseDefaultBrowser(); set => SetUseDefaultBrowser(value); }
+        public static string BotRespCooldown { get => GetBot_Resp_Cooldown(); set => SetBot_Resp_Cooldown(value); }
+
+        private static void SetBot_Resp_Cooldown(string value)
+        {
+            _currentConfig.BotConfig.BotRespCooldown = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static string GetBot_Resp_Cooldown()
+        {
+            return _currentConfig.BotConfig.BotRespCooldown;
+        }
+
+        private static void SetUseDefaultBrowser(bool value)
+        {
+            _currentConfig.AppConfig.UseDefaultBrowser = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static bool GetUseDefaultBrowser()
+        {
+            return _currentConfig.AppConfig.UseDefaultBrowser;
+        }
+
+        private static PrivateProfile GetSpotifyProfile()
+        {
+            return _currentConfig.SpotifyCredentials.Profile;
+        }
+
+        private static void SetSpotifyProfile(PrivateProfile value)
+        {
+            _currentConfig.SpotifyCredentials.Profile = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
+        }
 
         private static void SetRequesterPrefix(string value)
         {
@@ -771,7 +808,7 @@ namespace Songify_Slim.Util.Settings
                 ClientSecret = GetClientSecret(),
                 DeviceId = GetSpotifyDeviceId(),
                 RefreshToken = GetSpotifyRefreshToken(),
-
+                Profile = GetSpotifyProfile(),
             };
 
             TwitchCredentials twitchCredentials = new()
@@ -825,6 +862,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespRemove = GetBot_Resp_Remove(),
                 BotRespUnavailable = GetBot_Resp_SongUnavailable(),
                 BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
+                BotRespCooldown = GetBot_Resp_Cooldown(),
             };
 
             AppConfig appConfig = new()
@@ -898,6 +936,7 @@ namespace Songify_Slim.Util.Settings
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
                 RequesterPrefix = GetRequesterPrefix(),
+                UseDefaultBrowser = GetUseDefaultBrowser(),
             };
 
             return new Configuration

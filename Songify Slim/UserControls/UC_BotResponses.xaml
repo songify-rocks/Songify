@@ -165,7 +165,14 @@
                  AcceptsReturn="True" VerticalAlignment="Center"
                  ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" TextChanged="TbExplicit_TextChanged" />
 
+        <Border VerticalAlignment="Bottom" Margin="0,6"
+                BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent3}" />
+        <TextBlock Margin="0,0,6,0" TextWrapping="Wrap"
+                   Text="{x:Static properties:Resources.brw_CommandOnCooldown}" HorizontalAlignment="Left"
+                   VerticalAlignment="Center" />
+        <TextBox x:Name="TbSrCooldown" MinHeight="27" TextWrapping="Wrap"
+                 AcceptsReturn="True" VerticalAlignment="Center"
+                 ToolTip="{DynamicResource ParamTooltip}" GotFocus="tb__GotFocus" TextChanged="TbSrCooldown_TextChanged" />
         </StackPanel>
-
     </Grid>
 </UserControl>

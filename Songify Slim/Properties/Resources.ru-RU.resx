@@ -694,4 +694,10 @@
   <data name="lang_it" xml:space="preserve">
     <value>итальянский</value>
   </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Использовать веб-браузер по умолчанию</value>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Реакция, когда команда sr находится на кулдауне</value>
+  </data>
 </root>

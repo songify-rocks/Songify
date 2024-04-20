@@ -121,6 +121,7 @@ namespace Songify_Slim.Util.Songify
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
                                     PackIconBootstrapIconsKind.CheckCircleFill;
                                 GlobalObjects.SpotifyProfile = await Spotify.GetPrivateProfileAsync();
+                                Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
                                 Logger.LogStr($"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                                 Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
                                 if (GlobalObjects.SpotifyProfile.Product == "premium") return;
@@ -315,9 +316,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                string x = Spotify.GetPrivateProfile().Country;
-                // Returns a Track-Object matching the song id
-                return Spotify.GetTrack(id, x);
+                return Spotify.GetTrack(id, Settings.Settings.SpotifyProfile.Country ?? "");
             }
             catch (Exception e)
             {

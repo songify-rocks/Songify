@@ -690,4 +690,10 @@
   <data name="lang_it" xml:space="preserve">
     <value>Włoski</value>
   </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Użyj domyślnej przeglądarki internetowej</value>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Reakcja, gdy komenda sr jest w trakcie odnowienia</value>
+  </data>
 </root>

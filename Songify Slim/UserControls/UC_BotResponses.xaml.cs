@@ -71,7 +71,9 @@ namespace Songify_Slim.UserControls
                 {"}}", ""},
                 {"{url}", "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce"},
                 {"{playlist_name}", "My Super Cool Playlist"},
-                {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"}
+                {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"},
+                {"{cd}", "5"}
+
             };
             foreach (KeyValuePair<string, string> pair in replacements)
             {
@@ -203,7 +205,7 @@ namespace Songify_Slim.UserControls
             TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
             TbRemove.Text = Settings.BotRespRemove;
             TbExplicit.Text = Settings.BotRespTrackExplicit;
-
+            TbSrCooldown.Text = Settings.BotRespCooldown;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -226,6 +228,12 @@ namespace Songify_Slim.UserControls
         private void TbExplicit_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespTrackExplicit = TbExplicit.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void TbSrCooldown_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespCooldown = TbSrCooldown.Text;
             SetPreview(sender as TextBox);
         }
     }

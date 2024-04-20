@@ -143,8 +143,20 @@
                             Minimum="1"
                             NumericInputMode="Numbers"
                             ValueChanged="NudChrome_ValueChanged" />
+                        <controls:ToggleSwitch 
+                            x:Name="TglUseDefaultBrowser" Grid.Row="6"
+                                               Width="467"
+                                               Height="32"
+                                               VerticalAlignment="Top"
+                                               Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
+                                               ContentPadding="0"
+                                               Focusable="False"
+                                               FontFamily="Segoe UI"
+                                               FontSize="12"
+                                               Toggled="TglUseDefaultBrowser_OnToggled"
+                                               />
                         <Label
-                            Grid.Row="6"
+                            Grid.Row="7"
                             Padding="0,5,5,5"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
@@ -152,7 +164,7 @@
                             FontSize="16" />
                         <controls:ToggleSwitch
                             x:Name="ToggleSwitchPrivacy"
-                            Grid.Row="7"
+                            Grid.Row="8"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             ContentPadding="0"
@@ -163,7 +175,7 @@
                             Toggled="ToggleSwitchPrivacy_Toggled" />
                         <Label
                             x:Name="LabelColor"
-                            Grid.Row="9"
+                            Grid.Row="10"
                             Width="71"
                             Padding="5"
                             HorizontalAlignment="Left"
@@ -171,7 +183,7 @@
                             Content="{x:Static local:Resources.sw_Appearance_Color}" />
                         <ComboBox
                             x:Name="ComboBoxColor"
-                            Grid.Row="10"
+                            Grid.Row="11"
                             Width="234"
                             Height="23"
                             HorizontalAlignment="Left"
@@ -179,7 +191,7 @@
                             SelectionChanged="ComboBoxColorSelectionChanged" />
                         <controls:ToggleSwitch
                             x:Name="ThemeToggleSwitch"
-                            Grid.Row="10"
+                            Grid.Row="11"
                             Width="145"
                             Height="32"
                             Padding="5,0,0,0"
@@ -192,7 +204,7 @@
                             OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}"
                             Toggled="ThemeToggleSwitchIsCheckedChanged" />
                         <Label
-                            Grid.Row="8"
+                            Grid.Row="9"
                             Padding="0,5,5,5"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
