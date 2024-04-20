@@ -1179,7 +1179,7 @@ namespace Songify_Slim.Util.Songify
             // Same code from above but it reacts to a command instead of rewards
             // Songrequst Command (!ssr)
             if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
-                e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger} "))
+                e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger.ToLower()} ", StringComparison.CurrentCultureIgnoreCase))
             {
                 try
                 {
@@ -1232,7 +1232,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // Skip Command for mods (!skip)
-            if (Settings.Settings.Player == 0 && e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSkipTrigger}" &&
+            if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSkipTrigger.ToLower()}" &&
                 Settings.Settings.BotCmdSkip)
             {
                 try
@@ -1298,7 +1298,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Voteskip command (!voteskip)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message == $"!{Settings.Settings.BotCmdVoteskipTrigger}" &&
+                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdVoteskipTrigger.ToLower()}" &&
                      Settings.Settings.BotCmdSkipVote)
             {
                 try
@@ -1354,7 +1354,7 @@ namespace Songify_Slim.Util.Songify
                 }
             }
             // Song command (!song)
-            else if (e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSongTrigger}" && Settings.Settings.BotCmdSong)
+            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSongTrigger.ToLower()}" && Settings.Settings.BotCmdSong)
             {
                 try
                 {
@@ -1388,7 +1388,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Pos command (!pos)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message == $"!{Settings.Settings.BotCmdPosTrigger}" && Settings.Settings.BotCmdPos)
+                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdPosTrigger.ToLower()}" && Settings.Settings.BotCmdPos)
             {
                 try
                 {
@@ -1447,7 +1447,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Next command (!next)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message == $"!{Settings.Settings.BotCmdNextTrigger}" && Settings.Settings.BotCmdNext)
+                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdNextTrigger.ToLower()}" && Settings.Settings.BotCmdNext)
             {
                 try
                 {
@@ -1480,7 +1480,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Remove command (!remove)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger}") &&
+                     e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger.ToLower()}", StringComparison.CurrentCultureIgnoreCase) &&
                      Settings.Settings.BotCmdRemove)
             {
                 try
@@ -1558,7 +1558,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Songlike command (!songlike)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message == $"!{Settings.Settings.BotCmdSonglikeTrigger}" &&
+                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
                      (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
             {
                 if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
@@ -1592,7 +1592,7 @@ namespace Songify_Slim.Util.Songify
             }
             // Play / Pause command (!play; !pause)
             else
-                switch (e.ChatMessage.Message)
+                switch (e.ChatMessage.Message.ToLower())
                 // ReSharper disable once BadChildStatementIndent
                 {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&

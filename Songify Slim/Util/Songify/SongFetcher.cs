@@ -175,7 +175,7 @@ namespace Songify_Slim.Util.Songify
                 return Task.CompletedTask;
             }
             GlobalObjects.CurrentSong = trackinfo;
-            UpdateWebServerResponse();
+            UpdateWebServerResponse(trackinfo);
 
             string output = Settings.Settings.OutputString;
 
@@ -390,7 +390,7 @@ namespace Songify_Slim.Util.Songify
                 return Task.CompletedTask;
             }
             GlobalObjects.CurrentSong = songInfo;
-            UpdateWebServerResponse();
+            UpdateWebServerResponse(songInfo);
 
             string output = Settings.Settings.OutputString;
 
@@ -477,7 +477,6 @@ namespace Songify_Slim.Util.Songify
             TrackInfo songInfo = ApiHandler.GetSongInfo();
             try
             {
-
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null))
                 {
                     _trackChanged = true;
@@ -549,7 +548,7 @@ namespace Songify_Slim.Util.Songify
 
                     if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
-                        GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
+                        //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                     }
 
@@ -565,7 +564,8 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.ForceUpdate = false;
                 }
 
-                UpdateWebServerResponse();
+
+                UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)
             {
@@ -828,9 +828,9 @@ namespace Songify_Slim.Util.Songify
             return currentSongOutput;
         }
 
-        private static void UpdateWebServerResponse()
+        private static void UpdateWebServerResponse(TrackInfo track)
         {
-            string j = Json.Serialize(GlobalObjects.CurrentSong ?? new TrackInfo());
+            string j = Json.Serialize(track ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
             IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
