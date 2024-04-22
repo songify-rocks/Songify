@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -71,6 +72,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
         public Tuple<ResponseInfo, T> DownloadJson<T>(string url, Dictionary<string, string> headers = null)
         {
+            Debug.WriteLine($"called: {url}");
+
             Tuple<ResponseInfo, string> response = Download(url, headers);
             try
             {
@@ -78,13 +81,16 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             }
             catch (JsonException error)
             {
+                Logger.LogStr("SPOTIFY API:" + url);
+                Logger.LogExc(error);
+                IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/json.txt", response.Item2);
                 return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
             }
         }
 
         public async Task<Tuple<ResponseInfo, T>> DownloadJsonAsync<T>(string url, Dictionary<string, string> headers = null)
         {
-
+            Debug.WriteLine($"called: {url}");
             Tuple<ResponseInfo, string> response = await DownloadAsync(url, headers).ConfigureAwait(false);
 
             try

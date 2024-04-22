@@ -2947,5 +2947,12 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         }
 
         #endregion Util
+
+        public Task<Paging<SimplePlaylist>> GetCurrentUsersPlaylistsAsync(int limit = 20, int offset = 0)
+        {
+            if (!UseAuth)
+                throw new InvalidOperationException("Auth is required for GetUserPlaylists");
+            return DownloadDataAsync<Paging<SimplePlaylist>>(_builder.GetCurrentUserPlaylists(limit, offset));
+        }
     }
 }
