@@ -105,6 +105,7 @@ namespace Songify_Slim.Views
             TbClientSecret.Password = Settings.ClientSecret;
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
             TglswSpotify.IsOn = Settings.UseOwnApp;
+            TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             //TxtbxRewardId.Text = Settings.TwRewardId;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
@@ -175,11 +176,11 @@ namespace Songify_Slim.Views
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
 
-            if (ApiHandler.Spotify != null)
+            if (SpotifyApiHandler.Spotify != null)
             {
                 try
                 {
-                    PrivateProfile profile = await ApiHandler.Spotify.GetPrivateProfileAsync();
+                    PrivateProfile profile = await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
                     LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                     BitmapImage bitmap = new();
                     bitmap.BeginInit();
@@ -394,7 +395,7 @@ namespace Songify_Slim.Views
             Settings.SpotifyRefreshToken = "";
             try
             {
-                await ApiHandler.DoAuthAsync();
+                await SpotifyApiHandler.DoAuthAsync();
                 SetControls();
             }
             catch (Exception ex)
@@ -1386,16 +1387,16 @@ namespace Songify_Slim.Views
 
         private async Task LoadSpotifyPlaylists()
         {
-            if (ApiHandler.Spotify == null) return;
+            if (SpotifyApiHandler.Spotify == null) return;
             try
             {
-                GlobalObjects.SpotifyProfile ??= await ApiHandler.Spotify.GetPrivateProfileAsync();
+                GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
                 if (GlobalObjects.SpotifyProfile == null) return;
 
                 CbSpotifyPlaylist.Items.Clear();
                 CbSpotifySongLimitPlaylist.Items.Clear();
 
-                Paging<SimplePlaylist> playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50);
+                Paging<SimplePlaylist> playlists = await SpotifyApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50);
                 if (playlists == null) return;
 
                 while (playlists != null)
@@ -1408,7 +1409,7 @@ namespace Songify_Slim.Views
 
                     if (!playlists.HasNextPage()) break;  // Exit if no more pages
 
-                    playlists = await ApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50, playlists.Offset + playlists.Limit);
+                    playlists = await SpotifyApiHandler.Spotify.GetUserPlaylistsAsync(GlobalObjects.SpotifyProfile.Id, 50, playlists.Offset + playlists.Limit);
                 }
 
                 if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))

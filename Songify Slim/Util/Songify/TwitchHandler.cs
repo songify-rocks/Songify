@@ -602,7 +602,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            FullTrack track = ApiHandler.GetTrack(trackId);
+            FullTrack track = SpotifyApiHandler.GetTrack(trackId);
 
             if (track == null)
             {
@@ -646,7 +646,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            ErrorResponse error = ApiHandler.AddToQ("spotify:track:" + trackId);
+            ErrorResponse error = SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
             if (error == null)
             {
                 response = CreateErrorResponse(e.ChatMessage.DisplayName, "Spotify response was Null");
@@ -734,8 +734,8 @@ namespace Songify_Slim.Util.Songify
         private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
             string spotifySongLimitPlaylist)
         {
-            FullPlaylist playlist = await ApiHandler.Spotify.GetPlaylistAsync(spotifySongLimitPlaylist);
-            Paging<PlaylistTrack> tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(spotifySongLimitPlaylist);
+            FullPlaylist playlist = await SpotifyApiHandler.Spotify.GetPlaylistAsync(spotifySongLimitPlaylist);
+            Paging<PlaylistTrack> tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(spotifySongLimitPlaylist);
             while (tracks != null && tracks.Items != null)
             {
                 // Check if any track matches the given ID
@@ -751,7 +751,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // Fetch the next page of tracks
-                tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
             }
 
             return new Tuple<bool, FullPlaylist>(false, playlist);
@@ -762,7 +762,7 @@ namespace Songify_Slim.Util.Songify
             // loads the blacklist from settings
             string response;
             // gets the track information using spotify api
-            FullTrack track = ApiHandler.GetTrack(trackId);
+            FullTrack track = SpotifyApiHandler.GetTrack(trackId);
 
             if (track.IsPlayable != null && (bool)!track.IsPlayable)
             {
@@ -847,7 +847,7 @@ namespace Songify_Slim.Util.Songify
             string spotifyUri = "spotify:track:" + trackId;
 
             // try adding the song to the queue using the URI
-            ErrorResponse error = ApiHandler.AddToQ(spotifyUri);
+            ErrorResponse error = SpotifyApiHandler.AddToQ(spotifyUri);
             if (error.Error != null)
             {
                 // if an error has been encountered, log it, inform the requester and skip
@@ -914,7 +914,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 Paging<PlaylistTrack> tracks =
-                    await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+                    await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
 
                 while (tracks is { Items: not null })
                 {
@@ -933,10 +933,10 @@ namespace Songify_Slim.Util.Songify
                         break;  // Exit if no more pages
                     }
 
-                    tracks = await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                    tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                 }
 
-                ErrorResponse x = await ApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                ErrorResponse x = await SpotifyApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
                     $"spotify:track:{trackId}");
                 return x == null || x.HasError();
             }
@@ -1184,7 +1184,7 @@ namespace Songify_Slim.Util.Songify
                 //    return;
                 //}
 
-                if (ApiHandler.Spotify == null)
+                if (SpotifyApiHandler.Spotify == null)
                 {
                     SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
@@ -1238,7 +1238,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                if (ApiHandler.Spotify == null)
+                if (SpotifyApiHandler.Spotify == null)
                 {
                     SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
@@ -1297,7 +1297,7 @@ namespace Songify_Slim.Util.Songify
                     msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                     msg = msg.Replace("{song}",
                         $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    ErrorResponse response = await ApiHandler.SkipSong();
+                    ErrorResponse response = await SpotifyApiHandler.SkipSong();
                     if (response.Error != null)
                     {
                         SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
@@ -1358,7 +1358,7 @@ namespace Songify_Slim.Util.Songify
 
                 if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                 {
-                    ErrorResponse response = await ApiHandler.SkipSong();
+                    ErrorResponse response = await SpotifyApiHandler.SkipSong();
                     if (response.Error != null)
                     {
                         SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
@@ -1619,11 +1619,11 @@ namespace Songify_Slim.Util.Songify
                 {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                        Settings.Settings.BotCmdPlayPause):
-                        await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                        await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
                         break;
                     case "!pause" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                         Settings.Settings.BotCmdPlayPause):
-                        await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                         break;
                 }
         }
@@ -1914,7 +1914,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // search for a track with a search string from chat
-            SearchItem searchItem = ApiHandler.FindTrack(HttpUtility.UrlEncode(input));
+            SearchItem searchItem = SpotifyApiHandler.FindTrack(HttpUtility.UrlEncode(input));
             if (searchItem.HasError())
             {
                 SendChatMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
@@ -2312,7 +2312,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                if (ApiHandler.Spotify == null)
+                if (SpotifyApiHandler.Spotify == null)
                 {
                     msg = "It seems that Spotify is not connected right now.";
                     //Send a Message to the user, that his Userlevel is too low
@@ -2440,7 +2440,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (_skipCooldown)
                     return;
-                ErrorResponse response = await ApiHandler.SkipSong();
+                ErrorResponse response = await SpotifyApiHandler.SkipSong();
                 if (response.Error != null)
                 {
                     SendChatMessage(Settings.Settings.TwChannel, "Error: " + response.Error.Message);
@@ -2484,9 +2484,9 @@ namespace Songify_Slim.Util.Songify
                     if (match.Success)
                     {
                         string songId = match.Groups[1].Value;
-                        ErrorResponse response = ApiHandler.AddToQ($"spotify:track:{songId}");
+                        ErrorResponse response = SpotifyApiHandler.AddToQ($"spotify:track:{songId}");
                         if (response != null && !response.HasError())
-                            await ApiHandler.SkipSong();
+                            await SpotifyApiHandler.SkipSong();
                     }
                 }
             }

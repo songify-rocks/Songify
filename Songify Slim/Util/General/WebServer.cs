@@ -178,7 +178,7 @@ namespace Songify_Slim.Util.General
                     int clampedValue = MathUtils.Clamp(value, 0, 100); // For .NET Framework versions that don't have Math.Clamp, use your custom Clamp method
 
                     // Now, apply the clamped value
-                    await ApiHandler.Spotify.SetVolumeAsync(clampedValue);
+                    await SpotifyApiHandler.Spotify.SetVolumeAsync(clampedValue);
                     return "Volume set to " + clampedValue + "%";
                 }
 
@@ -203,18 +203,18 @@ namespace Songify_Slim.Util.General
                     return !string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block";
                 case "skip":
                 case "next":
-                    await ApiHandler.SkipSong();
+                    await SpotifyApiHandler.SkipSong();
                     return "Song skipped";
                 case "play_pause":
                 case "pause":
                 case "play":
-                    PlaybackContext playbackContext = await ApiHandler.Spotify.GetPlaybackAsync();
+                    PlaybackContext playbackContext = await SpotifyApiHandler.Spotify.GetPlaybackAsync();
                     if (playbackContext.IsPlaying)
                     {
-                        await ApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                         return "Playback paused";
                     }
-                    await ApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                    await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
                     return "Playback resumed";
                 case "stop_sr_reward":
                     foreach (string s in Settings.Settings.TwRewardId)
@@ -227,22 +227,22 @@ namespace Songify_Slim.Util.General
                     }
                     break;
                 case "vol_up":
-                    device = (await ApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
+                    device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
                     if (device == null)
                     {
                         return "No device found";
                     }
 
-                    await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent + 5, 0, 100), device.Id);
+                    await SpotifyApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent + 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent + 5, 0, 100) + "%";
                 case "vol_down":
-                    device = (await ApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
+                    device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
                     if (device == null)
                     {
                         return "No device found";
                     }
 
-                    await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
+                    await SpotifyApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
                 default:
                     return $"Unknown command: {message}";
@@ -266,7 +266,7 @@ namespace Songify_Slim.Util.General
 
         private static async void BlockSong()
         {
-            FullTrack result = ApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
+            FullTrack result = SpotifyApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
             if (result != null)
                 Settings.Settings.SongBlacklist.Add(new TrackItem
                 {
@@ -277,7 +277,7 @@ namespace Songify_Slim.Util.General
                     ReadableName = string.Join(", ", result.Artists.Select(o => o.Name).ToList()) + " - " + result.Name
                 });
             Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
-            await ApiHandler.SkipSong();
+            await SpotifyApiHandler.SkipSong();
             // If Window_Blacklist is open, call LoadBlacklists();
             Application.Current.Dispatcher.Invoke(() =>
             {

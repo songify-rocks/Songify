@@ -86,7 +86,7 @@ namespace Songify_Slim.Views
                 case 0:
                     // Spotify Artist Blacklist
                     // If the API is not connected just don't do anything?
-                    if (ApiHandler.Spotify == null)
+                    if (SpotifyApiHandler.Spotify == null)
                     {
                         await this.ShowMessageAsync("Notification",
                             "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
@@ -94,7 +94,7 @@ namespace Songify_Slim.Views
                     }
 
                     // Perform a search via the spotify API
-                    SearchItem searchItem = ApiHandler.GetArtist(search);
+                    SearchItem searchItem = SpotifyApiHandler.GetArtist(search);
                     switch (searchItem.Artists.Items.Count)
                     {
                         case <= 0:
@@ -131,7 +131,7 @@ namespace Songify_Slim.Views
                 case 2: // Song Blacklist
                     List<FullTrack> tracks = new();
                     string trackId;
-                    if (ApiHandler.Spotify == null)
+                    if (SpotifyApiHandler.Spotify == null)
                     {
                         await this.ShowMessageAsync("Notification",
                             "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
@@ -142,18 +142,18 @@ namespace Songify_Slim.Views
                         // search for a track with the id
                         trackId = search.Replace("spotify:track:", "");
                         // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                        tracks.Add(ApiHandler.GetTrack(trackId));
+                        tracks.Add(SpotifyApiHandler.GetTrack(trackId));
                     }
 
                     else if (search.StartsWith("https://open.spotify.com/track/"))
                     {
                         trackId = search.Replace("https://open.spotify.com/track/", "");
                         trackId = trackId.Split('?')[0];
-                        tracks.Add(ApiHandler.GetTrack(trackId));
+                        tracks.Add(SpotifyApiHandler.GetTrack(trackId));
                     }
                     else
                     {
-                        SearchItem result = ApiHandler.FindTrack(search);
+                        SearchItem result = SpotifyApiHandler.FindTrack(search);
                         if (result.Tracks != null)
                             tracks.AddRange(result.Tracks.Items);
                     }

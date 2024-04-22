@@ -29,7 +29,7 @@ namespace Songify_Slim.Util.Songify
     {
         private static int _id;
         private readonly List<string> _browsers = ["chrome", "msedge", "opera"];
-        private static readonly List<string> AudioFileyTypes =
+        private static readonly List<string> AudioFileTypes =
         [
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf",
             ".flac", ".gsm", ".iklax", ".ivs", ".m4a", ".m4b", ".m4p", ".mmf", ".mp3", ".mpc", ".msv", ".nmf", ".ogg",
@@ -109,7 +109,7 @@ namespace Songify_Slim.Util.Songify
 
                             try
                             {
-                                foreach (string item in AudioFileyTypes.Where(item => wintitle.Contains(item)))
+                                foreach (string item in AudioFileTypes.Where(item => wintitle.Contains(item)))
                                 {
                                     wintitle = wintitle.Replace(item, "");
                                 }
@@ -145,7 +145,7 @@ namespace Songify_Slim.Util.Songify
                             wintitle = wintitle.Replace(" [foobar2000]", "");
                             try
                             {
-                                foreach (string item in AudioFileyTypes.Where(item => wintitle.Contains(item)))
+                                foreach (string item in AudioFileTypes.Where(item => wintitle.Contains(item)))
                                 {
                                     wintitle = wintitle.Replace(item, "");
                                 }
@@ -463,18 +463,18 @@ namespace Songify_Slim.Util.Songify
             if (_updating)
                 return null;
             _updating = true;
-            if (ApiHandler.Spotify == null)
+            if (SpotifyApiHandler.Spotify == null)
             {
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
                     !string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
                 {
-                    await ApiHandler.DoAuthAsync();
+                    await SpotifyApiHandler.DoAuthAsync();
                 }
                 return null;
             }
 
             // gets the current playing song info
-            TrackInfo songInfo = ApiHandler.GetSongInfo();
+            TrackInfo songInfo = SpotifyApiHandler.GetSongInfo();
             try
             {
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null))
@@ -498,7 +498,7 @@ namespace Songify_Slim.Util.Songify
                         {
                             GlobalObjects.SkipList.Remove(
                                 GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId));
-                            await ApiHandler.SkipSong();
+                            await SpotifyApiHandler.SkipSong();
                         });
                     }
 
@@ -864,8 +864,8 @@ namespace Songify_Slim.Util.Songify
             do
             {
                 tracks = firstFetch
-                    ? await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
-                    : await ApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
+                    ? await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
+                    : await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
                         tracks.Offset + tracks.Limit);
                 if (tracks.Items.Any(t => t.Track.Id == id))
                 {

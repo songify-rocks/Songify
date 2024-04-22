@@ -529,7 +529,7 @@ namespace Songify_Slim.Views
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
                 else
-                    await ApiHandler.DoAuthAsync();
+                    await SpotifyApiHandler.DoAuthAsync();
 
                 img_cover.Visibility = Visibility.Visible;
             }

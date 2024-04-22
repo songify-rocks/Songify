@@ -19,7 +19,7 @@ using Timer = System.Timers.Timer;
 namespace Songify_Slim.Util.Songify
 {
     // This class handles everything regarding Spotify-API integration
-    public static class ApiHandler
+    public static class SpotifyApiHandler
     {
         public static SpotifyWebAPI Spotify;
         private static Token _lastToken;

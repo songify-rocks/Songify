@@ -137,7 +137,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void UpdateQueueWindow()
         {
-            SimpleQueue queue = await ApiHandler.GetQueueInfo();
+            SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
             Application.Current.Dispatcher.Invoke(() =>
             {
                 foreach (Window window in Application.Current.Windows)

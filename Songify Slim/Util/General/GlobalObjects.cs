@@ -127,7 +127,7 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-            SimpleQueue queue = await ApiHandler.GetQueueInfo();
+            SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
 
             //Remove all songs from the web queue that are not in the current playback queue
             if (ReqList.Count > 0)
