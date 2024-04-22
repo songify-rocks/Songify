@@ -580,10 +580,19 @@ namespace Songify_Slim.Views
                 Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains(@"C:\Program Files (x86)") ||
                 Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location).Contains(@"C:\ProgramData"))
             {
-                MessageBox.Show(
-                    "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
-                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Application.Current.Shutdown();
+                //Try to save a file at the current location, if we have permission to write / read files here don't do aynthing, else show the messagebox
+                try
+                {
+                    File.WriteAllText(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/test.txt", "test");
+                    File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/test.txt");
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(
+                        "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
+                        "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Application.Current.Shutdown();
+                }
             }
 
 

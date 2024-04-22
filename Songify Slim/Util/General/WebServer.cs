@@ -108,23 +108,6 @@ namespace Songify_Slim.Util.General
             WebSocketContext webSocketContext = null;
             try
             {
-                // Check for an Authorization header (or any other header as needed)
-                string authHeader = context.Request.Headers["Authorization"];
-
-                // Implement your authentication logic here.
-                // For example, verify a token extracted from the authHeader.
-                //bool isAuthenticated = ValidateAuthToken(authHeader); // You need to implement ValidateAuthToken
-
-                //if (!isAuthenticated)
-                //{
-                //    // If authentication fails, respond with an appropriate status code and close the connection.
-                //    Debug.WriteLine("Unauthorized");
-                //    context.Response.StatusCode = 401; // Unauthorized
-                //    context.Response.StatusDescription = "Unauthorized";
-                //    context.Response.Close();
-                //    return;
-                //}
-
                 webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
                 WebSocket webSocket = webSocketContext.WebSocket;
 
@@ -137,7 +120,8 @@ namespace Songify_Slim.Util.General
                         result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
 
                         // Decode the received message
-                        string message = System.Text.Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
+                        if (buffer.Array == null) continue;
+                        string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
 
                         // Process the command
                         string response = await ProcessCommand(message);
@@ -154,31 +138,26 @@ namespace Songify_Slim.Util.General
                         }
 
                         // Encode the response message to byte array
-                        byte[] responseBytes = System.Text.Encoding.UTF8.GetBytes(response);
+                        if (response == null) continue;
+                        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
                         ArraySegment<byte> responseBuffer = new(responseBytes);
 
                         // Send the response back to the client
                         await webSocket.SendAsync(responseBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
-
                     } while (!result.EndOfMessage);
                 }
             }
             catch (Exception e)
             {
+                Logger.LogExc(e);
                 // Handle exception
-                //Console.WriteLine("Exception: {0}", e);
             }
             finally
             {
                 webSocketContext?.WebSocket?.Dispose();
             }
         }
-
-        private static bool ValidateAuthToken(string authHeader)
-        {
-            return authHeader == "123456";
-        }
-
+        
         private async Task<string> ProcessCommand(string message)
         {
             string command = message.ToLower();
@@ -266,7 +245,6 @@ namespace Songify_Slim.Util.General
                     await ApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
                 default:
-                    //Console.WriteLine($"Unknown command: {message}");
                     return $"Unknown command: {message}";
             }
 
@@ -329,13 +307,13 @@ namespace Songify_Slim.Util.General
             return request.IsWebSocketRequest;
         }
 
-        public static string GetLocalIpAddress()
+        private static string GetLocalIpAddress()
         {
             IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
             return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).FirstOrDefault();
         }
 
-        public static bool IsRunningAsAdministrator()
+        private static bool IsRunningAsAdministrator()
         {
             try
             {
@@ -363,7 +341,7 @@ namespace Songify_Slim.Util.General
             _listener.Stop();
         }
 
-        public static bool PortIsFree(int port)
+        private static bool PortIsFree(int port)
         {
             IPGlobalProperties properties = IPGlobalProperties.GetIPGlobalProperties();
 
@@ -395,10 +373,8 @@ namespace Songify_Slim.Util.General
             response.Headers.Add("Access-Control-Allow-Methods", "POST, GET");
             response.ContentType = "application/json; charset=utf-8";
             response.ContentEncoding = Encoding.UTF8;
-            using (Stream output = response.OutputStream)
-            {
-                output.Write(responseBytes, 0, responseBytes.Length);
-            }
+            using Stream output = response.OutputStream;
+            output.Write(responseBytes, 0, responseBytes.Length);
         }
     }
 }
