@@ -43,7 +43,7 @@ namespace Songify_Slim.Views
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
-        private readonly List<int> _refundConditons = new();
+        private readonly List<int> _refundConditions = [];
 
         public Window_Settings()
         {
@@ -82,7 +82,6 @@ namespace Songify_Slim.Views
                 CbxUserLevelsMaxReq.SelectedIndex = 0;
             // Sets all the controls from settings
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
-            //TxtbxOutputdirectory.Text = Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException();
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
             ChbxAutoClear.IsOn = Settings.AutoClearQueue;
@@ -106,7 +105,6 @@ namespace Songify_Slim.Views
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
             TglswSpotify.IsOn = Settings.UseOwnApp;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
-            //TxtbxRewardId.Text = Settings.TwRewardId;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -160,8 +158,8 @@ namespace Songify_Slim.Views
             TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
             TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
 
-            Settings.UserLevelsCommand ??= new List<int>();
-            Settings.UserLevelsReward ??= new List<int>();
+            Settings.UserLevelsCommand ??= [];
+            Settings.UserLevelsReward ??= [];
 
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
@@ -241,11 +239,11 @@ namespace Songify_Slim.Views
             await LoadRewards();
 
             if (Settings.RefundConditons == null) return;
-            foreach (int conditon in Settings.RefundConditons)
+            foreach (int condition in Settings.RefundConditons)
             {
                 foreach (UIElement child in GrdTwitchReward.Children)
                 {
-                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund") && box.Tag.ToString() == conditon.ToString())
+                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund") && box.Tag.ToString() == condition.ToString())
                     {
                         box.IsChecked = true;
                     }
@@ -301,16 +299,12 @@ namespace Songify_Slim.Views
 
         private void AppendText(string s, string text)
         {
-            TextBox tb = null;
-            switch (s)
+            TextBox tb = s switch
             {
-                case "1":
-                    tb = TxtbxOutputformat;
-                    break;
-                case "2":
-                    tb = TxtbxOutputformat2;
-                    break;
-            }
+                "1" => TxtbxOutputformat,
+                "2" => TxtbxOutputformat2,
+                _ => null
+            };
 
             // Get the current caret position and the length of the selected text
             int selectionStart = tb.SelectionStart;
@@ -1017,7 +1011,7 @@ namespace Songify_Slim.Views
         private void CheckRefundChecked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            _refundConditons.Add(int.Parse(((CheckBox)sender).Tag.ToString()));
+            _refundConditions.Add(int.Parse(((CheckBox)sender).Tag.ToString()));
             if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
             {
                 foreach (UIElement child in GrdTwitchReward.Children)
@@ -1029,14 +1023,14 @@ namespace Songify_Slim.Views
                 }
             }
             //Debug.WriteLine(string.Join(", ", refundConditons));
-            Settings.RefundConditons = _refundConditons.ToArray();
+            Settings.RefundConditons = _refundConditions.ToArray();
 
         }
 
         private void CheckRefundUnchecked(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
-            _refundConditons.Remove(int.Parse(((CheckBox)sender).Tag.ToString()));
+            _refundConditions.Remove(int.Parse(((CheckBox)sender).Tag.ToString()));
             if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
                 foreach (UIElement child in GrdTwitchReward.Children)
                 {
@@ -1046,7 +1040,7 @@ namespace Songify_Slim.Views
                     }
                 }
             //Debug.WriteLine(string.Join(", ", refundConditons));
-            Settings.RefundConditons = _refundConditons.ToArray();
+            Settings.RefundConditons = _refundConditions.ToArray();
         }
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
