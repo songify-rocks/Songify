@@ -620,6 +620,18 @@ namespace Songify_Slim.Util.Settings
         public static bool UseDefaultBrowser { get => GetUseDefaultBrowser(); set => SetUseDefaultBrowser(value); }
         public static string BotRespCooldown { get => GetBot_Resp_Cooldown(); set => SetBot_Resp_Cooldown(value); }
         public static string BotRespNoTrackFound { get => GetBot_Resp_NoTrackFound(); set => SetBot_Resp_NoTrackFound(value); }
+        public static List<SimplePlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
+
+        private static void SetSpotifyPlaylistCache(List<SimplePlaylist> value)
+        {
+            _currentConfig.SpotifyCredentials.PlaylistCache = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.SpotifyCredentials, _currentConfig.SpotifyCredentials);
+        }
+
+        private static List<SimplePlaylist> GetSpotifyPlaylistCache()
+        {
+            return _currentConfig.SpotifyCredentials.PlaylistCache;
+        }
 
         private static void SetBot_Resp_NoTrackFound(string value)
         {
@@ -821,6 +833,7 @@ namespace Songify_Slim.Util.Settings
                 DeviceId = GetSpotifyDeviceId(),
                 RefreshToken = GetSpotifyRefreshToken(),
                 Profile = GetSpotifyProfile(),
+                PlaylistCache = GetSpotifyPlaylistCache()
             };
 
             TwitchCredentials twitchCredentials = new()

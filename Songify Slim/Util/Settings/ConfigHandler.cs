@@ -100,7 +100,8 @@ namespace Songify_Slim.Util.Settings
                                 DeviceId = "",
                                 ClientId = "",
                                 ClientSecret = "",
-                                Profile = new PrivateProfile()
+                                Profile = new PrivateProfile(),
+                                PlaylistCache = new List<SimplePlaylist>()
                             };
                         }
                         break;
@@ -566,6 +567,7 @@ namespace Songify_Slim.Util.Settings
         public string ClientId { get; set; } = "";
         public string ClientSecret { get; set; } = "";
         public PrivateProfile Profile { get; set; } = new();
+        public List<SimplePlaylist> PlaylistCache { get; set; } = [];
     }
 
     public class TwitchCredentials
