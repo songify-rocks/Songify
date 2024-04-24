@@ -621,6 +621,18 @@ namespace Songify_Slim.Util.Settings
         public static string BotRespCooldown { get => GetBot_Resp_Cooldown(); set => SetBot_Resp_Cooldown(value); }
         public static string BotRespNoTrackFound { get => GetBot_Resp_NoTrackFound(); set => SetBot_Resp_NoTrackFound(value); }
         public static List<SimplePlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
+        public static bool BotCmdVol { get => GetBotCmdVol(); set => SetBotCmdVol(value); }
+
+        private static void SetBotCmdVol(bool value)
+        {
+            _currentConfig.BotConfig.BotCmdVol = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static bool GetBotCmdVol()
+        {
+            return _currentConfig.BotConfig.BotCmdVol;
+        }
 
         private static void SetSpotifyPlaylistCache(List<SimplePlaylist> value)
         {
@@ -889,6 +901,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
                 BotRespCooldown = GetBot_Resp_Cooldown(),
                 BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
+                BotCmdVol = GetBotCmdVol()
             };
 
             AppConfig appConfig = new()

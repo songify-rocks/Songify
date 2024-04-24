@@ -1613,7 +1613,7 @@ namespace Songify_Slim.Util.Songify
                 }
             }
             else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") &&
-                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator))
+                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdVol)
             {
                 //Get the volume after !vol and set it
                 string[] split = e.ChatMessage.Message.Split(' ');
@@ -1649,7 +1649,7 @@ namespace Songify_Slim.Util.Songify
                                         Settings.Settings.BotCmdPlayPause):
                         await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                         break;
-                    case "!vol" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator)):
+                    case "!vol" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdVol):
                         Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
                         break;
                 }

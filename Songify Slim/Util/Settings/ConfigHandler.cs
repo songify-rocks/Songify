@@ -180,6 +180,7 @@ namespace Songify_Slim.Util.Settings
                                 BotRespExplicitSong = "This Song containts explicit content and is not allowed.",
                                 BotRespCooldown = "The command is on cooldown. Try again in {cd} seconds.",
                                 BotRespNoTrackFound = "No track found.",
+                                BotCmdVol = false
                             };
                         }
                         break;
@@ -623,6 +624,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
         public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
         public string BotRespNoTrackFound { get; set; } = "No track found.";
+        public bool BotCmdVol { get; set; }
     }
 
     public class AppConfig
