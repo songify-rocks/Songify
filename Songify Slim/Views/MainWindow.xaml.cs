@@ -674,10 +674,10 @@ namespace Songify_Slim.Views
         private void AutoUpdater_ApplicationExitEvent()
         {
             //Create folder for the current version and export the config to the folder
-            if (!Directory.Exists(GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}"))
-                Directory.CreateDirectory(GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}");
+            if (!Directory.Exists(GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}"))
+                Directory.CreateDirectory(GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}");
 
-            ConfigHandler.WriteAllConfig(Settings.Export(), GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}", true);
+            ConfigHandler.WriteAllConfig(Settings.Export(), GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}", true);
             Settings.UpdateRequired = true;
             Application.Current.Shutdown();
         }
