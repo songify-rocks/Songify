@@ -2426,7 +2426,6 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="Hotkeys"></TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_WebServer}">
                 <Border
                     Margin="10,0,0,0"

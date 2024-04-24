@@ -15,6 +15,7 @@ using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Enums;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Timer = System.Timers.Timer;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -236,7 +237,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (context.Context is { Type: "playlist" })
                 {
-                    if (GlobalObjects.CurrentSong.SongId != context.Item.Id)
+                    if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != context.Item.Id)
                     {
                         FullPlaylist playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
                         if (playlist != null)

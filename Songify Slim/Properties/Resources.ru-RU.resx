@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="brw_ArtistBlocked" xml:space="preserve">
-    <value>Исполнитель блокированный</value>
+    <value>Испольнитель заблокирован</value>
   </data>
   <data name="brw_FetchError" xml:space="preserve">
     <value>Ошибка при получении информации о песне</value>
@@ -136,7 +136,7 @@
     <value>Песня слишком длинная</value>
   </data>
   <data name="brw_Success" xml:space="preserve">
-    <value>Песня с успехом добавленная</value>
+    <value>Песня успешно добавлена</value>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Добавить</value>
@@ -221,13 +221,13 @@
     <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="sw_Appearance_Color" xml:space="preserve">
-    <value>Чвет:</value>
+    <value>Цвет:</value>
   </data>
   <data name="sw_Appearance_ThemeDark" xml:space="preserve">
     <value>Тёмная тема</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
-    <value>Яркий Thema</value>
+    <value>Светлая тема</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
     <value>Зкспортировать</value>
@@ -260,7 +260,7 @@
     <value>Очистить очередь при запуске</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Команда для перезарядки (в секундах)</value>
+    <value>Время перезарядки команды (в секундах)</value>
   </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
     <value>Макс. количество запросов на пользователя</value>
@@ -272,7 +272,7 @@
     <value>Активизировать SR (Команда)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
-    <value>Включить SR (Точки канала)</value>
+    <value>Включить SR (Баллы канала)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
     <value>Добавить пробелы</value>
@@ -290,7 +290,7 @@
     <value>Текст во время перерыва</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Собственный текст во врема перерива (пусто для пустого текстового файла)</value>
+    <value>Собственный текст во время перерыва (пусто для текстового файла)</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Загрузить информацию о песне</value>
@@ -308,7 +308,7 @@
     <value>Скорость сбора Chroma (в секундах)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>Свернуть в лоток</value>
+    <value>Свернуть в трей</value>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
     <value>Отправить анонимные данные</value>
@@ -329,7 +329,7 @@
     <value>Вывод</value>
   </data>
   <data name="sw_tc_System" xml:space="preserve">
-    <value>Генерально</value>
+    <value>Общее</value>
   </data>
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
     <value>сохранять</value>
@@ -512,7 +512,7 @@
     <value>Купите нам кофе</value>
   </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
-    <value>Художник - Название</value>
+    <value>Исполнитель - название</value>
   </data>
   <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
     <value>Проверить онлайн-статус</value>
@@ -668,7 +668,7 @@
     <value>Ответ на команду !remove</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Разделить исполнителя, название и отправителя запроса</value>
+    <value>Разделить исполнителя и название</value>
   </data>
   <data name="lang_pl" xml:space="preserve">
     <value>Польский</value>

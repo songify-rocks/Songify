@@ -1612,6 +1612,30 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogExc(exception);
                 }
             }
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") &&
+                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator))
+            {
+                //Get the volume after !vol and set it
+                string[] split = e.ChatMessage.Message.Split(' ');
+                if (split.Length > 1)
+                {
+                    if (int.TryParse(split[1], out int volume))
+                    {
+                        int vol = MathUtils.Clamp(volume, 0, 100);
+                        await SpotifyApiHandler.Spotify.SetVolumeAsync(vol);
+                        SendChatMessage(e.ChatMessage.Channel, $"Spotify volume set to {vol}%");
+
+                    }
+                    else
+                    {
+                        SendChatMessage(e.ChatMessage.Channel, "Volume must be a number between 0 and 100");
+                    }
+                }
+                else
+                {
+                    SendChatMessage(e.ChatMessage.Channel, "Please specify a volume between 0 and 100");
+                }
+            }
             // Play / Pause command (!play; !pause)
             else
                 switch (e.ChatMessage.Message.ToLower())
@@ -1624,6 +1648,9 @@ namespace Songify_Slim.Util.Songify
                     case "!pause" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                         Settings.Settings.BotCmdPlayPause):
                         await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        break;
+                    case "!vol" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator)):
+                        Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
                         break;
                 }
         }
