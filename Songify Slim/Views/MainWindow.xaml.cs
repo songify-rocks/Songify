@@ -522,7 +522,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.rc_3 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.rc_4 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
@@ -673,6 +673,11 @@ namespace Songify_Slim.Views
 
         private void AutoUpdater_ApplicationExitEvent()
         {
+            //Create folder for the current version and export the config to the folder
+            if (!Directory.Exists(GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}"))
+                Directory.CreateDirectory(GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}");
+
+            ConfigHandler.WriteAllConfig(Settings.Export(), GlobalObjects.RootDirectory + $"/{GlobalObjects.AppVersion.Replace(".", "_")}", true);
             Settings.UpdateRequired = true;
             Application.Current.Shutdown();
         }
@@ -1113,7 +1118,7 @@ namespace Songify_Slim.Views
                     }
                 }
             }
-           
+
             else
             {
                 // used for Youtube and Nightbot

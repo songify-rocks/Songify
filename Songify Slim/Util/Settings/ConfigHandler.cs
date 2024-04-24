@@ -31,33 +31,33 @@ namespace Songify_Slim.Util.Settings
             AppConfig
         }
 
-        public static void WriteConfig(ConfigTypes configType, object o, string path = null)
+        public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
-            if (path == null)
-                path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
             string yaml;
+            string fileEnding = isBackup ? ".bak" : ".yaml";
 
             switch (configType)
             {
                 case ConfigTypes.SpotifyCredentials:
-                    path += "/SpotifyCredentials.yaml";
+                    path += "/SpotifyCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as SpotifyCredentials ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.TwitchCredentials:
-                    path += "/TwitchCredentials.yaml";
+                    path += "/TwitchCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as TwitchCredentials ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.BotConfig:
-                    path += "/BotConfig.yaml";
+                    path += "/BotConfig" + fileEnding;
                     yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
                     break;
                 case ConfigTypes.AppConfig:
                     try
                     {
-                        path += "/AppConfig.yaml";
+                        path += "/AppConfig" + fileEnding;
                         yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
                     }
                     catch (Exception e)
@@ -543,12 +543,12 @@ namespace Songify_Slim.Util.Settings
             WriteConfig(ConfigTypes.AppConfig, appConfig);
         }
 
-        public static void WriteAllConfig(Configuration config, string path = null)
+        public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
         {
-            WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path);
-            WriteConfig(ConfigTypes.BotConfig, config.BotConfig, path);
-            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path);
-            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials, path);
+            WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, isBackup);
+            WriteConfig(ConfigTypes.BotConfig, config.BotConfig, path, isBackup);
+            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path, isBackup);
+            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials, path, isBackup);
         }
     }
 
