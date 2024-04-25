@@ -2081,7 +2081,7 @@ namespace Songify_Slim.Util.Songify
             response = string.Empty;
             try
             {
-                if (track.IsPlayable != null && (bool)track.IsPlayable)
+                if (track.IsPlayable == null || (bool)track.IsPlayable)
                 {
                     return false;
                 }

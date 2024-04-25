@@ -19,6 +19,7 @@ using MahApps.Metro.Controls;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Reflection;
 using System.Xml.Linq;
+using Utils = MahApps.Metro.Controls.Utils;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -475,6 +476,12 @@ namespace Songify_Slim.Util.Songify
 
             // gets the current playing song info
             TrackInfo songInfo = SpotifyApiHandler.GetSongInfo();
+
+            if (songInfo == null)
+            {
+                _updating = false;
+                return;
+            }
 
             if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
             {

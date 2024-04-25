@@ -856,7 +856,7 @@ namespace Songify_Slim.Views
 
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
-                    FetchTimer(Settings.UseOwnApp ? 1000 : 20000);
+                    FetchTimer(Settings.UseOwnApp ? 2000 : 20000);
                     break;
             }
         }

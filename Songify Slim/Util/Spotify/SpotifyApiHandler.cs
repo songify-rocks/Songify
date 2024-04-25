@@ -207,13 +207,13 @@ namespace Songify_Slim.Util.Songify
             catch (Exception)
             {
                 Logger.LogStr("SPOTIFY API: Couldn't fetch Song info");
-                return new TrackInfo { Artists = "", Title = "" };
+                return null;
             }
 
             if (context.Error != null)
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
-            if (context.Item == null) return new TrackInfo { Artists = "", Title = "" };
+            if (context.Item == null) return null;
 
 
             string artists = "";
@@ -322,7 +322,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                FullTrack x = Spotify.GetTrack(id, Settings.Settings.SpotifyProfile.Country ?? "");
+                FullTrack x = Spotify.GetTrack(id, "");
                 Debug.WriteLine(Json.Serialize(x));
                 return x;
             }

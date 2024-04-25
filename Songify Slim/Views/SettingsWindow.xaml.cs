@@ -84,102 +84,98 @@ namespace Songify_Slim.Views
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
-
-            BtnWebserverStart.Content = GlobalObjects.WebServer.Run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
-            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
-            CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
-            Cctrl.Content = new UcBotResponses();
             ChbxAutoClear.IsOn = Settings.AutoClearQueue;
+            ChbxMessageLogging.IsChecked = Settings.MsgLoggingEnabled;
+            ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
+            ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxCover.IsOn = Settings.DownloadCover;
             ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
-            ChbxMessageLogging.IsChecked = Settings.MsgLoggingEnabled;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
             ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             ChbxSplit.IsOn = Settings.SplitOutput;
-            ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
-            ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxUpload.IsOn = Settings.Upload;
-
-            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
-            ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
-            ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
-            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
-            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
-            ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
-            ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
-            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
-
-            ComboboxfetchPort.Items.Clear();
-            ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
-            ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
-            ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
-            ComboboxRedirectPort.Items.Clear();
-            ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
-            ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
-            ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
-
-            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
-            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
-
+            NudSpaces.Value = Settings.SpaceCount;
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
-            NudServerPort.Value = Settings.WebServerPort;
-            NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
-            NudSpaces.Value = Settings.SpaceCount;
-            NumUpDpwnRewardGoalAmount.Value = Settings.RewardGoalAmount;
-            NumUpDpwnRewardGoalAmount.ValueChanged += NumUpDpwnRewardGoalAmount_ValueChanged;
-            NumUpDpwnRewardGoalAmount.ValueChanged -= NumUpDpwnRewardGoalAmount_ValueChanged;
-
-            Settings.UserLevelsCommand ??= [];
-            Settings.UserLevelsReward ??= [];
-
             TbClientId.Text = Settings.ClientId;
             TbClientSecret.Password = Settings.ClientSecret;
-            TbRequesterPrefix.Text = Settings.RequesterPrefix;
-            TextBoxRewardGoalSong.Text = Settings.RewardGoalSong;
-
-            TextBoxTriggerNext.Text = string.IsNullOrWhiteSpace(Settings.BotCmdNextTrigger) ? "next" : Settings.BotCmdNextTrigger;
-            TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
-            TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
-            TextBoxTriggerSkip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSkipTrigger) ? "skip" : Settings.BotCmdSkipTrigger;
-            TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
-            TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
-            TextBoxTriggerSsr.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
-            TextBoxTriggerVoteskip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdVoteskipTrigger) ? "voteskip" : Settings.BotCmdVoteskipTrigger;
-
-            TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
-            TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
-            TglBetaUpdates.IsOn = Settings.BetaUpdates;
-            TglBotcmdNext.IsOn = Settings.BotCmdNext;
-            TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
-            TglBotcmdPos.IsOn = Settings.BotCmdPos;
-            TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
-            TglBotcmdSkip.IsOn = Settings.BotCmdSkip;
-            TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
-            TglBotcmdSong.IsOn = Settings.BotCmdSong;
-            TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
-            TglBotcmdSsr.IsOn = Settings.TwSrCommand;
-            TglBotcmdVol.IsOn = Settings.BotCmdVol;
-            TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
-            TglInformChat.IsOn = Settings.ChatLiveStatus;
-            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
-            TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
-            Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
             TglswSpotify.IsOn = Settings.UseOwnApp;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
-            ToggleRewardGoalEnabled.IsOn = Settings.RewardGoalEnabled;
-            ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
-
-            TxtbxCustompausetext.Text = Settings.CustomPauseText;
-            TxtbxOutputformat.Text = Settings.OutputString;
-            TxtbxOutputformat2.Text = Settings.OutputString2;
+            //TxtbxRewardId.Text = Settings.TwRewardId;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
+            TxtbxCustompausetext.Text = Settings.CustomPauseText;
+            TxtbxOutputformat.Text = Settings.OutputString;
+            TxtbxOutputformat2.Text = Settings.OutputString2;
+            CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
+            NudServerPort.Value = Settings.WebServerPort;
+            TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
+            TglBetaUpdates.IsOn = Settings.BetaUpdates;
+            TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
+            TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
+            BtnWebserverStart.Content = GlobalObjects.WebServer.Run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
+            ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
+            TglInformChat.IsOn = Settings.ChatLiveStatus;
+            TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
+            Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
+            ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
+            ComboboxRedirectPort.Items.Clear();
+            ComboboxfetchPort.Items.Clear();
+            TbRequesterPrefix.Text = Settings.RequesterPrefix;
+            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
+            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
+            ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
+            ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
+            ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
+            ToggleRewardGoalEnabled.IsOn = Settings.RewardGoalEnabled;
+            TextBoxRewardGoalSong.Text = Settings.RewardGoalSong;
+            NumUpDpwnRewardGoalAmount.ValueChanged -= NumUpDpwnRewardGoalAmount_ValueChanged;
+            NumUpDpwnRewardGoalAmount.Value = Settings.RewardGoalAmount;
+            NumUpDpwnRewardGoalAmount.ValueChanged += NumUpDpwnRewardGoalAmount_ValueChanged;
+            Cctrl.Content = new UcBotResponses();
+            TglBotcmdPos.IsOn = Settings.BotCmdPos;
+            TglBotcmdSong.IsOn = Settings.BotCmdSong;
+            TglBotcmdNext.IsOn = Settings.BotCmdNext;
+            TglBotcmdSkip.IsOn = Settings.BotCmdSkip;
+            TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
+            TglBotcmdSsr.IsOn = Settings.TwSrCommand;
+            TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
+            TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
+            TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
+            NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
+            TglBotcmdVol.IsOn = Settings.BotCmdVol;
+            TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
+            TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
+            TextBoxTriggerNext.Text = string.IsNullOrWhiteSpace(Settings.BotCmdNextTrigger) ? "next" : Settings.BotCmdNextTrigger;
+            TextBoxTriggerSkip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSkipTrigger) ? "skip" : Settings.BotCmdSkipTrigger;
+            TextBoxTriggerVoteskip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdVoteskipTrigger) ? "voteskip" : Settings.BotCmdVoteskipTrigger;
+            TextBoxTriggerSsr.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
+            TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
+            TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
+
+            Settings.UserLevelsCommand ??= new List<int>();
+            Settings.UserLevelsReward ??= new List<int>();
+
+            ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
+            ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
+            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
+            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
+
+            ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
+            ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
+            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
+            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
+
+            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
+            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
+
 
             if (SpotifyApiHandler.Spotify != null)
             {
@@ -190,7 +186,7 @@ namespace Songify_Slim.Views
                     BitmapImage bitmap = new();
                     bitmap.BeginInit();
 
-                    if (profile.Images.Count > 0)
+                    if (profile.Images is { Count: > 0 })
                     {
                         if (!string.IsNullOrEmpty(profile.Images[0].Url))
                             bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
