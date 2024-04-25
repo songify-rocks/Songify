@@ -522,7 +522,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.rc_4 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.5.4.rc_5 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             if (_selectedSource == PlayerType.SpotifyWeb)
             {
