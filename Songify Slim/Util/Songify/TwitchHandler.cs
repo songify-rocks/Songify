@@ -44,8 +44,6 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
-using TwitchLib.Api.Helix.Models.Soundtrack;
-using TwitchLib.PubSub.Models.Responses;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -54,21 +52,21 @@ namespace Songify_Slim.Util.Songify
     {
         public const bool PubSubEnabled = false;
 
-        public static ValidateAccessTokenResponse BotTokenCheck;
+        private static ValidateAccessTokenResponse _botTokenCheck;
 
         public static TwitchClient Client;
 
         public static bool ForceDisconnect;
 
-        public static TwitchClient MainClient;
+        private static TwitchClient _mainClient;
 
         public static ValidateAccessTokenResponse TokenCheck;
 
         public static TwitchAPI TwitchApi;
 
-        public static TwitchAPI TwitchApiBot;
+        private static TwitchAPI _twitchApiBot;
 
-        public static List<TwitchUser> Users = new();
+        private static readonly List<TwitchUser> Users = [];
 
         private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
 
@@ -213,12 +211,12 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
-                    if (MainClient != null)
+                    if (_mainClient != null)
                     {
                         try
                         {
-                            MainClient.Disconnect();
-                            MainClient = null;
+                            _mainClient.Disconnect();
+                            _mainClient = null;
                         }
                         catch (Exception e)
                         {
@@ -430,7 +428,7 @@ namespace Songify_Slim.Util.Songify
                 #region Bot
 
                 case TwitchAccount.Bot:
-                    TwitchApiBot = new TwitchAPI
+                    _twitchApiBot = new TwitchAPI
                     {
                         Settings =
                         {
@@ -438,8 +436,8 @@ namespace Songify_Slim.Util.Songify
                             AccessToken = Settings.Settings.TwitchBotToken
                         }
                     };
-                    BotTokenCheck = await TwitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
-                    if (BotTokenCheck == null)
+                    _botTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+                    if (_botTokenCheck == null)
                     {
                         GlobalObjects.TwitchBotTokenExpired = true;
                         await Application.Current.Dispatcher.Invoke(async () =>
@@ -463,9 +461,9 @@ namespace Songify_Slim.Util.Songify
 
                     GlobalObjects.TwitchBotTokenExpired = false;
 
-                    _userId = BotTokenCheck.UserId;
+                    _userId = _botTokenCheck.UserId;
 
-                    users = await TwitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
+                    users = await _twitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
                         Settings.Settings.TwitchBotToken);
 
                     user = users.Users.FirstOrDefault();
@@ -483,12 +481,12 @@ namespace Songify_Slim.Util.Songify
 
         public static void MainConnect()
         {
-            if (MainClient != null && MainClient.IsConnected)
+            if (_mainClient != null && _mainClient.IsConnected)
                 return;
-            if (MainClient != null && !MainClient.IsConnected)
+            if (_mainClient != null && !_mainClient.IsConnected)
             {
-                MainClient.Connect();
-                MainClient.JoinChannel(Settings.Settings.TwChannel);
+                _mainClient.Connect();
+                _mainClient.JoinChannel(Settings.Settings.TwChannel);
                 return;
             }
 
@@ -520,9 +518,9 @@ namespace Songify_Slim.Util.Songify
                     ThrottlingPeriod = TimeSpan.FromSeconds(30)
                 };
                 WebSocketClient customClient = new(clientOptions);
-                MainClient = new TwitchClient(customClient);
-                MainClient.Initialize(credentials, Settings.Settings.TwChannel);
-                MainClient.Connect();
+                _mainClient = new TwitchClient(customClient);
+                _mainClient.Initialize(credentials, Settings.Settings.TwChannel);
+                _mainClient.Connect();
             }
             catch (Exception e)
             {
@@ -616,11 +614,11 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            //if (IsTrackUnavailable(track, e, out response))
-            //{
-            //    SendChatMessage(e.ChatMessage.Channel, response);
-            //    return;
-            //}
+            if (IsTrackUnavailable(track, e, out response))
+            {
+                SendChatMessage(e.ChatMessage.Channel, response);
+                return;
+            }
 
             if (IsArtistBlacklisted(track, e, out response))
             {
@@ -654,7 +652,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (error?.Error != null)
+            if (error.Error != null)
             {
                 response = CreateErrorResponse(e.ChatMessage.DisplayName, error.Error.Message);
                 SendChatMessage(e.ChatMessage.Channel, response);
@@ -1013,9 +1011,9 @@ namespace Songify_Slim.Util.Songify
             Tuple<string, AnnouncementColors> tup = GetStringAndColor(msg);
             try
             {
-                if (BotTokenCheck != null)
+                if (_botTokenCheck != null)
                 {
-                    await TwitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchBotUser.Id, $"{tup.Item1}", tup.Item2,
                         Settings.Settings.TwitchBotToken);
                     return;
@@ -1023,7 +1021,7 @@ namespace Songify_Slim.Util.Songify
 
                 if (TokenCheck != null)
                 {
-                    await TwitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchUser.Id, $"{tup.Item1}", tup.Item2,
                         Settings.Settings.TwitchAccessToken);
                     return;
@@ -1965,6 +1963,11 @@ namespace Songify_Slim.Util.Songify
         private static bool IsArtistBlacklisted(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
+            if (track?.Artists == null || track.Artists.Count == 0)
+            {
+                Logger.LogStr("ERROR: No artist was found on the track object.");
+                return false;
+            }
 
             try
             {

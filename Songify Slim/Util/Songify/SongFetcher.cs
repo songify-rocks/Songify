@@ -457,11 +457,11 @@ namespace Songify_Slim.Util.Songify
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
 
-        public async Task<TrackInfo> FetchSpotifyWeb()
+        public async Task FetchSpotifyWeb()
         {
             // If the spotify object hast been created (successfully authed)
             if (_updating)
-                return null;
+                return;
             _updating = true;
             if (SpotifyApiHandler.Spotify == null)
             {
@@ -470,11 +470,17 @@ namespace Songify_Slim.Util.Songify
                 {
                     await SpotifyApiHandler.DoAuthAsync();
                 }
-                return null;
+                return;
             }
 
             // gets the current playing song info
             TrackInfo songInfo = SpotifyApiHandler.GetSongInfo();
+
+            if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
+            {
+                GlobalObjects.ForceUpdate = true;
+            }
+
             try
             {
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null))
@@ -560,10 +566,10 @@ namespace Songify_Slim.Util.Songify
 
                 if (GlobalObjects.ForceUpdate)
                 {
+                    GlobalObjects.CurrentSong = songInfo;
                     await WriteSongInfo(songInfo);
                     GlobalObjects.ForceUpdate = false;
                 }
-
 
                 UpdateWebServerResponse(songInfo);
             }
@@ -573,23 +579,13 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(e);
             }
             _updating = false;
-            return songInfo ?? new TrackInfo { IsPlaying = false };
         }
 
         private static Task WriteSongInfo(TrackInfo songInfo)
         {
-
-            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
-            {
-                // We don't have any song info, so we can't write anything
-                return Task.CompletedTask;
-            }
-
-            string title = songInfo.Title;
-            string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
-
             string songPath = GlobalObjects.RootDirectory + "/Songify.txt";
             string coverPath = GlobalObjects.RootDirectory + "/cover.png";
+            string title = songInfo.Title;
 
             if (!songInfo.IsPlaying)
             {
@@ -599,15 +595,27 @@ namespace Songify_Slim.Util.Songify
 
                 if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, title, "");
 
-                IOManager.DownloadCover(null, coverPath);
+                //IOManager.DownloadCover(null, coverPath);
 
-                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action((() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ((MainWindow)Application.Current.MainWindow).TxtblockLiveoutput.Text = Settings.Settings.CustomPauseText;
-                })));
+                    MainWindow main = Application.Current.MainWindow as MainWindow;
+                    main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        main.SetTextPreview(Settings.Settings.CustomPauseText);
+                    }));
+                });
                 return Task.CompletedTask;
             }
 
+            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
+            {
+                // We don't have any song info, so we can't write anything
+                return Task.CompletedTask;
+            }
+
+
+            string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
             string currentSongOutput = Settings.Settings.OutputString;
             string currentSongOutputTwitch = Settings.Settings.BotRespSong;
             // this only is used for Spotify because here the artist and title are split
@@ -806,7 +814,7 @@ namespace Songify_Slim.Util.Songify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
                     main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
                 }));

@@ -4,6 +4,7 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -16,6 +17,7 @@ using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Enums;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Timer = System.Timers.Timer;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using Unosquare.Swan.Formatters;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -320,7 +322,9 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                return Spotify.GetTrack(id, Settings.Settings.SpotifyProfile.Country ?? "");
+                FullTrack x = Spotify.GetTrack(id, Settings.Settings.SpotifyProfile.Country ?? "");
+                Debug.WriteLine(Json.Serialize(x));
+                return x;
             }
             catch (Exception e)
             {

@@ -314,7 +314,7 @@ namespace Songify_Slim.Views
 
         private async void FetchSpotifyWeb()
         {
-            TrackInfo info = await Sf.FetchSpotifyWeb();
+            await Sf.FetchSpotifyWeb();
             //if (info == null) return;
 
             //if (!info.IsPlaying)

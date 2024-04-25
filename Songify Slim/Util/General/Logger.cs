@@ -67,6 +67,7 @@ namespace Songify_Slim.Util.General
 
         private static void AppendConsole(string s)
         {
+            if (s == null) return;
             try
             {
                 GlobalObjects.ConsoleDocument.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
@@ -114,17 +115,15 @@ namespace Songify_Slim.Util.General
                     int lineCount = GlobalObjects.ConsoleDocument.Blocks.OfType<Paragraph>().Count();
 
                     // If the line count is greater than 50, remove the oldest lines
-                    if (lineCount > 50)
-                    {
-                        // Calculate the number of lines to remove
-                        int linesToRemove = lineCount - 50;
+                    if (lineCount <= 50) return;
+                    // Calculate the number of lines to remove
+                    int linesToRemove = lineCount - 50;
 
-                        // Remove the oldest lines from the beginning of the FlowDocument
-                        for (int i = 0; i < linesToRemove; i++)
-                        {
-                            GlobalObjects.ConsoleDocument.Blocks.Remove(GlobalObjects.ConsoleDocument.Blocks
-                                .FirstBlock);
-                        }
+                    // Remove the oldest lines from the beginning of the FlowDocument
+                    for (int i = 0; i < linesToRemove; i++)
+                    {
+                        GlobalObjects.ConsoleDocument.Blocks.Remove(GlobalObjects.ConsoleDocument.Blocks
+                            .FirstBlock);
                     }
                 }));
             }
