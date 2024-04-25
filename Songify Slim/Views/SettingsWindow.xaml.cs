@@ -84,8 +84,7 @@ namespace Songify_Slim.Views
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
-            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
-            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
+
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run ? Properties.Resources.sw_WebServer_StopWebServer : Properties.Resources.sw_WebServer_StartWebServer;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
             CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
@@ -120,6 +119,9 @@ namespace Songify_Slim.Views
             ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
             ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
             ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
+
+            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
+            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
 
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
