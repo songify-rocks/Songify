@@ -461,9 +461,9 @@ namespace Songify_Slim.Util.Songify
         public async Task FetchSpotifyWeb()
         {
             // If the spotify object hast been created (successfully authed)
-            if (_updating)
-                return;
-            _updating = true;
+            //if (_updating)
+            //    return;
+            //_updating = true;
             if (SpotifyApiHandler.Spotify == null)
             {
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
@@ -596,6 +596,8 @@ namespace Songify_Slim.Util.Songify
 
             if (!songInfo.IsPlaying)
             {
+                if (!Settings.Settings.CustomPauseTextEnabled)
+                    return Task.CompletedTask;
                 // read the text file
                 if (!File.Exists(songPath)) File.Create(songPath).Close();
                 IOManager.WriteOutput(songPath, Settings.Settings.CustomPauseText);

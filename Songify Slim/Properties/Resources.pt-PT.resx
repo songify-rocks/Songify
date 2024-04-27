@@ -699,4 +699,7 @@
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Resposta quando nenhuma trilha foi encontrada</value>
   </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Retorna o volume atual ou define-o. '!vol [0-100]'</value>
+  </data>
 </root>

@@ -17,6 +17,8 @@ namespace Songify_Slim.Util.General
 {
     static class IOManager
     {
+        private static bool _isWriting = false;
+
         public static void WriteOutput(string songPath, string currSong)
         {
             try
@@ -91,6 +93,7 @@ namespace Songify_Slim.Util.General
                 else
                 {
                     WebClient webClient = new();
+                   
                     webClient.DownloadFileCompleted += (sender, e) =>
                     {
                         if (e.Error != null)
@@ -129,7 +132,7 @@ namespace Songify_Slim.Util.General
                             {
                                 //Debug.WriteLine(exception);
                             }
-
+                            _isWriting = false;
                         }
                         Application.Current.Dispatcher.Invoke(() =>
                         {
@@ -140,8 +143,12 @@ namespace Songify_Slim.Util.General
                             }));
                         });
                     };
+
                     Uri uri = new(cover);
                     // Downloads the album cover to the filesystem
+
+                    if (_isWriting) return;
+                    _isWriting = true;
                     await webClient.DownloadFileTaskAsync(uri, coverTemp);
                 }
             }

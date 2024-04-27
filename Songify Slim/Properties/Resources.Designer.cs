@@ -196,6 +196,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns the current volume or sets it. &apos;!vol [0-100]&apos;.
+        /// </summary>
+        public static string brw_cmd_vol {
+            get {
+                return ResourceManager.GetString("brw_cmd_vol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response wehen the sr command is on cooldown.
         /// </summary>
         public static string brw_CommandOnCooldown {

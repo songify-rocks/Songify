@@ -365,10 +365,10 @@
     <value>Отображает следующую песню в очереди</value>
   </data>
   <data name="brw_cmd_off" xml:space="preserve">
-    <value>На сайте</value>
+    <value>Выкл</value>
   </data>
   <data name="brw_cmd_on" xml:space="preserve">
-    <value>На сайте</value>
+    <value>Вкл</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
     <value>Отображает положение в очереди пользователей songrequests</value>
@@ -668,7 +668,7 @@
     <value>Ответ на команду !remove</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Разделить исполнителя и название</value>
+    <value>Разделить исполнителя, название и заказчика</value>
   </data>
   <data name="lang_pl" xml:space="preserve">
     <value>Польский</value>
@@ -686,7 +686,7 @@
     <value>Блокировать все откровенные песни</value>
   </data>
   <data name="brw_ExplicitSongs" xml:space="preserve">
-    <value>Ответ, когда запрошена песня откровенного характера и включена функция «Блокировать песни откровенного характера».</value>
+    <value>Ответ, когда запрошена песня откровенного характера и включена функция «Блокировать песни откровенного характера»</value>
   </data>
   <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
     <value>Префикс текста запроса</value>
@@ -702,5 +702,8 @@
   </data>
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Ответ, когда трек не найден</value>
+  </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Восстанавливает текущую громкость или устанавливает её. `!vol #` где # - число между 0  и 100</value>
   </data>
 </root>

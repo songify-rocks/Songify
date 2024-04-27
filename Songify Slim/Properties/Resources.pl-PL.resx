@@ -699,4 +699,7 @@
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Odpowiedź, gdy nie znaleziono żadnego utworu</value>
   </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Zwraca bieżącą głośność lub ustawia ją. '!tom [0-100]'</value>
+  </data>
 </root>

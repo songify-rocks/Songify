@@ -703,4 +703,7 @@
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Respuesta cuando no se encontró ninguna pista</value>
   </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Devuelve el volumen actual o lo establece. '!vol [0-100]'</value>
+  </data>
 </root>

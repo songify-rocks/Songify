@@ -703,4 +703,7 @@
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Antwort, wenn kein Track gefunden wurde</value>
   </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Gibt die aktuelle Lautstärke zurück oder stellt sie ein. '!vol [0-100]'</value>
+  </data>
 </root>
