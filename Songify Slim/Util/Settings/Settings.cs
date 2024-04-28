@@ -622,6 +622,18 @@ namespace Songify_Slim.Util.Settings
         public static string BotRespNoTrackFound { get => GetBot_Resp_NoTrackFound(); set => SetBot_Resp_NoTrackFound(value); }
         public static List<SimplePlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
         public static bool BotCmdVol { get => GetBotCmdVol(); set => SetBotCmdVol(value); }
+        public static bool DonationReminder { get => GetDonationReminder(); set => SetDonationReminder(value); }
+
+        private static void SetDonationReminder(bool value)
+        {
+            _currentConfig.AppConfig.DonationReminder = value;
+            ConfigHandler.WriteConfig(ConfigHandler.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static bool GetDonationReminder()
+        {
+            return _currentConfig.AppConfig.DonationReminder;
+        }
 
         private static void SetBotCmdVol(bool value)
         {
@@ -976,6 +988,7 @@ namespace Songify_Slim.Util.Settings
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
                 RequesterPrefix = GetRequesterPrefix(),
                 UseDefaultBrowser = GetUseDefaultBrowser(),
+                DonationReminder = GetDonationReminder()
             };
 
             return new Configuration

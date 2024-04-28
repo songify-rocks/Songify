@@ -149,6 +149,7 @@ namespace Songify_Slim.Views
             TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
             TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
             TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
+            TglDonationReminder.IsOn = Settings.DonationReminder;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TglBotcmdVol.IsOn = Settings.BotCmdVol;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
@@ -1506,6 +1507,38 @@ namespace Songify_Slim.Views
         private void Tgl_botcmd_Vol_OnToggled_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdVol = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private async void TglDonationReminder_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            if (Settings.DonationReminder == ((ToggleSwitch)sender).IsOn)
+                return;
+
+            Settings.DonationReminder = ((ToggleSwitch)sender).IsOn;
+            if (!((ToggleSwitch)sender).IsOn) return;
+
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋", "You've chosen to keep your journey sleek and streamlined — no more donation messages! Remember, our app stays vibrant and user-friendly thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can always reactivate donation reminders in the settings. Enjoy your clutter-free experience! ❤️",
+                MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings
+                {
+                    AffirmativeButtonText = "Just Close",
+                    NegativeButtonText = "Close (Open Ko-Fi)"
+                });
+            switch (msgResult)
+            {
+                case MessageDialogResult.Negative:
+                    Process.Start("https://ko-fi.com/overcodetv");
+                    return;
+                case MessageDialogResult.Affirmative:
+                    break;
+                case MessageDialogResult.Canceled:
+                case MessageDialogResult.FirstAuxiliary:
+                case MessageDialogResult.SecondAuxiliary:
+                default:
+                    return;
+            }
         }
     }
 }

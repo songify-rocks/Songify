@@ -60,7 +60,8 @@ namespace Songify_Slim.Views
         private readonly WebClient _webClient = new();
         public SongFetcher Sf = new();
         private static readonly Timer _timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
-
+        private DispatcherTimer _disclaimerTimer = new();
+        private int secondsRemaining = 4;
         #endregion Variables
 
         private static async void TelemetryTask(object sender, ElapsedEventArgs e)
@@ -490,6 +491,7 @@ namespace Songify_Slim.Views
 
         private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
+            GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
             if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
             {
                 Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
@@ -595,6 +597,18 @@ namespace Songify_Slim.Views
                 }
             }
 
+            if (!Settings.DonationReminder)
+            {
+                GrdDisclaimer.Visibility = Visibility.Visible;
+                _disclaimerTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                _disclaimerTimer.Tick += DisclaimerTimerOnTick;
+                _disclaimerTimer.Start();
+                BtnDisclaimerClose.Visibility = Visibility.Visible;
+                TbDisclaimerDismiss.Text = "This message will disappear in 5 seconds";
+            }
 
             if (!Settings.UpdateRequired) return;
             List<int> userLevels = new();
@@ -606,6 +620,26 @@ namespace Songify_Slim.Views
             if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
             OpenPatchNotes();
             Settings.UpdateRequired = false;
+        }
+
+        private void DisclaimerTimerOnTick(object sender, EventArgs e)
+        {
+            if (secondsRemaining >= 0)
+            {
+                if (secondsRemaining == 0)
+                    TbDisclaimerDismiss.Text = "This message will disappear now :)";
+                else
+                    TbDisclaimerDismiss.Text = secondsRemaining == 1
+                        ? $"This message will disappear in {secondsRemaining} second"
+                        : $"This message will disappear in {secondsRemaining} seconds";
+                secondsRemaining--;
+            }
+            else
+            {
+                _disclaimerTimer.Stop();
+                TbDisclaimerDismiss.Text = ""; // Clears the message after countdown
+                GrdDisclaimer.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void CheckForUpdates()
@@ -1315,6 +1349,12 @@ namespace Songify_Slim.Views
             WriteOutput(_root + "/Artist.txt", artist);
             WriteOutput(_root + "/Title.txt", title + extra);
             WriteOutput(_root + "/Requester.txt", requester);
+        }
+
+        private void BtnDisclaimerClose_Click(object sender, RoutedEventArgs e)
+        {
+            _disclaimerTimer.Stop();
+            GrdDisclaimer.Visibility = Visibility.Collapsed;
         }
 
         private void BtnLogFolderClick(object sender, RoutedEventArgs e)

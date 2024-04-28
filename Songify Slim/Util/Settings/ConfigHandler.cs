@@ -271,7 +271,8 @@ namespace Songify_Slim.Util.Settings
                                 LimitSrToPlaylist = false,
                                 BlockAllExplicitSongs = false,
                                 RequesterPrefix = "Requested by ",
-                                UseDefaultBrowser = false
+                                UseDefaultBrowser = false,
+                                DonationReminder = false
                             };
                         }
                         break;
@@ -700,6 +701,7 @@ namespace Songify_Slim.Util.Settings
         public bool BlockAllExplicitSongs { get; set; } = false;
         public string RequesterPrefix { get; set; } = "Requested by ";
         public bool UseDefaultBrowser { get; set; } = false;
+        public bool DonationReminder { get; set; }
     }
 
     public class Config

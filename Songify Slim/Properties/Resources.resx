@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -253,7 +253,6 @@
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="sw_Appearance_Color" xml:space="preserve">
     <value>Color:</value>
     <comment>Label content for "Color"</comment>
@@ -630,7 +629,7 @@
     <comment>Menu Header for "View"</comment>
   </data>
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Buy Us A Coffee</value>
+    <value>Support us on Ko-Fi!</value>
     <comment>Menu Header for "Buy Us A Coffee"</comment>
   </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
@@ -873,5 +872,9 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Returns the current volume or sets it. '!vol [0-100]'</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -112,9 +112,9 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxMinimizeSystrayChecked" />
-                        <controls:ToggleSwitch
+                        <StackPanel Grid.Row="4" Orientation="Vertical">
+                            <controls:ToggleSwitch
                             x:Name="ChbxOpenQueueOnStartup"
-                            Grid.Row="4"
                             Width="467"
                             Height="32"
                             VerticalAlignment="Top"
@@ -124,6 +124,20 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxOpenQueueOnStartup_Toggled" />
+                            <controls:ToggleSwitch
+                            x:Name="TglDonationReminder"
+                                Width="467"
+                            Height="32"
+                            VerticalAlignment="Top"
+                            Content="Disable donation reminder"
+                            ContentPadding="0"
+                            Focusable="False"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            Toggled="TglDonationReminder_OnToggled"
+                            />
+                        </StackPanel>
+
                         <Label
                             Grid.Row="5"
                             Padding="0,5,5,5"

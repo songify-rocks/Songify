@@ -100,8 +100,33 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <Grid x:Name="GrdDisclaimer"
+            Grid.Column="0" Grid.Row="0"
+             Grid.RowSpan="3" Grid.ColumnSpan="2" 
+             Background="{DynamicResource MahApps.Brushes.Control.Background}"
+             ZIndex="1001" Visibility="Collapsed">
+            <Button Visibility="Collapsed" x:Name="BtnDisclaimerClose" Margin="5" Content="X" VerticalAlignment="Top" HorizontalAlignment="Right" Width="26" Height="26" BorderBrush="{x:Null}" Background="{x:Null}" Click="BtnDisclaimerClose_Click"/>
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="450" VerticalAlignment="Center" TextAlignment="Center" FontSize="14" >
+                        Songify is completely free.
+                        <LineBreak/>
+                        We are committed to keeping it accessible to everyone. To support our development and keep the app running smoothly, we rely on the generosity of our users. 
+                        <LineBreak/><LineBreak/>
+                        If you love using our app and wish to help us continue our work, consider making a donation.
+                </TextBlock>
+                <Button Background="#FFFF5E5B" Foreground="White" Width="250" Margin="0,15,0,0" Click="BtnPaypal_Click">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Text="Support us on Ko-Fi" FontSize="18"></TextBlock>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+            <TextBlock x:Name="TbDisclaimerDismiss" Text="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5,0"></TextBlock>
+        </Grid>
         <Menu
-            Grid.Row="0"
+            Grid.Row="0" Grid.Column="0"
             Margin="0,0,0,0"
             Padding="0"
             VerticalAlignment="Top"
@@ -259,24 +284,27 @@
             Margin="0,0,16,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Background="Transparent"
             BorderThickness="0"
             Click="BtnPaypal_Click"
             Cursor="Hand"
-            Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
+            Style="{DynamicResource MahApps.Styles.Button.Dialogs}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
             <Button.Content>
-                <StackPanel Orientation="Horizontal">
-                    <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
-                    <TextBlock VerticalAlignment="Center" Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" />
-                    <StackPanel.RenderTransform>
+                <Border CornerRadius="5"
+                        Padding="10,3"
+                        Background="#FFFF5E5B" Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" >
+                        <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
+                        <TextBlock VerticalAlignment="Center" Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" />
+                    </StackPanel>
+                    <Border.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform />
                             <SkewTransform />
-                            <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="50" CenterY="9" />
+                            <RotateTransform x:Name="RotateTransform" Angle="0" CenterX="62.5" CenterY="11" />
                             <TranslateTransform X="0" Y="0" />
                         </TransformGroup>
-                    </StackPanel.RenderTransform>
-                    <StackPanel.Triggers>
+                    </Border.RenderTransform>
+                    <Border.Triggers>
                         <EventTrigger RoutedEvent="Loaded">
                             <BeginStoryboard Name="wiggle">
                                 <Storyboard RepeatBehavior="Forever">
@@ -292,8 +320,8 @@
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
-                    </StackPanel.Triggers>
-                </StackPanel>
+                    </Border.Triggers>
+                </Border>
             </Button.Content>
         </Button>
         <StatusBar
