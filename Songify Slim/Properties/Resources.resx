@@ -275,7 +275,7 @@
     <comment>Button content for "Import Config"</comment>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>autoconnect</value>
+    <value>Autoconnect</value>
     <comment>Toggleswitch content for "auto connect"</comment>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
@@ -283,7 +283,7 @@
     <comment>Button content for "Link"</comment>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Configure Bot Responses &amp; Commands</value>
+    <value>Configure bot responses &amp; commands</value>
     <comment>Button content for "Configure Bot Responses &amp; Commands"</comment>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
@@ -299,15 +299,15 @@
     <comment>Label content for "Channel to join"</comment>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Channel Points Reward ID</value>
+    <value>Channel points reward id</value>
     <comment>Label content for "Channel Points Reward ID"</comment>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>Clear Queue on Startup</value>
+    <value>Clear queue on startup</value>
     <comment>Toggleswitch content for "Clear queue on startup"</comment>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Command Cooldown (seconds)</value>
+    <value>Command cooldown (seconds)</value>
     <comment>Label content for "Command cooldown (seconds)"</comment>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
@@ -315,11 +315,11 @@
     <comment>Label content for "Max song length (in minutes)"</comment>
   </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
-    <value>Max Requests per User</value>
+    <value>Max requests per user</value>
     <comment>Label content for "Max Requests per user"</comment>
   </data>
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
-    <value>Enable Message Logging</value>
+    <value>Enable message logging</value>
     <comment>Checkbox content for "Enable message logging) (unused as of 1.3.9)</comment>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
@@ -331,11 +331,11 @@
     <comment>Toggleswitch content for "Enable SR (Channel Reward)"</comment>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
-    <value>append spaces</value>
+    <value>Append spaces</value>
     <comment>Checkbox content for "append spaces"</comment>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
-    <value>Output Directory</value>
+    <value>Output directory</value>
     <comment>Label content for "Output Directory"</comment>
   </data>
   <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
@@ -343,11 +343,11 @@
     <comment>Toggleswitch content for "Download album cover (only works with API)"</comment>
   </data>
   <data name="sw_tcOutput_Format" xml:space="preserve">
-    <value>Output Format (Text file &amp; Widget)</value>
+    <value>Output format (Text file &amp; Widget)</value>
     <comment>Label content for "Output Format (Text file &amp; Widget)</comment>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
-    <value>Pause Text</value>
+    <value>Pause text</value>
     <comment>Toggleswitch content for "Pause Text"</comment>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
@@ -355,7 +355,7 @@
     <comment>Watermark content for the pause text textbox</comment>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Split Artist, Title and Requester</value>
+    <value>Split artist, title and requester</value>
     <comment>Toggleswitch content for "Split Artist and Title"</comment>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
@@ -367,11 +367,11 @@
     <comment>(unused)</comment>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Use Own AppID</value>
+    <value>Use own Spotify app</value>
     <comment>Toggleswitch content for "Use Own AppID"</comment>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>autostart with windows</value>
+    <value>Autostart with windows</value>
     <comment>Toggleswitch content for "autostart with windows"</comment>
   </data>
   <data name="sw_tcSystem_Behavior" xml:space="preserve">
@@ -387,11 +387,11 @@
     <comment>Label content for "Chrome fetch rate (seconds)"</comment>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>minimize to system tray</value>
+    <value>Minimize to system tray</value>
     <comment>Toggleswitch content for "minimize to system tray"</comment>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>send anonymous data</value>
+    <value>Send anonymous data</value>
     <comment>Toggleswitch content for "send anonymous data" (unused)</comment>
   </data>
   <data name="sw_tcSystem_Telemetry" xml:space="preserve">
@@ -423,11 +423,11 @@
     <comment>Langauge name for "Russian"</comment>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Use Songify AppID</value>
+    <value>Use Songify's Spotify app</value>
     <comment>Toggleswitch content for "Use Songify AppID"</comment>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Bot Config</value>
+    <value>Bot config</value>
     <comment>Menu content for "Bot Config"</comment>
   </data>
   <data name="lang_es" xml:space="preserve">
@@ -475,11 +475,11 @@
     <comment>Label content for "Trigger"</comment>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Output Format (Twitch Chat)</value>
+    <value>Output format (Twitch Chat)</value>
     <comment>Label content for "Output Format (Twitch Chat)"</comment>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
-    <value>Create Reward</value>
+    <value>Create reward</value>
     <comment>Button content for "Create Reward"</comment>
   </data>
   <data name="crw_RewardTitle" xml:space="preserve">
@@ -507,7 +507,7 @@
     <comment>MenuItem content for "Patch notes"</comment>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Log-Folder</value>
+    <value>Log-folder</value>
     <comment>MenuItem content for "Log Folder"</comment>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
@@ -531,15 +531,15 @@
     <comment>Label content for "Number of votes needed"</comment>
   </data>
   <data name="sw_WebServer_Port" xml:space="preserve">
-    <value>Web server Port</value>
+    <value>Web server port</value>
     <comment>Label content for Web Server Port</comment>
   </data>
   <data name="sw_WebServer_StartWebServer" xml:space="preserve">
-    <value>Start Web Server</value>
+    <value>Start web server</value>
     <comment>Button content for "Start Web Server"</comment>
   </data>
   <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
-    <value>Open Website</value>
+    <value>Open website</value>
     <comment>Button content for "Open Website"</comment>
   </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
@@ -547,11 +547,11 @@
     <comment>ToggleSwitch Content for "Display account names and profile pictures"</comment>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>open queue window on startup</value>
+    <value>Open queue window on startup</value>
     <comment>ToggleSwitch content for "open queue window on startup"</comment>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Automatically Announce Song To Chat</value>
+    <value>Automatically announce song to chat</value>
     <comment>TollgeSwitch content for "Automatically Announce Song To Chat"</comment>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
@@ -559,7 +559,7 @@
     <comment>ToggleSwitch content for "Limit Twitch activity to only work when stream is live (needs Twitch login)"</comment>
   </data>
   <data name="Sw_Integration_ManageRewards" xml:space="preserve">
-    <value>Manage Rewards</value>
+    <value>Manage rewards</value>
     <comment>Button content for "Manage Rewards"</comment>
   </data>
   <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
@@ -607,8 +607,7 @@
   </data>
   <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
     <value>Rewards</value>
-    <comment>TabControl header content for  "Rewards"
-</comment>
+    <comment>TabControl header content for  "Rewards"</comment>
   </data>
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
     <value>Song Requests</value>
@@ -619,7 +618,7 @@
     <comment>MenuItem content for when logged in with Twitch</comment>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>unlimited song requests</value>
+    <value>Unlimited song requests</value>
     <comment>ToggleSwitch Content for "unlimited song requests"</comment>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
@@ -639,11 +638,11 @@
     <comment>Textblock placeholder "Artist - Title"</comment>
   </data>
   <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
-    <value>Check Online Status</value>
+    <value>Check online status</value>
     <comment>MenuItem Header fro "Check Online Status" in Twitch</comment>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
-    <value>Song Queue</value>
+    <value>Song queue</value>
     <comment>Window Title for the Queue Window</comment>
   </data>
   <data name="s_Length" xml:space="preserve">
@@ -659,7 +658,7 @@
     <comment>The window title for the Blocklist Window</comment>
   </data>
   <data name="WinTitle_History" xml:space="preserve">
-    <value>Song History</value>
+    <value>Song history</value>
     <comment>Window Title for the History Window</comment>
   </data>
   <data name="Sw_System_PrivacyHeader" xml:space="preserve">
@@ -667,22 +666,22 @@
     <comment>The word "Privacy"</comment>
   </data>
   <data name="sw_tc_WebServer" xml:space="preserve">
-    <value>Web Server</value>
+    <value>Web server</value>
   </data>
   <data name="sw_WebServer_AutoStart" xml:space="preserve">
     <value>Automatically start the web server</value>
     <comment>Toggleswitch content for "Automatically start the web server"</comment>
   </data>
   <data name="sw_Config_ResetConfig" xml:space="preserve">
-    <value>Reset Config</value>
+    <value>Reset config</value>
     <comment>Button content for "Reset Config"</comment>
   </data>
   <data name="sw_WebServer_StopWebServer" xml:space="preserve">
-    <value>Stop Web Server</value>
+    <value>Stop web server</value>
     <comment>Button content for "Stop Web Server"</comment>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>Get Beta Updates</value>
+    <value>Get beta updates</value>
     <comment>Toggleswitch Content for "get beta updates"</comment>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
@@ -706,7 +705,7 @@
     <comment>The word "Time" as in when the song was played (history)</comment>
   </data>
   <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
-    <value>Create New Reward</value>
+    <value>Create new reward</value>
     <comment>Button content for "Create New Reward"</comment>
   </data>
   <data name="brw_ModSkip" xml:space="preserve">

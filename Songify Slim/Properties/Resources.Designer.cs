@@ -457,7 +457,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Reward.
+        ///   Looks up a localized string similar to Create reward.
         /// </summary>
         public static string crw_CreateReward {
             get {
@@ -718,7 +718,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log-Folder.
+        ///   Looks up a localized string similar to Log-folder.
         /// </summary>
         public static string mw_menu_Help_LogFolder {
             get {
@@ -826,7 +826,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot Config.
+        ///   Looks up a localized string similar to Bot config.
         /// </summary>
         public static string mw_menu_Twitch_Bot {
             get {
@@ -835,7 +835,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check Online Status.
+        ///   Looks up a localized string similar to Check online status.
         /// </summary>
         public static string mw_menu_Twitch_CheckOnlineStatus {
             get {
@@ -934,16 +934,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        public static System.Drawing.Icon songify {
-            get {
-                object obj = ResourceManager.GetObject("songify", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Color:.
         /// </summary>
         public static string sw_Appearance_Color {
@@ -980,7 +970,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get Beta Updates.
+        ///   Looks up a localized string similar to Get beta updates.
         /// </summary>
         public static string sw_Config_GetBetaUpdates {
             get {
@@ -998,7 +988,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset Config.
+        ///   Looks up a localized string similar to Reset config.
         /// </summary>
         public static string sw_Config_ResetConfig {
             get {
@@ -1007,7 +997,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to autoconnect.
+        ///   Looks up a localized string similar to Autoconnect.
         /// </summary>
         public static string sw_Integration_Autoconnect {
             get {
@@ -1025,7 +1015,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Bot Responses &amp; Commands.
+        ///   Looks up a localized string similar to Configure bot responses &amp; commands.
         /// </summary>
         public static string sw_Integration_ConfigureResponses {
             get {
@@ -1034,7 +1024,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Rewards.
+        ///   Looks up a localized string similar to Manage rewards.
         /// </summary>
         public static string Sw_Integration_ManageRewards {
             get {
@@ -1259,7 +1249,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically Announce Song To Chat.
+        ///   Looks up a localized string similar to Automatically announce song to chat.
         /// </summary>
         public static string Sw_intergration_AutoAnnounce {
             get {
@@ -1295,7 +1285,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Channel Points Reward ID.
+        ///   Looks up a localized string similar to Channel points reward id.
         /// </summary>
         public static string sw_SpotifySR_ChannelPoints {
             get {
@@ -1304,7 +1294,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clear Queue on Startup.
+        ///   Looks up a localized string similar to Clear queue on startup.
         /// </summary>
         public static string sw_SpotifySR_ClearQ {
             get {
@@ -1313,7 +1303,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command Cooldown (seconds).
+        ///   Looks up a localized string similar to Command cooldown (seconds).
         /// </summary>
         public static string sw_SpotifySR_CommandCD {
             get {
@@ -1331,7 +1321,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Max Requests per User.
+        ///   Looks up a localized string similar to Max requests per user.
         /// </summary>
         public static string sw_SpotifySR_MaxReq {
             get {
@@ -1340,7 +1330,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Message Logging.
+        ///   Looks up a localized string similar to Enable message logging.
         /// </summary>
         public static string sw_SpotifySR_MessageLogging {
             get {
@@ -1376,7 +1366,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to unlimited song requests.
+        ///   Looks up a localized string similar to Unlimited song requests.
         /// </summary>
         public static string Sw_SpotifySR_UnlimitedSRs {
             get {
@@ -1403,7 +1393,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to open queue window on startup.
+        ///   Looks up a localized string similar to Open queue window on startup.
         /// </summary>
         public static string Sw_System_OpenQueueOnStartup {
             get {
@@ -1493,7 +1483,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web Server.
+        ///   Looks up a localized string similar to Web server.
         /// </summary>
         public static string sw_tc_WebServer {
             get {
@@ -1502,7 +1492,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to append spaces.
+        ///   Looks up a localized string similar to Append spaces.
         /// </summary>
         public static string sw_tcOutput_AddSpaces {
             get {
@@ -1511,7 +1501,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Output Directory.
+        ///   Looks up a localized string similar to Output directory.
         /// </summary>
         public static string sw_tcOutput_Directory {
             get {
@@ -1529,7 +1519,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Output Format (Text file &amp; Widget).
+        ///   Looks up a localized string similar to Output format (Text file &amp; Widget).
         /// </summary>
         public static string sw_tcOutput_Format {
             get {
@@ -1538,7 +1528,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Output Format (Twitch Chat).
+        ///   Looks up a localized string similar to Output format (Twitch Chat).
         /// </summary>
         public static string sw_tcOutput_Format2 {
             get {
@@ -1547,7 +1537,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pause Text.
+        ///   Looks up a localized string similar to Pause text.
         /// </summary>
         public static string sw_tcOutput_PauseText {
             get {
@@ -1574,7 +1564,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Split Artist, Title and Requester.
+        ///   Looks up a localized string similar to Split artist, title and requester.
         /// </summary>
         public static string sw_tcOutput_SplitArtist {
             get {
@@ -1619,7 +1609,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Own AppID.
+        ///   Looks up a localized string similar to Use own Spotify app.
         /// </summary>
         public static string sw_tcSpotify_UseOwnApp {
             get {
@@ -1628,7 +1618,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Songify AppID.
+        ///   Looks up a localized string similar to Use Songify&apos;s Spotify app.
         /// </summary>
         public static string sw_tcSpotify_UseSongifyApp {
             get {
@@ -1637,7 +1627,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to autostart with windows.
+        ///   Looks up a localized string similar to Autostart with windows.
         /// </summary>
         public static string sw_tcSystem_Autostart {
             get {
@@ -1682,7 +1672,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to minimize to system tray.
+        ///   Looks up a localized string similar to Minimize to system tray.
         /// </summary>
         public static string sw_tcSystem_Minimize {
             get {
@@ -1691,7 +1681,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to send anonymous data.
+        ///   Looks up a localized string similar to Send anonymous data.
         /// </summary>
         public static string sw_tcSystem_SendAnonData {
             get {
@@ -1736,7 +1726,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create New Reward.
+        ///   Looks up a localized string similar to Create new reward.
         /// </summary>
         public static string sw_Twitch_Rewards_CreateNewReward {
             get {
@@ -1754,7 +1744,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Website.
+        ///   Looks up a localized string similar to Open website.
         /// </summary>
         public static string sw_WebServer_OpenWebsite {
             get {
@@ -1763,7 +1753,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Web server Port.
+        ///   Looks up a localized string similar to Web server port.
         /// </summary>
         public static string sw_WebServer_Port {
             get {
@@ -1772,7 +1762,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Web Server.
+        ///   Looks up a localized string similar to Start web server.
         /// </summary>
         public static string sw_WebServer_StartWebServer {
             get {
@@ -1781,7 +1771,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Stop Web Server.
+        ///   Looks up a localized string similar to Stop web server.
         /// </summary>
         public static string sw_WebServer_StopWebServer {
             get {
@@ -1808,7 +1798,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Song History.
+        ///   Looks up a localized string similar to Song history.
         /// </summary>
         public static string WinTitle_History {
             get {
@@ -1817,7 +1807,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Song Queue.
+        ///   Looks up a localized string similar to Song queue.
         /// </summary>
         public static string WinTitle_Queue {
             get {
