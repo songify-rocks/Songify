@@ -236,7 +236,7 @@
     <value>Importieren</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>autom. verbinden</value>
+    <value>Autom. verbinden</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
     <value>Verknüpfen</value>
@@ -254,7 +254,7 @@
     <value>Channel</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Kanalpunkte Belohnung ID</value>
+    <value>Kanalpunkte Belohnungs-ID</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Warteschlange beim Start leeren</value>
@@ -269,7 +269,7 @@
     <value>Max Songwünsche pro Benutzer</value>
   </data>
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
-    <value>Aktiviere Nachrichten Logging</value>
+    <value>Aktiviere Nachrichtenlogging</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Aktiviere SR (Kanalpunkte)</value>
@@ -299,7 +299,7 @@
     <value>Speichern</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Songifys Spotify AppID nutzen</value>
+    <value>Songifys Spotify-API Zugang nutzen</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>Mit Windows starten</value>
@@ -341,10 +341,10 @@
     <value>Russisch</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Eigene Spotify AppID nutzen</value>
+    <value>Eigene Spotify API-Daten nutzen</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Bot Konfiguration</value>
+    <value>Botkonfiguration</value>
   </data>
   <data name="lang_es" xml:space="preserve">
     <value>Spanisch</value>
@@ -383,7 +383,7 @@
     <value>Ausgabeformat (Twitch Chat)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
-    <value>Kanalpunkte Belohnung Erstellen</value>
+    <value>Kanalpunktebelohnung erstellen</value>
   </data>
   <data name="crw_CreateRewardError" xml:space="preserve">
     <value>Fehler beim Erstellen der Belohnung. Bitte stelle sicher, dass der Name für die Belohung nicht schon genutzt wird.</value>
@@ -533,7 +533,7 @@
     <value>Webserver automatisch starten</value>
   </data>
   <data name="sw_Config_ResetConfig" xml:space="preserve">
-    <value>Konfig zurücksetzen</value>
+    <value>Konfiguration zurücksetzen</value>
   </data>
   <data name="sw_WebServer_StopWebServer" xml:space="preserve">
     <value>Webserver stoppen</value>
