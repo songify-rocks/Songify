@@ -880,45 +880,6 @@
                 </Border>
             </TabItem>
             <TabItem
-                x:Name="TabItemTwitchAccounts"
-                Padding="20,0,0,0"
-                Header="Accounts"
-                Visibility="Collapsed">
-                <TabItem.Style>
-                    <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabItem.Style>
-                <Border
-                    Margin="10,0,0,0"
-                    BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                    BorderThickness="2,0,0,0" />
-            </TabItem>
-            <TabItem
                 x:Name="TabItemTwitchReward"
                 Padding="20,0,0,0"
                 Header="Rewards"
@@ -2119,7 +2080,7 @@
                             Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" />
+                            Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" TextWrapping="Wrap" />
                         <controls:ToggleSwitch
                             x:Name="TglBotcmdSsr"
                             Grid.Row="1"
