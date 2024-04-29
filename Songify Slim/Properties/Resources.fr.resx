@@ -178,7 +178,7 @@
     <value>Déconnexion</value>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
-    <value>Sortie</value>
+    <value>Sortir</value>
   </data>
   <data name="mw_menu_File" xml:space="preserve">
     <value>Fichier</value>
@@ -187,22 +187,22 @@
     <value>Aide</value>
   </data>
   <data name="mw_menu_Help_About" xml:space="preserve">
-    <value>À propos de</value>
+    <value>À propos</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
-    <value>Histoire</value>
+    <value>Historique</value>
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
-    <value>Navigateur d'histoire</value>
+    <value>Historique en ligne</value>
   </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
-    <value>Fenêtre d'histoire</value>
+    <value>Fenêtre d'historique</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>File d'attente</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>Navigateur de file d'attente</value>
+    <value>File d'attente en ligne</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
     <value>Effacer la file d'attente</value>
@@ -227,31 +227,31 @@
     <value>Thème sombre</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
-    <value>Thème de la lumière</value>
+    <value>Thème clair</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
-    <value>EXPORTER CONFIG</value>
+    <value>EXPORTER LA CONFIGURATION</value>
   </data>
   <data name="sw_Config_Import" xml:space="preserve">
-    <value>IMPORT CONFIG</value>
+    <value>IMPORTER UNE CONFIGURATION</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
     <value>Connexion automatique</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
-    <value>LIEN</value>
+    <value>LIER</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Configurer les réponses et les commandes du robot</value>
+    <value>Configurer les réponses et les commandes du bot</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
-    <value>Nom d'utilisateur NB (nom d'utilisateur Twitch)</value>
+    <value>Nom d'utilisateur NightBot (nom d'utilisateur Twitch)</value>
   </data>
   <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
     <value>Compte lié :</value>
   </data>
   <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
-    <value>Canal à rejoindre</value>
+    <value>Chat à rejoindre</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
     <value>Identifiant de la récompense de points de chaîne</value>
@@ -260,10 +260,10 @@
     <value>Effacer la file d'attente au démarrage</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Refroidissement des commandes (secondes)</value>
+    <value>Temps entre les commandes (en secondes)</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
-    <value>Longueur maximale de la chanson (en minutes)</value>
+    <value>Longueur maximale de la musique (en minutes)</value>
   </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
     <value>Requêtes maximales par utilisateur</value>
@@ -272,10 +272,10 @@
     <value>Activer la journalisation des messages</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Commande pour faire une requête de musique (Commande + lien Spotify ou Artiste - Titre)</value>
+    <value>Commande pour faire une demande de musique (Commande + lien Spotify ou Artiste - Titre)</value>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
-    <value>Activation du SR (canal des récompenses)</value>
+    <value>Activer les demandes de musiques (Récompenses de points de chaîne)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
     <value>Ajouter des espaces</value>
@@ -293,16 +293,16 @@
     <value>Texte de pause</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Texte de pause personnalisé (vide pour le fichier texte emtpy)</value>
+    <value>Texte de pause personnalisé (vide pour un fichier texte vide)</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
-    <value>Télécharger les informations sur la chanson</value>
+    <value>Télécharger les informations sur la musique</value>
   </data>
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
-    <value>Sauvez</value>
+    <value>Sauvegarder</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Utiliser les identifiants Spotify</value>
+    <value>Utiliser vos propres identifiants Spotify</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>Démarrage automatique avec Windows</value>
@@ -314,7 +314,7 @@
     <value>VÉRIFIER LES MISES À JOUR</value>
   </data>
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
-    <value>Taux de récupération de chrome (secondes)</value>
+    <value>Taux de récupération de Chrome (en secondes)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>Minimiser dans la barre d'état système</value>
@@ -326,10 +326,10 @@
     <value>Télémétrie</value>
   </data>
   <data name="sw_tc_Appearance" xml:space="preserve">
-    <value>Apparition</value>
+    <value>Apparence</value>
   </data>
   <data name="sw_tc_Config" xml:space="preserve">
-    <value>Config</value>
+    <value>Configuration</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
     <value>Twitch</value>
@@ -344,10 +344,10 @@
     <value>Russe</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Utiliser les identifiants Songify</value>
+    <value>Utiliser les identifiants Spotify internes à Songify</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Configuration du robot</value>
+    <value>Configuration du bot</value>
   </data>
   <data name="lang_es" xml:space="preserve">
     <value>Espagnol</value>
@@ -359,28 +359,28 @@
     <value>(traduit à l'aide de DeepL)</value>
   </data>
   <data name="brw_cmd_next" xml:space="preserve">
-    <value>Affiche la chanson suivante dans la file d'attente</value>
+    <value>Affiche la prochaine musique de la file d'attente</value>
   </data>
   <data name="brw_cmd_off" xml:space="preserve">
-    <value>Éteint</value>
+    <value>Désactivée</value>
   </data>
   <data name="brw_cmd_on" xml:space="preserve">
-    <value>Alumé</value>
+    <value>Activée</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
-    <value>Affiche la position de la file d'attente des demandes de chansons des utilisateurs</value>
+    <value>Affiche la position de la musique de l'utilisateur dans la file d'attente</value>
   </data>
   <data name="brw_cmd_song" xml:space="preserve">
-    <value>Affiche le morceau en cours</value>
+    <value>Affiche la musique en cours</value>
   </data>
   <data name="brw_cmd_description" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="brw_cmd_enabled" xml:space="preserve">
-    <value>Activé</value>
+    <value>Status</value>
   </data>
   <data name="brw_cmd_trigger" xml:space="preserve">
-    <value>Déclencheur</value>
+    <value>Commande</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
     <value>Format de sortie (Chat Twitch)</value>
@@ -392,10 +392,10 @@
     <value>Titre</value>
   </data>
   <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Rapide</value>
+    <value>Description</value>
   </data>
   <data name="crw_RewardCost" xml:space="preserve">
-    <value>Coût</value>
+    <value>Prix</value>
   </data>
   <data name="crw_CreateRewardError" xml:space="preserve">
     <value>Un problème est survenu lors de la création de la récompense. Assurez-vous que vous n'avez pas déjà une récompense avec le même nom.</value>
@@ -416,10 +416,10 @@
     <value>Console</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Ignore la chanson en cours (Broadcaster / Mod / Requester)</value>
+    <value>Ignore la musique en cours (Diffuseur / Modérateur / Demandeur)</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
-    <value>Démarre un vote pour ignorer la chanson en cours</value>
+    <value>Démarre un vote pour ignorer la musique en cours</value>
   </data>
   <data name="brw_cmd_skipvotecount" xml:space="preserve">
     <value>Nombre de votes nécessaires</value>
@@ -446,40 +446,40 @@
     <value>Gérer les récompenses</value>
   </data>
   <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
-    <value>Max SR / User (basé sur le niveau d'utilisateur)</value>
+    <value>Demandes max / Utilisateur (basé sur le niveau d'utilisateur)</value>
   </data>
   <data name="Sw_Integration_RefundOn" xml:space="preserve">
-    <value>Remboursement quand</value>
+    <value>Rembourser quand</value>
   </data>
   <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
     <value>Le niveau d'utilisateur est trop bas</value>
   </data>
   <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
-    <value>L'utilisateur est bloqué de SR</value>
+    <value>L'utilisateur est bloqué des demandes</value>
   </data>
   <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
     <value>Spotify n'est pas connecté</value>
   </data>
   <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
-    <value>La chanson n'est pas disponible dans la région</value>
+    <value>La musique n'est pas disponible dans la région</value>
   </data>
   <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
-    <value>La chanson contient des artistes bloqués</value>
+    <value>La musique contient des artistes bloqués</value>
   </data>
   <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
-    <value>La durée du morceau est trop longue</value>
+    <value>La durée de la musique est trop longue</value>
   </data>
   <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
-    <value>La chanson est déjà dans la file d'attente</value>
+    <value>La musique est déjà dans la file d'attente</value>
   </data>
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
-    <value>Aucune chanson n'a été trouvée</value>
+    <value>Aucune musique n'a été trouvée</value>
   </data>
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
-    <value>La chanson a été ajoutée à la file d'attente</value>
+    <value>La musique a été ajoutée à la file d'attente</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>toujours (rendre SR gratuit)</value>
+    <value>toujours (demandes gratuites)</value>
   </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
     <value>Masquer les noms de compte et les photos de profil</value>
@@ -491,7 +491,7 @@
     <value>Récompenses</value>
   </data>
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
-    <value>Demandes de chansons</value>
+    <value>Demandes de musiques</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
     <value>Connecté avec Twitch</value>
@@ -500,7 +500,7 @@
     <value>Demandes de musiques illimitées</value>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
-    <value>Demandes de chansons</value>
+    <value>Demandes de musiques</value>
   </data>
   <data name="mw_menu_View" xml:space="preserve">
     <value>Voir</value>
