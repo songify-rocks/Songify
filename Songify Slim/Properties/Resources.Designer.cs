@@ -646,7 +646,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Buy Us A Coffee.
+        ///   Looks up a localized string similar to Support us on Ko-Fi!.
         /// </summary>
         public static string mw_menu_BuyUsACoffee {
             get {
@@ -1349,7 +1349,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable SR (Command).
+        ///   Looks up a localized string similar to Command for making song requests. (Command + Spotify Link or Artist - Title).
         /// </summary>
         public static string sw_SpotifySR_SRCommand {
             get {

@@ -270,9 +270,6 @@
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
     <value>Włącz rejestrowanie wiadomości</value>
   </data>
-  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Włącz SR (polecenie)</value>
-  </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Włącz SR (nagrody za kanał)</value>
   </data>
@@ -701,5 +698,8 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Zwraca bieżącą głośność lub ustawia ją. '!tom [0-100]'</value>
+  </data>
+  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+    <value>Polecenie umożliwiające zgłaszanie żądań utworów. (Polecenie + Link Spotify lub Artysta - Tytuł)</value>
   </data>
 </root>

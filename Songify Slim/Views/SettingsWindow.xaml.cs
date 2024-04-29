@@ -1519,12 +1519,12 @@ namespace Songify_Slim.Views
             Settings.DonationReminder = ((ToggleSwitch)sender).IsOn;
             if (!((ToggleSwitch)sender).IsOn) return;
 
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋", "You've chosen to keep your journey sleek and streamlined — no more donation messages! Remember, our app stays vibrant and user-friendly thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can always reactivate donation reminders in the settings. Enjoy your clutter-free experience! ❤️",
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋", "No more donation messages!\n\nRemember, our app stays vibrant and user-friendly thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ✨",
                 MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings
                 {
-                    AffirmativeButtonText = "Just Close",
-                    NegativeButtonText = "Close (Open Ko-Fi)"
+                    AffirmativeButtonText = "Just Close 😞",
+                    NegativeButtonText = "Open Ko-Fi ❤️"
                 });
             switch (msgResult)
             {

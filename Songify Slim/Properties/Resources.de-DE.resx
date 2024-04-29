@@ -271,9 +271,6 @@
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
     <value>Aktiviere Nachrichten Logging</value>
   </data>
-  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Aktiviere SR (Befehl)</value>
-  </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Aktiviere SR (Kanalpunkte)</value>
   </data>
@@ -702,5 +699,8 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Gibt die aktuelle Lautstärke zurück oder stellt sie ein. '!vol [0-100]'</value>
+  </data>
+  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+    <value>Befehl zum Senden von Songwünschen. (Befehl + Spotify-Link oder Künstler - Titel)</value>
   </data>
 </root>

@@ -270,9 +270,6 @@
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
     <value>Abilita la registrazione dei messaggi</value>
   </data>
-  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Abilita SR (comando)</value>
-  </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Abilita SR (premi canale)</value>
   </data>
@@ -701,5 +698,8 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Restituisce il volume corrente o lo imposta. '!vol [0-100]'</value>
+  </data>
+  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+    <value>Comando per effettuare richieste di brani. (Comando + Collegamento Spotify o Artista - Titolo)</value>
   </data>
 </root>

@@ -322,7 +322,7 @@
     <comment>Checkbox content for "Enable message logging) (unused as of 1.3.9)</comment>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Enable SR (Command)</value>
+    <value>Command for making song requests. (Command + Spotify Link or Artist - Title)</value>
     <comment>Toggleswitch content for "Enable SR (Command)"</comment>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
