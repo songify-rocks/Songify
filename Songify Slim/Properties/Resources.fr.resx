@@ -706,4 +706,7 @@
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
     <value>Soutenez-nous sur Ko-Fi !</value>
   </data>
+  <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms" xml:space="preserve">
+    <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
