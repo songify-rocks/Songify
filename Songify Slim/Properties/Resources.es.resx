@@ -502,9 +502,6 @@
   <data name="mw_menu_View" xml:space="preserve">
     <value>Ver</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Invítanos un Café</value>
-  </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Artista - Título</value>
   </data>
@@ -702,5 +699,11 @@
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
     <value>Comando para realizar solicitudes de canciones. (Comando + Enlace de Spotify o Artista - Título)</value>
+  </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>Portugués Brasileño</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>¡Apóyanos en Ko-Fi!</value>
   </data>
 </root>

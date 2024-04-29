@@ -557,6 +557,11 @@ namespace Songify_Slim.Views
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo("it-IT");
                     Settings.Language = "it-IT";
                     break;
+                case 8:
+                    // Brazilian Portuguese
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-BR");
+                    Settings.Language = "pt-BR";
+                    break;
             }
 
             Process.Start(Application.ResourceAssembly.Location);

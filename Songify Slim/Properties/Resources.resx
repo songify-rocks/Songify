@@ -877,4 +877,8 @@
   <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>Brazilian Portuguese</value>
+    <comment>Language name for "Brazilian Portuguese"</comment>
+  </data>
 </root>

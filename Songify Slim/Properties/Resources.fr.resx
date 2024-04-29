@@ -505,9 +505,6 @@
   <data name="mw_menu_View" xml:space="preserve">
     <value>Voir</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Achetez-nous un café</value>
-  </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Artiste - Titre</value>
   </data>
@@ -702,5 +699,11 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Renvoie le volume actuel ou le définit. '!vol [0-100]'</value>
+  </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>portugais brésilien</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Soutenez-nous sur Ko-Fi !</value>
   </data>
 </root>

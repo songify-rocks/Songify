@@ -235,13 +235,13 @@
     <value>IMPORTAR CONFIGURAÇÃO</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>conexão automática</value>
+    <value>Conexão automática</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
     <value>LINK</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
-    <value>Configurar respostas e comandos do bot</value>
+    <value>Configurar respostas e comandos de bot</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
     <value>Nome de usuário do NB (nome de usuário Twitch)</value>
@@ -270,11 +270,14 @@
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
     <value>Habilitar registro de mensagens</value>
   </data>
+  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+    <value>Comando para fazer solicitações de músicas. (Command + Spotify Link ou Artista - Título)</value>
+  </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
     <value>Ativar SR (recompensas do canal)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
-    <value>acrescentar espaços</value>
+    <value>Anexar espaços</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
     <value>Diretório de saída</value>
@@ -292,7 +295,7 @@
     <value>Texto de pausa personalizado (em branco para arquivo de texto vazio)</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Dividir Artista, Título e Solicitante</value>
+    <value>Dividir artista, título e solicitante</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
     <value>Carregar informações da música</value>
@@ -301,10 +304,10 @@
     <value>Salvar</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Use o próprio AppID</value>
+    <value>Use o próprio aplicativo Spotify</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>inicialização automática com windows</value>
+    <value>Inicialização automática com Windows</value>
   </data>
   <data name="sw_tcSystem_Behavior" xml:space="preserve">
     <value>Comportamento</value>
@@ -316,10 +319,10 @@
     <value>Taxa de busca do Chrome (segundos)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>minimizar para a bandeja do sistema</value>
+    <value>Minimizar para a bandeja do sistema</value>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>enviar dados anônimos</value>
+    <value>Envie dados anônimos</value>
   </data>
   <data name="sw_tcSystem_Telemetry" xml:space="preserve">
     <value>Telemetria</value>
@@ -343,7 +346,7 @@
     <value>russo</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Use Songify AppID</value>
+    <value>Use o aplicativo Spotify do Songify</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
     <value>Configuração do bot</value>
@@ -406,7 +409,7 @@
     <value>Notas de atualização</value>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Pasta de registro</value>
+    <value>Pasta de log</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Faça login com Twitch</value>
@@ -436,10 +439,10 @@
     <value>Ocultar nomes de contas e fotos de perfil</value>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>abrir janela de fila na inicialização</value>
+    <value>Abrir janela de fila na inicialização</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anuncie automaticamente uma música para conversar</value>
+    <value>Anuncie música automaticamente no bate-papo</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
@@ -481,7 +484,7 @@
     <value>A música foi adicionada à fila</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>sempre (tornar SR gratuito)</value>
+    <value>sempre (tornar SR grátis)</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Contas</value>
@@ -496,7 +499,7 @@
     <value>Logado com Twitch</value>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>pedidos de músicas ilimitados</value>
+    <value>Solicitações de músicas ilimitadas</value>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
     <value>Solicitações de músicas</value>
@@ -529,7 +532,7 @@
     <value>Privacidade</value>
   </data>
   <data name="sw_tc_WebServer" xml:space="preserve">
-    <value>Servidor web</value>
+    <value>servidor web</value>
   </data>
   <data name="sw_WebServer_AutoStart" xml:space="preserve">
     <value>Iniciar automaticamente o servidor web</value>
@@ -541,7 +544,7 @@
     <value>Pare o servidor web</value>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>Obtenha atualizações beta</value>
+    <value>Receba atualizações beta</value>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
     <value>Por favor, vincule sua conta do Spotify. Configurações -&gt; Spotify</value>
@@ -568,7 +571,7 @@
     <value>Resposta para o comando !pos</value>
   </data>
   <data name="brw_Next" xml:space="preserve">
-    <value>Resposta para !next comando</value>
+    <value>Resposta para o próximo comando</value>
   </data>
   <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
     <value>Respostas e comandos do bot</value>
@@ -695,9 +698,6 @@
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Retorna o volume atual ou define-o. '!vol [0-100]'</value>
-  </data>
-  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
-    <value>Comando para fazer solicitações de músicas. (Command + Spotify Link ou Artista - Título)</value>
   </data>
   <data name="lang_br" xml:space="preserve">
     <value>Portugues do Brasil</value>

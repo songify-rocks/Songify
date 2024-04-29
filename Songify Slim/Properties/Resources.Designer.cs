@@ -511,6 +511,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brazilian Portuguese.
+        /// </summary>
+        public static string lang_br {
+            get {
+                return ResourceManager.GetString("lang_br", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to German.
         /// </summary>
         public static string lang_deDE {

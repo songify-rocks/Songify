@@ -86,6 +86,7 @@
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_it}" />
+                            <ComboBoxItem Content="{x:Static local:Resources.lang_br}"/>
                         </ComboBox>
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
@@ -884,35 +885,6 @@
                 Padding="20,0,0,0"
                 Header="Rewards"
                 Visibility="Visible">
-                <TabItem.Style>
-                    <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabItem.Style>
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"

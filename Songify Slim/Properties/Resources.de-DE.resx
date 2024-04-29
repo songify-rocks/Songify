@@ -502,9 +502,6 @@
   <data name="mw_menu_View" xml:space="preserve">
     <value>Anzeige</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Kauf uns doch 'n Kaffee</value>
-  </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Künstler - Titel</value>
   </data>
@@ -702,5 +699,11 @@
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
     <value>Befehl zum Senden von Songwünschen. (Befehl + Spotify-Link oder Künstler - Titel)</value>
+  </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>Brasilianisches Portugiesisch</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Unterstütz uns auf Ko-Fi!</value>
   </data>
 </root>

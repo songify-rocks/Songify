@@ -502,9 +502,6 @@
   <data name="mw_menu_View" xml:space="preserve">
     <value>Вид</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
-    <value>Купите нам кофе</value>
-  </data>
   <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
     <value>Исполнитель - название</value>
   </data>
@@ -702,5 +699,11 @@
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
     <value>Команда для запроса песен. (Command + ссылка Spotify или исполнитель — название)</value>
+  </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>бразильский португальский</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Поддержите нас на Ko-Fi!</value>
   </data>
 </root>
