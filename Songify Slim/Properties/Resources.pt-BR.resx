@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -124,7 +124,7 @@
     <value>Erro ao buscar dados da música</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
-    <value>Configure as respostas do bot para os seguintes cenários:</value>
+    <value>Configure as respostas do BOT para as seguintes situações:</value>
   </data>
   <data name="brw_MaxSongs" xml:space="preserve">
     <value>Máximo de músicas na fila</value>
@@ -145,7 +145,7 @@
     <value>Adicionar</value>
   </data>
   <data name="bw_btnClear" xml:space="preserve">
-    <value>Claro</value>
+    <value>Limpar</value>
   </data>
   <data name="bw_cbArtist" xml:space="preserve">
     <value>Artista</value>
@@ -175,7 +175,7 @@
     <value>Conectar</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
-    <value>desconectar</value>
+    <value>Desconectar</value>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
     <value>Saída</value>
@@ -193,7 +193,7 @@
     <value>História</value>
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
-    <value>Navegador de histórico</value>
+    <value>Histórico no Navegador</value>
   </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
     <value>Janela Histórico</value>
@@ -202,7 +202,7 @@
     <value>Fila</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>Navegador de filas</value>
+    <value>Fila no Navegador</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
     <value>Limpar fila</value>
