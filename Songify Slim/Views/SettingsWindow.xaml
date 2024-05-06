@@ -1285,35 +1285,6 @@
                 Header="SongRequest"
                 ToolTip="Song Requests"
                 Visibility="Visible">
-                <TabItem.Style>
-                    <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding ElementName=TabItemTwitch, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchAccounts, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchReward, Path=IsSelected}" Value="False" />
-                                    <Condition Binding="{Binding ElementName=TabItemTwitchSr, Path=IsSelected}" Value="False" />
-                                </MultiDataTrigger.Conditions>
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TabItem.Style>
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -1806,6 +1777,7 @@
                             Grid.Row="2"
                             Grid.Column="1"
                             HorizontalAlignment="Left"
+                            Margin="0,0,5,0"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_song}" />
                         <controls:ToggleSwitch
@@ -1853,6 +1825,7 @@
                             Grid.Column="1"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
+                            Margin="0,0,5,0"
                             Text="{x:Static local:Resources.brw_cmd_pos}"
                             TextWrapping="WrapWithOverflow" />
                         <controls:ToggleSwitch
@@ -1899,6 +1872,7 @@
                         <TextBlock
                             Grid.Row="4"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_next}"
@@ -1948,6 +1922,7 @@
                         <TextBlock
                             Grid.Row="5"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_skip}"
@@ -2050,6 +2025,7 @@
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" TextWrapping="Wrap" />
@@ -2096,6 +2072,7 @@
                         <TextBlock
                             Grid.Row="8"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_remove}" />
@@ -2142,6 +2119,7 @@
                         <TextBlock
                             Grid.Row="9"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_songlike}" />
@@ -2180,6 +2158,7 @@
                         <TextBlock
                             Grid.Row="10"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_playpause}" />
@@ -2219,6 +2198,7 @@
                         <TextBlock
                             Grid.Row="11"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             TextWrapping="Wrap"
                             VerticalAlignment="Center"

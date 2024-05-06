@@ -214,8 +214,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return null;
-
-
+            
             string artists = "";
 
             for (int i = 0; i < context.Item.Artists.Count; i++)
