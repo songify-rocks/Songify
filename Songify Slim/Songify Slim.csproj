@@ -695,6 +695,9 @@
     <Compile Include="Views\Window_CreateCustomReward.xaml.cs">
       <DependentUpon>Window_CreateCustomReward.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Window_ManualTwitchLogin.xaml.cs">
+      <DependentUpon>Window_ManualTwitchLogin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Window_Patchnotes.xaml.cs">
       <DependentUpon>Window_Patchnotes.xaml</DependentUpon>
     </Compile>
@@ -758,6 +761,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_CreateCustomReward.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_ManualTwitchLogin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

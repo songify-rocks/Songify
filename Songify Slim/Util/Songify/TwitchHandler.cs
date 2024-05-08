@@ -494,9 +494,10 @@ namespace Songify_Slim.Util.Songify
 
             {
                 // Checks if twitch credentials are present
-                if (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
-                    string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
-                    string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                if (Settings.Settings.TwitchUser != null &&
+                    (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
+                     string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
+                     string.IsNullOrEmpty(Settings.Settings.TwChannel)))
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -508,6 +509,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
+                if (Settings.Settings.TwitchUser == null) return;
                 // creates new connection based on the credentials in settings
                 ConnectionCredentials credentials =
                     new(Settings.Settings.TwitchUser.DisplayName,

@@ -661,34 +661,62 @@
                                     </Grid>
                                 </StackPanel>
                             </DockPanel>
-                            <Button
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        >
+                                <Button
                                 x:Name="BtnLogInTwitch"
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="6,0,6,0"
+                                Margin="6,0,0,0"
                                 VerticalAlignment="Bottom"
-                                Click="BtnLogInTwitch_Click">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <iconPacks:ForkAwesome Kind="Twitch" />
-                                        <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button
+                                Click="BtnLogInTwitch_Click" Width="160">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:ForkAwesome Kind="Twitch" />
+                                            <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button
+                                    x:Name="BtnLogInTwitchAlt"
+                                    Margin="6,0,6,0"
+                                    VerticalAlignment="Bottom"
+                                    Tag="main"
+                                    Click="BtnLogInTwitchAlt_Click" Height="30">
+                                    <Button.Content>
+                                        <TextBlock Text="Doesn't work?"></TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                            >
+                                <Button
                                 x:Name="BtnLogInTwitchBot"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="6,0,6,0"
+
+                                Margin="6,0,0,0"
                                 VerticalAlignment="Bottom"
-                                Click="BtnLogInTwitchBot_OnClick">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <iconPacks:ForkAwesome Kind="Twitch" />
-                                        <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
+                                Click="BtnLogInTwitchBot_OnClick" Width="160">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:ForkAwesome Kind="Twitch" />
+                                            <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button
+                                    x:Name="BtnLogInTwitchAltBot"
+                                    Margin="6,0,6,0"
+                                    VerticalAlignment="Bottom"
+                                    Tag="bot"
+                                    Click="BtnLogInTwitchAlt_Click" Height="30">
+                                    <Button.Content>
+                                        <TextBlock Text="Doesn't work?"></TextBlock>
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+
                         </Grid>
 
                         <!--#region Twitch Credentials (not using API)-->

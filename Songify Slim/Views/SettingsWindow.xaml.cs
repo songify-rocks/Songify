@@ -53,7 +53,7 @@ namespace Songify_Slim.Views
             Width = MinWidth = 830;
         }
 
-        public async void SetControls()
+        public async Task SetControls()
         {
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
@@ -224,7 +224,7 @@ namespace Songify_Slim.Views
             CbAccountSelection.Items.Clear();
             if (Settings.TwitchUser != null)
             {
-                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0);
+                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0, BtnLogInTwitchAlt);
                 TxtbxTwChannel.Text = Settings.TwitchUser.Login;
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
@@ -234,13 +234,16 @@ namespace Songify_Slim.Views
 
             if (Settings.TwitchBotUser != null)
             {
-                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1);
+                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1, BtnLogInTwitchAltBot);
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UC_AccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
                 });
             }
-            CbAccountSelection.SelectedItem = CbAccountSelection.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UC_AccountItem)item.Content).Username != null && ((UC_AccountItem)item.Content).Username == Settings.TwAcc);
+            if (string.IsNullOrEmpty(Settings.TwAcc))
+                CbAccountSelection.SelectedIndex = 0;
+            else
+                CbAccountSelection.SelectedItem = CbAccountSelection.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UC_AccountItem)item.Content).Username != null && ((UC_AccountItem)item.Content).Username == Settings.TwAcc);
             CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
             await LoadRewards();
 
@@ -255,9 +258,10 @@ namespace Songify_Slim.Views
                     }
                 }
             }
+            return;
         }
 
-        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn, int account)
+        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn, int account, UIElement btnAlt)
         {
             if (user == null)
             {
@@ -272,32 +276,32 @@ namespace Songify_Slim.Views
                 case 0 when GlobalObjects.TwitchUserTokenExpired:
                 case 1 when GlobalObjects.TwitchBotTokenExpired:
                     btn.Visibility = Visibility.Visible;
+                    btnAlt.Visibility = Visibility.Visible;
                     lbl.Content += $"{user.DisplayName} (Token Expired)";
 
                     break;
                 default:
+                    btnAlt.Visibility = Visibility.Collapsed;
                     btn.Visibility = Visibility.Collapsed;
                     lbl.Content += $"{user.DisplayName}";
 
                     break;
             }
 
-            if (user.ProfileImageUrl != null)
+            if (user.ProfileImageUrl == null) return;
+            BitmapImage bitmap = new();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
+            bitmap.EndInit();
+            switch (account)
             {
-                BitmapImage bitmap = new();
-                bitmap.BeginInit();
-                bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
-                bitmap.EndInit();
-                switch (account)
-                {
-                    case 0 when GlobalObjects.TwitchUserTokenExpired:
-                    case 1 when GlobalObjects.TwitchBotTokenExpired:
-                        img.ImageSource = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
-                        break;
-                    default:
-                        img.ImageSource = bitmap;
-                        break;
-                }
+                case 0 when GlobalObjects.TwitchUserTokenExpired:
+                case 1 when GlobalObjects.TwitchBotTokenExpired:
+                    img.ImageSource = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
+                    break;
+                default:
+                    img.ImageSource = bitmap;
+                    break;
             }
 
 
@@ -1323,9 +1327,14 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded)
                 return;
+            ResetTwitchConnection();
+        }
+
+        public void ResetTwitchConnection()
+        {
             Settings.TwAcc = ((UC_AccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
             Settings.TwOAuth = ((UC_AccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
-            TwitchHandler.Client.Disconnect();
+            TwitchHandler.Client?.Disconnect();
             TwitchHandler.Client = null;
             TwitchHandler.BotConnect();
             TwitchHandler.MainConnect();
@@ -1544,6 +1553,18 @@ namespace Songify_Slim.Views
                 default:
                     return;
             }
+        }
+
+        private void BtnLogInTwitchAlt_Click(object sender, RoutedEventArgs e)
+        {
+            Window_ManualTwitchLogin manualTwitchLogin = new(
+                (bool)(sender as Button)?.Tag.ToString().Equals("main", StringComparison.CurrentCultureIgnoreCase)
+                ? TwitchHandler.TwitchAccount.Main
+                : TwitchHandler.TwitchAccount.Bot)
+            {
+                Owner = this
+            };
+            manualTwitchLogin.ShowDialog();
         }
     }
 }
