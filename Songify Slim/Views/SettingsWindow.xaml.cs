@@ -1354,6 +1354,14 @@ namespace Songify_Slim.Views
 
         private void CbxUserLevelsRewardChecked(object sender, RoutedEventArgs e)
         {
+            /*
+               Everyone = 0,
+               Subscriber = 1,
+               Vip = 2,
+               Moderator = 3,
+               Broadcaster = 4
+             */
+
             if (!(sender is CheckBox checkBox)) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (Settings.UserLevelsReward.Contains(value)) return;

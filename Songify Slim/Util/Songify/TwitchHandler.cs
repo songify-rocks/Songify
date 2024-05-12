@@ -1067,12 +1067,19 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static int CheckUserLevel(ChatMessage o)
+        private static Tuple<int, bool> CheckUserLevel(ChatMessage o, int type = 0)
         {
-            if (o.IsBroadcaster) return 4;
-            if (o.IsModerator) return 3;
-            if (o.IsVip) return 2;
-            return o.IsSubscriber ? 1 : 0;
+            //Type 0 = Command, 1 = Reward
+
+            List<int> userlevels = [];
+            if (o.IsBroadcaster) userlevels.Add(4);
+            if (o.IsModerator) userlevels.Add(3);
+            if (o.IsVip) userlevels.Add(2);
+            if (o.IsSubscriber) userlevels.Add(1);
+            userlevels.Add(0);
+
+            bool isAllowed = type == 0 ? Settings.Settings.UserLevelsCommand.Any(userlevels.Contains) : Settings.Settings.UserLevelsReward.Any(userlevels.Contains);
+            return new Tuple<int, bool>(userlevels.Max(), isAllowed);
         }
 
         private static string CleanFormatString(string currSong)
@@ -1134,6 +1141,7 @@ namespace Songify_Slim.Util.Songify
         {
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
+            Tuple<int, bool> userlevel = CheckUserLevel(e.ChatMessage, 1);
 
             if (existingUser == null)
             {
@@ -1143,14 +1151,14 @@ namespace Songify_Slim.Util.Songify
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
                     DisplayName = e.ChatMessage.DisplayName,
-                    UserLevel = CheckUserLevel(e.ChatMessage)
+                    UserLevel = userlevel.Item1
                 };
                 Users.Add(newUser);
             }
             else
             {
                 // If the user exists, update their information.
-                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage));
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, userlevel.Item1);
             }
 
             if (Settings.Settings.TwRewardId.Count > 0 &&
@@ -1159,14 +1167,12 @@ namespace Songify_Slim.Util.Songify
             {
                 Settings.Settings.IsLive = await CheckStreamIsUp();
 
-                int userlevel = CheckUserLevel(e.ChatMessage);
-                if (userlevel < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!Settings.Settings.UserLevelsReward.Contains(userlevel) &&
-                        !Settings.Settings.UserLevelsReward.Contains(0))
+                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
+                    if (!userlevel.Item2)
                     {
                         //Send a Message to the user, that his Userlevel is too low
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
                         return;
                     }
 
@@ -1213,14 +1219,13 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
 
-                int userlevel = CheckUserLevel(e.ChatMessage);
-                if (userlevel < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!Settings.Settings.UserLevelsCommand.Contains(userlevel) &&
-                        !Settings.Settings.UserLevelsCommand.Contains(0))
+                userlevel = CheckUserLevel(e.ChatMessage, 0);
+                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
+                    if (!userlevel.Item2)
                     {
                         //Send a Message to the user, that his Userlevel is too low
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
                         return;
                     }
 
@@ -2113,14 +2118,14 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 if (!Settings.Settings.TwSrUnlimitedSr &&
-                    MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage)))
+                    MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage, 1).Item1))
                 {
                     response = Settings.Settings.BotRespMaxReq;
                     response = response.Replace("{user}", e.ChatMessage.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage)} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage))}");
+                        $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage).Item1} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage).Item1)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -2206,7 +2211,7 @@ namespace Songify_Slim.Util.Songify
                     ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
                 }
             });
-            Logger.LogStr("PUBSUB: Connected");
+            Logger.LogStr("TWITCH PUBSUB: Connected");
             SendChatMessage(Settings.Settings.TwChannel, "Connected to PubSub");
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
