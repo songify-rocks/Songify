@@ -251,16 +251,16 @@
     <value>Канал</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Идентификатор награды за очки канала</value>
+    <value>Идентификатор награды за баллы канала</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>Очистить очередь при запуске</value>
+    <value>Очистить очередь при запуске программы</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
     <value>Время перезарядки команды (в секундах)</value>
   </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
-    <value>Макс. количество запросов на пользователя</value>
+    <value>Макс. количество запросов для пользователя</value>
   </data>
   <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
     <value>Включить ведение журнала сообщений</value>
@@ -509,7 +509,7 @@
     <value>Проверить онлайн-статус</value>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
-    <value>Очередь песен</value>
+    <value>Очередь треков</value>
   </data>
   <data name="s_Length" xml:space="preserve">
     <value>Длина</value>
@@ -659,7 +659,7 @@
     <value>Ответ на команду !remove</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Разделить исполнителя, название и заказчика</value>
+    <value>Разделить исполнителя, название трека и от кого запрос трека</value>
   </data>
   <data name="lang_pl" xml:space="preserve">
     <value>Польский</value>
