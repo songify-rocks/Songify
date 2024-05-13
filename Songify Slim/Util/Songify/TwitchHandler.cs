@@ -1250,9 +1250,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 AddSong(
-                    await GetTrackIdFromInput(e.ChatMessage.Message
-                        .Replace($"!{Settings.Settings.BotCmdSsrTrigger}", "")
-                        .Trim()), e);
+                    await GetTrackIdFromInput(Regex.Replace(e.ChatMessage.Message, $"!{Settings.Settings.BotCmdSsrTrigger}", "", RegexOptions.IgnoreCase).Trim()), e);
 
                 // start the command cooldown
                 StartCooldown();

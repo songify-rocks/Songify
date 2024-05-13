@@ -1541,7 +1541,7 @@ namespace Songify_Slim.Views
             Settings.DonationReminder = ((ToggleSwitch)sender).IsOn;
             if (!((ToggleSwitch)sender).IsOn) return;
 
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋", "No more donation messages!\n\nRemember, our app stays vibrant and user-friendly thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ✨",
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋", "No more donation messages!\n\nRemember, our app stays free and accessible thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ✨",
                 MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings
                 {
