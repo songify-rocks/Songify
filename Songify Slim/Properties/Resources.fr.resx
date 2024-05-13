@@ -121,7 +121,7 @@
     <value>L'artiste est bloqué</value>
   </data>
   <data name="brw_FetchError" xml:space="preserve">
-    <value>Erreur dans la récupération des données sur la musique</value>
+    <value>Erreur dans la récupération des données de la musique</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
     <value>Configurez les réponses du bot pour les scénarios suivants :</value>
@@ -542,7 +542,7 @@
     <value>Arrêter le serveur Web</value>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>Obtenir des mises à jour bêta</value>
+    <value>Obtenir les mises à jour bêta</value>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
     <value>Veuillez lier votre compte Spotify. Paramètres -&gt; Spotify</value>
