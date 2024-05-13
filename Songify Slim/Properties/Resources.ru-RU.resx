@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="brw_ArtistBlocked" xml:space="preserve">
-    <value>Испольнитель заблокирован</value>
+    <value>Исполнитель заблокирован</value>
   </data>
   <data name="brw_FetchError" xml:space="preserve">
     <value>Ошибка при получении информации о песне</value>
   </data>
   <data name="brw_Header" xml:space="preserve">
-    <value>Настроити ответы чат-бота:</value>
+    <value>Настройки ответов чат-бота:</value>
   </data>
   <data name="brw_MaxSongs" xml:space="preserve">
-    <value>Максимальное количество песен достигнуто</value>
+    <value>Достигнут лимит песен в очереди</value>
   </data>
   <data name="brw_SongInQueue" xml:space="preserve">
     <value>Песня уже в очереди</value>
@@ -151,7 +151,7 @@
     <value>Пользователь</value>
   </data>
   <data name="bw_lblBlockedArtists" xml:space="preserve">
-    <value>Заблокированные исполнительи</value>
+    <value>Заблокированные исполнители</value>
   </data>
   <data name="bw_lblBlockedUsers" xml:space="preserve">
     <value>Заблокированные пользователи</value>
@@ -172,13 +172,13 @@
     <value>Черный список</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Соединяться</value>
+    <value>Подключение</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
-    <value>Отключится</value>
+    <value>Отключение</value>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
-    <value>Закрыть</value>
+    <value>Выход</value>
   </data>
   <data name="mw_menu_File" xml:space="preserve">
     <value>Файл</value>
@@ -187,31 +187,31 @@
     <value>Помощь</value>
   </data>
   <data name="mw_menu_Help_About" xml:space="preserve">
-    <value>О Программа</value>
+    <value>О программе</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
     <value>История</value>
   </data>
   <data name="mw_menu_History_Window" xml:space="preserve">
-    <value>Окно истории</value>
+    <value>История в окне</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Очередь</value>
   </data>
   <data name="mw_menu_Queue_Browser" xml:space="preserve">
-    <value>браузер</value>
+    <value>Очередь в браузере</value>
   </data>
   <data name="mw_menu_Queue_Clear" xml:space="preserve">
-    <value>Очистить</value>
+    <value>Очистить очередь</value>
   </data>
   <data name="mw_menu_Queue_Window" xml:space="preserve">
-    <value>Окно</value>
+    <value>Очередь в окне</value>
   </data>
   <data name="mw_menu_Settings" xml:space="preserve">
     <value>Настройки</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
-    <value>Поддержка</value>
+    <value>Поддержите нас</value>
   </data>
   <data name="mw_menu_Widget" xml:space="preserve">
     <value>Виджет</value>
@@ -227,25 +227,25 @@
     <value>Светлая тема</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
-    <value>Зкспортировать</value>
+    <value>Экспорт конфигурации</value>
   </data>
   <data name="sw_Config_Import" xml:space="preserve">
-    <value>Импортировать</value>
+    <value>Импорт конфигурации</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>Авто. подключаться</value>
+    <value>Автоподключение</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
-    <value>Связать</value>
+    <value>Привязать</value>
   </data>
   <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
     <value>Настройка ответов и команд бота</value>
   </data>
   <data name="sw_Integration_NBWatermark" xml:space="preserve">
-    <value>NB Имя пользователя (Twitch имя пользователя)</value>
+    <value>NB Имя пользователя (Имя пользователя Twitch )</value>
   </data>
   <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
-    <value>Подключенный аккаунт:</value>
+    <value>Привязанный аккаунт:</value>
   </data>
   <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
     <value>Канал</value>
@@ -278,16 +278,16 @@
     <value>Скачать обложку альбома (Только API)</value>
   </data>
   <data name="sw_tcOutput_Format" xml:space="preserve">
-    <value>Выходной формат  (Text File &amp; Widget)</value>
+    <value>Формат вывода(Текстовый файл и Виджет)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
-    <value>Текст во время перерыва</value>
+    <value>Текст для паузы</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Собственный текст во время перерыва (пусто для текстового файла)</value>
+    <value>Настраиваемый текст паузы (пусто для текстового файла)</value>
   </data>
   <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
-    <value>Загрузить информацию о песне</value>
+    <value>Загружать информацию о песне</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
     <value>Запускать вместе с Windows</value>
@@ -296,22 +296,22 @@
     <value>Поведение</value>
   </data>
   <data name="sw_tcSystem_CheckButton" xml:space="preserve">
-    <value>Проверит наличие обновлений</value>
+    <value>Проверить наличие обновлений</value>
   </data>
   <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
-    <value>Скорость сбора Chroma (в секундах)</value>
+    <value>Chrome fetch rate (в секундах)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
     <value>Свернуть в трей</value>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>Отправить анонимные данные</value>
+    <value>Отправлять анонимные данные</value>
   </data>
   <data name="sw_tcSystem_Telemetry" xml:space="preserve">
     <value>Телеметрия</value>
   </data>
   <data name="sw_tc_Appearance" xml:space="preserve">
-    <value>Внешность</value>
+    <value>Внешний вид</value>
   </data>
   <data name="sw_tc_Config" xml:space="preserve">
     <value>Конфигурация</value>
@@ -326,10 +326,10 @@
     <value>Общее</value>
   </data>
   <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
-    <value>сохранять</value>
+    <value>Сохранить</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>Использовать Songify AppID</value>
+    <value>Использовать собственный AppID</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Максимальная длина песни (в минутах)</value>
@@ -338,13 +338,13 @@
     <value>Песня не указана (пустой запрос)</value>
   </data>
   <data name="mw_menu_History_Browser" xml:space="preserve">
-    <value>Браузер истории</value>
+    <value>История в браузере</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>Используйте Songify AppID</value>
+    <value>Использовать Songify AppID</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
-    <value>Конфигурация бота</value>
+    <value>Настройка бота</value>
   </data>
   <data name="lang_es" xml:space="preserve">
     <value>Испанский</value>
@@ -365,7 +365,7 @@
     <value>Вкл</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
-    <value>Отображает положение в очереди пользователей songrequests</value>
+    <value>Отображает позицию в очереди запросов пользователей</value>
   </data>
   <data name="brw_cmd_song" xml:space="preserve">
     <value>Отображает текущую композицию</value>
@@ -380,7 +380,7 @@
     <value>Триггер</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Output Format (Twitch Chat)</value>
+    <value>Формат вывода(Чат Twitch)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
     <value>Создать награду</value>
@@ -389,10 +389,10 @@
     <value>Заголовок</value>
   </data>
   <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Быстрый</value>
+    <value>Подсказка</value>
   </data>
   <data name="crw_RewardCost" xml:space="preserve">
-    <value>Расходы</value>
+    <value>Стоимость</value>
   </data>
   <data name="crw_CreateRewardError" xml:space="preserve">
     <value>Возникла проблема с созданием награды. Убедитесь, что у вас уже нет награды с таким названием.</value>
@@ -404,7 +404,7 @@
     <value>Примечания к патчу</value>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Лог-папка</value>
+    <value>Логи</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Войти с Twitch</value>
@@ -413,7 +413,7 @@
     <value>Консоль</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Пропускает текущую песню (Broadcaster / Mod / Requester)</value>
+    <value>Пропускает текущую песню (Стример / Модератор / Заказчик)</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Начинает голосование за пропуск текущей песни</value>
@@ -431,13 +431,13 @@
     <value>Открыть веб-сайт</value>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>открыть окно очереди при запуске</value>
+    <value>Открыть окно очереди при запуске</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
     <value>Автоматически объявлять песню в чате</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
-    <value>Ограничьте активность Twitch, чтобы она работала только во время трансляции (требуется вход в Twitch)</value>
+    <value>Ограничить активность Twitch, чтобы реагировать только во время трансляции (требуется вход в Twitch)</value>
   </data>
   <data name="Sw_Integration_ManageRewards" xml:space="preserve">
     <value>Управление наградами</value>
@@ -455,7 +455,7 @@
     <value>Пользователь заблокирован в SR</value>
   </data>
   <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
-    <value>Спотифай не подключен</value>
+    <value>Spotify не подключен</value>
   </data>
   <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
     <value>Песня недоступна в регионе</value>
@@ -482,7 +482,7 @@
     <value>Скрыть имена учетных записей и изображения профиля</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
-    <value>учетные записи</value>
+    <value>Учётные записи</value>
   </data>
   <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
     <value>Награды</value>
@@ -494,7 +494,7 @@
     <value>Авторизовался через Twitch</value>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>неограниченные запросы песен</value>
+    <value>Неограниченные запросы песен</value>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
     <value>Запросы песен</value>
@@ -515,19 +515,19 @@
     <value>Длина</value>
   </data>
   <data name="s_Requester" xml:space="preserve">
-    <value>Заявитель</value>
+    <value>Заказчик</value>
   </data>
   <data name="WinTitle_Blocklist" xml:space="preserve">
-    <value>Черный список</value>
+    <value>Чёрный список</value>
   </data>
   <data name="WinTitle_History" xml:space="preserve">
-    <value>История песни</value>
+    <value>История песен</value>
   </data>
   <data name="Sw_System_PrivacyHeader" xml:space="preserve">
     <value>Конфиденциальность</value>
   </data>
   <data name="sw_tc_WebServer" xml:space="preserve">
-    <value>Веб сервер</value>
+    <value>Веб-сервер</value>
   </data>
   <data name="sw_WebServer_AutoStart" xml:space="preserve">
     <value>Автоматически запускать веб-сервер</value>
@@ -539,19 +539,19 @@
     <value>Остановить веб-сервер</value>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>получать бета-обновления</value>
+    <value>Получать бета-обновления</value>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
-    <value>Пожалуйста, привяжите свою учетную запись Spotify. Настройки -&gt; Спотифай</value>
+    <value>Пожалуйста, привяжите свою учетную запись Spotify. Настройки -&gt; Spotify</value>
   </data>
   <data name="s_Save" xml:space="preserve">
-    <value>сохранять</value>
+    <value>Сохранить</value>
   </data>
   <data name="s_Upload" xml:space="preserve">
     <value>Загрузить</value>
   </data>
   <data name="s_Name" xml:space="preserve">
-    <value>Имя</value>
+    <value>Название</value>
   </data>
   <data name="s_Time" xml:space="preserve">
     <value>Время</value>
@@ -560,7 +560,7 @@
     <value>Создать новую награду</value>
   </data>
   <data name="brw_ModSkip" xml:space="preserve">
-    <value>Вещатель/модератор/заявитель пропустил песню</value>
+    <value>Стример / Модератор / Заказчик пропустил песню</value>
   </data>
   <data name="brw_Pos" xml:space="preserve">
     <value>Ответ на команду !pos</value>
@@ -581,10 +581,10 @@
     <value>Пользователь проголосовал за пропуск текущей песни</value>
   </data>
   <data name="sw_Spotify_RewardSR" xml:space="preserve">
-    <value>Награда за запросы песен</value>
+    <value>Награда для запросов песен</value>
   </data>
   <data name="sw_Spotify_RewardSkip" xml:space="preserve">
-    <value>Награда за пропуск песни</value>
+    <value>Награда для пропуска песни</value>
   </data>
   <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
     <value>Команда !ssr перемещена в конфигурацию бота</value>
@@ -632,7 +632,7 @@
     <value>Ответ на команду !songlike</value>
   </data>
   <data name="brw_cmd_songlike" xml:space="preserve">
-    <value>Добавляет текущую песню в список воспроизведения, выбранный в конфигурации Spotify.</value>
+    <value>Добавляет текущую песню в плейлист, выбранный в конфигурации Spotify.</value>
   </data>
   <data name="brw_cmd_playpause" xml:space="preserve">
     <value>Возобновляет или приостанавливает текущее воспроизведение.</value>
@@ -650,7 +650,7 @@
     <value>Список воспроизведения, в который добавляются песни при использовании команды !songlike или с возможностью автоматического добавления песен в список воспроизведения.</value>
   </data>
   <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
-    <value>Добавить все запросы песен в плейлист</value>
+    <value>Добавлять все заказанные песни в плейлист</value>
   </data>
   <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
     <value>Ответ, когда песня не найдена в списке воспроизведения разрешенных песен</value>
@@ -665,7 +665,7 @@
     <value>Польский</value>
   </data>
   <data name="lang_pt" xml:space="preserve">
-    <value>португальский</value>
+    <value>Португальский</value>
   </data>
   <data name="sw_Integration_ShowCreds" xml:space="preserve">
     <value>Показать учетные данные</value>
@@ -674,34 +674,34 @@
     <value>Разрешить только песни из этого плейлиста (SR)</value>
   </data>
   <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
-    <value>Блокировать все откровенные песни</value>
+    <value>Блокировать весь Explicit-контент</value>
   </data>
   <data name="brw_ExplicitSongs" xml:space="preserve">
-    <value>Ответ, когда запрошена песня откровенного характера и включена функция «Блокировать песни откровенного характера»</value>
+    <value>Ответ, в случае запроса Explicit-песни при включенной функции «Блокировать весь Explicit-контент»</value>
   </data>
   <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
-    <value>Префикс текста запроса</value>
+    <value>Префикс заказчика</value>
   </data>
   <data name="lang_it" xml:space="preserve">
-    <value>итальянский</value>
+    <value>Итальянский</value>
   </data>
   <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
     <value>Использовать веб-браузер по умолчанию</value>
   </data>
   <data name="brw_CommandOnCooldown" xml:space="preserve">
-    <value>Реакция, когда команда sr находится на кулдауне</value>
+    <value>Ответ, когда команда sr находится на перезарядке</value>
   </data>
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Ответ, когда трек не найден</value>
   </data>
   <data name="brw_cmd_vol" xml:space="preserve">
-    <value>Восстанавливает текущую громкость или устанавливает её. `!vol #` где # - число между 0  и 100</value>
+    <value>Восстанавливает текущую громкость или устанавливает её. `!vol #` где # - число между 0 и 100</value>
   </data>
   <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
     <value>Команда для запроса песен. (Command + ссылка Spotify или исполнитель — название)</value>
   </data>
   <data name="lang_br" xml:space="preserve">
-    <value>бразильский португальский</value>
+    <value>Бразильский Португальский</value>
   </data>
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
     <value>Поддержите нас на Ko-Fi!</value>
