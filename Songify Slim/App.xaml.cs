@@ -77,7 +77,15 @@ namespace Songify_Slim
             Exception e = (Exception)args.ExceptionObject;
             Logger.LogStr("##### Unhandled Exception #####");
             Logger.LogStr("MyHandler caught : " + e.Message);
-            Logger.LogStr("Runtime terminating: {0}" + args.IsTerminating);
+            Logger.LogStr("Stack Trace: " + e.StackTrace);
+
+            if (e.InnerException != null)
+            {
+                Logger.LogStr("Inner Exception: " + e.InnerException.Message);
+                Logger.LogStr("Inner Exception Stack Trace: " + e.InnerException.StackTrace);
+            }
+
+            Logger.LogStr("Runtime terminating: " + args.IsTerminating);
             Logger.LogStr("###############################");
             Logger.LogExc(e);
 
@@ -87,6 +95,11 @@ namespace Songify_Slim
             {
                 Process.Start(Logger.LogDirectoryPath);
             }
+
+            if (MessageBox.Show("Restart Songify?", "Songify", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
+                MessageBoxResult.Yes) return;
+            Process.Start(ResourceAssembly.Location);
+            Current.Shutdown();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

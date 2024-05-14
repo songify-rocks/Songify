@@ -148,7 +148,7 @@
                 </MenuItem>
                 <MenuItem
                     x:Name="mi_Exit"
-                    Click="mi_Exit_Click"
+                    Click="Mi_Exit_Click"
                     Header="{x:Static local:Resources.mw_menu_Exit}" />
             </MenuItem>
             <MenuItem
@@ -157,7 +157,7 @@
                 ToolTip="Connect to Twitch">
                 <MenuItem
                     x:Name="mi_TwitchAPI"
-                    Click="mi_TwitchAPI_Click"
+                    Click="Mi_TwitchAPI_Click"
                     Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
                 <MenuItem
                     x:Name="mi_TwitchConnect"
@@ -175,7 +175,7 @@
                     Click="Mi_TwitchCheckOnlineStatus_OnClick"
                     Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}" />
                 <MenuItem
-                    Click="mi_TW_BotResponses_Click"
+                    Click="Mi_TW_BotResponses_Click"
                     Header="{x:Static local:Resources.mw_menu_Twitch_Bot}"
                     Visibility="Collapsed">
                     <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click"/>-->
