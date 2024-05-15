@@ -16,7 +16,23 @@ Songify is packed with features that will help you take your stream to the next 
 - 💬 Personalized Pause Text: Keep your audience entertained and engaged with customized pause text.
 - 🎉 And More: Discover even more features and benefits that will make your streaming experience smoother and more fun!
 
-# FAQ
+## Translations
+
+Songify is currently available in 9 different languages
+
+- 🇬🇧 English
+- 🇩🇪 German
+- 🇫🇷 French
+- 🇮🇹 Italian
+- 🇪🇸 Spanish
+- 🇵🇱 Polish
+- 🇵🇹 Portuguese
+- 🇧🇷 Brasilian Portuguese
+- 🇷🇺 Russian
+
+These translations are crowd-sourced and powered using [Weblate](https://translate.songify.rocks/projects/songify/songify/). Contributions are always welcome.
+
+## FAQ
 
 Are you ready to take your streaming to the next level? Check out our guide and FAQ to get started with Songify:
 
