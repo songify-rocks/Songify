@@ -612,10 +612,23 @@ namespace Songify_Slim.Views
 
         private async Task FinalSetupAndUpdatesAsync()
         {
-            await SendTelemetry();
-            Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-            SetFetchTimer();
-
+            try
+            {
+                Logger.LogStr("Starting final setup and updates");
+                Logger.LogStr("Sending Telemetry");
+                await SendTelemetry();
+                Logger.LogStr("Telemetry sent");
+                Logger.LogStr("Check Stream up");
+                Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
+                Logger.LogStr("Check Stream up done");
+                Logger.LogStr("SetFetchTimer");
+                SetFetchTimer();
+                Logger.LogStr("SetFetchTimer done");
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
             if (Settings.UpdateRequired)
             {
                 List<int> userLevels = [];
@@ -671,8 +684,7 @@ namespace Songify_Slim.Views
 
         private void CreateSystrayIcon()
         {
-            _contextMenu.MenuItems.AddRange(new[]
-            {
+            _contextMenu.MenuItems.AddRange([
                 new System.Windows.Forms.MenuItem("Twitch", [
                     new System.Windows.Forms.MenuItem("Connect", (_, _) =>
                     {
@@ -694,7 +706,7 @@ namespace Songify_Slim.Views
                     _forceClose = true;
                     Close();
                 })
-            });
+            ]);
             NotifyIcon.Icon = Properties.Resources.songify;
             NotifyIcon.ContextMenu = _contextMenu;
             NotifyIcon.Visible = true;
