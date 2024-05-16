@@ -123,7 +123,7 @@ namespace Songify_Slim.Util.Settings
                                 TwitchUser = null,
                                 TwitchBotToken = "",
                                 BotUser = null,
-
+                                
                             };
                         }
                         break;
@@ -701,7 +701,7 @@ namespace Songify_Slim.Util.Settings
         public bool BlockAllExplicitSongs { get; set; } = false;
         public string RequesterPrefix { get; set; } = "Requested by ";
         public bool UseDefaultBrowser { get; set; } = false;
-        public bool DonationReminder { get; set; }
+        public bool DonationReminder { get; set; } = false;
     }
 
     public class Config

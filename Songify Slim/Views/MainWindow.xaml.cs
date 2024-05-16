@@ -624,24 +624,16 @@ namespace Songify_Slim.Views
                 Logger.LogStr("SetFetchTimer");
                 SetFetchTimer();
                 Logger.LogStr("SetFetchTimer done");
+
+                if (Settings.UpdateRequired)
+                {
+                    OpenPatchNotes();
+                    Settings.UpdateRequired = false;
+                }
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
-            }
-            if (Settings.UpdateRequired)
-            {
-                List<int> userLevels = [];
-                for (int i = 0; i <= Settings.TwSrUserLevel; i++)
-                {
-                    userLevels.Add(i);
-                }
-
-                if (Settings.UserLevelsCommand.Count == 0) Settings.UserLevelsCommand = userLevels;
-                if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
-
-                OpenPatchNotes();
-                Settings.UpdateRequired = false;
             }
 
             CheckForUpdates();
