@@ -192,10 +192,12 @@ namespace Songify_Slim.Util.Songify
                 url => trackinfo.Url ?? ""
             ).Format();
 
-            if (output.Trim().EndsWith("-"))
+            output = output.Trim();
+
+            if (output.EndsWith("-"))
             {
                 // Remove the trailing "-" if it exists
-                output = output.Trim().Substring(0, output.Length - 1);
+                output = output.Substring(0, output.Length - 1);
             }
 
             IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
@@ -408,10 +410,12 @@ namespace Songify_Slim.Util.Songify
                 url => songInfo.Url ?? ""
             ).Format();
 
-            if (output.Trim().EndsWith("-"))
+            output = output.Trim();
+
+            if (output.EndsWith("-"))
             {
                 // Remove the trailing "-" if it exists
-                output = output.Trim().Substring(0, output.Length - 1);
+                output = output.Substring(0, output.Length - 1);
             }
 
             IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
