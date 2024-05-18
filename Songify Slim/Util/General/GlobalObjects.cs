@@ -38,7 +38,7 @@ namespace Songify_Slim.Util.General
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
         public static PrivateProfile SpotifyProfile;
-        public static bool ForceUpdate; 
+        public static bool ForceUpdate;
         private static readonly TaskQueue updateQueueWindowTasks = new();
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
@@ -176,14 +176,22 @@ namespace Songify_Slim.Util.General
                     {
                         // Determine if we have a matching request object that hasn't been used for replacement yet
                         RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
+                        RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
 
                         if (reqObj != null)
                         {
+
                             // If we found a request object, and it hasn't been used for replacement, add it and mark as used
                             (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
                             replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
                         }
-
+                        else if (skipObj != null)
+                        {
+                            skipObj.Requester = "Skipping...";
+                            // If we found a request object, and it hasn't been used for replacement, add it and mark as used
+                            (window as WindowQueue)?.dgv_Queue.Items.Add(skipObj);
+                            replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                        }
                         else
                         {
                             // Otherwise, just add the song information from the queue as a new request object
@@ -200,6 +208,7 @@ namespace Songify_Slim.Util.General
                                 Albumcover = null
                             });
                         }
+
                     }
                     (window as WindowQueue)?.dgv_Queue.Items.Refresh();
                 }

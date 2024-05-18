@@ -40,6 +40,23 @@
                 <DataGridTextColumn  Visibility="Visible" x:Name="ColLength" Width="*" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}" />
                 <DataGridTextColumn  Visibility="Visible" x:Name="ColRequester" Width="*" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}" />
             </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="LightGray"></Setter>
+                        </Trigger>
+
+                        <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                            <Setter Property="Background" Value="IndianRed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Requester}" Value="Spotify">
+                            <Setter Property="Background" Value="Transparent" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="SeaGreen"></Setter>
+                </Style>
+            </DataGrid.RowStyle>
         </DataGrid>
 
     </Grid>

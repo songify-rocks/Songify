@@ -62,9 +62,9 @@ namespace Songify_Slim.Views
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);
+                GlobalObjects.SkipList.Add(req);
             }));
-            dgv_Queue.Items.Refresh();
-
+            GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private void ColVisChecked(object sender, RoutedEventArgs e)

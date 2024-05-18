@@ -600,6 +600,8 @@ namespace Songify_Slim.Util.Songify
 
             if (!songInfo.IsPlaying)
             {
+                if (Settings.Settings.DownloadCover) IOManager.DownloadCover(null, coverPath);
+
                 if (!Settings.Settings.CustomPauseTextEnabled)
                     return Task.CompletedTask;
                 // read the text file
@@ -607,7 +609,6 @@ namespace Songify_Slim.Util.Songify
                 IOManager.WriteOutput(songPath, Settings.Settings.CustomPauseText);
 
                 if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, title, "");
-
                 //IOManager.DownloadCover(null, coverPath);
 
                 Application.Current.Dispatcher.Invoke(() =>
