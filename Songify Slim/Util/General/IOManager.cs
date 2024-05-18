@@ -24,6 +24,8 @@ namespace Songify_Slim.Util.General
             try
             {
                 string interpretedText = InterpretEscapeCharacters(currSong);
+                if (songPath.Contains("songify.txt") && Settings.Settings.AppendSpaces)
+                    interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
                 File.WriteAllText(songPath, interpretedText);
             }
             catch (Exception e)
@@ -93,7 +95,7 @@ namespace Songify_Slim.Util.General
                 else
                 {
                     WebClient webClient = new();
-                   
+
                     webClient.DownloadFileCompleted += (sender, e) =>
                     {
                         if (e.Error != null)

@@ -200,7 +200,7 @@ namespace Songify_Slim.Util.Songify
                 output = output.Substring(0, output.Length - 1);
             }
 
-            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
+            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
 
             if (Settings.Settings.SplitOutput)
             {
@@ -841,10 +841,6 @@ namespace Songify_Slim.Util.Songify
             Regex regex = new("[ ]{2,}", options);
             currentSongOutput = regex.Replace(currentSongOutput, " ");
             currentSongOutput = currentSongOutput.Trim();
-
-            // Add trailing spaces for better scroll
-            if (Settings.Settings.AppendSpaces)
-                currentSongOutput = currentSongOutput.PadRight(currentSongOutput.Length + Settings.Settings.SpaceCount);
 
             return currentSongOutput;
         }
