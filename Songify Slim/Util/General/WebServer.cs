@@ -266,7 +266,7 @@ namespace Songify_Slim.Util.General
 
         private static async void BlockSong()
         {
-            FullTrack result = SpotifyApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
+            FullTrack result = await SpotifyApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
             if (result != null)
                 Settings.Settings.SongBlacklist.Add(new TrackItem
                 {

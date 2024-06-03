@@ -317,11 +317,11 @@ namespace Songify_Slim.Util.Songify
 
         }
 
-        public static FullTrack GetTrack(string id)
+        public static async Task<FullTrack> GetTrack(string id)
         {
             try
             {
-                FullTrack x = Spotify.GetTrack(id, "");
+                FullTrack x = await Spotify.GetTrackAsync(id, "");
                 Debug.WriteLine(Json.Serialize(x));
                 return x;
             }

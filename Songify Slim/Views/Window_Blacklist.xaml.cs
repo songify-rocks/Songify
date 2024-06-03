@@ -142,14 +142,14 @@ namespace Songify_Slim.Views
                         // search for a track with the id
                         trackId = search.Replace("spotify:track:", "");
                         // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
-                        tracks.Add(SpotifyApiHandler.GetTrack(trackId));
+                        tracks.Add(await SpotifyApiHandler.GetTrack(trackId));
                     }
 
                     else if (search.StartsWith("https://open.spotify.com/track/"))
                     {
                         trackId = search.Replace("https://open.spotify.com/track/", "");
                         trackId = trackId.Split('?')[0];
-                        tracks.Add(SpotifyApiHandler.GetTrack(trackId));
+                        tracks.Add(await SpotifyApiHandler.GetTrack(trackId));
                     }
                     else
                     {

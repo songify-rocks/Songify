@@ -92,7 +92,6 @@ namespace Songify_Slim.Util.Songify
                                 }
                             }
                             break;
-
                         case "vlc":
                             //Splitting the win title which is always Artist - Title
                             if (string.IsNullOrEmpty(wintitle) || wintitle == "vlc")
@@ -175,6 +174,7 @@ namespace Songify_Slim.Util.Songify
             {
                 return Task.CompletedTask;
             }
+
             GlobalObjects.CurrentSong = trackinfo;
             UpdateWebServerResponse(trackinfo);
 
@@ -206,6 +206,21 @@ namespace Songify_Slim.Util.Songify
             {
                 IOManager.WriteSplitOutput(trackinfo?.Artists, trackinfo?.Title, "");
             }
+
+            if (Settings.Settings.Upload)
+                try
+                {
+                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // if error occurs write text to the status asynchronous
+                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                    }));
+                }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -575,12 +590,12 @@ namespace Songify_Slim.Util.Songify
                     await WriteSongInfo(songInfo);
                 }
 
-                if (GlobalObjects.ForceUpdate)
-                {
-                    GlobalObjects.CurrentSong = songInfo;
-                    await WriteSongInfo(songInfo);
-                    GlobalObjects.ForceUpdate = false;
-                }
+                //if (GlobalObjects.ForceUpdate)
+                //{
+                //    GlobalObjects.CurrentSong = songInfo;
+                //    await WriteSongInfo(songInfo);
+                //    GlobalObjects.ForceUpdate = false;
+                //}
 
                 UpdateWebServerResponse(songInfo);
             }

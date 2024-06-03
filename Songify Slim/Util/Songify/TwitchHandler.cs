@@ -602,7 +602,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            FullTrack track = SpotifyApiHandler.GetTrack(trackId);
+            FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
             if (track == null)
             {
@@ -762,7 +762,7 @@ namespace Songify_Slim.Util.Songify
             // loads the blacklist from settings
             string response;
             // gets the track information using spotify api
-            FullTrack track = SpotifyApiHandler.GetTrack(trackId);
+            FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
             if (track.IsPlayable != null && (bool)!track.IsPlayable)
             {

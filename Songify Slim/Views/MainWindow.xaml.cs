@@ -240,25 +240,6 @@ namespace Songify_Slim.Views
                 }));
         }
 
-        private async void FetchSpotifyWeb()
-        {
-            await Sf.FetchSpotifyWeb();
-            //if (info == null) return;
-
-            //if (!info.IsPlaying)
-            //{
-            //    if (Settings.CustomPauseTextEnabled)
-            //        WriteSong("", "", "");
-            //    return;
-            //}
-
-            //string albumUrl = null;
-
-            //if (info.Albums.Count != 0) albumUrl = info.Albums[0].Url;
-
-            //WriteSong(info.Artists, info.Title, "", albumUrl, false, info.SongId, info.Url);
-        }
-
         private void FetchTimer(int ms)
         {
             // Check if the timer is running, if yes stop it and start new with the ms giving in the parameter
@@ -302,7 +283,7 @@ namespace Songify_Slim.Views
                     break;
 
                 case PlayerType.SpotifyWeb:
-                    FetchSpotifyWeb();
+                    await Sf.FetchSpotifyWeb();
                     break;
             }
         }
@@ -835,13 +816,11 @@ namespace Songify_Slim.Views
             {
                 img_cover.Visibility = _selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
+            
             try
             {
                 _sCts.CancelAfter(3500);
-                _timerFetcher.Enabled = false;
                 await GetCurrentSongAsync();
-                _timerFetcher.Enabled = true;
-                // when the timer 'ticks' this code gets executed
             }
             catch (TaskCanceledException ex)
             {

@@ -124,44 +124,9 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void UpdateQueueWindow()
+        private static void UpdateQueueWindow()
         {
-            SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(WindowQueue))
-                        continue;
-                    //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                    ((WindowQueue)window).dgv_Queue.ItemsSource = null;
-                    ((WindowQueue)window).dgv_Queue.Items.Clear();
-                    foreach (FullTrack fullTrack in queue.Queue)
-                    {
-                        if (GlobalObjects.ReqList.Any(o => o.Trackid == fullTrack.Id))
-                        {
-                            RequestObject reqObj = GlobalObjects.ReqList.First(o => o.Trackid == fullTrack.Id);
-                            (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
-                        }
-                        else
-                        {
-                            (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
-                            {
-                                Queueid = 0,
-                                Uuid = Settings.Settings.Uuid,
-                                Trackid = fullTrack.Id,
-                                Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                Title = fullTrack.Name,
-                                Length = GlobalObjects.MsToMmSsConverter((int)fullTrack.DurationMs),
-                                Requester = "Spotify",
-                                Played = 0,
-                                Albumcover = null
-                            });
-                        }
-                    }
-                    (window as WindowQueue)?.dgv_Queue.Items.Refresh();
-                }
-            });
+            GlobalObjects.QueueUpdateQueueWindow();
         }
 
         public static async Task TelemetryRequest(RequestMethod method, string payload)

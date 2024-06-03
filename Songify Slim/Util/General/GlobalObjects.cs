@@ -2,6 +2,7 @@
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Songify_Slim.Views;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -127,115 +128,140 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-            SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
-
-            //Remove all songs from the web queue that are not in the current playback queue
-            if (ReqList.Count > 0)
+            try
             {
-                List<RequestObject> itemsToRemove = [];
-
-                foreach (RequestObject requestObject in ReqList)
+                SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
+                if (queue == null || queue.Queue.Count == 0)
                 {
-                    if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
-                    dynamic payload = new
-                    {
-                        uuid = Settings.Settings.Uuid,
-                        key = Settings.Settings.AccessKey,
-                        queueid = requestObject.Queueid,
-                    };
-                    await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                    itemsToRemove.Add(requestObject);
+                    return;
                 }
 
-                foreach (RequestObject item in itemsToRemove)
+                // Remove all songs from the web queue that are not in the current playback queue
+                if (ReqList.Count > 0)
                 {
-                    await Application.Current.Dispatcher.BeginInvoke(() =>
+                    List<RequestObject> itemsToRemove = new List<RequestObject>();
+
+                    foreach (RequestObject requestObject in ReqList)
                     {
-                        if (item.Trackid == CurrentSong.SongId)
+                        if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
+
+                        dynamic payload = new
                         {
-                            return;
-                        }
-                        ReqList.Remove(item);
-                    });
-                }
-            }
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                // Dictionary to keep track of replacements
-                Dictionary<string, bool> replacementTracker = [];
+                            uuid = Settings.Settings.Uuid,
+                            key = Settings.Settings.AccessKey,
+                            queueid = requestObject.Queueid,
+                        };
 
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(WindowQueue))
-                        continue;
-
-                    ((WindowQueue)window).dgv_Queue.ItemsSource = null;
-                    ((WindowQueue)window).dgv_Queue.Items.Clear();
-
-                    foreach (FullTrack fullTrack in queue.Queue)
-                    {
-                        // Determine if we have a matching request object that hasn't been used for replacement yet
-                        RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
-                        RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
-
-                        if (reqObj != null)
+                        try
                         {
-
-                            // If we found a request object, and it hasn't been used for replacement, add it and mark as used
-                            (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
-                            replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                            itemsToRemove.Add(requestObject);
                         }
-                        else if (skipObj != null)
+                        catch (Exception ex)
                         {
-                            skipObj.Requester = "Skipping...";
-                            // If we found a request object, and it hasn't been used for replacement, add it and mark as used
-                            (window as WindowQueue)?.dgv_Queue.Items.Add(skipObj);
-                            replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                            // Log or handle error for individual request failure
+                            Logger.LogStr("API: Error updating value in web queue");
+                            Logger.LogExc(ex);
                         }
-                        else
-                        {
-                            // Otherwise, just add the song information from the queue as a new request object
-                            (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
-                            {
-                                Queueid = 0,
-                                Uuid = Settings.Settings.Uuid,
-                                Trackid = fullTrack.Id,
-                                Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                Title = fullTrack.Name,
-                                Length = MsToMmSsConverter((int)fullTrack.DurationMs),
-                                Requester = "Spotify",
-                                Played = 0,
-                                Albumcover = null
-                            });
-                        }
-
                     }
-                    (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+
+                    foreach (RequestObject item in itemsToRemove)
+                    {
+                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        {
+                            if (item.Trackid == CurrentSong.SongId)
+                            {
+                                return;
+                            }
+                            ReqList.Remove(item);
+                        });
+                    }
                 }
 
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    try
+                    {
+                        // Dictionary to keep track of replacements
+                        Dictionary<string, bool> replacementTracker = new Dictionary<string, bool>();
 
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window.GetType() != typeof(WindowQueue))
+                                continue;
+
+                            ((WindowQueue)window).dgv_Queue.ItemsSource = null;
+                            ((WindowQueue)window).dgv_Queue.Items.Clear();
+
+                            foreach (FullTrack fullTrack in queue.Queue)
+                            {
+                                // Determine if we have a matching request object that hasn't been used for replacement yet
+                                RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
+                                RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+
+                                if (reqObj != null)
+                                {
+                                    // If we found a request object, and it hasn't been used for replacement, add it and mark as used
+                                    (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
+                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                                }
+                                else if (skipObj != null)
+                                {
+                                    skipObj.Requester = "Skipping...";
+                                    // If we found a request object, and it hasn't been used for replacement, add it and mark as used
+                                    (window as WindowQueue)?.dgv_Queue.Items.Add(skipObj);
+                                    replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                                }
+                                else
+                                {
+                                    // Otherwise, just add the song information from the queue as a new request object
+                                    (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
+                                    {
+                                        Queueid = 0,
+                                        Uuid = Settings.Settings.Uuid,
+                                        Trackid = fullTrack.Id,
+                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                        Title = fullTrack.Name,
+                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                        Requester = "Spotify",
+                                        Played = 0,
+                                        Albumcover = null
+                                    });
+                                }
+                            }
+                            (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log or handle error during UI update
+                        Logger.LogStr("CORE: Encountered an error while updating the UI");
+                        Logger.LogExc(ex);
+                        Console.WriteLine($"Error updating UI: {ex.Message}");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // Log or handle error for the entire method failure
+                Logger.LogStr("CORE: Error in QueueUpdate method");
+                Logger.LogExc(ex);
+            }
         }
+
 
         public static string GetReadablePlayer()
         {
-            switch (Settings.Settings.Player)
+            return Settings.Settings.Player switch
             {
-                case 0:
-                    return "Spotify API";
-                case 1:
-                    return "Spotify Legacy";
-                case 2:
-                    return "Deezer";
-                case 3:
-                    return "Foobar2000";
-                case 4:
-                    return "VLC";
-                case 5:
-                    return "YouTube";
-            }
-
-            return "";
+                0 => "Spotify API",
+                1 => "Spotify Legacy",
+                2 => "Deezer",
+                3 => "Foobar2000",
+                4 => "VLC",
+                5 => "YouTube",
+                _ => ""
+            };
         }
     }
 }
