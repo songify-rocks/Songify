@@ -334,7 +334,7 @@
     <value>Configuração</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Contração muscular</value>
+    <value>Twitch</value>
   </data>
   <data name="sw_tc_Output" xml:space="preserve">
     <value>Saída</value>
@@ -442,7 +442,7 @@
     <value>Abrir janela de fila na inicialização</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anuncie música automaticamente no bate-papo</value>
+    <value>Anunciar a música automaticamente no bate-papo.</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
