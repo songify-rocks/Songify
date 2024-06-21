@@ -152,6 +152,7 @@ namespace Songify_Slim.Views
             TglDonationReminder.IsOn = Settings.DonationReminder;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TglBotcmdVol.IsOn = Settings.BotCmdVol;
+            TglBotcmdVolIgnoreMod.IsOn = Settings.BotCmdVolIgnoreMod;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
             TextBoxTriggerNext.Text = string.IsNullOrWhiteSpace(Settings.BotCmdNextTrigger) ? "next" : Settings.BotCmdNextTrigger;
@@ -1573,6 +1574,11 @@ namespace Songify_Slim.Views
                 Owner = this
             };
             manualTwitchLogin.ShowDialog();
+        }
+
+        private void TglBotcmdVolIgnoreMod_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdVolIgnoreMod = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

@@ -1739,6 +1739,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <TextBlock
                             Grid.Row="0"
@@ -2242,6 +2243,25 @@
                             OffContent="{x:Static local:Resources.brw_cmd_off}"
                             OnContent="{x:Static local:Resources.brw_cmd_on}"
                             Toggled="Tgl_botcmd_Vol_OnToggled_Toggled" />
+                        <TextBlock
+                            Grid.Row="12"
+                            Grid.Column="1"
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Left"
+                            TextWrapping="Wrap"
+                            VerticalAlignment="Center"
+                            Text="Ignore Broadcaster / Moderator check" />
+                        <controls:ToggleSwitch
+                            x:Name="TglBotcmdVolIgnoreMod"
+                            Grid.Row="12"
+                            Grid.Column="2"
+                            Height="32"
+                            MinWidth="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            OffContent="{x:Static local:Resources.brw_cmd_off}"
+                            OnContent="{x:Static local:Resources.brw_cmd_on}"
+                            Toggled="TglBotcmdVolIgnoreMod_OnToggled" />
                     </Grid>
                 </Border>
             </TabItem>

@@ -1627,7 +1627,6 @@ namespace Songify_Slim.Util.Songify
                         int vol = MathUtils.Clamp(volume, 0, 100);
                         await SpotifyApiHandler.Spotify.SetVolumeAsync(vol);
                         SendChatMessage(e.ChatMessage.Channel, $"Spotify volume set to {vol}%");
-
                     }
                     else
                     {
@@ -1652,8 +1651,21 @@ namespace Songify_Slim.Util.Songify
                                         Settings.Settings.BotCmdPlayPause):
                         await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
                         break;
-                    case "!vol" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdVol):
-                        Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+                    case "!vol" when Settings.Settings.BotCmdVol:
+                        bool isBroadcasterOrModerator = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
+
+                        if (Settings.Settings.BotCmdVolIgnoreMod)
+                        {
+                            if (isBroadcasterOrModerator)
+                            {
+                                Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+                            }
+                        }
+                        else
+                        {
+                            // Always send the message if BotCmdVol is true and BotCmdVolIgnoreMod is false
+                            Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+                        }
                         break;
                 }
         }
