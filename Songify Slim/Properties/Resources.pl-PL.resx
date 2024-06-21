@@ -705,4 +705,7 @@
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
     <value>Wesprzyj nas na Ko-Fi!</value>
   </data>
+  <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
+    <value>Ignoruj kontrolę nadawcy/moderatora</value>
+  </data>
 </root>

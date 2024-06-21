@@ -706,4 +706,7 @@
   <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
     <value>¡Apóyanos en Ko-Fi!</value>
   </data>
+  <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
+    <value>Ignorar verificación de emisor/moderador</value>
+  </data>
 </root>

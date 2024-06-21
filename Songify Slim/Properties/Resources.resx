@@ -881,4 +881,7 @@
     <value>Brazilian Portuguese</value>
     <comment>Language name for "Brazilian Portuguese"</comment>
   </data>
+  <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
+    <value>Ignore Broadcaster / Moderator check</value>
+  </data>
 </root>

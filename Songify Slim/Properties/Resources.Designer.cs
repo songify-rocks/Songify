@@ -205,6 +205,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore Broadcaster / Moderator check.
+        /// </summary>
+        public static string brw_cmd_volIgnoreMod {
+            get {
+                return ResourceManager.GetString("brw_cmd_volIgnoreMod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response wehen the sr command is on cooldown.
         /// </summary>
         public static string brw_CommandOnCooldown {
