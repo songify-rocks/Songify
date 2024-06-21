@@ -18,6 +18,10 @@ using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Timer = System.Timers.Timer;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Unosquare.Swan.Formatters;
+using System.Linq;
+using System.Windows.Forms;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -45,7 +49,8 @@ namespace Songify_Slim.Util.Songify
                     $"{GlobalObjects.BaseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
             }
             else
@@ -53,9 +58,11 @@ namespace Songify_Slim.Util.Songify
                 _auth = new TokenSwapAuth(
                     $"{GlobalObjects.BaseUrl}/auth/_index.php",
                     "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState | Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
                 );
             }
+
             try
             {
                 // Execute the authentication flow and subscribe the timer elapsed event
@@ -125,7 +132,8 @@ namespace Songify_Slim.Util.Songify
                                     PackIconBootstrapIconsKind.CheckCircleFill;
                                 GlobalObjects.SpotifyProfile = await Spotify.GetPrivateProfileAsync();
                                 Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-                                Logger.LogStr($"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                                Logger.LogStr(
+                                    $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                                 Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
                                 if (GlobalObjects.SpotifyProfile.Product == "premium") return;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
@@ -147,7 +155,8 @@ namespace Songify_Slim.Util.Songify
                 // automatically refreshes the token after it expires
                 _auth.OnAccessTokenExpired += async (sender, e) =>
                 {
-                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
+                    Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken))
+                        .AccessToken;
                     Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
                     Settings.Settings.SpotifyAccessToken = Spotify.AccessToken;
                 };
@@ -214,7 +223,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
 
             if (context.Item == null) return null;
-            
+
             string artists = "";
 
             for (int i = 0; i < context.Item.Artists.Count; i++)
@@ -307,6 +316,7 @@ namespace Songify_Slim.Util.Songify
                     if (!error.HasError())
                         break;
                 }
+
                 return error;
             }
             catch (Exception e)
@@ -338,8 +348,33 @@ namespace Songify_Slim.Util.Songify
             // Returns a Track-Object matching a search query (artist - title). It only returns the first match which is found
             try
             {
-                return Spotify.SearchItems(searchQuery, SearchType.Track, 1);
+                SearchItem search = Spotify.SearchItems(searchQuery, SearchType.Track, 10);
 
+                FullTrack bestMatch = null;
+                int bestScore = int.MaxValue;
+
+
+                foreach (FullTrack track in search.Tracks.Items)
+                {
+                    string combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name;
+                    int score = LevenshteinDistance(searchQuery, combined);
+                    if (score >= bestScore) continue;
+
+                    bestScore = score;
+                    bestMatch = track;
+                }
+
+                if (bestMatch == null)
+                    return search;
+
+                return new SearchItem()
+                {
+                    Error = search.Error,
+                    Tracks = new Paging<FullTrack>()
+                    {
+                        Items = [bestMatch]
+                    }
+                };
             }
             catch (Exception e)
             {
@@ -347,6 +382,38 @@ namespace Songify_Slim.Util.Songify
                 return null;
             }
         }
+
+
+        private static int LevenshteinDistance(string source, string target)
+        {
+            if (string.IsNullOrEmpty(source))
+                return string.IsNullOrEmpty(target) ? 0 : target.Length;
+
+            if (string.IsNullOrEmpty(target))
+                return source.Length;
+
+            int sourceLength = source.Length;
+            int targetLength = target.Length;
+
+            int[,] distance = new int[sourceLength + 1, targetLength + 1];
+
+            for (int i = 0; i <= sourceLength; distance[i, 0] = i++) ;
+            for (int j = 0; j <= targetLength; distance[0, j] = j++) ;
+
+            for (int i = 1; i <= sourceLength; i++)
+            {
+                for (int j = 1; j <= targetLength; j++)
+                {
+                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+                    distance[i, j] = Math.Min(
+                        Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1),
+                        distance[i - 1, j - 1] + cost);
+                }
+            }
+
+            return distance[sourceLength, targetLength];
+        }
+
 
         public static async Task<ErrorResponse> SkipSong()
         {

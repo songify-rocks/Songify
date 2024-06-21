@@ -1944,7 +1944,13 @@ namespace Songify_Slim.Util.Songify
             }
 
             // search for a track with a search string from chat
-            SearchItem searchItem = SpotifyApiHandler.FindTrack(HttpUtility.UrlEncode(input));
+            //SearchItem searchItem = SpotifyApiHandler.FindTrack(HttpUtility.UrlEncode(input));
+            SearchItem searchItem = SpotifyApiHandler.FindTrack(input);
+            if (searchItem == null)
+            {
+                SendChatMessage(Settings.Settings.TwChannel, "An error occurred while searching for the track.");
+                return "";
+            }
             if (searchItem.HasError())
             {
                 SendChatMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
