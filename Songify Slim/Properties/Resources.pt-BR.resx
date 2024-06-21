@@ -127,10 +127,10 @@
     <value>Configure as respostas do BOT para as seguintes situações:</value>
   </data>
   <data name="brw_MaxSongs" xml:space="preserve">
-    <value>Máximo de músicas na fila</value>
+    <value>Ao atingir o limite de músicas na fila</value>
   </data>
   <data name="brw_NoSong" xml:space="preserve">
-    <value>Nenhuma música foi especificada (solicitação vazia)</value>
+    <value>Nenhuma música foi especificada (Comando vazio)</value>
   </data>
   <data name="brw_SongInQueue" xml:space="preserve">
     <value>A música já está na fila</value>
@@ -334,7 +334,7 @@
     <value>Configuração</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Contração muscular</value>
+    <value>Twitch</value>
   </data>
   <data name="sw_tc_Output" xml:space="preserve">
     <value>Saída</value>
@@ -367,7 +367,7 @@
     <value>Desligado</value>
   </data>
   <data name="brw_cmd_on" xml:space="preserve">
-    <value>Sobre</value>
+    <value>Ativado</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
     <value>Exibe a posição na fila das solicitações de músicas dos usuários</value>
@@ -442,7 +442,7 @@
     <value>Abrir janela de fila na inicialização</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anuncie música automaticamente no bate-papo</value>
+    <value>Anunciar a música automaticamente no bate-papo.</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
@@ -676,7 +676,7 @@
     <value>Permitir apenas músicas desta playlist (SR)</value>
   </data>
   <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
-    <value>Bloqueie todas as músicas explícitas</value>
+    <value>Bloquar todas as músicas explícitas</value>
   </data>
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Resposta quando uma música explícita for solicitada e a opção "bloquear músicas explícitas" estiver ativada</value>
