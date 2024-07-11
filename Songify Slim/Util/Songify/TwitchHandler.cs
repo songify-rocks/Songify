@@ -647,19 +647,19 @@ namespace Songify_Slim.Util.Songify
             }
 
             ErrorResponse error = SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
-            if (error == null)
-            {
-                response = CreateErrorResponse(e.ChatMessage.DisplayName, "Spotify response was Null");
-                SendChatMessage(e.ChatMessage.Channel, response);
-                return;
-            }
+            //if (error == null)
+            //{
+            //    response = CreateErrorResponse(e.ChatMessage.DisplayName, "Spotify response was Null");
+            //    SendChatMessage(e.ChatMessage.Channel, response);
+            //    return;
+            //}
 
-            if (error.Error != null)
-            {
-                response = CreateErrorResponse(e.ChatMessage.DisplayName, error.Error.Message);
-                SendChatMessage(e.ChatMessage.Channel, response);
-                return;
-            }
+            //if (error.Error != null)
+            //{
+            //    response = CreateErrorResponse(e.ChatMessage.DisplayName, error.Error.Message);
+            //    SendChatMessage(e.ChatMessage.Channel, response);
+            //    return;
+            //}
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
@@ -848,24 +848,24 @@ namespace Songify_Slim.Util.Songify
 
             // try adding the song to the queue using the URI
             ErrorResponse error = SpotifyApiHandler.AddToQ(spotifyUri);
-            if (error.Error != null)
-            {
-                // if an error has been encountered, log it, inform the requester and skip
-                Logger.LogStr("TWITCH: " + error.Error.Message + "\n" + error.Error.Status);
-                response = Settings.Settings.BotRespError;
-                response = response.Replace("{user}", username);
-                response = response.Replace("{artist}", "");
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", "");
-                response = response.Replace("{errormsg}", error.Error.Message);
+            //if (error.Error != null)
+            //{
+            //    // if an error has been encountered, log it, inform the requester and skip
+            //    Logger.LogStr("TWITCH: " + error.Error.Message + "\n" + error.Error.Status);
+            //    response = Settings.Settings.BotRespError;
+            //    response = response.Replace("{user}", username);
+            //    response = response.Replace("{artist}", "");
+            //    response = response.Replace("{title}", "");
+            //    response = response.Replace("{maxreq}", "");
+            //    response = response.Replace("{errormsg}", error.Error.Message);
 
-                return new ReturnObject
-                {
-                    Msg = response,
-                    Success = false,
-                    Refundcondition = 7
-                };
-            }
+            //    return new ReturnObject
+            //    {
+            //        Msg = response,
+            //        Success = false,
+            //        Refundcondition = 7
+            //    };
+            //}
 
             // if everything worked so far, inform the user that the song has been added to the queue
             response = Settings.Settings.BotRespSuccess;
