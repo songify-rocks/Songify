@@ -1300,12 +1300,8 @@ namespace Songify_Slim.Util.Songify
                     msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                     msg = msg.Replace("{song}",
                         $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    ErrorResponse response = await SpotifyApiHandler.SkipSong();
-                    if (response.Error != null)
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
-                    }
-                    else
+                    await SpotifyApiHandler.SkipSong();
+
                     {
                         if (msg.StartsWith("[announce "))
                         {
@@ -1361,17 +1357,9 @@ namespace Songify_Slim.Util.Songify
 
                 if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                 {
-                    ErrorResponse response = await SpotifyApiHandler.SkipSong();
-                    if (response.Error != null)
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, "Error: " + response.Error.Message);
-                    }
-                    else
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
-                        _skipCooldown = true;
-                        SkipCooldownTimer.Start();
-                    }
+                    await SpotifyApiHandler.SkipSong();
+
+                    SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
 
                     SkipVotes.Clear();
                     _skipCooldown = true;
@@ -2493,17 +2481,12 @@ namespace Songify_Slim.Util.Songify
             {
                 if (_skipCooldown)
                     return;
-                ErrorResponse response = await SpotifyApiHandler.SkipSong();
-                if (response.Error != null)
-                {
-                    SendChatMessage(Settings.Settings.TwChannel, "Error: " + response.Error.Message);
-                }
-                else
-                {
-                    SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
-                    _skipCooldown = true;
-                    SkipCooldownTimer.Start();
-                }
+                await SpotifyApiHandler.SkipSong();
+
+                SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
+                _skipCooldown = true;
+                SkipCooldownTimer.Start();
+
             }
 
             if (reward.Id == Settings.Settings.TwRewardGoalRewardId)
