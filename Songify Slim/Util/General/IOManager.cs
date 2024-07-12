@@ -104,46 +104,36 @@ namespace Songify_Slim.Util.General
                         }
 
                         const int tries = 5;
-                        if (coverPath != "" && coverTemp != "")
+                        if (coverPath == "" || coverTemp == "") return;
+                        try
                         {
-                            try
+                            for (int i = 0; i < tries; i++)
                             {
-                                for (int i = 0; i < tries; i++)
+                                if (IsFileLocked(new FileInfo(coverPath)))
                                 {
-                                    if (IsFileLocked(new FileInfo(coverPath)))
-                                    {
-                                        Thread.Sleep(1000);
-                                        if (i != tries) continue;
-                                        return;
-                                    }
-
-                                    break;
+                                    Thread.Sleep(1000);
+                                    if (i != tries) continue;
+                                    return;
                                 }
-                                File.Delete(coverPath);
-                            }
-                            catch (Exception)
-                            {
-                                //Debug.WriteLine(exception);
-                            }
 
-                            try
-                            {
-                                File.Move(coverTemp, coverPath);
+                                break;
                             }
-                            catch (Exception)
-                            {
-                                //Debug.WriteLine(exception);
-                            }
-                            _isWriting = false;
+                            File.Delete(coverPath);
                         }
-                        Application.Current.Dispatcher.Invoke(() =>
+                        catch (Exception)
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                            {
-                                main.SetCoverImage(coverPath);
-                            }));
-                        });
+                            //Debug.WriteLine(exception);
+                        }
+
+                        try
+                        {
+                            File.Move(coverTemp, coverPath);
+                        }
+                        catch (Exception)
+                        {
+                            //Debug.WriteLine(exception);
+                        }
+                        _isWriting = false;
                     };
 
                     Uri uri = new(cover);
@@ -153,6 +143,15 @@ namespace Songify_Slim.Util.General
                     _isWriting = true;
                     await webClient.DownloadFileTaskAsync(uri, coverTemp);
                 }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow main = Application.Current.MainWindow as MainWindow;
+                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        main.SetCoverImage(coverPath);
+                    }));
+                });
             }
             catch (Exception ex)
             {

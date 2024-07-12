@@ -574,9 +574,19 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
 
-                if (_trackChanged)
+
+                if (!songInfo.IsPlaying && Settings.Settings.CustomPauseTextEnabled && GlobalObjects.CurrentSong.IsPlaying != songInfo.IsPlaying)
+                {
+                    GlobalObjects.ForceUpdate = true;
+                }
+
+                GlobalObjects.CurrentSong.IsPlaying = songInfo.IsPlaying;
+
+
+                if (_trackChanged || GlobalObjects.ForceUpdate)
                 {
                     _trackChanged = false;
+                    GlobalObjects.ForceUpdate = false;
 
                     if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
