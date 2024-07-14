@@ -19,6 +19,8 @@ using Timer = System.Timers.Timer;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Unosquare.Swan.Formatters;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Web.Util;
 using System.Windows.Forms;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
@@ -348,31 +350,41 @@ namespace Songify_Slim.Util.Songify
             // Returns a Track-Object matching a search query (artist - title). It only returns the first match which is found
             try
             {
-                SearchItem search = Spotify.SearchItems(searchQuery, SearchType.Track, 10);
-
-                FullTrack bestMatch = null;
-                int bestScore = int.MaxValue;
-
+                string newQuery = UrlEncoder.Default.Encode(searchQuery);
+                Debug.WriteLine(searchQuery);
+                Debug.WriteLine(newQuery);
+                SearchItem search = Spotify.SearchItems(newQuery, SearchType.Track, 1);
+                return search;
 
                 foreach (FullTrack track in search.Tracks.Items)
                 {
-                    string combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name;
-                    int score = LevenshteinDistance(searchQuery, combined);
-                    if (score >= bestScore) continue;
-
-                    bestScore = score;
-                    bestMatch = track;
+                    Debug.WriteLine(string.Join(", ", track.Artists.Select(a => a.Name).ToList()) + " - " + track.Name);
                 }
+
+                List<TrackScore> trackScores = (from track in search.Tracks.Items
+                    let combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name
+                    let score = LevenshteinDistance(searchQuery, combined)
+                    select new TrackScore
+                    {
+                        TrackName = track.Name, ArtistName = string.Join(", ", track.Artists.Select(a => a.Name)),
+                        Score = score
+                    }).ToList();
+
+                // To find the best match from the list
+                TrackScore bestMatch = trackScores.OrderBy(ts => ts.Score).FirstOrDefault();
 
                 if (bestMatch == null)
                     return search;
+
+                // Find the FullTrack object for the best match
+                FullTrack bestFullTrack = search.Tracks.Items.FirstOrDefault(track => track.Name == bestMatch.TrackName && string.Join(", ", track.Artists.Select(a => a.Name)) == bestMatch.ArtistName);
 
                 return new SearchItem()
                 {
                     Error = search.Error,
                     Tracks = new Paging<FullTrack>()
                     {
-                        Items = [bestMatch]
+                        Items = new List<FullTrack> { bestFullTrack }
                     }
                 };
             }
@@ -433,5 +445,12 @@ namespace Songify_Slim.Util.Songify
         {
             return await Spotify.GetQueueAsync();
         }
+    }
+
+    public class TrackScore
+    {
+        public string TrackName { get; set; }
+        public string ArtistName { get; set; }
+        public int Score { get; set; }
     }
 }

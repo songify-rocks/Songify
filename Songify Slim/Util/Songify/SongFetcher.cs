@@ -653,7 +653,6 @@ namespace Songify_Slim.Util.Songify
                 return Task.CompletedTask;
             }
 
-
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
             string currentSongOutput = Settings.Settings.OutputString;
             string currentSongOutputTwitch = Settings.Settings.BotRespSong;
