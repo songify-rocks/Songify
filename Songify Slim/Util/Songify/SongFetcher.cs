@@ -625,7 +625,7 @@ namespace Songify_Slim.Util.Songify
 
             if (!songInfo.IsPlaying)
             {
-                if (Settings.Settings.DownloadCover) IOManager.DownloadCover(null, coverPath);
+                if (Settings.Settings.DownloadCover && Settings.Settings.CustomPauseTextEnabled) IOManager.DownloadCover(null, coverPath);
 
                 if (!Settings.Settings.CustomPauseTextEnabled)
                     return Task.CompletedTask;
@@ -659,6 +659,7 @@ namespace Songify_Slim.Util.Songify
             // this only is used for Spotify because here the artist and title are split
             // replace parameters with actual info
             currentSongOutput = currentSongOutput.Format(
+                single_artist => songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",
@@ -667,6 +668,7 @@ namespace Songify_Slim.Util.Songify
             ).Format();
 
             currentSongOutputTwitch = currentSongOutputTwitch.Format(
+                single_artist => songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",

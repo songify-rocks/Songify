@@ -44,6 +44,7 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
+using System.Web.UI.WebControls;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -557,6 +558,7 @@ namespace Songify_Slim.Util.Songify
             msg = msg.Replace("{song}",
                 $"{GlobalObjects.CurrentSong.Artists} {(GlobalObjects.CurrentSong.Title != "" ? " - " + GlobalObjects.CurrentSong.Title : "")}");
             msg = msg.Replace("{artist}", $"{GlobalObjects.CurrentSong.Artists}");
+            msg = msg.Replace("{single_artist}", $"{GlobalObjects.CurrentSong.FullArtists.FirstOrDefault()?.Name}");
             msg = msg.Replace("{title}", $"{GlobalObjects.CurrentSong.Title}");
             msg = msg.Replace(@"\n", " - ").Replace("  ", " ");
 
@@ -1354,7 +1356,6 @@ namespace Songify_Slim.Util.Songify
                 {
                     SendChatMessage(e.ChatMessage.Channel, msg);
                 }
-
                 if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
                 {
                     await SpotifyApiHandler.SkipSong();
@@ -1603,27 +1604,15 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogExc(exception);
                 }
             }
-            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") &&
-                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdVol)
+            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") && Settings.Settings.BotCmdVol)
             {
-                //Get the volume after !vol and set it
-                string[] split = e.ChatMessage.Message.Split(' ');
-                if (split.Length > 1)
+                if (Settings.Settings.BotCmdVolIgnoreMod)
                 {
-                    if (int.TryParse(split[1], out int volume))
-                    {
-                        int vol = MathUtils.Clamp(volume, 0, 100);
-                        await SpotifyApiHandler.Spotify.SetVolumeAsync(vol);
-                        SendChatMessage(e.ChatMessage.Channel, $"Spotify volume set to {vol}%");
-                    }
-                    else
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, "Volume must be a number between 0 and 100");
-                    }
+                    await SetSpotifyVolume(e);
                 }
-                else
+                else if (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator)
                 {
-                    SendChatMessage(e.ChatMessage.Channel, "Please specify a volume between 0 and 100");
+                    await SetSpotifyVolume(e);
                 }
             }
             // Play / Pause command (!play; !pause)
@@ -1644,18 +1633,41 @@ namespace Songify_Slim.Util.Songify
 
                         if (Settings.Settings.BotCmdVolIgnoreMod)
                         {
-                            if (isBroadcasterOrModerator)
-                            {
-                                Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
-                            }
+                            Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
                         }
                         else
                         {
-                            // Always send the message if BotCmdVol is true and BotCmdVolIgnoreMod is false
-                            Client.SendMessage(e.ChatMessage.Channel, $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+                            if (isBroadcasterOrModerator)
+                            {
+                                // Always send the message if BotCmdVol is true and BotCmdVolIgnoreMod is false
+                                Client.SendMessage(e.ChatMessage.Channel,
+                                    $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+                            }
                         }
                         break;
                 }
+        }
+
+        private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
+        {
+            string[] split = e.ChatMessage.Message.Split(' ');
+            if (split.Length > 1)
+            {
+                if (int.TryParse(split[1], out int volume))
+                {
+                    int vol = MathUtils.Clamp(volume, 0, 100);
+                    await SpotifyApiHandler.Spotify.SetVolumeAsync(vol);
+                    SendChatMessage(e.ChatMessage.Channel, $"Spotify volume set to {vol}%");
+                }
+                else
+                {
+                    SendChatMessage(e.ChatMessage.Channel, "Volume must be a number between 0 and 100");
+                }
+            }
+            else
+            {
+                SendChatMessage(e.ChatMessage.Channel, "Please specify a volume between 0 and 100");
+            }
         }
 
         private static string CreateCooldownResponse(OnMessageReceivedArgs e)
@@ -1738,6 +1750,7 @@ namespace Songify_Slim.Util.Songify
 
             response = response.Replace("{user}", displayName);
             response = response.Replace("{artist}", artists);
+            response = response.Replace("{single_artist}", track.Artists.FirstOrDefault()?.Name);
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
@@ -1768,6 +1781,7 @@ namespace Songify_Slim.Util.Songify
             string currentSong = Settings.Settings.BotRespSong;
 
             currentSong = currentSong.Format(
+                            single_artist => GlobalObjects.CurrentSong.FullArtists.FirstOrDefault().Name,
                             artist => GlobalObjects.CurrentSong.Artists,
                             title => GlobalObjects.CurrentSong.Title,
                             extra => "",

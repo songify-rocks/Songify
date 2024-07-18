@@ -229,6 +229,21 @@ namespace Songify_Slim.Util.General
                                     });
                                 }
                             }
+
+                            // Add the current song to the top of the queue
+                            (window as WindowQueue)?.dgv_Queue.Items.Insert(0, new RequestObject
+                            {
+                                Queueid = 0,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = CurrentSong.SongId,
+                                Artist = CurrentSong.Artists,
+                                Title = CurrentSong.Title,
+                                Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
+                                Requester = Requester == "" ? "Spotify" : Requester,
+                                Played = -1,
+                                Albumcover = null
+                            });
+
                             (window as WindowQueue)?.dgv_Queue.Items.Refresh();
                         }
                     }
