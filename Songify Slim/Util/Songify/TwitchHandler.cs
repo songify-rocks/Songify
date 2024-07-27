@@ -1622,11 +1622,27 @@ namespace Songify_Slim.Util.Songify
                 {
                     case "!play" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                        Settings.Settings.BotCmdPlayPause):
-                        await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                        try
+                        {
+                            await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
                         break;
                     case "!pause" when ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
                                         Settings.Settings.BotCmdPlayPause):
-                        await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        try
+                        {
+                            await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
                         break;
                     case "!vol" when Settings.Settings.BotCmdVol:
                         bool isBroadcasterOrModerator = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
