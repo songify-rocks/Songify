@@ -698,14 +698,12 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void SettingsWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // assign mw to mainwindow for calling methods and setting texts etc
             foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(MainWindow))
                     _mW = window;
-
-
 
             // add colors to the combobox
             foreach (string s in ThemeManager.Current.ColorSchemes)
@@ -734,7 +732,7 @@ namespace Songify_Slim.Views
                     Settings.Color = (string)s.Content;
                 }
             }
-            SetControls();
+            await SetControls();
         }
 
         private void tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
@@ -808,13 +806,21 @@ namespace Songify_Slim.Views
 
         private void TxtbxOutputformat_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
             // write custom output format to settings
+            if(TxtbxOutputformat.Text == Settings.OutputString)
+                return;
             Settings.OutputString = TxtbxOutputformat.Text;
             GlobalObjects.ForceUpdate = true;
         }
 
         private void TxtbxOutputformat2_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (!IsLoaded)
+                return;
+            if (TxtbxOutputformat2.Text == Settings.OutputString2)
+                return;
             Settings.OutputString2 = ((TextBox)sender).Text;
         }
 
