@@ -64,7 +64,22 @@ namespace Songify_Slim.Util.General
                 // ignored
             }
         }
+        public static void LogStr(string s)
+        {
+            AppendConsole(s);
 
+            // Writes a log file with exceptions in it
+            string logFile = GetLogFilePath();
+            try
+            {
+                File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
+                //Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
         private static void AppendConsole(string s)
         {
             if (s == null) return;
@@ -148,21 +163,6 @@ namespace Songify_Slim.Util.General
             return Colors.White;
         }
 
-        public static void LogStr(string s)
-        {
-            AppendConsole(s);
 
-            // Writes a log file with exceptions in it
-            string logFile = GetLogFilePath();
-            try
-            {
-                File.AppendAllText(logFile, DateTime.Now.ToString("HH:mm:ss") + @": " + s + Environment.NewLine);
-                //Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss") + @": " + s);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
     }
 }
