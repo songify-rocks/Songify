@@ -606,6 +606,7 @@ namespace Songify_Slim.Util.Songify
 
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
+
             if (track == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
@@ -667,6 +668,7 @@ namespace Songify_Slim.Util.Songify
                 await AddToPlaylist(track.Id);
 
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
+
             SendChatMessage(e.ChatMessage.Channel, response);
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
@@ -1755,6 +1757,11 @@ namespace Songify_Slim.Util.Songify
             string response = Settings.Settings.BotRespSuccess;
             string artists = "";
             string singleArtist = "";
+
+            //Fix for russia where Spotify is not available
+            if (track.HasError() && track.Error.Status == 403)
+                return "Track has been added to the queue.";
+
             try
             {
                 artists = string.Join(", ", track.Artists.Select(o => o.Name).ToList());
