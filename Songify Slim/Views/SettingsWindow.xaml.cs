@@ -290,22 +290,27 @@ namespace Songify_Slim.Views
             }
 
             if (user.ProfileImageUrl == null) return;
-            BitmapImage bitmap = new();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
-            bitmap.EndInit();
-            switch (account)
+            try
             {
-                case 0 when GlobalObjects.TwitchUserTokenExpired:
-                case 1 when GlobalObjects.TwitchBotTokenExpired:
-                    img.ImageSource = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
-                    break;
-                default:
-                    img.ImageSource = bitmap;
-                    break;
+                BitmapImage bitmap = new();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(user.ProfileImageUrl, UriKind.Absolute);
+                bitmap.EndInit();
+                switch (account)
+                {
+                    case 0 when GlobalObjects.TwitchUserTokenExpired:
+                    case 1 when GlobalObjects.TwitchBotTokenExpired:
+                        img.ImageSource = new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
+                        break;
+                    default:
+                        img.ImageSource = bitmap;
+                        break;
+                }
             }
-
-
+            catch
+            {
+                Logger.LogStr($"Couldn't load profile picture for {(account == 0 ? "Main" : "Bot")}");
+            }
         }
 
         private void AppendText(string s, string text)
