@@ -1617,6 +1617,22 @@ namespace Songify_Slim.Util.Songify
                     await SetSpotifyVolume(e);
                 }
             }
+            //else if (e.ChatMessage.Message.ToLower() == "!queue")
+            //{
+            //    string output = "";
+            //    int counter = 1;
+            //    foreach (RequestObject requestObject in GlobalObjects.QueueTracks.Take(5))
+            //    {
+            //        output += $"#{counter} {requestObject.Artist} - {requestObject.Title}";
+            //        if (requestObject.Requester != "Spotify")
+            //            output += $" (@{requestObject.Requester})";
+            //        output += " | ";
+            //        counter++;
+            //    }
+            //    output = output.TrimEnd(' ', '|');
+            //    // if output exceeds 500 characters, split at the last "|" before 500 characters
+            //    SendChatMessage(e.ChatMessage.Channel, output);
+            //}
             // Play / Pause command (!play; !pause)
             else
                 switch (e.ChatMessage.Message.ToLower())
@@ -1806,7 +1822,7 @@ namespace Songify_Slim.Util.Songify
             string currentSong = Settings.Settings.BotRespSong;
 
             currentSong = currentSong.Format(
-                            single_artist => GlobalObjects.CurrentSong.FullArtists.FirstOrDefault().Name,
+                            single_artist => GlobalObjects.CurrentSong.FullArtists != null ? GlobalObjects.CurrentSong.FullArtists.FirstOrDefault().Name : GlobalObjects.CurrentSong.Artists,
                             artist => GlobalObjects.CurrentSong.Artists,
                             title => GlobalObjects.CurrentSong.Title,
                             extra => "",

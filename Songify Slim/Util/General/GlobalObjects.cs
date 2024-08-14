@@ -5,6 +5,7 @@ using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace Songify_Slim.Util.General
         public static string Requester = "";
         public static int RewardGoalCount = 0;
         public static List<RequestObject> SkipList = new();
+        public static List<RequestObject> QueueTracks = new();
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
@@ -182,9 +184,9 @@ namespace Songify_Slim.Util.General
                 {
                     try
                     {
+                        QueueTracks.Clear();
                         // Dictionary to keep track of replacements
                         Dictionary<string, bool> replacementTracker = new Dictionary<string, bool>();
-
                         foreach (Window window in Application.Current.Windows)
                         {
                             if (window.GetType() != typeof(WindowQueue))
@@ -192,7 +194,7 @@ namespace Songify_Slim.Util.General
 
                             ((WindowQueue)window).dgv_Queue.ItemsSource = null;
                             ((WindowQueue)window).dgv_Queue.Items.Clear();
-
+                            
                             foreach (FullTrack fullTrack in queue.Queue)
                             {
                                 // Determine if we have a matching request object that hasn't been used for replacement yet
@@ -203,6 +205,7 @@ namespace Songify_Slim.Util.General
                                 {
                                     // If we found a request object, and it hasn't been used for replacement, add it and mark as used
                                     (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
+                                    QueueTracks.Add(reqObj);
                                     replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
                                 }
                                 else if (skipObj != null)
@@ -210,10 +213,25 @@ namespace Songify_Slim.Util.General
                                     skipObj.Requester = "Skipping...";
                                     // If we found a request object, and it hasn't been used for replacement, add it and mark as used
                                     (window as WindowQueue)?.dgv_Queue.Items.Add(skipObj);
+                                    QueueTracks.Add(skipObj);
+
                                     replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
                                 }
                                 else
                                 {
+                                    QueueTracks.Add(new RequestObject
+                                    {
+                                        Queueid = 0,
+                                        Uuid = Settings.Settings.Uuid,
+                                        Trackid = fullTrack.Id,
+                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                        Title = fullTrack.Name,
+                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                        Requester = "Spotify",
+                                        Played = 0,
+                                        Albumcover = null
+                                    });
+
                                     // Otherwise, just add the song information from the queue as a new request object
                                     (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
                                     {

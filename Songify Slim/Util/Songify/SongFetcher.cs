@@ -186,6 +186,7 @@ namespace Songify_Slim.Util.Songify
 
             output = output.Format(
                 artist => trackinfo.Artists ?? "",
+                single_artist => trackinfo.Artists ?? "",
                 title => trackinfo.Title ?? "",
                 extra => "",
                 uri => trackinfo.SongId ?? "",
