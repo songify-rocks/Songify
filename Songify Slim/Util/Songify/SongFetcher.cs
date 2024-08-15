@@ -219,7 +219,7 @@ namespace Songify_Slim.Util.Songify
                     // if error occurs write text to the status asynchronous
                     Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
                     }));
                 }
 
@@ -576,7 +576,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
 
-                if (!songInfo.IsPlaying && Settings.Settings.CustomPauseTextEnabled && GlobalObjects.CurrentSong.IsPlaying != songInfo.IsPlaying)
+                if (!songInfo.IsPlaying && GlobalObjects.CurrentSong.IsPlaying != songInfo.IsPlaying)
                 {
                     GlobalObjects.ForceUpdate = true;
                 }
@@ -601,13 +601,6 @@ namespace Songify_Slim.Util.Songify
                     await WriteSongInfo(songInfo);
                 }
 
-                //if (GlobalObjects.ForceUpdate)
-                //{
-                //    GlobalObjects.CurrentSong = songInfo;
-                //    await WriteSongInfo(songInfo);
-                //    GlobalObjects.ForceUpdate = false;
-                //}
-
                 UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)
@@ -626,25 +619,47 @@ namespace Songify_Slim.Util.Songify
 
             if (!songInfo.IsPlaying)
             {
-                if (Settings.Settings.DownloadCover && Settings.Settings.CustomPauseTextEnabled) IOManager.DownloadCover(null, coverPath);
-
-                if (!Settings.Settings.CustomPauseTextEnabled)
-                    return Task.CompletedTask;
-                // read the text file
-                if (!File.Exists(songPath)) File.Create(songPath).Close();
-                IOManager.WriteOutput(songPath, Settings.Settings.CustomPauseText);
-
-                if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, title, "");
-                //IOManager.DownloadCover(null, coverPath);
+                switch (Settings.Settings.PauseOption)
+                {
+                    case Enums.PauseOptions.Nothing:
+                        return Task.CompletedTask;
+                    case Enums.PauseOptions.PauseText:
+                        // read the text file
+                        if (!File.Exists(songPath)) File.Create(songPath).Close();
+                        IOManager.WriteOutput(songPath, Settings.Settings.CustomPauseText);
+                        if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IOManager.DownloadCover(null, coverPath);
+                        if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
+                        break;
+                    case Enums.PauseOptions.ClearAll:
+                        if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) IOManager.DownloadCover(null, coverPath);
+                        IOManager.WriteOutput(songPath, "");
+                        if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput("", "", "");
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MainWindow main = Application.Current.MainWindow as MainWindow;
                     main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        main.SetTextPreview(Settings.Settings.CustomPauseText);
+                        switch (Settings.Settings.PauseOption)
+                        {
+                            case Enums.PauseOptions.PauseText:
+                                main.SetTextPreview(Settings.Settings.CustomPauseText);
+                                break;
+                            case Enums.PauseOptions.ClearAll:
+                                main.SetTextPreview("");
+                                break;
+                            case Enums.PauseOptions.Nothing:
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                     }));
                 });
+
                 return Task.CompletedTask;
             }
 

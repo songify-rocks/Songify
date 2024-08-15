@@ -245,8 +245,8 @@
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="Auto" />
-                            <RowDefinition Height="38" />
-                            <RowDefinition Height="38" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
@@ -353,7 +353,11 @@
                                 </ContextMenu>
                             </TextBox.ContextMenu>
                         </TextBox>
-                        <controls:ToggleSwitch
+                        <Label Grid.Column="0" Content="What to do on pause?" Grid.Row="4" 
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Top"
+                               ></Label>
+                        <!--<controls:ToggleSwitch
                             x:Name="ChbxCustomPause"
                             Grid.Row="4"
                             Grid.Column="0"
@@ -363,17 +367,36 @@
                             Focusable="False"
                             FontFamily="Segoe UI"
                             FontSize="12"
-                            Toggled="ChbxCustompauseChecked" />
-                        <TextBox
+                            Toggled="ChbxCustompauseChecked" />-->
+                        <StackPanel Orientation="Vertical"
+                                    Grid.Row="4"
+                                    Grid.Column="1">
+                            <ComboBox x:Name="CbPauseOptions"
+                                  Height="26" Margin="0,0,0,6" SelectionChanged="CbPauseOptions_SelectionChanged">
+                                <ComboBoxItem Content="Do Nothing"/>
+                                <ComboBoxItem Content="Use Custom Pause Text"/>
+                                <ComboBoxItem Content="Clear All Output"/>
+                            </ComboBox>
+                            <TextBox
                             x:Name="TxtbxCustompausetext"
-                            Grid.Row="4"
-                            Grid.Column="1"
                             Height="26"
                             VerticalAlignment="Center"
                             controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
-                            IsEnabled="False"
                             TextChanged="TxtbxCustompausetext_TextChanged"
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap">
+                                <TextBox.Style>
+                                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                        <Setter Property="IsReadOnly" Value="True"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="0">
+                                                <Setter Property="IsReadOnly" Value="False"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </StackPanel>
+
                         <controls:ToggleSwitch
                             x:Name="ChbxUpload"
                             Grid.Row="5"
@@ -430,32 +453,46 @@
                             Toggled="ChbxSplit_Checked" />
                         <Label Grid.Row="7" Grid.Column="0" Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}" VerticalAlignment="Center"/>
                         <TextBox  Grid.Row="7" Grid.Column="1" x:Name="TbRequesterPrefix" Height="26" VerticalAlignment="Center" TextChanged="TbRequesterPrefix_TextChanged"/>
-                        <CheckBox
-                            x:Name="ChbxSpaces"
+                        <Grid
                             Grid.Row="3"
-                            Grid.Column="1"
-                            Height="18"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Checked="ChbxSpaces_Checked"
-                            Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
-                            RenderTransformOrigin="0.47,1.039"
-                            Unchecked="ChbxSpaces_Checked" />
-                        <controls:NumericUpDown
-                            x:Name="NudSpaces"
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Width="121"
-                            Height="26"
-                            Margin="131,0,0,0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Interval="1"
-                            Minimum="1"
-                            NumericInputMode="Numbers"
-                            UpDownButtonsWidth="16"
-                            ValueChanged="nud_Spaces_ValueChanged" />
+                            Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <CheckBox
+                                x:Name="ChbxSpaces"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Height="18"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Checked="ChbxSpaces_Checked"
+                                Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
+                                RenderTransformOrigin="0.47,1.039"
+                                Unchecked="ChbxSpaces_Checked" />
+                            <controls:NumericUpDown
+                                x:Name="NudSpaces"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Width="121"
+                                Height="26"
+                                Margin="0,0,0,0"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Interval="1"
+                                Minimum="1"
+                                NumericInputMode="Numbers"
+                                UpDownButtonsWidth="16"
+                                ValueChanged="nud_Spaces_ValueChanged" />
+                            <CheckBox x:Name="ChbxSpacesSplitFiles" Content="Apply to split files too" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="0,0,0,6" Checked="ChbxSpacesSplitFiles_Checked" Unchecked="ChbxSpacesSplitFiles_Checked"></CheckBox>
+                        </Grid>
+
                         <Label
                             Grid.Row="2"
                             Grid.Column="0"

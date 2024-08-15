@@ -95,23 +95,8 @@ namespace Songify_Slim.Util.Songify
 
         private static string _userId;
 
-        public enum TwitchAccount
-        {
-            Main,
-            Bot
-        }
 
-        //create a list with Twitch UserTypes and assign int values to them
-        public enum TwitchUserLevels
-        {
-            Everyone = 0,
-            Subscriber = 1,
-            Vip = 2,
-            Moderator = 3,
-            Broadcaster = 4
-        }
-
-        public static void ApiConnect(TwitchAccount account)
+        public static void ApiConnect(Enums.TwitchAccount account)
         {
             ImplicitOAuth ioa = new(1234);
 
@@ -126,12 +111,12 @@ namespace Songify_Slim.Util.Songify
 
                 switch (account)
                 {
-                    case TwitchAccount.Main:
+                    case Enums.TwitchAccount.Main:
                         // Don't actually print the user token on screen or to the console.
                         // Here you should save it where the application can access it whenever it wants to, such as in appdata.
                         Settings.Settings.TwitchAccessToken = token;
                         break;
-                    case TwitchAccount.Bot:
+                    case Enums.TwitchAccount.Bot:
                         // Don't actually print the user token on screen or to the console.
                         // Here you should save it where the application can access it whenever it wants to, such as in appdata.
                         Settings.Settings.TwitchBotToken = token;
@@ -151,7 +136,7 @@ namespace Songify_Slim.Util.Songify
                         if (window.GetType() != typeof(Window_Settings)) continue;
                         await ((Window_Settings)window).ShowMessageAsync(Resources.msgbx_BotAccount,
                             Resources.msgbx_UseAsBotAccount.Replace("{account}",
-                                account == TwitchAccount.Main
+                                account == Enums.TwitchAccount.Main
                                     ? Settings.Settings.TwitchUser.DisplayName
                                     : Settings.Settings.TwitchBotUser.DisplayName),
                             MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
@@ -163,8 +148,8 @@ namespace Songify_Slim.Util.Songify
                         {
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
                             Settings.Settings.TwOAuth =
-                                $"oauth:{(account == TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
-                            Settings.Settings.TwAcc = account == TwitchAccount.Main
+                                $"oauth:{(account == Enums.TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
+                            Settings.Settings.TwAcc = account == Enums.TwitchAccount.Main
                                 ? Settings.Settings.TwitchUser.Login
                                 : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
@@ -178,7 +163,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Resources.msgbx_BotAccount,
                             Resources.msgbx_UseAsBotAccount.Replace("{account}",
-                                account == TwitchAccount.Main
+                                account == Enums.TwitchAccount.Main
                                     ? Settings.Settings.TwitchUser.DisplayName
                                     : Settings.Settings.TwitchBotUser.DisplayName),
                             MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
@@ -190,8 +175,8 @@ namespace Songify_Slim.Util.Songify
                         {
                             if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
                             Settings.Settings.TwOAuth =
-                                $"oauth:{(account == TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
-                            Settings.Settings.TwAcc = account == TwitchAccount.Main
+                                $"oauth:{(account == Enums.TwitchAccount.Main ? Settings.Settings.TwitchAccessToken : Settings.Settings.TwitchBotToken)}";
+                            Settings.Settings.TwAcc = account == Enums.TwitchAccount.Main
                                 ? Settings.Settings.TwitchUser.Login
                                 : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
@@ -343,7 +328,7 @@ namespace Songify_Slim.Util.Songify
             return rewardsResponse?.Data.ToList();
         }
 
-        public static async Task InitializeApi(TwitchAccount twitchAccount)
+        public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
         {
             GetUsersResponse users;
             User user;
@@ -351,7 +336,7 @@ namespace Songify_Slim.Util.Songify
             {
                 #region Main
 
-                case TwitchAccount.Main:
+                case Enums.TwitchAccount.Main:
                     TwitchApi = new TwitchAPI
                     {
                         Settings =
@@ -383,7 +368,7 @@ namespace Songify_Slim.Util.Songify
                                     new MetroDialogSettings
                                     { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
-                                ApiConnect(TwitchAccount.Main);
+                                ApiConnect(Enums.TwitchAccount.Main);
                             }
                         });
                         return;
@@ -428,7 +413,7 @@ namespace Songify_Slim.Util.Songify
 
                 #region Bot
 
-                case TwitchAccount.Bot:
+                case Enums.TwitchAccount.Bot:
                     _twitchApiBot = new TwitchAPI
                     {
                         Settings =
@@ -454,7 +439,7 @@ namespace Songify_Slim.Util.Songify
                                     new MetroDialogSettings
                                     { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
                                 if (msgResult == MessageDialogResult.Negative) return;
-                                ApiConnect(TwitchAccount.Bot);
+                                ApiConnect(Enums.TwitchAccount.Bot);
                             }
                         });
                         return;
@@ -1176,7 +1161,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         //Send a Message to the user, that his Userlevel is too low
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
                         return;
                     }
 
@@ -1229,7 +1214,7 @@ namespace Songify_Slim.Util.Songify
                     {
                         //Send a Message to the user, that his Userlevel is too low
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
                         return;
                     }
 
@@ -1849,20 +1834,20 @@ namespace Songify_Slim.Util.Songify
 
         private static int GetMaxRequestsForUserlevel(int userLevel)
         {
-            switch ((TwitchUserLevels)userLevel)
+            switch ((Enums.TwitchUserLevels)userLevel)
             {
-                case TwitchUserLevels.Everyone:
+                case Enums.TwitchUserLevels.Everyone:
                     return Settings.Settings.TwSrMaxReqEveryone;
-                case TwitchUserLevels.Vip:
+                case Enums.TwitchUserLevels.Vip:
                     return Settings.Settings.TwSrMaxReqVip;
 
-                case TwitchUserLevels.Subscriber:
+                case Enums.TwitchUserLevels.Subscriber:
                     return Settings.Settings.TwSrMaxReqSubscriber;
 
-                case TwitchUserLevels.Moderator:
+                case Enums.TwitchUserLevels.Moderator:
                     return Settings.Settings.TwSrMaxReqModerator;
 
-                case TwitchUserLevels.Broadcaster:
+                case Enums.TwitchUserLevels.Broadcaster:
                     return 999;
                 default:
                     return 0;
@@ -2184,7 +2169,7 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(TwitchUserLevels)CheckUserLevel(e.ChatMessage).Item1} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage).Item1)}");
+                        $"{(Enums.TwitchUserLevels)CheckUserLevel(e.ChatMessage).Item1} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage).Item1)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -2212,21 +2197,21 @@ namespace Songify_Slim.Util.Songify
             // Checks if the requester already reached max songrequests
             List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Requester == requester).ToList();
 
-            switch ((TwitchUserLevels)userLevel)
+            switch ((Enums.TwitchUserLevels)userLevel)
             {
-                case TwitchUserLevels.Everyone:
+                case Enums.TwitchUserLevels.Everyone:
                     maxreq = Settings.Settings.TwSrMaxReqEveryone;
                     break;
-                case TwitchUserLevels.Vip:
+                case Enums.TwitchUserLevels.Vip:
                     maxreq = Settings.Settings.TwSrMaxReqVip;
                     break;
-                case TwitchUserLevels.Subscriber:
+                case Enums.TwitchUserLevels.Subscriber:
                     maxreq = Settings.Settings.TwSrMaxReqSubscriber;
                     break;
-                case TwitchUserLevels.Moderator:
+                case Enums.TwitchUserLevels.Moderator:
                     maxreq = Settings.Settings.TwSrMaxReqModerator;
                     break;
-                case TwitchUserLevels.Broadcaster:
+                case Enums.TwitchUserLevels.Broadcaster:
                     maxreq = 999;
                     break;
                 default:
@@ -2342,12 +2327,12 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
                 int userlevel = Users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
                 Logger.LogStr(
-                    $"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(TwitchUserLevels), userlevel)})");
+                    $"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel)})");
                 string msg;
                 if (userlevel < Settings.Settings.TwSrUserLevel)
                 {
                     msg =
-                        $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
+                        $"Sorry, only {Enum.GetName(typeof(Enums.TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
                     //Send a Message to the user, that his Userlevel is too low
                     if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
                     {
@@ -2400,7 +2385,7 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
+                        $"{(Enums.TwitchUserLevels)userlevel} {GetMaxRequestsForUserlevel(userlevel)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     if (!string.IsNullOrEmpty(response))

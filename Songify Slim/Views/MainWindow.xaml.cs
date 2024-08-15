@@ -549,9 +549,9 @@ namespace Songify_Slim.Views
             }
 
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
-                await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Main);
+                await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
-                await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
+                await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
         }
 
         private static void CheckAndNotifyConfigurationIssues()
@@ -898,7 +898,7 @@ namespace Songify_Slim.Views
 
         private void Mi_TwitchAPI_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Main);
+            TwitchHandler.ApiConnect(Enums.TwitchAccount.Main);
         }
 
         private void MetroWindow_LocationChanged(object sender, EventArgs e)

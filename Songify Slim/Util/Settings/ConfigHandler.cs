@@ -23,15 +23,7 @@ namespace Songify_Slim.Util.Settings
     /// </summary>
     internal class ConfigHandler
     {
-        public enum ConfigTypes
-        {
-            SpotifyCredentials,
-            TwitchCredentials,
-            BotConfig,
-            AppConfig
-        }
-
-        public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
+        public static void WriteConfig(Enums.ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
             path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             ISerializer serializer = new SerializerBuilder()
@@ -42,19 +34,19 @@ namespace Songify_Slim.Util.Settings
 
             switch (configType)
             {
-                case ConfigTypes.SpotifyCredentials:
+                case Enums.ConfigTypes.SpotifyCredentials:
                     path += "/SpotifyCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as SpotifyCredentials ?? throw new InvalidOperationException());
                     break;
-                case ConfigTypes.TwitchCredentials:
+                case Enums.ConfigTypes.TwitchCredentials:
                     path += "/TwitchCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as TwitchCredentials ?? throw new InvalidOperationException());
                     break;
-                case ConfigTypes.BotConfig:
+                case Enums.ConfigTypes.BotConfig:
                     path += "/BotConfig" + fileEnding;
                     yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
                     break;
-                case ConfigTypes.AppConfig:
+                case Enums.ConfigTypes.AppConfig:
                     try
                     {
                         path += "/AppConfig" + fileEnding;
@@ -81,11 +73,11 @@ namespace Songify_Slim.Util.Settings
 
             Configuration config = new();
 
-            foreach (ConfigTypes configType in (ConfigTypes[])Enum.GetValues(typeof(ConfigTypes)))
+            foreach (Enums.ConfigTypes configType in (Enums.ConfigTypes[])Enum.GetValues(typeof(Enums.ConfigTypes)))
             {
                 switch (configType)
                 {
-                    case ConfigTypes.SpotifyCredentials:
+                    case Enums.ConfigTypes.SpotifyCredentials:
                         if (File.Exists($@"{path}\SpotifyCredentials.yaml"))
                         {
                             SpotifyCredentials p = deserializer.Deserialize<SpotifyCredentials>(File.ReadAllText($@"{path}\SpotifyCredentials.yaml"));
@@ -105,7 +97,7 @@ namespace Songify_Slim.Util.Settings
                             };
                         }
                         break;
-                    case ConfigTypes.TwitchCredentials:
+                    case Enums.ConfigTypes.TwitchCredentials:
                         if (File.Exists($@"{path}\TwitchCredentials.yaml"))
                         {
                             TwitchCredentials p = deserializer.Deserialize<TwitchCredentials>(File.ReadAllText($@"{path}\TwitchCredentials.yaml"));
@@ -127,7 +119,7 @@ namespace Songify_Slim.Util.Settings
                             };
                         }
                         break;
-                    case ConfigTypes.BotConfig:
+                    case Enums.ConfigTypes.BotConfig:
                         if (File.Exists($@"{path}\BotConfig.yaml"))
                         {
                             BotConfig p = deserializer.Deserialize<BotConfig>(File.ReadAllText($@"{path}\BotConfig.yaml"));
@@ -185,7 +177,7 @@ namespace Songify_Slim.Util.Settings
                             };
                         }
                         break;
-                    case ConfigTypes.AppConfig:
+                    case Enums.ConfigTypes.AppConfig:
                         if (File.Exists($@"{path}\AppConfig.yaml"))
                         {
                             deserializer = new DeserializerBuilder()
@@ -273,7 +265,8 @@ namespace Songify_Slim.Util.Settings
                                 BlockAllExplicitSongs = false,
                                 RequesterPrefix = "Requested by ",
                                 UseDefaultBrowser = false,
-                                DonationReminder = false
+                                DonationReminder = false,
+                                PauseOption = Enums.PauseOptions.Nothing
                             };
                         }
                         break;
@@ -466,7 +459,7 @@ namespace Songify_Slim.Util.Settings
                 ClientId = cfg.ClientId,
                 ClientSecret = cfg.ClientSecret,
             };
-            WriteConfig(ConfigTypes.SpotifyCredentials, sp);
+            WriteConfig(Enums.ConfigTypes.SpotifyCredentials, sp);
 
             TwitchCredentials twitchCredentials = new()
             {
@@ -476,7 +469,7 @@ namespace Songify_Slim.Util.Settings
                 BotAccountName = cfg.TwAcc,
                 BotOAuthToken = cfg.TwOAuth
             };
-            WriteConfig(ConfigTypes.TwitchCredentials, twitchCredentials);
+            WriteConfig(Enums.ConfigTypes.TwitchCredentials, twitchCredentials);
 
             BotConfig botConfig = new()
             {
@@ -497,7 +490,7 @@ namespace Songify_Slim.Util.Settings
                 BotRespVoteSkip = cfg.BotRespVoteSkip,
 
             };
-            WriteConfig(ConfigTypes.BotConfig, botConfig);
+            WriteConfig(Enums.ConfigTypes.BotConfig, botConfig);
 
             AppConfig appConfig = new()
             {
@@ -542,15 +535,15 @@ namespace Songify_Slim.Util.Settings
                 UserBlacklist = cfg.UserBlacklist,
                 Uuid = cfg.Uuid,
             };
-            WriteConfig(ConfigTypes.AppConfig, appConfig);
+            WriteConfig(Enums.ConfigTypes.AppConfig, appConfig);
         }
 
         public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
         {
-            WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, isBackup);
-            WriteConfig(ConfigTypes.BotConfig, config.BotConfig, path, isBackup);
-            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path, isBackup);
-            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials, path, isBackup);
+            WriteConfig(Enums.ConfigTypes.AppConfig, config.AppConfig, path, isBackup);
+            WriteConfig(Enums.ConfigTypes.BotConfig, config.BotConfig, path, isBackup);
+            WriteConfig(Enums.ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path, isBackup);
+            WriteConfig(Enums.ConfigTypes.TwitchCredentials, config.TwitchCredentials, path, isBackup);
         }
     }
 
@@ -704,6 +697,8 @@ namespace Songify_Slim.Util.Settings
         public string RequesterPrefix { get; set; } = "Requested by ";
         public bool UseDefaultBrowser { get; set; } = false;
         public bool DonationReminder { get; set; } = false;
+        public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
+        public bool AppendSpacesSplitFiles { get; set; } = false;
     }
 
     public class Config

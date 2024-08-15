@@ -59,7 +59,7 @@ namespace Songify_Slim.Views
             CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
             CbxUserLevels.Items.Clear();
             CbxUserLevelsMaxReq.Items.Clear();
-            Array values = Enum.GetValues(typeof(TwitchHandler.TwitchUserLevels));
+            Array values = Enum.GetValues(typeof(Enums.TwitchUserLevels));
             foreach (object value in values)
             {
                 switch (value.ToString())
@@ -90,10 +90,12 @@ namespace Songify_Slim.Views
             ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxCover.IsOn = Settings.DownloadCover;
-            ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
+            CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
+            //ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
             ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
+            ChbxSpacesSplitFiles.IsChecked = Settings.AppendSpacesSplitFiles;
             ChbxSplit.IsOn = Settings.SplitOutput;
             ChbxUpload.IsOn = Settings.Upload;
             NudSpaces.Value = Settings.SpaceCount;
@@ -487,11 +489,11 @@ namespace Songify_Slim.Views
             Settings.DownloadCover = ChbxCover.IsOn;
         }
 
-        private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
-        {
-            Settings.CustomPauseTextEnabled = ChbxCustomPause.IsOn;
-            TxtbxCustompausetext.IsEnabled = ChbxCustomPause.IsOn;
-        }
+        //private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
+        //{
+        //    Settings.CustomPauseTextEnabled = ChbxCustomPause.IsOn;
+        //    TxtbxCustompausetext.IsEnabled = ChbxCustomPause.IsOn;
+        //}
 
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
@@ -681,21 +683,21 @@ namespace Songify_Slim.Views
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             //Sets max requests per user value
-            switch ((TwitchHandler.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
+            switch ((Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
             {
-                case TwitchHandler.TwitchUserLevels.Everyone:
+                case Enums.TwitchUserLevels.Everyone:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
                     break;
-                case TwitchHandler.TwitchUserLevels.Vip:
+                case Enums.TwitchUserLevels.Vip:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
                     break;
-                case TwitchHandler.TwitchUserLevels.Subscriber:
+                case Enums.TwitchUserLevels.Subscriber:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
                     break;
-                case TwitchHandler.TwitchUserLevels.Moderator:
+                case Enums.TwitchUserLevels.Moderator:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
                     break;
-                case TwitchHandler.TwitchUserLevels.Broadcaster:
+                case Enums.TwitchUserLevels.Broadcaster:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
                     break;
                 default:
@@ -814,7 +816,7 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             // write custom output format to settings
-            if(TxtbxOutputformat.Text == Settings.OutputString)
+            if (TxtbxOutputformat.Text == Settings.OutputString)
                 return;
             Settings.OutputString = TxtbxOutputformat.Text;
             GlobalObjects.ForceUpdate = true;
@@ -840,26 +842,15 @@ namespace Songify_Slim.Views
                 return;
 
             NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
-            switch ((TwitchHandler.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
+            NudMaxReq.Value = (Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex switch
             {
-                case TwitchHandler.TwitchUserLevels.Everyone:
-                    NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
-                    break;
-                case TwitchHandler.TwitchUserLevels.Vip:
-                    NudMaxReq.Value = Settings.TwSrMaxReqVip;
-                    break;
-                case TwitchHandler.TwitchUserLevels.Subscriber:
-                    NudMaxReq.Value = Settings.TwSrMaxReqSubscriber;
-                    break;
-                case TwitchHandler.TwitchUserLevels.Moderator:
-                    NudMaxReq.Value = Settings.TwSrMaxReqModerator;
-                    break;
-                case TwitchHandler.TwitchUserLevels.Broadcaster:
-                    NudMaxReq.Value = Settings.TwSrMaxReqBroadcaster;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                Enums.TwitchUserLevels.Everyone => Settings.TwSrMaxReqEveryone,
+                Enums.TwitchUserLevels.Vip => Settings.TwSrMaxReqVip,
+                Enums.TwitchUserLevels.Subscriber => Settings.TwSrMaxReqSubscriber,
+                Enums.TwitchUserLevels.Moderator => Settings.TwSrMaxReqModerator,
+                Enums.TwitchUserLevels.Broadcaster => Settings.TwSrMaxReqBroadcaster,
+                _ => throw new ArgumentOutOfRangeException()
+            };
             NudMaxReq.ValueChanged += NudMaxReq_ValueChanged;
         }
 
@@ -1072,7 +1063,7 @@ namespace Songify_Slim.Views
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Main);
+            TwitchHandler.ApiConnect(Enums.TwitchAccount.Main);
         }
 
         private void ToggleSwitchPrivacy_Toggled(object sender, RoutedEventArgs e)
@@ -1195,7 +1186,7 @@ namespace Songify_Slim.Views
 
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.ApiConnect(TwitchHandler.TwitchAccount.Bot);
+            TwitchHandler.ApiConnect(Enums.TwitchAccount.Bot);
 
         }
 
@@ -1578,9 +1569,9 @@ namespace Songify_Slim.Views
         private void BtnLogInTwitchAlt_Click(object sender, RoutedEventArgs e)
         {
             Window_ManualTwitchLogin manualTwitchLogin = new(
-                (bool)(sender as Button)?.Tag.ToString().Equals("main", StringComparison.CurrentCultureIgnoreCase)
-                ? TwitchHandler.TwitchAccount.Main
-                : TwitchHandler.TwitchAccount.Bot)
+                (sender is Button ? ((Button)sender).Tag.ToString().Equals("main", StringComparison.CurrentCultureIgnoreCase) : true)
+                ? Enums.TwitchAccount.Main
+                : Enums.TwitchAccount.Bot)
             {
                 Owner = this
             };
@@ -1590,6 +1581,20 @@ namespace Songify_Slim.Views
         private void TglBotcmdVolIgnoreMod_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdVolIgnoreMod = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void CbPauseOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            if ((Enums.PauseOptions)CbPauseOptions.SelectedIndex == Settings.PauseOption)
+                return;
+            Settings.PauseOption = (Enums.PauseOptions)CbPauseOptions.SelectedIndex;
+        }
+
+        private void ChbxSpacesSplitFiles_Checked(object sender, RoutedEventArgs e)
+        {
+            Settings.AppendSpacesSplitFiles = (bool)((CheckBox)sender).IsChecked;
         }
     }
 }
