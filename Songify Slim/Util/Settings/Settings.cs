@@ -20,6 +20,19 @@ namespace Songify_Slim.Util.Settings
             set => SetPauseOption(value);
         }
 
+        public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
+
+        private static void SetFontSize(int value)
+        {
+            _currentConfig.AppConfig.FontSize = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static int GetFontSize()
+        {
+            return _currentConfig.AppConfig.FontSize;
+        }
+
         private static void SetPauseOption(Enums.PauseOptions value)
         {
             _currentConfig.AppConfig.PauseOption = value;
@@ -986,6 +999,7 @@ namespace Songify_Slim.Util.Settings
                 Directory = GetDirectory(),
                 DonationReminder = GetDonationReminder(),
                 DownloadCover = GetDownloadCover(),
+                FontSize = GetFontSize(),
                 Language = GetLanguage(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 MaxSongLength = GetMaxSongLength(),

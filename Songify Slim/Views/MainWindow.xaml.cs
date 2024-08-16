@@ -25,6 +25,7 @@ using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
+using Button = System.Windows.Controls.Button;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -509,6 +510,9 @@ namespace Songify_Slim.Views
 
             // text in the bottom right
             LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+
+            tbFontSize.Text = Settings.Fontsize.ToString();
+            TxtblockLiveoutput.FontSize = Settings.Fontsize;
         }
 
         private async Task HandleSpotifyInitializationAsync()
@@ -987,6 +991,22 @@ namespace Songify_Slim.Views
         {
             if (GlobalObjects.WebServer.Run)
                 Process.Start($"http://localhost:{Settings.WebServerPort}");
+        }
+
+        private void btnFontSizeUp_Click(object sender, RoutedEventArgs e)
+        {
+            int fontSize = MathUtils.Clamp(Settings.Fontsize + 2, 2, 72);
+            Settings.Fontsize = fontSize;
+            TxtblockLiveoutput.FontSize = fontSize;
+            tbFontSize.Text = fontSize.ToString();
+        }
+
+        private void btnFontSizeDown_Click(object sender, RoutedEventArgs e)
+        {
+            int fontSize = MathUtils.Clamp(Settings.Fontsize - 2, 2, 72);
+            Settings.Fontsize = fontSize;
+            TxtblockLiveoutput.FontSize = fontSize;
+            tbFontSize.Text = fontSize.ToString();
         }
 
         public void SetTextPreview(string replace)

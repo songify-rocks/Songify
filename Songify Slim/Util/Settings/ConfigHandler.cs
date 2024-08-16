@@ -115,7 +115,7 @@ namespace Songify_Slim.Util.Settings
                                 TwitchUser = null,
                                 TwitchBotToken = "",
                                 BotUser = null,
-                                
+
                             };
                         }
                         break;
@@ -266,7 +266,9 @@ namespace Songify_Slim.Util.Settings
                                 RequesterPrefix = "Requested by ",
                                 UseDefaultBrowser = false,
                                 DonationReminder = false,
-                                PauseOption = Enums.PauseOptions.Nothing
+                                PauseOption = Enums.PauseOptions.Nothing,
+                                AppendSpacesSplitFiles = false,
+                                FontSize = 22,
                             };
                         }
                         break;
@@ -699,6 +701,7 @@ namespace Songify_Slim.Util.Settings
         public bool DonationReminder { get; set; } = false;
         public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
         public bool AppendSpacesSplitFiles { get; set; } = false;
+        public int FontSize { get; set; } = 22;
     }
 
     public class Config

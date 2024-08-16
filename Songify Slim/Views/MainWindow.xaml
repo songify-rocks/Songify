@@ -10,15 +10,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:songifySlim="clr-namespace:Songify_Slim"
     Title="Songify"
-    Width="588"
-    Height="285"
+    MinWidth="588"
+    MinHeight="285"
     Closed="MetroWindowClosed"
     Closing="MetroWindow_Closing"
     KeyDown="MetroWindow_KeyDown"
     Loaded="MetroWindowLoaded"
     LocationChanged="MetroWindow_LocationChanged"
     RenderOptions.BitmapScalingMode="NearestNeighbor"
-    ResizeMode="CanMinimize"
+    ResizeMode="CanResizeWithGrip"
     SaveWindowPosition="True"
     ShowDialogsOverTitleBar="False"
     StateChanged="MetroWindowStateChanged"
@@ -214,49 +214,85 @@
                 <MenuItem Click="BtnMenuViewConsole_Click" Header="{x:Static local:Resources.mw_menu_Console}" />
                 <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
             </MenuItem>
+
         </Menu>
-        <ComboBox
-            x:Name="cbx_Source"
+        <StackPanel 
             Grid.Row="0"
             Grid.Column="1"
+            Orientation="Horizontal"
+            Margin="0,3,6,0">
+            <Button x:Name="btnFontSizeDown"
+                Focusable="False"
+                    Height="26"  Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeDown_Click">
+                <iconPacks:PackIconMaterial
+                    Width="15"
+                    Height="15"
+                    Margin="-1,-1,-1,-1"
+                    Kind="FormatFontSizeDecrease" />
+            </Button>
+            <Button 
+                Focusable="False"
+                x:Name="btnFontSizeUp"
+                Height="26" Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeUp_Click">
+                <iconPacks:PackIconMaterial
+                    Width="15"
+                    Height="15"
+                    Margin="-1,-1,-1,-1"
+                    Kind="FormatFontSizeIncrease" />
+            </Button>
+
+            <TextBlock 
+                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
+                x:Name="tbFontSize" 
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Margin="3,0,12,0"
+                       />
+            <ComboBox
+            x:Name="cbx_Source"
             Width="116"
-            Margin="0,3,6,0"
             Padding="2"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             IsTabStop="False"
             SelectedIndex="0" />
-        <Grid
+        </StackPanel>
+        <Viewbox 
+            Margin="6"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Stretch"
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="0"
-            Grid.ColumnSpan="2"
-            VerticalAlignment="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Image
+            Grid.ColumnSpan="2">
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
                 x:Name="img_cover"
                 Grid.Column="0"
-                Width="175"
-                Height="175"
-                Margin="10,0,0,0"
+                MinHeight="175"
+                MinWidth="175"
+                MaxHeight="175"
+                MaxWidth="175"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top"
+                VerticalAlignment="Center"
                 Visibility="Hidden" />
-            <TextBlock
+
+                <TextBlock
+                    Grid.Column="1"
                 x:Name="TxtblockLiveoutput"
-                Grid.Column="1"
-                MaxWidth="400"
-                MaxHeight="185"
+                    MaxWidth="500"
                 Padding="10"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                FontSize="22"
                 Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
                 TextWrapping="Wrap" />
-        </Grid>
+
+            </Grid>
+        </Viewbox>
         <StackPanel
             Grid.Row="2"
             Grid.Column="0"
@@ -324,14 +360,15 @@
                 </Border>
             </Button.Content>
         </Button>
-        <StatusBar
+        <DockPanel
+            HorizontalAlignment="Stretch"
             x:Name="sb_Main"
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Height="20"
             Margin="0"
-            Padding="0"
+            LastChildFill="True"
             VerticalAlignment="Bottom"
             Background="{DynamicResource MahApps.Brushes.Control.Background}"
             ScrollViewer.CanContentScroll="True"
@@ -446,8 +483,7 @@
             </StatusBarItem>
             <Border
                 Height="20"
-                Margin="0,-4,-4,-4"
-                Padding="3,0,6,0"
+                Padding="3,0,12,0"
                 BorderThickness="1,0,0,0"
                 CornerRadius="10,0,0,10">
                 <Border.Style>
@@ -462,7 +498,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <DockPanel Width="490" LastChildFill="False">
+                <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
                     <StatusBarItem x:Name="LblStatus">
                         <StatusBar />
                     </StatusBarItem>
@@ -488,6 +524,6 @@
                     </StatusBarItem>
                 </DockPanel>
             </Border>
-        </StatusBar>
+        </DockPanel>
     </Grid>
 </controls:MetroWindow>

@@ -133,13 +133,13 @@ namespace Songify_Slim.Util.General
             try
             {
                 SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
-                if (queue == null || queue.Queue.Count == 0)
+                if (queue?.Queue == null || queue.Queue.Count == 0)
                 {
                     return;
                 }
 
                 // Remove all songs from the web queue that are not in the current playback queue
-                if (ReqList.Count > 0)
+                if (ReqList?.Count > 0)
                 {
                     List<RequestObject> itemsToRemove = new List<RequestObject>();
 
@@ -171,11 +171,20 @@ namespace Songify_Slim.Util.General
                     {
                         await Application.Current.Dispatcher.BeginInvoke(() =>
                         {
-                            if (item.Trackid == CurrentSong.SongId)
+                            try
                             {
-                                return;
+                                if (item.Trackid == CurrentSong.SongId)
+                                {
+                                    return;
+                                }
+                                ReqList.Remove(item);
                             }
-                            ReqList.Remove(item);
+                            catch (Exception ex)
+                            {
+                                // Log or handle error during list update
+                                Logger.LogStr("CORE: Error removing item from ReqList");
+                                Logger.LogExc(ex);
+                            }
                         });
                     }
                 }
@@ -192,64 +201,63 @@ namespace Songify_Slim.Util.General
                             if (window.GetType() != typeof(WindowQueue))
                                 continue;
 
-                            ((WindowQueue)window).dgv_Queue.ItemsSource = null;
-                            ((WindowQueue)window).dgv_Queue.Items.Clear();
-                            
+                            if (window is not WindowQueue windowQueue)
+                                continue;
+
+                            windowQueue.dgv_Queue.ItemsSource = null;
+                            windowQueue.dgv_Queue.Items.Clear();
+
                             foreach (FullTrack fullTrack in queue.Queue)
                             {
-                                // Determine if we have a matching request object that hasn't been used for replacement yet
-                                RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
-                                RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+                                try
+                                {
+                                    // Determine if we have a matching request object that hasn't been used for replacement yet
+                                    RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
+                                    RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
 
-                                if (reqObj != null)
-                                {
-                                    // If we found a request object, and it hasn't been used for replacement, add it and mark as used
-                                    (window as WindowQueue)?.dgv_Queue.Items.Add(reqObj);
-                                    QueueTracks.Add(reqObj);
-                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
-                                }
-                                else if (skipObj != null)
-                                {
-                                    skipObj.Requester = "Skipping...";
-                                    // If we found a request object, and it hasn't been used for replacement, add it and mark as used
-                                    (window as WindowQueue)?.dgv_Queue.Items.Add(skipObj);
-                                    QueueTracks.Add(skipObj);
-
-                                    replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
-                                }
-                                else
-                                {
-                                    QueueTracks.Add(new RequestObject
+                                    if (reqObj != null)
                                     {
-                                        Queueid = 0,
-                                        Uuid = Settings.Settings.Uuid,
-                                        Trackid = fullTrack.Id,
-                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                        Title = fullTrack.Name,
-                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
-                                        Requester = "Spotify",
-                                        Played = 0,
-                                        Albumcover = null
-                                    });
-
-                                    // Otherwise, just add the song information from the queue as a new request object
-                                    (window as WindowQueue)?.dgv_Queue.Items.Add(new RequestObject
+                                        // If we found a request object, and it hasn't been used for replacement, add it and mark as used
+                                        windowQueue.dgv_Queue.Items.Add(reqObj);
+                                        QueueTracks.Add(reqObj);
+                                        replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                                    }
+                                    else if (skipObj != null)
                                     {
-                                        Queueid = 0,
-                                        Uuid = Settings.Settings.Uuid,
-                                        Trackid = fullTrack.Id,
-                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                        Title = fullTrack.Name,
-                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
-                                        Requester = "Spotify",
-                                        Played = 0,
-                                        Albumcover = null
-                                    });
+                                        skipObj.Requester = "Skipping...";
+                                        windowQueue.dgv_Queue.Items.Add(skipObj);
+                                        QueueTracks.Add(skipObj);
+                                        replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                                    }
+                                    else
+                                    {
+                                        var newRequestObject = new RequestObject
+                                        {
+                                            Queueid = 0,
+                                            Uuid = Settings.Settings.Uuid,
+                                            Trackid = fullTrack.Id,
+                                            Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                            Title = fullTrack.Name,
+                                            Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                            Requester = "Spotify",
+                                            Played = 0,
+                                            Albumcover = null
+                                        };
+
+                                        QueueTracks.Add(newRequestObject);
+                                        windowQueue.dgv_Queue.Items.Add(newRequestObject);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Log or handle error during queue processing
+                                    Logger.LogStr("CORE: Error processing queue item");
+                                    Logger.LogExc(ex);
                                 }
                             }
 
                             // Add the current song to the top of the queue
-                            (window as WindowQueue)?.dgv_Queue.Items.Insert(0, new RequestObject
+                            windowQueue.dgv_Queue.Items.Insert(0, new RequestObject
                             {
                                 Queueid = 0,
                                 Uuid = Settings.Settings.Uuid,
@@ -262,7 +270,7 @@ namespace Songify_Slim.Util.General
                                 Albumcover = null
                             });
 
-                            (window as WindowQueue)?.dgv_Queue.Items.Refresh();
+                            windowQueue.dgv_Queue.Items.Refresh();
                         }
                     }
                     catch (Exception ex)
@@ -270,7 +278,6 @@ namespace Songify_Slim.Util.General
                         // Log or handle error during UI update
                         Logger.LogStr("CORE: Encountered an error while updating the UI");
                         Logger.LogExc(ex);
-                        Console.WriteLine($"Error updating UI: {ex.Message}");
                     }
                 });
             }
@@ -281,7 +288,6 @@ namespace Songify_Slim.Util.General
                 Logger.LogExc(ex);
             }
         }
-
 
         public static string GetReadablePlayer()
         {

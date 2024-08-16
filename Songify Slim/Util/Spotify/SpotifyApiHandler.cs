@@ -323,6 +323,8 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                if (e.Message == "Input string was not in a correct format.")
+                    return null;
                 Logger.LogExc(e);
                 return null;
             }
@@ -362,13 +364,14 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 List<TrackScore> trackScores = (from track in search.Tracks.Items
-                    let combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name
-                    let score = LevenshteinDistance(searchQuery, combined)
-                    select new TrackScore
-                    {
-                        TrackName = track.Name, ArtistName = string.Join(", ", track.Artists.Select(a => a.Name)),
-                        Score = score
-                    }).ToList();
+                                                let combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name
+                                                let score = LevenshteinDistance(searchQuery, combined)
+                                                select new TrackScore
+                                                {
+                                                    TrackName = track.Name,
+                                                    ArtistName = string.Join(", ", track.Artists.Select(a => a.Name)),
+                                                    Score = score
+                                                }).ToList();
 
                 // To find the best match from the list
                 TrackScore bestMatch = trackScores.OrderBy(ts => ts.Score).FirstOrDefault();
