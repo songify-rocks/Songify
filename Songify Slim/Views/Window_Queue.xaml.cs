@@ -6,10 +6,13 @@ using Songify_Slim.Util.Songify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
+using CheckBox = System.Windows.Controls.CheckBox;
+using DataGridColumn = System.Windows.Controls.DataGridColumn;
 
 namespace Songify_Slim.Views
 {
@@ -42,6 +45,8 @@ namespace Songify_Slim.Views
                 }
                 dgv_Queue.Columns[queueWindowColumn].Visibility = Visibility.Visible;
             }
+
+            tbFontSize.Text = ((int)dgv_Queue.FontSize).ToString();
         }
 
         private async void DgvItemDelete_Click(object sender, RoutedEventArgs e)
@@ -74,7 +79,7 @@ namespace Songify_Slim.Views
             if (index < 0) return;
             bool? isChecked = (sender as CheckBox)?.IsChecked;
             dgv_Queue.Columns[index].Visibility = isChecked != null && (bool)isChecked ? Visibility.Visible : Visibility.Collapsed;
-            List<int> cols = (from UIElement item in stackCols.Children where (bool)(item as CheckBox).IsChecked select int.Parse((item as CheckBox)?.Tag.ToString())).ToList();
+            List<int> cols = (from UIElement item in stackCols.Children let @checked = ((CheckBox)item).IsChecked where @checked != null && (bool)@checked select int.Parse((item as CheckBox)?.Tag.ToString())).ToList();
             Settings.QueueWindowColumns = cols;
         }
 
@@ -102,6 +107,20 @@ namespace Songify_Slim.Views
         private void dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
             e.Cancel = true;
+        }
+
+        private void btnFontSizeDown_Click(object sender, RoutedEventArgs e)
+        {
+            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize - 2, 2, 72);
+            dgv_Queue.FontSize = fontSize;
+            tbFontSize.Text = fontSize.ToString();
+        }
+
+        private void btnFontSizeUp_Click(object sender, RoutedEventArgs e)
+        {
+            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize + 2, 2, 72);
+            dgv_Queue.FontSize = fontSize;
+            tbFontSize.Text = fontSize.ToString();
         }
     }
 }
