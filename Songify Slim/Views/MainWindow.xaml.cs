@@ -509,7 +509,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.6.7_beta Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.6.5_beta Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
 
             tbFontSize.Text = Settings.Fontsize.ToString();
             TxtblockLiveoutput.FontSize = Settings.Fontsize;
