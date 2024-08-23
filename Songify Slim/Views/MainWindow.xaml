@@ -89,6 +89,36 @@
         </Style>
         <Style BasedOn="{StaticResource NewCustomMessageDialogStyle}" TargetType="{x:Type dialog:MessageDialog}" />
     </controls:MetroWindow.Resources>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands ShowSeparators="False" >
+            <Button x:Name="btnFontSizeDown"
+                    Focusable="False"
+                    Height="26"  Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeDown_Click">
+                <iconPacks:PackIconMaterial
+                    Width="15"
+                    Height="15"
+                    Margin="-1,-1,-1,-1"
+                    Kind="FormatFontSizeDecrease" />
+            </Button>
+            <Button 
+                Focusable="False"
+                x:Name="btnFontSizeUp"
+                Height="26" Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeUp_Click">
+                <iconPacks:PackIconMaterial
+                    Width="15"
+                    Height="15"
+                    Margin="-1,-1,-1,-1"
+                    Kind="FormatFontSizeIncrease" />
+            </Button>
+            <TextBlock 
+                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
+                x:Name="tbFontSize" 
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Margin="3,0,12,0"
+            />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -220,34 +250,7 @@
             Grid.Row="0"
             Grid.Column="1"
             Orientation="Horizontal"
-            Margin="0,3,6,0">
-            <Button x:Name="btnFontSizeDown"
-                Focusable="False"
-                    Height="26"  Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeDown_Click">
-                <iconPacks:PackIconMaterial
-                    Width="15"
-                    Height="15"
-                    Margin="-1,-1,-1,-1"
-                    Kind="FormatFontSizeDecrease" />
-            </Button>
-            <Button 
-                Focusable="False"
-                x:Name="btnFontSizeUp"
-                Height="26" Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeUp_Click">
-                <iconPacks:PackIconMaterial
-                    Width="15"
-                    Height="15"
-                    Margin="-1,-1,-1,-1"
-                    Kind="FormatFontSizeIncrease" />
-            </Button>
-
-            <TextBlock 
-                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
-                x:Name="tbFontSize" 
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Margin="3,0,12,0"
-                       />
+            Margin="0,3,6,0" HorizontalAlignment="Right">
             <ComboBox
             x:Name="cbx_Source"
             Width="116"

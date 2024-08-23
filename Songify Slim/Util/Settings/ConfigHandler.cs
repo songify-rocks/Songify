@@ -269,6 +269,7 @@ namespace Songify_Slim.Util.Settings
                                 PauseOption = Enums.PauseOptions.Nothing,
                                 AppendSpacesSplitFiles = false,
                                 FontSize = 22,
+                                FontsizeQueue = 12,
                             };
                         }
                         break;
@@ -702,6 +703,7 @@ namespace Songify_Slim.Util.Settings
         public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
         public bool AppendSpacesSplitFiles { get; set; } = false;
         public int FontSize { get; set; } = 22;
+        public int FontsizeQueue { get; set; }
     }
 
     public class Config

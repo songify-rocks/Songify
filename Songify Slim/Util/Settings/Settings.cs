@@ -21,6 +21,18 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
+        public static int FontsizeQueue { get => GetFontSizeQueue(); set => SetFontSizeQueue(value); }
+
+        private static void SetFontSizeQueue(int value)
+        {
+            _currentConfig.AppConfig.FontsizeQueue = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static int GetFontSizeQueue()
+        {
+            return _currentConfig.AppConfig.FontsizeQueue;
+        }
 
         private static void SetFontSize(int value)
         {
@@ -1000,6 +1012,7 @@ namespace Songify_Slim.Util.Settings
                 DonationReminder = GetDonationReminder(),
                 DownloadCover = GetDownloadCover(),
                 FontSize = GetFontSize(),
+                FontsizeQueue = GetFontSizeQueue(),
                 Language = GetLanguage(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 MaxSongLength = GetMaxSongLength(),

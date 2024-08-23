@@ -386,10 +386,10 @@
                             TextWrapping="Wrap">
                                 <TextBox.Style>
                                     <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                        <Setter Property="IsReadOnly" Value="True"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="0">
-                                                <Setter Property="IsReadOnly" Value="False"/>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="1">
+                                                <Setter Property="IsEnabled" Value="True"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
