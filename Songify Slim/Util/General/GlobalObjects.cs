@@ -22,12 +22,14 @@ namespace Songify_Slim.Util.General
     {
         public const string ApiUrl = "https://api.songify.rocks/v2";
         public const string BaseUrl = "https://songify.overcode.tv";
+        public const string AuthUrl = "https://songify.overcode.tv";
+        public const string AltAuthUrl = "https://songify.bloemacher.com";
         public static string ApiResponse;
         public static string AppVersion;
         public static FlowDocument ConsoleDocument = new();
         public static TrackInfo CurrentSong;
         public static bool DetachConsole = false;
-        public static bool IsBeta = true;
+        public static bool IsBeta = false;
         public static bool IsInPlaylist;
         public static ObservableCollection<RequestObject> ReqList = new();
         public static string Requester = "";

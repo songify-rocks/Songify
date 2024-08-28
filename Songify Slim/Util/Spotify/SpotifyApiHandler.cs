@@ -43,12 +43,13 @@ namespace Songify_Slim.Util.Songify
         // Spotify Authentication flow with the webserver
         private static TokenSwapAuth _auth;
 
-        public static async Task DoAuthAsync()
+        public static async Task DoAuthAsync(bool altUrl = false)
         {
+            string url = altUrl ? GlobalObjects.AltAuthUrl : GlobalObjects.AuthUrl;
             if (Settings.Settings.UseOwnApp)
             {
                 _auth = new TokenSwapAuth(
-                    $"{GlobalObjects.BaseUrl}/auth/auth.php?id=" + Settings.Settings.ClientId +
+                    $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
@@ -58,7 +59,7 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 _auth = new TokenSwapAuth(
-                    $"{GlobalObjects.BaseUrl}/auth/_index.php",
+                    $"{url}/auth/_index.php",
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
                     Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
@@ -76,6 +77,8 @@ namespace Songify_Slim.Util.Songify
                 {
                     Authed = true;
                     Token token = await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken);
+                    if(token == null)
+                        return;
                     Spotify = new SpotifyWebAPI
                     {
                         TokenType = token.TokenType,
