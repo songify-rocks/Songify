@@ -625,6 +625,7 @@ namespace Songify_Slim.Views
             }
 
             CheckForUpdates();
+
         }
 
 
@@ -656,10 +657,16 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            AutoUpdater.ReportErrors = false;
+            AutoUpdater.ReportErrors = true;
+            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
                 : $"{GlobalObjects.BaseUrl}/update.xml");
+        }
+
+        private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        {
+            Debug.Write(args);
         }
 
         private void CreateSystrayIcon()
@@ -820,7 +827,7 @@ namespace Songify_Slim.Views
             {
                 img_cover.Visibility = _selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
-            
+
             try
             {
                 _sCts.CancelAfter(3500);
@@ -1015,6 +1022,11 @@ namespace Songify_Slim.Views
             {
                 TxtblockLiveoutput.Text = replace;
             }));
+        }
+
+        private void Mi_Update_OnClick(object sender, RoutedEventArgs e)
+        {
+            CheckForUpdates();
         }
     }
 }

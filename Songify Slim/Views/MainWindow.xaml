@@ -177,6 +177,11 @@
                     <MenuItem Click="BtnAboutClick" Header="{x:Static local:Resources.mw_menu_Help_About}" />
                 </MenuItem>
                 <MenuItem
+                    x:Name="mi_Update"
+                    Click="Mi_Update_OnClick"
+                    Header="Check For Updates">
+                </MenuItem>
+                <MenuItem
                     x:Name="mi_Exit"
                     Click="Mi_Exit_Click"
                     Header="{x:Static local:Resources.mw_menu_Exit}" />

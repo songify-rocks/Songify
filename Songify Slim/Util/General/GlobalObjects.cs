@@ -21,8 +21,8 @@ namespace Songify_Slim.Util.General
     public static class GlobalObjects
     {
         public const string ApiUrl = "https://api.songify.rocks/v2";
-        public const string BaseUrl = "https://songify.overcode.tv";
-        public const string AuthUrl = "https://songify.overcode.tv";
+        public const string BaseUrl = "https://songify.bloemacher.com";
+        public const string AuthUrl = "https://songify.bloemacher.com";
         public const string AltAuthUrl = "https://songify.bloemacher.com";
         public static string ApiResponse;
         public static string AppVersion;
