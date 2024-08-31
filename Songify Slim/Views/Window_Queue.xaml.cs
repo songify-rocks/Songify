@@ -46,8 +46,9 @@ namespace Songify_Slim.Views
                 dgv_Queue.Columns[queueWindowColumn].Visibility = Visibility.Visible;
             }
 
-            tbFontSize.Text = MathUtils.Clamp(Settings.FontsizeQueue, 2, 72).ToString();
-            dgv_Queue.FontSize = MathUtils.Clamp(Settings.FontsizeQueue, 2, 72);
+            int fSize = MathUtils.Clamp(Settings.FontsizeQueue, 12, 72);
+            tbFontSize.Text = $"{fSize}";
+            dgv_Queue.FontSize = fSize;
         }
 
         private async void DgvItemDelete_Click(object sender, RoutedEventArgs e)
@@ -112,7 +113,7 @@ namespace Songify_Slim.Views
 
         private void btnFontSizeDown_Click(object sender, RoutedEventArgs e)
         {
-            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize - 2, 2, 72);
+            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize - 2, 12, 72);
             Settings.FontsizeQueue = fontSize;
             dgv_Queue.FontSize = fontSize;
             tbFontSize.Text = fontSize.ToString();
@@ -120,7 +121,7 @@ namespace Songify_Slim.Views
 
         private void btnFontSizeUp_Click(object sender, RoutedEventArgs e)
         {
-            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize + 2, 2, 72);
+            int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize + 2, 12, 72);
             Settings.FontsizeQueue = fontSize;
             dgv_Queue.FontSize = fontSize;
             tbFontSize.Text = fontSize.ToString();

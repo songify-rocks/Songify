@@ -270,6 +270,7 @@ namespace Songify_Slim.Util.Settings
                                 AppendSpacesSplitFiles = false,
                                 FontSize = 22,
                                 FontsizeQueue = 12,
+                                BaseUrl = "https://songify.overcode.tv",
                             };
                         }
                         break;
@@ -703,7 +704,8 @@ namespace Songify_Slim.Util.Settings
         public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
         public bool AppendSpacesSplitFiles { get; set; } = false;
         public int FontSize { get; set; } = 22;
-        public int FontsizeQueue { get; set; }
+        public int FontsizeQueue { get; set; } = 12;
+        public string BaseUrl { get; set; } = "https://songify.overcode.tv";
     }
 
     public class Config

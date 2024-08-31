@@ -22,6 +22,18 @@ namespace Songify_Slim.Util.Settings
 
         public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
         public static int FontsizeQueue { get => GetFontSizeQueue(); set => SetFontSizeQueue(value); }
+        public static string BaseUrl { get => GetBaseUrl(); set => SetBaseUrl(value); }
+
+        private static void SetBaseUrl(string value)
+        {
+            _currentConfig.AppConfig.BaseUrl = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static string GetBaseUrl()
+        {
+            return _currentConfig.AppConfig.BaseUrl;
+        }
 
         private static void SetFontSizeQueue(int value)
         {
@@ -1067,6 +1079,7 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
+                BaseUrl = GetBaseUrl(),
             };
 
             return new Configuration

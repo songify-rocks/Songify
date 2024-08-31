@@ -10,6 +10,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:songifySlim="clr-namespace:Songify_Slim"
     Title="Songify"
+    Width="588"
+    Height="285"
     MinWidth="588"
     MinHeight="285"
     Closed="MetroWindowClosed"
@@ -90,33 +92,39 @@
         <Style BasedOn="{StaticResource NewCustomMessageDialogStyle}" TargetType="{x:Type dialog:MessageDialog}" />
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.RightWindowCommands>
-        <controls:WindowCommands ShowSeparators="False" >
-            <Button x:Name="btnFontSizeDown"
-                    Focusable="False"
-                    Height="26"  Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeDown_Click">
+        <controls:WindowCommands ShowSeparators="False">
+            <Button
+                x:Name="btnFontSizeDown"
+                Height="26"
+                Padding="5,5,5,5"
+                Click="btnFontSizeDown_Click"
+                Focusable="False"
+                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
                     Width="15"
                     Height="15"
                     Margin="-1,-1,-1,-1"
                     Kind="FormatFontSizeDecrease" />
             </Button>
-            <Button 
-                Focusable="False"
+            <Button
                 x:Name="btnFontSizeUp"
-                Height="26" Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeUp_Click">
+                Height="26"
+                Padding="5,5,5,5"
+                Click="btnFontSizeUp_Click"
+                Focusable="False"
+                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
                     Width="15"
                     Height="15"
                     Margin="-1,-1,-1,-1"
                     Kind="FormatFontSizeIncrease" />
             </Button>
-            <TextBlock 
-                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
-                x:Name="tbFontSize" 
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
+            <TextBlock
+                x:Name="tbFontSize"
                 Margin="3,0,12,0"
-            />
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
@@ -130,33 +138,71 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Grid x:Name="GrdDisclaimer"
-            Grid.Column="0" Grid.Row="0"
-             Grid.RowSpan="3" Grid.ColumnSpan="2" 
-             Background="{DynamicResource MahApps.Brushes.Control.Background}"
-             ZIndex="1001" Visibility="Collapsed">
-            <Button Visibility="Collapsed" x:Name="BtnDisclaimerClose" Margin="5" Content="X" VerticalAlignment="Top" HorizontalAlignment="Right" Width="26" Height="26" BorderBrush="{x:Null}" Background="{x:Null}" Click="BtnDisclaimerClose_Click"/>
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="450" VerticalAlignment="Center" TextAlignment="Center" FontSize="14" >
-                        Songify is completely free.
-                        <LineBreak/>
-                        We are committed to keeping it accessible to everyone. To support our development and keep the app running smoothly, we rely on the generosity of our users. 
-                        <LineBreak/><LineBreak/>
-                        If you love using our app and wish to help us continue our work, consider making a donation.
-                </TextBlock>
-                <Button Background="#FFFF5E5B" Foreground="White" Width="250" Margin="0,15,0,0" Click="BtnPaypal_Click">
+        <Grid
+            x:Name="GrdDisclaimer"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            Visibility="Collapsed"
+            ZIndex="1001">
+            <Button
+                x:Name="BtnDisclaimerClose"
+                Width="26"
+                Height="26"
+                Margin="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Background="{x:Null}"
+                BorderBrush="{x:Null}"
+                Click="BtnDisclaimerClose_Click"
+                Content="X"
+                Visibility="Collapsed" />
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Vertical">
+                <TextBlock
+                    MaxWidth="450"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap">
+                    Songify is completely free.<LineBreak />
+                    We are committed to keeping it accessible to everyone. To support our development and keep the app running smoothly, we rely on the generosity of our users.<LineBreak /><LineBreak />
+                    If you love using our app and wish to help us continue our work, consider making a donation.</TextBlock>
+                <Button
+                    Width="250"
+                    Margin="0,15,0,0"
+                    Background="#FFFF5E5B"
+                    Click="BtnPaypal_Click"
+                    Foreground="White">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                            <TextBlock Text="Support us on Ko-Fi" FontSize="18"></TextBlock>
+                            <iconPacks:PackIconForkAwesome
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="Buymeacoffee" />
+                            <TextBlock FontSize="18" Text="Support us on Ko-Fi" />
                         </StackPanel>
                     </Button.Content>
                 </Button>
             </StackPanel>
-            <TextBlock x:Name="TbDisclaimerDismiss" Text="" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="5,0"></TextBlock>
+            <TextBlock
+                x:Name="TbDisclaimerDismiss"
+                Margin="5,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Text="" />
         </Grid>
         <Menu
-            Grid.Row="0" Grid.Column="0"
+            Grid.Row="0"
+            Grid.Column="0"
             Margin="0,0,0,0"
             Padding="0"
             VerticalAlignment="Top"
@@ -179,8 +225,7 @@
                 <MenuItem
                     x:Name="mi_Update"
                     Click="Mi_Update_OnClick"
-                    Header="Check For Updates">
-                </MenuItem>
+                    Header="Check For Updates" />
                 <MenuItem
                     x:Name="mi_Exit"
                     Click="Mi_Exit_Click"
@@ -251,56 +296,59 @@
             </MenuItem>
 
         </Menu>
-        <StackPanel 
+        <StackPanel
             Grid.Row="0"
             Grid.Column="1"
-            Orientation="Horizontal"
-            Margin="0,3,6,0" HorizontalAlignment="Right">
-            <ComboBox
-            x:Name="cbx_Source"
-            Width="116"
-            Padding="2"
+            Margin="0,3,6,0"
             HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            IsTabStop="False"
-            SelectedIndex="0" />
+            Orientation="Horizontal">
+            <ComboBox
+                x:Name="cbx_Source"
+                Width="116"
+                Padding="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                IsTabStop="False"
+                SelectedIndex="0" />
         </StackPanel>
-        <Viewbox 
-            Margin="6"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Stretch"
+
+        <Grid
             Grid.Row="1"
             Grid.RowSpan="2"
             Grid.Column="0"
-            Grid.ColumnSpan="2">
-            <Grid VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Image
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Image
                 x:Name="img_cover"
                 Grid.Column="0"
-                MinHeight="175"
                 MinWidth="175"
-                MaxHeight="175"
+                MinHeight="175"
                 MaxWidth="175"
+                MaxHeight="175"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 Visibility="Hidden" />
-
-                <TextBlock
-                    Grid.Column="1"
-                x:Name="TxtblockLiveoutput"
-                    MaxWidth="500"
-                Padding="10"
+            <Viewbox
+                Grid.Column="1"
+                Margin="6"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
-                TextWrapping="Wrap" />
+                VerticalAlignment="Stretch">
+                <TextBlock
+                    x:Name="TxtblockLiveoutput"
+                    MaxWidth="500"
+                    Padding="10"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
+                    TextWrapping="Wrap" />
+            </Viewbox>
 
-            </Grid>
-        </Viewbox>
+        </Grid>
         <StackPanel
             Grid.Row="2"
             Grid.Column="0"
@@ -328,15 +376,20 @@
             Margin="0,0,16,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
             BorderThickness="0"
             Click="BtnPaypal_Click"
             Cursor="Hand"
-            Style="{DynamicResource MahApps.Styles.Button.Dialogs}" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+            Foreground="White"
+            Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
             <Button.Content>
-                <Border CornerRadius="5"
-                        Padding="10,3"
-                        Background="#FFFF5E5B" Cursor="Hand">
-                    <StackPanel Orientation="Horizontal" >
+                <Border
+                    Padding="10,3"
+                    Background="#FFFF5E5B"
+                    CornerRadius="5"
+                    Cursor="Hand">
+                    <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
                         <TextBlock VerticalAlignment="Center" Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" />
                     </StackPanel>
@@ -369,16 +422,16 @@
             </Button.Content>
         </Button>
         <DockPanel
-            HorizontalAlignment="Stretch"
             x:Name="sb_Main"
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Height="20"
             Margin="0"
-            LastChildFill="True"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
             Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            LastChildFill="True"
             ScrollViewer.CanContentScroll="True"
             UseLayoutRounding="False">
             <StatusBarItem Padding="3,0,0,0" Background="{DynamicResource MahApps.Brushes.Control.Background}">

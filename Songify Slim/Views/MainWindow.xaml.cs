@@ -25,7 +25,6 @@ using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
-using Button = System.Windows.Controls.Button;
 using ContextMenu = System.Windows.Forms.ContextMenu;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -178,9 +177,20 @@ namespace Songify_Slim.Views
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
         {
-            // Opens the 'Settings'-Window
-            Window_Settings sW = new() { Top = Top, Left = Left };
-            sW.ShowDialog();
+            // If a window of type Window_Settings is already open, focus that instead of opening a new one
+            if (IsWindowOpen<Window_Settings>())
+            {
+                Window_Settings wS = Application.Current.Windows.OfType<Window_Settings>().First();
+                wS.Focus();
+                wS.Activate();
+            }
+            else
+            {
+
+                // Opens the 'Settings'-Window
+                Window_Settings sW = new() { Top = Top, Left = Left };
+                sW.Show();
+            }
         }
 
         private void BtnTwitch_Click(object sender, RoutedEventArgs e)
@@ -328,138 +338,6 @@ namespace Songify_Slim.Views
             Settings.PosY = Top;
         }
 
-        //private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
-        //{
-        //    GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
-        //    if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
-        //    {
-        //        Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-        //    }
-
-        //    SetIconColors();
-
-        //    Settings.MsgLoggingEnabled = false;
-
-        //    // Add sources to combobox
-        //    AddSourcesToSourceBox();
-
-        //    // Create systray menu and icon and show it
-        //    CreateSystrayIcon();
-
-        //    // set the current theme
-        //    ThemeHandler.ApplyTheme();
-
-        //    // get the software version from assembly
-        //    Assembly assembly = Assembly.GetExecutingAssembly();
-        //    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-        //    GlobalObjects.AppVersion = fvi.FileVersion;
-
-        //    // check for update
-        //    CheckForUpdates();
-
-        //    // set the cbx index to the correct source
-        //    cbx_Source.SelectedIndex = Settings.Player;
-        //    _selectedSource = cbx_Source.SelectedValue.ToString();
-        //    cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
-
-        //    // text in the bottom right
-        //    LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-
-        //    if (_selectedSource == PlayerType.SpotifyWeb)
-        //    {
-        //        if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
-        //            TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
-        //        else
-        //            await SpotifyApiHandler.DoAuthAsync();
-
-        //        img_cover.Visibility = Visibility.Visible;
-        //    }
-        //    else
-        //    {
-        //        img_cover.Visibility = Visibility.Hidden;
-        //    }
-        //    if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
-        //    if (Settings.OpenQueueOnStartup) OpenQueue();
-        //    if (Settings.TwAutoConnect)
-        //    {
-        //        TwitchHandler.MainConnect();
-        //        TwitchHandler.BotConnect();
-        //    }
-        //    if (Settings.AutoClearQueue)
-        //    {
-        //        GlobalObjects.ReqList.Clear();
-        //        dynamic payload = new
-        //        {
-        //            uuid = Settings.Uuid,
-        //            key = Settings.AccessKey
-        //        };
-        //        await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
-        //        //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
-        //    }
-
-        //    if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
-        //        await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Main);
-        //    if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
-        //        await TwitchHandler.InitializeApi(TwitchHandler.TwitchAccount.Bot);
-        //    await SendTelemetry();
-        //    Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-        //    // automatically start fetching songs
-        //    SetFetchTimer();
-
-        //    Logger.LogStr($"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
-        //    // if location is in AppData\Local\Temp or location contains Songify.zip or is in a System folder, Notify the user
-
-        //    if (Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!.Contains("Songify.zip"))
-        //    {
-        //        MessageBox.Show(
-        //            "Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.",
-        //            "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-        //        Application.Current.Shutdown();
-        //    }
-        //    if (Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!.Contains(@"C:\Program Files") ||
-        //        Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!.Contains(@"C:\Program Files (x86)") ||
-        //        Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!.Contains(@"C:\ProgramData"))
-        //    {
-        //        //Try to save a file at the current location, if we have permission to write / read files here don't do aynthing, else show the messagebox
-        //        try
-        //        {
-        //            File.WriteAllText(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/test.txt", @"test");
-        //            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/test.txt");
-        //        }
-        //        catch (Exception)
-        //        {
-        //            MessageBox.Show(
-        //                "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
-        //                "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-        //            Application.Current.Shutdown();
-        //        }
-        //    }
-
-        //    if (!Settings.DonationReminder)
-        //    {
-        //        GrdDisclaimer.Visibility = Visibility.Visible;
-        //        _disclaimerTimer = new DispatcherTimer
-        //        {
-        //            Interval = TimeSpan.FromSeconds(1)
-        //        };
-        //        _disclaimerTimer.Tick += DisclaimerTimerOnTick;
-        //        _disclaimerTimer.Start();
-        //        BtnDisclaimerClose.Visibility = Visibility.Visible;
-        //        TbDisclaimerDismiss.Text = "This message will disappear in 5 seconds";
-        //    }
-
-        //    if (!Settings.UpdateRequired) return;
-        //    List<int> userLevels = new();
-        //    for (int i = 0; i <= Settings.TwSrUserLevel; i++)
-        //    {
-        //        userLevels.Add(i);
-        //    }
-        //    if (Settings.UserLevelsCommand.Count == 0) Settings.UserLevelsCommand = userLevels;
-        //    if (Settings.UserLevelsReward.Count == 0) Settings.UserLevelsReward = userLevels;
-        //    OpenPatchNotes();
-        //    Settings.UpdateRequired = false;
-        //}
-
         private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
             InitialSetup();
@@ -563,7 +441,7 @@ namespace Songify_Slim.Views
             Logger.LogStr($"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
 
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            if (assemblyLocation != null && assemblyLocation.Contains("Songify.zip"))
+            if (assemblyLocation != null && assemblyLocation.Contains(".zip"))
             {
                 MessageBox.Show("Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Application.Current.Shutdown();
@@ -650,7 +528,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private static void CheckForUpdates()
+        private void CheckForUpdates()
         {
             AutoUpdater.Mandatory = false;
             AutoUpdater.UpdateMode = Mode.Normal;
@@ -659,14 +537,18 @@ namespace Songify_Slim.Views
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
             AutoUpdater.ReportErrors = true;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+            LblStatus.Content = "Checking for update...";
+            Logger.LogStr("UPDATER: Checking for update...");
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
                 : $"{GlobalObjects.BaseUrl}/update.xml");
         }
 
-        private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {
-            Debug.Write(args);
+            Logger.LogStr($"UPDATER: Current version {args.InstalledVersion}");
+            Logger.LogStr($"UPDATER: Newest update  {args.CurrentVersion}");
+            LblStatus.Content = "";
         }
 
         private void CreateSystrayIcon()
