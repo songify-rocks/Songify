@@ -17,9 +17,9 @@
         CornerRadius="10">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -27,14 +27,14 @@
             </Grid.RowDefinitions>
             <StackPanel
                 Grid.Row="0"
-                Grid.Column="0"
+                Grid.Column="1"
                 Orientation="Horizontal">
                 <TextBlock Text="Date: " />
                 <TextBlock x:Name="TbDate" />
             </StackPanel>
             <StackPanel
                 Grid.Row="0"
-                Grid.Column="1"
+                Grid.Column="0"
                 Orientation="Horizontal">
                 <TextBlock Text="Severity: " />
                 <Border
@@ -58,7 +58,9 @@
                 Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Margin="6" />
+                Margin="6"
+                TextAlignment="Justify"
+                TextWrapping="Wrap" />
         </Grid>
     </Border>
 </UserControl>

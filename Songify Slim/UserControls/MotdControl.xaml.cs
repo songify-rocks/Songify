@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.UserControls
 {
@@ -26,7 +27,7 @@ namespace Songify_Slim.UserControls
             InitializeComponent();
             TbAuthor.Text = motd.Author;
             TbDate.Text = motd.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
-            TbMessage.Text = motd.MessageText;
+            TbMessage.Text = IOManager.InterpretEscapeCharacters(motd.MessageText);
             TbSeverity.Text = motd.Severity;
 
             Brush severitybrush = motd.Severity switch
