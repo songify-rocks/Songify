@@ -72,7 +72,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
         public Tuple<ResponseInfo, T> DownloadJson<T>(string url, Dictionary<string, string> headers = null)
         {
-            Debug.WriteLine($"called: {url}");
 
             Tuple<ResponseInfo, string> response = Download(url, headers);
             try
@@ -90,7 +89,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
 
         public async Task<Tuple<ResponseInfo, T>> DownloadJsonAsync<T>(string url, Dictionary<string, string> headers = null)
         {
-            Debug.WriteLine($"called: {url}");
             Tuple<ResponseInfo, string> response = await DownloadAsync(url, headers).ConfigureAwait(false);
 
             try

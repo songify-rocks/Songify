@@ -525,6 +525,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\BotResponseItem.cs" />
+    <Compile Include="Models\Motd.cs" />
     <Compile Include="Models\QueueItem.cs" />
     <Compile Include="Properties\Resources.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -545,6 +546,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.pt-PT.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\MotdControl.xaml.cs">
+      <DependentUpon>MotdControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UC_AccountItem.xaml.cs">
       <DependentUpon>UC_AccountItem.xaml</DependentUpon>
@@ -705,6 +709,10 @@
     <Compile Include="Views\Window_Queue.xaml.cs">
       <DependentUpon>Window_Queue.xaml</DependentUpon>
     </Compile>
+    <Page Include="UserControls\MotdControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\UC_AccountItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

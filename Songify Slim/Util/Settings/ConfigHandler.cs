@@ -705,7 +705,7 @@ namespace Songify_Slim.Util.Settings
         public bool AppendSpacesSplitFiles { get; set; } = false;
         public int FontSize { get; set; } = 22;
         public int FontsizeQueue { get; set; } = 12;
-        public string BaseUrl { get; set; } = "https://songify.overcode.tv";
+        public string BaseUrl { get; set; } = "https://songify.rocks";
     }
 
     public class Config

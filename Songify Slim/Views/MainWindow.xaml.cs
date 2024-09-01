@@ -18,9 +18,13 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 using System.Windows.Threading;
+using MahApps.Metro.IconPacks;
+using Songify_Slim.UserControls;
 using Unosquare.Swan;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
@@ -29,6 +33,7 @@ using ContextMenu = System.Windows.Forms.ContextMenu;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 using Timer = System.Timers.Timer;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -42,6 +47,7 @@ namespace Songify_Slim.Views
         private bool _forceClose;
         private CancellationTokenSource _sCts;
         private DispatcherTimer _disclaimerTimer = new();
+        private readonly DispatcherTimer _motdTimer = new();
         private int _secondsRemaining = 4;
         private readonly ContextMenu _contextMenu = new();
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
@@ -341,17 +347,70 @@ namespace Songify_Slim.Views
         private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
         {
             InitialSetup();
-
             SetupUiAndThemes();
+            CheckAndNotifyConfigurationIssues();
+            SetupDisclaimer();
 
             await HandleSpotifyInitializationAsync();
             await HandleTwitchInitializationAsync();
-
-            CheckAndNotifyConfigurationIssues();
-
-            SetupDisclaimer();
-
             await FinalSetupAndUpdatesAsync();
+            SetupMotdTimer();
+        }
+
+        private async void SetupMotdTimer()
+        {
+            _motdTimer.Interval = TimeSpan.FromMinutes(5);
+            _motdTimer.Tick += async (o, args) =>
+            {
+                SetModts();
+            };
+            _motdTimer.Start();
+            SetModts();
+        }
+
+        private async void SetModts()
+        {
+            List<Motd> motds = await WebHelper.GetMotd();
+            if (motds == null || motds.Count == 0)
+            {
+                PnlMotds.Children.Clear();
+                Badge.Badge = null;
+                badgeIcon.Kind = PackIconBootstrapIconsKind.Bell;
+                return;
+            }
+
+            Badge.Badge = motds.Count;
+            badgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
+
+            if (motds.Any(motd => motd.Severity == "High"))
+            {
+                Badge.BadgeBackground = new SolidColorBrush(Colors.IndianRed);
+            }
+            else if (motds.Any(motd => motd.Severity == "Medium"))
+            {
+                Badge.BadgeBackground = new SolidColorBrush(Colors.Orange);
+            }
+            else
+                Badge.BadgeBackground = new SolidColorBrush(Colors.DarkGray);
+
+            PnlMotds.Children.Clear();
+            for (int i = 0; i < motds.Count; i++)
+            {
+                // Add the MotdControl
+                PnlMotds.Children.Add(new MotdControl(motds[i]));
+
+                // Add a spacer if it's not the last item
+                if (i < motds.Count - 1)
+                {
+                    PnlMotds.Children.Add(new Rectangle
+                    {
+                        Height = 2,
+                        Fill = Brushes.White,
+                        Margin = new Thickness(0, 5, 0, 5) // Optional: adjust spacing around the line
+                    });
+                }
+            }
+
         }
 
         private void InitialSetup()
@@ -535,20 +594,10 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            AutoUpdater.ReportErrors = true;
-            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             LblStatus.Content = "Checking for update...";
-            Logger.LogStr("UPDATER: Checking for update...");
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
                 : $"{GlobalObjects.BaseUrl}/update.xml");
-        }
-
-        private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
-        {
-            Logger.LogStr($"UPDATER: Current version {args.InstalledVersion}");
-            Logger.LogStr($"UPDATER: Newest update  {args.CurrentVersion}");
-            LblStatus.Content = "";
         }
 
         private void CreateSystrayIcon()
@@ -777,11 +826,6 @@ namespace Songify_Slim.Views
                     FetchTimer(Settings.ChromeFetchRate * 1000);
                     break;
 
-                //case PlayerType.Nightbot:
-                //    // Nightbot
-                //    FetchTimer(3000);
-                //    break;
-
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
                     FetchTimer(Settings.UseOwnApp ? 2000 : 20000);
@@ -909,6 +953,27 @@ namespace Songify_Slim.Views
         private void Mi_Update_OnClick(object sender, RoutedEventArgs e)
         {
             CheckForUpdates();
+        }
+
+        private void Mi_Motd_Click(object sender, RoutedEventArgs e)
+        {
+            SetModts();
+        }
+
+        private void BtnMotd_Click(object sender, RoutedEventArgs e)
+        {
+            SetModts();
+            FlyMotd.IsOpen = !FlyMotd.IsOpen;
+        }
+
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            FlyMotd.Width = this.ActualWidth;
+        }
+
+        private void BtnFlyOutClose_OnClick(object sender, RoutedEventArgs e)
+        {
+            FlyMotd.IsOpen = false;
         }
     }
 }

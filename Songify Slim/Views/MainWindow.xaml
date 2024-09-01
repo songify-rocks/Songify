@@ -23,8 +23,10 @@
     ResizeMode="CanResizeWithGrip"
     SaveWindowPosition="True"
     ShowDialogsOverTitleBar="False"
+    SizeChanged="MainWindow_OnSizeChanged"
     StateChanged="MetroWindowStateChanged"
     TextOptions.TextFormattingMode="Display"
+    WindowStartupLocation="Manual"
     mc:Ignorable="d">
     <controls:MetroWindow.Resources>
         <Style
@@ -90,6 +92,41 @@
             </Setter>
         </Style>
         <Style BasedOn="{StaticResource NewCustomMessageDialogStyle}" TargetType="{x:Type dialog:MessageDialog}" />
+        <!--  Custom Flyout Header Template with Close Button  -->
+        <ControlTemplate x:Key="CustomFlyoutHeaderTemplate" TargetType="controls:Flyout">
+            <Grid
+                Height="30"
+                VerticalAlignment="Top"
+                Background="{DynamicResource MahApps.Brushes.FlyoutTitleBackground}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Header Text  -->
+                <TextBlock
+                    Grid.Column="0"
+                    Padding="5"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource MahApps.Brushes.FlyoutTitleForeground}"
+                    Text="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}" />
+
+                <!--  Close Button  -->
+                <Button
+                    Grid.Column="1"
+                    Width="20"
+                    Height="20"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderBrush="{x:Null}"
+                    Command="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToCloseFlyoutCommandConverter}}"
+                    Content="x"
+                    Foreground="{DynamicResource MahApps.Brushes.FlyoutTitleForeground}" />
+            </Grid>
+        </ControlTemplate>
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands ShowSeparators="False">
@@ -294,7 +331,6 @@
                 <MenuItem Click="BtnMenuViewConsole_Click" Header="{x:Static local:Resources.mw_menu_Console}" />
                 <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
             </MenuItem>
-
         </Menu>
         <StackPanel
             Grid.Row="0"
@@ -310,7 +346,77 @@
                 VerticalAlignment="Top"
                 IsTabStop="False"
                 SelectedIndex="0" />
+            <controls:Badged
+                x:Name="Badge"
+                Margin="12,0,8,0"
+                Badge=""
+                BadgeFontSize="12">
+                <Button
+                    Width="26"
+                    Height="26"
+                    Click="BtnMotd_Click"
+                    Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
+                    <Button.Content>
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <iconPacks:BootstrapIcons
+                                x:Name="badgeIcon"
+                                Width="12"
+                                Height="12"
+                                Kind="BellFill"
+                                Spin="False"
+                                SpinAutoReverse="False" />
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </controls:Badged>
         </StackPanel>
+        <Grid
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            ZIndex="100">
+            <controls:Flyout
+                x:Name="FlyMotd"
+                Width="{Binding ElementName=MainWindow, Path=ActualWidth}"
+                Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                Header="Notifications"
+                IsOpen="False"
+                Position="Right">
+                <controls:Flyout.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid Height="28">
+                            <TextBlock
+                                Padding="5"
+                                VerticalAlignment="Center"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Text="{Binding}" />
+                            <Button
+                                x:Name="BtnFlyOutClose"
+                                Width="28"
+                                Height="28"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Click="BtnFlyOutClose_OnClick"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                                <Button.Content>
+                                    <iconPacks:FontAwesome Kind="ArrowRightSolid" />
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </controls:Flyout.HeaderTemplate>
+                <ScrollViewer Margin="8">
+                    <StackPanel x:Name="PnlMotds" />
+                </ScrollViewer>
+            </controls:Flyout>
+        </Grid>
 
         <Grid
             Grid.Row="1"
@@ -318,7 +424,8 @@
             Grid.Column="0"
             Grid.ColumnSpan="2"
             HorizontalAlignment="Left"
-            VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            ZIndex="-1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -544,7 +651,8 @@
             </StatusBarItem>
             <Border
                 Height="20"
-                Padding="3,0,12,0"
+                Margin="5,0,0,0"
+                Padding="5,0,12,0"
                 BorderThickness="1,0,0,0"
                 CornerRadius="10,0,0,10">
                 <Border.Style>

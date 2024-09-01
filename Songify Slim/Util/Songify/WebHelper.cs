@@ -2,15 +2,17 @@
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Songify_Slim.Views;
 using System.Windows;
+using Newtonsoft.Json.Linq;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -21,7 +23,7 @@ namespace Songify_Slim.Util.Songify
         /// </summary>
 
         private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
-        
+
         internal enum RequestMethod
         {
             Get,
@@ -178,7 +180,7 @@ namespace Songify_Slim.Util.Songify
         public static void UploadHistory(string currSong, int unixTimestamp)
         {
             string song = GlobalObjects.CurrentSong == null ? currSong : $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}";
-            
+
             dynamic payload = new
             {
                 id = Settings.Settings.Uuid,
@@ -199,5 +201,26 @@ namespace Songify_Slim.Util.Songify
                 return content;
             }
         }
+
+        public static async Task<List<Motd>> GetMotd()
+        {
+            string result = await ApiClient.Get("motd", "");
+            if (string.IsNullOrEmpty(result))
+            {
+                return null;
+            }
+            try
+            {
+                List<Motd> motds = JsonConvert.DeserializeObject<List<Motd>>(result);
+                return motds.Count == 0 ? null : motds;
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
+            return null;
+        }
+
     }
 }

@@ -629,6 +629,10 @@ namespace Songify_Slim.Util.Songify
                         IOManager.WriteOutput(songPath, Settings.Settings.CustomPauseText);
                         if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IOManager.DownloadCover(null, coverPath);
                         if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
+
+                        if (Settings.Settings.Upload)
+                            WebHelper.UploadSong(Settings.Settings.CustomPauseText);
+
                         break;
                     case Enums.PauseOptions.ClearAll:
                         if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) IOManager.DownloadCover(null, coverPath);

@@ -111,6 +111,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
                 {
                     if (!siteResponse.RequestMessage.RequestUri.ToString().Contains(GlobalObjects.AuthUrl)) return null;
                     General.Logger.LogStr("SPOTIFY: Issues Authentication, trying alternate url");
+                    await Task.Delay(5000);
                     await SpotifyApiHandler.DoAuthAsync(true);
                     return null;
                 }

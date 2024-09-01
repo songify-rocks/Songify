@@ -46,6 +46,7 @@ namespace Songify_Slim.Util.Songify
         public static async Task DoAuthAsync(bool altUrl = false)
         {
             string url = altUrl ? GlobalObjects.AltAuthUrl : GlobalObjects.AuthUrl;
+            Debug.WriteLine(url);
             if (Settings.Settings.UseOwnApp)
             {
                 _auth = new TokenSwapAuth(
