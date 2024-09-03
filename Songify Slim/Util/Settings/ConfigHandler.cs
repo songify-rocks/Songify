@@ -271,6 +271,8 @@ namespace Songify_Slim.Util.Settings
                                 FontSize = 22,
                                 FontsizeQueue = 12,
                                 BaseUrl = "https://songify.overcode.tv",
+                                LastShownMotdId = 0,
+                                ReadNotificationIds = [],
                             };
                         }
                         break;
@@ -706,6 +708,8 @@ namespace Songify_Slim.Util.Settings
         public int FontSize { get; set; } = 22;
         public int FontsizeQueue { get; set; } = 12;
         public string BaseUrl { get; set; } = "https://songify.rocks";
+        public int LastShownMotdId { get; set; }
+        public List<int> ReadNotificationIds { get; set; } = [];
     }
 
     public class Config

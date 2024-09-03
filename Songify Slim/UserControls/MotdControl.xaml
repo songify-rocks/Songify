@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MinWidth="588"
@@ -51,6 +52,22 @@
                 Orientation="Horizontal">
                 <TextBlock Text="Author: " />
                 <TextBlock x:Name="TbAuthor" />
+                <Button
+                    x:Name="btnRead"
+                    Margin="6,0"
+                    Click="BtnRead_OnClick"
+                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
+                    ToolTip="Mark As Read">
+                    <Button.Content>
+                        <iconPacks:Material
+                            x:Name="badgeIcon"
+                            Width="12"
+                            Height="12"
+                            Kind="Read"
+                            Spin="False"
+                            SpinAutoReverse="False" />
+                    </Button.Content>
+                </Button>
             </StackPanel>
 
             <TextBlock

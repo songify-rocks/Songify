@@ -23,6 +23,31 @@ namespace Songify_Slim.Util.Settings
         public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
         public static int FontsizeQueue { get => GetFontSizeQueue(); set => SetFontSizeQueue(value); }
         public static string BaseUrl { get => GetBaseUrl(); set => SetBaseUrl(value); }
+        public static int LastShownMotdId { get => GetLastShownMotdId(); set => SetLastShownMotdId(value); }
+        public static List<int> ReadNotificationIds { get => GetReadNotificationIds(); set => SetReadNotificationIds(value); }
+
+        private static void SetReadNotificationIds(List<int> value)
+        {
+            _currentConfig.AppConfig.ReadNotificationIds = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static List<int> GetReadNotificationIds()
+        {
+            return _currentConfig.AppConfig.ReadNotificationIds;
+        }
+
+        private static void SetLastShownMotdId(int value)
+        {
+            _currentConfig.AppConfig.LastShownMotdId = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static int GetLastShownMotdId()
+        {
+            return _currentConfig.AppConfig.LastShownMotdId;
+        }
+
 
         private static void SetBaseUrl(string value)
         {
@@ -1080,6 +1105,8 @@ namespace Songify_Slim.Util.Settings
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 BaseUrl = GetBaseUrl(),
+                LastShownMotdId = GetLastShownMotdId(),
+                ReadNotificationIds = GetReadNotificationIds()
             };
 
             return new Configuration

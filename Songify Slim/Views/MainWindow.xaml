@@ -9,6 +9,7 @@
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:songifySlim="clr-namespace:Songify_Slim"
+    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="Songify"
     Width="588"
     Height="285"
@@ -397,18 +398,37 @@
                                 FontSize="20"
                                 FontWeight="Bold"
                                 Text="{Binding}" />
-                            <Button
-                                x:Name="BtnFlyOutClose"
-                                Width="28"
-                                Height="28"
+                            <StackPanel
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
-                                Click="BtnFlyOutClose_OnClick"
-                                Style="{DynamicResource MahApps.Styles.Button.Circle}">
-                                <Button.Content>
-                                    <iconPacks:FontAwesome Kind="ArrowRightSolid" />
-                                </Button.Content>
-                            </Button>
+                                Orientation="Horizontal">
+                                <Button
+                                    x:Name="BtnFlyOutAllread"
+                                    Width="40"
+                                    Height="28"
+                                    Margin="10,0"
+                                    Click="BtnFlyOutAllread_OnClick"
+                                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
+                                    ToolTip="Mark All As Read">
+                                    <Button.Content>
+                                        <iconPacks:Material
+                                            Width="18"
+                                            Height="18"
+                                            Kind="Read" />
+                                    </Button.Content>
+                                </Button>
+                                <Button
+                                    x:Name="BtnFlyOutClose"
+                                    Width="28"
+                                    Height="28"
+                                    Margin="0"
+                                    Click="BtnFlyOutClose_OnClick"
+                                    Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                                    <Button.Content>
+                                        <iconPacks:FontAwesome Kind="ArrowRightSolid" />
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </controls:Flyout.HeaderTemplate>
@@ -417,7 +437,6 @@
                 </ScrollViewer>
             </controls:Flyout>
         </Grid>
-
         <Grid
             Grid.Row="1"
             Grid.RowSpan="2"
@@ -443,7 +462,7 @@
             <Viewbox
                 Grid.Column="1"
                 Margin="6"
-                HorizontalAlignment="Left"
+                HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch">
                 <TextBlock
                     x:Name="TxtblockLiveoutput"
@@ -451,8 +470,11 @@
                     Padding="10"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    SnapsToDevicePixels="True"
                     Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
-                    TextWrapping="Wrap" />
+                    TextOptions.TextFormattingMode="Display"
+                    TextWrapping="Wrap"
+                    UseLayoutRounding="True" />
             </Viewbox>
 
         </Grid>

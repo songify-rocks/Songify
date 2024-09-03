@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,8 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 using Timer = System.Timers.Timer;
+using Microsoft.Toolkit.Uwp.Notifications;
+using TwitchLib.Api.Helix;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -57,7 +60,7 @@ namespace Songify_Slim.Views
         public NotifyIcon NotifyIcon = new();
         public SongFetcher Sf = new();
         public string SongArtist, SongTitle;
-
+        public List<Motd> Motds;
         #endregion Variables
 
         private static async void TelemetryTask(object sender, ElapsedEventArgs e)
@@ -370,23 +373,65 @@ namespace Songify_Slim.Views
 
         private async void SetModts()
         {
-            List<Motd> motds = await WebHelper.GetMotd();
-            if (motds == null || motds.Count == 0)
+            Motds = await WebHelper.GetMotd();
+            if (Motds == null || Motds.Count == 0)
             {
                 PnlMotds.Children.Clear();
-                Badge.Badge = null;
+                Badge.Badge = null!;
                 badgeIcon.Kind = PackIconBootstrapIconsKind.Bell;
                 return;
             }
 
-            Badge.Badge = motds.Count;
+            try
+            {
+                // compare motds ids with Settings.ReadNotificationIds and if there are new motds, show the badge
+                if (Settings.ReadNotificationIds != null)
+                {
+                    List<Motd> unreadMotds = Motds.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
+                    if (unreadMotds.Count > 0)
+                    {
+                        Badge.Badge = unreadMotds.Count;
+                    }
+                    else
+                    {
+                        Badge.Badge = null!;
+                    }
+                }
+                else if (Badge.Badge.ToString() != Motds.Count.ToString())
+                {
+                    Badge.Badge = Motds.Count;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
             badgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
 
-            if (motds.Any(motd => motd.Severity == "High"))
+            if (Motds.Any(motd => motd.Severity == "High"))
             {
                 Badge.BadgeBackground = new SolidColorBrush(Colors.IndianRed);
+                Motd highSeverityMotd = Motds.First(motd => motd.Severity == "High");
+                string msg = highSeverityMotd.MessageText;
+                if (msg.Length > 190)
+                    msg = msg.Substring(0, 190) + "...";
+                if (highSeverityMotd != null)
+                {
+                    if (Settings.LastShownMotdId != highSeverityMotd.Id)
+                    {
+                        new ToastContentBuilder()
+                            .AddArgument("msgId", highSeverityMotd.Id)
+                            .AddText($"{highSeverityMotd.Author} from Songify")
+                            .AddText(msg)
+                            .AddAttributionText(highSeverityMotd.CreatedAtDateTime.ToString())
+                            .Show(); // Not seeing the Show() method? Make sure you have version 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
+                        // store the already shown motd id and don't show it again
+                        Settings.LastShownMotdId = highSeverityMotd.Id;
+                    }
+                }
             }
-            else if (motds.Any(motd => motd.Severity == "Medium"))
+            else if (Motds.Any(motd => motd.Severity == "Medium"))
             {
                 Badge.BadgeBackground = new SolidColorBrush(Colors.Orange);
             }
@@ -394,13 +439,13 @@ namespace Songify_Slim.Views
                 Badge.BadgeBackground = new SolidColorBrush(Colors.DarkGray);
 
             PnlMotds.Children.Clear();
-            for (int i = 0; i < motds.Count; i++)
+            for (int i = 0; i < Motds.Count; i++)
             {
                 // Add the MotdControl
-                PnlMotds.Children.Add(new MotdControl(motds[i]));
+                PnlMotds.Children.Add(new MotdControl(Motds[i]));
 
                 // Add a spacer if it's not the last item
-                if (i < motds.Count - 1)
+                if (i < Motds.Count - 1)
                 {
                     PnlMotds.Children.Add(new Rectangle
                     {
@@ -417,7 +462,8 @@ namespace Songify_Slim.Views
         {
             if (Settings.Systray)
                 MinimizeToSysTray();
-
+            // Initialize toast notification system (if needed)
+            ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
             GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
 
             if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
@@ -430,6 +476,75 @@ namespace Songify_Slim.Views
             CreateSystrayIcon();
         }
 
+        private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
+        {
+            // Handle the toast notification activation (e.g., open a specific window or show a message)
+            // Get the arguments string
+            string arguments = e.Argument;
+
+            // Convert the arguments to a dictionary
+            Dictionary<string, string> argsDictionary = ParseArguments(arguments);
+
+            if (!argsDictionary.TryGetValue("msgId", out string value1)) return;
+            if (!int.TryParse(value1, out int intValue)) return;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                try
+                {
+                    // Ensure Motds is not null or empty
+                    if (Motds == null || !Motds.Any())
+                    {
+                        throw new InvalidOperationException("Motds collection is null or empty.");
+                    }
+
+                    // Attempt to find the Motd
+                    Motd motd = Motds.FirstOrDefault(o => o.Id == intValue);
+
+                    // Check if motd is found
+                    if (motd == null)
+                    {
+                        throw new InvalidOperationException($"No Motd found with Id {intValue}.");
+                    }
+
+                    // Create and show the dialog
+                    WindowUniversalDialog wUd = new WindowUniversalDialog(motd, "Notification");
+                    wUd.Show();
+                }
+                catch (Exception ex)
+                {
+                    // Handle or log the exception
+                    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+            });
+        }
+
+        // Method to parse arguments string to dictionary
+        private Dictionary<string, string> ParseArguments(string arguments)
+        {
+            var argsDictionary = new Dictionary<string, string>();
+
+            // Check if arguments are not null or empty
+            if (!string.IsNullOrEmpty(arguments))
+            {
+                // Split the arguments string by '&' to separate key-value pairs
+                string[] pairs = arguments.Split('&');
+
+                foreach (string pair in pairs)
+                {
+                    // Split each pair by '=' to get the key and value
+                    string[] keyValue = pair.Split('=');
+
+                    if (keyValue.Length == 2)
+                    {
+                        // Add the key-value pair to the dictionary
+                        argsDictionary[keyValue[0]] = keyValue[1];
+                    }
+                }
+            }
+
+            return argsDictionary;
+        }
         private void SetupUiAndThemes()
         {
             SetIconColors();
@@ -594,7 +709,7 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            LblStatus.Content = "Checking for update...";
+            Logger.LogStr("Checking for update...");
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
                 : $"{GlobalObjects.BaseUrl}/update.xml");
@@ -974,6 +1089,27 @@ namespace Songify_Slim.Views
         private void BtnFlyOutClose_OnClick(object sender, RoutedEventArgs e)
         {
             FlyMotd.IsOpen = false;
+        }
+
+        private void BtnFlyOutAllread_OnClick(object sender, RoutedEventArgs e)
+        {
+            List<int> readIds = Settings.ReadNotificationIds ?? [];
+            foreach (Motd motd in Motds.Where(motd => !readIds.Contains(motd.Id)))
+            {
+                readIds.Add(motd.Id);
+            }
+            Settings.ReadNotificationIds = readIds;
+
+            foreach (UIElement pnlMotdsChild in PnlMotds.Children)
+            {
+                ((MotdControl)pnlMotdsChild).btnRead.Content = new PackIconMaterial()
+                {
+                    Kind = PackIconMaterialKind.Check,
+                    Width = 12,
+                    Height = 12,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+            }
         }
     }
 }
