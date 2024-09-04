@@ -385,7 +385,7 @@
             <controls:Flyout
                 x:Name="FlyMotd"
                 Width="{Binding ElementName=MainWindow, Path=ActualWidth}"
-                Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                 Header="Notifications"
                 IsOpen="False"
                 Position="Right">
@@ -409,7 +409,8 @@
                                     Margin="10,0"
                                     Click="BtnFlyOutAllread_OnClick"
                                     Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
-                                    ToolTip="Mark All As Read">
+                                    ToolTip="Mark All As Read"
+                                    Visibility="Hidden">
                                     <Button.Content>
                                         <iconPacks:Material
                                             Width="18"
@@ -690,17 +691,24 @@
                     </Style>
                 </Border.Style>
                 <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
-                    <StatusBarItem x:Name="LblStatus">
+                    <StatusBarItem x:Name="LblStatus" Foreground="{DynamicResource MahApps.Brushes.IdealForeground}">
                         <StatusBar />
                     </StatusBarItem>
                     <StatusBarItem
                         Margin="0,-2,0,-2"
                         Padding="0"
                         HorizontalAlignment="Right"
-                        DockPanel.Dock="Right">
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}">
                         <StackPanel Orientation="Horizontal">
-                            <StatusBarItem x:Name="LblCopyright" Content="Songify v1.1.1-RC1 Copyright ©" />
-                            <StatusBarItem x:Name="LblCopyrightLink" FontStyle="Italic">
+                            <StatusBarItem
+                                x:Name="LblCopyright"
+                                Content="Songify v1.1.1-RC1 Copyright ©"
+                                Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                            <StatusBarItem
+                                x:Name="LblCopyrightLink"
+                                FontStyle="Italic"
+                                Foreground="{DynamicResource MahApps.Brushes.Control.Background}">
                                 <Hyperlink
                                     FontStyle="Normal"
                                     NavigateUri="https://songify.overcode.tv"

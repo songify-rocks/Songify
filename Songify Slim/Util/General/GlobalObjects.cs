@@ -49,7 +49,6 @@ namespace Songify_Slim.Util.General
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
 
-
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
         {

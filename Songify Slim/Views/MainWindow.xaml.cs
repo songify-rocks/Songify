@@ -38,6 +38,7 @@ using Path = System.IO.Path;
 using Timer = System.Timers.Timer;
 using Microsoft.Toolkit.Uwp.Notifications;
 using TwitchLib.Api.Helix;
+using Button = System.Windows.Controls.Button;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -1078,7 +1079,24 @@ namespace Songify_Slim.Views
         private void BtnMotd_Click(object sender, RoutedEventArgs e)
         {
             SetModts();
+            // If any child of pnlMotds as MotdcControl is unread, show the all read button
+            List<int> readIds = Settings.ReadNotificationIds ?? [];
+
+            foreach (UIElement pnlMotdsChild in PnlMotds.Children)
+            {
+                if (pnlMotdsChild is not MotdControl motdControl) continue;
+                if (readIds.Contains(motdControl.Motd.Id)) continue;
+                Button btnFlyOutAllread = GlobalObjects.FindChild<Button>(FlyMotd, "BtnFlyOutAllread");
+                if (btnFlyOutAllread != null)
+                {
+                    // Now you can interact with the button
+                    btnFlyOutAllread.Visibility = Visibility.Visible; // Example usage
+                }
+                return;
+            }
+
             FlyMotd.IsOpen = !FlyMotd.IsOpen;
+
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)

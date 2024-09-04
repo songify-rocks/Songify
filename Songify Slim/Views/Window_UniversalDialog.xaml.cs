@@ -25,7 +25,7 @@ namespace Songify_Slim.Views
         {
             InitializeComponent();
             this.Title = title;
-            this.ContentControl.Content = new MotdControl(motd);
+            this.ContentControl.Content = new MotdControl(motd, true);
         }
     }
 }

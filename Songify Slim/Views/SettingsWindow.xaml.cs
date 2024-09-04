@@ -183,10 +183,10 @@ namespace Songify_Slim.Views
 
             if (SpotifyApiHandler.Spotify != null)
             {
+                PrivateProfile profile = await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
+                LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                 try
                 {
-                    PrivateProfile profile = await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
-                    LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                     BitmapImage bitmap = new();
                     bitmap.BeginInit();
 
@@ -198,12 +198,13 @@ namespace Songify_Slim.Views
 
                     bitmap.EndInit();
                     ImgSpotifyProfile.ImageSource = bitmap;
-                    await LoadSpotifyPlaylists();
                 }
                 catch (Exception ex)
                 {
                     Logger.LogExc(ex);
                 }
+
+                await LoadSpotifyPlaylists();
             }
 
 
