@@ -9,11 +9,10 @@ Are you looking for a way to add some musical magic to your stream? Look no furt
 Songify is packed with features that will help you take your stream to the next level:
 
 - 🎵 Real-Time Song Info: Get the currently playing song and save it to a text file, display in our cloud hosted widget or built your own with the data provided by the internal webserver.
-- 🔊 Streamlined Start-Up: Songify automatically starts with Windows and minimizes to the system tray, so you can focus on your stream without interruption. No worries, there is a setting that enables Songify only when your stream is live!
-- 💬 Seamless Chat Integration: With integration Twitch chat, you can easily share song info and get requests from your viewers in real-time.
-- 🎧 Ultimate Playlist Control: Use Songify's song history and Spotify song requests features to create the ultimate playlist for your stream.
+- 🔊 Spotify song requests: Let your viewers request songs through Spotify, either with channel points or a chat command.
+- 💬 Seamless Chat Integration: Songify comes with a bunch of integrated chat commands to control Spotify, manage the playback queue or get infos about the current playing song.
+- 🎧 Ultimate Playlist Control: Use Songify's playlist features to add all song requests to a dedicated playlist. You can also limit song requests to only allow songs from a selected playlist.
 - 🖼️ Custom Visuals: Download album covers to visually enhance your stream, or use Songify's internal webserver to build custom "now playing" displays that fit your brand and style.
-- 💬 Personalized Pause Text: Keep your audience entertained and engaged with customized pause text.
 - 🎉 And More: Discover even more features and benefits that will make your streaming experience smoother and more fun!
 
 ## Translations

@@ -160,10 +160,12 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-                            if (wintitle.Contains(" - "))
-                            {
-                                artist = wintitle.Split(Convert.ToChar("-"))[0].Trim();
-                                title = wintitle.Split(Convert.ToChar("-"))[1].Trim();
+                            int dashIndex = wintitle.IndexOf(" - ");
+                            if (dashIndex != -1)
+                            {   
+                                artist = wintitle.Substring(0, dashIndex).Trim();
+                                dashIndex += 3;
+                                title = wintitle.Substring(dashIndex, wintitle.Length - dashIndex).Trim();
                             }
                             trackinfo = new TrackInfo { Artists = artist, Title = title };
                             break;
