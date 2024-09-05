@@ -21,11 +21,11 @@ using Songify_Slim.Views;
 namespace Songify_Slim.UserControls
 {
     /// <summary>
-    /// Interaction logic for MotdControl.xaml
+    /// Interaction logic for PsaControl.xaml
     /// </summary>
-    public partial class MotdControl : UserControl
+    public partial class PsaControl : UserControl
     {
-        public Motd Motd;
+        public PSA Psa;
 
         private readonly PackIconMaterial _readIcon = new()
         {
@@ -35,21 +35,21 @@ namespace Songify_Slim.UserControls
             VerticalAlignment = VerticalAlignment.Center
         };
 
-        public MotdControl(Motd motd, bool byPassLimit = false)
+        public PsaControl(PSA psa, bool byPassLimit = false)
         {
             InitializeComponent();
-            this.Motd = motd;
-            TbAuthor.Text = this.Motd.Author;
-            TbDate.Text = this.Motd.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
-            TbSeverity.Text = this.Motd.Severity;
+            this.Psa = psa;
+            TbAuthor.Text = this.Psa.Author;
+            TbDate.Text = this.Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
+            TbSeverity.Text = this.Psa.Severity;
 
-            TbMessage.Text = IOManager.InterpretEscapeCharacters(this.Motd.MessageText);
+            TbMessage.Text = IOManager.InterpretEscapeCharacters(this.Psa.MessageText);
             if (!byPassLimit)
-                DisplayMessageWithReadMore(IOManager.InterpretEscapeCharacters(this.Motd.MessageText));
+                DisplayMessageWithReadMore(IOManager.InterpretEscapeCharacters(this.Psa.MessageText));
             // if the message is longer than 200 characters, add a "read more" clickable text that opens the message in a new window
 
 
-            Brush severitybrush = this.Motd.Severity switch
+            Brush severitybrush = this.Psa.Severity switch
             {
                 "Low" => Brushes.ForestGreen,
                 "Medium" => Brushes.DarkOrange,
@@ -60,12 +60,12 @@ namespace Songify_Slim.UserControls
             BorderSeverity.BorderBrush = severitybrush;
             BorderSeverity.Background = severitybrush;
 
-            if (this.Motd.Severity == "High")
+            if (this.Psa.Severity == "High")
             {
                 BorderMotd.BorderBrush = severitybrush;
             }
 
-            if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(motd.Id))
+            if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
             {
 
                 btnRead.Content = _readIcon;
@@ -114,7 +114,7 @@ namespace Songify_Slim.UserControls
         private void OpenFullMessageWindow()
         {
             // Create a new window to display the full message
-            WindowUniversalDialog messageWindow = new(Motd, "Notification")
+            WindowUniversalDialog messageWindow = new(Psa, "Notification")
             {
                 Owner = Application.Current.MainWindow,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -127,10 +127,10 @@ namespace Songify_Slim.UserControls
         {
             btnRead.Content = _readIcon;
             List<int> readNotificationIds = Settings.ReadNotificationIds;
-            if (readNotificationIds != null && readNotificationIds.Contains(Motd.Id))
+            if (readNotificationIds != null && readNotificationIds.Contains(Psa.Id))
                 return;
             readNotificationIds ??= [];
-            readNotificationIds.Add(Motd.Id);
+            readNotificationIds.Add(Psa.Id);
             Settings.ReadNotificationIds = readNotificationIds;
 
         }

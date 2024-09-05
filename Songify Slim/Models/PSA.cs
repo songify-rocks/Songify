@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace Songify_Slim.Models
 {
-    public class Motd
+    public class PSA
     {
         public int Id { get; set; }
         public string MessageText { get; set; }

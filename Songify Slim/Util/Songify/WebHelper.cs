@@ -202,7 +202,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static async Task<List<Motd>> GetMotd()
+        public static async Task<List<PSA>> GetPSA()
         {
             string result = await ApiClient.Get("motd", "");
             if (string.IsNullOrEmpty(result))
@@ -211,8 +211,8 @@ namespace Songify_Slim.Util.Songify
             }
             try
             {
-                List<Motd> motds = JsonConvert.DeserializeObject<List<Motd>>(result);
-                return motds.Count == 0 ? null : motds;
+                List<PSA> psas = JsonConvert.DeserializeObject<List<PSA>>(result);
+                return psas.Count == 0 ? null : psas;
             }
             catch (Exception e)
             {

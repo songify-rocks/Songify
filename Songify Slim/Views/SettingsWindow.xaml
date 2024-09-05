@@ -86,7 +86,7 @@
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
                             <ComboBoxItem Content="{x:Static local:Resources.lang_it}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_br}"/>
+                            <ComboBoxItem Content="{x:Static local:Resources.lang_br}" />
                         </ComboBox>
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
@@ -115,28 +115,27 @@
                             Toggled="ChbxMinimizeSystrayChecked" />
                         <StackPanel Grid.Row="4" Orientation="Vertical">
                             <controls:ToggleSwitch
-                            x:Name="ChbxOpenQueueOnStartup"
-                            Width="467"
-                            Height="32"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
-                            ContentPadding="0"
-                            Focusable="False"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            Toggled="ChbxOpenQueueOnStartup_Toggled" />
-                            <controls:ToggleSwitch
-                            x:Name="TglDonationReminder"
+                                x:Name="ChbxOpenQueueOnStartup"
                                 Width="467"
-                            Height="32"
-                            VerticalAlignment="Top"
-                            Content="Disable donation reminder"
-                            ContentPadding="0"
-                            Focusable="False"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            Toggled="TglDonationReminder_OnToggled"
-                            />
+                                Height="32"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
+                                ContentPadding="0"
+                                Focusable="False"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                Toggled="ChbxOpenQueueOnStartup_Toggled" />
+                            <controls:ToggleSwitch
+                                x:Name="TglDonationReminder"
+                                Width="467"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                Content="Disable donation reminder"
+                                ContentPadding="0"
+                                Focusable="False"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                Toggled="TglDonationReminder_OnToggled" />
                         </StackPanel>
 
                         <Label
@@ -158,18 +157,18 @@
                             Minimum="1"
                             NumericInputMode="Numbers"
                             ValueChanged="NudChrome_ValueChanged" />
-                        <controls:ToggleSwitch 
-                            x:Name="TglUseDefaultBrowser" Grid.Row="6"
-                                               Width="467"
-                                               Height="32"
-                                               VerticalAlignment="Top"
-                                               Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
-                                               ContentPadding="0"
-                                               Focusable="False"
-                                               FontFamily="Segoe UI"
-                                               FontSize="12"
-                                               Toggled="TglUseDefaultBrowser_OnToggled"
-                                               />
+                        <controls:ToggleSwitch
+                            x:Name="TglUseDefaultBrowser"
+                            Grid.Row="6"
+                            Width="467"
+                            Height="32"
+                            VerticalAlignment="Top"
+                            Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
+                            ContentPadding="0"
+                            Focusable="False"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            Toggled="TglUseDefaultBrowser_OnToggled" />
                         <Label
                             Grid.Row="7"
                             Padding="0,5,5,5"
@@ -353,10 +352,12 @@
                                 </ContextMenu>
                             </TextBox.ContextMenu>
                         </TextBox>
-                        <Label Grid.Column="0" Content="What to do on pause?" Grid.Row="4" 
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Top"
-                               ></Label>
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Content="What to do on pause?" />
                         <!--<controls:ToggleSwitch
                             x:Name="ChbxCustomPause"
                             Grid.Row="4"
@@ -368,28 +369,32 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxCustompauseChecked" />-->
-                        <StackPanel Orientation="Vertical"
-                                    Grid.Row="4"
-                                    Grid.Column="1">
-                            <ComboBox x:Name="CbPauseOptions"
-                                  Height="26" Margin="0,0,0,6" SelectionChanged="CbPauseOptions_SelectionChanged">
-                                <ComboBoxItem Content="Do Nothing"/>
-                                <ComboBoxItem Content="Use Custom Pause Text"/>
-                                <ComboBoxItem Content="Clear All Output"/>
+                        <StackPanel
+                            Grid.Row="4"
+                            Grid.Column="1"
+                            Orientation="Vertical">
+                            <ComboBox
+                                x:Name="CbPauseOptions"
+                                Height="26"
+                                Margin="0,0,0,6"
+                                SelectionChanged="CbPauseOptions_SelectionChanged">
+                                <ComboBoxItem Content="Do Nothing" />
+                                <ComboBoxItem Content="Use Custom Pause Text" />
+                                <ComboBoxItem Content="Clear All Output" />
                             </ComboBox>
                             <TextBox
-                            x:Name="TxtbxCustompausetext"
-                            Height="26"
-                            VerticalAlignment="Center"
-                            controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
-                            TextChanged="TxtbxCustompausetext_TextChanged"
-                            TextWrapping="Wrap">
+                                x:Name="TxtbxCustompausetext"
+                                Height="26"
+                                VerticalAlignment="Center"
+                                controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
+                                TextChanged="TxtbxCustompausetext_TextChanged"
+                                TextWrapping="Wrap">
                                 <TextBox.Style>
-                                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                                        <Setter Property="IsEnabled" Value="False"/>
+                                    <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+                                        <Setter Property="IsEnabled" Value="False" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="1">
-                                                <Setter Property="IsEnabled" Value="True"/>
+                                                <Setter Property="IsEnabled" Value="True" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -441,8 +446,8 @@
                         <controls:ToggleSwitch
                             x:Name="ChbxSplit"
                             Grid.Row="6"
-                            Grid.ColumnSpan="2"
                             Grid.Column="0"
+                            Grid.ColumnSpan="2"
                             Height="32"
                             HorizontalAlignment="Stretch"
                             Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}"
@@ -451,18 +456,26 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxSplit_Checked" />
-                        <Label Grid.Row="7" Grid.Column="0" Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}" VerticalAlignment="Center"/>
-                        <TextBox  Grid.Row="7" Grid.Column="1" x:Name="TbRequesterPrefix" Height="26" VerticalAlignment="Center" TextChanged="TbRequesterPrefix_TextChanged"/>
-                        <Grid
-                            Grid.Row="3"
-                            Grid.Column="1">
+                        <Label
+                            Grid.Row="7"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}" />
+                        <TextBox
+                            x:Name="TbRequesterPrefix"
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Height="26"
+                            VerticalAlignment="Center"
+                            TextChanged="TbRequesterPrefix_TextChanged" />
+                        <Grid Grid.Row="3" Grid.Column="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <CheckBox
                                 x:Name="ChbxSpaces"
@@ -490,7 +503,15 @@
                                 NumericInputMode="Numbers"
                                 UpDownButtonsWidth="16"
                                 ValueChanged="nud_Spaces_ValueChanged" />
-                            <CheckBox x:Name="ChbxSpacesSplitFiles" Content="Apply to split files too" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0" Margin="0,0,0,6" Checked="ChbxSpacesSplitFiles_Checked" Unchecked="ChbxSpacesSplitFiles_Checked"></CheckBox>
+                            <CheckBox
+                                x:Name="ChbxSpacesSplitFiles"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0,0,0,6"
+                                Checked="ChbxSpacesSplitFiles_Checked"
+                                Content="Apply to split files too"
+                                Unchecked="ChbxSpacesSplitFiles_Checked" />
                         </Grid>
 
                         <Label
@@ -698,15 +719,16 @@
                                     </Grid>
                                 </StackPanel>
                             </DockPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        >
+                            <StackPanel
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Orientation="Horizontal">
                                 <Button
-                                x:Name="BtnLogInTwitch"
-                                Margin="6,0,0,0"
-                                VerticalAlignment="Bottom"
-                                Click="BtnLogInTwitch_Click" Width="160">
+                                    x:Name="BtnLogInTwitch"
+                                    Width="160"
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    Click="BtnLogInTwitch_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:ForkAwesome Kind="Twitch" />
@@ -716,25 +738,26 @@
                                 </Button>
                                 <Button
                                     x:Name="BtnLogInTwitchAlt"
+                                    Height="30"
                                     Margin="6,0,6,0"
                                     VerticalAlignment="Bottom"
-                                    Tag="main"
-                                    Click="BtnLogInTwitchAlt_Click" Height="30">
+                                    Click="BtnLogInTwitchAlt_Click"
+                                    Tag="main">
                                     <Button.Content>
-                                        <TextBlock Text="Doesn't work?"></TextBlock>
+                                        <TextBlock Text="Doesn't work?" />
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal"
-                                        Grid.Row="1"
-                                        Grid.Column="1"
-                            >
+                            <StackPanel
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Orientation="Horizontal">
                                 <Button
-                                x:Name="BtnLogInTwitchBot"
-
-                                Margin="6,0,0,0"
-                                VerticalAlignment="Bottom"
-                                Click="BtnLogInTwitchBot_OnClick" Width="160">
+                                    x:Name="BtnLogInTwitchBot"
+                                    Width="160"
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    Click="BtnLogInTwitchBot_OnClick">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:ForkAwesome Kind="Twitch" />
@@ -744,12 +767,13 @@
                                 </Button>
                                 <Button
                                     x:Name="BtnLogInTwitchAltBot"
+                                    Height="30"
                                     Margin="6,0,6,0"
                                     VerticalAlignment="Bottom"
-                                    Tag="bot"
-                                    Click="BtnLogInTwitchAlt_Click" Height="30">
+                                    Click="BtnLogInTwitchAlt_Click"
+                                    Tag="bot">
                                     <Button.Content>
-                                        <TextBlock Text="Doesn't work?"></TextBlock>
+                                        <TextBlock Text="Doesn't work?" />
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
@@ -1038,7 +1062,8 @@
                                             Width="23"
                                             Height="23"
                                             Margin="3"
-                                            Content="-" Click="BtnRemoveReward_Click" />
+                                            Click="BtnRemoveReward_Click"
+                                            Content="-" />
                                     </Grid>
 
                                     <ListBox x:Name="LbRewards" />
@@ -1683,18 +1708,17 @@
                                         NumericInputMode="Numbers"
                                         ValueChanged="NudMaxlength_ValueChanged" />
                                 </DockPanel>
-                                <controls:ToggleSwitch x:Name="Tglsw_BlockAllExplicitSongs" 
+                                <controls:ToggleSwitch
+                                    x:Name="Tglsw_BlockAllExplicitSongs"
                                     Width="470"
                                     Height="36"
+                                    VerticalAlignment="Top"
+                                    Content="{x:Static local:Resources.sw_SpotifySR_BlockAllExplicit}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
-                                    VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.sw_SpotifySR_BlockAllExplicit}"
-                                    Toggled="Chbx_BlockAllExplicit_Checked">
-
-                                </controls:ToggleSwitch>
+                                    Toggled="Chbx_BlockAllExplicit_Checked" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -1716,7 +1740,8 @@
                             Margin="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.brw_Header}" />
+                            Content="{x:Static local:Resources.brw_Header}"
+                            Visibility="Collapsed" />
                         <ScrollViewer
                             Grid.Row="1"
                             Margin="0,0,0,0"
@@ -1842,8 +1867,8 @@
                         <TextBlock
                             Grid.Row="2"
                             Grid.Column="1"
-                            HorizontalAlignment="Left"
                             Margin="0,0,5,0"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             Text="{x:Static local:Resources.brw_cmd_song}" />
                         <controls:ToggleSwitch
@@ -1889,9 +1914,9 @@
                         <TextBlock
                             Grid.Row="3"
                             Grid.Column="1"
+                            Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Margin="0,0,5,0"
                             Text="{x:Static local:Resources.brw_cmd_pos}"
                             TextWrapping="WrapWithOverflow" />
                         <controls:ToggleSwitch
@@ -2094,7 +2119,8 @@
                             Margin="0,0,5,0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}" TextWrapping="Wrap" />
+                            Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
+                            TextWrapping="Wrap" />
                         <controls:ToggleSwitch
                             x:Name="TglBotcmdSsr"
                             Grid.Row="1"
@@ -2266,9 +2292,9 @@
                             Grid.Column="1"
                             Margin="0,0,5,0"
                             HorizontalAlignment="Left"
-                            TextWrapping="Wrap"
                             VerticalAlignment="Center"
-                            Text="{x:Static local:Resources.brw_cmd_vol}" />
+                            Text="{x:Static local:Resources.brw_cmd_vol}"
+                            TextWrapping="Wrap" />
                         <controls:ToggleSwitch
                             x:Name="TglBotcmdVol"
                             Grid.Row="11"
@@ -2285,9 +2311,9 @@
                             Grid.Column="1"
                             Margin="0,0,5,0"
                             HorizontalAlignment="Left"
-                            TextWrapping="Wrap"
                             VerticalAlignment="Center"
-                            Text="{x:Static local:Resources.brw_cmd_volIgnoreMod}" />
+                            Text="{x:Static local:Resources.brw_cmd_volIgnoreMod}"
+                            TextWrapping="Wrap" />
                         <controls:ToggleSwitch
                             x:Name="TglBotcmdVolIgnoreMod"
                             Grid.Row="12"

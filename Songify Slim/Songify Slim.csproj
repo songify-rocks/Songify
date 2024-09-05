@@ -141,7 +141,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\BotResponseItem.cs" />
-    <Compile Include="Models\Motd.cs" />
+    <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
     <Compile Include="Properties\Resources.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -163,8 +163,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.pt-PT.resx</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\MotdControl.xaml.cs">
-      <DependentUpon>MotdControl.xaml</DependentUpon>
+    <Compile Include="UserControls\PsaControl.xaml.cs">
+      <DependentUpon>PsaControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UC_AccountItem.xaml.cs">
       <DependentUpon>UC_AccountItem.xaml</DependentUpon>
@@ -328,7 +328,7 @@
     <Compile Include="Views\Window_UniversalDialog.xaml.cs">
       <DependentUpon>Window_UniversalDialog.xaml</DependentUpon>
     </Compile>
-    <Page Include="UserControls\MotdControl.xaml">
+    <Page Include="UserControls\PsaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

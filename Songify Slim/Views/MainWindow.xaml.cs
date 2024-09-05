@@ -61,7 +61,7 @@ namespace Songify_Slim.Views
         public NotifyIcon NotifyIcon = new();
         public SongFetcher Sf = new();
         public string SongArtist, SongTitle;
-        public List<Motd> Motds;
+        public List<PSA> PSAs;
         #endregion Variables
 
         private static async void TelemetryTask(object sender, ElapsedEventArgs e)
@@ -366,16 +366,16 @@ namespace Songify_Slim.Views
             _motdTimer.Interval = TimeSpan.FromMinutes(5);
             _motdTimer.Tick += async (o, args) =>
             {
-                SetModts();
+                SetPSAs();
             };
             _motdTimer.Start();
-            SetModts();
+            SetPSAs();
         }
 
-        private async void SetModts()
+        private async void SetPSAs()
         {
-            Motds = await WebHelper.GetMotd();
-            if (Motds == null || Motds.Count == 0)
+            PSAs = await WebHelper.GetPSA();
+            if (PSAs == null || PSAs.Count == 0)
             {
                 PnlMotds.Children.Clear();
                 Badge.Badge = null!;
@@ -388,7 +388,7 @@ namespace Songify_Slim.Views
                 // compare motds ids with Settings.ReadNotificationIds and if there are new motds, show the badge
                 if (Settings.ReadNotificationIds != null)
                 {
-                    List<Motd> unreadMotds = Motds.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
+                    List<PSA> unreadMotds = PSAs.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
                     if (unreadMotds.Count > 0)
                     {
                         Badge.Badge = unreadMotds.Count;
@@ -398,9 +398,9 @@ namespace Songify_Slim.Views
                         Badge.Badge = null!;
                     }
                 }
-                else if (Badge.Badge.ToString() != Motds.Count.ToString())
+                else if (Badge.Badge.ToString() != PSAs.Count.ToString())
                 {
-                    Badge.Badge = Motds.Count;
+                    Badge.Badge = PSAs.Count;
                 }
             }
             catch (Exception e)
@@ -410,29 +410,29 @@ namespace Songify_Slim.Views
 
             badgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
 
-            if (Motds.Any(motd => motd.Severity == "High"))
+            if (PSAs.Any(motd => motd.Severity == "High"))
             {
                 Badge.BadgeBackground = new SolidColorBrush(Colors.IndianRed);
-                Motd highSeverityMotd = Motds.First(motd => motd.Severity == "High");
-                string msg = highSeverityMotd.MessageText;
+                PSA highSeverityPsa = PSAs.First(motd => motd.Severity == "High");
+                string msg = highSeverityPsa.MessageText;
                 if (msg.Length > 190)
                     msg = msg.Substring(0, 190) + "...";
-                if (highSeverityMotd != null)
+                if (highSeverityPsa != null)
                 {
-                    if (Settings.LastShownMotdId != highSeverityMotd.Id)
+                    if (Settings.LastShownMotdId != highSeverityPsa.Id)
                     {
                         new ToastContentBuilder()
-                            .AddArgument("msgId", highSeverityMotd.Id)
-                            .AddText($"{highSeverityMotd.Author} from Songify")
+                            .AddArgument("msgId", highSeverityPsa.Id)
+                            .AddText($"{highSeverityPsa.Author} from Songify")
                             .AddText(msg)
-                            .AddAttributionText(highSeverityMotd.CreatedAtDateTime.ToString())
+                            .AddAttributionText(highSeverityPsa.CreatedAtDateTime.ToString())
                             .Show(); // Not seeing the Show() method? Make sure you have version 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
-                        // store the already shown motd id and don't show it again
-                        Settings.LastShownMotdId = highSeverityMotd.Id;
+                        // store the already shown psa id and don't show it again
+                        Settings.LastShownMotdId = highSeverityPsa.Id;
                     }
                 }
             }
-            else if (Motds.Any(motd => motd.Severity == "Medium"))
+            else if (PSAs.Any(motd => motd.Severity == "Medium"))
             {
                 Badge.BadgeBackground = new SolidColorBrush(Colors.Orange);
             }
@@ -440,13 +440,13 @@ namespace Songify_Slim.Views
                 Badge.BadgeBackground = new SolidColorBrush(Colors.DarkGray);
 
             PnlMotds.Children.Clear();
-            for (int i = 0; i < Motds.Count; i++)
+            for (int i = 0; i < PSAs.Count; i++)
             {
-                // Add the MotdControl
-                PnlMotds.Children.Add(new MotdControl(Motds[i]));
+                // Add the PsaControl
+                PnlMotds.Children.Add(new PsaControl(PSAs[i]));
 
                 // Add a spacer if it's not the last item
-                if (i < Motds.Count - 1)
+                if (i < PSAs.Count - 1)
                 {
                     PnlMotds.Children.Add(new Rectangle
                     {
@@ -492,23 +492,23 @@ namespace Songify_Slim.Views
             {
                 try
                 {
-                    // Ensure Motds is not null or empty
-                    if (Motds == null || !Motds.Any())
+                    // Ensure PSAs is not null or empty
+                    if (PSAs == null || !PSAs.Any())
                     {
-                        throw new InvalidOperationException("Motds collection is null or empty.");
+                        throw new InvalidOperationException("PSAs collection is null or empty.");
                     }
 
-                    // Attempt to find the Motd
-                    Motd motd = Motds.FirstOrDefault(o => o.Id == intValue);
+                    // Attempt to find the PSA
+                    PSA psa = PSAs.FirstOrDefault(o => o.Id == intValue);
 
-                    // Check if motd is found
-                    if (motd == null)
+                    // Check if psa is found
+                    if (psa == null)
                     {
-                        throw new InvalidOperationException($"No Motd found with Id {intValue}.");
+                        throw new InvalidOperationException($"No PSA found with Id {intValue}.");
                     }
 
                     // Create and show the dialog
-                    WindowUniversalDialog wUd = new WindowUniversalDialog(motd, "Notification");
+                    WindowUniversalDialog wUd = new WindowUniversalDialog(psa, "Notification");
                     wUd.Show();
                 }
                 catch (Exception ex)
@@ -1073,26 +1073,26 @@ namespace Songify_Slim.Views
 
         private void Mi_Motd_Click(object sender, RoutedEventArgs e)
         {
-            SetModts();
+            SetPSAs();
         }
 
         private void BtnMotd_Click(object sender, RoutedEventArgs e)
         {
-            SetModts();
+            SetPSAs();
             // If any child of pnlMotds as MotdcControl is unread, show the all read button
             List<int> readIds = Settings.ReadNotificationIds ?? [];
 
             foreach (UIElement pnlMotdsChild in PnlMotds.Children)
             {
-                if (pnlMotdsChild is not MotdControl motdControl) continue;
-                if (readIds.Contains(motdControl.Motd.Id)) continue;
+                if (pnlMotdsChild is not PsaControl motdControl) continue;
+                if (readIds.Contains(motdControl.Psa.Id)) continue;
                 Button btnFlyOutAllread = GlobalObjects.FindChild<Button>(FlyMotd, "BtnFlyOutAllread");
                 if (btnFlyOutAllread != null)
                 {
                     // Now you can interact with the button
                     btnFlyOutAllread.Visibility = Visibility.Visible; // Example usage
                 }
-                return;
+                break;
             }
 
             FlyMotd.IsOpen = !FlyMotd.IsOpen;
@@ -1112,7 +1112,7 @@ namespace Songify_Slim.Views
         private void BtnFlyOutAllread_OnClick(object sender, RoutedEventArgs e)
         {
             List<int> readIds = Settings.ReadNotificationIds ?? [];
-            foreach (Motd motd in Motds.Where(motd => !readIds.Contains(motd.Id)))
+            foreach (PSA motd in PSAs.Where(motd => !readIds.Contains(motd.Id)))
             {
                 readIds.Add(motd.Id);
             }
@@ -1120,7 +1120,7 @@ namespace Songify_Slim.Views
 
             foreach (UIElement pnlMotdsChild in PnlMotds.Children)
             {
-                ((MotdControl)pnlMotdsChild).btnRead.Content = new PackIconMaterial()
+                ((PsaControl)pnlMotdsChild).btnRead.Content = new PackIconMaterial()
                 {
                     Kind = PackIconMaterialKind.Check,
                     Width = 12,
