@@ -160,7 +160,7 @@ namespace Songify_Slim.Util.Songify
                                 title = "";
                                 extra = "";
                             }
-                            int dashIndex = wintitle.IndexOf(" - ");
+                            int dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
                             if (dashIndex != -1)
                             {   
                                 artist = wintitle.Substring(0, dashIndex).Trim();

@@ -47,19 +47,12 @@ namespace Songify_Slim.Util.Songify
                         try
                         {
                             List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
-                            List<Task> tasks = new();
-                            foreach (Models.QueueItem q in queue)
-                            {
-                                if (GlobalObjects.ReqList.Count != 0 &&
-                                    GlobalObjects.ReqList.Any(o => o.Queueid == q.Queueid)) continue;
-                                var pL = new
-                                {
-                                    uuid = Settings.Settings.Uuid,
-                                    key = Settings.Settings.AccessKey,
-                                    queueid = q.Queueid
-                                };
-                                tasks.Add(QueueRequest(RequestMethod.Patch, Json.Serialize(pL)));
-                            }
+                            List<Task> tasks = [];
+                            tasks.AddRange(from q in queue
+                                           where GlobalObjects.ReqList.Count == 0 || GlobalObjects.ReqList.All(o => o.Queueid != q.Queueid)
+                                           select new { uuid = Settings.Settings.Uuid, key = Settings.Settings.AccessKey, queueid = q.Queueid }
+                                into pL
+                                           select QueueRequest(RequestMethod.Patch, Json.Serialize(pL)));
                             await Task.WhenAll(tasks).ConfigureAwait(false);
                         }
                         catch (Exception e)
