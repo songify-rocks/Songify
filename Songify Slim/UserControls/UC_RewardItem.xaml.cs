@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Microsoft.Build.Utilities;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
 namespace Songify_Slim.UserControls
@@ -13,8 +17,9 @@ namespace Songify_Slim.UserControls
     {
         public CustomReward Reward;
         public bool IsManagable;
+        public string RewardId;
 
-        public UcRewardItem(CustomReward customReward, bool managable)
+        public UcRewardItem(CustomReward customReward, bool managable, bool showDeleteButton = false)
         {
             InitializeComponent();
             Reward = customReward;
@@ -28,6 +33,7 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
+            this.RewardId = customReward.Id;
             TbRewardName.Text = Reward.Title;
             TbRewardCost.Text = Reward.Cost.ToString();
             if (Reward.BackgroundColor != null)
@@ -46,6 +52,8 @@ namespace Songify_Slim.UserControls
                 RewardImage.Source = new BitmapImage(new Uri(Reward.Image.Url1x));
             if (managable)
                 IconManagable.Visibility = Visibility.Visible;
+            if (showDeleteButton)
+                BtnDelete.Visibility = Visibility.Visible;
         }
 
         public static SolidColorBrush GetRandomSolidColorBrush()
@@ -55,6 +63,27 @@ namespace Songify_Slim.UserControls
             byte g = (byte)random.Next(256);
             byte b = (byte)random.Next(256);
             return new SolidColorBrush(Color.FromRgb(r, g, b));
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            Settings.TwRewardId.Remove(RewardId);
+            Settings.TwRewardId = Settings.TwRewardId;
+            try
+            {
+                foreach (Window currentWindow in Application.Current.Windows)
+                {
+                    if (currentWindow is Window_Settings settings)
+                    {
+                        settings.RemoveRewardFromList(RewardId);
+                    }
+                }
+
+            }
+            catch (Exception exception)
+            {
+                Util.General.Logger.LogExc(exception);
+            }
         }
     }
 }

@@ -133,6 +133,11 @@ namespace Songify_Slim.UserControls
             readNotificationIds.Add(Psa.Id);
             Settings.ReadNotificationIds = readNotificationIds;
 
+            Window mainWin = Application.Current.MainWindow;
+            if (mainWin is MainWindow mainWindow)
+            {
+                mainWindow.SetUnreadBadge();
+            }
         }
     }
 }

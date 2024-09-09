@@ -383,30 +383,7 @@ namespace Songify_Slim.Views
                 return;
             }
 
-            try
-            {
-                // compare motds ids with Settings.ReadNotificationIds and if there are new motds, show the badge
-                if (Settings.ReadNotificationIds != null)
-                {
-                    List<PSA> unreadMotds = PSAs.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
-                    if (unreadMotds.Count > 0)
-                    {
-                        Badge.Badge = unreadMotds.Count;
-                    }
-                    else
-                    {
-                        Badge.Badge = null!;
-                    }
-                }
-                else if (Badge.Badge.ToString() != PSAs.Count.ToString())
-                {
-                    Badge.Badge = PSAs.Count;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogExc(e);
-            }
+            SetUnreadBadge();
 
             badgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
 
@@ -457,6 +434,34 @@ namespace Songify_Slim.Views
                 }
             }
 
+        }
+
+        public void SetUnreadBadge()
+        {
+            try
+            {
+                // compare motds ids with Settings.ReadNotificationIds and if there are new motds, show the badge
+                if (Settings.ReadNotificationIds != null)
+                {
+                    List<PSA> unreadMotds = PSAs.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
+                    if (unreadMotds.Count > 0)
+                    {
+                        Badge.Badge = unreadMotds.Count;
+                    }
+                    else
+                    {
+                        Badge.Badge = null!;
+                    }
+                }
+                else if (Badge.Badge.ToString() != PSAs.Count.ToString())
+                {
+                    Badge.Badge = PSAs.Count;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
         }
 
         private void InitialSetup()
@@ -1071,28 +1076,25 @@ namespace Songify_Slim.Views
             CheckForUpdates();
         }
 
-        private void Mi_Motd_Click(object sender, RoutedEventArgs e)
-        {
-            SetPSAs();
-        }
-
         private void BtnMotd_Click(object sender, RoutedEventArgs e)
         {
             SetPSAs();
             // If any child of pnlMotds as MotdcControl is unread, show the all read button
             List<int> readIds = Settings.ReadNotificationIds ?? [];
-
-            foreach (UIElement pnlMotdsChild in PnlMotds.Children)
+            Button btnFlyOutAllread = GlobalObjects.FindChild<Button>(FlyMotd, "BtnFlyOutAllread");
+            if (btnFlyOutAllread != null)
             {
-                if (pnlMotdsChild is not PsaControl motdControl) continue;
-                if (readIds.Contains(motdControl.Psa.Id)) continue;
-                Button btnFlyOutAllread = GlobalObjects.FindChild<Button>(FlyMotd, "BtnFlyOutAllread");
-                if (btnFlyOutAllread != null)
+                btnFlyOutAllread.Visibility = Visibility.Hidden; // Example usage
+                foreach (UIElement pnlMotdsChild in PnlMotds.Children)
                 {
-                    // Now you can interact with the button
-                    btnFlyOutAllread.Visibility = Visibility.Visible; // Example usage
+                    if (pnlMotdsChild is not PsaControl motdControl) continue;
+                    if (readIds.Contains(motdControl.Psa.Id)) continue;
+                    if (btnFlyOutAllread != null)
+                    {
+                        // Now you can interact with the button
+                    }
+                    break;
                 }
-                break;
             }
 
             FlyMotd.IsOpen = !FlyMotd.IsOpen;
@@ -1101,7 +1103,7 @@ namespace Songify_Slim.Views
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            FlyMotd.Width = this.ActualWidth;
+            FlyMotd.Width = ActualWidth;
         }
 
         private void BtnFlyOutClose_OnClick(object sender, RoutedEventArgs e)
@@ -1128,6 +1130,7 @@ namespace Songify_Slim.Views
                     VerticalAlignment = VerticalAlignment.Center
                 };
             }
+            Badge.Badge = null!;
         }
     }
 }

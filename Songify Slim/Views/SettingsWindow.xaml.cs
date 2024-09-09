@@ -998,7 +998,7 @@ namespace Songify_Slim.Views
                             {
                                 LbRewards.Items.Add(new ListBoxItem
                                 {
-                                    Content = new UcRewardItem(reward, managable)
+                                    Content = new UcRewardItem(reward, managable, true)
                                 });
                             }
                         }
@@ -1499,7 +1499,7 @@ namespace Songify_Slim.Views
 
             LbRewards.Items.Add(new ListBoxItem
             {
-                Content = new UcRewardItem(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward, ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable)
+                Content = new UcRewardItem(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward, ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable, true)
             });
             Settings.TwRewardId.Add(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward.Id);
             Settings.TwRewardId = Settings.TwRewardId;
@@ -1596,6 +1596,17 @@ namespace Songify_Slim.Views
         private void ChbxSpacesSplitFiles_Checked(object sender, RoutedEventArgs e)
         {
             Settings.AppendSpacesSplitFiles = (bool)((CheckBox)sender).IsChecked;
+        }
+
+        public void RemoveRewardFromList(string rewardId)
+        {
+            // Remove item from LbRewards.Items where the item.id = rewardId
+            foreach (ListBoxItem item in LbRewards.Items)
+            {
+                if (((UcRewardItem)item.Content).Reward.Id != rewardId) continue;
+                LbRewards.Items.Remove(item);
+                break;
+            }
         }
     }
 }

@@ -94,8 +94,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _skipCooldown;
 
         private static string _userId;
-
-
+        
         public static void ApiConnect(Enums.TwitchAccount account)
         {
             ImplicitOAuth ioa = new(1234);
@@ -233,19 +232,72 @@ namespace Songify_Slim.Util.Songify
             // This method initialize the flow of getting the token and returns a temporary random state that we will use to check authenticity.
             _currentState = ioa.RequestClientAuthorization();
         }
+        public static void MainConnect()
+        {
+            switch (_mainClient)
+            {
+                case { IsConnected: true }:
+                    return;
+                case { IsConnected: false }:
+                    _mainClient.Connect();
+                    _mainClient.JoinChannel(Settings.Settings.TwChannel);
+                    return;
+                default:
+                    try
 
+                    {
+                        // Checks if twitch credentials are present
+                        if (Settings.Settings.TwitchUser != null &&
+                            (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
+                             string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
+                             string.IsNullOrEmpty(Settings.Settings.TwChannel)))
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                foreach (Window window in Application.Current.Windows)
+                                    if (window.GetType() == typeof(MainWindow))
+                                        //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
+                                        ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
+                            });
+                            return;
+                        }
+
+                        if (Settings.Settings.TwitchUser == null) return;
+                        // creates new connection based on the credentials in settings
+                        ConnectionCredentials credentials =
+                            new(Settings.Settings.TwitchUser.DisplayName,
+                                $"oauth:{Settings.Settings.TwitchAccessToken}");
+                        ClientOptions clientOptions = new()
+                        {
+                            MessagesAllowedInPeriod = 750,
+                            ThrottlingPeriod = TimeSpan.FromSeconds(30)
+                        };
+                        WebSocketClient customClient = new(clientOptions);
+                        _mainClient = new TwitchClient(customClient);
+                        _mainClient.Initialize(credentials, Settings.Settings.TwChannel);
+                        _mainClient.Connect();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogExc(e);
+                    }
+
+                    break;
+            }
+        }
         public static void BotConnect()
         {
             try
             {
                 MainConnect();
-                if (Client != null && Client.IsConnected)
-                    return;
-                if (Client != null && !Client.IsConnected)
+                switch (Client)
                 {
-                    Client.Connect();
-                    Client.JoinChannel(Settings.Settings.TwChannel);
-                    return;
+                    case { IsConnected: true }:
+                        return;
+                    case { IsConnected: false }:
+                        Client.Connect();
+                        Client.JoinChannel(Settings.Settings.TwChannel);
+                        return;
                 }
 
                 // Checks if twitch credentials are present
@@ -289,7 +341,6 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
         }
-
         public static async Task<bool> CheckStreamIsUp()
         {
             try
@@ -310,7 +361,6 @@ namespace Songify_Slim.Util.Songify
                 return false;
             }
         }
-
         public static async Task<List<CustomReward>> GetChannelRewards(bool b)
         {
             GetCustomRewardsResponse rewardsResponse = null;
@@ -327,7 +377,6 @@ namespace Songify_Slim.Util.Songify
 
             return rewardsResponse?.Data.ToList();
         }
-
         public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
         {
             GetUsersResponse users;
@@ -464,63 +513,10 @@ namespace Songify_Slim.Util.Songify
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
         }
-
-        public static void MainConnect()
-        {
-            if (_mainClient != null && _mainClient.IsConnected)
-                return;
-            if (_mainClient != null && !_mainClient.IsConnected)
-            {
-                _mainClient.Connect();
-                _mainClient.JoinChannel(Settings.Settings.TwChannel);
-                return;
-            }
-
-            try
-
-            {
-                // Checks if twitch credentials are present
-                if (Settings.Settings.TwitchUser != null &&
-                    (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
-                     string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
-                     string.IsNullOrEmpty(Settings.Settings.TwChannel)))
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                            if (window.GetType() == typeof(MainWindow))
-                                //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                                ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
-                    });
-                    return;
-                }
-
-                if (Settings.Settings.TwitchUser == null) return;
-                // creates new connection based on the credentials in settings
-                ConnectionCredentials credentials =
-                    new(Settings.Settings.TwitchUser.DisplayName,
-                        $"oauth:{Settings.Settings.TwitchAccessToken}");
-                ClientOptions clientOptions = new()
-                {
-                    MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30)
-                };
-                WebSocketClient customClient = new(clientOptions);
-                _mainClient = new TwitchClient(customClient);
-                _mainClient.Initialize(credentials, Settings.Settings.TwChannel);
-                _mainClient.Connect();
-            }
-            catch (Exception e)
-            {
-                Logger.LogExc(e);
-            }
-        }
-
         public static void ResetVotes()
         {
             SkipVotes.Clear();
         }
-
         public static async void SendCurrSong()
         {
             if (Client == null || !Client.IsConnected || Client.JoinedChannels.Count == 0) return;
@@ -556,7 +552,6 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(Settings.Settings.TwChannel, msg);
             }
         }
-
         private static async void AddSong(string trackId, OnMessageReceivedArgs e)
         {
             if (string.IsNullOrWhiteSpace(trackId))
@@ -658,7 +653,6 @@ namespace Songify_Slim.Util.Songify
             await UploadToQueue(track, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
         }
-
         private static string CreateNoTrackFoundResponse(OnMessageReceivedArgs e)
         {
             string response = Settings.Settings.BotRespNoTrackFound;
@@ -670,7 +664,6 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{errormsg}", "");
             return response;
         }
-
         private static bool IsTrackExplicit(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -700,7 +693,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
         {
             string response = string.Empty;
@@ -719,7 +711,6 @@ namespace Songify_Slim.Util.Songify
 
             return Tuple.Create(true, response);
         }
-
         private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
             string spotifySongLimitPlaylist)
         {
@@ -745,7 +736,6 @@ namespace Songify_Slim.Util.Songify
 
             return new Tuple<bool, FullPlaylist>(false, playlist);
         }
-
         private static async Task<ReturnObject> AddSong2(string trackId, string username)
         {
             // loads the blacklist from settings
@@ -897,7 +887,6 @@ namespace Songify_Slim.Util.Songify
                 Refundcondition = 8
             };
         }
-
         private static async Task<bool> AddToPlaylist(string trackId, bool sendResponse = false)
         {
             try
@@ -935,7 +924,6 @@ namespace Songify_Slim.Util.Songify
                 return true;
             }
         }
-
         private static string GetFormattedRespone(string response, string username = "", string errormsg = "",
             string votes = "")
         {
@@ -979,7 +967,6 @@ namespace Songify_Slim.Util.Songify
 
             return returnString;
         }
-
         private static void RemoveDelimitedSubstring(ref string input, string startDelimiter, string endDelimiter)
         {
             try
@@ -996,7 +983,6 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(ex);
             }
         }
-
         private static async Task AnnounceInChat(string msg)
         {
             Tuple<string, AnnouncementColors> tup = GetStringAndColor(msg);
@@ -1025,7 +1011,6 @@ namespace Songify_Slim.Util.Songify
 
             SendChatMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
         }
-
         private static bool CheckLiveStatus()
         {
             if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive)
@@ -1055,7 +1040,6 @@ namespace Songify_Slim.Util.Songify
                 }, DispatcherPriority.Normal);
             return false;
         }
-
         private static Tuple<int, bool> CheckUserLevel(ChatMessage o, int type = 0)
         {
             //Type 0 = Command, 1 = Reward
@@ -1070,7 +1054,6 @@ namespace Songify_Slim.Util.Songify
             bool isAllowed = type == 0 ? Settings.Settings.UserLevelsCommand.Any(userlevels.Contains) : Settings.Settings.UserLevelsReward.Any(userlevels.Contains);
             return new Tuple<int, bool>(userlevels.Max(), isAllowed);
         }
-
         private static string CleanFormatString(string currSong)
         {
             const RegexOptions options = RegexOptions.None;
@@ -1080,7 +1063,6 @@ namespace Songify_Slim.Util.Songify
             // Add trailing spaces for better scroll
             return currSong;
         }
-
         private static void Client_OnConnected(object sender, OnConnectedArgs e)
         {
             // Connected
@@ -1103,7 +1085,6 @@ namespace Songify_Slim.Util.Songify
             });
             Logger.LogStr($"TWITCH: Connected to Twitch. User: {Client.TwitchUsername}");
         }
-
         private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
             // Disconnected
@@ -1125,7 +1106,6 @@ namespace Songify_Slim.Util.Songify
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch Chat");
         }
-
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             // Attempt to find the user in the existing list.
@@ -1666,7 +1646,6 @@ namespace Songify_Slim.Util.Songify
                         break;
                 }
         }
-
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
         {
             string[] split = e.ChatMessage.Message.Split(' ');
@@ -1688,7 +1667,6 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(e.ChatMessage.Channel, "Please specify a volume between 0 and 100");
             }
         }
-
         private static string CreateCooldownResponse(OnMessageReceivedArgs e)
         {
             string response = Settings.Settings.BotRespCooldown;
@@ -1701,12 +1679,10 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{cd}", time.ToString());
             return response;
         }
-
         private static void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
         }
-
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Resets the cooldown for the !ssr command
@@ -1715,7 +1691,6 @@ namespace Songify_Slim.Util.Songify
             CooldownStopwatch.Reset();
             CooldownTimer.Stop();
         }
-
         private static string CreateErrorResponse(string displayName, string errorMessage)
         {
             string response = Settings.Settings.BotRespError;
@@ -1728,7 +1703,6 @@ namespace Songify_Slim.Util.Songify
 
             return response;
         }
-
         private static void CreatePubSubEventHandlers()
         {
             TwitchPubSub.OnListenResponse += OnListenResponse;
@@ -1739,20 +1713,17 @@ namespace Songify_Slim.Util.Songify
             TwitchPubSub.OnStreamUp += OnStreamUp;
             TwitchPubSub.OnStreamDown += OnStreamDown;
         }
-
         private static void CreatePubSubListenEvents()
         {
             TwitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
             TwitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
         }
-
         private static void CreatePubSubsConnection()
         {
             CreatePubSubEventHandlers();
             CreatePubSubListenEvents();
             TwitchPubSub.Connect();
         }
-
         private static string CreateSuccessResponse(FullTrack track, string displayName)
         {
             string response = Settings.Settings.BotRespSuccess;
@@ -1785,7 +1756,6 @@ namespace Songify_Slim.Util.Songify
 
             return response;
         }
-
         private static string FormattedTime(int duration)
         {
             // duration in milliseconds gets converted to mm:ss
@@ -1801,7 +1771,6 @@ namespace Songify_Slim.Util.Songify
 
             return minutes + ":" + seconds;
         }
-
         private static string GetCurrentSong()
         {
             string currentSong = Settings.Settings.BotRespSong;
@@ -1831,7 +1800,6 @@ namespace Songify_Slim.Util.Songify
 
             return currentSong;
         }
-
         private static int GetMaxRequestsForUserlevel(int userLevel)
         {
             switch ((Enums.TwitchUserLevels)userLevel)
@@ -1853,7 +1821,6 @@ namespace Songify_Slim.Util.Songify
                     return 0;
             }
         }
-
         private static string GetNextSong()
         {
             int index = 0;
@@ -1874,7 +1841,6 @@ namespace Songify_Slim.Util.Songify
 
             return $"{GlobalObjects.ReqList[index].Artist} - {GlobalObjects.ReqList[index].Title}";
         }
-
         private static List<QueueItem> GetQueueItems(string requester = null)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
@@ -1924,7 +1890,6 @@ namespace Songify_Slim.Util.Songify
             });
             return temp3;
         }
-
         private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
         {
             AnnouncementColors colors = AnnouncementColors.Purple;
@@ -1955,7 +1920,6 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace($"[announce {colorName}]", string.Empty).Trim();
             return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
         }
-
         private static async Task<string> GetTrackIdFromInput(string input)
         {
             if (input.StartsWith("https://spotify.link/"))
@@ -2002,7 +1966,6 @@ namespace Songify_Slim.Util.Songify
             FullTrack fullTrack = searchItem.Tracks.Items[0];
             return fullTrack.Id;
         }
-
         private static async Task<string> GetFullSpotifyUrl(string input)
         {
             using HttpClient httpClient = new();
@@ -2010,7 +1973,6 @@ namespace Songify_Slim.Util.Songify
             HttpResponseMessage response = await httpClient.SendAsync(request);
             return response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.AbsoluteUri : "";
         }
-
         private static bool IsArtistBlacklisted(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -2043,7 +2005,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsInQueue(string id)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
@@ -2051,7 +2012,6 @@ namespace Songify_Slim.Util.Songify
 
             return temp.Count > 0;
         }
-
         private static bool IsSongBlacklisted(string trackId)
         {
             try
@@ -2070,7 +2030,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsTrackAlreadyInQueue(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -2097,7 +2056,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsTrackTooLong(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -2126,7 +2084,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsTrackUnavailable(FullTrack track, OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -2154,7 +2111,6 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsUserAtMaxRequests(OnMessageReceivedArgs e, out string response)
         {
             response = string.Empty;
@@ -2183,14 +2139,12 @@ namespace Songify_Slim.Util.Songify
 
             return false;
         }
-
         private static bool IsUserBlocked(string displayName)
         {
             // checks if one of the artist in the requested song is on the blacklist
             return Settings.Settings.UserBlacklist.Any(s =>
                 s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
         }
-
         private static bool MaxQueueItems(string requester, int userLevel)
         {
             int maxreq;
@@ -2220,12 +2174,10 @@ namespace Songify_Slim.Util.Songify
 
             return temp.Count >= maxreq;
         }
-
         private static void OnListenResponse(object sender, OnListenResponseArgs e)
         {
             //Debug.WriteLine($"{DateTime.Now.ToShortTimeString()} PubSub: Response received: {e.Response}");
         }
-
         private static void OnPubSubServiceClosed(object sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -2241,7 +2193,6 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
             Logger.LogStr("PUBSUB: Disconnected");
         }
-
         private static void OnPubSubServiceConnected(object sender, EventArgs e)
         {
             TwitchPubSub.SendTopics(Settings.Settings.TwitchAccessToken);
@@ -2259,7 +2210,6 @@ namespace Songify_Slim.Util.Songify
             SendChatMessage(Settings.Settings.TwChannel, "Connected to PubSub");
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
         }
-
         private static async void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
         {
             //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
@@ -2281,19 +2231,16 @@ namespace Songify_Slim.Util.Songify
                 throw;
             }
         }
-
         private static void OnStreamDown(object sender, OnStreamDownArgs args)
         {
             Logger.LogStr("TWITCH API: Stream is down");
             Settings.Settings.IsLive = false;
         }
-
         private static void OnStreamUp(object sender, OnStreamUpArgs args)
         {
             Logger.LogStr("TWITCH API: Stream is up");
             Settings.Settings.IsLive = true;
         }
-
         private static async void PubSub_OnChannelPointsRewardRedeemed(object sender,
             OnChannelPointsRewardRedeemedArgs e)
         {
@@ -2567,7 +2514,6 @@ namespace Songify_Slim.Util.Songify
                 }
             }
         }
-
         private static async void SendChatMessage(string channel, string message)
         {
             if (message.StartsWith("[announce "))
@@ -2579,13 +2525,11 @@ namespace Songify_Slim.Util.Songify
             if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
                 Client.SendMessage(channel, message);
         }
-
         private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             _skipCooldown = false;
             SkipCooldownTimer.Stop();
         }
-
         private static void StartCooldown()
         {
             // starts the cooldown on the command
@@ -2595,7 +2539,6 @@ namespace Songify_Slim.Util.Songify
             CooldownStopwatch.Reset();
             CooldownStopwatch.Start();
         }
-
         private static async Task UploadToQueue(FullTrack track, string displayName)
         {
             try

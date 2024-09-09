@@ -996,7 +996,7 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <TextBox
@@ -1013,7 +1013,6 @@
                                     Text=""
                                     TextChanged="txtbx_RewardID_TextChanged"
                                     Visibility="Collapsed" />
-
                                 <CheckBox
                                     x:Name="ChbxMessageLogging"
                                     Grid.Row="2"
@@ -1063,29 +1062,50 @@
                                             Height="23"
                                             Margin="3"
                                             Click="BtnRemoveReward_Click"
-                                            Content="-" />
+                                            Content="-"
+                                            Visibility="Collapsed" />
                                     </Grid>
-
-                                    <ListBox x:Name="LbRewards" />
+                                    <StackPanel
+                                        Margin="0,0,10,0"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="0,0,3,0"
+                                            VerticalAlignment="Bottom"
+                                            Text="Click here after selecting the reward" />
+                                        <Grid VerticalAlignment="Center">
+                                            <iconPacks:PackIconMaterial
+                                                Width="12"
+                                                Height="12"
+                                                Kind="ArrowUpRight" />
+                                        </Grid>
+                                    </StackPanel>
+                                    <Label Margin="0,8,0,0" Content="Enabled Rewards for Songrequests" />
+                                    <ListBox x:Name="LbRewards" SelectionMode="Single" />
                                 </StackPanel>
 
-                                <Button
-                                    x:Name="BtnUpdateRewards"
+                                <StackPanel
                                     Grid.Row="0"
                                     Grid.Column="1"
-                                    Width="26"
-                                    Height="26"
                                     Margin="0,0,0,6"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Click="BtnUpdateRewards_Click">
-                                    <Button.Content>
-                                        <iconPacks:PackIconForkAwesome
-                                            Width="12"
-                                            Height="12"
-                                            Kind="Refresh" />
-                                    </Button.Content>
-                                </Button>
+                                    Orientation="Horizontal">
+                                    <Button
+                                        x:Name="BtnUpdateRewards"
+                                        Width="26"
+                                        Height="26"
+                                        Margin="15,0,0,0"
+                                        Click="BtnUpdateRewards_Click">
+                                        <Button.Content>
+                                            <iconPacks:PackIconForkAwesome
+                                                Width="12"
+                                                Height="12"
+                                                Kind="Refresh" />
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
 
                                 <TextBlock
                                     Grid.Row="2"
