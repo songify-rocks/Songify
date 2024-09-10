@@ -173,7 +173,8 @@ namespace Songify_Slim.Util.Settings
                                 BotRespCooldown = "The command is on cooldown. Try again in {cd} seconds.",
                                 BotRespNoTrackFound = "No track found.",
                                 BotCmdVol = false,
-                                BotCmdVolIgnoreMod = false
+                                BotCmdVolIgnoreMod = false,
+                                BotCmdQueue = false,
                             };
                         }
                         break;
@@ -627,6 +628,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespNoTrackFound { get; set; } = "No track found.";
         public bool BotCmdVol { get; set; }
         public bool BotCmdVolIgnoreMod { get; set; } = false;
+        public bool BotCmdQueue { get; set; }
     }
 
     public class AppConfig

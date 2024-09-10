@@ -378,9 +378,9 @@
                                 Height="26"
                                 Margin="0,0,0,6"
                                 SelectionChanged="CbPauseOptions_SelectionChanged">
-                                <ComboBoxItem Content="Do Nothing" />
-                                <ComboBoxItem Content="Use Custom Pause Text" />
-                                <ComboBoxItem Content="Clear All Output" />
+                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_DoNothing}" />
+                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_UseCustomPauseText}" />
+                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_ClearAllOutput}" />
                             </ComboBox>
                             <TextBox
                                 x:Name="TxtbxCustompausetext"
@@ -510,7 +510,7 @@
                                 Grid.ColumnSpan="2"
                                 Margin="0,0,0,6"
                                 Checked="ChbxSpacesSplitFiles_Checked"
-                                Content="Apply to split files too"
+                                Content="{x:Static local:Resources.sw_tcOutput_ApplyToSplitFilesToo}"
                                 Unchecked="ChbxSpacesSplitFiles_Checked" />
                         </Grid>
 
@@ -1072,7 +1072,7 @@
                                         <TextBlock
                                             Margin="0,0,3,0"
                                             VerticalAlignment="Bottom"
-                                            Text="Click here after selecting the reward" />
+                                            Text="{x:Static local:Resources.sw_rewards_ClickReminder}" />
                                         <Grid VerticalAlignment="Center">
                                             <iconPacks:PackIconMaterial
                                                 Width="12"
@@ -1080,7 +1080,7 @@
                                                 Kind="ArrowUpRight" />
                                         </Grid>
                                     </StackPanel>
-                                    <Label Margin="0,8,0,0" Content="Enabled Rewards for Songrequests" />
+                                    <Label Margin="0,8,0,0" Content="{x:Static local:Resources.sw_rewards_enabledRewards}" />
                                     <ListBox x:Name="LbRewards" SelectionMode="Single" />
                                 </StackPanel>
 
@@ -1822,6 +1822,8 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+
                         </Grid.RowDefinitions>
                         <TextBlock
                             Grid.Row="0"
@@ -2345,6 +2347,47 @@
                             OffContent="{x:Static local:Resources.brw_cmd_off}"
                             OnContent="{x:Static local:Resources.brw_cmd_on}"
                             Toggled="TglBotcmdVolIgnoreMod_OnToggled" />
+
+                        <Border
+                            Grid.Row="13"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            Margin="-10,0"
+                            BorderThickness="0,1,0,0">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
+                            </Border.BorderBrush>
+                        </Border>
+                        <DockPanel
+                            Grid.Row="13"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            LastChildFill="True">
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="!queue" />
+                        </DockPanel>
+                        <TextBlock
+                            Grid.Row="13"
+                            Grid.Column="1"
+                            Margin="0,0,5,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="{x:Static local:Resources.brw_cmd_QueueReturn}"
+                            TextWrapping="Wrap" />
+                        <controls:ToggleSwitch
+                            x:Name="TglBotQueue"
+                            Grid.Row="13"
+                            Grid.Column="2"
+                            Height="32"
+                            MinWidth="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            OffContent="{x:Static local:Resources.brw_cmd_off}"
+                            OnContent="{x:Static local:Resources.brw_cmd_on}"
+                            Toggled="TglBotQueue_OnToggled" />
                     </Grid>
                 </Border>
             </TabItem>

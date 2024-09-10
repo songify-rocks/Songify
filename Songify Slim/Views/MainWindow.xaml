@@ -263,7 +263,7 @@
                 <MenuItem
                     x:Name="mi_Update"
                     Click="Mi_Update_OnClick"
-                    Header="Check For Updates" />
+                    Header="{x:Static local:Resources.mw_menu_CheckUpdates}" />
                 <MenuItem
                     x:Name="mi_Exit"
                     Click="Mi_Exit_Click"

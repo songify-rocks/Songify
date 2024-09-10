@@ -708,4 +708,28 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Ignorar verificação de Emissora/Moderador</value>
   </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Verificar atualizações</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Aplicar também para dividir arquivos</value>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Não faça nada</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Use texto de pausa personalizado</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Limpar todas as saídas</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Clique aqui após selecionar a recompensa</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Recompensas habilitadas para Songrequests</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Retorna as primeiras 5 músicas da fila de reprodução atual</value>
+  </data>
 </root>

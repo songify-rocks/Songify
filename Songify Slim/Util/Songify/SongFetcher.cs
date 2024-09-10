@@ -603,8 +603,6 @@ namespace Songify_Slim.Util.Songify
                     await CheckInLikedPlaylist(songInfo);
 
                 }
-                Debug.Write(songInfo.Playlist);
-
                 UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)

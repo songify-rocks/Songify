@@ -884,4 +884,29 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Ignore Broadcaster / Moderator check</value>
   </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Check For Updates</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Apply to split files too</value>
+    <comment>Append spaves to split files too</comment>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Do Nothing</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Use Custom Pause Text</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Clear All Output</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Click here after selecting the reward</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Enabled Rewards for Songrequests</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Returns the first 5 songs of the current playback queue</value>
+  </data>
 </root>

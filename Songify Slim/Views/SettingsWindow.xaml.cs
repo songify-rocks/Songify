@@ -155,6 +155,7 @@ namespace Songify_Slim.Views
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TglBotcmdVol.IsOn = Settings.BotCmdVol;
             TglBotcmdVolIgnoreMod.IsOn = Settings.BotCmdVolIgnoreMod;
+            TglBotQueue.IsOn = Settings.BotCmdQueue;
             TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger) ? "song" : Settings.BotCmdSongTrigger;
             TextBoxTriggerPos.Text = string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
             TextBoxTriggerNext.Text = string.IsNullOrWhiteSpace(Settings.BotCmdNextTrigger) ? "next" : Settings.BotCmdNextTrigger;
@@ -1342,7 +1343,7 @@ namespace Songify_Slim.Views
             TwitchHandler.Client = null;
             TwitchHandler.BotConnect();
             TwitchHandler.MainConnect();
-            SetControls();
+            _ = SetControls();
         }
 
         private void Tgl_botcmd_PlayPause_OnToggled_Toggled(object sender, RoutedEventArgs e)
@@ -1607,6 +1608,11 @@ namespace Songify_Slim.Views
                 LbRewards.Items.Remove(item);
                 break;
             }
+        }
+
+        private void TglBotQueue_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdQueue = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

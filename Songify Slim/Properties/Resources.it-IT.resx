@@ -708,4 +708,28 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Ignora il controllo dell'emittente/moderatore</value>
   </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Controlla gli aggiornamenti</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Applicabile anche ai file divisi</value>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Non fare nulla</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Usa testo di pausa personalizzato</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Cancella tutto l'output</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Clicca qui dopo aver selezionato la ricompensa</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Ricompense abilitate per le richieste di canzoni</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Restituisce i primi 5 brani della coda di riproduzione corrente</value>
+  </data>
 </root>

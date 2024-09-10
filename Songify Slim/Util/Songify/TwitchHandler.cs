@@ -94,7 +94,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _skipCooldown;
 
         private static string _userId;
-        
+
         public static void ApiConnect(Enums.TwitchAccount account)
         {
             ImplicitOAuth ioa = new(1234);
@@ -1582,7 +1582,7 @@ namespace Songify_Slim.Util.Songify
                     await SetSpotifyVolume(e);
                 }
             }
-            else if (e.ChatMessage.Message.ToLower() == "!queue")
+            else if (e.ChatMessage.Message.ToLower() == "!queue" && Settings.Settings.BotCmdQueue)
             {
                 string output = "";
                 int counter = 1;

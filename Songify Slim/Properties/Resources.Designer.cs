@@ -133,6 +133,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
+        /// </summary>
+        public static string brw_cmd_QueueReturn {
+            get {
+                return ResourceManager.GetString("brw_cmd_QueueReturn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removes the latest song request of the user..
         /// </summary>
         public static string brw_cmd_remove {
@@ -669,6 +678,15 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_BuyUsACoffee {
             get {
                 return ResourceManager.GetString("mw_menu_BuyUsACoffee", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check For Updates.
+        /// </summary>
+        public static string mw_menu_CheckUpdates {
+            get {
+                return ResourceManager.GetString("mw_menu_CheckUpdates", resourceCulture);
             }
         }
         
@@ -1286,6 +1304,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click here after selecting the reward.
+        /// </summary>
+        public static string sw_rewards_ClickReminder {
+            get {
+                return ResourceManager.GetString("sw_rewards_ClickReminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled Rewards for Songrequests.
+        /// </summary>
+        public static string sw_rewards_enabledRewards {
+            get {
+                return ResourceManager.GetString("sw_rewards_enabledRewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reward for Song Skip.
         /// </summary>
         public static string sw_Spotify_RewardSkip {
@@ -1529,6 +1565,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply to split files too.
+        /// </summary>
+        public static string sw_tcOutput_ApplyToSplitFilesToo {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_ApplyToSplitFilesToo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output directory.
         /// </summary>
         public static string sw_tcOutput_Directory {
@@ -1561,6 +1606,33 @@ namespace Songify_Slim.Properties {
         public static string sw_tcOutput_Format2 {
             get {
                 return ResourceManager.GetString("sw_tcOutput_Format2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear All Output.
+        /// </summary>
+        public static string sw_tcOutput_onPause_ClearAllOutput {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_onPause_ClearAllOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do Nothing.
+        /// </summary>
+        public static string sw_tcOutput_onPause_DoNothing {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_onPause_DoNothing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Custom Pause Text.
+        /// </summary>
+        public static string sw_tcOutput_onPause_UseCustomPauseText {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_onPause_UseCustomPauseText", resourceCulture);
             }
         }
         

@@ -722,6 +722,18 @@ namespace Songify_Slim.Util.Settings
 
         public static bool DonationReminder { get => GetDonationReminder(); set => SetDonationReminder(value); }
         public static bool AppendSpacesSplitFiles { get => GetAppendSpacesSplitFiles(); set => SetAppendSpacesSplitFiles(value); }
+        public static bool BotCmdQueue { get => GetBotCmdQueue(); set => SetBotCmdQueue(value); }
+
+        private static void SetBotCmdQueue(bool value)
+        {
+            _currentConfig.BotConfig.BotCmdQueue = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static bool GetBotCmdQueue()
+        {
+            return _currentConfig.BotConfig.BotCmdQueue;
+        }
 
         private static void SetAppendSpacesSplitFiles(bool value)
         {
@@ -1024,7 +1036,8 @@ namespace Songify_Slim.Util.Settings
                 BotRespCooldown = GetBot_Resp_Cooldown(),
                 BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
                 BotCmdVol = GetBotCmdVol(),
-                BotCmdVolIgnoreMod = GetBotCmdVolIgnoreMod()
+                BotCmdVolIgnoreMod = GetBotCmdVolIgnoreMod(),
+                BotCmdQueue = GetBotCmdQueue()
             };
 
             AppConfig appConfig = new()

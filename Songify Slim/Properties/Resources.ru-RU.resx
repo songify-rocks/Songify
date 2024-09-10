@@ -709,4 +709,28 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Игнорировать проверку вещателя/модератора</value>
   </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Проверить наличие обновлений</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Применить также к разделенным файлам</value>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Ничего не делать</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Использовать пользовательский текст паузы</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Очистить все выходные данные</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Нажмите здесь после выбора награды</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Включены награды за Songrequests</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Возвращает первые 5 песен текущей очереди воспроизведения.</value>
+  </data>
 </root>

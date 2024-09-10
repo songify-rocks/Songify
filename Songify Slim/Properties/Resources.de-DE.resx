@@ -709,4 +709,28 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Broadcaster-/Moderator-Check ignorieren</value>
   </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Nach Updates suchen</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Auch auf geteilte Dateien anwenden</value>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Nichts tun</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Benutzerdefinierten Pausentext verwenden</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Gesamte Ausgabe löschen</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Klicke hier, nachdem die Belohnung ausgewählt wurde</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Aktivierte Kanal-Belohnungen für Songanfragen</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Gibt die ersten 5 Songs der aktuellen Wiedergabewarteschlange zurück</value>
+  </data>
 </root>
