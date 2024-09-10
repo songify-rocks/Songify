@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xaml;
+using Songify_Slim.Util.Settings;
 using Application = System.Windows.Application;
 using Markdown = Markdig.Wpf.Markdown;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -40,7 +41,7 @@ namespace Songify_Slim.Views
 
             if (GlobalObjects.IsBeta)
             {
-                string patchnotes = await WebHelper.GetBetaPatchNotes("https://songify.overcode.tv/beta_update.md");
+                string patchnotes = await WebHelper.GetBetaPatchNotes($"{GlobalObjects.BaseUrl}/beta_update.md");
 
                 LbxVersions.Items.Insert(0, new ReleaseObject
                 {
