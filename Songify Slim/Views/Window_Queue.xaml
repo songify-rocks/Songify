@@ -1,99 +1,249 @@
-﻿<controls:MetroWindow x:Class="Songify_Slim.Views.WindowQueue"
-                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                      xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-                      xmlns:properties="clr-namespace:Songify_Slim.Properties"
-                      xmlns:util="clr-namespace:Songify_Slim.Util"
-                      xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-                      mc:Ignorable="d"
-                      Title="{x:Static properties:Resources.WinTitle_Queue}" Height="444" Width="600" WindowStyle="SingleBorderWindow"
-                      Loaded="MetroWindow_Loaded" WindowStartupLocation="Manual" ResizeMode="CanResizeWithGrip">
+﻿<controls:MetroWindow
+    x:Class="Songify_Slim.Views.WindowQueue"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
+    Title="{x:Static properties:Resources.WinTitle_Queue}"
+    Width="600"
+    Height="444"
+    Loaded="MetroWindow_Loaded"
+    ResizeMode="CanResizeWithGrip"
+    WindowStartupLocation="Manual"
+    WindowStyle="SingleBorderWindow"
+    mc:Ignorable="d">
     <controls:MetroWindow.Resources>
         <util:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
     </controls:MetroWindow.Resources>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands ShowSeparators="False">
-            <Button x:Name="btnFontSizeDown"
-                    Focusable="False"
-                    Height="26"  Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeDown_Click">
+            <Button
+                x:Name="btnFontSizeDown"
+                Height="26"
+                Padding="5,5,5,5"
+                Click="btnFontSizeDown_Click"
+                Focusable="False"
+                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
                     Width="15"
                     Height="15"
                     Margin="-1,-1,-1,-1"
                     Kind="FormatFontSizeDecrease" />
             </Button>
-            <Button 
-                Focusable="False"
+            <Button
                 x:Name="btnFontSizeUp"
-                Height="26" Style="{DynamicResource MahApps.Styles.Button.WindowCommands}" Padding="5,5,5,5" Click="btnFontSizeUp_Click">
+                Height="26"
+                Padding="5,5,5,5"
+                Click="btnFontSizeUp_Click"
+                Focusable="False"
+                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
                     Width="15"
                     Height="15"
                     Margin="-1,-1,-1,-1"
                     Kind="FormatFontSizeIncrease" />
             </Button>
-            <TextBlock 
-                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}"
-                x:Name="tbFontSize" 
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
+            <TextBlock
+                x:Name="tbFontSize"
                 Margin="3,0,12,0"
-            />
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Margin="6,10,0,0" Orientation="Horizontal">
-            <StackPanel Orientation="Vertical" Margin="6,2">
-                <Border Background="SteelBlue" Width="auto"  Height="25" CornerRadius="3">
-                    <TextBlock Text="Now Playing" VerticalAlignment="Center" Margin="6,0"/>
+        <StackPanel
+            Grid.Row="0"
+            Margin="6,10,0,0"
+            HorizontalAlignment="Left"
+            Orientation="Horizontal">
+            <StackPanel Margin="6,2" Orientation="Vertical">
+                <Border
+                    Width="auto"
+                    Height="25"
+                    Background="SteelBlue"
+                    CornerRadius="3">
+                    <TextBlock
+                        Margin="6,0"
+                        VerticalAlignment="Center"
+                        Text="Now Playing" />
                 </Border>
             </StackPanel>
-            <StackPanel Orientation="Vertical" Margin="6,2">
-                <Border Background="SeaGreen"  Width="auto" Height="25" CornerRadius="3">
-                    <TextBlock Text="Song Request" VerticalAlignment="Center" Margin="6,0"/>
+            <StackPanel Margin="6,2" Orientation="Vertical">
+                <Border
+                    Width="auto"
+                    Height="25"
+                    Background="SeaGreen"
+                    CornerRadius="3">
+                    <TextBlock
+                        Margin="6,0"
+                        VerticalAlignment="Center"
+                        Text="Song Request" />
                 </Border>
             </StackPanel>
-            <StackPanel Orientation="Vertical" Margin="6,2">
-                <Border Background="IndianRed" Width="auto" Height="25"  CornerRadius="3">
-                    <TextBlock Text="Skipping" VerticalAlignment="Center" Margin="6,0"/>
+            <StackPanel Margin="6,2" Orientation="Vertical">
+                <Border
+                    Width="auto"
+                    Height="25"
+                    Background="IndianRed"
+                    CornerRadius="3">
+                    <TextBlock
+                        Margin="6,0"
+                        VerticalAlignment="Center"
+                        Text="Skipping" />
                 </Border>
             </StackPanel>
 
         </StackPanel>
-        <Button Content="Clear Queue" Click="BtnClearQueue_Click" Grid.Row="0" x:Name="BtnClearQueue" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,120,0"/>
-        <Expander Background="{StaticResource MahApps.Brushes.Control.Background}" Grid.Row="0" Grid.RowSpan="2" x:Name="DropDownCols" Margin="0,10,10,0" Width="107" HorizontalAlignment="Right" Header="Columns" Panel.ZIndex="6" VerticalAlignment="Top">
+        <Button
+            x:Name="BtnClearQueue"
+            Grid.Row="0"
+            Margin="0,10,120,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="BtnClearQueue_Click"
+            Content="Clear Queue" />
+        <Expander
+            x:Name="DropDownCols"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Width="107"
+            Margin="0,10,10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Panel.ZIndex="6"
+            Background="{StaticResource MahApps.Brushes.Control.Background}"
+            Header="Columns">
             <StackPanel x:Name="stackCols" Orientation="Vertical">
-                <CheckBox Margin="3" Tag="0" x:Name="CheckColQueueID" Content="QueueId" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
-                <CheckBox Margin="3" Tag="1" x:Name="CheckColArtist" Content="Artist" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
-                <CheckBox Margin="3" Tag="2" x:Name="CheckColTitle" Content="Title" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
-                <CheckBox Margin="3" Tag="3" x:Name="CheckColLength" Content="Length" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
-                <CheckBox Margin="3" Tag="4" x:Name="CheckColRequester" Content="Requester" Checked="ColVisChecked" Unchecked="ColVisChecked"></CheckBox>
+                <CheckBox
+                    x:Name="CheckColQueueID"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="QueueId"
+                    Tag="0"
+                    Unchecked="ColVisChecked" />
+                <CheckBox
+                    x:Name="CheckColArtist"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="Artist"
+                    Tag="1"
+                    Unchecked="ColVisChecked" />
+                <CheckBox
+                    x:Name="CheckColTitle"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="Title"
+                    Tag="2"
+                    Unchecked="ColVisChecked" />
+                <CheckBox
+                    x:Name="CheckColLength"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="Length"
+                    Tag="3"
+                    Unchecked="ColVisChecked" />
+                <CheckBox
+                    x:Name="CheckColRequester"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="Requester"
+                    Tag="4"
+                    Unchecked="ColVisChecked" />
+                <CheckBox
+                    x:Name="CheckColAction"
+                    Margin="3"
+                    Checked="ColVisChecked"
+                    Content="Action"
+                    Tag="5"
+                    Unchecked="ColVisChecked" />
             </StackPanel>
         </Expander>
-        <DataGrid Grid.Row="1" x:Name="dgv_Queue" Margin="10,10,10,10" CanUserAddRows="False" CanUserSortColumns="False" AutoGenerateColumns="False" HorizontalScrollBarVisibility="Disabled" BeginningEdit="dgv_Queue_BeginningEdit">
+        <DataGrid
+            x:Name="dgv_Queue"
+            Grid.Row="1"
+            Margin="10,10,10,10"
+            AutoGenerateColumns="False"
+            BeginningEdit="dgv_Queue_BeginningEdit"
+            CanUserAddRows="False"
+            CanUserSortColumns="False"
+            HorizontalScrollBarVisibility="Disabled">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Delete" Click="DgvItemDelete_Click" />
+                    <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTextColumn  Visibility="Visible" x:Name="ColQueueId" Width="*" Header="Queue ID" Binding="{Binding Path=Queueid}" />
-                <DataGridTextColumn  Visibility="Visible" x:Name="ColArtist" Width="*" Header="{x:Static properties:Resources.bw_cbArtist}" Binding="{Binding Path=Artist}" />
-                <DataGridTextColumn  Visibility="Visible" x:Name="ColTitle" Width="*" Header="{x:Static properties:Resources.crw_RewardTitle}" Binding="{Binding Path=Title}" />
-                <DataGridTextColumn  Visibility="Visible" x:Name="ColLength" Width="*" Header="{x:Static properties:Resources.s_Length}" Binding="{Binding Path=Length}" />
-                <DataGridTextColumn  Visibility="Visible" x:Name="ColRequester" Width="*" Header="{x:Static properties:Resources.s_Requester}" Binding="{Binding Path=Requester}" />
+                <DataGridTextColumn
+                    x:Name="ColQueueId"
+                    Width="*"
+                    Binding="{Binding Path=Queueid}"
+                    Header="Queue ID"
+                    Visibility="Visible" />
+                <DataGridTextColumn
+                    x:Name="ColArtist"
+                    Width="*"
+                    Binding="{Binding Path=Artist}"
+                    Header="{x:Static properties:Resources.bw_cbArtist}"
+                    Visibility="Visible" />
+                <DataGridTextColumn
+                    x:Name="ColTitle"
+                    Width="*"
+                    Binding="{Binding Path=Title}"
+                    Header="{x:Static properties:Resources.crw_RewardTitle}"
+                    Visibility="Visible" />
+                <DataGridTextColumn
+                    x:Name="ColLength"
+                    Width="*"
+                    Binding="{Binding Path=Length}"
+                    Header="{x:Static properties:Resources.s_Length}"
+                    Visibility="Visible" />
+                <DataGridTextColumn
+                    x:Name="ColRequester"
+                    Width="*"
+                    Binding="{Binding Path=Requester}"
+                    Header="{x:Static properties:Resources.s_Requester}"
+                    Visibility="Visible" />
+                <DataGridTemplateColumn
+                    x:Name="colDeleteButton"
+                    Header="Action"
+                    Visibility="Visible">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="DgvButtonSkip_Click">
+                                <Button.Style>
+                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Played}" Value="-1">
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <Button.Content>
+                                    <iconPacks:BootstrapIcons Kind="SkipEnd" />
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="LightGray"></Setter>
+                            <Setter Property="Background" Value="LightGray" />
                         </Trigger>
                         <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
                             <Setter Property="Background" Value="IndianRed" />
@@ -105,7 +255,7 @@
                             <Setter Property="Background" Value="SteelBlue" />
                         </DataTrigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="SeaGreen"></Setter>
+                    <Setter Property="Background" Value="SeaGreen" />
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>

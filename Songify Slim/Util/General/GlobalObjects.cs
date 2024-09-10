@@ -29,7 +29,7 @@ namespace Songify_Slim.Util.General
         public static FlowDocument ConsoleDocument = new();
         public static TrackInfo CurrentSong;
         public static bool DetachConsole = false;
-        public static bool IsBeta = false;
+        public static bool IsBeta = true;
         public static bool IsInPlaylist;
         public static ObservableCollection<RequestObject> ReqList = new();
         public static string Requester = "";
@@ -160,6 +160,7 @@ namespace Songify_Slim.Util.General
                             await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                             itemsToRemove.Add(requestObject);
                         }
+
                         catch (Exception ex)
                         {
                             // Log or handle error for individual request failure
@@ -194,84 +195,89 @@ namespace Songify_Slim.Util.General
                 {
                     try
                     {
+                        // Clear the tracks in the queue
                         QueueTracks.Clear();
                         // Dictionary to keep track of replacements
                         Dictionary<string, bool> replacementTracker = new Dictionary<string, bool>();
+
+                        // Process the queue regardless of whether the window is open
+                        foreach (FullTrack fullTrack in queue.Queue)
+                        {
+                            try
+                            {
+                                // Determine if we have a matching request object that hasn't been used for replacement yet
+                                RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
+                                RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+
+                                if (reqObj != null)
+                                {
+                                    QueueTracks.Add(reqObj);
+                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                                }
+                                else if (skipObj != null)
+                                {
+                                    skipObj.Requester = "Skipping...";
+                                    QueueTracks.Add(skipObj);
+                                    replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                                }
+                                else
+                                {
+                                    var newRequestObject = new RequestObject
+                                    {
+                                        Queueid = 0,
+                                        Uuid = Settings.Settings.Uuid,
+                                        Trackid = fullTrack.Id,
+                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                        Title = fullTrack.Name,
+                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                        Requester = "Spotify",
+                                        Played = 0,
+                                        Albumcover = null
+                                    };
+
+                                    QueueTracks.Add(newRequestObject);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // Log or handle error during queue processing
+                                Logger.LogStr("CORE: Error processing queue item");
+                                Logger.LogExc(ex);
+                            }
+                        }
+
+                        // Check if the queue window is open and update it accordingly
                         foreach (Window window in Application.Current.Windows)
                         {
                             if (window.GetType() != typeof(WindowQueue))
                                 continue;
 
-                            if (window is not WindowQueue windowQueue)
-                                continue;
-
-                            windowQueue.dgv_Queue.ItemsSource = null;
-                            windowQueue.dgv_Queue.Items.Clear();
-
-                            foreach (FullTrack fullTrack in queue.Queue)
+                            if (window is WindowQueue windowQueue)
                             {
-                                try
-                                {
-                                    // Determine if we have a matching request object that hasn't been used for replacement yet
-                                    RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
-                                    RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+                                windowQueue.dgv_Queue.ItemsSource = null;
+                                windowQueue.dgv_Queue.Items.Clear();
 
-                                    if (reqObj != null)
-                                    {
-                                        // If we found a request object, and it hasn't been used for replacement, add it and mark as used
-                                        windowQueue.dgv_Queue.Items.Add(reqObj);
-                                        QueueTracks.Add(reqObj);
-                                        replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
-                                    }
-                                    else if (skipObj != null)
-                                    {
-                                        skipObj.Requester = "Skipping...";
-                                        windowQueue.dgv_Queue.Items.Add(skipObj);
-                                        QueueTracks.Add(skipObj);
-                                        replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
-                                    }
-                                    else
-                                    {
-                                        var newRequestObject = new RequestObject
-                                        {
-                                            Queueid = 0,
-                                            Uuid = Settings.Settings.Uuid,
-                                            Trackid = fullTrack.Id,
-                                            Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
-                                            Title = fullTrack.Name,
-                                            Length = MsToMmSsConverter((int)fullTrack.DurationMs),
-                                            Requester = "Spotify",
-                                            Played = 0,
-                                            Albumcover = null
-                                        };
-
-                                        QueueTracks.Add(newRequestObject);
-                                        windowQueue.dgv_Queue.Items.Add(newRequestObject);
-                                    }
-                                }
-                                catch (Exception ex)
+                                foreach (var track in QueueTracks)
                                 {
-                                    // Log or handle error during queue processing
-                                    Logger.LogStr("CORE: Error processing queue item");
-                                    Logger.LogExc(ex);
+                                    windowQueue.dgv_Queue.Items.Add(track);
                                 }
+
+                                // Add the current song to the top of the queue
+                                windowQueue.dgv_Queue.Items.Insert(0, new RequestObject
+                                {
+                                    Queueid = 0,
+                                    Uuid = Settings.Settings.Uuid,
+                                    Trackid = CurrentSong.SongId,
+                                    Artist = CurrentSong.Artists,
+                                    Title = CurrentSong.Title,
+                                    Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
+                                    Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
+                                    Played = -1,
+                                    Albumcover = null
+                                });
+
+                                windowQueue.dgv_Queue.Items.Refresh();
                             }
-
-                            // Add the current song to the top of the queue
-                            windowQueue.dgv_Queue.Items.Insert(0, new RequestObject
-                            {
-                                Queueid = 0,
-                                Uuid = Settings.Settings.Uuid,
-                                Trackid = CurrentSong.SongId,
-                                Artist = CurrentSong.Artists,
-                                Title = CurrentSong.Title,
-                                Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
-                                Requester = Requester == "" ? "Spotify" : Requester,
-                                Played = -1,
-                                Albumcover = null
-                            });
-
-                            windowQueue.dgv_Queue.Items.Refresh();
                         }
                     }
                     catch (Exception ex)
@@ -281,6 +287,7 @@ namespace Songify_Slim.Util.General
                         Logger.LogExc(ex);
                     }
                 });
+
             }
             catch (Exception ex)
             {

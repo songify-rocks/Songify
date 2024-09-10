@@ -34,6 +34,12 @@ namespace Songify_Slim.Views
 
             foreach (DataGridColumn dataGridColumn in dgv_Queue.Columns)
             {
+                //if ((string)dataGridColumn.Header == "Action")
+                //{
+                //    dataGridColumn.Visibility = Visibility.Visible;
+                //    continue;
+                //}
+
                 dataGridColumn.Visibility = Visibility.Collapsed;
             }
             foreach (int queueWindowColumn in Settings.QueueWindowColumns)
@@ -125,6 +131,29 @@ namespace Songify_Slim.Views
             Settings.FontsizeQueue = fontSize;
             dgv_Queue.FontSize = fontSize;
             tbFontSize.Text = fontSize.ToString();
+        }
+
+        private async void DgvButtonSkip_Click(object sender, RoutedEventArgs e)
+        {
+            // This deletes the selected requestobject
+            if (dgv_Queue.SelectedItem == null)
+                return;
+
+            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            //if (req.Queueid == 0 || req.Requester == "Spotify") return;
+            dynamic payload = new
+            {
+                uuid = Settings.Uuid,
+                key = Settings.AccessKey,
+                queueid = req.Queueid,
+            };
+            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                GlobalObjects.ReqList.Remove(req);
+                GlobalObjects.SkipList.Add(req);
+            }));
+            GlobalObjects.QueueUpdateQueueWindow();
         }
     }
 }

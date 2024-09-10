@@ -30,6 +30,7 @@ namespace Songify_Slim.Util.Songify
     // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler
     {
+        private static PlaylistInfo playlistInfo;
         public static SpotifyWebAPI Spotify;
         private static Token _lastToken;
         public static bool Authed;
@@ -248,7 +249,6 @@ namespace Songify_Slim.Util.Songify
             double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;
             double currentDuration = TimeSpan.FromMilliseconds(context.ProgressMs).TotalSeconds;
             double percentage = 100 / totalSeconds * currentDuration;
-            PlaylistInfo playlistInfo = null;
             try
             {
                 if (context.Context is { Type: "playlist" })
@@ -273,6 +273,7 @@ namespace Songify_Slim.Util.Songify
             catch (Exception ex)
             {
                 // ignored because it's not important if the playlist info can't be fetched
+                playlistInfo = null;
             }
 
             return new TrackInfo

@@ -162,7 +162,7 @@ namespace Songify_Slim.Util.Songify
                             }
                             int dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
                             if (dashIndex != -1)
-                            {   
+                            {
                                 artist = wintitle.Substring(0, dashIndex).Trim();
                                 dashIndex += 3;
                                 title = wintitle.Substring(dashIndex, wintitle.Length - dashIndex).Trim();
@@ -590,7 +590,6 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-
                     if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
                     {
                         //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
@@ -601,7 +600,10 @@ namespace Songify_Slim.Util.Songify
 
                     // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
                     await WriteSongInfo(songInfo);
+                    await CheckInLikedPlaylist(songInfo);
+
                 }
+                Debug.Write(songInfo.Playlist);
 
                 UpdateWebServerResponse(songInfo);
             }
@@ -640,6 +642,8 @@ namespace Songify_Slim.Util.Songify
                         if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) IOManager.DownloadCover(null, coverPath);
                         IOManager.WriteOutput(songPath, "");
                         if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput("", "", "");
+                        if (Settings.Settings.Upload)
+                            WebHelper.UploadSong("");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -935,10 +939,13 @@ namespace Songify_Slim.Util.Songify
                         tracks.Offset + tracks.Limit);
                 if (tracks.Items.Any(t => t.Track.Id == id))
                 {
+                    GlobalObjects.IsInPlaylist = true;
                     return true;
                 }
                 firstFetch = false;
             } while (tracks.HasNextPage());
+
+            GlobalObjects.IsInPlaylist = false;
             return false;
         }
     }
