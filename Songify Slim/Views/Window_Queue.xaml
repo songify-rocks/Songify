@@ -5,6 +5,7 @@
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:util="clr-namespace:Songify_Slim.Util"
@@ -16,9 +17,6 @@
     WindowStartupLocation="Manual"
     WindowStyle="SingleBorderWindow"
     mc:Ignorable="d">
-    <controls:MetroWindow.Resources>
-        <util:BooleanToVisibilityConverter x:Key="VisibilityConverter" />
-    </controls:MetroWindow.Resources>
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands ShowSeparators="False">
             <Button
@@ -104,6 +102,14 @@
 
         </StackPanel>
         <Button
+            x:Name="BtnUpdateQueue"
+            Grid.Row="0"
+            Margin="0,10,200,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="BtnUpdateQueue_OnClick"
+            Content="Refresh" />
+        <Button
             x:Name="BtnClearQueue"
             Grid.Row="0"
             Margin="0,10,120,0"
@@ -171,11 +177,45 @@
             x:Name="dgv_Queue"
             Grid.Row="1"
             Margin="10,10,10,10"
+            AddingNewItem="dgv_Queue_AddingNewItem"
             AutoGenerateColumns="False"
             BeginningEdit="dgv_Queue_BeginningEdit"
             CanUserAddRows="False"
             CanUserSortColumns="False"
-            HorizontalScrollBarVisibility="Disabled">
+            EnableColumnVirtualization="False"
+            EnableRowVirtualization="False"
+            HorizontalScrollBarVisibility="Disabled"
+            SelectionMode="Single"
+            SourceUpdated="Dgv_Queue_OnSourceUpdated">
+            <DataGrid.Resources>
+                <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->
+                <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
+                    <Setter Property="Foreground" Value="White" />
+                    <Style.Triggers>
+                        <!--  When the row is selected, change the background and foreground  -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        </Trigger>
+                        <!--  When the mouse hovers over a row, change the background and foreground  -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
+                    <Setter Property="Foreground" Value="White" />
+                    <Style.Triggers>
+                        <!--  When the row is selected, change the background and foreground  -->
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        </Trigger>
+                        <!--  When the mouse hovers over a row, change the background and foreground  -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
@@ -214,27 +254,46 @@
                     Visibility="Visible" />
                 <DataGridTemplateColumn
                     x:Name="colDeleteButton"
-                    Header="Action"
+                    Header="Actions"
                     Visibility="Visible">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="DgvButtonSkip_Click">
-                                <Button.Style>
-                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Played}" Value="-1">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                                <Button.Content>
-                                    <iconPacks:BootstrapIcons Kind="SkipEnd" />
-                                </Button.Content>
-                            </Button>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Click="DgvButtonSkip_Click" ToolTip="Skip Song">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                                <!--<DataTrigger Binding="{Binding Played}" Value="-1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>-->
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <Button.Content>
+                                        <iconPacks:BootstrapIcons Kind="SkipEnd" />
+                                    </Button.Content>
+                                </Button>
+                                <Button
+                                    Click="DgvButtonAddToFav_Click"
+                                    Tag="like"
+                                    ToolTip="Add to favorite playlist">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>
+                                                <!--<DataTrigger Binding="{Binding Played}" Value="-1">
+                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                </DataTrigger>-->
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

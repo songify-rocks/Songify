@@ -22,4 +22,7 @@ public class RequestObject
     public int Played { get; set; }
     [JsonProperty("albumcover")]
     public string Albumcover { get; set; }
+
+    public bool IsLiked { get; set; } = false;
+
 }

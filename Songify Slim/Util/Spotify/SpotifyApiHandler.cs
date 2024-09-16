@@ -256,7 +256,7 @@ namespace Songify_Slim.Util.Songify
                     if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != context.Item.Id)
                     {
                         FullPlaylist playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
-                        if (playlist != null)
+                        if (playlist != null || !GlobalObjects.IsObjectDefault(playlist))
                         {
                             playlistInfo = new PlaylistInfo
                             {
@@ -400,6 +400,39 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogExc(e);
                 return null;
+            }
+        }
+
+        public static async Task<bool> AddToPlaylist(string trackId)
+        {
+            try
+            {
+                Paging<PlaylistTrack> tracks =
+                    await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+
+                while (tracks is { Items: not null })
+                {
+                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    {
+                        return true;
+                    }
+
+                    if (!tracks.HasNextPage())
+                    {
+                        break;  // Exit if no more pages
+                    }
+
+                    tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                }
+
+                ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                    $"spotify:track:{trackId}");
+                return x == null || x.HasError();
+            }
+            catch (Exception)
+            {
+                Logger.LogStr("Error adding song to playlist");
+                return true;
             }
         }
 

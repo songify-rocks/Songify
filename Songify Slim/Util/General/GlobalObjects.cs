@@ -12,9 +12,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using Unosquare.Swan.Formatters;
+using MahApps.Metro.IconPacks;
 
 namespace Songify_Slim.Util.General
 {
@@ -35,7 +37,8 @@ namespace Songify_Slim.Util.General
         public static string Requester = "";
         public static int RewardGoalCount = 0;
         public static List<RequestObject> SkipList = new();
-        public static List<RequestObject> QueueTracks = new();
+        public static ObservableCollection<RequestObject> QueueTracks { get; set; } = new ObservableCollection<RequestObject>();
+
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
@@ -44,7 +47,9 @@ namespace Songify_Slim.Util.General
         internal static string AllowedPlaylistUrl;
         public static PrivateProfile SpotifyProfile;
         public static bool ForceUpdate;
-        private static readonly TaskQueue updateQueueWindowTasks = new();
+        private static readonly TaskQueue UpdateQueueWindowTasks = new();
+        public static List<PlaylistTrack> LikedPlaylistTracks = [];
+
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
@@ -93,6 +98,24 @@ namespace Songify_Slim.Util.General
             return foundChild;
         }
 
+        public static bool IsObjectDefault<T>(T obj)
+        {
+            if (obj == null)
+                return false;  // The object itself is not null based on your condition.
+
+            // Get all properties of the object using reflection.
+            PropertyInfo[] properties = typeof(T).GetProperties();
+
+            // Check each property if it's equal to the default value of its type.
+            return !(from property in properties
+                     let propertyValue = property.GetValue(obj)
+                     let defaultValue = property.PropertyType.IsValueType
+                         ? Activator.CreateInstance(property.PropertyType)
+                         : null
+                     where !Equals(propertyValue, defaultValue)
+                     select propertyValue).Any();
+        }
+
         public static string MsToMmSsConverter(int milliseconds)
         {
             // Convert milliseconds to seconds
@@ -126,7 +149,7 @@ namespace Songify_Slim.Util.General
 
         public static void QueueUpdateQueueWindow()
         {
-            updateQueueWindowTasks.Enqueue(UpdateQueueWindow);
+            UpdateQueueWindowTasks.Enqueue(UpdateQueueWindow);
         }
 
         public static async Task UpdateQueueWindow()
@@ -160,7 +183,6 @@ namespace Songify_Slim.Util.General
                             await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
                             itemsToRemove.Add(requestObject);
                         }
-
                         catch (Exception ex)
                         {
                             // Log or handle error for individual request failure
@@ -191,34 +213,41 @@ namespace Songify_Slim.Util.General
                     }
                 }
 
-                Application.Current.Dispatcher.Invoke(() =>
+                await Application.Current.Dispatcher.Invoke(async () =>
                 {
                     try
                     {
-                        // Clear the tracks in the queue
-                        QueueTracks.Clear();
+                        // Clear the tracks in the queue (ObservableCollection will notify the UI)
+
+                        await LoadLikedPlaylistTracks();
+
+                        List<RequestObject> tempQueueList = new List<RequestObject>();
                         // Dictionary to keep track of replacements
                         Dictionary<string, bool> replacementTracker = new Dictionary<string, bool>();
 
-                        // Process the queue regardless of whether the window is open
+                        // Process the queue
                         foreach (FullTrack fullTrack in queue.Queue)
                         {
                             try
                             {
+                                bool isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
+
                                 // Determine if we have a matching request object that hasn't been used for replacement yet
                                 RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
                                 RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
 
                                 if (reqObj != null)
                                 {
-                                    QueueTracks.Add(reqObj);
-                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as having been replaced
+                                    reqObj.IsLiked = isInLikedPlaylist;
+                                    tempQueueList.Add(reqObj);
+                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as replaced
                                 }
                                 else if (skipObj != null)
                                 {
                                     skipObj.Requester = "Skipping...";
-                                    QueueTracks.Add(skipObj);
-                                    replacementTracker[skipObj.Trackid] = true; // Mark this track ID as having been replaced
+                                    skipObj.IsLiked = isInLikedPlaylist;
+                                    tempQueueList.Add(skipObj);
+                                    replacementTracker[skipObj.Trackid] = true;
                                 }
                                 else
                                 {
@@ -227,15 +256,16 @@ namespace Songify_Slim.Util.General
                                         Queueid = 0,
                                         Uuid = Settings.Settings.Uuid,
                                         Trackid = fullTrack.Id,
-                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name).ToList()),
+                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name)),
                                         Title = fullTrack.Name,
                                         Length = MsToMmSsConverter((int)fullTrack.DurationMs),
                                         Requester = "Spotify",
                                         Played = 0,
-                                        Albumcover = null
+                                        Albumcover = null,
+                                        IsLiked = isInLikedPlaylist
                                     };
 
-                                    QueueTracks.Add(newRequestObject);
+                                    tempQueueList.Add(newRequestObject);
                                 }
                             }
                             catch (Exception ex)
@@ -254,16 +284,13 @@ namespace Songify_Slim.Util.General
 
                             if (window is WindowQueue windowQueue)
                             {
-                                windowQueue.dgv_Queue.ItemsSource = null;
-                                windowQueue.dgv_Queue.Items.Clear();
-
-                                foreach (var track in QueueTracks)
-                                {
-                                    windowQueue.dgv_Queue.Items.Add(track);
-                                }
+                                // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
+                                QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
+                                windowQueue.dgv_Queue.ItemsSource = QueueTracks;
+                                bool isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
 
                                 // Add the current song to the top of the queue
-                                windowQueue.dgv_Queue.Items.Insert(0, new RequestObject
+                                QueueTracks.Insert(0, new RequestObject
                                 {
                                     Queueid = 0,
                                     Uuid = Settings.Settings.Uuid,
@@ -273,10 +300,10 @@ namespace Songify_Slim.Util.General
                                     Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
                                     Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
                                     Played = -1,
-                                    Albumcover = null
+                                    Albumcover = null,
+                                    IsLiked = isInLikedPlaylist
                                 });
-
-                                windowQueue.dgv_Queue.Items.Refresh();
+                                windowQueue.UpdateQueueIcons();
                             }
                         }
                     }
@@ -287,7 +314,6 @@ namespace Songify_Slim.Util.General
                         Logger.LogExc(ex);
                     }
                 });
-
             }
             catch (Exception ex)
             {
@@ -295,6 +321,51 @@ namespace Songify_Slim.Util.General
                 Logger.LogStr("CORE: Error in QueueUpdate method");
                 Logger.LogExc(ex);
             }
+
+        }
+
+
+        public static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
+        {
+            Debug.WriteLine("Check Playlist");
+            if (trackInfo.SongId == null)
+                return false;
+            string id = trackInfo.SongId;
+            if (string.IsNullOrEmpty(id))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+            {
+                return false;
+            }
+
+            if (LikedPlaylistTracks == null)
+                await LoadLikedPlaylistTracks();
+
+            if (LikedPlaylistTracks != null && LikedPlaylistTracks.Any(o => o.Track.Id == trackInfo.SongId))
+                return true;
+
+            IsInPlaylist = false;
+            return false;
+        }
+
+        private static async Task LoadLikedPlaylistTracks()
+        {
+            bool firstFetch = true;
+            LikedPlaylistTracks = [];
+            Paging<PlaylistTrack> tracks = null;
+            do
+            {
+                tracks = firstFetch
+                    ? await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
+                    : await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
+                        tracks.Offset + tracks.Limit);
+                LikedPlaylistTracks.AddRange(tracks.Items);
+                firstFetch = false;
+            } while (tracks.HasNextPage());
+
         }
 
         public static string GetReadablePlayer()

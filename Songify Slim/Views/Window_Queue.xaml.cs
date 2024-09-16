@@ -1,4 +1,5 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
@@ -6,11 +7,14 @@ using Songify_Slim.Util.Songify;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
+using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using DataGridColumn = System.Windows.Controls.DataGridColumn;
 
@@ -138,8 +142,14 @@ namespace Songify_Slim.Views
             // This deletes the selected requestobject
             if (dgv_Queue.SelectedItem == null)
                 return;
-
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+
+            if (req.Trackid == GlobalObjects.CurrentSong.SongId)
+            {
+                await SpotifyApiHandler.SkipSong();
+                return;
+            }
+
             //if (req.Queueid == 0 || req.Requester == "Spotify") return;
             dynamic payload = new
             {
@@ -154,6 +164,80 @@ namespace Songify_Slim.Views
                 GlobalObjects.SkipList.Add(req);
             }));
             GlobalObjects.QueueUpdateQueueWindow();
+        }
+
+        private async void DgvButtonAddToFav_Click(object sender, RoutedEventArgs e)
+        {
+            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            if (req == null)
+                return;
+            await SpotifyApiHandler.AddToPlaylist(req.Trackid);
+            GlobalObjects.QueueUpdateQueueWindow();
+        }
+
+        private void BtnUpdateQueue_OnClick(object sender, RoutedEventArgs e)
+        {
+            dgv_Queue.Items.Refresh();
+        }
+
+        private void Dgv_Queue_OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            foreach (object item in dgv_Queue.Items)
+            {
+                // Check if the item is a RequestObject and cast it
+                if (item is not RequestObject request) continue;
+                // Get the index of the item in the DataGrid
+                int rowIndex = dgv_Queue.Items.IndexOf(request);
+                DataGridRow row = (DataGridRow)dgv_Queue.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+
+                if (row == null) continue;
+                // Find the button inside the DataGridTemplateColumn
+                IEnumerable<Button> buttons = GlobalObjects.FindVisualChildren<Button>(row);
+
+                foreach (Button button in buttons)
+                {
+                    if (button.Tag.ToString() == "like")
+                    {
+                        button.Content = request.IsLiked ?
+                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.HeartFill } :
+                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.Heart };
+                    }
+                }
+            }
+        }
+
+        public void UpdateQueueIcons()
+        {
+            dgv_Queue.Items.Refresh();
+            dgv_Queue.UpdateLayout();
+
+            foreach (object item in dgv_Queue.Items)
+            {
+                // Check if the item is a RequestObject and cast it
+                if (item is not RequestObject request) continue;
+                // Get the index of the item in the DataGrid
+                int rowIndex = dgv_Queue.Items.IndexOf(request);
+                DataGridRow row = (DataGridRow)dgv_Queue.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+
+                if (row == null) continue;
+                // Find the button inside the DataGridTemplateColumn
+                IEnumerable<Button> buttons = GlobalObjects.FindVisualChildren<Button>(row);
+
+                foreach (Button button in buttons)
+                {
+                    if (button.Tag != null && button.Tag.ToString() == "like")
+                    {
+                        button.Content = request.IsLiked ?
+                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.HeartFill } :
+                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.Heart };
+                    }
+                }
+            }
+        }
+
+        private void dgv_Queue_AddingNewItem(object sender, AddingNewItemEventArgs e)
+        {
+
         }
     }
 }

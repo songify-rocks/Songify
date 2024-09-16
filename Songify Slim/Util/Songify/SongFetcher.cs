@@ -600,7 +600,7 @@ namespace Songify_Slim.Util.Songify
 
                     // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
                     await WriteSongInfo(songInfo);
-                    await CheckInLikedPlaylist(songInfo);
+                    await GlobalObjects.CheckInLikedPlaylist(songInfo);
 
                 }
                 UpdateWebServerResponse(songInfo);
@@ -909,42 +909,6 @@ namespace Songify_Slim.Util.Songify
             dictionary["Queue"] = GlobalObjects.ReqList;
             string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
-        }
-
-        private static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
-        {
-            Debug.WriteLine("Check Playlist");
-            if (trackInfo.SongId == null)
-                return false;
-            string id = trackInfo.SongId;
-            if (string.IsNullOrEmpty(id))
-            {
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
-            {
-                return false;
-            }
-
-            bool firstFetch = true;
-            Paging<PlaylistTrack> tracks = null;
-            do
-            {
-                tracks = firstFetch
-                    ? await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
-                    : await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
-                        tracks.Offset + tracks.Limit);
-                if (tracks.Items.Any(t => t.Track.Id == id))
-                {
-                    GlobalObjects.IsInPlaylist = true;
-                    return true;
-                }
-                firstFetch = false;
-            } while (tracks.HasNextPage());
-
-            GlobalObjects.IsInPlaylist = false;
-            return false;
         }
     }
 }
