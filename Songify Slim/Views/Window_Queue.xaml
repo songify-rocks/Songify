@@ -57,58 +57,47 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <StackPanel
             Grid.Row="0"
             Margin="6,10,0,0"
             HorizontalAlignment="Left"
             Orientation="Horizontal">
-            <StackPanel Margin="6,2" Orientation="Vertical">
-                <Border
-                    Width="auto"
-                    Height="25"
-                    Background="SteelBlue"
-                    CornerRadius="3">
-                    <TextBlock
-                        Margin="6,0"
-                        VerticalAlignment="Center"
-                        Text="Now Playing" />
-                </Border>
-            </StackPanel>
-            <StackPanel Margin="6,2" Orientation="Vertical">
-                <Border
-                    Width="auto"
-                    Height="25"
-                    Background="SeaGreen"
-                    CornerRadius="3">
-                    <TextBlock
-                        Margin="6,0"
-                        VerticalAlignment="Center"
-                        Text="Song Request" />
-                </Border>
-            </StackPanel>
-            <StackPanel Margin="6,2" Orientation="Vertical">
-                <Border
-                    Width="auto"
-                    Height="25"
-                    Background="IndianRed"
-                    CornerRadius="3">
-                    <TextBlock
-                        Margin="6,0"
-                        VerticalAlignment="Center"
-                        Text="Skipping" />
-                </Border>
-            </StackPanel>
-
+            <Border
+                Width="auto"
+                Height="25"
+                Margin="3"
+                Background="SteelBlue"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Center"
+                    Text="Now Playing" />
+            </Border>
+            <Border
+                Width="auto"
+                Height="25"
+                Margin="3"
+                Background="SeaGreen"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Center"
+                    Text="Song Request" />
+            </Border>
+            <Border
+                Width="auto"
+                Height="25"
+                Margin="3"
+                Background="IndianRed"
+                CornerRadius="3">
+                <TextBlock
+                    Margin="6,0"
+                    VerticalAlignment="Center"
+                    Text="Skipping" />
+            </Border>
         </StackPanel>
-        <Button
-            x:Name="BtnUpdateQueue"
-            Grid.Row="0"
-            Margin="0,10,200,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Click="BtnUpdateQueue_OnClick"
-            Content="Refresh" />
         <Button
             x:Name="BtnClearQueue"
             Grid.Row="0"
@@ -273,7 +262,7 @@
                                         </Style>
                                     </Button.Style>
                                     <Button.Content>
-                                        <iconPacks:BootstrapIcons Kind="SkipEnd" />
+                                        <iconPacks:BootstrapIcons Kind="DashCircle" />
                                     </Button.Content>
                                 </Button>
                                 <Button
@@ -318,5 +307,77 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
+        <Grid
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            ZIndex="5">
+            <Button
+                x:Name="BtnPlayerControlsVisibility"
+                Padding="0"
+                Click="BtnPlayerControlsVisibility_OnClick"
+                Style="{StaticResource MahApps.Styles.Button.WindowCommands}"
+                ToolTip="Show / Hide Spotify Controls">
+                <Button.Content>
+                    <iconPacks:BootstrapIcons Kind="ChevronDown" />
+                </Button.Content>
+            </Button>
+        </Grid>
+        <Border
+            x:Name="BorderPlayerControls"
+            Grid.Row="2"
+            Margin="6,0,6,6"
+            Padding="0,3"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            BorderThickness="1,1,1,1"
+            CornerRadius="25">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
+                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
+                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="BtnBack"
+                    Click="BtnBack_OnClick"
+                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
+                    <Button.Content>
+                        <iconPacks:BootstrapIcons Kind="SkipStartFill" />
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="BtnPlayPause"
+                    Width="40"
+                    Height="40"
+                    Click="BtnPlayPause_OnClick"
+                    Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                    <Button.Content>
+                        <Grid Margin="3,0,0,0">
+                            <iconPacks:BootstrapIcons Kind="PlayFill" />
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <Button
+                    x:Name="BtnNext"
+                    Click="BtnNext_OnClick"
+                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
+                    <Button.Content>
+                        <iconPacks:BootstrapIcons Kind="SkipEndFill" />
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Border>
     </Grid>
 </controls:MetroWindow>

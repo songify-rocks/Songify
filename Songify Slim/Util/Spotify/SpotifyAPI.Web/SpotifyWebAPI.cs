@@ -2408,15 +2408,17 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <summary>
         ///     Start a new context or resume current playback on the user’s active device.
         /// </summary>
+        /// <param name="spotifyDeviceId"></param>
         /// <param name="deviceId">The id of the device this command is targeting. If not supplied, the user's currently active device is the target.</param>
         /// <param name="contextUri">Spotify URI of the context to play.</param>
         /// <param name="uris">A JSON array of the Spotify track URIs to play.</param>
         /// <param name="offset">Indicates from where in the context playback should start.
-        /// Only available when context_uri corresponds to an album or playlist object, or when the uris parameter is used.</param>
+        ///     Only available when context_uri corresponds to an album or playlist object, or when the uris parameter is used.</param>
         /// <param name="positionMs">The starting time to seek the track to</param>
         /// <returns></returns>
-        public Task<ErrorResponse> ResumePlaybackAsync(string deviceId = "", string contextUri = "", List<string> uris = null,
-          int? offset = null, int positionMs = 0)
+        public Task<ErrorResponse> ResumePlaybackAsync(string spotifyDeviceId, string deviceId = "",
+            string contextUri = "", List<string> uris = null,
+            int? offset = null, int positionMs = 0)
         {
             JObject ob = new();
             if (!string.IsNullOrEmpty(contextUri))

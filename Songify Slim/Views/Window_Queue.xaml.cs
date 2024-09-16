@@ -12,6 +12,7 @@ using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Threading;
 using Unosquare.Swan.Formatters;
 using Button = System.Windows.Controls.Button;
@@ -26,9 +27,25 @@ namespace Songify_Slim.Views
     public partial class WindowQueue
     {
         private readonly DispatcherTimer _timer = new();
+        private DateTime _lastBackButtonClickTime = DateTime.MinValue;
+
         public WindowQueue()
         {
             InitializeComponent();
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += _timer_Tick;
+        }
+
+        private void _timer_Tick(object sender, EventArgs e)
+        {
+            if (GlobalObjects.CurrentSong == null) return;
+            Grid grd = new Grid();
+            if (!GlobalObjects.CurrentSong.IsPlaying)
+                grd.Margin = new Thickness(3, 0, 0, 0);
+            grd.Children.Add(GlobalObjects.CurrentSong.IsPlaying
+                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
+                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
+            BtnPlayPause.Content = grd;
         }
 
         // This window shows the current Queue in a DataGrid
@@ -59,6 +76,23 @@ namespace Songify_Slim.Views
             int fSize = MathUtils.Clamp(Settings.FontsizeQueue, 12, 72);
             tbFontSize.Text = $"{fSize}";
             dgv_Queue.FontSize = fSize;
+            _timer.IsEnabled = true;
+
+
+            if (!Settings.SpotifyControlVisible)
+            {
+                BorderPlayerControls.Visibility = Visibility.Collapsed;
+                BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
+                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
+                    { Kind = PackIconBootstrapIconsKind.ChevronUp };
+            }
+            else
+            {
+                BorderPlayerControls.Visibility = Visibility.Visible;
+                BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
+                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
+                    { Kind = PackIconBootstrapIconsKind.ChevronDown };
+            }
         }
 
         private async void DgvItemDelete_Click(object sender, RoutedEventArgs e)
@@ -238,6 +272,64 @@ namespace Songify_Slim.Views
         private void dgv_Queue_AddingNewItem(object sender, AddingNewItemEventArgs e)
         {
 
+        }
+
+        private async void BtnBack_OnClick(object sender, RoutedEventArgs e)
+        {
+            DateTime currentTime = DateTime.Now;
+
+            // Check if the button was clicked within the last 3 seconds
+            if ((currentTime - _lastBackButtonClickTime).TotalSeconds < 3)
+            {
+                // If clicked again within 3 seconds, skip to the previous track
+                await SpotifyApiHandler.SkipPrevious();
+            }
+            else
+            {
+                // If not, restart the current track from the beginning
+                await SpotifyApiHandler.PlayFromStart();
+            }
+
+            // Update the last click time
+            _lastBackButtonClickTime = currentTime;
+        }
+
+        private async void BtnNext_OnClick(object sender, RoutedEventArgs e)
+        {
+            await SpotifyApiHandler.SkipSong();
+        }
+
+        private async void BtnPlayPause_OnClick(object sender, RoutedEventArgs e)
+        {
+            bool isPlaying = await SpotifyApiHandler.PlayPause();
+
+            Grid grd = new Grid();
+            if (!isPlaying)
+                grd.Margin = new Thickness(3, 0, 0, 0);
+            grd.Children.Add(isPlaying
+                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
+                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
+            BtnPlayPause.Content = grd;
+        }
+
+        private void BtnPlayerControlsVisibility_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (BorderPlayerControls.Visibility == Visibility.Visible)
+            {
+                BorderPlayerControls.Visibility = Visibility.Collapsed;
+                BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
+                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
+                    { Kind = PackIconBootstrapIconsKind.ChevronUp };
+                Settings.SpotifyControlVisible = false;
+            }
+            else
+            {
+                BorderPlayerControls.Visibility = Visibility.Visible;
+                BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
+                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
+                    { Kind = PackIconBootstrapIconsKind.ChevronDown };
+                Settings.SpotifyControlVisible = true;
+            }
         }
     }
 }

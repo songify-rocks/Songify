@@ -79,7 +79,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     Authed = true;
                     Token token = await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken);
-                    if(token == null)
+                    if (token == null)
                         return;
                     Spotify = new SpotifyWebAPI
                     {
@@ -477,7 +477,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                //ignored
                 return null;
             }
         }
@@ -485,6 +485,48 @@ namespace Songify_Slim.Util.Songify
         public static async Task<SimpleQueue> GetQueueInfo()
         {
             return await Spotify.GetQueueAsync();
+        }
+
+        public static async Task SkipPrevious()
+        {
+            try
+            {
+                await Spotify.SkipPlaybackToPreviousAsync(Settings.Settings.SpotifyDeviceId);
+            }
+            catch (Exception e)
+            {
+                //ignored
+            }
+        }
+
+        public static async Task PlayFromStart()
+        {
+            try
+            {
+                await Spotify.SeekPlaybackAsync(0, Settings.Settings.SpotifyDeviceId);
+            }
+            catch (Exception e)
+            {
+                //ignored
+            }
+        }
+
+        public static async Task<bool> PlayPause()
+        {
+            PlaybackContext playback = await Spotify.GetPlaybackAsync();
+
+            try
+            {
+                if (playback.IsPlaying)
+                    await Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                else
+                    await Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, null, 0);
+            }
+            catch (Exception e)
+            {
+                //ignored
+            }
+            return !playback.IsPlaying;
         }
     }
 

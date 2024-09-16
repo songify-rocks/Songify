@@ -723,6 +723,20 @@ namespace Songify_Slim.Util.Settings
         public static bool DonationReminder { get => GetDonationReminder(); set => SetDonationReminder(value); }
         public static bool AppendSpacesSplitFiles { get => GetAppendSpacesSplitFiles(); set => SetAppendSpacesSplitFiles(value); }
         public static bool BotCmdQueue { get => GetBotCmdQueue(); set => SetBotCmdQueue(value); }
+        public static bool SpotifyControlVisible
+        {
+            get => GetSpotifyControlVisible(); set => SetSpotifyControlVisible(value); }
+
+        private static void SetSpotifyControlVisible(bool value)
+        {
+            _currentConfig.AppConfig.SpotifyControlVisible = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static bool GetSpotifyControlVisible()
+        {
+            return _currentConfig.AppConfig.SpotifyControlVisible;
+        }
 
         private static void SetBotCmdQueue(bool value)
         {
@@ -1119,7 +1133,8 @@ namespace Songify_Slim.Util.Settings
                 WebUserAgent = GetWebua(),
                 BaseUrl = GetBaseUrl(),
                 LastShownMotdId = GetLastShownMotdId(),
-                ReadNotificationIds = GetReadNotificationIds()
+                ReadNotificationIds = GetReadNotificationIds(),
+                SpotifyControlVisible = GetSpotifyControlVisible(),
             };
 
             return new Configuration

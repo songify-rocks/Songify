@@ -274,6 +274,7 @@ namespace Songify_Slim.Util.Settings
                                 BaseUrl = "https://songify.overcode.tv",
                                 LastShownMotdId = 0,
                                 ReadNotificationIds = [],
+                                SpotifyControlVisible = false,
                             };
                         }
                         break;
@@ -712,6 +713,7 @@ namespace Songify_Slim.Util.Settings
         public string BaseUrl { get; set; } = "https://songify.rocks";
         public int LastShownMotdId { get; set; }
         public List<int> ReadNotificationIds { get; set; } = [];
+        public bool SpotifyControlVisible { get; set; } = false;
     }
 
     public class Config
