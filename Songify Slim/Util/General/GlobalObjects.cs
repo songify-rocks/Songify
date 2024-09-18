@@ -276,6 +276,8 @@ namespace Songify_Slim.Util.General
                             }
                         }
 
+                        QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
+
                         // Check if the queue window is open and update it accordingly
                         foreach (Window window in Application.Current.Windows)
                         {
@@ -285,7 +287,6 @@ namespace Songify_Slim.Util.General
                             if (window is WindowQueue windowQueue)
                             {
                                 // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
-                                QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
                                 windowQueue.dgv_Queue.ItemsSource = QueueTracks;
                                 bool isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
 
