@@ -40,7 +40,8 @@ namespace Songify_Slim.Util.Songify
         private AutomationElement _parent;
         private static SongInfo _previousSonginfo;
         private static bool _trackChanged;
-        private bool _updating = false;
+        private string _localTrackTitle;
+        private static bool _isLocalTrack;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -501,7 +502,6 @@ namespace Songify_Slim.Util.Songify
 
             if (songInfo == null)
             {
-                _updating = false;
                 return;
             }
 
@@ -512,8 +512,16 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null))
+                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null) || (songInfo.SongId == null && !string.IsNullOrEmpty(songInfo.Title)))
                 {
+                    //for local files: store track title, match it and check if id == null
+                    if (songInfo.SongId == null && _localTrackTitle == songInfo.Title)
+                    {
+                        return;
+                    }
+
+                    _isLocalTrack = songInfo.SongId == null;
+                    _localTrackTitle = songInfo.Title;
                     _trackChanged = true;
 
                     if (GlobalObjects.CurrentSong != null)
@@ -607,10 +615,8 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                _updating = false;
                 Logger.LogExc(e);
             }
-            _updating = false;
         }
 
         private static Task WriteSongInfo(TrackInfo songInfo)
@@ -690,7 +696,7 @@ namespace Songify_Slim.Util.Songify
                 uri => songInfo.SongId,
                 url => songInfo.Url
             ).Format();
-
+            
             currentSongOutputTwitch = currentSongOutputTwitch.Format(
                 single_artist => songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
@@ -699,6 +705,26 @@ namespace Songify_Slim.Util.Songify
                 uri => songInfo.SongId,
                 url => songInfo.Url
             ).Format();
+
+            if (_isLocalTrack && string.IsNullOrEmpty(songInfo.Artists))
+            {
+                //find where the title starts and remove everything before it
+                int index = currentSongOutput.IndexOf(songInfo.Title, StringComparison.Ordinal);
+                if (index > 0)
+                {
+                    currentSongOutput = currentSongOutput.Substring(index);
+                }
+
+
+                //find where the title starts and remove everything before it
+                index = currentSongOutputTwitch.IndexOf(songInfo.Title, StringComparison.Ordinal);
+                if (index > 0)
+                {
+                    currentSongOutputTwitch = currentSongOutputTwitch.Substring(index);
+                }
+            }
+
+
             RequestObject rq = null;
 
             if (GlobalObjects.ReqList.Count > 0)
