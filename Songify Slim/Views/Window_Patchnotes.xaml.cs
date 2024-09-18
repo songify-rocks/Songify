@@ -39,7 +39,7 @@ namespace Songify_Slim.Views
                 LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
             }
 
-            if (GlobalObjects.IsBeta)
+            if (App.IsBeta)
             {
                 string patchnotes = await WebHelper.GetBetaPatchNotes($"{GlobalObjects.BaseUrl}/beta_update.md");
 

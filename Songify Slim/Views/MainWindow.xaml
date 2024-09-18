@@ -17,6 +17,7 @@
     MinHeight="285"
     Closed="MetroWindowClosed"
     Closing="MetroWindow_Closing"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
     KeyDown="MetroWindow_KeyDown"
     Loaded="MetroWindowLoaded"
     LocationChanged="MetroWindow_LocationChanged"
@@ -24,6 +25,7 @@
     ResizeMode="CanResizeWithGrip"
     SaveWindowPosition="True"
     ShowDialogsOverTitleBar="False"
+    ShowIconOnTitleBar="False"
     SizeChanged="MainWindow_OnSizeChanged"
     StateChanged="MetroWindowStateChanged"
     TextOptions.TextFormattingMode="Display"
@@ -165,6 +167,28 @@
                 Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
+    <controls:MetroWindow.LeftWindowCommands>
+        <controls:WindowCommands ShowSeparators="False">
+            <Border
+                x:Name="BetaPanel"
+                Width="60"
+                Margin="6"
+                Padding="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Background="Black"
+                CornerRadius="10"
+                Visibility="{Binding IsBetaVisible}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="BETA" />
+            </Border>
+        </controls:WindowCommands>
+    </controls:MetroWindow.LeftWindowCommands>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -450,6 +474,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
+
             <Image
                 x:Name="img_cover"
                 Grid.Column="0"
@@ -477,7 +502,6 @@
                     TextWrapping="Wrap"
                     UseLayoutRounding="True" />
             </Viewbox>
-
         </Grid>
         <StackPanel
             Grid.Row="2"

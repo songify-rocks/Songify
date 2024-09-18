@@ -2,12 +2,14 @@
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 namespace Songify_Slim
@@ -18,6 +20,7 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
+        public static bool IsBeta = true;
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
@@ -104,7 +107,12 @@ namespace Songify_Slim
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            MainWindow main = new();
+            MainWindow main = new()
+            {
+                Icon = IsBeta 
+                    ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico")) 
+                    : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
+            };
             main.Show();
         }
     }

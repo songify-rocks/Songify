@@ -9,10 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -22,7 +24,6 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.UserControls;
@@ -39,6 +40,8 @@ using Timer = System.Timers.Timer;
 using Microsoft.Toolkit.Uwp.Notifications;
 using TwitchLib.Api.Helix;
 using Button = System.Windows.Controls.Button;
+using ImageConverter = Songify_Slim.Util.General.ImageConverter;
+using Rectangle = System.Windows.Shapes.Rectangle;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -567,7 +570,8 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = GlobalObjects.IsBeta ? $"Songify v1.6.6_beta Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? $"Songify v1.6.6_beta Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
             TxtblockLiveoutput.FontSize = Settings.Fontsize;
@@ -746,7 +750,13 @@ namespace Songify_Slim.Views
                     Close();
                 })
             ]);
-            NotifyIcon.Icon = Properties.Resources.songify;
+
+            BitmapImage img = App.IsBeta
+                ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
+                : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"));
+            Icon icon = ImageConverter.ConvertBitmapImageToIcon(img);
+
+            NotifyIcon.Icon = icon;
             NotifyIcon.ContextMenu = _contextMenu;
             NotifyIcon.Visible = true;
             NotifyIcon.DoubleClick += (_, _) =>
