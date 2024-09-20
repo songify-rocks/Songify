@@ -29,10 +29,7 @@ namespace Songify_Slim
 
         private App()
         {
-            if (File.Exists(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml"))
-                ConfigHandler.LoadConfig(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-            else
-                ConfigHandler.ReadConfig();
+            ConfigHandler.ReadConfig();
             try
             {
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(Settings.Language);
@@ -109,8 +106,8 @@ namespace Songify_Slim
         {
             MainWindow main = new()
             {
-                Icon = IsBeta 
-                    ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico")) 
+                Icon = IsBeta
+                    ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
             main.Show();

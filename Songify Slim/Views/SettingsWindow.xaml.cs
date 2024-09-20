@@ -376,10 +376,17 @@ namespace Songify_Slim.Views
             this.ShowMessageAsync("Success", "Config file saved successfully");
         }
 
-        private void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
+        private async void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
-            // calls confighandler
-            ConfigHandler.LoadConfig();
+            // Open a dialog to select a folder to import the config files
+            using FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.Description = "Select the folder containing the config files";
+            fbd.ShowNewFolderButton = false;  // Optional, prevents creating new folders
+            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            // Get the selected folder path and call the config handler
+            string selectedFolder = fbd.SelectedPath;
+            ConfigHandler.ReadConfig(selectedFolder);
+            await SetControls();
         }
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)

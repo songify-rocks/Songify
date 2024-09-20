@@ -2673,10 +2673,10 @@
                             VerticalAlignment="Top"
                             Click="Btn_ImportConfig_Click"
                             Content="{x:Static local:Resources.sw_Config_Import}"
-                            Visibility="Collapsed" />
+                            Visibility="Visible" />
                         <Button
                             x:Name="BtnResetConfig"
-                            Grid.Row="1"
+                            Grid.Row="2"
                             Grid.Column="1"
                             Width="170"
                             HorizontalAlignment="Right"
