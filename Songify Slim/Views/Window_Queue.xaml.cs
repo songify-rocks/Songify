@@ -84,14 +84,14 @@ namespace Songify_Slim.Views
                 BorderPlayerControls.Visibility = Visibility.Collapsed;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
                 BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                    { Kind = PackIconBootstrapIconsKind.ChevronUp };
+                { Kind = PackIconBootstrapIconsKind.ChevronUp };
             }
             else
             {
                 BorderPlayerControls.Visibility = Visibility.Visible;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
                 BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                    { Kind = PackIconBootstrapIconsKind.ChevronDown };
+                { Kind = PackIconBootstrapIconsKind.ChevronDown };
             }
         }
 
@@ -204,6 +204,8 @@ namespace Songify_Slim.Views
         {
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
             if (req == null)
+                return;
+            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
                 return;
             await SpotifyApiHandler.AddToPlaylist(req.Trackid);
             GlobalObjects.QueueUpdateQueueWindow();
@@ -319,7 +321,7 @@ namespace Songify_Slim.Views
                 BorderPlayerControls.Visibility = Visibility.Collapsed;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
                 BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                    { Kind = PackIconBootstrapIconsKind.ChevronUp };
+                { Kind = PackIconBootstrapIconsKind.ChevronUp };
                 Settings.SpotifyControlVisible = false;
             }
             else
@@ -327,7 +329,7 @@ namespace Songify_Slim.Views
                 BorderPlayerControls.Visibility = Visibility.Visible;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
                 BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                    { Kind = PackIconBootstrapIconsKind.ChevronDown };
+                { Kind = PackIconBootstrapIconsKind.ChevronDown };
                 Settings.SpotifyControlVisible = true;
             }
         }
