@@ -628,7 +628,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
         public string BotRespNoTrackFound { get; set; } = "No track found.";
         public bool BotCmdVol { get; set; }
-        public bool BotCmdVolIgnoreMod { get; set; } = false;
+        public bool BotCmdVolIgnoreMod { get; set; }
         public bool BotCmdQueue { get; set; }
     }
 
@@ -685,7 +685,7 @@ namespace Songify_Slim.Util.Settings
         public string WebUserAgent = "Songify Data Provider";
         public bool UpdateRequired { get; set; } = true;
         public bool BotOnlyWorkWhenLive { get; set; }
-        public bool TwSrUnlimitedSr { get; set; } = false;
+        public bool TwSrUnlimitedSr { get; set; }
         public string TwRewardSkipId { get; set; } = "";
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public int TwitchFetchPort { get; set; } = 4004;
@@ -696,24 +696,24 @@ namespace Songify_Slim.Util.Settings
         public int RewardGoalAmount { get; set; }
         public List<TrackItem> SongBlacklist { get; set; } = new();
         public string SpotifyPlaylistId { get; set; } = "";
-        public List<int> UserLevelsReward { get; set; } = new();
-        public List<int> UserLevelsCommand { get; set; } = new();
-        public bool AddSrToPlaylist { get; set; } = false;
+        public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
+        public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
+        public bool AddSrToPlaylist { get; set; }
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public string SpotifySongLimitPlaylist { get; set; } = "";
-        public bool LimitSrToPlaylist { get; set; } = false;
-        public bool BlockAllExplicitSongs { get; set; } = false;
+        public bool LimitSrToPlaylist { get; set; }
+        public bool BlockAllExplicitSongs { get; set; }
         public string RequesterPrefix { get; set; } = "Requested by ";
-        public bool UseDefaultBrowser { get; set; } = false;
-        public bool DonationReminder { get; set; } = false;
+        public bool UseDefaultBrowser { get; set; }
+        public bool DonationReminder { get; set; }
         public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
-        public bool AppendSpacesSplitFiles { get; set; } = false;
+        public bool AppendSpacesSplitFiles { get; set; }
         public int FontSize { get; set; } = 22;
         public int FontsizeQueue { get; set; } = 12;
         public string BaseUrl { get; set; } = "https://songify.rocks";
         public int LastShownMotdId { get; set; }
         public List<int> ReadNotificationIds { get; set; } = [];
-        public bool SpotifyControlVisible { get; set; } = false;
+        public bool SpotifyControlVisible { get; set; }
     }
 
     public class Config
