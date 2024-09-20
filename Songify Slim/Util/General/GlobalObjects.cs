@@ -218,7 +218,15 @@ namespace Songify_Slim.Util.General
                     {
                         // Clear the tracks in the queue (ObservableCollection will notify the UI)
 
-                        await LoadLikedPlaylistTracks();
+                        try
+                        {
+                            await LoadLikedPlaylistTracks();
+
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogStr("Spotify API: Error getting Liked Songs");
+                        }
 
                         List<RequestObject> tempQueueList = new List<RequestObject>();
                         // Dictionary to keep track of replacements
@@ -353,6 +361,11 @@ namespace Songify_Slim.Util.General
 
         private static async Task LoadLikedPlaylistTracks()
         {
+            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+            {
+                return;
+            }
+
             bool firstFetch = true;
             LikedPlaylistTracks = [];
             Paging<PlaylistTrack> tracks = null;
