@@ -646,7 +646,7 @@ namespace Songify_Slim.Util.Settings
         public bool SplitOutput { get; set; }
         public bool Systray { get; set; }
         public bool Telemetry { get; set; }
-        public bool TwAutoConnect { get; set; }
+        public bool TwAutoConnect { get; set; } = true;
         public bool TwSrCommand { get; set; }
         public bool TwSrReward { get; set; }
         public bool Upload { get; set; }
