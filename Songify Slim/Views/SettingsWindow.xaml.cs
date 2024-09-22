@@ -380,8 +380,10 @@ namespace Songify_Slim.Views
         {
             // Open a dialog to select a folder to import the config files
             using FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.Description = "Select the folder containing the config files";
+            fbd.Description = @"Select the folder containing the config files";
             fbd.ShowNewFolderButton = false;  // Optional, prevents creating new folders
+            // set the apps directory as the default directory
+            fbd.SelectedPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             // Get the selected folder path and call the config handler
             string selectedFolder = fbd.SelectedPath;
@@ -417,7 +419,7 @@ namespace Songify_Slim.Views
             try
             {
                 await SpotifyApiHandler.DoAuthAsync();
-                SetControls();
+                await SetControls();
             }
             catch (Exception ex)
             {
