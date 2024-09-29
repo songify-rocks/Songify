@@ -436,13 +436,38 @@ namespace Songify_Slim.Util.Songify
                 // Remove the trailing "-" if it exists
                 output = output.Substring(0, output.Length - 1);
             }
-
-            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output);
+            
+            IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
 
             if (Settings.Settings.SplitOutput)
             {
                 IOManager.WriteSplitOutput(songInfo?.Artists, songInfo?.Title, "");
             }
+
+            if (Settings.Settings.Upload)
+                try
+                {
+                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // if error occurs write text to the status asynchronous
+                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
+                    }));
+                }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MainWindow main = Application.Current.MainWindow as MainWindow;
+                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    main.SetTextPreview(output);
+                }));
+            });
+
 
             return Task.CompletedTask;
         }
