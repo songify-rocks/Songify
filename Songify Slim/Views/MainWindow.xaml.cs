@@ -13,6 +13,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -42,6 +43,7 @@ using TwitchLib.Api.Helix;
 using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
+using System.Net.NetworkInformation;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -358,10 +360,55 @@ namespace Songify_Slim.Views
             CheckAndNotifyConfigurationIssues();
             SetupDisclaimer();
 
-            await HandleSpotifyInitializationAsync();
-            await HandleTwitchInitializationAsync();
-            await FinalSetupAndUpdatesAsync();
+            bool internetAvailable = await WaitForInternetConnectionAsync();
+            if (internetAvailable)
+            {
+                await HandleSpotifyInitializationAsync();
+                await HandleTwitchInitializationAsync();
+                await FinalSetupAndUpdatesAsync();
+            }
+            else
+            {
+                //Show a message to the user that the app can't run without internet connection and close the app after the user clicked ok
+                MessageBox.Show("Songify requires an internet connection to work properly. Please check your connection and restart the app.", "No Internet Connection", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
             SetupMotdTimer();
+        }
+
+        private static async Task<bool> WaitForInternetConnectionAsync()
+        {
+            using HttpClient httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(5); // Set a timeout for the request
+            int retryCount = 0;
+            const int maxRetries = 12;
+            while (retryCount < maxRetries)
+            {
+                try
+                {
+                    // Try to reach a reliable website
+                    HttpResponseMessage response = await httpClient.GetAsync("https://www.google.com");
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Logger.LogStr("CORE: Internet Connection Established");
+                        // Internet is available
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // Ignore exceptions and wait before retrying
+                }
+
+                Logger.LogStr("CORE: No Internet Connection");
+                retryCount++;
+                // Wait for a short period before retrying
+                await Task.Delay(5000);
+            }
+            Logger.LogStr("CORE: Internet not available after 1-minute timeout");
+            return false;
         }
 
         private async void SetupMotdTimer()

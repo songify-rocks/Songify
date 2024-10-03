@@ -347,7 +347,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (TokenCheck == null) return false;
                 GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
-                    new List<string> { Settings.Settings.TwitchUser.Id }, null, Settings.Settings.TwitchAccessToken);
+                    [Settings.Settings.TwitchUser.Id], null, Settings.Settings.TwitchAccessToken);
                 if (x.Streams.Length != 0)
                 {
                     return x.Streams[0].Type == "live";
