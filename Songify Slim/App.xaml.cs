@@ -20,7 +20,7 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
-        public static bool IsBeta = true;
+        public static bool IsBeta = false;
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
