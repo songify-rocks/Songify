@@ -1461,8 +1461,8 @@ namespace Songify_Slim.Util.Songify
             }
             // Remove command (!remove)
             else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger.ToLower()}", StringComparison.CurrentCultureIgnoreCase) &&
-                     Settings.Settings.BotCmdRemove)
+           e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger.ToLower()}", StringComparison.CurrentCultureIgnoreCase) &&
+           Settings.Settings.BotCmdRemove)
             {
                 try
                 {
@@ -1481,32 +1481,55 @@ namespace Songify_Slim.Util.Songify
                 bool modAction = false;
                 RequestObject reqObj = null;
 
+                string[] words = e.ChatMessage.Message.Split(' ');
                 if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster)
                 {
-                    if (e.ChatMessage.Message.Split(' ').Length > 1)
+                    if (words.Length > 1)
                     {
-                        if (int.TryParse(e.ChatMessage.Message.Split(' ')[1], out int queueId))
+                        string arg = words[1];
+
+                        // Check if the argument is an ID (number)
+                        if (int.TryParse(arg, out int queueId))
                         {
                             modAction = true;
                             reqObj = GlobalObjects.ReqList.FirstOrDefault(o => o.Queueid == queueId);
                         }
+                        else
+                        {
+                            // Remove '@' if present
+                            if (arg.StartsWith("@"))
+                            {
+                                arg = arg.Substring(1);
+                            }
+
+                            // Treat the argument as a username
+                            string usernameToRemove = arg;
+
+                            modAction = true;
+                            reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+                                o.Requester.Equals(usernameToRemove, StringComparison.InvariantCultureIgnoreCase));
+                        }
                     }
                     else
                     {
+                        // No argument provided, remove the moderator's own last request
                         reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                            o.Requester == e.ChatMessage.DisplayName);
+                            o.Requester.Equals(e.ChatMessage.DisplayName, StringComparison.InvariantCultureIgnoreCase));
                     }
                 }
                 else
                 {
+                    // Remove the user's own last request
                     reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                        o.Requester == e.ChatMessage.DisplayName);
+                        o.Requester.Equals(e.ChatMessage.DisplayName, StringComparison.InvariantCultureIgnoreCase));
                 }
 
                 if (reqObj == null)
                     return;
+
                 string tmp = $"{reqObj.Artist} - {reqObj.Title}";
                 GlobalObjects.SkipList.Add(reqObj);
+
                 dynamic payload = new
                 {
                     uuid = Settings.Settings.Uuid,
@@ -1515,19 +1538,22 @@ namespace Songify_Slim.Util.Songify
                 };
 
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+
                 await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     GlobalObjects.ReqList.Remove(reqObj);
                 }));
-                //WebHelper.UpdateWebQueue(reqObj.Trackid, "", "", "", "", "1", "u");
+
                 GlobalObjects.QueueUpdateQueueWindow();
 
                 string response = modAction
-                    ? $"The request {tmp} requested by @{reqObj.Requester} will be skipped."
+                    ? $"The request {tmp} requested by @{reqObj.Requester} has been removed."
                     : Settings.Settings.BotRespRemove;
+
                 response = response
                     .Replace("{song}", tmp)
                     .Replace("{user}", e.ChatMessage.DisplayName);
+
                 if (response.StartsWith("[announce "))
                 {
                     await AnnounceInChat(response);
@@ -1537,6 +1563,7 @@ namespace Songify_Slim.Util.Songify
                     SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
+
             // Songlike command (!songlike)
             else if (Settings.Settings.Player == 0 &&
                      e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
