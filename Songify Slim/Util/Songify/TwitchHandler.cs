@@ -45,6 +45,7 @@ using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
+using TwitchLib.Api.Helix.Models.Soundtrack;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -1312,6 +1313,9 @@ namespace Songify_Slim.Util.Songify
                 SkipVotes.Add(e.ChatMessage.DisplayName);
 
                 string msg = Settings.Settings.BotRespVoteSkip;
+                msg = msg.Replace("{artist}", GlobalObjects.CurrentSong.Artists);
+                msg = msg.Replace("{title}", GlobalObjects.CurrentSong.Title);
+                msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} {(GlobalObjects.CurrentSong.Title != "" ? " - " + GlobalObjects.CurrentSong.Title : "")}");
                 msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
                 msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
 
