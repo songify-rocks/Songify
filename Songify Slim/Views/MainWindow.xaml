@@ -341,6 +341,10 @@
                     x:Name="mi_Blacklist"
                     Click="Mi_Blacklist_Click"
                     Header="{x:Static local:Resources.mw_menu_Blacklist}" />
+                <MenuItem
+                    x:Name="mi_Youtube"
+                    Click="Mi_Youtube_Click"
+                    Header="YouTube Song Requests" />
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
                 <MenuItem

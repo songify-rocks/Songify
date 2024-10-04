@@ -143,6 +143,7 @@
     <Compile Include="Models\BotResponseItem.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Models\YoutubeRequest.cs" />
     <Compile Include="Properties\Resources.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -247,6 +248,7 @@
     <Compile Include="Util\Spotify\SpotifyAPI.Web\SpotifyWebBuilder.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\SpotifyWebClient.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web\Util.cs" />
+    <Compile Include="Util\Youtube\YoutubeHelper.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -329,6 +331,9 @@
     <Compile Include="Views\Window_UniversalDialog.xaml.cs">
       <DependentUpon>Window_UniversalDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Window_YoutubePlayer.xaml.cs">
+      <DependentUpon>Window_YoutubePlayer.xaml</DependentUpon>
+    </Compile>
     <Page Include="UserControls\PsaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -406,6 +411,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_UniversalDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_YoutubePlayer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -492,6 +501,9 @@
     </PackageReference>
     <PackageReference Include="AvalonEdit">
       <Version>6.3.0.90</Version>
+    </PackageReference>
+    <PackageReference Include="CefSharp.Wpf">
+      <Version>128.4.90</Version>
     </PackageReference>
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>
@@ -727,5 +739,6 @@
     <Resource Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\2.png" />
     <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\start.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

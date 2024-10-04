@@ -36,6 +36,8 @@ namespace Songify_Slim.Util.General
         public static string Requester = "";
         public static int RewardGoalCount = 0;
         public static List<RequestObject> SkipList = new();
+        public static List<YoutubeRequest> YoutubeRequests = new();
+
         public static ObservableCollection<RequestObject> QueueTracks { get; set; } = new ObservableCollection<RequestObject>();
 
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";

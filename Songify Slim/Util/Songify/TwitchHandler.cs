@@ -45,6 +45,8 @@ using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
+using Windows.Media.Core;
+using Songify_Slim.Util.Youtube;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -1168,6 +1170,75 @@ namespace Songify_Slim.Util.Songify
                 AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e);
                 return;
             }
+
+            //Command for Youtube Songrequest
+            if (e.ChatMessage.Message.StartsWith("!ysr "))
+            {
+                // Remove !ysr from the message and check try to get the track id 
+                string id = e.ChatMessage.Message.Replace("!ysr ", "");
+                if (string.IsNullOrEmpty(id))
+                {
+                    SendChatMessage(e.ChatMessage.Channel, "No song found.");
+                    return;
+                }
+                if (string.IsNullOrEmpty(id))
+                {
+                    SendChatMessage(e.ChatMessage.Channel, "No song found.");
+                    return;
+                }
+                // The URL can be in different formats so we need to check. 
+                // If the URL is shortened and containes youtu.be the ID is the part after the last /
+                // If the URL is a normal youtube URL the ID is the part after the v=
+                // If no URL is found, the ID is the input
+                if (id.Contains("youtu.be"))
+                {
+                    id = id.Substring(id.LastIndexOf("/", StringComparison.Ordinal) + 1);
+                }
+                else if (id.Contains("youtube.com"))
+                {
+                    id = id.Substring(id.LastIndexOf("v=", StringComparison.Ordinal) + 2);
+                }
+                if (id.Contains("&"))
+                    id = id.Split('&')[0];
+
+                // Using the ID get information about the video 
+                YouTubeOEmbedResponse info = await YoutubeHelper.GetVideoInfoAsync(id);
+
+                if (info == null)
+                {
+                    return;
+                }
+
+                if (GlobalObjects.YoutubeRequests.All(o => o.VideoId != id))
+                {
+                    GlobalObjects.YoutubeRequests.Add(new YoutubeRequest
+                    {
+                        VideoId = id,
+                        Title = info.Title,
+                        Requester = e.ChatMessage.Username,
+                        ThumbnailUrl = info.Thumbnail_Url
+                    });
+
+                    // if an instance of Window_YoutubePlayer is open , update the list
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window.GetType() == typeof(Window_YoutubePlayer))
+                            {
+                                (window as Window_YoutubePlayer)?.UpdateDatagrid();
+                            }
+                        }
+                    });
+
+                    SendChatMessage(e.ChatMessage.Channel, $"Added {info.Title} to the queue.");
+                }
+                else
+                {
+                    SendChatMessage(e.ChatMessage.Channel, "This video is already in the queue.");
+                }
+            }
+
 
             // Same code from above but it reacts to a command instead of rewards
             // Songrequst Command (!ssr)

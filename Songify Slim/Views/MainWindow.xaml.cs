@@ -1189,5 +1189,15 @@ namespace Songify_Slim.Views
             }
             Badge.Badge = null!;
         }
+
+        private void Mi_Youtube_Click(object sender, RoutedEventArgs e)
+        {
+            // Create a new instance of Window_YoutubePlayer if it's not already open
+            if (!IsWindowOpen<Window_YoutubePlayer>())
+            {
+                Window_YoutubePlayer wYp = new() { Top = Top, Left = Left };
+                wYp.Show();
+            }
+        }
     }
 }
