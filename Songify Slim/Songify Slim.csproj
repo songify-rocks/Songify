@@ -141,6 +141,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Models\BotResponseItem.cs" />
+    <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
     <Compile Include="Properties\Resources.it-IT.Designer.cs">

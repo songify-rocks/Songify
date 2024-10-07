@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -46,6 +47,7 @@ using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
 using TwitchLib.Api.Helix.Models.Soundtrack;
+using System.Web.UI;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -765,6 +767,9 @@ namespace Songify_Slim.Util.Songify
             foreach (string s in Settings.Settings.ArtistBlacklist.Where(s =>
                          Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
             {
+
+
+
                 // if artist is on blacklist, skip and inform requester
                 response = Settings.Settings.BotRespBlacklist;
                 response = response.Replace("{user}", username);
@@ -1149,17 +1154,9 @@ namespace Songify_Slim.Util.Songify
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
-                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
                     return;
                 }
-
-                // if onCooldown skips
-                //if (_onCooldown)
-                //{
-                //    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e));
-                //    return;
-                //}
-
+                
                 if (SpotifyApiHandler.Spotify == null)
                 {
                     SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
@@ -1202,7 +1199,6 @@ namespace Songify_Slim.Util.Songify
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
-                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
                     return;
                 }
 
@@ -1266,10 +1262,18 @@ namespace Songify_Slim.Util.Songify
                 if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
                     (count > 0 && name == e.ChatMessage.DisplayName))
                 {
-                    string msg = Settings.Settings.BotRespModSkip;
-                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                    msg = msg.Replace("{song}",
-                        $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+
+                   string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.Username,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = Settings.Settings.TwSrCooldown.ToString()
+                    }, Settings.Settings.BotRespModSkip);
+
                     await SpotifyApiHandler.SkipSong();
 
                     {
@@ -1312,12 +1316,17 @@ namespace Songify_Slim.Util.Songify
                 if (SkipVotes.Any(o => o == e.ChatMessage.DisplayName)) return;
                 SkipVotes.Add(e.ChatMessage.DisplayName);
 
-                string msg = Settings.Settings.BotRespVoteSkip;
-                msg = msg.Replace("{artist}", GlobalObjects.CurrentSong.Artists);
-                msg = msg.Replace("{title}", GlobalObjects.CurrentSong.Title);
-                msg = msg.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} {(GlobalObjects.CurrentSong.Title != "" ? " - " + GlobalObjects.CurrentSong.Title : "")}");
-                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
+                string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                {
+                    User = e.ChatMessage.Username,
+                    MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                    ErrorMsg = null,
+                    MaxLength = $"{Settings.Settings.MaxSongLength}",
+                    Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                    Req = GlobalObjects.Requester,
+                    Cd = Settings.Settings.TwSrCooldown.ToString()
+                }, Settings.Settings.BotRespModSkip);
+
 
                 if (msg.StartsWith("[announce "))
                 {
@@ -1567,7 +1576,6 @@ namespace Songify_Slim.Util.Songify
                     SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
-
             // Songlike command (!songlike)
             else if (Settings.Settings.Player == 0 &&
                      e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
@@ -1786,6 +1794,21 @@ namespace Songify_Slim.Util.Songify
             response = CleanFormatString(response);
 
             return response;
+        }
+        private static string CreateResponse(PlaceholderContext context, string template)
+        {
+            // Use reflection to get all properties of PlaceholderContext
+            PropertyInfo[] properties = typeof(PlaceholderContext).GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                string placeholder = $"{{{property.Name.ToLower()}}}"; // Placeholder format, e.g., "{user}"
+                string value = property.GetValue(context)?.ToString() ?? string.Empty; // Get property value or empty string if null
+                template = template.Replace(placeholder, value); // Replace placeholder in the template with value
+            }
+
+            template = CleanFormatString(template);
+            return template;
         }
         private static string FormattedTime(int duration)
         {
