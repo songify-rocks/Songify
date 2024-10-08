@@ -1634,7 +1634,7 @@ namespace Songify_Slim.Util.Songify
                     await SetSpotifyVolume(e);
                 }
             }
-            else if (e.ChatMessage.Message.ToLower() == "!queue" && Settings.Settings.BotCmdQueue)
+            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdQueueTrigger.ToLower()}" && Settings.Settings.BotCmdQueue)
             {
                 string output = "";
                 int counter = 1;

@@ -171,47 +171,48 @@ namespace Songify_Slim.Util.Settings
     public class BotConfig
     {
         public bool BotCmdNext { get; set; }
+        public bool BotCmdPlayPause { get; set; }
         public bool BotCmdPos { get; set; }
+        public bool BotCmdQueue { get; set; }
+        public bool BotCmdRemove { get; set; }
         public bool BotCmdSkip { get; set; }
         public bool BotCmdSkipVote { get; set; }
         public bool BotCmdSong { get; set; }
+        public bool BotCmdSonglike { get; set; }
+        public bool BotCmdVol { get; set; }
+        public bool BotCmdVolIgnoreMod { get; set; }
+        public bool ChatLiveStatus { get; set; }
+        public bool OnlyWorkWhenLive { get; set; }
         public int BotCmdSkipVoteCount { get; set; } = 5;
+        public string BotCmdNextTrigger { get; set; } = "next";
+        public string BotCmdPosTrigger { get; set; } = "pos";
+        public string BotCmdQueueTrigger { get; set; } = "queue";
+        public string BotCmdRemoveTrigger { get; set; } = "remove";
+        public string BotCmdSkipTrigger { get; set; } = "skip";
+        public string BotCmdSonglikeTrigger { get; set; } = "songlike";
+        public string BotCmdSongTrigger { get; set; } = "song";
+        public string BotCmdSsrTrigger { get; set; } = "ssr";
+        public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
         public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.";
+        public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
         public string BotRespError { get; set; } = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
+        public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
         public string BotRespIsInQueue { get; set; } = "@{user} this song is already in the queue.";
         public string BotRespLength { get; set; } = "@{user} the song you requested exceeded the maximum song length ({maxlength}).";
         public string BotRespMaxReq { get; set; } = "@{user} maximum number of songs in queue reached ({maxreq}).";
         public string BotRespModSkip { get; set; } = "@{user} skipped the current song.";
-        public string BotRespNoSong { get; set; } = "@{user} please specify a song to add to the queue.";
-        public string BotRespSuccess { get; set; } = "{artist} - {title} requested by @{user} has been added to the queue.";
-        public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
-        public string BotRespPos { get; set; } = "@{user} {songs}{pos} {song}{/songs}";
         public string BotRespNext { get; set; } = "@{user} {song}";
-        public bool OnlyWorkWhenLive { get; set; }
-        public string BotCmdPosTrigger { get; set; } = "pos";
-        public string BotCmdSongTrigger { get; set; } = "song";
-        public string BotCmdNextTrigger { get; set; } = "next";
-        public string BotCmdSkipTrigger { get; set; } = "skip";
-        public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
-        public string BotCmdSsrTrigger { get; set; } = "ssr";
-        public bool ChatLiveStatus { get; set; }
-        public string BotRespSong { get; set; } = "@{user} {song}";
-        public string BotRespRefund { get; set; } = "Your points have been refunded.";
-        public bool BotCmdRemove { get; set; }
-        public string BotCmdRemoveTrigger { get; set; } = "remove";
-        public bool BotCmdSonglike { get; set; }
-        public string BotCmdSonglikeTrigger { get; set; } = "songlike";
-        public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
-        public bool BotCmdPlayPause { get; set; }
-        public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
-        public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
-        public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
-        public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
-        public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
+        public string BotRespNoSong { get; set; } = "@{user} please specify a song to add to the queue.";
         public string BotRespNoTrackFound { get; set; } = "No track found.";
-        public bool BotCmdVol { get; set; }
-        public bool BotCmdVolIgnoreMod { get; set; }
-        public bool BotCmdQueue { get; set; }
+        public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
+        public string BotRespPos { get; set; } = "@{user} {songs}{pos} {song}{/songs}";
+        public string BotRespRefund { get; set; } = "Your points have been refunded.";
+        public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
+        public string BotRespSong { get; set; } = "@{user} {song}";
+        public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
+        public string BotRespSuccess { get; set; } = "{artist} - {title} requested by @{user} has been added to the queue.";
+        public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
+        public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
     }
 
     public class AppConfig

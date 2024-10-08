@@ -2368,7 +2368,16 @@
                                     Margin="6,0,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Text="!queue" />
+                                    Text="!" />
+                                <TextBox
+                                    x:Name="TextBoxTriggerQueue"
+                                    VerticalAlignment="Top"
+                                    PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                    Style="{StaticResource TextBoxTextBlock}"
+                                    Tag="queue"
+                                    Text="queue"
+                                    TextChanged="TextBoxTrigger_TextChanged" />
+
                             </DockPanel>
                             <TextBlock
                                 Grid.Row="13"

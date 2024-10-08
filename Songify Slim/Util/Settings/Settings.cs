@@ -25,6 +25,19 @@ namespace Songify_Slim.Util.Settings
         public static string BaseUrl { get => GetBaseUrl(); set => SetBaseUrl(value); }
         public static int LastShownMotdId { get => GetLastShownMotdId(); set => SetLastShownMotdId(value); }
         public static List<int> ReadNotificationIds { get => GetReadNotificationIds(); set => SetReadNotificationIds(value); }
+        public static string BotCmdQueueTrigger { get => GetBotCmdQueueTrigger(); set=> SetBotCmdQueueTrigger(value); }
+
+        private static void SetBotCmdQueueTrigger(string value)
+        {
+            _currentConfig.BotConfig.BotCmdQueueTrigger = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+
+        private static string GetBotCmdQueueTrigger()
+        {
+            return _currentConfig.BotConfig.BotCmdQueueTrigger;
+        }
 
         private static void SetReadNotificationIds(List<int> value)
         {
@@ -1051,7 +1064,8 @@ namespace Songify_Slim.Util.Settings
                 BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
                 BotCmdVol = GetBotCmdVol(),
                 BotCmdVolIgnoreMod = GetBotCmdVolIgnoreMod(),
-                BotCmdQueue = GetBotCmdQueue()
+                BotCmdQueue = GetBotCmdQueue(),
+                BotCmdQueueTrigger = GetBotCmdQueueTrigger(),
             };
 
             AppConfig appConfig = new()

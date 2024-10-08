@@ -1303,6 +1303,11 @@ namespace Songify_Slim.Views
                         ? "like"
                         : ((TextBox)sender).Text;
                     break;
+                case "queue":
+                    Settings.BotCmdQueueTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
+                        ? "queue"
+                        : ((TextBox)sender).Text;
+                    break;
             }
         }
 
