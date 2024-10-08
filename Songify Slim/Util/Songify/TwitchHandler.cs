@@ -1359,13 +1359,26 @@ namespace Songify_Slim.Util.Songify
                         return;
                     }
 
-                    string msg = GetCurrentSong();
-                    string artist = GlobalObjects.CurrentSong.Artists;
-                    string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
-                        ? GlobalObjects.CurrentSong.Title
-                        : "";
-                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                    msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+                    //string msg = GetCurrentSong();
+                    //string artist = GlobalObjects.CurrentSong.Artists;
+                    //string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
+                    //    ? GlobalObjects.CurrentSong.Title
+                    //    : "";
+                    //msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    //msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.Username,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = Settings.Settings.TwSrCooldown.ToString()
+                    }, Settings.Settings.BotRespModSkip);
+
+
                     if (msg.StartsWith("[announce "))
                     {
                         await AnnounceInChat(msg);

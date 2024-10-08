@@ -83,7 +83,7 @@ namespace Songify_Slim.Util.General
             string coverTemp = $"{GlobalObjects.RootDirectory}/tmp.png";
             try
             {
-                if (cover == null)
+                if (string.IsNullOrEmpty(cover))
                 {
                     // create Empty png file
                     Bitmap bmp = new(640, 640);

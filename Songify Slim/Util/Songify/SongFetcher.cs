@@ -93,7 +93,8 @@ namespace Songify_Slim.Util.Songify
                                 {
                                     Logger.LogExc(ex);
                                 }
-                            } else if (wintitle is "Spotify" or "Spotify Premium")
+                            }
+                            else if (wintitle is "Spotify" or "Spotify Premium")
                             {
                                 // we assume that the song is paused
                                 ExecutePauseActions();
@@ -110,6 +111,7 @@ namespace Songify_Slim.Util.Songify
                                 trackinfo = Settings.Settings.CustomPauseTextEnabled
                                     ? new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" }
                                     : new TrackInfo { Artists = "", Title = "" };
+                                break;
                             }
 
 
@@ -245,7 +247,7 @@ namespace Songify_Slim.Util.Songify
             return Task.CompletedTask;
         }
 
-        private void ExecutePauseActions()
+        private static void ExecutePauseActions()
         {
             switch (Settings.Settings.PauseOption)
             {
@@ -490,7 +492,7 @@ namespace Songify_Slim.Util.Songify
                 // Remove the trailing "-" if it exists
                 output = output.Substring(0, output.Length - 1);
             }
-            
+
             IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
 
             if (Settings.Settings.SplitOutput)
@@ -773,7 +775,7 @@ namespace Songify_Slim.Util.Songify
                 uri => songInfo.SongId,
                 url => songInfo.Url
             ).Format();
-            
+
             currentSongOutputTwitch = currentSongOutputTwitch.Format(
                 single_artist => songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,

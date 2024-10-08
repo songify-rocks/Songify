@@ -626,7 +626,7 @@ namespace Songify_Slim.Views
 
         private async Task HandleSpotifyInitializationAsync()
         {
-            if (_selectedSource == PlayerType.SpotifyWeb)
+            try
             {
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
@@ -635,7 +635,12 @@ namespace Songify_Slim.Views
 
                 img_cover.Visibility = Visibility.Visible;
             }
-            else
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
+            if (_selectedSource != PlayerType.SpotifyWeb)
             {
                 img_cover.Visibility = Visibility.Hidden;
             }
@@ -1030,6 +1035,7 @@ namespace Songify_Slim.Views
             const int delayOnRetry = 1000;
 
             for (int i = 1; i < numberOfRetries; i++)
+            {
                 try
                 {
                     try
@@ -1049,6 +1055,10 @@ namespace Songify_Slim.Views
                         continue;
                     }
 
+                    // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
+                    if (Settings.Player != 0 && Settings.DownloadCover)
+                        img_cover.Visibility = Visibility.Collapsed;
+                    else img_cover.Visibility = Visibility.Visible;
                     Logger.LogStr("COVER: Set succesfully");
                     break;
                 }
@@ -1056,6 +1066,7 @@ namespace Songify_Slim.Views
                 {
                     Thread.Sleep(delayOnRetry);
                 }
+            }
         }
 
         private void BtnDisclaimerClose_Click(object sender, RoutedEventArgs e)
