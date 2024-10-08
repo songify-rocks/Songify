@@ -1265,7 +1265,7 @@ namespace Songify_Slim.Util.Songify
 
                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                     {
-                        User = e.ChatMessage.Username,
+                        User = e.ChatMessage.DisplayName,
                         MaxReq = $"{Settings.Settings.TwSrMaxReq}",
                         ErrorMsg = null,
                         MaxLength = $"{Settings.Settings.MaxSongLength}",
@@ -1318,14 +1318,14 @@ namespace Songify_Slim.Util.Songify
 
                 string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                 {
-                    User = e.ChatMessage.Username,
+                    User = e.ChatMessage.DisplayName,
                     MaxReq = $"{Settings.Settings.TwSrMaxReq}",
                     ErrorMsg = null,
                     MaxLength = $"{Settings.Settings.MaxSongLength}",
                     Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
                     Req = GlobalObjects.Requester,
                     Cd = Settings.Settings.TwSrCooldown.ToString()
-                }, Settings.Settings.BotRespModSkip);
+                }, Settings.Settings.BotRespVoteSkip);
 
 
                 if (msg.StartsWith("[announce "))
@@ -1369,14 +1369,14 @@ namespace Songify_Slim.Util.Songify
 
                     string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                     {
-                        User = e.ChatMessage.Username,
+                        User = e.ChatMessage.DisplayName,
                         MaxReq = $"{Settings.Settings.TwSrMaxReq}",
                         ErrorMsg = null,
                         MaxLength = $"{Settings.Settings.MaxSongLength}",
                         Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
                         Req = GlobalObjects.Requester,
                         Cd = Settings.Settings.TwSrCooldown.ToString()
-                    }, Settings.Settings.BotRespModSkip);
+                    }, Settings.Settings.BotRespSong);
 
 
                     if (msg.StartsWith("[announce "))
@@ -1820,6 +1820,24 @@ namespace Songify_Slim.Util.Songify
                 template = template.Replace(placeholder, value); // Replace placeholder in the template with value
             }
 
+            if (template.Contains("{{") && template.Contains("}}"))
+            {
+                if (string.IsNullOrEmpty(context.Req))
+                {
+                    int start = template.IndexOf("{{", StringComparison.Ordinal);
+                    int end = template.IndexOf("}}", start, StringComparison.Ordinal) + 2;
+
+                    if (start >= 0 && end >= start)
+                    {
+                        template = template.Remove(start, end - start);
+                    }
+                }
+                else
+                {
+                    template = template.Replace("{{", "").Replace("}}", "");
+                }
+            }
+
             template = CleanFormatString(template);
             return template;
         }
@@ -1965,24 +1983,15 @@ namespace Songify_Slim.Util.Songify
 
             string colorName = response.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
 
-            switch (colorName)
+            colors = colorName switch
             {
-                case "green":
-                    colors = AnnouncementColors.Green;
-                    break;
-                case "orange":
-                    colors = AnnouncementColors.Orange;
-                    break;
-                case "blue":
-                    colors = AnnouncementColors.Blue;
-                    break;
-                case "purple":
-                    colors = AnnouncementColors.Purple;
-                    break;
-                case "primary":
-                    colors = AnnouncementColors.Primary;
-                    break;
-            }
+                "green" => AnnouncementColors.Green,
+                "orange" => AnnouncementColors.Orange,
+                "blue" => AnnouncementColors.Blue,
+                "purple" => AnnouncementColors.Purple,
+                "primary" => AnnouncementColors.Primary,
+                _ => AnnouncementColors.Purple
+            };
 
             response = response.Replace($"[announce {colorName}]", string.Empty).Trim();
             return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
