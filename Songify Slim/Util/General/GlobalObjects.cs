@@ -17,6 +17,8 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using Unosquare.Swan.Formatters;
 using MahApps.Metro.IconPacks;
+using TwitchLib.Api.Helix;
+using System.Collections;
 
 namespace Songify_Slim.Util.General
 {
@@ -212,15 +214,34 @@ namespace Songify_Slim.Util.General
                     }
                 }
 
+
+                bool isLikedSongsPlaylist = false;
+
                 await Application.Current.Dispatcher.Invoke(async () =>
                 {
                     try
                     {
                         // Clear the tracks in the queue (ObservableCollection will notify the UI)
-
+                        Dictionary<string, bool> isInLikedSongs = new();
                         try
                         {
-                            await LoadLikedPlaylistTracks();
+                            if (!string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
+                                Settings.Settings.SpotifyPlaylistId == "-1")
+                            {
+                                isLikedSongsPlaylist = true;
+                                List<string> ids = queue.Queue.Select(track => track.Id).ToList();
+                                ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync(ids);
+
+                                for (int i = 0; i < ids.Count; i++)
+                                {
+                                    isInLikedSongs[ids[i]] = x.List[i];
+                                }
+                            }
+                            else
+                            {
+                                isLikedSongsPlaylist = false;
+                                await LoadLikedPlaylistTracks();
+                            }
 
                         }
                         catch (Exception e)
@@ -228,16 +249,20 @@ namespace Songify_Slim.Util.General
                             Logger.LogStr("Spotify API: Error getting Liked Songs");
                         }
 
-                        List<RequestObject> tempQueueList = new List<RequestObject>();
+                        List<RequestObject> tempQueueList = [];
                         // Dictionary to keep track of replacements
-                        Dictionary<string, bool> replacementTracker = new Dictionary<string, bool>();
+                        Dictionary<string, bool> replacementTracker = new();
 
                         // Process the queue
                         foreach (FullTrack fullTrack in queue.Queue)
                         {
                             try
                             {
-                                bool isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
+                                bool isInLikedPlaylist;
+                                if (isLikedSongsPlaylist)
+                                    isInLikedPlaylist = isInLikedSongs.TryGetValue(fullTrack.Id, out bool boolValue) && boolValue;
+                                else
+                                    isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
 
                                 // Determine if we have a matching request object that hasn't been used for replacement yet
                                 RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
@@ -258,7 +283,7 @@ namespace Songify_Slim.Util.General
                                 }
                                 else
                                 {
-                                    var newRequestObject = new RequestObject
+                                    RequestObject newRequestObject = new()
                                     {
                                         Queueid = 0,
                                         Uuid = Settings.Settings.Uuid,
@@ -295,7 +320,15 @@ namespace Songify_Slim.Util.General
                             {
                                 // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
                                 windowQueue.dgv_Queue.ItemsSource = QueueTracks;
-                                bool isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
+                                bool isInLikedPlaylist;
+
+                                if (isLikedSongsPlaylist)
+                                {
+                                    ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([CurrentSong.SongId]);
+                                    isInLikedPlaylist = x.List.Count > 0 && x.List[0];
+                                }
+                                else
+                                    isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
 
                                 // Add the current song to the top of the queue
                                 QueueTracks.Insert(0, new RequestObject

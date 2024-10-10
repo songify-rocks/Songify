@@ -897,39 +897,67 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                Paging<PlaylistTrack> tracks =
-                    await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-
-                while (tracks is { Items: not null })
+                if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
+                    Settings.Settings.SpotifyPlaylistId == "-1")
                 {
-                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([trackId]);
+                    if (x.List.Count > 0)
                     {
-                        if (sendResponse)
+                        switch (x.List[0])
                         {
-                            SendChatMessage(Settings.Settings.TwChannel,
-                                $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                            case true:
+                                if (sendResponse)
+                                {
+                                    SendChatMessage(Settings.Settings.TwChannel,
+                                        $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                                }
+                                return true;
+                            case false:
+                                await SpotifyApiHandler.AddToPlaylist(trackId);
+                                return false;
                         }
-                        return true;
                     }
 
-                    if (!tracks.HasNextPage())
+                }
+                else
+                {
+                    Paging<PlaylistTrack> tracks =
+                        await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+
+                    while (tracks is { Items: not null })
                     {
-                        break;  // Exit if no more pages
+                        if (tracks.Items.Any(t => t.Track.Id == trackId))
+                        {
+                            if (sendResponse)
+                            {
+                                SendChatMessage(Settings.Settings.TwChannel,
+                                    $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                            }
+                            return true;
+                        }
+
+                        if (!tracks.HasNextPage())
+                        {
+                            break;  // Exit if no more pages
+                        }
+
+                        tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                     }
 
-                    tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                    await SpotifyApiHandler.AddToPlaylist(trackId);
+                    return false;
                 }
 
-                ErrorResponse x = await SpotifyApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                    $"spotify:track:{trackId}");
-                return x == null || x.HasError();
             }
             catch (Exception)
             {
                 Logger.LogStr("Error adding song to playlist");
                 return true;
             }
+
+            return false;
         }
+
         private static string GetFormattedRespone(string response, string username = "", string errormsg = "",
             string votes = "")
         {
@@ -1156,7 +1184,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     return;
                 }
-                
+
                 if (SpotifyApiHandler.Spotify == null)
                 {
                     SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
@@ -1263,7 +1291,7 @@ namespace Songify_Slim.Util.Songify
                     (count > 0 && name == e.ChatMessage.DisplayName))
                 {
 
-                   string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                     {
                         User = e.ChatMessage.DisplayName,
                         MaxReq = $"{Settings.Settings.TwSrMaxReq}",

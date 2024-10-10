@@ -30,10 +30,13 @@ using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
+using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace Songify_Slim.Views
 {
@@ -1439,6 +1442,34 @@ namespace Songify_Slim.Views
                     CbSpotifyPlaylist.Items.Clear();
                     CbSpotifySongLimitPlaylist.Items.Clear();
 
+                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem
+                    {
+                        Content = new UcPlaylistItem(new SimplePlaylist
+                        {
+                            Error = null,
+                            Collaborative = false,
+                            ExternalUrls = null,
+                            Href = null,
+                            Id = "-1",
+                            Images =
+                            [
+                                new Image
+                                {
+                                    Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
+                                    Width = 640,
+                                    Height = 640
+                                }
+                            ],
+                            Name = "Liked Songs",
+                            Owner = null,
+                            Public = false,
+                            SnapshotId = null,
+                            Tracks = null,
+                            Type = null,
+                            Uri = null
+                        })
+                    });
+
                     Paging<SimplePlaylist> playlists = await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, 0);
                     if (playlists == null) return;
                     List<SimplePlaylist> playlistCache = [];
@@ -1473,6 +1504,33 @@ namespace Songify_Slim.Views
                 if (Settings.SpotifyPlaylistCache.Count > 0)
                 {
                     CbSpotifySongLimitPlaylist.Items.Clear();
+                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem
+                    {
+                        Content = new UcPlaylistItem(new SimplePlaylist
+                        {
+                            Error = null,
+                            Collaborative = false,
+                            ExternalUrls = null,
+                            Href = null,
+                            Id = "-1",
+                            Images =
+                            [
+                                new Image
+                                {
+                                    Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
+                                    Width = 640,
+                                    Height = 640
+                                }
+                            ],
+                            Name = "Liked Songs",
+                            Owner = null,
+                            Public = false,
+                            SnapshotId = null,
+                            Tracks = null,
+                            Type = null,
+                            Uri = null
+                        })
+                    });
                     foreach (SimplePlaylist playlist in Settings.SpotifyPlaylistCache)
                     {
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });

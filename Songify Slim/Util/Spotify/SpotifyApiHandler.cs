@@ -55,7 +55,7 @@ namespace Songify_Slim.Util.Songify
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
                 );
             }
             else
@@ -64,7 +64,7 @@ namespace Songify_Slim.Util.Songify
                     $"{url}/auth/_index.php",
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
                 );
             }
 
@@ -405,35 +405,43 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<bool> AddToPlaylist(string trackId)
         {
-            try
+            if (Settings.Settings.SpotifyPlaylistId == null || Settings.Settings.SpotifyPlaylistId == "-1")
             {
-                Paging<PlaylistTrack> tracks =
-                    await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-
-                while (tracks is { Items: not null })
+                await Spotify.SaveTracksAsync([trackId]);
+            }
+            else
+            {
+                try
                 {
-                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    Paging<PlaylistTrack> tracks =
+                        await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+
+                    while (tracks is { Items: not null })
                     {
-                        return true;
+                        if (tracks.Items.Any(t => t.Track.Id == trackId))
+                        {
+                            return true;
+                        }
+
+                        if (!tracks.HasNextPage())
+                        {
+                            break;  // Exit if no more pages
+                        }
+
+                        tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                     }
 
-                    if (!tracks.HasNextPage())
-                    {
-                        break;  // Exit if no more pages
-                    }
-
-                    tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                    ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                        $"spotify:track:{trackId}");
+                    return x == null || x.HasError();
                 }
-
-                ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                    $"spotify:track:{trackId}");
-                return x == null || x.HasError();
+                catch (Exception)
+                {
+                    Logger.LogStr("Error adding song to playlist");
+                    return true;
+                }
             }
-            catch (Exception)
-            {
-                Logger.LogStr("Error adding song to playlist");
-                return true;
-            }
+            return false;
         }
 
 

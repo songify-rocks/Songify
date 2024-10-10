@@ -205,8 +205,6 @@ namespace Songify_Slim.Views
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
             if (req == null)
                 return;
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
-                return;
             await SpotifyApiHandler.AddToPlaylist(req.Trackid);
             GlobalObjects.QueueUpdateQueueWindow();
         }
