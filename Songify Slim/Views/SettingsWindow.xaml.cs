@@ -167,6 +167,7 @@ namespace Songify_Slim.Views
             TextBoxTriggerSsr.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
             TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger) ? "remove" : Settings.BotCmdRemoveTrigger;
             TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger) ? "songlike" : Settings.BotCmdSonglikeTrigger;
+            TextBoxTriggerQueue.Text = string.IsNullOrWhiteSpace(Settings.BotCmdQueueTrigger) ? "queue" : Settings.BotCmdQueueTrigger;
 
             Settings.UserLevelsCommand ??= new List<int>();
             Settings.UserLevelsReward ??= new List<int>();
