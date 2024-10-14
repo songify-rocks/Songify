@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -104,6 +105,7 @@ namespace Songify_Slim.Views
             NudSpaces.Value = Settings.SpaceCount;
             NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
+            NudCooldownPerUser.Value = Settings.TwSrPerUserCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
             TbClientId.Text = Settings.ClientId;
             TbClientSecret.Password = Settings.ClientSecret;
@@ -687,7 +689,16 @@ namespace Songify_Slim.Views
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets command cooldown
-            if (NudCooldown.Value != null) Settings.TwSrCooldown = (int)NudCooldown.Value;
+            if (NudCooldown.Value == null)
+                return; 
+            if (!IsLoaded)
+                return;
+            Settings.TwSrCooldown = (int)NudCooldown.Value;
+            if (!NudCooldown.Value.HasValue) return;
+            int totalSeconds = (int)NudCooldown.Value.Value;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            GlobalCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
         }
 
         private void NudMaxlength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -1427,122 +1438,118 @@ namespace Songify_Slim.Views
 
         private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)
         {
+            CbSpotifyPlaylist.IsEnabled = false;
+            ((Button)sender).IsEnabled = false;
             await LoadSpotifyPlaylists(true);
+            CbSpotifyPlaylist.IsEnabled = true;
+            ((Button)sender).IsEnabled = true;
         }
 
         private async Task LoadSpotifyPlaylists(bool forceSync = false)
         {
-            if (forceSync)
+            while (true)
             {
-                if (SpotifyApiHandler.Spotify == null) return;
-                try
+                if (forceSync)
                 {
-                    GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
-                    if (GlobalObjects.SpotifyProfile == null) return;
-
-                    CbSpotifyPlaylist.Items.Clear();
-                    CbSpotifySongLimitPlaylist.Items.Clear();
-
-                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem
+                    if (SpotifyApiHandler.Spotify == null) return;
+                    try
                     {
-                        Content = new UcPlaylistItem(new SimplePlaylist
+                        GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
+                        if (GlobalObjects.SpotifyProfile == null) return;
+
+                        CbSpotifyPlaylist.Items.Clear();
+                        CbSpotifySongLimitPlaylist.Items.Clear();
+
+                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                         {
-                            Error = null,
-                            Collaborative = false,
-                            ExternalUrls = null,
-                            Href = null,
-                            Id = "-1",
-                            Images =
-                            [
-                                new Image
-                                {
-                                    Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
-                                    Width = 640,
-                                    Height = 640
-                                }
-                            ],
-                            Name = "Liked Songs",
-                            Owner = null,
-                            Public = false,
-                            SnapshotId = null,
-                            Tracks = null,
-                            Type = null,
-                            Uri = null
-                        })
-                    });
+                            Content = new UcPlaylistItem(new SimplePlaylist
+                            {
+                                Error = null,
+                                Collaborative = false,
+                                ExternalUrls = null,
+                                Href = null,
+                                Id = "-1",
+                                Images = [new Image { Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png", Width = 640, Height = 640 }],
+                                Name = "Liked Songs",
+                                Owner = null,
+                                Public = false,
+                                SnapshotId = null,
+                                Tracks = null,
+                                Type = null,
+                                Uri = null
+                            })
+                        });
 
-                    Paging<SimplePlaylist> playlists = await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, 0);
-                    if (playlists == null) return;
-                    List<SimplePlaylist> playlistCache = [];
-                    while (playlists != null)
+                        Paging<SimplePlaylist> playlists = await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, 0);
+                        if (playlists == null) return;
+                        List<SimplePlaylist> playlistCache = [];
+                        CbSpotifyPlaylist.SelectionChanged -= cb_SpotifyPlaylist_SelectionChanged;
+                        while (playlists != null)
+                        {
+                            foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == GlobalObjects.SpotifyProfile.Id))
+                            {
+                                CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                                CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                                playlistCache.Add(playlist);
+                                Thread.Sleep(100);
+                            }
+
+                            if (!playlists.HasNextPage()) break; // Exit if no more pages
+                            playlists = await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, playlists.Offset + playlists.Limit);
+                        }
+                        CbSpotifyPlaylist.SelectionChanged += cb_SpotifyPlaylist_SelectionChanged;
+                        Settings.SpotifyPlaylistCache = playlistCache;
+
+                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId)) CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                        if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist)) CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
+                    }
+                    catch (Exception ex)
                     {
-                        foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == GlobalObjects.SpotifyProfile.Id))
+                        Logger.LogExc(ex);
+                        return;
+                    }
+                }
+                else
+                {
+                    if (Settings.SpotifyPlaylistCache.Count > 0)
+                    {
+                        CbSpotifySongLimitPlaylist.Items.Clear();
+                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem
+                        {
+                            Content = new UcPlaylistItem(new SimplePlaylist
+                            {
+                                Error = null,
+                                Collaborative = false,
+                                ExternalUrls = null,
+                                Href = null,
+                                Id = "-1",
+                                Images = [new Image { Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png", Width = 640, Height = 640 }],
+                                Name = "Liked Songs",
+                                Owner = null,
+                                Public = false,
+                                SnapshotId = null,
+                                Tracks = null,
+                                Type = null,
+                                Uri = null
+                            })
+                        });
+                        foreach (SimplePlaylist playlist in Settings.SpotifyPlaylistCache)
                         {
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                             CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                            playlistCache.Add(playlist);
                         }
 
-                        if (!playlists.HasNextPage()) break;  // Exit if no more pages
-                        playlists = await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, playlists.Offset + playlists.Limit);
+                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId)) CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                        if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist)) CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
                     }
-
-                    Settings.SpotifyPlaylistCache = playlistCache;
-
-                    if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
-                        CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
-                    if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
-                        CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    return;
-                }
-            }
-            else
-            {
-                if (Settings.SpotifyPlaylistCache.Count > 0)
-                {
-                    CbSpotifySongLimitPlaylist.Items.Clear();
-                    CbSpotifyPlaylist.Items.Add(new ComboBoxItem
+                    else
                     {
-                        Content = new UcPlaylistItem(new SimplePlaylist
-                        {
-                            Error = null,
-                            Collaborative = false,
-                            ExternalUrls = null,
-                            Href = null,
-                            Id = "-1",
-                            Images =
-                            [
-                                new Image
-                                {
-                                    Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png",
-                                    Width = 640,
-                                    Height = 640
-                                }
-                            ],
-                            Name = "Liked Songs",
-                            Owner = null,
-                            Public = false,
-                            SnapshotId = null,
-                            Tracks = null,
-                            Type = null,
-                            Uri = null
-                        })
-                    });
-                    foreach (SimplePlaylist playlist in Settings.SpotifyPlaylistCache)
-                    {
-                        CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                        CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
+                        forceSync = true;
+                        continue;
                     }
-                    if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
-                        CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
-                    if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
-                        CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items.Cast<ComboBoxItem>().FirstOrDefault(item => ((UcPlaylistItem)item.Content).Playlist != null && ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
-
                 }
+
+                break;
             }
         }
 
@@ -1686,6 +1693,28 @@ namespace Songify_Slim.Views
         private void TglBotQueue_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdQueue = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void NudUserCdMinutes_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+        }
+
+        private void NudUserCdSeconds_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+        }
+
+        private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if(!IsLoaded)
+                return;
+            if (NudCooldownPerUser.Value.HasValue)
+            {
+                Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
+                int totalSeconds = (int)NudCooldownPerUser.Value.Value;
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+                UserCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
+            }
         }
     }
 }

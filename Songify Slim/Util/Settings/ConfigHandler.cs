@@ -213,6 +213,7 @@ namespace Songify_Slim.Util.Settings
         public string BotRespSuccess { get; set; } = "{artist} - {title} requested by @{user} has been added to the queue.";
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
+        public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
     }
 
     public class AppConfig
@@ -297,6 +298,7 @@ namespace Songify_Slim.Util.Settings
         public int LastShownMotdId { get; set; }
         public List<int> ReadNotificationIds { get; set; } = [];
         public bool SpotifyControlVisible { get; set; }
+        public int TwSrPerUserCooldown { get; set; } = 0;
     }
 
     public class Config

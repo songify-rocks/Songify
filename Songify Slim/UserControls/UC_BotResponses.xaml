@@ -15,16 +15,16 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
             <!--#region Commands-->
-            <TextBlock 
+            <TextBlock
                 Margin="0,6"
                 FontSize="18"
                 FontWeight="Bold"
                 Text="Command Responses" />
-            <TextBlock FontSize="14" 
-
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_Song}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -41,10 +41,11 @@
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_Remove}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -63,10 +64,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_Pos}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -84,10 +86,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_Next}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -105,10 +108,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_SongLike}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -123,13 +127,13 @@
 
             <!--#endregion-->
             <!--#region Song Request Related Responses-->
-            <TextBlock 
+            <TextBlock
                 Margin="0,16,0,6"
                 FontSize="18"
                 FontWeight="Bold"
                 Text="Song Request Responses" />
 
-            <TextBlock 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
@@ -151,10 +155,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_SongInQueue}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -172,10 +177,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_MaxSongs}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -193,10 +199,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_SongTooLong}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -214,10 +221,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_ArtistBlocked}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -235,10 +243,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_ExplicitSongs}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -257,10 +266,11 @@
                 BorderThickness="1" />
 
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_CommandOnCooldown}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -278,10 +288,33 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
+                Text="{x:Static properties:Resources.brw_CommandOnUserCooldown}"
+                TextWrapping="Wrap" />
+            <TextBox
+                x:Name="TbSrUserCooldown"
+                MinHeight="27"
+                VerticalAlignment="Center"
+                AcceptsReturn="True"
+                GotFocus="tb__GotFocus"
+                TextChanged="TbSrUserCooldown_OnTextChanged"
+                TextWrapping="Wrap"
+                ToolTip="{DynamicResource ParamTooltip}" />
+            <Border
+                Margin="0,6"
+                VerticalAlignment="Bottom"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderThickness="1" />
+
+            <TextBlock
+                Margin="0,0,6,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_ModSkip}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -300,10 +333,11 @@
                 BorderThickness="1" />
 
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_VoteSkip}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -321,10 +355,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -343,10 +378,11 @@
                 BorderThickness="1" />
 
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_FetchError}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -364,10 +400,11 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_NoSong}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -386,10 +423,11 @@
                 BorderThickness="1" />
 
 
-            <TextBlock FontSize="14" 
+            <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
+                FontSize="14"
                 Text="{x:Static properties:Resources.brw_NoTrackFound}"
                 TextWrapping="Wrap" />
             <TextBox
@@ -404,10 +442,11 @@
             <!--#endregion-->
 
             <Grid Visibility="Collapsed">
-                <TextBlock FontSize="14" 
+                <TextBlock
                     Margin="0,0,6,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    FontSize="14"
                     Text="{x:Static properties:Resources.brw_Refund}"
                     TextWrapping="Wrap" />
                 <TextBox

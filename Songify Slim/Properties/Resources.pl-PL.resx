@@ -258,9 +258,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Wyczyść kolejkę przy uruchomieniu</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Czas odnowienia polecenia (sekundy)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Maksymalna długość utworu (w minutach)</value>
   </data>
@@ -731,5 +728,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Zwraca pierwsze 5 utworów z bieżącej kolejki odtwarzania</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Czas odnowienia globalnego polecenia (sekundy)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Czas odnowienia komendy SR (na użytkownika)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Odpowiedź, gdy użytkownik jest w cooldownie (cooldown dla użytkownika dla komendy żądania utworu).</value>
   </data>
 </root>

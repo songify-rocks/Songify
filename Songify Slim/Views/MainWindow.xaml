@@ -177,8 +177,7 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Background="Black"
-                CornerRadius="10"
-                Visibility="{Binding IsBetaVisible}">
+                CornerRadius="10">
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"

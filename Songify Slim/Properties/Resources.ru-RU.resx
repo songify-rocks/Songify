@@ -256,9 +256,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Очистить очередь при запуске программы</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Время перезарядки команды (в секундах)</value>
-  </data>
   <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
     <value>Макс. количество запросов для пользователя</value>
   </data>
@@ -732,5 +729,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Возвращает первые 5 песен текущей очереди воспроизведения.</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Глобальное время восстановления команды (секунды)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Перезарядка команды SR (на пользователя)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Ответ, когда пользователь находится в состоянии кулдауна (персональный кулдаун для команды запроса песни).</value>
   </data>
 </root>

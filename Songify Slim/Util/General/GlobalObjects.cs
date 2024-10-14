@@ -324,6 +324,8 @@ namespace Songify_Slim.Util.General
 
                                 if (isLikedSongsPlaylist)
                                 {
+                                    if(CurrentSong == null)
+                                        return;
                                     ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([CurrentSong.SongId]);
                                     isInLikedPlaylist = x.List.Count > 0 && x.List[0];
                                 }

@@ -26,6 +26,33 @@ namespace Songify_Slim.Util.Settings
         public static int LastShownMotdId { get => GetLastShownMotdId(); set => SetLastShownMotdId(value); }
         public static List<int> ReadNotificationIds { get => GetReadNotificationIds(); set => SetReadNotificationIds(value); }
         public static string BotCmdQueueTrigger { get => GetBotCmdQueueTrigger(); set=> SetBotCmdQueueTrigger(value); }
+        public static int TwSrPerUserCooldown
+        {
+            get => GetTwSrPerUserCooldown(); set => SetTwSrPerUserCooldown(value); }
+
+        public static string BotRespUserCooldown { get=> GetBotRespUserCooldown(); set => SetBotRespUserCooldown(value); }
+
+        private static void SetBotRespUserCooldown(string value)
+        {
+            _currentConfig.BotConfig.BotRespUserCooldown = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.BotConfig, _currentConfig.BotConfig);
+        }
+
+        private static string GetBotRespUserCooldown()
+        {
+            return _currentConfig.BotConfig.BotRespUserCooldown;
+        }
+
+        private static void SetTwSrPerUserCooldown(int value)
+        {
+            _currentConfig.AppConfig.TwSrPerUserCooldown = value;
+            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, _currentConfig.AppConfig);
+        }
+
+        private static int GetTwSrPerUserCooldown()
+        {
+            return _currentConfig.AppConfig.TwSrPerUserCooldown;
+        }
 
         private static void SetBotCmdQueueTrigger(string value)
         {
@@ -1025,8 +1052,11 @@ namespace Songify_Slim.Util.Settings
             {
                 BotCmdNext = GetBotCmdNext(),
                 BotCmdNextTrigger = GetCmdNextTrigger(),
+                BotCmdPlayPause = GetBotCmdPlayPause(),
                 BotCmdPos = GetBotCmdPos(),
                 BotCmdPosTrigger = GetCmdPosTrigger(),
+                BotCmdQueue = GetBotCmdQueue(),
+                BotCmdQueueTrigger = GetBotCmdQueueTrigger(),
                 BotCmdRemove = GetBotCmdRemove(),
                 BotCmdRemoveTrigger = GetCmdRemoveTrigger(),
                 BotCmdSkip = GetBotCmdSkip(),
@@ -1034,38 +1064,36 @@ namespace Songify_Slim.Util.Settings
                 BotCmdSkipVote = GetBotCmdSkipVote(),
                 BotCmdSkipVoteCount = GetBotCmdSkipVoteCount(),
                 BotCmdSong = GetBotCmdSong(),
+                BotCmdSonglike = GetBotCmdSonglike(),
+                BotCmdSonglikeTrigger = GetCmdSonglikeTrigger(),
                 BotCmdSongTrigger = GetCmdSongTrigger(),
                 BotCmdSsrTrigger = GetCmdSsrTrigger(),
+                BotCmdVol = GetBotCmdVol(),
+                BotCmdVolIgnoreMod = GetBotCmdVolIgnoreMod(),
                 BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
                 BotRespBlacklist = GetBot_Resp_Blacklist(),
+                BotRespCooldown = GetBot_Resp_Cooldown(),
                 BotRespError = GetBot_Resp_Error(),
+                BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
                 BotRespIsInQueue = GetBot_Resp_IsInQueue(),
                 BotRespLength = GetBot_Resp_Length(),
                 BotRespMaxReq = GetBot_Resp_MaxReq(),
                 BotRespModSkip = GetBot_Resp_ModSkip(),
                 BotRespNext = GetBot_Resp_Next(),
                 BotRespNoSong = GetBot_Resp_NoSong(),
+                BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
+                BotRespPlaylist = GetBot_Resp_Playlist(),
                 BotRespPos = GetBot_Resp_Pos(),
                 BotRespRefund = GetBot_Resp_Refund(),
+                BotRespRemove = GetBot_Resp_Remove(),
                 BotRespSong = GetBot_resp_Song(),
+                BotRespSongLike = GetBot_Resp_SongLike(),
                 BotRespSuccess = GetBot_Resp_Success(),
+                BotRespUnavailable = GetBot_Resp_SongUnavailable(),
+                BotRespUserCooldown = GetBotRespUserCooldown(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 ChatLiveStatus = GetChatLiveStatus(),
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
-                BotCmdSonglike = GetBotCmdSonglike(),
-                BotCmdSonglikeTrigger = GetCmdSonglikeTrigger(),
-                BotRespSongLike = GetBot_Resp_SongLike(),
-                BotCmdPlayPause = GetBotCmdPlayPause(),
-                BotRespPlaylist = GetBot_Resp_Playlist(),
-                BotRespRemove = GetBot_Resp_Remove(),
-                BotRespUnavailable = GetBot_Resp_SongUnavailable(),
-                BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
-                BotRespCooldown = GetBot_Resp_Cooldown(),
-                BotRespNoTrackFound = GetBot_Resp_NoTrackFound(),
-                BotCmdVol = GetBotCmdVol(),
-                BotCmdVolIgnoreMod = GetBotCmdVolIgnoreMod(),
-                BotCmdQueue = GetBotCmdQueue(),
-                BotCmdQueueTrigger = GetBotCmdQueueTrigger(),
             };
 
             AppConfig appConfig = new()
@@ -1079,6 +1107,7 @@ namespace Songify_Slim.Util.Settings
                 AutoClearQueue = GetAutoClearQueue(),
                 Autostart = GetAutostart(),
                 AutoStartWebServer = GetAutoStartWebServer(),
+                BaseUrl = GetBaseUrl(),
                 BetaUpdates = GetBetaUpdates(),
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
                 BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
@@ -1092,6 +1121,7 @@ namespace Songify_Slim.Util.Settings
                 FontSize = GetFontSize(),
                 FontsizeQueue = GetFontSizeQueue(),
                 Language = GetLanguage(),
+                LastShownMotdId = GetLastShownMotdId(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 MaxSongLength = GetMaxSongLength(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
@@ -1103,6 +1133,7 @@ namespace Songify_Slim.Util.Settings
                 PosX = (int)GetPosX(),
                 PosY = (int)GetPosY(),
                 QueueWindowColumns = GetQueueWindowColumns(),
+                ReadNotificationIds = GetReadNotificationIds(),
                 RefundConditons = GetRefundConditons(),
                 RequesterPrefix = GetRequesterPrefix(),
                 RewardGoalAmount = GetRewardGoalAmount(),
@@ -1112,6 +1143,7 @@ namespace Songify_Slim.Util.Settings
                 SongBlacklist = GetSongBlacklist(),
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
+                SpotifyControlVisible = GetSpotifyControlVisible(),
                 SpotifyPlaylistId = GetSpotifyPlaylistId(),
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 Systray = GetSystray(),
@@ -1131,6 +1163,7 @@ namespace Songify_Slim.Util.Settings
                 TwSrMaxReqModerator = GetTwSrMaxReqModerator(),
                 TwSrMaxReqSubscriber = GetTwSrMaxReqSubscriber(),
                 TwSrMaxReqVip = GetTwSrMaxReqVip(),
+                TwSrPerUserCooldown = GetTwSrPerUserCooldown(),
                 TwSrReward = GetTwSrReward(),
                 TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
                 TwSrUserLevel = GetTwSrUserLevel(),
@@ -1145,10 +1178,6 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
-                BaseUrl = GetBaseUrl(),
-                LastShownMotdId = GetLastShownMotdId(),
-                ReadNotificationIds = GetReadNotificationIds(),
-                SpotifyControlVisible = GetSpotifyControlVisible(),
             };
 
             return new Configuration

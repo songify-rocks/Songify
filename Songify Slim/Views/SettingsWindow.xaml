@@ -1692,21 +1692,58 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" />
-                                    <controls:NumericUpDown
-                                        x:Name="NudCooldown"
-                                        Width="151"
-                                        Height="28"
-                                        Margin="0,0,0,0"
-                                        Padding="0"
+                                    <StackPanel
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
-                                        DecimalPointCorrection="Number"
                                         DockPanel.Dock="Right"
-                                        Interval="1"
-                                        Maximum="100"
-                                        Minimum="1"
-                                        NumericInputMode="Numbers"
-                                        ValueChanged="NudCooldown_ValueChanged" />
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            x:Name="NudCooldown"
+                                            Width="90"
+                                            Height="28"
+                                            DecimalPointCorrection="Number"
+                                            DockPanel.Dock="Right"
+                                            Interval="1"
+                                            Maximum="100"
+                                            Minimum="1"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="NudCooldown_ValueChanged" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="GlobalCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="(00:00)" />
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,6,0,0">
+                                    <Label
+                                        Margin="0,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Content="{x:Static local:Resources.sw_SpotifySR_CommandCDUser}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            Name="NudCooldownPerUser"
+                                            Width="90"
+                                            Height="28"
+                                            Interval="1"
+                                            Maximum="3599"
+                                            Minimum="0"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="CooldownSpinner_OnValueChangedpinner_ValueChanged"
+                                            Value="0" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="UserCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="(00:00)" />
+                                    </StackPanel>
                                 </DockPanel>
                                 <DockPanel Margin="0,6,0,0">
                                     <Label

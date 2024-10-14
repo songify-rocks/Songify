@@ -306,7 +306,7 @@
     <comment>Toggleswitch content for "Clear queue on startup"</comment>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Command cooldown (seconds)</value>
+    <value>Global command cooldown (seconds)</value>
     <comment>Label content for "Command cooldown (seconds)"</comment>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
@@ -908,5 +908,11 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Returns the first 5 songs of the current playback queue</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>SR Command Cooldown (per user)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Response when the User is on cooldown (per user sr command cooldown)</value>
   </data>
 </root>

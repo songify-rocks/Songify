@@ -76,7 +76,7 @@ namespace Songify_Slim.Util.Songify
 
         private static readonly Timer CooldownTimer = new()
         {
-            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
+            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds
         };
 
         private static readonly Timer SkipCooldownTimer = new()
@@ -1047,7 +1047,7 @@ namespace Songify_Slim.Util.Songify
         }
         private static bool CheckLiveStatus()
         {
-            if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive)
+            if (Settings.Settings.IsLive)
             {
                 Logger.LogStr("STREAM: Stream is live.");
                 Application.Current.BeginInvoke(
@@ -1153,10 +1153,13 @@ namespace Songify_Slim.Util.Songify
                 {
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
+                    LastCommandTime = null,
                     DisplayName = e.ChatMessage.DisplayName,
-                    UserLevel = userlevel.Item1
+                    UserLevel = userlevel.Item1,
+
                 };
                 Users.Add(newUser);
+                existingUser = newUser;
             }
             else
             {
@@ -1200,19 +1203,22 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
                 e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger.ToLower()} ", StringComparison.CurrentCultureIgnoreCase))
             {
-                try
-                {
-                    if (!CheckLiveStatus())
+                Settings.Settings.IsLive = await CheckStreamIsUp();
+
+                if (Settings.Settings.BotOnlyWorkWhenLive)
+                    try
                     {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
+                        if (!CheckLiveStatus())
+                        {
+                            if (Settings.Settings.ChatLiveStatus)
+                                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            return;
+                        }
                     }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
+                    catch (Exception)
+                    {
+                        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                    }
 
                 userlevel = CheckUserLevel(e.ChatMessage, 0);
                 if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
@@ -1227,6 +1233,32 @@ namespace Songify_Slim.Util.Songify
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
+                    return;
+                }
+
+                TimeSpan cooldown = TimeSpan.FromSeconds(Settings.Settings.TwSrPerUserCooldown); // Set your cooldown time here
+                if (!existingUser.IsCooldownExpired(cooldown))
+                {
+                    // Inform user about the cooldown
+                    if (existingUser.LastCommandTime == null) return;
+                    TimeSpan remaining = cooldown - (DateTime.Now - existingUser.LastCommandTime.Value);
+                    Logger.LogStr($"{existingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
+                    // if remaining is more than 1 minute format to mm:ss, else to ss
+                    string time = remaining.Minutes >= 1
+                        ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
+                        : $"{remaining.Seconds} seconds";
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.DisplayName,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = time
+                    }, Settings.Settings.BotRespUserCooldown);
+                    SendChatMessage(e.ChatMessage.Channel, msg);
                     return;
                 }
 
@@ -1248,6 +1280,7 @@ namespace Songify_Slim.Util.Songify
 
                 // start the command cooldown
                 StartCooldown();
+                existingUser.UpdateCommandTime();
             }
 
             // Skip Command for mods (!skip)
@@ -1724,8 +1757,43 @@ namespace Songify_Slim.Util.Songify
                             }
                         }
                         break;
+                    case "!bansong" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                        {
+                            TrackInfo currentSong = GlobalObjects.CurrentSong;
+                            if (currentSong == null || Settings.Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
+                                return;
+
+                            List<TrackItem> blacklist = Settings.Settings.SongBlacklist;
+                            blacklist.Add(new TrackItem
+                            {
+                                Artists = currentSong.Artists,
+                                TrackName = currentSong.Title,
+                                TrackId = currentSong.SongId,
+                                TrackUri = $"spotify:track:{currentSong.SongId}",
+                                ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
+                            });
+                            Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+
+                            string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                            {
+                                User = e.ChatMessage.DisplayName,
+                                MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                                ErrorMsg = null,
+                                MaxLength = $"{Settings.Settings.MaxSongLength}",
+                                Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                                Req = GlobalObjects.Requester,
+                                Cd = Settings.Settings.TwSrCooldown.ToString()
+                            }, "The song {song} has been added to the blocklist.");
+
+                            SendChatMessage(e.ChatMessage.Channel, msg);
+
+                            await SpotifyApiHandler.SkipSong();
+                            break;
+                        }
+
                 }
         }
+
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
         {
             string[] split = e.ChatMessage.Message.Split(' ');
@@ -2637,8 +2705,15 @@ namespace Songify_Slim.Util.Songify
         private static void StartCooldown()
         {
             // starts the cooldown on the command
+            int interval = Settings.Settings.TwSrCooldown > 0 ? Settings.Settings.TwSrCooldown : 0;
+            if (interval == 0)
+            {
+                _onCooldown = false;
+                return;
+            }
+
             _onCooldown = true;
-            CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
+            CooldownTimer.Interval = TimeSpan.FromSeconds(interval).TotalMilliseconds;
             CooldownTimer.Start();
             CooldownStopwatch.Reset();
             CooldownStopwatch.Start();
@@ -2696,12 +2771,26 @@ namespace Songify_Slim.Util.Songify
         public string UserId { get; set; }
         public int UserLevel { get; set; }
         public string UserName { get; set; }
+        public DateTime? LastCommandTime { get; set; } = null;
 
         public void Update(string username, string displayname, int userlevel)
         {
             UserName = username;
             DisplayName = displayname;
             UserLevel = userlevel;
+        }
+
+        public bool IsCooldownExpired(TimeSpan cooldown)
+        {
+            if (LastCommandTime == null)
+                return true;
+
+            return (DateTime.Now - LastCommandTime.Value) > cooldown;
+        }
+
+        public void UpdateCommandTime()
+        {
+            LastCommandTime = DateTime.Now;
         }
     }
 

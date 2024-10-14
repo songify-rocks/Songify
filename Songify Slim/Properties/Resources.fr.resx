@@ -259,9 +259,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Effacer la file d'attente au démarrage</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Temps entre les commandes (en secondes)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Longueur maximale de la musique (en minutes)</value>
   </data>
@@ -735,5 +732,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Renvoie les 5 premières chansons de la file d'attente de lecture actuelle</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Temps de recharge de la commande globale (secondes)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Temps de recharge de la commande SR (par utilisateur)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Réponse lorsque l'utilisateur est en cooldown (cooldown par utilisateur pour la commande de demande de chansons).</value>
   </data>
 </root>

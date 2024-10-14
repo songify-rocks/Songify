@@ -256,9 +256,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>borrar cola al iniciar</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Tiempo de Reutilización del Comando (segundos)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Duración máxima de la canción (en minutos)</value>
   </data>
@@ -732,5 +729,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Devuelve las primeras 5 canciones de la cola de reproducción actual</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Tiempo de recuperación del comando global (segundos)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Tiempo de reutilización del comando SR (por usuario)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Respuesta cuando el usuario está en cooldown (cooldown por usuario para el comando de solicitud de canciones).</value>
   </data>
 </root>

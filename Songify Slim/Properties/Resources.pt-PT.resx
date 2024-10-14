@@ -258,9 +258,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Limpar fila na inicialização</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Tempo de espera do comando (segundos)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Duração máxima da música (em minutos)</value>
   </data>
@@ -731,5 +728,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Retorna as primeiras 5 músicas da fila de reprodução atual</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Tempo de espera do comando global (segundos)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Tempo de espera do comando SR (por usuário)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Resposta quando o utilizador está em cooldown (cooldown por utilizador para o comando de solicitação de música).</value>
   </data>
 </root>

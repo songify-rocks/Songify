@@ -258,9 +258,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Cancella coda all'avvio</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Recupero comando (secondi)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Durata massima del brano (in minuti)</value>
   </data>
@@ -731,5 +728,14 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Restituisce i primi 5 brani della coda di riproduzione corrente</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Tempo di recupero del comando globale (secondi)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Tempo di recupero del comando SR (per utente)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Risposta quando l'utente è in cooldown (cooldown per utente per il comando di richiesta canzoni).</value>
   </data>
 </root>
