@@ -8,6 +8,7 @@
  Should you notice the list being outdated, please, do contact VonRiddarn.
  */
 
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using System.Collections.Generic;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
@@ -31,7 +32,8 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 "moderator:read:chat_settings",
                 "moderator:manage:chat_settings",
                 "moderator:manage:announcements",
-                "channel:moderate"                   
+                "channel:moderate",
+                "moderator:read:followers"
                 //s.Add("user:read:follows");
                 //s.Add("user:read:subscriptions");
                 //s.Add("analytics:read:extensions");

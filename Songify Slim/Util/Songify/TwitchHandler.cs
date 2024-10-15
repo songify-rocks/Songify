@@ -48,6 +48,7 @@ using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Web.UI;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -100,7 +101,12 @@ namespace Songify_Slim.Util.Songify
 
         public static void ApiConnect(Enums.TwitchAccount account)
         {
-            ImplicitOAuth ioa = new(1234);
+            // generate a radnom int salt
+            Random random = new();
+            int salt = random.Next(1000, 9999);
+
+
+            ImplicitOAuth ioa = new(salt);
 
             // This event is triggered when the application recieves a new token and state from the "RequestClientAuthorization" method.
             ioa.OnRevcievedValues += async (state, token) =>
@@ -1148,6 +1154,7 @@ namespace Songify_Slim.Util.Songify
 
             if (existingUser == null)
             {
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
                 {
@@ -1156,7 +1163,8 @@ namespace Songify_Slim.Util.Songify
                     LastCommandTime = null,
                     DisplayName = e.ChatMessage.DisplayName,
                     UserLevel = userlevel.Item1,
-
+                    IsFollowing = isUserFollowing.Item1,
+                    FollowInformation = isUserFollowing.Item2
                 };
                 Users.Add(newUser);
                 existingUser = newUser;
@@ -1792,6 +1800,27 @@ namespace Songify_Slim.Util.Songify
                         }
 
                 }
+        }
+
+        private static async Task<Tuple<bool?, ChannelFollower>> GetIsUserFollowing(string chatMessageUserId)
+        {
+            // Using the Twitch API to check if the user is following the channel
+            try
+            {
+                GetChannelFollowersResponse resp = await TwitchApi.Helix.Channels.GetChannelFollowersAsync(
+                    Settings.Settings.TwitchUser.Id,
+                    chatMessageUserId,
+                    20,
+                    null,
+                    Settings.Settings.TwitchAccessToken);
+                return new Tuple<bool?, ChannelFollower>(resp.Data.Length > 0, resp.Data.FirstOrDefault());
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+                return null;
+            }
+
         }
 
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
@@ -2772,6 +2801,9 @@ namespace Songify_Slim.Util.Songify
         public int UserLevel { get; set; }
         public string UserName { get; set; }
         public DateTime? LastCommandTime { get; set; } = null;
+
+        public bool? IsFollowing { get; set; } = null;
+        public ChannelFollower FollowInformation { get; set; }
 
         public void Update(string username, string displayname, int userlevel)
         {

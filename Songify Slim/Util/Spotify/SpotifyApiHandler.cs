@@ -358,6 +358,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 string newQuery = UrlEncoder.Default.Encode(searchQuery);
+                newQuery = newQuery.Replace("%20", "+");
                 Debug.WriteLine(searchQuery);
                 Debug.WriteLine(newQuery);
                 SearchItem search = Spotify.SearchItems(newQuery, SearchType.Track, 1);
