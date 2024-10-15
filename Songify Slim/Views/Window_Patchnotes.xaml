@@ -7,7 +7,6 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Patch Notes"
     Width="800"
     Height="450"
@@ -38,9 +37,9 @@
                 DisplayMemberPath="Version"
                 DockPanel.Dock="Bottom"
                 SelectedValuePath="Content"
-                SelectionChanged="LbxVersions_OnSelectionChanged" />
+                SelectionChanged="LbxVersions_SelectionChanged" />
         </DockPanel>
-        <DockPanel Grid.Column="1" LastChildFill="True">
+        <DockPanel Grid.Column="1">
             <StackPanel
                 Margin="6,0,0,0"
                 DockPanel.Dock="Top"
@@ -55,10 +54,10 @@
                     </Hyperlink>
                 </TextBlock>
             </StackPanel>
-            <wv2:WebView2
-                x:Name="webView"
-                Margin="10"
-                HorizontalAlignment="Stretch"
+            <WebBrowser x:Name="Browser" Visibility="Collapsed" />
+            <FlowDocumentScrollViewer
+                x:Name="RtbPatchnotes"
+                Margin="6,0,6,6"
                 VerticalAlignment="Stretch"
                 DockPanel.Dock="Bottom" />
         </DockPanel>

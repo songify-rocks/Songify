@@ -17,8 +17,6 @@ using Songify_Slim.Util.Settings;
 using Application = System.Windows.Application;
 using Markdown = Markdig.Wpf.Markdown;
 using XamlReader = System.Windows.Markup.XamlReader;
-using Windows.UI.Xaml.Controls;
-using SelectionChangedEventArgs = Windows.UI.Xaml.Controls.SelectionChangedEventArgs;
 
 namespace Songify_Slim.Views
 {
@@ -56,41 +54,82 @@ namespace Songify_Slim.Views
             LbxVersions.SelectedIndex = 0;
             LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
         }
-
         private void LbxVersions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //string markdownTxt = (string)LbxVersions.SelectedValue;
-            //markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
-            //MarkdownPipeline pipeline = new MarkdownPipelineBuilder().Build();
-            //string xaml = Markdown.ToXaml(markdownTxt, pipeline);
-            //using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
+            string markdownTxt = (string)LbxVersions.SelectedValue;
+            markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
+            MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            string xaml = Markdown.ToXaml(markdownTxt, pipeline);
+            using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
+            {
+                using (XamlXmlReader reader = new(stream, new MyXamlSchemaContext()))
+                {
+                    if (XamlReader.Load(reader) is FlowDocument document)
+                    {
+                        RtbPatchnotes.Document = document;
+                    }
+                }
+            }
+
+            foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
+            {
+                Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
+                documentBlock.Foreground = new SolidColorBrush(themeForeground);
+            }
+            string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
+            if (!string.IsNullOrWhiteSpace(uri))
+            {
+                Hyperlink.IsEnabled = true;
+                Hyperlink.NavigateUri = new Uri(uri);
+            }
+            else
+            {
+                Hyperlink.IsEnabled = false;
+            }
+
+            //// Define the plain text with links
+            //string plainText = markdownTxt;
+
+            //// Define the regular expression pattern to match URLs
+            //const string urlPattern = @"https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)";
+
+            //// Convert plain text links to hyperlinks
+            //var regex = new Regex(urlPattern, RegexOptions.IgnoreCase);
+            //var matches = regex.Matches(plainText);
+            //int index = 0;
+            //var paragraph = new Paragraph();
+            //foreach (Match match in matches)
             //{
-            //    using (XamlXmlReader reader = new(stream, new MyXamlSchemaContext()))
+            //    // Add plain text before the match
+            //    paragraph.Inlines.Add(new Run(plainText.Substring(index, match.Index - index)));
+
+            //    // Add hyperlink for the match
+            //    var hyperlink = new Hyperlink(new Run(match.Value))
             //    {
-            //        if (XamlReader.Load(reader) is FlowDocument document)
-            //        {
-            //            RtbPatchnotes.Document = document;
-            //        }
-            //    }
+            //        NavigateUri = new Uri(match.Value),
+            //        TextDecorations = TextDecorations.Underline
+            //    };
+            //    hyperlink.RequestNavigate += (o, args) =>
+            //    {
+            //        Process.Start(args.Uri.ToString());
+            //        args.Handled = true;
+            //    };
+            //    paragraph.Inlines.Add(hyperlink);
+
+            //    // Update index for next iteration
+            //    index = match.Index + match.Length;
             //}
 
-            //foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
+            //// Add remaining plain text after the last match
+            //if (index < plainText.Length)
             //{
-            //    Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
-            //    documentBlock.Foreground = new SolidColorBrush(themeForeground);
-            //}
-            //string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
-            //if (!string.IsNullOrWhiteSpace(uri))
-            //{
-            //    Hyperlink.IsEnabled = true;
-            //    Hyperlink.NavigateUri = new Uri(uri);
-            //}
-            //else
-            //{
-            //    Hyperlink.IsEnabled = false;
+            //    paragraph.Inlines.Add(new Run(plainText.Substring(index)));
             //}
 
-
+            //// Set the paragraph as the content of the RichTextBox
+            //RtbPatchnotes.Document.Blocks.Clear();
+            //RtbPatchnotes.Document.Blocks.Add(paragraph);
+            //RtbPatchnotes.IsDocumentEnabled = true;
         }
 
         private class ReleaseObject
@@ -120,104 +159,6 @@ namespace Songify_Slim.Views
                     return true;
                 }
                 return base.TryGetCompatibleXamlNamespace(xamlNamespace, out compatibleNamespace);
-            }
-        }
-
-        private async void LbxVersions_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-            string markdownTxt = (string)LbxVersions.SelectedValue;
-
-            // Convert Markdown to HTML
-            MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            string htmlContent = Markdig.Markdown.ToHtml(markdownTxt, pipeline);
-
-            // Load HTML Template and replace placeholder with content
-            const string htmlTemplate = """
-                                                <html>
-                                            <head>
-                                            <style>
-                                                body {
-                                                    font-family: Arial, sans-serif;
-                                                    color: #e0e0e0; /* Light gray text for dark background */
-                                                    background-color: #252525; /* Dark background for body */
-                                                    line-height: 1.6;
-                                                }
-                                                code {
-                                                    background-color: #2d2d2d; /* Slightly darker background for code elements */
-                                                    padding: 2px 4px;
-                                                    border-radius: 3px;
-                                                    font-family: Consolas, 'Courier New', monospace;
-                                                    color: #ff9d00; /* Slightly orange color for code text */
-                                                }
-                                                pre {
-                                                    background-color: #2d2d2d; /* Dark background for preformatted text */
-                                                    color: #f8f8f2; /* Light color for code */
-                                                    padding: 10px;
-                                                    border-radius: 5px;
-                                                    overflow-x: auto;
-                                                }
-                                                a {
-                                                    color: #4e9efc; /* Bright blue for links */
-                                                    text-decoration: none;
-                                                }
-                                                a:hover {
-                                                    text-decoration: underline;
-                                                }
-                                                h1, h2, h3, h4, h5, h6 {
-                                                    color: #e6e6e6; /* Light color for headers */
-                                                }
-                                                blockquote {
-                                                    border-left: 4px solid #757575; /* Light gray border for blockquotes */
-                                                    padding-left: 10px;
-                                                    color: #b0b0b0; /* Gray color for blockquote text */
-                                                    margin-left: 0;
-                                                    margin-right: 0;
-                                                }
-                                                ul, ol {
-                                                    margin-left: 20px;
-                                                    color: #d0d0d0; /* Light color for list items */
-                                                }
-                                                table {
-                                                    width: 100%;
-                                                    border-collapse: collapse;
-                                                    margin-top: 20px;
-                                                    background-color: #252525; /* Dark background for table */
-                                                }
-                                                th, td {
-                                                    border: 1px solid #444444; /* Border for table cells */
-                                                    padding: 8px;
-                                                    color: #e0e0e0; /* Light color for text */
-                                                }
-                                                th {
-                                                    background-color: #333333; /* Slightly lighter background for header cells */
-                                                }
-                                            </style>
-                                        </head>
-                                        <body>
-                                            {{Content}}
-                                        </body>
-                                        </html>
-                                        
-                                        """;
-
-            // Replace placeholder with HTML content
-            string finalHtml = htmlTemplate.Replace("{{Content}}", htmlContent);
-            // Ensure WebView2 is initialized
-            await webView.EnsureCoreWebView2Async();
-            // Navigate WebView to generated HTML
-            webView.NavigateToString(finalHtml);
-
-            // Handle hyperlink, if applicable
-            string uri = (LbxVersions.SelectedItem as ReleaseObject)?.Url;
-            if (!string.IsNullOrWhiteSpace(uri))
-            {
-                Hyperlink.IsEnabled = true;
-                Hyperlink.NavigateUri = new Uri(uri);
-            }
-            else
-            {
-                Hyperlink.IsEnabled = false;
             }
         }
     }
