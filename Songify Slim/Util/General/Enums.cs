@@ -26,10 +26,11 @@ namespace Songify_Slim.Util.General
         public enum TwitchUserLevels
         {
             Everyone = 0,
-            Subscriber = 1,
-            Vip = 2,
-            Moderator = 3,
-            Broadcaster = 4
+            Follower = 1,
+            Subscriber = 2,
+            Vip = 3,
+            Moderator = 4,
+            Broadcaster = 5
         }
 
         public enum PauseOptions

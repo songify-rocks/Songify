@@ -70,10 +70,6 @@ namespace Songify_Slim.Views
                 {
                     case "Broadcaster":
                         continue;
-                    case "Everyone":
-                        CbxUserLevels.Items.Add(value);
-                        CbxUserLevelsMaxReq.Items.Add("Viewer (non vip/sub)");
-                        continue;
                     default:
                         CbxUserLevels.Items.Add(value);
                         CbxUserLevelsMaxReq.Items.Add(value);
@@ -175,14 +171,16 @@ namespace Songify_Slim.Views
             Settings.UserLevelsReward ??= new List<int>();
 
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
-            ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(1);
-            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(2);
-            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(3);
+            ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
+            ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
+            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(3);
+            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(4);
 
             ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
-            ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(1);
-            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(2);
-            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(3);
+            ChckUlRewardFollower.IsChecked = Settings.UserLevelsReward.Contains(1);
+            ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(2);
+            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(3);
+            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(4);
 
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
@@ -690,7 +688,7 @@ namespace Songify_Slim.Views
         {
             // Sets command cooldown
             if (NudCooldown.Value == null)
-                return; 
+                return;
             if (!IsLoaded)
                 return;
             Settings.TwSrCooldown = (int)NudCooldown.Value;
@@ -713,6 +711,9 @@ namespace Songify_Slim.Views
             {
                 case Enums.TwitchUserLevels.Everyone:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
+                    break;
+                case Enums.TwitchUserLevels.Follower:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqFollower = (int)NudMaxReq.Value;
                     break;
                 case Enums.TwitchUserLevels.Vip:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
@@ -871,6 +872,7 @@ namespace Songify_Slim.Views
             NudMaxReq.Value = (Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex switch
             {
                 Enums.TwitchUserLevels.Everyone => Settings.TwSrMaxReqEveryone,
+                Enums.TwitchUserLevels.Follower => Settings.TwSrMaxReqFollower,
                 Enums.TwitchUserLevels.Vip => Settings.TwSrMaxReqVip,
                 Enums.TwitchUserLevels.Subscriber => Settings.TwSrMaxReqSubscriber,
                 Enums.TwitchUserLevels.Moderator => Settings.TwSrMaxReqModerator,
@@ -884,6 +886,7 @@ namespace Songify_Slim.Views
         {
             if (NudMaxReq.Value == null) return;
             Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqFollower = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
@@ -1705,7 +1708,7 @@ namespace Songify_Slim.Views
 
         private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if(!IsLoaded)
+            if (!IsLoaded)
                 return;
             if (NudCooldownPerUser.Value.HasValue)
             {

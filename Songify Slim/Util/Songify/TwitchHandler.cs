@@ -49,55 +49,32 @@ using System.Web.UI.WebControls;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Web.UI;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
+using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify
 {
     // This class handles everything regarding to twitch.tv
     public static class TwitchHandler
     {
-        public const bool PubSubEnabled = false;
-
-        private static ValidateAccessTokenResponse _botTokenCheck;
-
-        public static TwitchClient Client;
-
-        public static bool ForceDisconnect;
-
-        private static TwitchClient _mainClient;
-
-        public static ValidateAccessTokenResponse TokenCheck;
-
-        public static TwitchAPI TwitchApi;
-
-        private static TwitchAPI _twitchApiBot;
-
-        private static readonly List<TwitchUser> Users = [];
-
         private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
-
-        private static readonly Timer CooldownTimer = new()
-        {
-            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds
-        };
-
-        private static readonly Timer SkipCooldownTimer = new()
-        {
-            Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
-        };
-
-        private static readonly Stopwatch CooldownStopwatch = new();
-
-        private static readonly List<string> SkipVotes = new();
-
-        private static readonly TwitchPubSub TwitchPubSub = new();
-
-        private static string _currentState;
-
         private static bool _onCooldown;
-
         private static bool _skipCooldown;
-
+        private static readonly List<string> SkipVotes = [];
+        private static readonly List<TwitchUser> Users = [];
+        private static readonly Stopwatch CooldownStopwatch = new();
+        private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds };
+        private static readonly Timer SkipCooldownTimer = new() { Interval = TimeSpan.FromSeconds(5).TotalMilliseconds };
+        private static readonly TwitchPubSub TwitchPubSub = new();
+        private static string _currentState;
         private static string _userId;
+        private static TwitchAPI _twitchApiBot;
+        private static TwitchClient _mainClient;
+        private static ValidateAccessTokenResponse _botTokenCheck;
+        public const bool PubSubEnabled = false;
+        public static bool ForceDisconnect;
+        public static TwitchAPI TwitchApi;
+        public static TwitchClient Client;
+        public static ValidateAccessTokenResponse TokenCheck;
 
         public static void ApiConnect(Enums.TwitchAccount account)
         {
@@ -435,7 +412,7 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.TwitchUserTokenExpired = false;
                     _userId = TokenCheck.UserId;
 
-                    users = await TwitchApi.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
+                    users = await TwitchApi.Helix.Users.GetUsersAsync([_userId], null,
                         Settings.Settings.TwitchAccessToken);
 
                     user = users.Users.FirstOrDefault();
@@ -507,7 +484,7 @@ namespace Songify_Slim.Util.Songify
 
                     _userId = _botTokenCheck.UserId;
 
-                    users = await _twitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
+                    users = await _twitchApiBot.Helix.Users.GetUsersAsync([_userId], null,
                         Settings.Settings.TwitchBotToken);
 
                     user = users.Users.FirstOrDefault();
@@ -1080,20 +1057,32 @@ namespace Songify_Slim.Util.Songify
                 }, DispatcherPriority.Normal);
             return false;
         }
-        private static Tuple<int, bool> CheckUserLevel(ChatMessage o, int type = 0)
+        private static (TwitchUserLevels, bool) CheckUserLevel(ChatMessage o, int type = 0)
         {
-            //Type 0 = Command, 1 = Reward
+            // Type 0 = Command, 1 = Reward
+            List<TwitchUserLevels> userLevels = [];
 
-            List<int> userlevels = [];
-            if (o.IsBroadcaster) userlevels.Add(4);
-            if (o.IsModerator) userlevels.Add(3);
-            if (o.IsVip) userlevels.Add(2);
-            if (o.IsSubscriber) userlevels.Add(1);
-            userlevels.Add(0);
+            if (o.IsBroadcaster) userLevels.Add(TwitchUserLevels.Broadcaster);
+            if (o.IsModerator) userLevels.Add(TwitchUserLevels.Moderator);
+            if (o.IsVip) userLevels.Add(TwitchUserLevels.Vip);
+            if (o.IsSubscriber) userLevels.Add(TwitchUserLevels.Subscriber);
 
-            bool isAllowed = type == 0 ? Settings.Settings.UserLevelsCommand.Any(userlevels.Contains) : Settings.Settings.UserLevelsReward.Any(userlevels.Contains);
-            return new Tuple<int, bool>(userlevels.Max(), isAllowed);
+            TwitchUser user = Users.FirstOrDefault(user => user.UserId == o.UserId);
+            if (user?.IsFollowing == true)
+            {
+                userLevels.Add(TwitchUserLevels.Follower);
+            }
+
+            userLevels.Add(TwitchUserLevels.Everyone);
+
+            // Determine if the user is allowed based on the type (Command or Reward)
+            bool isAllowed = type == 0
+                ? Settings.Settings.UserLevelsCommand.Any(level => userLevels.Contains((TwitchUserLevels)level))
+                : Settings.Settings.UserLevelsReward.Any(level => userLevels.Contains((TwitchUserLevels)level));
+
+            return (userLevels.Max(), isAllowed);
         }
+
         private static string CleanFormatString(string currSong)
         {
             const RegexOptions options = RegexOptions.None;
@@ -1150,11 +1139,13 @@ namespace Songify_Slim.Util.Songify
         {
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
-            Tuple<int, bool> userlevel = CheckUserLevel(e.ChatMessage, 1);
+            (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
 
             if (existingUser == null)
             {
+                // Await the following status check for the user
                 Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
+
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
                 {
@@ -1162,7 +1153,7 @@ namespace Songify_Slim.Util.Songify
                     UserName = e.ChatMessage.Username,
                     LastCommandTime = null,
                     DisplayName = e.ChatMessage.DisplayName,
-                    UserLevel = userlevel.Item1,
+                    UserLevel = (int)userLevel,  // Convert enum to int for storage
                     IsFollowing = isUserFollowing.Item1,
                     FollowInformation = isUserFollowing.Item2
                 };
@@ -1172,7 +1163,7 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 // If the user exists, update their information.
-                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, userlevel.Item1);
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel);
             }
 
             if (Settings.Settings.TwRewardId.Count > 0 &&
@@ -1181,14 +1172,17 @@ namespace Songify_Slim.Util.Songify
             {
                 Settings.Settings.IsLive = await CheckStreamIsUp();
 
-                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!userlevel.Item2)
+                // Check if the user level is lower than broadcaster or not allowed to request songs
+                if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
+                {
+                    if (!isAllowed)
                     {
-                        //Send a Message to the user, that his Userlevel is too low
+                        // Send a message to the user that their user level is too low to request songs
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
                         return;
                     }
+                }
 
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
@@ -1228,15 +1222,17 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                     }
 
-                userlevel = CheckUserLevel(e.ChatMessage, 0);
-                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!userlevel.Item2)
+                (userLevel, isAllowed) = CheckUserLevel(e.ChatMessage, 0);
+                if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
+                {
+                    if (!isAllowed)
                     {
-                        //Send a Message to the user, that his Userlevel is too low
+                        // Send a message to the user that their user level is too low to request songs
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
                         return;
                     }
+                }
 
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
@@ -1488,7 +1484,7 @@ namespace Songify_Slim.Util.Songify
                     string response = Settings.Settings.BotRespPos;
                     if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
                     //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                    string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
+                    string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
                     string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
                     string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
                     string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
@@ -1801,7 +1797,6 @@ namespace Songify_Slim.Util.Songify
 
                 }
         }
-
         private static async Task<Tuple<bool?, ChannelFollower>> GetIsUserFollowing(string chatMessageUserId)
         {
             // Using the Twitch API to check if the user is following the channel
@@ -1822,7 +1817,6 @@ namespace Songify_Slim.Util.Songify
             }
 
         }
-
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
         {
             string[] split = e.ChatMessage.Message.Split(' ');
@@ -2054,9 +2048,9 @@ namespace Songify_Slim.Util.Songify
         private static List<QueueItem> GetQueueItems(string requester = null)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<QueueItem> temp3 = new();
+            List<QueueItem> temp3 = [];
             string currsong = "";
-            List<RequestObject> temp = new(GlobalObjects.ReqList);
+            List<RequestObject> temp = [.. GlobalObjects.ReqList];
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -2318,15 +2312,18 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                if (!Settings.Settings.TwSrUnlimitedSr &&
-                    MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage, 1).Item1))
+                // Get user level and allowed status
+                (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
+
+                // Check if the maximum queue items have been reached for the user level
+                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(e.ChatMessage.DisplayName, (int)userLevel))
                 {
                     response = Settings.Settings.BotRespMaxReq;
                     response = response.Replace("{user}", e.ChatMessage.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(Enums.TwitchUserLevels)CheckUserLevel(e.ChatMessage).Item1} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage).Item1)}");
+                        $"{userLevel} {GetMaxRequestsForUserlevel((int)userLevel)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -2339,6 +2336,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             return false;
+
         }
         private static bool IsUserBlocked(string displayName)
         {
@@ -2487,7 +2485,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2510,7 +2508,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2550,7 +2548,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2590,7 +2588,7 @@ namespace Songify_Slim.Util.Songify
                             UpdateRedemptionStatusResponse updateRedemptionStatus =
                                 await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                     Settings.Settings.TwitchUser.Id, reward.Id,
-                                    new List<string> { e.RewardRedeemed.Redemption.Id },
+                                    [e.RewardRedeemed.Redemption.Id],
                                     new UpdateCustomRewardRedemptionStatusRequest
                                     { Status = CustomRewardRedemptionStatus.CANCELED },
                                     Settings.Settings.TwitchAccessToken);
@@ -2636,7 +2634,7 @@ namespace Songify_Slim.Util.Songify
                             UpdateRedemptionStatusResponse updateRedemptionStatus =
                                 await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                     Settings.Settings.TwitchUser.Id, reward.Id,
-                                    new List<string> { e.RewardRedeemed.Redemption.Id },
+                                    [e.RewardRedeemed.Redemption.Id],
                                     new UpdateCustomRewardRedemptionStatusRequest
                                     { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)

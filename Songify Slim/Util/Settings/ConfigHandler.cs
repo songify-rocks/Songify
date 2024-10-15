@@ -218,87 +218,87 @@ namespace Songify_Slim.Util.Settings
 
     public class AppConfig
     {
+        public bool AddSrToPlaylist { get; set; }
         public bool AnnounceInChat { get; set; }
         public bool AppendSpaces { get; set; }
+        public bool AppendSpacesSplitFiles { get; set; }
         public bool AutoClearQueue { get; set; }
         public bool Autostart { get; set; }
+        public bool AutoStartWebServer { get; set; }
+        public bool BetaUpdates { get; set; }
+        public bool BlockAllExplicitSongs { get; set; }
+        public bool BotOnlyWorkWhenLive { get; set; }
         public bool CustomPauseTextEnabled { get; set; }
+        public bool DonationReminder { get; set; }
         public bool DownloadCover { get; set; }
+        public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }
         public bool OpenQueueOnStartup { get; set; }
+        public bool RewardGoalEnabled { get; set; }
         public bool SaveHistory { get; set; }
         public bool SplitOutput { get; set; }
+        public bool SpotifyControlVisible { get; set; }
         public bool Systray { get; set; }
         public bool Telemetry { get; set; }
         public bool TwAutoConnect { get; set; } = true;
         public bool TwSrCommand { get; set; }
         public bool TwSrReward { get; set; }
+        public bool TwSrUnlimitedSr { get; set; }
+        public bool UpdateRequired { get; set; } = true;
         public bool Upload { get; set; }
         public bool UploadHistory { get; set; }
+        public bool UseDefaultBrowser { get; set; }
         public bool UseOwnApp { get; set; }
+        public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
+        public int ChromeFetchRate { get; set; } = 1;
+        public int FontSize { get; set; } = 22;
+        public int FontsizeQueue { get; set; } = 12;
+        public int LastShownMotdId { get; set; }
         public int MaxSongLength { get; set; } = 10;
+        public int Player { get; internal set; }
         public int PosX { get; set; } = 100;
         public int PosY { get; set; } = 100;
+        public int RewardGoalAmount { get; set; }
         public int SpaceCount { get; set; } = 10;
+        public int TwitchFetchPort { get; set; } = 4004;
+        public int TwitchRedirectPort { get; set; } = 4003;
         public int TwSrCooldown { get; set; } = 5;
         public int TwSrMaxReq { get; set; } = 3;
         public int TwSrMaxReqBroadcaster { get; set; } = 3;
         public int TwSrMaxReqEveryone { get; set; } = 3;
+        public int TwSrMaxReqFollower { get; set; } = 3;
         public int TwSrMaxReqModerator { get; set; } = 3;
         public int TwSrMaxReqSubscriber { get; set; } = 3;
         public int TwSrMaxReqVip { get; set; } = 3;
+        public int TwSrPerUserCooldown { get; set; } = 0;
         public int TwSrUserLevel { get; set; } = 1;
-        public List<string> TwRewardId { get; set; } = [];
+        public int WebServerPort { get; set; } = 65530;
         public int[] RefundConditons { get; set; } = [];
+        public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
+        public List<int> ReadNotificationIds { get; set; } = [];
+        public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
+        public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
         public List<string> ArtistBlacklist { get; set; } = [];
+        public List<string> TwRewardId { get; set; } = [];
+        public List<string> UserBlacklist { get; set; } = [];
+        public List<TrackItem> SongBlacklist { get; set; } = [];
+        public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
+        public string BaseUrl { get; set; } = "https://songify.rocks";
         public string Color { get; set; } = "Blue";
         public string CustomPauseText { get; set; } = "";
         public string Directory { get; set; } = "";
         public string Language { get; set; } = "en";
         public string OutputString { get; set; } = "{artist} - {title} {extra}";
         public string OutputString2 { get; set; } = "{artist} - {title} {extra}";
-        public string Theme { get; set; } = "Light";
-        public List<string> UserBlacklist { get; set; } = [];
-        public string Uuid { get; set; } = "";
-        public int WebServerPort { get; set; } = 65530;
-        public bool AutoStartWebServer { get; set; }
-        public bool BetaUpdates { get; set; }
-        public int ChromeFetchRate { get; set; } = 1;
-        public int Player { get; internal set; }
-
-        public string WebUserAgent = "Songify Data Provider";
-        public bool UpdateRequired { get; set; } = true;
-        public bool BotOnlyWorkWhenLive { get; set; }
-        public bool TwSrUnlimitedSr { get; set; }
-        public string TwRewardSkipId { get; set; } = "";
-        public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
-        public int TwitchFetchPort { get; set; } = 4004;
-        public int TwitchRedirectPort { get; set; } = 4003;
-        public string TwRewardGoalRewardId { get; set; } = "";
-        public bool RewardGoalEnabled { get; set; }
-        public string RewardGoalSong { get; set; } = "";
-        public int RewardGoalAmount { get; set; }
-        public List<TrackItem> SongBlacklist { get; set; } = [];
-        public string SpotifyPlaylistId { get; set; } = "";
-        public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
-        public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
-        public bool AddSrToPlaylist { get; set; }
-        public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
-        public string SpotifySongLimitPlaylist { get; set; } = "";
-        public bool LimitSrToPlaylist { get; set; }
-        public bool BlockAllExplicitSongs { get; set; }
         public string RequesterPrefix { get; set; } = "Requested by ";
-        public bool UseDefaultBrowser { get; set; }
-        public bool DonationReminder { get; set; }
-        public Enums.PauseOptions PauseOption { get; set; } = Enums.PauseOptions.Nothing;
-        public bool AppendSpacesSplitFiles { get; set; }
-        public int FontSize { get; set; } = 22;
-        public int FontsizeQueue { get; set; } = 12;
-        public string BaseUrl { get; set; } = "https://songify.rocks";
-        public int LastShownMotdId { get; set; }
-        public List<int> ReadNotificationIds { get; set; } = [];
-        public bool SpotifyControlVisible { get; set; }
-        public int TwSrPerUserCooldown { get; set; } = 0;
+        public string RewardGoalSong { get; set; } = "";
+        public string SpotifyPlaylistId { get; set; } = "";
+        public string SpotifySongLimitPlaylist { get; set; } = "";
+        public string Theme { get; set; } = "Light";
+        public string TwRewardGoalRewardId { get; set; } = "";
+        public string TwRewardSkipId { get; set; } = "";
+        public string Uuid { get; set; } = "";
+        public string WebUserAgent = "Songify Data Provider";
     }
 
     public class Config

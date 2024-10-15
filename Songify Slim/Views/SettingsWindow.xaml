@@ -1467,8 +1467,19 @@
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="Viewer (everyone)"
+                                                    Content="Viewer"
                                                     Tag="0"
+                                                    Unchecked="CbxUserLevelsCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlCommandFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsCommandChecked"
+                                                    Content="Follower"
+                                                    Tag="1"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1479,7 +1490,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="Subscriber"
-                                                    Tag="1"
+                                                    Tag="2"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1490,7 +1501,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="VIP"
-                                                    Tag="2"
+                                                    Tag="3"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1501,7 +1512,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="Moderator"
-                                                    Tag="3"
+                                                    Tag="4"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>
@@ -1538,8 +1549,19 @@
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="Viewer (everyone)"
+                                                    Content="Viewer"
                                                     Tag="0"
+                                                    Unchecked="CbxUserLevelsRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlRewardFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsRewardChecked"
+                                                    Content="Follower"
+                                                    Tag="1"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1550,7 +1572,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="Subscriber"
-                                                    Tag="1"
+                                                    Tag="2"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1561,7 +1583,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="VIP"
-                                                    Tag="2"
+                                                    Tag="3"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1572,7 +1594,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="Moderator"
-                                                    Tag="3"
+                                                    Tag="4"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>
