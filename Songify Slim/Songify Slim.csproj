@@ -729,4 +729,11 @@
     <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\start.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)PostBuild.ps1"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
