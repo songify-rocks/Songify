@@ -1143,8 +1143,18 @@ namespace Songify_Slim.Util.Songify
 
             if (existingUser == null)
             {
+                Tuple<bool?, ChannelFollower> isUserFollowing = new(null, new ChannelFollower());
+
+                if (TwitchApi.Settings.Scopes.Contains(AuthScopes.Helix_Moderator_Read_Followers))
+                {
+                    isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
+                }
+                else
+                {
+                    //can't fetch follower status without the required scope
+                    Logger.LogStr("TWITCH: Can't fetch follower status without the required scope. Please re-authorize using with Twitch (log out and back in)");
+                }
                 // Await the following status check for the user
-                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
 
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
@@ -1813,7 +1823,7 @@ namespace Songify_Slim.Util.Songify
             catch (Exception e)
             {
                 Logger.LogExc(e);
-                return null;
+                return new Tuple<bool?, ChannelFollower>(false, new ChannelFollower());
             }
 
         }
