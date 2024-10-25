@@ -234,7 +234,7 @@ namespace Songify_Slim.Views
             if (Settings.TwitchUser != null)
             {
                 UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0, BtnLogInTwitchAlt);
-                TxtbxTwChannel.Text = Settings.TwitchUser.Login;
+                //TxtbxTwChannel.Text = Settings.TwitchUser.Login;
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UC_AccountItem(Settings.TwitchUser.Login, Settings.TwitchAccessToken)

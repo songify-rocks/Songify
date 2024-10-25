@@ -75,6 +75,7 @@ namespace Songify_Slim.Util.Songify
         public static TwitchAPI TwitchApi;
         public static TwitchClient Client;
         public static ValidateAccessTokenResponse TokenCheck;
+        private static string joinedChannelId = "";
 
         public static void ApiConnect(Enums.TwitchAccount account)
         {
@@ -111,8 +112,8 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 await InitializeApi(account);
-
-                Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
+                if (string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                    Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
                 bool shownInSettings = false;
                 await Application.Current.Dispatcher.Invoke(async () =>
                 {
@@ -173,6 +174,10 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
+                            foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
+                            {
+                                Client.LeaveChannel(clientJoinedChannel);
+                            }
                             Client.Disconnect();
                             Client = null;
                         }
@@ -305,17 +310,17 @@ namespace Songify_Slim.Util.Songify
                 ClientOptions clientOptions = new()
                 {
                     MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30)
+                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
                 };
                 WebSocketClient customClient = new(clientOptions);
                 Client = new TwitchClient(customClient);
-                Client.Initialize(credentials, Settings.Settings.TwChannel);
+                Client.Initialize(credentials);
 
                 Client.OnMessageReceived += Client_OnMessageReceived;
                 Client.OnConnected += Client_OnConnected;
                 Client.OnDisconnected += Client_OnDisconnected;
                 Client.OnJoinedChannel += ClientOnOnJoinedChannel;
-
+                Client.OnLeftChannel += ClientOnOnLeftChannel;
                 Client.Connect();
 
                 // subscirbes to the cooldowntimer elapsed event for the command cooldown
@@ -327,6 +332,12 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
         }
+
+        private static void ClientOnOnLeftChannel(object sender, OnLeftChannelArgs e)
+        {
+            Logger.LogStr($"TWITCH: Left channel {e.Channel}");
+        }
+
         public static async Task<bool> CheckStreamIsUp()
         {
             try
@@ -1044,6 +1055,8 @@ namespace Songify_Slim.Util.Songify
                     }, DispatcherPriority.Normal);
                 return true;
             }
+            if (!Settings.Settings.BotOnlyWorkWhenLive)
+                return true;
 
             Logger.LogStr("STREAM: Stream is down.");
             Application.Current.BeginInvoke(
@@ -1113,6 +1126,7 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr($"TWITCH: Connected to Twitch. User: {Client.TwitchUsername}");
+            Client.JoinChannel(Settings.Settings.TwChannel, true);
         }
         private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
@@ -1143,17 +1157,11 @@ namespace Songify_Slim.Util.Songify
 
             if (existingUser == null)
             {
-                Tuple<bool?, ChannelFollower> isUserFollowing = new(null, new ChannelFollower());
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
 
-                if (TwitchApi.Settings.Scopes.Contains(AuthScopes.Helix_Moderator_Read_Followers))
-                {
-                    isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
-                }
-                else
-                {
-                    //can't fetch follower status without the required scope
+                if (isUserFollowing.Item1 == null)
                     Logger.LogStr("TWITCH: Can't fetch follower status without the required scope. Please re-authorize using with Twitch (log out and back in)");
-                }
+
                 // Await the following status check for the user
 
                 // If the user doesn't exist, add them.
@@ -1172,8 +1180,12 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                // If the user exists, update their information.
-                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel);
+                bool isFollowing = existingUser.IsFollowing ?? false;
+                bool newFollowingState = false;
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
+                if (isFollowing != isUserFollowing.Item1)
+                    newFollowingState = isUserFollowing.Item1 ?? false;
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel, newFollowingState);
             }
 
             if (Settings.Settings.TwRewardId.Count > 0 &&
@@ -1210,12 +1222,14 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
+            if(e.ChatMessage.Message.StartsWith("!"))
+                Settings.Settings.IsLive = await CheckStreamIsUp();
+
             // Same code from above but it reacts to a command instead of rewards
             // Songrequst Command (!ssr)
             if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
                 e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger.ToLower()} ", StringComparison.CurrentCultureIgnoreCase))
             {
-                Settings.Settings.IsLive = await CheckStreamIsUp();
 
                 if (Settings.Settings.BotOnlyWorkWhenLive)
                     try
@@ -1813,7 +1827,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 GetChannelFollowersResponse resp = await TwitchApi.Helix.Channels.GetChannelFollowersAsync(
-                    Settings.Settings.TwitchUser.Id,
+                    joinedChannelId,
                     chatMessageUserId,
                     20,
                     null,
@@ -1822,8 +1836,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
-                return new Tuple<bool?, ChannelFollower>(false, new ChannelFollower());
+                return new Tuple<bool?, ChannelFollower>(null, new ChannelFollower());
             }
 
         }
@@ -1860,9 +1873,20 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{cd}", time.ToString());
             return response;
         }
-        private static void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
+        private static async void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
+            foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
+            {
+                Debug.WriteLine(clientJoinedChannel.Channel);
+            }
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
+            GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(null, [e.Channel], Settings.Settings.TwitchAccessToken);
+            if (channels.Users is { Length: > 0 })
+            {
+                Debug.WriteLine($"Joined {channels.Users[0].DisplayName} ({channels.Users[0].Id})");
+                joinedChannelId = channels.Users[0].Id;
+            }
+
         }
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -2813,11 +2837,12 @@ namespace Songify_Slim.Util.Songify
         public bool? IsFollowing { get; set; } = null;
         public ChannelFollower FollowInformation { get; set; }
 
-        public void Update(string username, string displayname, int userlevel)
+        public void Update(string username, string displayname, int userlevel, bool isFollowing)
         {
             UserName = username;
             DisplayName = displayname;
             UserLevel = userlevel;
+            IsFollowing = isFollowing;
         }
 
         public bool IsCooldownExpired(TimeSpan cooldown)
