@@ -714,7 +714,8 @@ namespace Songify_Slim.Util.Songify
                         // read the text file
                         if (!File.Exists(SongPath)) File.Create(SongPath).Close();
                         IOManager.WriteOutput(SongPath, Settings.Settings.CustomPauseText);
-                        if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IOManager.DownloadCover(null, CoverPath);
+                        if (!Settings.Settings.KeepAlbumCover)
+                            if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IOManager.DownloadCover(null, CoverPath);
                         if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
 
                         if (Settings.Settings.Upload)
@@ -722,7 +723,8 @@ namespace Songify_Slim.Util.Songify
 
                         break;
                     case Enums.PauseOptions.ClearAll:
-                        if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) IOManager.DownloadCover(null, CoverPath);
+                        if (!Settings.Settings.KeepAlbumCover)
+                            if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) IOManager.DownloadCover(null, CoverPath);
                         IOManager.WriteOutput(SongPath, "");
                         if (Settings.Settings.SplitOutput) IOManager.WriteSplitOutput("", "", "");
                         if (Settings.Settings.Upload)

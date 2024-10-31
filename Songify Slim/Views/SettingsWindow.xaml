@@ -382,6 +382,25 @@
                                 <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_UseCustomPauseText}" />
                                 <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_ClearAllOutput}" />
                             </ComboBox>
+                            <controls:ToggleSwitch
+                                x:Name="tgl_KeepCover"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Right"
+                                Content="Keep album cover"
+                                Toggled="Tgl_KeepCover_OnToggled">
+                                <controls:ToggleSwitch.Style>
+                                    <Style TargetType="controls:ToggleSwitch">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="0">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </controls:ToggleSwitch.Style>
+                            </controls:ToggleSwitch>
                             <TextBox
                                 x:Name="TxtbxCustompausetext"
                                 Height="26"

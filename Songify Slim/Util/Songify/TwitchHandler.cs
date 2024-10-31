@@ -1880,12 +1880,18 @@ namespace Songify_Slim.Util.Songify
                 Debug.WriteLine(clientJoinedChannel.Channel);
             }
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
-            GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(null, [e.Channel], Settings.Settings.TwitchAccessToken);
-            if (channels.Users is { Length: > 0 })
+            try
             {
+                GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(null, [e.Channel], Settings.Settings.TwitchAccessToken);
+                if (channels.Users is not { Length: > 0 }) return;
                 Debug.WriteLine($"Joined {channels.Users[0].DisplayName} ({channels.Users[0].Id})");
                 joinedChannelId = channels.Users[0].Id;
             }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+
 
         }
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
