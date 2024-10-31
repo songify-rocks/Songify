@@ -350,7 +350,7 @@
     <comment>Toggleswitch content for "Pause Text"</comment>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
-    <value>Custom pause text (blank for emtpy text file)</value>
+    <value>Custom pause text (blank for empty text file)</value>
     <comment>Watermark content for the pause text textbox</comment>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
