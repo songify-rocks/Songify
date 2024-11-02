@@ -474,16 +474,32 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Image
-                x:Name="img_cover"
+            <Grid
                 Grid.Column="0"
                 MinWidth="175"
                 MinHeight="175"
                 MaxWidth="175"
                 MaxHeight="175"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Visibility="Hidden" />
+                VerticalAlignment="Center">
+                <Grid.Clip>
+                    <RectangleGeometry Rect="0,0,175,175" />
+                </Grid.Clip>
+                <Image
+                    x:Name="img_cover"
+                    Margin="10"
+                    Visibility="Collapsed" />
+                <MediaElement
+                    x:Name="CoverCanvas"
+                    Margin="10"
+                    IsMuted="True"
+                    LoadedBehavior="Manual"
+                    MediaEnded="CoverCanvas_OnMediaEnded"
+                    Stretch="UniformToFill"
+                    UnloadedBehavior="Stop"
+                    Visibility="Collapsed" />
+            </Grid>
+
             <Viewbox
                 Grid.Column="1"
                 Margin="6"

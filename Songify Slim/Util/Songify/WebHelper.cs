@@ -215,5 +215,11 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
+        public static async Task<Tuple<bool, string>> GetCanvasAsync(string songInfoSongId)
+        {
+            string result = await ApiClient.GetCanvas(songInfoSongId);
+            result = result.Replace("\"", "");
+            return result != "No canvas found" ? new Tuple<bool, string>(true, result) : new Tuple<bool, string>(false, "");
+        }
     }
 }

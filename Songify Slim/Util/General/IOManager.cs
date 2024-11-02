@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
@@ -78,11 +79,115 @@ namespace Songify_Slim.Util.General
             WriteOutput(GlobalObjects.RootDirectory + "/Requester.txt", string.IsNullOrEmpty(requester) ? "" : Settings.Settings.RequesterPrefix + requester);
         }
 
+        public static async void DownloadCanvas(string canvasUrl, string canvasPath)
+        {
+            string canvasTmp = $"{GlobalObjects.RootDirectory}/tmp.mp4";
+            try
+            {
+                if (string.IsNullOrEmpty(canvasUrl))
+                {
+                    try
+                    {
+                        File.Delete(canvasPath);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
+
+                else
+                {
+                    WebClient webClient = new();
+
+                    webClient.DownloadFileCompleted += (sender, e) =>
+                    {
+                        if (e.Error != null)
+                        {
+                            Logger.LogExc(e.Error);
+                        }
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow main = Application.Current.MainWindow as MainWindow;
+                            main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                main.StopCanvas();
+                            }));
+                        });
+
+                        const int tries = 5;
+                        if (canvasPath == "" || canvasTmp == "") return;
+                        if (File.Exists(canvasPath))
+                            try
+                            {
+                                for (int i = 0; i < tries; i++)
+                                {
+                                    if (IsFileLocked(new FileInfo(canvasPath)))
+                                    {
+                                        Thread.Sleep(1000);
+                                        if (i != tries) continue;
+                                        return;
+                                    }
+
+                                    break;
+                                }
+                                File.Delete(canvasPath);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex);
+                            }
+
+                        try
+                        {
+                            File.Move(canvasTmp, canvasPath);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+
+                        }
+                        _isWriting = false;
+                    };
+
+                    Uri uri = new(canvasUrl.Replace("\"", ""));
+                    // Downloads the album cover to the filesystem
+
+                    if (_isWriting) return;
+                    _isWriting = true;
+                    await webClient.DownloadFileTaskAsync(uri, canvasTmp);
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow main = Application.Current.MainWindow as MainWindow;
+                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        main.SetCanvas(canvasPath);
+                    }));
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
         public static async void DownloadCover(string cover, string coverPath)
         {
             string coverTemp = $"{GlobalObjects.RootDirectory}/tmp.png";
             try
             {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow main = Application.Current.MainWindow as MainWindow;
+                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        main.StopCanvas();
+                    }));
+                });
+
                 if (string.IsNullOrEmpty(cover))
                 {
                     // create Empty png file

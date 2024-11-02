@@ -20,6 +20,8 @@ using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Reflection;
 using System.Xml.Linq;
 using Utils = MahApps.Metro.Controls.Utils;
+using System.Web.UI.WebControls;
+using System.Dynamic;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -30,6 +32,7 @@ namespace Songify_Slim.Util.Songify
     {
         private static readonly string SongPath = GlobalObjects.RootDirectory + "/Songify.txt";
         private static readonly string CoverPath = GlobalObjects.RootDirectory + "/cover.png";
+        private static readonly string CavnasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
         private static int _id;
         private readonly List<string> _browsers = ["chrome", "msedge", "opera"];
         private static readonly List<string> AudioFileTypes =
@@ -44,6 +47,8 @@ namespace Songify_Slim.Util.Songify
         private static bool _trackChanged;
         private string _localTrackTitle;
         private static bool _isLocalTrack;
+        private static Tuple<bool, string> canvasResponse;
+
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -614,6 +619,8 @@ namespace Songify_Slim.Util.Songify
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
                     GlobalObjects.CurrentSong = songInfo;
+                    canvasResponse = await WebHelper.GetCanvasAsync(songInfo.SongId);
+                    GlobalObjects.Canvas = canvasResponse;
 
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId) != null)
@@ -692,6 +699,7 @@ namespace Songify_Slim.Util.Songify
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
 
                 }
+
                 UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)
@@ -700,7 +708,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static Task WriteSongInfo(TrackInfo songInfo)
+        private static async Task WriteSongInfo(TrackInfo songInfo)
         {
             string title = songInfo.Title;
 
@@ -709,7 +717,7 @@ namespace Songify_Slim.Util.Songify
                 switch (Settings.Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
-                        return Task.CompletedTask;
+                        return;
                     case Enums.PauseOptions.PauseText:
                         // read the text file
                         if (!File.Exists(SongPath)) File.Create(SongPath).Close();
@@ -755,13 +763,13 @@ namespace Songify_Slim.Util.Songify
                     }));
                 });
 
-                return Task.CompletedTask;
+                return;
             }
 
             if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
             {
                 // We don't have any song info, so we can't write anything
-                return Task.CompletedTask;
+                return;
             }
 
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
@@ -866,7 +874,7 @@ namespace Songify_Slim.Util.Songify
                 catch (Exception e)
                 {
                     Logger.LogExc(e);
-                    return Task.CompletedTask;
+                    return;
                 }
             }
 
@@ -979,7 +987,13 @@ namespace Songify_Slim.Util.Songify
             }
 
             //Save Album Cover
-            if (Settings.Settings.DownloadCover) IOManager.DownloadCover(albumUrl, CoverPath);
+            // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
+            if (canvasResponse.Item1)
+            {
+                IOManager.DownloadCanvas(canvasResponse.Item2, CavnasPath);
+                IOManager.DownloadCover(null, CoverPath);
+            }
+            else if (Settings.Settings.DownloadCover) IOManager.DownloadCover(albumUrl, CoverPath);
 
 
             Application.Current.Dispatcher.Invoke(() =>
@@ -990,7 +1004,6 @@ namespace Songify_Slim.Util.Songify
                     main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
                 }));
             });
-            return Task.CompletedTask;
         }
 
         private static string CleanFormatString(string currentSongOutput)
@@ -1008,6 +1021,7 @@ namespace Songify_Slim.Util.Songify
             string j = Json.Serialize(track ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
             IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
+            dictionary["CanvasUrl"] = GlobalObjects.Canvas.Item1 ? GlobalObjects.Canvas.Item2 : "";
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
             dictionary["Requester"] = GlobalObjects.Requester;
             dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
