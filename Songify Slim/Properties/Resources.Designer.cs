@@ -1664,7 +1664,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom pause text (blank for emtpy text file).
+        ///   Looks up a localized string similar to Custom pause text (blank for empty text file).
         /// </summary>
         public static string sw_tcOutput_PauseWatermark {
             get {
