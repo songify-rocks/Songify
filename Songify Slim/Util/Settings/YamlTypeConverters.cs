@@ -15,7 +15,7 @@ namespace Songify_Slim.Util.Settings
                 return type == typeof(List<string>);
             }
 
-            public object ReadYaml(IParser parser, Type type)
+            public object ReadYaml(IParser parser, Type type, ObjectDeserializer rootDeserializer)
             {
                 if (parser.TryConsume<Scalar>(out Scalar scalar))
                 {
@@ -36,10 +36,9 @@ namespace Songify_Slim.Util.Settings
                 throw new YamlException("Expected a scalar or sequence node.");
             }
 
-            public void WriteYaml(IEmitter emitter, object value, Type type)
+            public void WriteYaml(IEmitter emitter, object value, Type type, ObjectSerializer serializer)
             {
-                // Implement this if you plan to serialize objects back to YAML
-                throw new NotImplementedException();
+                // not implemented
             }
         }
     }

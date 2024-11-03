@@ -722,7 +722,7 @@
     <value>Borrar toda la salida</value>
   </data>
   <data name="sw_rewards_ClickReminder" xml:space="preserve">
-    <value>Haga clic aquí después de seleccionar la recompensa.</value>
+    <value>Haga clic aquí después de seleccionar la recompensa</value>
   </data>
   <data name="sw_rewards_enabledRewards" xml:space="preserve">
     <value>Recompensas habilitadas para SongRequests</value>
@@ -737,6 +737,6 @@
     <value>Tiempo de reutilización del comando SR (por usuario)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Respuesta cuando el usuario está en cooldown (cooldown por usuario para el comando de solicitud de canciones).</value>
+    <value>Respuesta cuando el usuario está en cooldown (cooldown por usuario para el comando de solicitud de canciones)</value>
   </data>
 </root>

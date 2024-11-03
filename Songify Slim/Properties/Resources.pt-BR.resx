@@ -439,7 +439,7 @@
     <value>Abrir janela de fila na inicialização</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anunciar a música automaticamente no bate-papo.</value>
+    <value>Anunciar a música automaticamente no bate-papo</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
@@ -736,6 +736,6 @@
     <value>Tempo de espera do comando SR (por usuário)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Resposta quando o usuário está em cooldown (cooldown por usuário para o comando de solicitação de música).</value>
+    <value>Resposta quando o usuário está em cooldown (cooldown por usuário para o comando de solicitação de música)</value>
   </data>
 </root>

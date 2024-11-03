@@ -247,7 +247,7 @@ namespace Songify_Slim.Util.General
                             }
 
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                             Logger.LogStr("Spotify API: Error getting Liked Songs");
                         }

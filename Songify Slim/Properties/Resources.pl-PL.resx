@@ -736,6 +736,6 @@
     <value>Czas odnowienia komendy SR (na użytkownika)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Odpowiedź, gdy użytkownik jest w cooldownie (cooldown dla użytkownika dla komendy żądania utworu).</value>
+    <value>Odpowiedź, gdy użytkownik jest w cooldownie (cooldown dla użytkownika dla komendy żądania utworu)</value>
   </data>
 </root>

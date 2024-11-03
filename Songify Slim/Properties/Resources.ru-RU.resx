@@ -728,7 +728,7 @@
     <value>Включены награды за Songrequests</value>
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
-    <value>Возвращает первые 5 песен текущей очереди воспроизведения.</value>
+    <value>Возвращает первые 5 песен текущей очереди воспроизведения</value>
   </data>
   <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
     <value>Глобальное время восстановления команды (секунды)</value>
@@ -737,6 +737,6 @@
     <value>Перезарядка команды SR (на пользователя)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Ответ, когда пользователь находится в состоянии кулдауна (персональный кулдаун для команды запроса песни).</value>
+    <value>Ответ, когда пользователь находится в состоянии кулдауна (персональный кулдаун для команды запроса песни)</value>
   </data>
 </root>

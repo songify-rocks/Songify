@@ -737,6 +737,6 @@
     <value>Abklingzeit für SR-Befehle (pro Benutzer)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Antwort, wenn der Benutzer im Cooldown ist (Benutzer-spezifischer Cooldown für den Songrequest-Befehl).</value>
+    <value>Antwort, wenn der Benutzer im Cooldown ist (Benutzer-spezifischer Cooldown für den Songrequest-Befehl)</value>
   </data>
 </root>

@@ -736,6 +736,6 @@
     <value>Tempo de espera do comando SR (por usuário)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Resposta quando o utilizador está em cooldown (cooldown por utilizador para o comando de solicitação de música).</value>
+    <value>Resposta quando o utilizador está em cooldown (cooldown por utilizador para o comando de solicitação de música)</value>
   </data>
 </root>

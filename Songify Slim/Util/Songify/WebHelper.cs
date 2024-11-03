@@ -113,7 +113,7 @@ namespace Songify_Slim.Util.Songify
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
                 }
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 //Console.WriteLine(e);
             }

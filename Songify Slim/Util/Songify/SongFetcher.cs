@@ -43,11 +43,10 @@ namespace Songify_Slim.Util.Songify
             ".wv", ".webm", ".8svx", ".cda"
         ];
         private AutomationElement _parent;
-        private static SongInfo _previousSonginfo;
         private static bool _trackChanged;
         private string _localTrackTitle;
         private static bool _isLocalTrack;
-        private static Tuple<bool, string> canvasResponse;
+        private static Tuple<bool, string> _canvasResponse;
 
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
-                    string artist = "", title = "", extra;
+                    string artist, title;
 
                     switch (player)
                     {
@@ -137,7 +136,6 @@ namespace Songify_Slim.Util.Songify
                             {
                                 artist = wintitle;
                                 title = "";
-                                extra = "";
                             }
 
                             if (wintitle.Contains(" - "))
@@ -173,7 +171,6 @@ namespace Songify_Slim.Util.Songify
                             {
                                 artist = wintitle;
                                 title = "";
-                                extra = "";
                             }
                             int dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
                             if (dashIndex != -1)
@@ -619,8 +616,8 @@ namespace Songify_Slim.Util.Songify
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
                     GlobalObjects.CurrentSong = songInfo;
-                    canvasResponse = await WebHelper.GetCanvasAsync(songInfo.SongId);
-                    GlobalObjects.Canvas = canvasResponse;
+                    _canvasResponse = await WebHelper.GetCanvasAsync(songInfo.SongId);
+                    GlobalObjects.Canvas = _canvasResponse;
 
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId) != null)
@@ -708,7 +705,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async Task WriteSongInfo(TrackInfo songInfo)
+        private static Task WriteSongInfo(TrackInfo songInfo)
         {
             string title = songInfo.Title;
 
@@ -717,7 +714,7 @@ namespace Songify_Slim.Util.Songify
                 switch (Settings.Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
-                        return;
+                        return Task.CompletedTask;
                     case Enums.PauseOptions.PauseText:
                         // read the text file
                         if (!File.Exists(SongPath)) File.Create(SongPath).Close();
@@ -763,13 +760,13 @@ namespace Songify_Slim.Util.Songify
                     }));
                 });
 
-                return;
+                return Task.CompletedTask;
             }
 
             if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
             {
                 // We don't have any song info, so we can't write anything
-                return;
+                return Task.CompletedTask;
             }
 
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
@@ -874,7 +871,7 @@ namespace Songify_Slim.Util.Songify
                 catch (Exception e)
                 {
                     Logger.LogExc(e);
-                    return;
+                    return Task.CompletedTask;
                 }
             }
 
@@ -988,9 +985,9 @@ namespace Songify_Slim.Util.Songify
 
             //Save Album Cover
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
-            if (canvasResponse.Item1)
+            if (_canvasResponse.Item1)
             {
-                IOManager.DownloadCanvas(canvasResponse.Item2, CavnasPath);
+                IOManager.DownloadCanvas(_canvasResponse.Item2, CavnasPath);
                 IOManager.DownloadCover(null, CoverPath);
             }
             else if (Settings.Settings.DownloadCover) IOManager.DownloadCover(albumUrl, CoverPath);
@@ -1004,6 +1001,7 @@ namespace Songify_Slim.Util.Songify
                     main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
                 }));
             });
+            return Task.CompletedTask;
         }
 
         private static string CleanFormatString(string currentSongOutput)

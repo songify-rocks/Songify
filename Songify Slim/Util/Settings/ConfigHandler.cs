@@ -52,7 +52,7 @@ namespace Songify_Slim.Util.Settings
                         path += "/AppConfig" + fileEnding;
                         yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
                     }
-                    catch (Exception e)
+                    catch (Exception)
                     {
                         //Console.WriteLine(e);
                         return;

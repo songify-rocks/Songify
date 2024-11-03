@@ -740,6 +740,6 @@
     <value>Temps de recharge de la commande SR (par utilisateur)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
-    <value>Réponse lorsque l'utilisateur est en cooldown (cooldown par utilisateur pour la commande de demande de chansons).</value>
+    <value>Réponse lorsque l'utilisateur est en cooldown (cooldown par utilisateur pour la commande de demande de chansons)</value>
   </data>
 </root>

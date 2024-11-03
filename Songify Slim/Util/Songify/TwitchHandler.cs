@@ -140,7 +140,7 @@ namespace Songify_Slim.Util.Songify
                                 : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
                         });
-                        ((Window_Settings)window).SetControls();
+                        await ((Window_Settings)window).SetControls();
                         shownInSettings = true;
                         break;
                     }
@@ -1834,7 +1834,7 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.TwitchAccessToken);
                 return new Tuple<bool?, ChannelFollower>(resp.Data.Length > 0, resp.Data.FirstOrDefault());
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 return new Tuple<bool?, ChannelFollower>(null, new ChannelFollower());
             }
