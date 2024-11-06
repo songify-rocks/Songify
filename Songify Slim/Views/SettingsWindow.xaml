@@ -250,6 +250,8 @@
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
+                            <RowDefinition Height="38" />
+
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="72*" />
@@ -447,6 +449,19 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxCover_Checked" />
+                        <controls:ToggleSwitch
+                            x:Name="TglCanvas"
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Height="32"
+                            HorizontalAlignment="Stretch"
+                            Content="Use Canvas if available"
+                            ContentPadding="0"
+                            Focusable="False"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            Toggled="TglCanvas_OnToggled" />
                         <Button
                             x:Name="BtnCopyUrl"
                             Grid.Row="5"

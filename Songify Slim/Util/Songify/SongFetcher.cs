@@ -4,6 +4,7 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -985,12 +986,15 @@ namespace Songify_Slim.Util.Songify
 
             //Save Album Cover
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
-            if (_canvasResponse.Item1)
+            if (Settings.Settings.DownloadCanvas && _canvasResponse.Item1)
             {
                 IOManager.DownloadCanvas(_canvasResponse.Item2, CavnasPath);
                 IOManager.DownloadCover(null, CoverPath);
             }
-            else if (Settings.Settings.DownloadCover) IOManager.DownloadCover(albumUrl, CoverPath);
+            else if (Settings.Settings.DownloadCover)
+            {
+                IOManager.DownloadCover(albumUrl, CoverPath);
+            }
 
 
             Application.Current.Dispatcher.Invoke(() =>

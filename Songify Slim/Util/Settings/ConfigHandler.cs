@@ -231,6 +231,7 @@ namespace Songify_Slim.Util.Settings
         public bool CustomPauseTextEnabled { get; set; }
         public bool DonationReminder { get; set; }
         public bool DownloadCover { get; set; }
+        public bool DownloadCanvas { get; set; }
         public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }
         public bool OpenQueueOnStartup { get; set; }

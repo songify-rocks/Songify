@@ -640,6 +640,19 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string WebUserAgent => GetWebua();
+        public static bool DownloadCanvas { get => GetDownloadCanvas(); set => SetDownloadCanvas(value); }
+
+        private static void SetDownloadCanvas(bool value)
+        {
+            _currentConfig.AppConfig.DownloadCanvas = value;
+            ConfigHandler.WriteAllConfig(_currentConfig);
+        }
+
+        private static bool GetDownloadCanvas()
+        {
+            return _currentConfig.AppConfig.DownloadCanvas;
+        }
+
         public static Configuration Export()
         {
             SpotifyCredentials spotifyCredentials = new()
@@ -735,6 +748,7 @@ namespace Songify_Slim.Util.Settings
                 Directory = GetDirectory(),
                 DonationReminder = GetDonationReminder(),
                 DownloadCover = GetDownloadCover(),
+                DownloadCanvas = GetDownloadCanvas(),
                 FontSize = GetFontSize(),
                 FontsizeQueue = GetFontSizeQueue(),
                 KeepAlbumCover = GetKeepAlubmCover(),

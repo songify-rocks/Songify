@@ -90,6 +90,7 @@ namespace Songify_Slim.Views
             ChbxTwReward.IsOn = Settings.TwSrReward;
             ChbxAutostart.IsOn = Settings.Autostart;
             ChbxCover.IsOn = Settings.DownloadCover;
+            TglCanvas.IsOn = Settings.DownloadCanvas;
             CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
             //ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
@@ -1699,14 +1700,6 @@ namespace Songify_Slim.Views
             Settings.BotCmdQueue = ((ToggleSwitch)sender).IsOn;
         }
 
-        private void NudUserCdMinutes_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-        }
-
-        private void NudUserCdSeconds_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-        }
-
         private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (!IsLoaded)
@@ -1726,6 +1719,13 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             Settings.KeepAlbumCover = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void TglCanvas_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
     }
 }
