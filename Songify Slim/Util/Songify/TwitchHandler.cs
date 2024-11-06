@@ -81,7 +81,7 @@ namespace Songify_Slim.Util.Songify
         {
             // generate a radnom int salt
             Random random = new();
-            int salt = random.Next(1000, 9999);
+            int salt = random.Next(1, 1000);
 
 
             ImplicitOAuth ioa = new(salt);
