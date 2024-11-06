@@ -77,17 +77,9 @@
                             Width="220"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            SelectionChanged="ComboBox_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_es}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_fr}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_it}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_br}" />
-                        </ComboBox>
+                            DisplayMemberPath="Value"
+                            SelectedValuePath="Key"
+                            SelectionChanged="ComboBox_SelectionChanged" />
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
                             Grid.Row="2"
@@ -130,7 +122,7 @@
                                 Width="467"
                                 Height="32"
                                 VerticalAlignment="Top"
-                                Content="Disable donation reminder"
+                                Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
                                 ContentPadding="0"
                                 Focusable="False"
                                 FontFamily="Segoe UI"
@@ -456,7 +448,7 @@
                             Grid.ColumnSpan="2"
                             Height="32"
                             HorizontalAlignment="Stretch"
-                            Content="Use Canvas if available"
+                            Content="{x:Static local:Resources.sw_tcOutput_DownloadCanvas}"
                             ContentPadding="0"
                             Focusable="False"
                             FontFamily="Segoe UI"

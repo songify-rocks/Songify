@@ -738,4 +738,10 @@
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
     <value>Odpowiedź, gdy użytkownik jest w cooldownie (cooldown dla użytkownika dla komendy żądania utworu)</value>
   </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Wyłącz przypomnienie o darowiznach</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Użyj Canvas, jeśli jest dostępny</value>
+  </data>
 </root>

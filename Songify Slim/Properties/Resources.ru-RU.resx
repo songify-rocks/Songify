@@ -739,4 +739,10 @@
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
     <value>Ответ, когда пользователь находится в состоянии кулдауна (персональный кулдаун для команды запроса песни)</value>
   </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Отключить напоминание о пожертвовании</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Используйте Canvas, если он доступен</value>
+  </data>
 </root>

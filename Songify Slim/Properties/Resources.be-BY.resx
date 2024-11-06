@@ -911,4 +911,10 @@
   <data name="brw_ExplicitSongs" xml:space="preserve">
     <value>Адказ, калі была замоўлена нецэнзурная песня падчас уключанай функцыі "Блакаваць усе нецэнзурныя песні"</value>
   </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Адключыць напамін аб ахвяраваннях</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Выкарыстоўвайце Canvas, калі ёсць</value>
+  </data>
 </root>

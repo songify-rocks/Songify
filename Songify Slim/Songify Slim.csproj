@@ -144,6 +144,11 @@
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Properties\Resources.be-BY.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.be-BY.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.it-IT.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -415,7 +420,10 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.be-BY.resx" />
+    <EmbeddedResource Include="Properties\Resources.be-BY.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.be-BY.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.de-DE.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.de-DE.Designer.cs</LastGenOutput>

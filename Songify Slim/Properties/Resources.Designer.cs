@@ -1475,6 +1475,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Disable donation reminder.
+        /// </summary>
+        public static string Sw_System_DisableDonationReminder {
+            get {
+                return ResourceManager.GetString("Sw_System_DisableDonationReminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open queue window on startup.
         /// </summary>
         public static string Sw_System_OpenQueueOnStartup {
@@ -1606,6 +1615,15 @@ namespace Songify_Slim.Properties {
         public static string sw_tcOutput_DownloadAlbum {
             get {
                 return ResourceManager.GetString("sw_tcOutput_DownloadAlbum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Canvas if available.
+        /// </summary>
+        public static string sw_tcOutput_DownloadCanvas {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_DownloadCanvas", resourceCulture);
             }
         }
         
