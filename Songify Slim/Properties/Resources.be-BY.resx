@@ -915,6 +915,6 @@
     <value>Адключыць напамін аб ахвяраваннях</value>
   </data>
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
-    <value>Выкарыстоўвайце Canvas, калі ёсць</value>
+    <value>Ужываць Canvas, калі ён даступны</value>
   </data>
 </root>
