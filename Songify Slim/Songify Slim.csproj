@@ -144,6 +144,7 @@
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Models\YoutubeRequest.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -512,13 +513,13 @@
       <Version>6.3.0.90</Version>
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf">
-      <Version>128.4.90</Version>
+      <Version>130.1.90</Version>
     </PackageReference>
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>
     </PackageReference>
     <PackageReference Include="ControlzEx">
-      <Version>6.0.0</Version>
+      <Version>5.0.2</Version>
     </PackageReference>
     <PackageReference Include="Costura.Fody">
       <Version>5.7.0</Version>
@@ -529,7 +530,7 @@
       <Version>2.9.2</Version>
     </PackageReference>
     <PackageReference Include="Fody">
-      <Version>6.9.0</Version>
+      <Version>6.9.1</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

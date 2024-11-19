@@ -1269,5 +1269,13 @@ namespace Songify_Slim.Views
                 CoverCanvas.Source = null; // Set Source to null to release the file lock
             }
         }
+
+        private void Mi_Youtube_Click(object sender, RoutedEventArgs e)
+        {
+            if (IsWindowOpen<Window_YoutubePlayer>())
+                return;
+            Window_YoutubePlayer wYp = new() { Top = Top, Left = Left };
+            wYp.Show();
+        }
     }
 }
