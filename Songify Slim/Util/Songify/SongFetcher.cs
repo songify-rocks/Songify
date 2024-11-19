@@ -618,8 +618,7 @@ namespace Songify_Slim.Util.Songify
 
                     GlobalObjects.CurrentSong = songInfo;
                     _canvasResponse = await WebHelper.GetCanvasAsync(songInfo.SongId);
-                    GlobalObjects.Canvas = _canvasResponse;
-
+                    GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId) != null)
                     {
