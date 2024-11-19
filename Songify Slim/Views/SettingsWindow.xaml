@@ -77,17 +77,9 @@
                             Width="220"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            SelectionChanged="ComboBox_SelectionChanged">
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_en}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_deDE}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_ru}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_es}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_fr}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_pl}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_pt}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_it}" />
-                            <ComboBoxItem Content="{x:Static local:Resources.lang_br}" />
-                        </ComboBox>
+                            DisplayMemberPath="Value"
+                            SelectedValuePath="Key"
+                            SelectionChanged="ComboBox_SelectionChanged" />
                         <controls:ToggleSwitch
                             x:Name="ChbxAutostart"
                             Grid.Row="2"
@@ -130,7 +122,7 @@
                                 Width="467"
                                 Height="32"
                                 VerticalAlignment="Top"
-                                Content="Disable donation reminder"
+                                Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
                                 ContentPadding="0"
                                 Focusable="False"
                                 FontFamily="Segoe UI"
@@ -250,6 +242,8 @@
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
+                            <RowDefinition Height="38" />
+
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="72*" />
@@ -382,6 +376,25 @@
                                 <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_UseCustomPauseText}" />
                                 <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_ClearAllOutput}" />
                             </ComboBox>
+                            <controls:ToggleSwitch
+                                x:Name="tgl_KeepCover"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Right"
+                                Content="Keep album cover"
+                                Toggled="Tgl_KeepCover_OnToggled">
+                                <controls:ToggleSwitch.Style>
+                                    <Style TargetType="controls:ToggleSwitch">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SelectedIndex, ElementName=CbPauseOptions}" Value="0">
+                                                <Setter Property="IsEnabled" Value="False" />
+                                                <Setter Property="Visibility" Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </controls:ToggleSwitch.Style>
+                            </controls:ToggleSwitch>
                             <TextBox
                                 x:Name="TxtbxCustompausetext"
                                 Height="26"
@@ -428,6 +441,19 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="ChbxCover_Checked" />
+                        <controls:ToggleSwitch
+                            x:Name="TglCanvas"
+                            Grid.Row="9"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Height="32"
+                            HorizontalAlignment="Stretch"
+                            Content="{x:Static local:Resources.sw_tcOutput_DownloadCanvas}"
+                            ContentPadding="0"
+                            Focusable="False"
+                            FontFamily="Segoe UI"
+                            FontSize="12"
+                            Toggled="TglCanvas_OnToggled" />
                         <Button
                             x:Name="BtnCopyUrl"
                             Grid.Row="5"
@@ -1467,8 +1493,19 @@
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="Viewer (everyone)"
+                                                    Content="Viewer"
                                                     Tag="0"
+                                                    Unchecked="CbxUserLevelsCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlCommandFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsCommandChecked"
+                                                    Content="Follower"
+                                                    Tag="1"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1479,7 +1516,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="Subscriber"
-                                                    Tag="1"
+                                                    Tag="2"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1490,7 +1527,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="VIP"
-                                                    Tag="2"
+                                                    Tag="3"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1501,7 +1538,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="Moderator"
-                                                    Tag="3"
+                                                    Tag="4"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>
@@ -1538,8 +1575,19 @@
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="Viewer (everyone)"
+                                                    Content="Viewer"
                                                     Tag="0"
+                                                    Unchecked="CbxUserLevelsRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlRewardFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsRewardChecked"
+                                                    Content="Follower"
+                                                    Tag="1"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1550,7 +1598,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="Subscriber"
-                                                    Tag="1"
+                                                    Tag="2"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1561,7 +1609,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="VIP"
-                                                    Tag="2"
+                                                    Tag="3"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1572,7 +1620,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="Moderator"
-                                                    Tag="3"
+                                                    Tag="4"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>
@@ -1692,21 +1740,58 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" />
-                                    <controls:NumericUpDown
-                                        x:Name="NudCooldown"
-                                        Width="151"
-                                        Height="28"
-                                        Margin="0,0,0,0"
-                                        Padding="0"
+                                    <StackPanel
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
-                                        DecimalPointCorrection="Number"
                                         DockPanel.Dock="Right"
-                                        Interval="1"
-                                        Maximum="100"
-                                        Minimum="1"
-                                        NumericInputMode="Numbers"
-                                        ValueChanged="NudCooldown_ValueChanged" />
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            x:Name="NudCooldown"
+                                            Width="90"
+                                            Height="28"
+                                            DecimalPointCorrection="Number"
+                                            DockPanel.Dock="Right"
+                                            Interval="1"
+                                            Maximum="100"
+                                            Minimum="1"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="NudCooldown_ValueChanged" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="GlobalCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="(00:00)" />
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,6,0,0">
+                                    <Label
+                                        Margin="0,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Content="{x:Static local:Resources.sw_SpotifySR_CommandCDUser}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            Name="NudCooldownPerUser"
+                                            Width="90"
+                                            Height="28"
+                                            Interval="1"
+                                            Maximum="3599"
+                                            Minimum="0"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="CooldownSpinner_OnValueChangedpinner_ValueChanged"
+                                            Value="0" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="UserCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="(00:00)" />
+                                    </StackPanel>
                                 </DockPanel>
                                 <DockPanel Margin="0,6,0,0">
                                     <Label
@@ -2368,7 +2453,16 @@
                                     Margin="6,0,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Text="!queue" />
+                                    Text="!" />
+                                <TextBox
+                                    x:Name="TextBoxTriggerQueue"
+                                    VerticalAlignment="Top"
+                                    PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                    Style="{StaticResource TextBoxTextBlock}"
+                                    Tag="queue"
+                                    Text="queue"
+                                    TextChanged="TextBoxTrigger_TextChanged" />
+
                             </DockPanel>
                             <TextBlock
                                 Grid.Row="13"

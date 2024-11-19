@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
@@ -47,59 +48,45 @@ using Timer = System.Timers.Timer;
 using System.Web.UI.WebControls;
 using Windows.Media.Core;
 using Songify_Slim.Util.Youtube;
+using TwitchLib.Api.Helix.Models.Soundtrack;
+using System.Web.UI;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
+using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify
 {
     // This class handles everything regarding to twitch.tv
     public static class TwitchHandler
     {
-        public const bool PubSubEnabled = false;
-
-        private static ValidateAccessTokenResponse _botTokenCheck;
-
-        public static TwitchClient Client;
-
-        public static bool ForceDisconnect;
-
-        private static TwitchClient _mainClient;
-
-        public static ValidateAccessTokenResponse TokenCheck;
-
-        public static TwitchAPI TwitchApi;
-
-        private static TwitchAPI _twitchApiBot;
-
-        private static readonly List<TwitchUser> Users = [];
-
         private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
-
-        private static readonly Timer CooldownTimer = new()
-        {
-            Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds
-        };
-
-        private static readonly Timer SkipCooldownTimer = new()
-        {
-            Interval = TimeSpan.FromSeconds(5).TotalMilliseconds
-        };
-
-        private static readonly Stopwatch CooldownStopwatch = new();
-
-        private static readonly List<string> SkipVotes = new();
-
-        private static readonly TwitchPubSub TwitchPubSub = new();
-
-        private static string _currentState;
-
         private static bool _onCooldown;
-
         private static bool _skipCooldown;
-
+        private static readonly List<string> SkipVotes = [];
+        private static readonly List<TwitchUser> Users = [];
+        private static readonly Stopwatch CooldownStopwatch = new();
+        private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds };
+        private static readonly Timer SkipCooldownTimer = new() { Interval = TimeSpan.FromSeconds(5).TotalMilliseconds };
+        private static readonly TwitchPubSub TwitchPubSub = new();
+        private static string _currentState;
         private static string _userId;
+        private static TwitchAPI _twitchApiBot;
+        private static TwitchClient _mainClient;
+        private static ValidateAccessTokenResponse _botTokenCheck;
+        public const bool PubSubEnabled = false;
+        public static bool ForceDisconnect;
+        public static TwitchAPI TwitchApi;
+        public static TwitchClient Client;
+        public static ValidateAccessTokenResponse TokenCheck;
+        private static string joinedChannelId = "";
 
         public static void ApiConnect(Enums.TwitchAccount account)
         {
-            ImplicitOAuth ioa = new(1234);
+            // generate a radnom int salt
+            Random random = new();
+            int salt = random.Next(1, 1000);
+
+
+            ImplicitOAuth ioa = new(salt);
 
             // This event is triggered when the application recieves a new token and state from the "RequestClientAuthorization" method.
             ioa.OnRevcievedValues += async (state, token) =>
@@ -127,8 +114,8 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 await InitializeApi(account);
-
-                Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
+                if (string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                    Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
                 bool shownInSettings = false;
                 await Application.Current.Dispatcher.Invoke(async () =>
                 {
@@ -155,7 +142,7 @@ namespace Songify_Slim.Util.Songify
                                 : Settings.Settings.TwitchBotUser.Login;
                             return Task.CompletedTask;
                         });
-                        ((Window_Settings)window).SetControls();
+                        await ((Window_Settings)window).SetControls();
                         shownInSettings = true;
                         break;
                     }
@@ -189,6 +176,10 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
+                            foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
+                            {
+                                Client.LeaveChannel(clientJoinedChannel);
+                            }
                             Client.Disconnect();
                             Client = null;
                         }
@@ -321,17 +312,17 @@ namespace Songify_Slim.Util.Songify
                 ClientOptions clientOptions = new()
                 {
                     MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30)
+                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
                 };
                 WebSocketClient customClient = new(clientOptions);
                 Client = new TwitchClient(customClient);
-                Client.Initialize(credentials, Settings.Settings.TwChannel);
+                Client.Initialize(credentials);
 
                 Client.OnMessageReceived += Client_OnMessageReceived;
                 Client.OnConnected += Client_OnConnected;
                 Client.OnDisconnected += Client_OnDisconnected;
                 Client.OnJoinedChannel += ClientOnOnJoinedChannel;
-
+                Client.OnLeftChannel += ClientOnOnLeftChannel;
                 Client.Connect();
 
                 // subscirbes to the cooldowntimer elapsed event for the command cooldown
@@ -343,6 +334,12 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH: Couldn't connect to Twitch, maybe credentials are wrong?");
             }
         }
+
+        private static void ClientOnOnLeftChannel(object sender, OnLeftChannelArgs e)
+        {
+            Logger.LogStr($"TWITCH: Left channel {e.Channel}");
+        }
+
         public static async Task<bool> CheckStreamIsUp()
         {
             try
@@ -428,7 +425,7 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.TwitchUserTokenExpired = false;
                     _userId = TokenCheck.UserId;
 
-                    users = await TwitchApi.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
+                    users = await TwitchApi.Helix.Users.GetUsersAsync([_userId], null,
                         Settings.Settings.TwitchAccessToken);
 
                     user = users.Users.FirstOrDefault();
@@ -500,7 +497,7 @@ namespace Songify_Slim.Util.Songify
 
                     _userId = _botTokenCheck.UserId;
 
-                    users = await _twitchApiBot.Helix.Users.GetUsersAsync(new List<string> { _userId }, null,
+                    users = await _twitchApiBot.Helix.Users.GetUsersAsync([_userId], null,
                         Settings.Settings.TwitchBotToken);
 
                     user = users.Users.FirstOrDefault();
@@ -766,6 +763,9 @@ namespace Songify_Slim.Util.Songify
             foreach (string s in Settings.Settings.ArtistBlacklist.Where(s =>
                          Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
             {
+
+
+
                 // if artist is on blacklist, skip and inform requester
                 response = Settings.Settings.BotRespBlacklist;
                 response = response.Replace("{user}", username);
@@ -893,39 +893,67 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                Paging<PlaylistTrack> tracks =
-                    await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-
-                while (tracks is { Items: not null })
+                if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
+                    Settings.Settings.SpotifyPlaylistId == "-1")
                 {
-                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([trackId]);
+                    if (x.List.Count > 0)
                     {
-                        if (sendResponse)
+                        switch (x.List[0])
                         {
-                            SendChatMessage(Settings.Settings.TwChannel,
-                                $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                            case true:
+                                if (sendResponse)
+                                {
+                                    SendChatMessage(Settings.Settings.TwChannel,
+                                        $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                                }
+                                return true;
+                            case false:
+                                await SpotifyApiHandler.AddToPlaylist(trackId);
+                                return false;
                         }
-                        return true;
                     }
 
-                    if (!tracks.HasNextPage())
+                }
+                else
+                {
+                    Paging<PlaylistTrack> tracks =
+                        await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+
+                    while (tracks is { Items: not null })
                     {
-                        break;  // Exit if no more pages
+                        if (tracks.Items.Any(t => t.Track.Id == trackId))
+                        {
+                            if (sendResponse)
+                            {
+                                SendChatMessage(Settings.Settings.TwChannel,
+                                    $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                            }
+                            return true;
+                        }
+
+                        if (!tracks.HasNextPage())
+                        {
+                            break;  // Exit if no more pages
+                        }
+
+                        tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                     }
 
-                    tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                    await SpotifyApiHandler.AddToPlaylist(trackId);
+                    return false;
                 }
 
-                ErrorResponse x = await SpotifyApiHandler.Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                    $"spotify:track:{trackId}");
-                return x == null || x.HasError();
             }
             catch (Exception)
             {
                 Logger.LogStr("Error adding song to playlist");
                 return true;
             }
+
+            return false;
         }
+
         private static string GetFormattedRespone(string response, string username = "", string errormsg = "",
             string votes = "")
         {
@@ -1015,7 +1043,7 @@ namespace Songify_Slim.Util.Songify
         }
         private static bool CheckLiveStatus()
         {
-            if (Settings.Settings.IsLive || !Settings.Settings.BotOnlyWorkWhenLive)
+            if (Settings.Settings.IsLive)
             {
                 Logger.LogStr("STREAM: Stream is live.");
                 Application.Current.BeginInvoke(
@@ -1029,6 +1057,8 @@ namespace Songify_Slim.Util.Songify
                     }, DispatcherPriority.Normal);
                 return true;
             }
+            if (!Settings.Settings.BotOnlyWorkWhenLive)
+                return true;
 
             Logger.LogStr("STREAM: Stream is down.");
             Application.Current.BeginInvoke(
@@ -1042,20 +1072,32 @@ namespace Songify_Slim.Util.Songify
                 }, DispatcherPriority.Normal);
             return false;
         }
-        private static Tuple<int, bool> CheckUserLevel(ChatMessage o, int type = 0)
+        private static (TwitchUserLevels, bool) CheckUserLevel(ChatMessage o, int type = 0)
         {
-            //Type 0 = Command, 1 = Reward
+            // Type 0 = Command, 1 = Reward
+            List<TwitchUserLevels> userLevels = [];
 
-            List<int> userlevels = [];
-            if (o.IsBroadcaster) userlevels.Add(4);
-            if (o.IsModerator) userlevels.Add(3);
-            if (o.IsVip) userlevels.Add(2);
-            if (o.IsSubscriber) userlevels.Add(1);
-            userlevels.Add(0);
+            if (o.IsBroadcaster) userLevels.Add(TwitchUserLevels.Broadcaster);
+            if (o.IsModerator) userLevels.Add(TwitchUserLevels.Moderator);
+            if (o.IsVip) userLevels.Add(TwitchUserLevels.Vip);
+            if (o.IsSubscriber) userLevels.Add(TwitchUserLevels.Subscriber);
 
-            bool isAllowed = type == 0 ? Settings.Settings.UserLevelsCommand.Any(userlevels.Contains) : Settings.Settings.UserLevelsReward.Any(userlevels.Contains);
-            return new Tuple<int, bool>(userlevels.Max(), isAllowed);
+            TwitchUser user = Users.FirstOrDefault(user => user.UserId == o.UserId);
+            if (user?.IsFollowing == true)
+            {
+                userLevels.Add(TwitchUserLevels.Follower);
+            }
+
+            userLevels.Add(TwitchUserLevels.Everyone);
+
+            // Determine if the user is allowed based on the type (Command or Reward)
+            bool isAllowed = type == 0
+                ? Settings.Settings.UserLevelsCommand.Any(level => userLevels.Contains((TwitchUserLevels)level))
+                : Settings.Settings.UserLevelsReward.Any(level => userLevels.Contains((TwitchUserLevels)level));
+
+            return (userLevels.Max(), isAllowed);
         }
+
         private static string CleanFormatString(string currSong)
         {
             const RegexOptions options = RegexOptions.None;
@@ -1086,6 +1128,7 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr($"TWITCH: Connected to Twitch. User: {Client.TwitchUsername}");
+            Client.JoinChannel(Settings.Settings.TwChannel, true);
         }
         private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
         {
@@ -1112,24 +1155,39 @@ namespace Songify_Slim.Util.Songify
         {
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
-            Tuple<int, bool> userlevel = CheckUserLevel(e.ChatMessage, 1);
+            (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
 
             if (existingUser == null)
             {
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
+
+                if (isUserFollowing.Item1 == null)
+                    Logger.LogStr("TWITCH: Can't fetch follower status without the required scope. Please re-authorize using with Twitch (log out and back in)");
+
+                // Await the following status check for the user
+
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
                 {
                     UserId = e.ChatMessage.UserId,
                     UserName = e.ChatMessage.Username,
+                    LastCommandTime = null,
                     DisplayName = e.ChatMessage.DisplayName,
-                    UserLevel = userlevel.Item1
+                    UserLevel = (int)userLevel,  // Convert enum to int for storage
+                    IsFollowing = isUserFollowing.Item1,
+                    FollowInformation = isUserFollowing.Item2
                 };
                 Users.Add(newUser);
+                existingUser = newUser;
             }
             else
             {
-                // If the user exists, update their information.
-                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, userlevel.Item1);
+                bool isFollowing = existingUser.IsFollowing ?? false;
+                bool newFollowingState = false;
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
+                if (isFollowing != isUserFollowing.Item1)
+                    newFollowingState = isUserFollowing.Item1 ?? false;
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel, newFollowingState);
             }
 
             if (Settings.Settings.TwRewardId.Count > 0 &&
@@ -1138,28 +1196,23 @@ namespace Songify_Slim.Util.Songify
             {
                 Settings.Settings.IsLive = await CheckStreamIsUp();
 
-                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!userlevel.Item2)
+                // Check if the user level is lower than broadcaster or not allowed to request songs
+                if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
+                {
+                    if (!isAllowed)
                     {
-                        //Send a Message to the user, that his Userlevel is too low
+                        // Send a message to the user that their user level is too low to request songs
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
                         return;
                     }
+                }
 
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
-                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
                     return;
                 }
-
-                // if onCooldown skips
-                //if (_onCooldown)
-                //{
-                //    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e));
-                //    return;
-                //}
 
                 if (SpotifyApiHandler.Spotify == null)
                 {
@@ -1240,39 +1293,71 @@ namespace Songify_Slim.Util.Songify
             }
 
 
+            if(e.ChatMessage.Message.StartsWith("!"))
+                Settings.Settings.IsLive = await CheckStreamIsUp();
+
             // Same code from above but it reacts to a command instead of rewards
             // Songrequst Command (!ssr)
             if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
                 e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger.ToLower()} ", StringComparison.CurrentCultureIgnoreCase))
             {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
 
-                userlevel = CheckUserLevel(e.ChatMessage, 0);
-                if (userlevel.Item1 < 4 || !e.ChatMessage.IsBroadcaster)
-                    if (!userlevel.Item2)
+                if (Settings.Settings.BotOnlyWorkWhenLive)
+                    try
                     {
-                        //Send a Message to the user, that his Userlevel is too low
+                        if (!CheckLiveStatus())
+                        {
+                            if (Settings.Settings.ChatLiveStatus)
+                                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            return;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                    }
+
+                (userLevel, isAllowed) = CheckUserLevel(e.ChatMessage, 0);
+                if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
+                {
+                    if (!isAllowed)
+                    {
+                        // Send a message to the user that their user level is too low to request songs
                         SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(Enums.TwitchUserLevels), userlevel.Item1)}s are not allowed to request songs.");
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
                         return;
                     }
+                }
 
                 // Do nothing if the user is blocked, don't even reply
                 if (IsUserBlocked(e.ChatMessage.DisplayName))
                 {
-                    Client.SendWhisper(e.ChatMessage.DisplayName, "You are blocked from making Songrequests");
+                    return;
+                }
+
+                TimeSpan cooldown = TimeSpan.FromSeconds(Settings.Settings.TwSrPerUserCooldown); // Set your cooldown time here
+                if (!existingUser.IsCooldownExpired(cooldown))
+                {
+                    // Inform user about the cooldown
+                    if (existingUser.LastCommandTime == null) return;
+                    TimeSpan remaining = cooldown - (DateTime.Now - existingUser.LastCommandTime.Value);
+                    Logger.LogStr($"{existingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
+                    // if remaining is more than 1 minute format to mm:ss, else to ss
+                    string time = remaining.Minutes >= 1
+                        ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
+                        : $"{remaining.Seconds} seconds";
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.DisplayName,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = time
+                    }, Settings.Settings.BotRespUserCooldown);
+                    SendChatMessage(e.ChatMessage.Channel, msg);
                     return;
                 }
 
@@ -1294,6 +1379,7 @@ namespace Songify_Slim.Util.Songify
 
                 // start the command cooldown
                 StartCooldown();
+                existingUser.UpdateCommandTime();
             }
 
             // Skip Command for mods (!skip)
@@ -1336,10 +1422,18 @@ namespace Songify_Slim.Util.Songify
                 if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
                     (count > 0 && name == e.ChatMessage.DisplayName))
                 {
-                    string msg = Settings.Settings.BotRespModSkip;
-                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                    msg = msg.Replace("{song}",
-                        $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.DisplayName,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = Settings.Settings.TwSrCooldown.ToString()
+                    }, Settings.Settings.BotRespModSkip);
+
                     await SpotifyApiHandler.SkipSong();
 
                     {
@@ -1382,9 +1476,17 @@ namespace Songify_Slim.Util.Songify
                 if (SkipVotes.Any(o => o == e.ChatMessage.DisplayName)) return;
                 SkipVotes.Add(e.ChatMessage.DisplayName);
 
-                string msg = Settings.Settings.BotRespVoteSkip;
-                msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                msg = msg.Replace("{votes}", $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}");
+                string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                {
+                    User = e.ChatMessage.DisplayName,
+                    MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                    ErrorMsg = null,
+                    MaxLength = $"{Settings.Settings.MaxSongLength}",
+                    Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                    Req = GlobalObjects.Requester,
+                    Cd = Settings.Settings.TwSrCooldown.ToString()
+                }, Settings.Settings.BotRespVoteSkip);
+
 
                 if (msg.StartsWith("[announce "))
                 {
@@ -1417,13 +1519,26 @@ namespace Songify_Slim.Util.Songify
                         return;
                     }
 
-                    string msg = GetCurrentSong();
-                    string artist = GlobalObjects.CurrentSong.Artists;
-                    string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
-                        ? GlobalObjects.CurrentSong.Title
-                        : "";
-                    msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                    msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+                    //string msg = GetCurrentSong();
+                    //string artist = GlobalObjects.CurrentSong.Artists;
+                    //string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
+                    //    ? GlobalObjects.CurrentSong.Title
+                    //    : "";
+                    //msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+                    //msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.DisplayName,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = Settings.Settings.TwSrCooldown.ToString()
+                    }, Settings.Settings.BotRespSong);
+
+
                     if (msg.StartsWith("[announce "))
                     {
                         await AnnounceInChat(msg);
@@ -1464,7 +1579,7 @@ namespace Songify_Slim.Util.Songify
                     string response = Settings.Settings.BotRespPos;
                     if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
                     //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                    string[] split = response.Split(new[] { "{songs}", "{/songs}" }, StringSplitOptions.None);
+                    string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
                     string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
                     string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
                     string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
@@ -1634,7 +1749,6 @@ namespace Songify_Slim.Util.Songify
                     SendChatMessage(e.ChatMessage.Channel, response);
                 }
             }
-
             // Songlike command (!songlike)
             else if (Settings.Settings.Player == 0 &&
                      e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
@@ -1680,7 +1794,7 @@ namespace Songify_Slim.Util.Songify
                     await SetSpotifyVolume(e);
                 }
             }
-            else if (e.ChatMessage.Message.ToLower() == "!queue" && Settings.Settings.BotCmdQueue)
+            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdQueueTrigger.ToLower()}" && Settings.Settings.BotCmdQueue)
             {
                 string output = "";
                 int counter = 1;
@@ -1742,7 +1856,60 @@ namespace Songify_Slim.Util.Songify
                             }
                         }
                         break;
+                    case "!bansong" when (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator):
+                        {
+                            TrackInfo currentSong = GlobalObjects.CurrentSong;
+                            if (currentSong == null || Settings.Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
+                                return;
+
+                            List<TrackItem> blacklist = Settings.Settings.SongBlacklist;
+                            blacklist.Add(new TrackItem
+                            {
+                                Artists = currentSong.Artists,
+                                TrackName = currentSong.Title,
+                                TrackId = currentSong.SongId,
+                                TrackUri = $"spotify:track:{currentSong.SongId}",
+                                ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
+                            });
+                            Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+
+                            string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                            {
+                                User = e.ChatMessage.DisplayName,
+                                MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                                ErrorMsg = null,
+                                MaxLength = $"{Settings.Settings.MaxSongLength}",
+                                Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                                Req = GlobalObjects.Requester,
+                                Cd = Settings.Settings.TwSrCooldown.ToString()
+                            }, "The song {song} has been added to the blocklist.");
+
+                            SendChatMessage(e.ChatMessage.Channel, msg);
+
+                            await SpotifyApiHandler.SkipSong();
+                            break;
+                        }
+
                 }
+        }
+        private static async Task<Tuple<bool?, ChannelFollower>> GetIsUserFollowing(string chatMessageUserId)
+        {
+            // Using the Twitch API to check if the user is following the channel
+            try
+            {
+                GetChannelFollowersResponse resp = await TwitchApi.Helix.Channels.GetChannelFollowersAsync(
+                    joinedChannelId,
+                    chatMessageUserId,
+                    20,
+                    null,
+                    Settings.Settings.TwitchAccessToken);
+                return new Tuple<bool?, ChannelFollower>(resp.Data.Length > 0, resp.Data.FirstOrDefault());
+            }
+            catch (Exception )
+            {
+                return new Tuple<bool?, ChannelFollower>(null, new ChannelFollower());
+            }
+
         }
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
         {
@@ -1777,9 +1944,26 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{cd}", time.ToString());
             return response;
         }
-        private static void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
+        private static async void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
+            foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
+            {
+                Debug.WriteLine(clientJoinedChannel.Channel);
+            }
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
+            try
+            {
+                GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(null, [e.Channel], Settings.Settings.TwitchAccessToken);
+                if (channels.Users is not { Length: > 0 }) return;
+                Debug.WriteLine($"Joined {channels.Users[0].DisplayName} ({channels.Users[0].Id})");
+                joinedChannelId = channels.Users[0].Id;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+
+
         }
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -1853,6 +2037,39 @@ namespace Songify_Slim.Util.Songify
             response = CleanFormatString(response);
 
             return response;
+        }
+        private static string CreateResponse(PlaceholderContext context, string template)
+        {
+            // Use reflection to get all properties of PlaceholderContext
+            PropertyInfo[] properties = typeof(PlaceholderContext).GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                string placeholder = $"{{{property.Name.ToLower()}}}"; // Placeholder format, e.g., "{user}"
+                string value = property.GetValue(context)?.ToString() ?? string.Empty; // Get property value or empty string if null
+                template = template.Replace(placeholder, value); // Replace placeholder in the template with value
+            }
+
+            if (template.Contains("{{") && template.Contains("}}"))
+            {
+                if (string.IsNullOrEmpty(context.Req))
+                {
+                    int start = template.IndexOf("{{", StringComparison.Ordinal);
+                    int end = template.IndexOf("}}", start, StringComparison.Ordinal) + 2;
+
+                    if (start >= 0 && end >= start)
+                    {
+                        template = template.Remove(start, end - start);
+                    }
+                }
+                else
+                {
+                    template = template.Replace("{{", "").Replace("}}", "");
+                }
+            }
+
+            template = CleanFormatString(template);
+            return template;
         }
         private static string FormattedTime(int duration)
         {
@@ -1942,9 +2159,9 @@ namespace Songify_Slim.Util.Songify
         private static List<QueueItem> GetQueueItems(string requester = null)
         {
             // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<QueueItem> temp3 = new();
+            List<QueueItem> temp3 = [];
             string currsong = "";
-            List<RequestObject> temp = new(GlobalObjects.ReqList);
+            List<RequestObject> temp = [.. GlobalObjects.ReqList];
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -1996,24 +2213,15 @@ namespace Songify_Slim.Util.Songify
 
             string colorName = response.Substring(startIndex, endIndex - startIndex).ToLower().Trim();
 
-            switch (colorName)
+            colors = colorName switch
             {
-                case "green":
-                    colors = AnnouncementColors.Green;
-                    break;
-                case "orange":
-                    colors = AnnouncementColors.Orange;
-                    break;
-                case "blue":
-                    colors = AnnouncementColors.Blue;
-                    break;
-                case "purple":
-                    colors = AnnouncementColors.Purple;
-                    break;
-                case "primary":
-                    colors = AnnouncementColors.Primary;
-                    break;
-            }
+                "green" => AnnouncementColors.Green,
+                "orange" => AnnouncementColors.Orange,
+                "blue" => AnnouncementColors.Blue,
+                "purple" => AnnouncementColors.Purple,
+                "primary" => AnnouncementColors.Primary,
+                _ => AnnouncementColors.Purple
+            };
 
             response = response.Replace($"[announce {colorName}]", string.Empty).Trim();
             return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
@@ -2215,15 +2423,18 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                if (!Settings.Settings.TwSrUnlimitedSr &&
-                    MaxQueueItems(e.ChatMessage.DisplayName, CheckUserLevel(e.ChatMessage, 1).Item1))
+                // Get user level and allowed status
+                (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
+
+                // Check if the maximum queue items have been reached for the user level
+                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(e.ChatMessage.DisplayName, (int)userLevel))
                 {
                     response = Settings.Settings.BotRespMaxReq;
                     response = response.Replace("{user}", e.ChatMessage.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(Enums.TwitchUserLevels)CheckUserLevel(e.ChatMessage).Item1} {GetMaxRequestsForUserlevel(CheckUserLevel(e.ChatMessage).Item1)}");
+                        $"{userLevel} {GetMaxRequestsForUserlevel((int)userLevel)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -2236,6 +2447,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             return false;
+
         }
         private static bool IsUserBlocked(string displayName)
         {
@@ -2384,7 +2596,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2407,7 +2619,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2447,7 +2659,7 @@ namespace Songify_Slim.Util.Songify
                         UpdateRedemptionStatusResponse updateRedemptionStatus =
                             await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                 Settings.Settings.TwitchUser.Id, reward.Id,
-                                new List<string> { e.RewardRedeemed.Redemption.Id },
+                                [e.RewardRedeemed.Redemption.Id],
                                 new UpdateCustomRewardRedemptionStatusRequest
                                 { Status = CustomRewardRedemptionStatus.CANCELED });
                         if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2487,7 +2699,7 @@ namespace Songify_Slim.Util.Songify
                             UpdateRedemptionStatusResponse updateRedemptionStatus =
                                 await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                     Settings.Settings.TwitchUser.Id, reward.Id,
-                                    new List<string> { e.RewardRedeemed.Redemption.Id },
+                                    [e.RewardRedeemed.Redemption.Id],
                                     new UpdateCustomRewardRedemptionStatusRequest
                                     { Status = CustomRewardRedemptionStatus.CANCELED },
                                     Settings.Settings.TwitchAccessToken);
@@ -2533,7 +2745,7 @@ namespace Songify_Slim.Util.Songify
                             UpdateRedemptionStatusResponse updateRedemptionStatus =
                                 await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
                                     Settings.Settings.TwitchUser.Id, reward.Id,
-                                    new List<string> { e.RewardRedeemed.Redemption.Id },
+                                    [e.RewardRedeemed.Redemption.Id],
                                     new UpdateCustomRewardRedemptionStatusRequest
                                     { Status = CustomRewardRedemptionStatus.CANCELED });
                             if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
@@ -2631,8 +2843,15 @@ namespace Songify_Slim.Util.Songify
         private static void StartCooldown()
         {
             // starts the cooldown on the command
+            int interval = Settings.Settings.TwSrCooldown > 0 ? Settings.Settings.TwSrCooldown : 0;
+            if (interval == 0)
+            {
+                _onCooldown = false;
+                return;
+            }
+
             _onCooldown = true;
-            CooldownTimer.Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown).TotalMilliseconds;
+            CooldownTimer.Interval = TimeSpan.FromSeconds(interval).TotalMilliseconds;
             CooldownTimer.Start();
             CooldownStopwatch.Reset();
             CooldownStopwatch.Start();
@@ -2690,12 +2909,30 @@ namespace Songify_Slim.Util.Songify
         public string UserId { get; set; }
         public int UserLevel { get; set; }
         public string UserName { get; set; }
+        public DateTime? LastCommandTime { get; set; } = null;
 
-        public void Update(string username, string displayname, int userlevel)
+        public bool? IsFollowing { get; set; } = null;
+        public ChannelFollower FollowInformation { get; set; }
+
+        public void Update(string username, string displayname, int userlevel, bool isFollowing)
         {
             UserName = username;
             DisplayName = displayname;
             UserLevel = userlevel;
+            IsFollowing = isFollowing;
+        }
+
+        public bool IsCooldownExpired(TimeSpan cooldown)
+        {
+            if (LastCommandTime == null)
+                return true;
+
+            return (DateTime.Now - LastCommandTime.Value) > cooldown;
+        }
+
+        public void UpdateCommandTime()
+        {
+            LastCommandTime = DateTime.Now;
         }
     }
 

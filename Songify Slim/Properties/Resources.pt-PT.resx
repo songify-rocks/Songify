@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -257,9 +257,6 @@
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Limpar fila na inicialização</value>
-  </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Tempo de espera do comando (segundos)</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Duração máxima da música (em minutos)</value>
@@ -731,5 +728,20 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Retorna as primeiras 5 músicas da fila de reprodução atual</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Tempo de espera do comando global (segundos)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Tempo de espera do comando SR (por usuário)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Resposta quando o utilizador está em cooldown (cooldown por utilizador para o comando de solicitação de música)</value>
+  </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Desativar lembrete de doação</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Use Canvas se disponível</value>
   </data>
 </root>

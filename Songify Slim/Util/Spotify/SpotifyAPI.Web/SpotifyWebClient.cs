@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -81,6 +82,9 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             catch (JsonException error)
             {
                 Logger.LogStr("SPOTIFY API:" + url);
+                if (!File.Exists("data.json"))
+                    File.Create("data.json").Close();
+                File.WriteAllText("data.json", response.Item2);
                 Logger.LogExc(error);
                 IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/json.txt", response.Item2);
                 return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
@@ -99,8 +103,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             {
                 Logger.LogStr("SPOTIFY API:" + url);
                 Logger.LogExc(error);
-                IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/json.txt", response.Item2); 
-                
+                IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/json.txt", response.Item2);
+
                 return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
             }
         }

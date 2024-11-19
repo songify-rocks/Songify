@@ -259,9 +259,6 @@
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
     <value>Warteschlange beim Start leeren</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
-    <value>Befehl Abklingzeit (Sekunden)</value>
-  </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Maximale Songlänge (in min)</value>
   </data>
@@ -732,5 +729,20 @@
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Gibt die ersten 5 Songs der aktuellen Wiedergabewarteschlange zurück</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+    <value>Allgemeine Command Abklingzeit (Sekunden)</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Abklingzeit für SR-Befehle (pro Benutzer)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Antwort, wenn der Benutzer im Cooldown ist (Benutzer-spezifischer Cooldown für den Songrequest-Befehl)</value>
+  </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Spendenerinnerung deaktivieren</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Verwenden Canvas, falls verfügbar</value>
   </data>
 </root>

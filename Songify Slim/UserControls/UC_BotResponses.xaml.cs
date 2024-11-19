@@ -3,6 +3,7 @@ using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -76,10 +77,8 @@ namespace Songify_Slim.UserControls
                 {"{cd}", "5"}
 
             };
-            foreach (KeyValuePair<string, string> pair in replacements)
-            {
-                response = response.Replace(pair.Key, pair.Value);
-            }
+
+            response = replacements.Aggregate(response, (current, pair) => current.Replace(pair.Key, pair.Value));
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
@@ -208,6 +207,7 @@ namespace Songify_Slim.UserControls
             TbExplicit.Text = Settings.BotRespTrackExplicit;
             TbSrCooldown.Text = Settings.BotRespCooldown;
             TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
+            TbSrUserCooldown.Text = Settings.BotRespUserCooldown;
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -242,6 +242,12 @@ namespace Songify_Slim.UserControls
         private void TbnoTrackFound_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespNoTrackFound = TbnoTrackFound.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void TbSrUserCooldown_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespUserCooldown = TbSrUserCooldown.Text;
             SetPreview(sender as TextBox);
         }
     }

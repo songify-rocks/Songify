@@ -232,6 +232,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Response when the User is on cooldown (per user sr command cooldown).
+        /// </summary>
+        public static string brw_CommandOnUserCooldown {
+            get {
+                return ResourceManager.GetString("brw_CommandOnUserCooldown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Response when an explicit song has been requested and &apos;block explicit songs&apos; is turned on.
         /// </summary>
         public static string brw_ExplicitSongs {
@@ -1367,11 +1376,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Command cooldown (seconds).
+        ///   Looks up a localized string similar to Global command cooldown (seconds).
         /// </summary>
         public static string sw_SpotifySR_CommandCD {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_CommandCD", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SR Command Cooldown (per user).
+        /// </summary>
+        public static string sw_SpotifySR_CommandCDUser {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_CommandCDUser", resourceCulture);
             }
         }
         
@@ -1453,6 +1471,15 @@ namespace Songify_Slim.Properties {
         public static string sw_SpotifySR_Userlevel_reward {
             get {
                 return ResourceManager.GetString("sw_SpotifySR_Userlevel_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable donation reminder.
+        /// </summary>
+        public static string Sw_System_DisableDonationReminder {
+            get {
+                return ResourceManager.GetString("Sw_System_DisableDonationReminder", resourceCulture);
             }
         }
         
@@ -1592,6 +1619,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use Canvas if available.
+        /// </summary>
+        public static string sw_tcOutput_DownloadCanvas {
+            get {
+                return ResourceManager.GetString("sw_tcOutput_DownloadCanvas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output format (Text file &amp; Widget).
         /// </summary>
         public static string sw_tcOutput_Format {
@@ -1646,7 +1682,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom pause text (blank for emtpy text file).
+        ///   Looks up a localized string similar to Custom pause text (blank for empty text file).
         /// </summary>
         public static string sw_tcOutput_PauseWatermark {
             get {

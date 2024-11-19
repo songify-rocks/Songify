@@ -44,6 +44,7 @@ using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Net.NetworkInformation;
+using MahApps.Metro.Controls;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -411,10 +412,10 @@ namespace Songify_Slim.Views
             return false;
         }
 
-        private async void SetupMotdTimer()
+        private void SetupMotdTimer()
         {
             _motdTimer.Interval = TimeSpan.FromMinutes(5);
-            _motdTimer.Tick += async (o, args) =>
+            _motdTimer.Tick += (o, args) =>
             {
                 SetPSAs();
             };
@@ -617,7 +618,7 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = App.IsBeta ? $"Songify v1.6.6_beta Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
@@ -626,7 +627,7 @@ namespace Songify_Slim.Views
 
         private async Task HandleSpotifyInitializationAsync()
         {
-            if (_selectedSource == PlayerType.SpotifyWeb)
+            try
             {
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
@@ -635,10 +636,27 @@ namespace Songify_Slim.Views
 
                 img_cover.Visibility = Visibility.Visible;
             }
-            else
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
+            if (_selectedSource != PlayerType.SpotifyWeb)
             {
                 img_cover.Visibility = Visibility.Hidden;
             }
+        }
+
+        public void PlayVideoFromUrl(string url)
+        {
+            img_cover.Visibility = Visibility.Collapsed;
+            CoverCanvas.Visibility = Visibility.Visible;
+            string newUri = url.Replace("\"", "");
+            Uri uri = new Uri(newUri);
+            CoverCanvas.Stop();
+            CoverCanvas.Source = null;
+            CoverCanvas.Source = uri;
+            CoverCanvas.Play();
         }
 
         private static async Task HandleTwitchInitializationAsync()
@@ -1006,7 +1024,7 @@ namespace Songify_Slim.Views
 
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
-                    FetchTimer(Settings.UseOwnApp ? 2000 : 20000);
+                    FetchTimer(Settings.UseOwnApp ? 1000 : 20000);
                     break;
             }
         }
@@ -1024,12 +1042,45 @@ namespace Songify_Slim.Views
             _consoleWindow.Top = Top;
         }
 
+        public void SetCanvas(string canvasUrl)
+        {
+            const int numberOfRetries = 5;
+            const int delayOnRetry = 1000;
+
+            for (int i = 1; i < numberOfRetries; i++)
+            {
+                try
+                {
+                    PlayVideoFromUrl(canvasUrl);
+                    // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
+                    if (Settings.Player != 0 && Settings.DownloadCover)
+                    {
+                        img_cover.Visibility = Visibility.Collapsed;
+                        CoverCanvas.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        img_cover.Visibility = Visibility.Collapsed;
+                        CoverCanvas.Visibility = Visibility.Visible;
+                    }
+
+                    Logger.LogStr("COVER: Set succesfully");
+                    break;
+                }
+                catch (Exception) when (i <= numberOfRetries)
+                {
+                    Thread.Sleep(delayOnRetry);
+                }
+            }
+        }
+
         public async void SetCoverImage(string coverPath)
         {
             const int numberOfRetries = 5;
             const int delayOnRetry = 1000;
 
             for (int i = 1; i < numberOfRetries; i++)
+            {
                 try
                 {
                     try
@@ -1049,6 +1100,18 @@ namespace Songify_Slim.Views
                         continue;
                     }
 
+                    // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
+                    if (Settings.Player != 0 && Settings.DownloadCover)
+                    {
+                        img_cover.Visibility = Visibility.Collapsed;
+                        CoverCanvas.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        img_cover.Visibility = Visibility.Visible;
+                        CoverCanvas.Visibility = Visibility.Collapsed;
+                    }
+                    CoverCanvas.Visibility = Visibility.Collapsed;
                     Logger.LogStr("COVER: Set succesfully");
                     break;
                 }
@@ -1056,6 +1119,7 @@ namespace Songify_Slim.Views
                 {
                     Thread.Sleep(delayOnRetry);
                 }
+            }
         }
 
         private void BtnDisclaimerClose_Click(object sender, RoutedEventArgs e)
@@ -1190,13 +1254,19 @@ namespace Songify_Slim.Views
             Badge.Badge = null!;
         }
 
-        private void Mi_Youtube_Click(object sender, RoutedEventArgs e)
+        private void CoverCanvas_OnMediaEnded(object sender, RoutedEventArgs e)
         {
-            // Create a new instance of Window_YoutubePlayer if it's not already open
-            if (!IsWindowOpen<Window_YoutubePlayer>())
+            CoverCanvas.Position = TimeSpan.Zero; // Restart the video from the beginning
+            CoverCanvas.Play(); // Play again
+        }
+
+        public void StopCanvas()
+        {
+            if (CoverCanvas != null)
             {
-                Window_YoutubePlayer wYp = new() { Top = Top, Left = Left };
-                wYp.Show();
+                CoverCanvas.Stop();      // Stop the playback
+                CoverCanvas.Close();     // Close the MediaElement to release resources (optional, see note)
+                CoverCanvas.Source = null; // Set Source to null to release the file lock
             }
         }
     }

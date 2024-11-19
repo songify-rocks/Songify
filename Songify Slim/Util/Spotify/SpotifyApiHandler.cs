@@ -55,7 +55,7 @@ namespace Songify_Slim.Util.Songify
                     "&secret=" + Settings.Settings.ClientSecret,
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
                 );
             }
             else
@@ -64,7 +64,7 @@ namespace Songify_Slim.Util.Songify
                     $"{url}/auth/_index.php",
                     "http://localhost:4002/auth",
                     Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate
+                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
                 );
             }
 
@@ -129,7 +129,7 @@ namespace Songify_Slim.Util.Songify
                                 foreach (Window window in Application.Current.Windows)
                                 {
                                     if (window.GetType() == typeof(Window_Settings))
-                                        ((Window_Settings)window).SetControls();
+                                        await ((Window_Settings)window).SetControls();
                                 }
 
                                 if (Application.Current.MainWindow == null) return;
@@ -270,7 +270,7 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // ignored because it's not important if the playlist info can't be fetched
                 playlistInfo = null;
@@ -358,43 +358,11 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 string newQuery = UrlEncoder.Default.Encode(searchQuery);
+                newQuery = newQuery.Replace("%20", "+");
                 Debug.WriteLine(searchQuery);
                 Debug.WriteLine(newQuery);
                 SearchItem search = Spotify.SearchItems(newQuery, SearchType.Track, 1);
                 return search;
-
-                foreach (FullTrack track in search.Tracks.Items)
-                {
-                    Debug.WriteLine(string.Join(", ", track.Artists.Select(a => a.Name).ToList()) + " - " + track.Name);
-                }
-
-                List<TrackScore> trackScores = (from track in search.Tracks.Items
-                                                let combined = string.Join(" ", track.Artists.Select(a => a.Name)) + " " + track.Name
-                                                let score = LevenshteinDistance(searchQuery, combined)
-                                                select new TrackScore
-                                                {
-                                                    TrackName = track.Name,
-                                                    ArtistName = string.Join(", ", track.Artists.Select(a => a.Name)),
-                                                    Score = score
-                                                }).ToList();
-
-                // To find the best match from the list
-                TrackScore bestMatch = trackScores.OrderBy(ts => ts.Score).FirstOrDefault();
-
-                if (bestMatch == null)
-                    return search;
-
-                // Find the FullTrack object for the best match
-                FullTrack bestFullTrack = search.Tracks.Items.FirstOrDefault(track => track.Name == bestMatch.TrackName && string.Join(", ", track.Artists.Select(a => a.Name)) == bestMatch.ArtistName);
-
-                return new SearchItem()
-                {
-                    Error = search.Error,
-                    Tracks = new Paging<FullTrack>()
-                    {
-                        Items = new List<FullTrack> { bestFullTrack }
-                    }
-                };
             }
             catch (Exception e)
             {
@@ -405,35 +373,43 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<bool> AddToPlaylist(string trackId)
         {
-            try
+            if (Settings.Settings.SpotifyPlaylistId == null || Settings.Settings.SpotifyPlaylistId == "-1")
             {
-                Paging<PlaylistTrack> tracks =
-                    await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-
-                while (tracks is { Items: not null })
+                await Spotify.SaveTracksAsync([trackId]);
+            }
+            else
+            {
+                try
                 {
-                    if (tracks.Items.Any(t => t.Track.Id == trackId))
+                    Paging<PlaylistTrack> tracks =
+                        await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+
+                    while (tracks is { Items: not null })
                     {
-                        return true;
+                        if (tracks.Items.Any(t => t.Track.Id == trackId))
+                        {
+                            return true;
+                        }
+
+                        if (!tracks.HasNextPage())
+                        {
+                            break;  // Exit if no more pages
+                        }
+
+                        tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                     }
 
-                    if (!tracks.HasNextPage())
-                    {
-                        break;  // Exit if no more pages
-                    }
-
-                    tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                    ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
+                        $"spotify:track:{trackId}");
+                    return x == null || x.HasError();
                 }
-
-                ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-                    $"spotify:track:{trackId}");
-                return x == null || x.HasError();
+                catch (Exception)
+                {
+                    Logger.LogStr("Error adding song to playlist");
+                    return true;
+                }
             }
-            catch (Exception)
-            {
-                Logger.LogStr("Error adding song to playlist");
-                return true;
-            }
+            return false;
         }
 
 
@@ -475,7 +451,7 @@ namespace Songify_Slim.Util.Songify
                 return await Spotify.SkipPlaybackToNextAsync();
 
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 //ignored
                 return null;
@@ -493,7 +469,7 @@ namespace Songify_Slim.Util.Songify
             {
                 await Spotify.SkipPlaybackToPreviousAsync(Settings.Settings.SpotifyDeviceId);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 //ignored
             }
@@ -505,7 +481,7 @@ namespace Songify_Slim.Util.Songify
             {
                 await Spotify.SeekPlaybackAsync(0, Settings.Settings.SpotifyDeviceId);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 //ignored
             }
@@ -522,7 +498,7 @@ namespace Songify_Slim.Util.Songify
                 else
                     await Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, null, 0);
             }
-            catch (Exception e)
+            catch (Exception )
             {
                 //ignored
             }

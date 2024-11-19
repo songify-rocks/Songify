@@ -955,8 +955,12 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public async Task<ErrorResponse> SaveTracksAsync(List<string> ids)
         {
-            JArray array = new(ids);
-            return await UploadDataAsync<ErrorResponse>(_builder.SaveTracks(), array.ToString(Formatting.None), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
+            JObject payload = new()
+            {
+                { "ids", JArray.FromObject(ids) }
+            };
+
+            return await UploadDataAsync<ErrorResponse>(_builder.SaveTracks(), payload.ToString(), "PUT").ConfigureAwait(false) ?? new ErrorResponse();
         }
 
         /// <summary>

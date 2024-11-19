@@ -113,7 +113,7 @@ namespace Songify_Slim.Util.Songify
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //Console.WriteLine(e);
             }
@@ -215,5 +215,15 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
+        public static async Task<Tuple<bool, string>> GetCanvasAsync(string songInfoSongId)
+        {
+            if (string.IsNullOrEmpty(songInfoSongId))
+            {
+                return new Tuple<bool, string>(false, "");
+            }
+            string result = await ApiClient.GetCanvas(songInfoSongId);
+            result = result.Replace("\"", "");
+            return result != "No canvas found" ? new Tuple<bool, string>(true, result) : new Tuple<bool, string>(false, "");
+        }
     }
 }

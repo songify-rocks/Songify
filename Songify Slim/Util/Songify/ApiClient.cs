@@ -18,6 +18,21 @@ namespace Songify_Slim.Util.Songify
             _httpClient = new HttpClient();
         }
 
+        public async Task<string> GetCanvas(string songId)
+        {
+            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/canvas/{songId}");
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.InternalServerError:
+                    return null;
+                case HttpStatusCode.ServiceUnavailable:
+                    return null;
+                case HttpStatusCode.OK:
+                    return await response.Content.ReadAsStringAsync();
+            }
+            return null;
+        }
+
         public async Task<string> Get(string endpoint, string uuid)
         {
             HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}?uuid={uuid}");
