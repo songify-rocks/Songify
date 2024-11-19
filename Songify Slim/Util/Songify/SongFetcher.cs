@@ -1022,7 +1022,11 @@ namespace Songify_Slim.Util.Songify
             string j = Json.Serialize(track ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
             IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
-            dictionary["CanvasUrl"] = GlobalObjects.Canvas.Item1 ? GlobalObjects.Canvas.Item2 : "";
+            if (GlobalObjects.Canvas != null)
+                dictionary["CanvasUrl"] = GlobalObjects.Canvas.Item1 ? GlobalObjects.Canvas.Item2 : "";
+            else
+                dictionary["CanvasUrl"] = "";
+
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
             dictionary["Requester"] = GlobalObjects.Requester;
             dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
