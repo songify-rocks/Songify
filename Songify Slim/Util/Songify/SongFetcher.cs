@@ -23,6 +23,8 @@ using System.Xml.Linq;
 using Utils = MahApps.Metro.Controls.Utils;
 using System.Web.UI.WebControls;
 using System.Dynamic;
+using Songify_Slim.Models.YTMD;
+using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -775,7 +777,7 @@ namespace Songify_Slim.Util.Songify
             // this only is used for Spotify because here the artist and title are split
             // replace parameters with actual info
             currentSongOutput = currentSongOutput.Format(
-                single_artist => songInfo.FullArtists.FirstOrDefault().Name,
+                single_artist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",
@@ -784,7 +786,7 @@ namespace Songify_Slim.Util.Songify
             ).Format();
 
             currentSongOutputTwitch = currentSongOutputTwitch.Format(
-                single_artist => songInfo.FullArtists.FirstOrDefault().Name,
+                single_artist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",
@@ -800,7 +802,6 @@ namespace Songify_Slim.Util.Songify
                 {
                     currentSongOutput = currentSongOutput.Substring(index);
                 }
-
 
                 //find where the title starts and remove everything before it
                 index = currentSongOutputTwitch.IndexOf(songInfo.Title, StringComparison.Ordinal);
@@ -1035,6 +1036,50 @@ namespace Songify_Slim.Util.Songify
             dictionary["Queue"] = GlobalObjects.ReqList;
             string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
+        }
+
+        public async Task FetchYTM()
+        {
+            YTMDResponse response = await WebHelper.GetYTMData();
+            if (response == null)
+            {
+                return;
+            }
+
+            if (GlobalObjects.CurrentSong == null)
+                GlobalObjects.CurrentSong = new TrackInfo();
+            
+            TrackInfo trackInfo = new TrackInfo
+            {
+                Artists = response.Video.Author,
+                Title = response.Video.Title,
+                Albums = new List<Image>()
+                {
+                    new Image
+                    {
+                        Url = response.Video.Thumbnails.Last().Url,
+                        Width = response.Video.Thumbnails.Last().Width,
+                        Height = response.Video.Thumbnails.Last().Height
+                    }
+                },
+                SongId = response.Video.Id,
+                DurationMs = (int)TimeSpan.FromSeconds(response.Video.DurationSeconds).TotalMilliseconds,
+                IsPlaying = response.Player.TrackState == (TrackState)1,
+                Url = $"https://music.youtube.com/watch?v={response.Video.Id}",
+                DurationPercentage = (int)((response.Player.VideoProgress / response.Video.DurationSeconds) * 100),
+                DurationTotal = response.Video.DurationSeconds,
+                Progress = (int)response.Player.VideoProgress,
+                Playlist = null,
+                FullArtists = null
+            };
+
+
+            UpdateWebServerResponse(trackInfo);
+            if (GlobalObjects.CurrentSong.SongId == response.Video.Id)
+                return;
+            GlobalObjects.CurrentSong = trackInfo;
+            await WriteSongInfo(trackInfo);
+
         }
     }
 }

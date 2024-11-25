@@ -641,6 +641,18 @@ namespace Songify_Slim.Util.Settings
 
         public static string WebUserAgent => GetWebua();
         public static bool DownloadCanvas { get => GetDownloadCanvas(); set => SetDownloadCanvas(value); }
+        public static string YTMDToken { get => GetYTMDToken(); set=> SetYTMDToken(value); }
+
+        private static void SetYTMDToken(string value)
+        {
+            _currentConfig.AppConfig.YTMDToken = value;
+            ConfigHandler.WriteAllConfig(_currentConfig);
+        }
+
+        private static string GetYTMDToken()
+        {
+            return _currentConfig.AppConfig.YTMDToken;
+        }
 
         private static void SetDownloadCanvas(bool value)
         {
@@ -811,6 +823,7 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
+                YTMDToken = GetYTMDToken(),
             };
 
             return new Configuration

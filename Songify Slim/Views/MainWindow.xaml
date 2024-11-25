@@ -488,6 +488,9 @@
                 <Image
                     x:Name="img_cover"
                     Margin="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Stretch="UniformToFill"
                     Visibility="Collapsed" />
                 <MediaElement
                     x:Name="CoverCanvas"

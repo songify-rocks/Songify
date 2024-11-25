@@ -144,6 +144,7 @@
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Models\YTMD\YTMDResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -188,6 +189,8 @@
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
+    <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
+    <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthorizationCodeAuth.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthUtil.cs" />
     <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\CredentialsAuth.cs" />
@@ -737,6 +740,7 @@
     <Resource Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\2.png" />
     <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\start.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

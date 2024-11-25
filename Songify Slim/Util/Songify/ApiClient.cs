@@ -7,20 +7,13 @@ using System.Threading.Tasks;
 
 namespace Songify_Slim.Util.Songify
 {
-    public class ApiClient
+    public class ApiClient(string baseUrl)
     {
-        private readonly string _baseUrl;
-        private readonly HttpClient _httpClient;
-
-        public ApiClient(string baseUrl)
-        {
-            this._baseUrl = baseUrl;
-            _httpClient = new HttpClient();
-        }
+        private readonly HttpClient _httpClient = new();
 
         public async Task<string> GetCanvas(string songId)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/canvas/{songId}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/canvas/{songId}");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.InternalServerError:
@@ -35,7 +28,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Get(string endpoint, string uuid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{_baseUrl}/{endpoint}?uuid={uuid}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}?uuid={uuid}");
             switch (response.StatusCode)
             {
                 case HttpStatusCode.InternalServerError:
@@ -52,7 +45,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                UriBuilder builder = new($"{_baseUrl}/{endpoint}")
+                UriBuilder builder = new($"{baseUrl}/{endpoint}")
                 {
                     Query = $"api_key={Settings.Settings.AccessKey}"
                 };
@@ -87,7 +80,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Patch(string endpoint, string payload)
         {
-            UriBuilder builder = new($"{_baseUrl}/{endpoint}")
+            UriBuilder builder = new($"{baseUrl}/{endpoint}")
             {
                 Query = $"api_key={Settings.Settings.AccessKey}"
             };
@@ -110,7 +103,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Clear(string endpoint, string payload)
         {
-            UriBuilder builder = new($"{_baseUrl}/{endpoint}")
+            UriBuilder builder = new($"{baseUrl}/{endpoint}")
             {
                 Query = $"api_key={Settings.Settings.AccessKey}"
             };

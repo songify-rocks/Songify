@@ -27,16 +27,25 @@ namespace Songify_Slim.Models
         // Constructor that accepts a FullTrack object
         public PlaceholderContext(TrackInfo track = null)
         {
-            if (track != null)
+            if (track == null) return;
+            Artist = track.FullArtists != null ? string.Join(", ", track.FullArtists.Select(artist => artist.Name).ToList()) : track.Artists;
+            if (track.FullArtists != null)
             {
-                Artist = string.Join(", ", track.FullArtists.Select(artist => artist.Name).ToList());
                 SingleArtist = track.FullArtists.FirstOrDefault()?.Name;
-                Title = track.Title;
-                Song = $"{track.Artists} - {track.Title}";
-                Url = track.Url;
-                PlaylistName = track.Playlist?.Name;
-                PlaylistUrl = track.Playlist?.Url;
             }
+            else if (track.Artists.Contains(", ") && track.FullArtists == null)
+            {
+                SingleArtist = track.Artists.Split().First().Trim();
+            }
+            else
+            {
+                SingleArtist = track.Artists;
+            }
+            Title = track.Title;
+            Song = $"{track.Artists} - {track.Title}";
+            Url = track.Url;
+            PlaylistName = track.Playlist?.Name;
+            PlaylistUrl = track.Playlist?.Url;
         }
     }
 

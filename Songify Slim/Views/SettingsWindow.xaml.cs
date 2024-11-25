@@ -22,7 +22,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -36,7 +36,6 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
-using static System.Net.WebRequestMethods;
 using File = System.IO.File;
 
 namespace Songify_Slim.Views
@@ -130,6 +129,7 @@ namespace Songify_Slim.Views
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             TxtbxOutputformat2.Text = Settings.OutputString2;
+            TbYTMDesktopToken.Password = Settings.YTMDToken;
             CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
             NudServerPort.Value = Settings.WebServerPort;
             tgl_KeepCover.IsOn = Settings.KeepAlbumCover;
@@ -1758,5 +1758,50 @@ namespace Songify_Slim.Views
                 return;
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
+
+        private async void btn_YTMDesktopLink_Click(object sender, RoutedEventArgs e)
+        {
+            const string baseUrl = "http://localhost:9863/api/v1/";
+            YTMDAuthentication auth = new(baseUrl);
+
+            try
+            {
+                // Step 1: Request the auth code
+                string appId = "songify";
+                string appName = "Songify";
+                string appVersion = FormatAppVersion(GlobalObjects.AppVersion);
+
+                Debug.WriteLine("Requesting authorization code...");
+                string authCode = await auth.RequestAuthCodeAsync(appId, appName, appVersion);
+                Debug.WriteLine($"Received authorization code: {authCode}");
+
+                // Step 2: Request the token using the auth code
+                Debug.WriteLine("Requesting token...");
+                string token = await auth.RequestTokenAsync(appId, authCode);
+                Debug.WriteLine($"Received token: {token}");
+                if (!string.IsNullOrEmpty(token))
+                {
+                    TbYTMDesktopToken.Password = token;
+                    Settings.YTMDToken = token;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        public static string FormatAppVersion(string appVersion)
+        {
+            if (string.IsNullOrWhiteSpace(appVersion))
+                throw new ArgumentException("App version cannot be null or empty.");
+
+            string[] parts = appVersion.Split('.'); // Split by dots
+            if (parts.Length < 3)
+                throw new ArgumentException("App version must have at least three components.");
+
+            return string.Join(".", parts[0], parts[1], parts[2]); // Join the first three parts
+        }
+
     }
 }

@@ -137,7 +137,8 @@ namespace Songify_Slim.Views
                 PlayerType.Deezer,
                 PlayerType.FooBar2000,
                 PlayerType.Vlc,
-                PlayerType.Youtube
+                PlayerType.Youtube,
+                PlayerType.YTMDesktop
             ];
             cbx_Source.ItemsSource = sourceBoxItems;
         }
@@ -260,7 +261,7 @@ namespace Songify_Slim.Views
             if (_selectedSource == PlayerType.SpotifyWeb)
                 img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    if (_selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover)
+                    if ((_selectedSource == PlayerType.SpotifyWeb || _selectedSource == PlayerType.YTMDesktop) && Settings.DownloadCover)
                         img_cover.Visibility = Visibility.Visible;
                     else
                         img_cover.Visibility = Visibility.Collapsed;
@@ -311,6 +312,9 @@ namespace Songify_Slim.Views
 
                 case PlayerType.SpotifyWeb:
                     await Sf.FetchSpotifyWeb();
+                    break;
+                case PlayerType.YTMDesktop:
+                    await Sf.FetchYTM();
                     break;
             }
         }
@@ -454,7 +458,7 @@ namespace Songify_Slim.Views
                             .AddText($"{highSeverityPsa.Author} from Songify")
                             .AddText(msg)
                             .AddAttributionText(highSeverityPsa.CreatedAtDateTime.ToString())
-                            .Show(); // Not seeing the Show() method? Make sure you have version 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
+                            .Show(); // Not seeing the Show() method? Make sure you have versionversion 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
                         // store the already shown psa id and don't show it again
                         Settings.LastShownMotdId = highSeverityPsa.Id;
                     }
@@ -618,7 +622,8 @@ namespace Songify_Slim.Views
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? $"Songify v1.6.8 BETA_1 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
@@ -641,10 +646,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            if (_selectedSource != PlayerType.SpotifyWeb)
-            {
-                img_cover.Visibility = Visibility.Hidden;
-            }
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -952,7 +954,8 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                img_cover.Visibility = _selectedSource == PlayerType.SpotifyWeb && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
+
+                img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
 
             try
@@ -1010,6 +1013,9 @@ namespace Songify_Slim.Views
 
             switch (_selectedSource)
             {
+                case PlayerType.YTMDesktop:
+                    FetchTimer(5000);
+                    break;
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
@@ -1055,14 +1061,13 @@ namespace Songify_Slim.Views
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
                     if (Settings.Player != 0 && Settings.DownloadCover)
                     {
-                        img_cover.Visibility = Visibility.Collapsed;
                         CoverCanvas.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
-                        img_cover.Visibility = Visibility.Collapsed;
                         CoverCanvas.Visibility = Visibility.Visible;
                     }
+                    img_cover.Visibility = Visibility.Collapsed;
 
                     Logger.LogStr("COVER: Set succesfully");
                     break;
@@ -1101,16 +1106,15 @@ namespace Songify_Slim.Views
                     }
 
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
-                    if (Settings.Player != 0 && Settings.DownloadCover)
+                    if ((Settings.Player == 0 || Settings.Player == 6) && Settings.DownloadCover)
                     {
-                        img_cover.Visibility = Visibility.Collapsed;
-                        CoverCanvas.Visibility = Visibility.Collapsed;
+                        img_cover.Visibility = Visibility.Visible;
                     }
                     else
                     {
-                        img_cover.Visibility = Visibility.Visible;
-                        CoverCanvas.Visibility = Visibility.Collapsed;
+                        img_cover.Visibility = Visibility.Collapsed;
                     }
+
                     CoverCanvas.Visibility = Visibility.Collapsed;
                     Logger.LogStr("COVER: Set succesfully");
                     break;

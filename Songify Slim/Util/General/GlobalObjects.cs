@@ -429,6 +429,7 @@ namespace Songify_Slim.Util.General
                 3 => "Foobar2000",
                 4 => "VLC",
                 5 => "YouTube",
+                6 => "YTM Desktop",
                 _ => ""
             };
         }

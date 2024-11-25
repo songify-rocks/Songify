@@ -302,6 +302,7 @@ namespace Songify_Slim.Util.Settings
         public bool KeepAlbumCover { get; set; } = false;
 
         public string WebUserAgent = "Songify Data Provider";
+        public string YTMDToken;
     }
 
     public class Config

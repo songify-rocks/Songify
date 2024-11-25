@@ -2662,6 +2662,42 @@
                     </Grid>
                 </Border>
             </TabItem>
+            <TabItem Header="YTMDesktop">
+                <Border
+                    Margin="10,0,0,0"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                    BorderThickness="2,0,0,0">
+                    <Grid Margin="10,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            x:Name="BtnYTMDesktopLink"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Width="90"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="btn_YTMDesktopLink_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="0,0,8,0" Text="{x:Static local:Resources.sw_Integration_btnLink}" />
+                                    <iconPacks:FontAwesome Kind="LinkSolid" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <PasswordBox
+                            x:Name="TbYTMDesktopToken"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="6,0"/>
+                    </Grid>
+                </Border>
+            </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_WebServer}">
                 <Border
                     Margin="10,0,0,0"
