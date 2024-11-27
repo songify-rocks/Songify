@@ -43,8 +43,8 @@
                 TextWrapping="Wrap">
                 <Run Text="This Project is a free time project and licensed under the GNU General Public License v3.0." />
                 <LineBreak /><Run /><LineBreak />
-                <Run Text="If you want to support this project feel free to" /><Run Text=" " />
-                <Run Text=" hang out with us on Discord!" />
+                <Run Text="If you want to support this project feel free to" />
+                <Run Text="hang out with us on Discord!" />
             </TextBlock>
             <StackPanel
                 HorizontalAlignment="Center"

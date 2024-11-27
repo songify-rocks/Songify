@@ -45,6 +45,7 @@ using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Net.NetworkInformation;
 using MahApps.Metro.Controls;
+using Songify_Slim.Util.Songify.YTMDesktop;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -314,7 +315,7 @@ namespace Songify_Slim.Views
                     await Sf.FetchSpotifyWeb();
                     break;
                 case PlayerType.YTMDesktop:
-                    await Sf.FetchYTM();
+                    //await Sf.FetchYTM();
                     break;
             }
         }
@@ -663,6 +664,28 @@ namespace Songify_Slim.Views
 
         private static async Task HandleTwitchInitializationAsync()
         {
+
+            // Replace with your server URL and token
+            string serverUrl = "http://127.0.0.1:9863/api/v1/realtime";
+            string token = Settings.YTMDToken;
+
+            // Initialize the Socket.IO client
+            SocketIoClient socketClient = new SocketIoClient(serverUrl, token);
+
+            // Run connection in a separate task
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await socketClient.ConnectAsync();
+                    Debug.WriteLine("YTMD: Socket.IO connected.");
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+            });
+
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect)
@@ -1014,7 +1037,8 @@ namespace Songify_Slim.Views
             switch (_selectedSource)
             {
                 case PlayerType.YTMDesktop:
-                    FetchTimer(5000);
+                    // stop the timer if the player is YTMDesktop
+                    _timerFetcher.Enabled = false;
                     break;
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.Vlc:

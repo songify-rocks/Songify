@@ -2670,6 +2670,7 @@
                     <Grid Margin="10,16,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -2694,7 +2695,27 @@
                             x:Name="TbYTMDesktopToken"
                             Grid.Row="0"
                             Grid.Column="1"
-                            Margin="6,0"/>
+                            Margin="6,0" />
+                        <StackPanel
+                            x:Name="PnlYTMDesktopAuthcode"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="16"
+                            Orientation="Vertical">
+                            <TextBlock
+                                MaxWidth="400"
+                                HorizontalAlignment="Center"
+                                Text="Compare the codes between Songify and the YouTube Music Desktop player. Only accept the integration request if the codes match!"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                x:Name="TbYTMDesktopAuthcode"
+                                HorizontalAlignment="Center"
+                                FontSize="36"
+                                Text="AUTH CODE:" />
+                        </StackPanel>
+
                     </Grid>
                 </Border>
             </TabItem>

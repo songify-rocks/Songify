@@ -1916,6 +1916,42 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string WinQueue_Actions {
+            get {
+                return ResourceManager.GetString("WinQueue_Actions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now Playing.
+        /// </summary>
+        public static string WinQueue_NowPlaying {
+            get {
+                return ResourceManager.GetString("WinQueue_NowPlaying", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping.
+        /// </summary>
+        public static string WinQueue_Skipping {
+            get {
+                return ResourceManager.GetString("WinQueue_Skipping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Request.
+        /// </summary>
+        public static string WinQueue_SongRequest {
+            get {
+                return ResourceManager.GetString("WinQueue_SongRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blacklist.
         /// </summary>
         public static string WinTitle_Blocklist {

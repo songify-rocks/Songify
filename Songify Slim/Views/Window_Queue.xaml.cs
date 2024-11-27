@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Songify_Slim.Util.Songify.YTMDesktop;
 using Unosquare.Swan.Formatters;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
@@ -276,40 +277,67 @@ namespace Songify_Slim.Views
 
         private async void BtnBack_OnClick(object sender, RoutedEventArgs e)
         {
-            DateTime currentTime = DateTime.Now;
-
-            // Check if the button was clicked within the last 3 seconds
-            if ((currentTime - _lastBackButtonClickTime).TotalSeconds < 3)
+            switch (Settings.Player)
             {
-                // If clicked again within 3 seconds, skip to the previous track
-                await SpotifyApiHandler.SkipPrevious();
-            }
-            else
-            {
-                // If not, restart the current track from the beginning
-                await SpotifyApiHandler.PlayFromStart();
-            }
+                case 0:
+                    DateTime currentTime = DateTime.Now;
 
-            // Update the last click time
-            _lastBackButtonClickTime = currentTime;
+                    // Check if the button was clicked within the last 3 seconds
+                    if ((currentTime - _lastBackButtonClickTime).TotalSeconds < 3)
+                    {
+                        // If clicked again within 3 seconds, skip to the previous track
+                        await SpotifyApiHandler.SkipPrevious();
+                    }
+                    else
+                    {
+                        // If not, restart the current track from the beginning
+                        await SpotifyApiHandler.PlayFromStart();
+                    }
+
+                    // Update the last click time
+                    _lastBackButtonClickTime = currentTime;
+                    break;
+                case 6:
+                    await WebHelper.YTMDPrevious();
+                    break;
+            }
         }
 
         private async void BtnNext_OnClick(object sender, RoutedEventArgs e)
         {
+            switch (Settings.Player)
+            {
+                case 0:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+                case 6:
+                    await WebHelper.YTMDNext();
+                    break;
+            }
             await SpotifyApiHandler.SkipSong();
         }
 
         private async void BtnPlayPause_OnClick(object sender, RoutedEventArgs e)
         {
-            bool isPlaying = await SpotifyApiHandler.PlayPause();
+            switch (Settings.Player)
+            {
+                case 0:
+                    {
+                        bool isPlaying = await SpotifyApiHandler.PlayPause();
 
-            Grid grd = new Grid();
-            if (!isPlaying)
-                grd.Margin = new Thickness(3, 0, 0, 0);
-            grd.Children.Add(isPlaying
-                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
-                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
-            BtnPlayPause.Content = grd;
+                        Grid grd = new Grid();
+                        if (!isPlaying)
+                            grd.Margin = new Thickness(3, 0, 0, 0);
+                        grd.Children.Add(isPlaying
+                            ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
+                            : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
+                        BtnPlayPause.Content = grd;
+                        break;
+                    }
+                case 6:
+                    await WebHelper.YTMDPlayPause();
+                    break;
+            }
         }
 
         private void BtnPlayerControlsVisibility_OnClick(object sender, RoutedEventArgs e)

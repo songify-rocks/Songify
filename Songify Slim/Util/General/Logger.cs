@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Unosquare.Swan;
 
 namespace Songify_Slim.Util.General
 {
@@ -17,6 +19,17 @@ namespace Songify_Slim.Util.General
 
         private static readonly string RootPath =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Songify.Rocks", "Logs");
+
+        private static readonly Dictionary<string, Color> ColorMappings = new()
+        {
+            { "CORE", Colors.Coral },
+            { "TWITCH", Colors.MediumPurple },
+            { "API", Colors.LightGreen },
+            { "COVER", Colors.Yellow },
+            { "SPOTIFY", Color.FromRgb(30, 215, 96) },
+            { "YTMD", Color.FromRgb(255, 0, 51) }
+        };
+
 
         private static void CreateLogDirectory()
         {
@@ -150,19 +163,16 @@ namespace Songify_Slim.Util.General
 
         private static Color GetForegroundColor(string s)
         {
-            if (s.Contains("CORE"))
-                return Colors.Coral;
-            if (s.Contains("TWITCH"))
-                return Colors.MediumPurple;
-            if (s.Contains("API"))
-                return Colors.LightGreen;
-            if (s.Contains("COVER"))
-                return Colors.Yellow;
-            if (s.Contains("SPOTIFY"))
-                return Color.FromRgb(30, 215, 96);
-            return Colors.White;
-        }
+            foreach (KeyValuePair<string, Color> mapping in ColorMappings)
+            {
+                if (s.Contains(mapping.Key))
+                {
+                    return mapping.Value;
+                }
+            }
 
+            return Colors.White; // Default color
+        }
 
     }
 }

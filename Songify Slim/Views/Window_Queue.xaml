@@ -73,7 +73,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="Now Playing" />
+                    Text="{x:Static properties:Resources.WinQueue_NowPlaying}" />
             </Border>
             <Border
                 Width="auto"
@@ -84,7 +84,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="Song Request" />
+                    Text="{x:Static properties:Resources.WinQueue_SongRequest}" />
             </Border>
             <Border
                 Width="auto"
@@ -95,7 +95,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="Skipping" />
+                    Text="{x:Static properties:Resources.WinQueue_Skipping}" />
             </Border>
         </StackPanel>
         <Button
@@ -105,7 +105,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
             Click="BtnClearQueue_Click"
-            Content="Clear Queue" />
+            Content="{x:Static properties:Resources.mw_menu_Queue_Clear}" />
         <Expander
             x:Name="DropDownCols"
             Grid.Row="0"
@@ -129,35 +129,35 @@
                     x:Name="CheckColArtist"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="Artist"
+                    Content="{x:Static properties:Resources.bw_cbArtist}"
                     Tag="1"
                     Unchecked="ColVisChecked" />
                 <CheckBox
                     x:Name="CheckColTitle"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="Title"
+                    Content="{x:Static properties:Resources.crw_RewardTitle}"
                     Tag="2"
                     Unchecked="ColVisChecked" />
                 <CheckBox
                     x:Name="CheckColLength"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="Length"
+                    Content="{x:Static properties:Resources.s_Length}"
                     Tag="3"
                     Unchecked="ColVisChecked" />
                 <CheckBox
                     x:Name="CheckColRequester"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="Requester"
+                    Content="{x:Static properties:Resources.s_Requester}"
                     Tag="4"
                     Unchecked="ColVisChecked" />
                 <CheckBox
                     x:Name="CheckColAction"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="Action"
+                    Content="{x:Static properties:Resources.WinQueue_Actions}"
                     Tag="5"
                     Unchecked="ColVisChecked" />
             </StackPanel>
@@ -243,7 +243,7 @@
                     Visibility="Visible" />
                 <DataGridTemplateColumn
                     x:Name="colDeleteButton"
-                    Header="Actions"
+                    Header="{x:Static properties:Resources.WinQueue_Actions}"
                     Visibility="Visible">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -297,6 +297,9 @@
                             <Setter Property="Background" Value="IndianRed" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Requester}" Value="Spotify">
+                            <Setter Property="Background" Value="Transparent" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Requester}" Value="YouTube">
                             <Setter Property="Background" Value="Transparent" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Played}" Value="-1">

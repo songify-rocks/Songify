@@ -411,8 +411,7 @@ namespace Songify_Slim.Util.Songify
             }
             return false;
         }
-
-
+        
         private static int LevenshteinDistance(string source, string target)
         {
             if (string.IsNullOrEmpty(source))
@@ -442,8 +441,7 @@ namespace Songify_Slim.Util.Songify
 
             return distance[sourceLength, targetLength];
         }
-
-
+        
         public static async Task<ErrorResponse> SkipSong()
         {
             try

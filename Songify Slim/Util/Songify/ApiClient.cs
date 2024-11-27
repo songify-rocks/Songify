@@ -13,31 +13,47 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> GetCanvas(string songId)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/canvas/{songId}");
-            switch (response.StatusCode)
+            try
             {
-                case HttpStatusCode.InternalServerError:
-                    return null;
-                case HttpStatusCode.ServiceUnavailable:
-                    return null;
-                case HttpStatusCode.OK:
-                    return await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/canvas/{songId}");
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.InternalServerError:
+                        return null;
+                    case HttpStatusCode.ServiceUnavailable:
+                        return null;
+                    case HttpStatusCode.OK:
+                        return await response.Content.ReadAsStringAsync();
+                }
             }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
             return null;
         }
 
         public async Task<string> Get(string endpoint, string uuid)
         {
-            HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}?uuid={uuid}");
-            switch (response.StatusCode)
+            try
             {
-                case HttpStatusCode.InternalServerError:
-                    return null;
-                case HttpStatusCode.ServiceUnavailable:
-                    return null;
-                case HttpStatusCode.OK:
-                    return await response.Content.ReadAsStringAsync();
+                HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}?uuid={uuid}");
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.InternalServerError:
+                        return null;
+                    case HttpStatusCode.ServiceUnavailable:
+                        return null;
+                    case HttpStatusCode.OK:
+                        return await response.Content.ReadAsStringAsync();
+                }
             }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
             return null;
         }
 
@@ -80,44 +96,58 @@ namespace Songify_Slim.Util.Songify
 
         public async Task<string> Patch(string endpoint, string payload)
         {
-            UriBuilder builder = new($"{baseUrl}/{endpoint}")
+            try
             {
-                Query = $"api_key={Settings.Settings.AccessKey}"
-            };
-            StringContent content = new(payload, Encoding.UTF8, "application/json");
-            HttpMethod method = new("PATCH");
-            HttpRequestMessage request = new(method, builder.ToString()) { Content = content };
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
+                UriBuilder builder = new($"{baseUrl}/{endpoint}")
+                {
+                    Query = $"api_key={Settings.Settings.AccessKey}"
+                };
+                StringContent content = new(payload, Encoding.UTF8, "application/json");
+                HttpMethod method = new("PATCH");
+                HttpRequestMessage request = new(method, builder.ToString()) { Content = content };
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-            switch (response.StatusCode)
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.InternalServerError:
+                        return null;
+                    case HttpStatusCode.ServiceUnavailable:
+                        return null;
+                    case HttpStatusCode.OK:
+                        return await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception e)
             {
-                case HttpStatusCode.InternalServerError:
-                    return null;
-                case HttpStatusCode.ServiceUnavailable:
-                    return null;
-                case HttpStatusCode.OK:
-                    return await response.Content.ReadAsStringAsync();
+                Logger.LogExc(e);
             }
             return null;
         }
 
         public async Task<string> Clear(string endpoint, string payload)
         {
-            UriBuilder builder = new($"{baseUrl}/{endpoint}")
+            try
             {
-                Query = $"api_key={Settings.Settings.AccessKey}"
-            };
-            StringContent content = new(payload, Encoding.UTF8, "application/json");
-            HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+                UriBuilder builder = new($"{baseUrl}/{endpoint}")
+                {
+                    Query = $"api_key={Settings.Settings.AccessKey}"
+                };
+                StringContent content = new(payload, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
 
-            switch (response.StatusCode)
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.InternalServerError:
+                        return null;
+                    case HttpStatusCode.ServiceUnavailable:
+                        return null;
+                    case HttpStatusCode.OK:
+                        return await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception e)
             {
-                case HttpStatusCode.InternalServerError:
-                    return null;
-                case HttpStatusCode.ServiceUnavailable:
-                    return null;
-                case HttpStatusCode.OK:
-                    return await response.Content.ReadAsStringAsync();
+                Logger.LogExc(e);
             }
             return null;
         }

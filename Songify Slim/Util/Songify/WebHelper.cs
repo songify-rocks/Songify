@@ -236,5 +236,43 @@ namespace Songify_Slim.Util.Songify
             string result = await ApiClientYTM.Get("state");
             return string.IsNullOrEmpty(result) ? null : JsonConvert.DeserializeObject<YTMDResponse>(result);
         }
+
+        public static async Task YTMDPlayPause()
+        {
+            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+                return;
+            dynamic payload = new
+            {
+                command = "playPause"
+            };
+
+            string result = await ApiClientYTM.Post( Json.Serialize(payload));
+        }
+
+        public static async Task YTMDNext()
+        {
+            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+                return;
+            dynamic payload = new
+            {
+                command = "next"
+            };
+
+            string result = await ApiClientYTM.Post( Json.Serialize(payload));
+
+        }
+
+        public static async Task YTMDPrevious()
+        {
+            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+                return;
+            dynamic payload = new
+            {
+                command = "next"
+            };
+
+            string result = await ApiClientYTM.Post(Json.Serialize(payload));
+
+        }
     }
 }

@@ -19,6 +19,10 @@ using Unosquare.Swan.Formatters;
 using MahApps.Metro.IconPacks;
 using TwitchLib.Api.Helix;
 using System.Collections;
+using System.Windows.Threading;
+using Songify_Slim.Models.YTMD;
+using Queue = Songify_Slim.Models.YTMD.Queue;
+using QueueItem = Songify_Slim.Models.YTMD.QueueItem;
 
 namespace Songify_Slim.Util.General
 {
@@ -158,216 +162,293 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-            try
+            switch (Settings.Settings.Player)
             {
-                SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
-                if (queue?.Queue == null || queue.Queue.Count == 0)
-                {
-                    return;
-                }
-
-                // Remove all songs from the web queue that are not in the current playback queue
-                if (ReqList?.Count > 0)
-                {
-                    List<RequestObject> itemsToRemove = new List<RequestObject>();
-
-                    foreach (RequestObject requestObject in ReqList)
+                case 0:
+                    try
                     {
-                        if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
-
-                        dynamic payload = new
+                        SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
+                        if (queue?.Queue == null || queue.Queue.Count == 0)
                         {
-                            uuid = Settings.Settings.Uuid,
-                            key = Settings.Settings.AccessKey,
-                            queueid = requestObject.Queueid,
-                        };
-
-                        try
-                        {
-                            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-                            itemsToRemove.Add(requestObject);
+                            return;
                         }
-                        catch (Exception ex)
-                        {
-                            // Log or handle error for individual request failure
-                            Logger.LogStr("API: Error updating value in web queue");
-                            Logger.LogExc(ex);
-                        }
-                    }
 
-                    foreach (RequestObject item in itemsToRemove)
-                    {
-                        await Application.Current.Dispatcher.BeginInvoke(() =>
+                        // Remove all songs from the web queue that are not in the current playback queue
+                        if (ReqList?.Count > 0)
+                        {
+                            List<RequestObject> itemsToRemove = new List<RequestObject>();
+
+                            foreach (RequestObject requestObject in ReqList)
+                            {
+                                if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
+
+                                dynamic payload = new
+                                {
+                                    uuid = Settings.Settings.Uuid,
+                                    key = Settings.Settings.AccessKey,
+                                    queueid = requestObject.Queueid,
+                                };
+
+                                try
+                                {
+                                    await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+                                    itemsToRemove.Add(requestObject);
+                                }
+                                catch (Exception ex)
+                                {
+                                    // Log or handle error for individual request failure
+                                    Logger.LogStr("API: Error updating value in web queue");
+                                    Logger.LogExc(ex);
+                                }
+                            }
+
+                            foreach (RequestObject item in itemsToRemove)
+                            {
+                                await Application.Current.Dispatcher.BeginInvoke(() =>
+                                {
+                                    try
+                                    {
+                                        if (item.Trackid == CurrentSong.SongId)
+                                        {
+                                            return;
+                                        }
+                                        ReqList.Remove(item);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        // Log or handle error during list update
+                                        Logger.LogStr("CORE: Error removing item from ReqList");
+                                        Logger.LogExc(ex);
+                                    }
+                                });
+                            }
+                        }
+
+
+                        bool isLikedSongsPlaylist = false;
+
+                        await Application.Current.Dispatcher.Invoke(async () =>
                         {
                             try
                             {
-                                if (item.Trackid == CurrentSong.SongId)
+                                // Clear the tracks in the queue (ObservableCollection will notify the UI)
+                                Dictionary<string, bool> isInLikedSongs = new();
+                                try
                                 {
-                                    return;
+                                    if (!string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
+                                        Settings.Settings.SpotifyPlaylistId == "-1")
+                                    {
+                                        isLikedSongsPlaylist = true;
+                                        List<string> ids = queue.Queue.Select(track => track.Id).ToList();
+                                        ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync(ids);
+
+                                        for (int i = 0; i < ids.Count; i++)
+                                        {
+                                            isInLikedSongs[ids[i]] = x.List[i];
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isLikedSongsPlaylist = false;
+                                        await LoadLikedPlaylistTracks();
+                                    }
+
                                 }
-                                ReqList.Remove(item);
+                                catch (Exception)
+                                {
+                                    Logger.LogStr("Spotify API: Error getting Liked Songs");
+                                }
+
+                                List<RequestObject> tempQueueList = [];
+                                // Dictionary to keep track of replacements
+                                Dictionary<string, bool> replacementTracker = new();
+
+                                // Process the queue
+                                foreach (FullTrack fullTrack in queue.Queue)
+                                {
+                                    try
+                                    {
+                                        bool isInLikedPlaylist;
+                                        if (isLikedSongsPlaylist)
+                                            isInLikedPlaylist = isInLikedSongs.TryGetValue(fullTrack.Id, out bool boolValue) && boolValue;
+                                        else
+                                            isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
+
+                                        // Determine if we have a matching request object that hasn't been used for replacement yet
+                                        RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
+                                        RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+
+                                        if (reqObj != null)
+                                        {
+                                            reqObj.IsLiked = isInLikedPlaylist;
+                                            tempQueueList.Add(reqObj);
+                                            replacementTracker[reqObj.Trackid] = true; // Mark this track ID as replaced
+                                        }
+                                        else if (skipObj != null)
+                                        {
+                                            skipObj.Requester = "Skipping...";
+                                            skipObj.IsLiked = isInLikedPlaylist;
+                                            tempQueueList.Add(skipObj);
+                                            replacementTracker[skipObj.Trackid] = true;
+                                        }
+                                        else
+                                        {
+                                            RequestObject newRequestObject = new()
+                                            {
+                                                Queueid = 0,
+                                                Uuid = Settings.Settings.Uuid,
+                                                Trackid = fullTrack.Id,
+                                                Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name)),
+                                                Title = fullTrack.Name,
+                                                Length = MsToMmSsConverter((int)fullTrack.DurationMs),
+                                                Requester = "Spotify",
+                                                Played = 0,
+                                                Albumcover = null,
+                                                IsLiked = isInLikedPlaylist
+                                            };
+
+                                            tempQueueList.Add(newRequestObject);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        // Log or handle error during queue processing
+                                        Logger.LogStr("CORE: Error processing queue item");
+                                        Logger.LogExc(ex);
+                                    }
+                                }
+
+                                QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
+
+                                // Check if the queue window is open and update it accordingly
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    if (window.GetType() != typeof(WindowQueue))
+                                        continue;
+
+                                    if (window is WindowQueue windowQueue)
+                                    {
+                                        // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
+                                        windowQueue.dgv_Queue.ItemsSource = QueueTracks;
+                                        bool isInLikedPlaylist;
+
+                                        if (isLikedSongsPlaylist)
+                                        {
+                                            if (CurrentSong == null)
+                                                return;
+                                            ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([CurrentSong.SongId]);
+                                            isInLikedPlaylist = x.List.Count > 0 && x.List[0];
+                                        }
+                                        else
+                                            isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
+
+                                        // Add the current song to the top of the queue
+                                        QueueTracks.Insert(0, new RequestObject
+                                        {
+                                            Queueid = 0,
+                                            Uuid = Settings.Settings.Uuid,
+                                            Trackid = CurrentSong.SongId,
+                                            Artist = CurrentSong.Artists,
+                                            Title = CurrentSong.Title,
+                                            Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
+                                            Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
+                                            Played = -1,
+                                            Albumcover = null,
+                                            IsLiked = isInLikedPlaylist
+                                        });
+                                        windowQueue.UpdateQueueIcons();
+                                    }
+                                }
                             }
                             catch (Exception ex)
                             {
-                                // Log or handle error during list update
-                                Logger.LogStr("CORE: Error removing item from ReqList");
+                                // Log or handle error during UI update
+                                Logger.LogStr("CORE: Encountered an error while updating the UI");
                                 Logger.LogExc(ex);
                             }
                         });
                     }
-                }
-
-
-                bool isLikedSongsPlaylist = false;
-
-                await Application.Current.Dispatcher.Invoke(async () =>
-                {
-                    try
+                    catch (Exception ex)
                     {
-                        // Clear the tracks in the queue (ObservableCollection will notify the UI)
-                        Dictionary<string, bool> isInLikedSongs = new();
-                        try
-                        {
-                            if (!string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
-                                Settings.Settings.SpotifyPlaylistId == "-1")
-                            {
-                                isLikedSongsPlaylist = true;
-                                List<string> ids = queue.Queue.Select(track => track.Id).ToList();
-                                ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync(ids);
+                        // Log or handle error for the entire method failure
+                        Logger.LogStr("CORE: Error in QueueUpdate method");
+                        Logger.LogExc(ex);
+                    }
 
-                                for (int i = 0; i < ids.Count; i++)
-                                {
-                                    isInLikedSongs[ids[i]] = x.List[i];
-                                }
-                            }
-                            else
-                            {
-                                isLikedSongsPlaylist = false;
-                                await LoadLikedPlaylistTracks();
-                            }
+                    break;
+                case 6:
+                    YTMDResponse response = await WebHelper.GetYTMData();
+                    if (response == null)
+                    {
+                        return;
+                    }
 
-                        }
-                        catch (Exception)
-                        {
-                            Logger.LogStr("Spotify API: Error getting Liked Songs");
-                        }
+                    List<RequestObject> tempQueueList = [];
+                    List<QueueItem> queueItems = [];
 
-                        List<RequestObject> tempQueueList = [];
-                        // Dictionary to keep track of replacements
-                        Dictionary<string, bool> replacementTracker = new();
+                    // Find the index of the current VideoId
+                    int index = response.Player.Queue.Items.IndexOf(
+                        response.Player.Queue.Items.Find(i => i.VideoId == response.Video.Id));
 
-                        // Process the queue
-                        foreach (FullTrack fullTrack in queue.Queue)
-                        {
-                            try
-                            {
-                                bool isInLikedPlaylist;
-                                if (isLikedSongsPlaylist)
-                                    isInLikedPlaylist = isInLikedSongs.TryGetValue(fullTrack.Id, out bool boolValue) && boolValue;
-                                else
-                                    isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
+                    if (index != -1 && index + 1 < response.Player.Queue.Items.Count)
+                    {
+                        // Skip items only if the index is valid and not the last item
+                        queueItems = response.Player.Queue.Items.Skip(index + 1).ToList();
+                    }
 
-                                // Determine if we have a matching request object that hasn't been used for replacement yet
-                                RequestObject reqObj = ReqList.FirstOrDefault(o => o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) && fullTrack.Id != CurrentSong.SongId);
-                                RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+                    tempQueueList.AddRange(queueItems.Select(queueItem => new RequestObject
+                    {
+                        Queueid = 0,
+                        Uuid = Settings.Settings.Uuid,
+                        Trackid = queueItem.VideoId,
+                        Artist = queueItem.Author,
+                        Title = queueItem.Title,
+                        Length = queueItem.Duration,
+                        Requester = "YouTube",
+                        Played = 0,
+                        Albumcover = queueItem.Thumbnails.Last().Url,
+                        IsLiked = false
+                    }));
 
-                                if (reqObj != null)
-                                {
-                                    reqObj.IsLiked = isInLikedPlaylist;
-                                    tempQueueList.Add(reqObj);
-                                    replacementTracker[reqObj.Trackid] = true; // Mark this track ID as replaced
-                                }
-                                else if (skipObj != null)
-                                {
-                                    skipObj.Requester = "Skipping...";
-                                    skipObj.IsLiked = isInLikedPlaylist;
-                                    tempQueueList.Add(skipObj);
-                                    replacementTracker[skipObj.Trackid] = true;
-                                }
-                                else
-                                {
-                                    RequestObject newRequestObject = new()
-                                    {
-                                        Queueid = 0,
-                                        Uuid = Settings.Settings.Uuid,
-                                        Trackid = fullTrack.Id,
-                                        Artist = string.Join(", ", fullTrack.Artists.Select(o => o.Name)),
-                                        Title = fullTrack.Name,
-                                        Length = MsToMmSsConverter((int)fullTrack.DurationMs),
-                                        Requester = "Spotify",
-                                        Played = 0,
-                                        Albumcover = null,
-                                        IsLiked = isInLikedPlaylist
-                                    };
+                    QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
 
-                                    tempQueueList.Add(newRequestObject);
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                // Log or handle error during queue processing
-                                Logger.LogStr("CORE: Error processing queue item");
-                                Logger.LogExc(ex);
-                            }
-                        }
-
-                        QueueTracks = new ObservableCollection<RequestObject>(tempQueueList);
-
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
                         // Check if the queue window is open and update it accordingly
                         foreach (Window window in Application.Current.Windows)
                         {
                             if (window.GetType() != typeof(WindowQueue))
                                 continue;
 
-                            if (window is WindowQueue windowQueue)
+                            if (window is not WindowQueue windowQueue) continue;
+                            // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
+                            windowQueue.dgv_Queue.ItemsSource = QueueTracks;
+
+                            // Add the current song to the top of the queue
+                            QueueTracks.Insert(0, new RequestObject
                             {
-                                // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
-                                windowQueue.dgv_Queue.ItemsSource = QueueTracks;
-                                bool isInLikedPlaylist;
-
-                                if (isLikedSongsPlaylist)
-                                {
-                                    if(CurrentSong == null)
-                                        return;
-                                    ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([CurrentSong.SongId]);
-                                    isInLikedPlaylist = x.List.Count > 0 && x.List[0];
-                                }
-                                else
-                                    isInLikedPlaylist = LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
-
-                                // Add the current song to the top of the queue
-                                QueueTracks.Insert(0, new RequestObject
-                                {
-                                    Queueid = 0,
-                                    Uuid = Settings.Settings.Uuid,
-                                    Trackid = CurrentSong.SongId,
-                                    Artist = CurrentSong.Artists,
-                                    Title = CurrentSong.Title,
-                                    Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
-                                    Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
-                                    Played = -1,
-                                    Albumcover = null,
-                                    IsLiked = isInLikedPlaylist
-                                });
-                                windowQueue.UpdateQueueIcons();
-                            }
+                                Queueid = 0,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = response.Video.Id,
+                                Artist = response.Video.Author,
+                                Title = response.Video.Title,
+                                Length = SecondsToMMSS(response.Video.DurationSeconds),
+                                Requester = "YouTube",
+                                Played = -1,
+                                Albumcover = response.Video.Thumbnails.Last().Url,
+                                IsLiked = false
+                            });
+                            windowQueue.UpdateQueueIcons();
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log or handle error during UI update
-                        Logger.LogStr("CORE: Encountered an error while updating the UI");
-                        Logger.LogExc(ex);
-                    }
-                });
+                    }));
+                    break;
             }
-            catch (Exception ex)
-            {
-                // Log or handle error for the entire method failure
-                Logger.LogStr("CORE: Error in QueueUpdate method");
-                Logger.LogExc(ex);
-            }
+        }
 
+        public static string SecondsToMMSS(int totalSeconds)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(totalSeconds);
+            return $"{(int)timeSpan.TotalMinutes:D2}:{timeSpan.Seconds:D2}";
         }
 
 

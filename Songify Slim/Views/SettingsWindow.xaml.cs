@@ -1775,6 +1775,10 @@ namespace Songify_Slim.Views
                 string authCode = await auth.RequestAuthCodeAsync(appId, appName, appVersion);
                 Debug.WriteLine($"Received authorization code: {authCode}");
 
+                TbYTMDesktopAuthcode.Text = $"AUTH CODE: {authCode}";
+                PnlYTMDesktopAuthcode.Visibility = Visibility.Visible;
+                Activate();
+
                 // Step 2: Request the token using the auth code
                 Debug.WriteLine("Requesting token...");
                 string token = await auth.RequestTokenAsync(appId, authCode);

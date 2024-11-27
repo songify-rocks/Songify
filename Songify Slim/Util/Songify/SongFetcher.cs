@@ -986,7 +986,7 @@ namespace Songify_Slim.Util.Songify
 
             //Save Album Cover
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
-            if (Settings.Settings.DownloadCanvas && _canvasResponse.Item1)
+            if (Settings.Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
                 IOManager.DownloadCanvas(_canvasResponse.Item2, CavnasPath);
                 IOManager.DownloadCover(null, CoverPath);
@@ -1038,48 +1038,58 @@ namespace Songify_Slim.Util.Songify
             GlobalObjects.ApiResponse = updatedJson;
         }
 
-        public async Task FetchYTM()
+        public async Task FetchYTM(YTMDResponse response = null)
         {
-            YTMDResponse response = await WebHelper.GetYTMData();
-            if (response == null)
+
+            response ??= await WebHelper.GetYTMData();
+            if (response == null || response == new YTMDResponse())
             {
                 return;
             }
 
             if (GlobalObjects.CurrentSong == null)
                 GlobalObjects.CurrentSong = new TrackInfo();
-            
-            TrackInfo trackInfo = new TrackInfo
+            try
             {
-                Artists = response.Video.Author,
-                Title = response.Video.Title,
-                Albums = new List<Image>()
+
+                TrackInfo trackInfo = new()
                 {
-                    new Image
-                    {
-                        Url = response.Video.Thumbnails.Last().Url,
-                        Width = response.Video.Thumbnails.Last().Width,
-                        Height = response.Video.Thumbnails.Last().Height
-                    }
-                },
-                SongId = response.Video.Id,
-                DurationMs = (int)TimeSpan.FromSeconds(response.Video.DurationSeconds).TotalMilliseconds,
-                IsPlaying = response.Player.TrackState == (TrackState)1,
-                Url = $"https://music.youtube.com/watch?v={response.Video.Id}",
-                DurationPercentage = (int)((response.Player.VideoProgress / response.Video.DurationSeconds) * 100),
-                DurationTotal = response.Video.DurationSeconds,
-                Progress = (int)response.Player.VideoProgress,
-                Playlist = null,
-                FullArtists = null
-            };
+                    Artists = response.Video.Author,
+                    Title = response.Video.Title,
+                    Albums =
+                    [
+                        new Image()
+                        {
+                            Url = response.Video.Thumbnails.Last().Url,
+                            Width = response.Video.Thumbnails.Last().Width,
+                            Height = response.Video.Thumbnails.Last().Height
+                        }
+                    ],
+                    SongId = response.Video.Id,
+                    DurationMs = (int)TimeSpan.FromSeconds(response.Video.DurationSeconds).TotalMilliseconds,
+                    IsPlaying = response.Player.TrackState == (TrackState)1,
+                    Url = $"https://music.youtube.com/watch?v={response.Video.Id}",
+                    DurationPercentage = (int)((response.Player.VideoProgress / response.Video.DurationSeconds) * 100),
+                    DurationTotal = response.Video.DurationSeconds * 1000,
+                    Progress = (int)response.Player.VideoProgress * 1000,
+                    Playlist = null,
+                    FullArtists = null
+                };
+                
 
+                UpdateWebServerResponse(trackInfo);
+                if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
+                    return;
 
-            UpdateWebServerResponse(trackInfo);
-            if (GlobalObjects.CurrentSong.SongId == response.Video.Id)
-                return;
-            GlobalObjects.CurrentSong = trackInfo;
-            await WriteSongInfo(trackInfo);
+                await WriteSongInfo(trackInfo);
+                GlobalObjects.CurrentSong = trackInfo;
+                GlobalObjects.QueueUpdateQueueWindow();
 
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
         }
     }
 }

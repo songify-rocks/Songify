@@ -19,16 +19,13 @@ namespace Songify_Slim.Util.Songify
                 _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YTMDToken);
                 HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}");
 
-                switch (response.StatusCode)
+                return response.StatusCode switch
                 {
-                    case HttpStatusCode.InternalServerError:
-                        return null;
-                    case HttpStatusCode.ServiceUnavailable:
-                        return null;
-                    case HttpStatusCode.OK:
-                        return await response.Content.ReadAsStringAsync();
-                }
-                return null;
+                    HttpStatusCode.InternalServerError => null,
+                    HttpStatusCode.ServiceUnavailable => null,
+                    HttpStatusCode.OK => await response.Content.ReadAsStringAsync(),
+                    _ => null
+                };
             }
             catch (Exception e)
             {
@@ -37,35 +34,21 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        public async Task<string> Post(string endpoint, string payload)
+        public async Task<string> Post(string payload)
         {
             try
             {
-                UriBuilder builder = new($"{baseUrl}/{endpoint}")
-                {
-                    Query = $"api_key={Settings.Settings.AccessKey}"
-                };
+                _httpClient.DefaultRequestHeaders.Remove("Authorization");
+                _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YTMDToken);
                 StringContent content = new(payload, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
-                switch (response.StatusCode)
+                HttpResponseMessage response = await _httpClient.PostAsync($"{baseUrl}/command", content);
+                return response.StatusCode switch
                 {
-                    case HttpStatusCode.InternalServerError:
-                        return null;
-                    case HttpStatusCode.ServiceUnavailable:
-                        return null;
-                    case HttpStatusCode.OK:
-                        switch (endpoint)
-                        {
-                            case "song":
-                                Logger.LogStr("API: Upload Song: success");
-                                break;
-                            case "telemetry":
-                                Logger.LogStr("API: Telemetry: success");
-                                break;
-                        }
-                        return await response.Content.ReadAsStringAsync();
-                }
-                return null;
+                    HttpStatusCode.InternalServerError => null,
+                    HttpStatusCode.ServiceUnavailable => null,
+                    HttpStatusCode.OK => await response.Content.ReadAsStringAsync(),
+                    _ => null
+                };
             }
             catch (Exception e)
             {

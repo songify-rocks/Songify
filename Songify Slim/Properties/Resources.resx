@@ -921,4 +921,16 @@
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
     <value>Use Canvas if available</value>
   </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>Now Playing</value>
+  </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Song Request</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Skipping</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
 </root>
