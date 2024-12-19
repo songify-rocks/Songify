@@ -385,36 +385,47 @@ namespace Songify_Slim.Views
 
         private static async Task<bool> WaitForInternetConnectionAsync()
         {
-            using HttpClient httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromSeconds(5); // Set a timeout for the request
-            int retryCount = 0;
-            const int maxRetries = 12;
-            while (retryCount < maxRetries)
+            using HttpClient httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(5) // Set a timeout for the request
+            };
+
+            // List of reliable URLs to check
+            string[] urlsToCheck =
+            [
+                "https://www.google.com",
+                "https://www.cloudflare.com",
+                "https://www.amazon.com",
+                "https://songify.rocks"
+            ];
+
+            while (true)
             {
                 try
                 {
-                    // Try to reach a reliable website
-                    HttpResponseMessage response = await httpClient.GetAsync("https://www.google.com");
+                    // Create tasks for all URLs
+                    List<Task<HttpResponseMessage>> tasks = urlsToCheck.Select(url => httpClient.GetAsync(url)).ToList();
 
-                    if (response.IsSuccessStatusCode)
+                    // Wait for any task to complete successfully
+                    Task<HttpResponseMessage> completedTask = await Task.WhenAny(tasks);
+
+                    // Check if the response from the completed task was successful
+                    if (completedTask is not null && (await completedTask).IsSuccessStatusCode)
                     {
                         Logger.LogStr("CORE: Internet Connection Established");
-                        // Internet is available
                         return true;
                     }
                 }
                 catch
                 {
-                    // Ignore exceptions and wait before retrying
+                    // Ignore exceptions and continue
                 }
 
                 Logger.LogStr("CORE: No Internet Connection");
-                retryCount++;
+
                 // Wait for a short period before retrying
                 await Task.Delay(5000);
             }
-            Logger.LogStr("CORE: Internet not available after 1-minute timeout");
-            return false;
         }
 
         private void SetupMotdTimer()
@@ -761,6 +772,15 @@ namespace Songify_Slim.Views
                 Logger.LogStr("Check Stream up");
                 Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
                 Logger.LogStr("Check Stream up done");
+                switch (Settings.IsLive)
+                {
+                    case true:
+                        Logger.LogStr("Stream is LIVE");
+                        break;
+                    case false:
+                        Logger.LogStr("Stream is NOT live");
+                        break;
+                }
                 Logger.LogStr("SetFetchTimer");
                 SetFetchTimer();
                 Logger.LogStr("SetFetchTimer done");

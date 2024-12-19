@@ -8,8 +8,6 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:songifySlim="clr-namespace:Songify_Slim"
-    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="Songify"
     Width="588"
     Height="285"

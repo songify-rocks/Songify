@@ -50,6 +50,7 @@ using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Web.UI;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using static Songify_Slim.Util.General.Enums;
+using TwitchLib.Api.Interfaces;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -76,8 +77,15 @@ namespace Songify_Slim.Util.Songify
         public static TwitchClient Client;
         public static ValidateAccessTokenResponse TokenCheck;
         private static string joinedChannelId = "";
+        private static int _consecutiveFailures = 0; // Counter for consecutive failures
+        private const int MaxConsecutiveFailures = 5; // Threshold for setting IsLive to false
 
-        public static void ApiConnect(Enums.TwitchAccount account)
+        private static readonly DispatcherTimer StreamUpTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(5)
+        };
+
+        public static void ApiConnect(TwitchAccount account)
         {
             // generate a radnom int salt
             Random random = new();
@@ -223,6 +231,30 @@ namespace Songify_Slim.Util.Songify
             // This method initialize the flow of getting the token and returns a temporary random state that we will use to check authenticity.
             _currentState = ioa.RequestClientAuthorization();
         }
+
+        private static async void _streamUpTimer_Tick(object sender, EventArgs e)
+        {
+            bool isStreamUp = await CheckStreamIsUp();
+
+            if (isStreamUp)
+            {
+                _consecutiveFailures = 0; // Reset failure counter on success
+
+                if (Settings.Settings.IsLive) return; // Only update if the state has changed
+                Settings.Settings.IsLive = true;
+                Logger.LogStr("Stream is online");
+            }
+            else
+            {
+                _consecutiveFailures++; // Increment failure counter
+
+                if (_consecutiveFailures < MaxConsecutiveFailures || !Settings.Settings.IsLive) return; // Only update if the state has changed
+                Settings.Settings.IsLive = false;
+                Logger.LogStr("Stream is offline");
+            }
+
+        }
+
         public static void MainConnect()
         {
             switch (_mainClient)
@@ -448,6 +480,9 @@ namespace Songify_Slim.Util.Songify
                     Settings.Settings.TwitchChannelId = user.Id;
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
+
+                    StreamUpTimer.Tick += _streamUpTimer_Tick;
+                    StreamUpTimer.Start();
 
                     //TODO: Enable PubSub when it's fixed in TwitchLib
                     if (PubSubEnabled)

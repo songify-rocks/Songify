@@ -1522,7 +1522,8 @@ namespace Songify_Slim.Views
                         CbSpotifyPlaylist.SelectionChanged -= cb_SpotifyPlaylist_SelectionChanged;
                         while (playlists != null)
                         {
-                            foreach (SimplePlaylist playlist in playlists.Items.Where(playlist => playlist.Owner.Id == GlobalObjects.SpotifyProfile.Id))
+                            foreach (SimplePlaylist playlist in playlists.Items
+                                         .Where(playlist => playlist?.Owner?.Id != null && playlist.Owner.Id == GlobalObjects.SpotifyProfile?.Id))
                             {
                                 CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                                 CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
