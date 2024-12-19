@@ -917,4 +917,7 @@
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
     <value>Ужываць Canvas, калі ён даступны</value>
   </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>Зараз грае</value>
+  </data>
 </root>
