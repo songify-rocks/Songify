@@ -133,9 +133,9 @@ namespace Songify_Slim.Views
         private async void BtnClearQueue_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
-                "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.s_Warning,
+                Properties.Resources.mw_clearQueueDisclaimer, MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.msgbx_Yes, NegativeButtonText = Properties.Resources.msgbx_No });
             if (msgResult == MessageDialogResult.Affirmative)
             {
                 //GlobalObjects.ReqList.Clear();

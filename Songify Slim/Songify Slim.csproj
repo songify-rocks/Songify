@@ -180,6 +180,7 @@
       <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\General\CombineStringConverter.cs" />
     <Compile Include="Util\General\Enums.cs" />
     <Compile Include="Util\General\ImageConverter.cs" />
     <Compile Include="Util\General\IOManager.cs" />

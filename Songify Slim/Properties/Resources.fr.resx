@@ -748,4 +748,76 @@
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
     <value>Utilisez Canvas si disponible</value>
   </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>En cours de lecture</value>
+  </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Demande de chanson</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Saut</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Actes</value>
+  </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Comparez les codes entre Songify et le lecteur YouTube Music Desktop. Acceptez la demande d'intégration uniquement si les codes correspondent !</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Ça ne marche pas ?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>Que faire pendant la pause ?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>Le widget ne fonctionne que si l'option « Télécharger les informations sur la chanson » est activée. Vous pouvez trouver cette option sous Paramètres -&gt; Sortie. Voulez-vous l'activer maintenant ?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Connecté</value>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Déconnecté</value>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>ID de la file d'attente</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Voulez-vous vraiment vider la file d’attente ?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Avertissement</value>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Chanson</value>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Chansons bloquées</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>Niveaux d'utilisateur (commande)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>Téléspectateur</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Disciple</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Abonné</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>VIP</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Modérateur</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>Niveaux d'utilisateur (récompense)</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Réponses aux commandes</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Réponses aux demandes de chansons</value>
+  </data>
 </root>

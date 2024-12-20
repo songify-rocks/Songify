@@ -745,4 +745,76 @@
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
     <value>Verwenden Canvas, falls verfügbar</value>
   </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>Jetzt läuft</value>
+  </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Songwunsch</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Überspringen</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Aktionen</value>
+  </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Vergleichen Sie die Codes zwischen Songify und dem YouTube Music Desktop-Player. Akzeptieren Sie die Integrationsanfrage nur, wenn die Codes übereinstimmen!</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Funktioniert nicht?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>Was tun wenn Pausiert?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>Das Widget funktioniert nur, wenn „Songinfo hochladen“ aktiviert ist. Diese Option findest du unter Einstellungen -&gt; Ausgabe. Möchtest du sie jetzt aktivieren?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Verbunden</value>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Getrennt</value>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>Warteschlangen-ID</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Möchten Sie die Warteschlange wirklich löschen?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Lied</value>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Blockierte Lieder</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>Benutzerlevel (Befehl)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>Zuschauer</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Follower</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Abonnent</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>VIP</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Moderator</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>Benutzerlevel (Belohnung)</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Befehlsantworten</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Antworten auf Songanfragen</value>
+  </data>
 </root>

@@ -745,4 +745,76 @@
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
     <value>Используйте Canvas, если он доступен</value>
   </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>Сейчас воспроизводится</value>
+  </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Запрос песни</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Пропуск</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Действия</value>
+  </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Сравните коды Songify и YouTube Music Desktop player. Принимайте запрос на интеграцию только в том случае, если коды совпадают!</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Не работает?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>Что делать на паузе?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>Виджет работает только если включена опция «Загрузить информацию о песне». Эту опцию можно найти в разделе «Настройки» -&gt; «Вывод». Хотите активировать ее сейчас?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Подключен</value>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Отключен</value>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>QueueId</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Вы действительно хотите очистить очередь?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Песня</value>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Заблокированные песни</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>Уровни пользователя (команда)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>Зритель</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Последователь</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Подписчик</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>ВИП</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Модератор</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>Уровни пользователя (Награда)</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Ответы команд</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Ответы на запросы песен</value>
+  </data>
 </root>

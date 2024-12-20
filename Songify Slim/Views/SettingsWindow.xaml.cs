@@ -1784,11 +1784,10 @@ namespace Songify_Slim.Views
                 Debug.WriteLine("Requesting token...");
                 string token = await auth.RequestTokenAsync(appId, authCode);
                 Debug.WriteLine($"Received token: {token}");
-                if (!string.IsNullOrEmpty(token))
-                {
-                    TbYTMDesktopToken.Password = token;
-                    Settings.YTMDToken = token;
-                }
+                if (string.IsNullOrEmpty(token)) return;
+                TbYTMDesktopToken.Password = token;
+                Settings.YTMDToken = token;
+                await ((MainWindow)Application.Current.MainWindow)?.StartYtmdSocketIoClient()!;
             }
             catch (Exception ex)
             {

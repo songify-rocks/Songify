@@ -19,7 +19,7 @@
                 Margin="0,6"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="Command Responses" />
+                Text="{x:Static properties:Resources.UC_BotResponses_CommandResponses}" />
             <TextBlock
                 Margin="0,0,6,0"
                 HorizontalAlignment="Left"
@@ -131,7 +131,7 @@
                 Margin="0,16,0,6"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="Song Request Responses" />
+                Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
 
             <TextBlock
                 Margin="0,0,6,0"

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Windows;
@@ -50,26 +51,38 @@ namespace Songify_Slim
         protected override void OnStartup(StartupEventArgs e)
         {
             const string appName = "Songify";
-            _mutex = new Mutex(true, appName, out bool createdNew);
-            if (!createdNew)
+
+            // Check if restart argument exists
+            bool isRestart = e.Args.Contains("--restart");
+
+            // Mutex logic: bypass if it's a restart
+            if (!isRestart)
             {
-                _mutex = Mutex.OpenExisting(appName);
-                if (_mutex != null)
+                _mutex = new Mutex(true, appName, out bool createdNew);
+                if (!createdNew)
                 {
-                    Window mainWindow = Current.MainWindow;
-                    if (mainWindow != null)
+                    // Mutex exists: app is already running
+                    _mutex = Mutex.OpenExisting(appName);
+                    if (_mutex != null)
                     {
-                        mainWindow.Show();
-                        mainWindow.Activate();
+                        Window mainWindow = Current.MainWindow;
+                        if (mainWindow != null)
+                        {
+                            mainWindow.Show();
+                            mainWindow.Activate();
+                        }
                     }
+                    Current.Shutdown();
+                    return;
                 }
-                //app is already running! Exiting the application
-                Current.Shutdown();
             }
 
+            // Register global unhandled exception handler
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
+
             base.OnStartup(e);
+
         }
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
@@ -98,18 +111,41 @@ namespace Songify_Slim
 
             if (MessageBox.Show("Restart Songify?", "Songify", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
-            Process.Start(ResourceAssembly.Location);
-            Current.Shutdown();
+            // Pass an argument to indicate this is a restart
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = System.Reflection.Assembly.GetExecutingAssembly().Location,
+                Arguments = "--restart", // Custom argument
+                UseShellExecute = false
+            };
+
+            // Start the new process
+            Process.Start(startInfo);
+
+            // Shutdown the current instance
+            Application.Current.Shutdown();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            // Check for the --restart flag
+            bool isRestart = e.Args.Contains("--restart");
+
+            // Optionally log or handle restart-specific behavior
+            if (isRestart)
+            {
+                // Perform any specific actions for restarted instance, if needed
+                Console.WriteLine("Restarting Songify...");
+            }
+
+            // Initialize and show the main window
             MainWindow main = new()
             {
                 Icon = IsBeta
                     ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
+
             main.Show();
         }
     }

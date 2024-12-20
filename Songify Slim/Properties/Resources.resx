@@ -933,4 +933,68 @@
   <data name="WinQueue_Actions" xml:space="preserve">
     <value>Actions</value>
   </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Compare the codes between Songify and the YouTube Music Desktop player. Only accept the integration request if the codes match!</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Doesn't work?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>What to do on pause?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>The widget only works if "Upload Song Info" is enabled. You can find this option under Settings -&gt; Output. Do you want to activate it now?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Connected</value>
+    <comment>The word "Connected"</comment>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Disconnected</value>
+    <comment>The word "Disconnected"</comment>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>QueueId</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Do you really want to clear the queue?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Warning</value>
+    <comment>The word "Warning"</comment>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Song</value>
+    <comment>The word "Song"</comment>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Blocked Songs</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>User Levels (Command)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>Viewer</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Follower</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Subscriber</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>VIP</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Moderator</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>User Levels (Reward)</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Command Responses</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Song Request Responses</value>
+  </data>
 </root>

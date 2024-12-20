@@ -46,6 +46,7 @@ using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Net.NetworkInformation;
 using MahApps.Metro.Controls;
 using Songify_Slim.Util.Songify.YTMDesktop;
+using Songify_Slim.Properties;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -233,17 +234,19 @@ namespace Songify_Slim.Views
         private async void BtnWidget_Click(object sender, RoutedEventArgs e)
         {
             if (Settings.Upload)
-                Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+            {
+            }
             else
             {
                 // After user confirmation sends a command to the webserver which clears the queue
                 MessageDialogResult msgResult = await this.ShowMessageAsync("",
-                    "The widget only works if \"Upload Song Info\" is enabled. You can find this option under Settings -> Output.\n\n\nDo you want to activate it now?", MessageDialogStyle.AffirmativeAndNegative,
+                    Properties.Resources.mw_menu_Widget_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
                     new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
                 if (msgResult != MessageDialogResult.Affirmative) return;
                 Settings.Upload = true;
-                Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
             }
+
+            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
         private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -372,6 +375,7 @@ namespace Songify_Slim.Views
                 await HandleSpotifyInitializationAsync();
                 await HandleTwitchInitializationAsync();
                 await FinalSetupAndUpdatesAsync();
+                await StartYtmdSocketIoClient();
             }
             else
             {
@@ -381,6 +385,27 @@ namespace Songify_Slim.Views
             }
 
             SetupMotdTimer();
+        }
+
+        public async Task StartYtmdSocketIoClient()
+        {
+            // Replace with your server URL and token
+            const string serverUrl = "http://127.0.0.1:9863/api/v1/realtime";
+            string token = Settings.YTMDToken;
+
+            // Initialize the Socket.IO client
+            SocketIoClient socketClient = new SocketIoClient(serverUrl, token);
+
+            // Run connection in a separate task
+            try
+            {
+                await socketClient.ConnectAsync();
+                Debug.WriteLine("YTMD: Socket.IO connected.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private static async Task<bool> WaitForInternetConnectionAsync()
@@ -675,28 +700,6 @@ namespace Songify_Slim.Views
 
         private static async Task HandleTwitchInitializationAsync()
         {
-
-            // Replace with your server URL and token
-            string serverUrl = "http://127.0.0.1:9863/api/v1/realtime";
-            string token = Settings.YTMDToken;
-
-            // Initialize the Socket.IO client
-            SocketIoClient socketClient = new SocketIoClient(serverUrl, token);
-
-            // Run connection in a separate task
-            _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await socketClient.ConnectAsync();
-                    Debug.WriteLine("YTMD: Socket.IO connected.");
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                }
-            });
-
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect)
@@ -959,9 +962,9 @@ namespace Songify_Slim.Views
         private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
-                "Do you really want to clear the queue?", MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
+            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.s_Warning,
+                Properties.Resources.mw_clearQueueDisclaimer, MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.msgbx_Yes, NegativeButtonText = Properties.Resources.msgbx_No });
             if (msgResult == MessageDialogResult.Affirmative)
             {
                 //GlobalObjects.ReqList.Clear();

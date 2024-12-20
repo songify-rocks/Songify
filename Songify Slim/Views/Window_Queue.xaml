@@ -122,7 +122,7 @@
                     x:Name="CheckColQueueID"
                     Margin="3"
                     Checked="ColVisChecked"
-                    Content="QueueId"
+                    Content="{x:Static properties:Resources.Window_Queue_QueueId}"
                     Tag="0"
                     Unchecked="ColVisChecked" />
                 <CheckBox
