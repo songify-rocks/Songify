@@ -4,7 +4,9 @@ Your number one companion for all your musical needs while streaming.
 
 ---
 
-![Dotnet](https://img.shields.io/badge/platform-.NET-blue?style=for-the-badge&color=%23159643) 
+[![Dotnet](https://img.shields.io/badge/platform-windows-blue?style=for-the-badge&color=%23159643)]() 
+[![Dotnet](https://img.shields.io/badge/written_in-C%23-blue?style=for-the-badge&color=%23159643)]() 
+
 [![Discord](https://img.shields.io/discord/117032577977679873?style=for-the-badge&logo=discord&logoColor=%23ffffff&color=%23159643)](https://discord.gg/H8nd4T4) 
 [![GitHub Repo stars](https://img.shields.io/github/stars/songify-rocks/Songify?style=for-the-badge&color=%23159643)](https://github.com/songify-rocks/Songify/stargazers) 
 [![GitHub contributors](https://img.shields.io/github/contributors/songify-rocks/Songify?style=for-the-badge&color=%23159643)](https://github.com/songify-rocks/Songify/graphs/contributors) 
