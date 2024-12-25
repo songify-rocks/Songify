@@ -1060,6 +1060,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Track has been added to the queue..
+        /// </summary>
+        public static string s_TrackAdded {
+            get {
+                return ResourceManager.GetString("s_TrackAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload.
         /// </summary>
         public static string s_Upload {

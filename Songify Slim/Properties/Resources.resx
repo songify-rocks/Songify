@@ -997,4 +997,7 @@
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
     <value>Song Request Responses</value>
   </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Track has been added to the queue.</value>
+  </data>
 </root>

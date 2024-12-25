@@ -817,4 +817,7 @@
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
     <value>Ответы на запросы песен</value>
   </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Трек добавлен в очередь.</value>
+  </data>
 </root>
