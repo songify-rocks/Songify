@@ -464,7 +464,7 @@
     <value>Продолжительность песни слишком велика</value>
   </data>
   <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
-    <value>Песня уже в очереди</value>
+    <value>Песня уже находится в очереди</value>
   </data>
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
     <value>Песня не найдена</value>
@@ -668,7 +668,7 @@
     <value>Показать учетные данные</value>
   </data>
   <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
-    <value>Разрешить только песни из этого плейлиста (SR)</value>
+    <value>Разрешить песни только из этого плейлиста (SR)</value>
   </data>
   <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
     <value>Блокировать весь Explicit-контент</value>
@@ -764,7 +764,7 @@
     <value>Не работает?</value>
   </data>
   <data name="sw_tcOutput_pause" xml:space="preserve">
-    <value>Что делать на паузе?</value>
+    <value>Что делать, когда музыка паузе?</value>
   </data>
   <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
     <value>Виджет работает только если включена опция «Загрузить информацию о песне». Эту опцию можно найти в разделе «Настройки» -&gt; «Вывод». Хотите активировать ее сейчас?</value>
@@ -812,7 +812,7 @@
     <value>Уровни пользователя (Награда)</value>
   </data>
   <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
-    <value>Ответы команд</value>
+    <value>Ответы на команды</value>
   </data>
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
     <value>Ответы на запросы песен</value>
