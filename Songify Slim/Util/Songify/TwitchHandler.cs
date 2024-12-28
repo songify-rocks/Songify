@@ -269,6 +269,9 @@ namespace Songify_Slim.Util.Songify
                     try
 
                     {
+                        if (string.IsNullOrEmpty(Settings.Settings.TwChannel))
+                            Settings.Settings.TwChannel = Settings.Settings.TwitchUser.Login;
+
                         // Checks if twitch credentials are present
                         if (Settings.Settings.TwitchUser != null &&
                             (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
@@ -510,6 +513,9 @@ namespace Songify_Slim.Util.Songify
 
             Settings.Settings.TwitchUser = user;
             Settings.Settings.TwitchChannelId = user.Id;
+            if (string.IsNullOrEmpty(Settings.Settings.TwAcc))
+                Settings.Settings.TwAcc = user.Login;
+
             ConfigHandler.WriteAllConfig(Settings.Settings.Export());
 
             StreamUpTimer.Tick += _streamUpTimer_Tick;
