@@ -920,4 +920,80 @@
   <data name="WinQueue_NowPlaying" xml:space="preserve">
     <value>Зараз грае</value>
   </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Запыт песні</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Пропуск</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Дзеянні</value>
+  </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Параўнайце коды паміж Songify і YouTube Music Desktop. Прымайце запыт на інтэграцыю, толькі калі коды супадаюць!</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Не працуе?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>Што рабіць падчас паўзы?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>Віджэт працуе толькі калі ўключана "Запампаваць інфармацыю аб песні". Гэты параметр можна знайсці ў раздзеле Налады -&gt; Вывад. Жадаеце актываваць яго зараз?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Падключаны</value>
+    <comment>The word "Connected"</comment>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Адключаны</value>
+    <comment>The word "Disconnected"</comment>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>ID чаргі</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Вы сапраўды жадаеце ачысціць чаргу?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Папярэджанне</value>
+    <comment>The word "Warning"</comment>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Песня</value>
+    <comment>The word "Song"</comment>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Заблакаваныя песні</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>Узроўні карыстальніка (Каманда)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>Глядач</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Падпісчык</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>VIP</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Мадэратар</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>Узроўні карыстальніка (Узнагарода)</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Паслядоўнік</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Адказы на каманды</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Адказы на Запыты песень</value>
+  </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Песня была дададзены ў чаргу.</value>
+  </data>
 </root>
