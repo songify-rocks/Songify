@@ -70,12 +70,12 @@ namespace Songify_Slim.Util.Songify
         private static string _userId;
         private static TwitchAPI _twitchApiBot;
         private static TwitchClient _mainClient;
-        private static ValidateAccessTokenResponse _botTokenCheck;
+        public static ValidateAccessTokenResponse TokenCheck;
+        public static ValidateAccessTokenResponse BotTokenCheck;
         public const bool PubSubEnabled = false;
         public static bool ForceDisconnect;
         public static TwitchAPI TwitchApi;
         public static TwitchClient Client;
-        public static ValidateAccessTokenResponse TokenCheck;
         private static string _joinedChannelId = "";
         private static int _consecutiveFailures = 0; // Counter for consecutive failures
         private const int MaxConsecutiveFailures = 5; // Threshold for setting IsLive to false
@@ -424,6 +424,7 @@ namespace Songify_Slim.Util.Songify
                     };
                     accessToken = Settings.Settings.TwitchAccessToken;
                     validateToken = TwitchApi.Auth.ValidateAccessTokenAsync;
+                    TokenCheck = await validateToken(accessToken);
                     onTokenExpired = async () => await HandleTokenExpiryAsync(TwitchAccount.Main, "Main");
                     break;
 
@@ -434,6 +435,7 @@ namespace Songify_Slim.Util.Songify
                     };
                     accessToken = Settings.Settings.TwitchBotToken;
                     validateToken = _twitchApiBot.Auth.ValidateAccessTokenAsync;
+                    BotTokenCheck = await validateToken(accessToken);
                     onTokenExpired = async () => await HandleTokenExpiryAsync(TwitchAccount.Bot, "Bot");
                     break;
 
@@ -441,14 +443,19 @@ namespace Songify_Slim.Util.Songify
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
 
-            ValidateAccessTokenResponse tokenCheck = await validateToken(accessToken);
-            if (tokenCheck == null)
+            if (TokenCheck == null && !string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken))
             {
                 onTokenExpired.Invoke();
                 return;
             }
 
-            string userId = tokenCheck.UserId;
+            if (BotTokenCheck == null && !string.IsNullOrEmpty(Settings.Settings.TwitchBotToken))
+            {
+                onTokenExpired.Invoke();
+                return;
+            }
+
+            string userId = TokenCheck.UserId;
             GetUsersResponse usersResponse = await TwitchApi.Helix.Users.GetUsersAsync([userId], null, accessToken);
             User user = usersResponse.Users.FirstOrDefault();
             if (user == null)
@@ -469,7 +476,17 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task HandleTokenExpiryAsync(TwitchAccount account, string accountName)
         {
-            GlobalObjects.TwitchUserTokenExpired = true;
+            switch (account)
+            {
+                case TwitchAccount.Main:
+                    GlobalObjects.TwitchUserTokenExpired = true;
+                    break;
+                case TwitchAccount.Bot:
+                    GlobalObjects.TwitchBotTokenExpired = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(account), account, null);
+            }
 
             await Application.Current.Dispatcher.Invoke(async () =>
             {
@@ -493,6 +510,7 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
             });
+
         }
 
         private static async Task SetupMainAccountAsync(User user)
@@ -1034,7 +1052,7 @@ namespace Songify_Slim.Util.Songify
             Tuple<string, AnnouncementColors> tup = GetStringAndColor(msg);
             try
             {
-                if (_botTokenCheck != null)
+                if (BotTokenCheck != null)
                 {
                     await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchBotUser.Id, $"{tup.Item1}", tup.Item2,
