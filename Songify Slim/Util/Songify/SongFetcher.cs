@@ -37,7 +37,7 @@ namespace Songify_Slim.Util.Songify
         private static readonly string CoverPath = GlobalObjects.RootDirectory + "/cover.png";
         private static readonly string CavnasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
         private static int _id;
-        private readonly List<string> _browsers = ["chrome", "msedge", "opera"];
+        private readonly List<string> _browsers = ["chrome", "opera", "msedge"];
         private static readonly List<string> AudioFileTypes =
         [
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf",
@@ -1075,7 +1075,7 @@ namespace Songify_Slim.Util.Songify
                     Playlist = null,
                     FullArtists = null
                 };
-                
+
 
                 UpdateWebServerResponse(trackInfo);
                 if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
