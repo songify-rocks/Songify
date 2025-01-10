@@ -370,6 +370,33 @@ namespace Songify_Slim.Views
             SetupDisclaimer();
 
             bool internetAvailable = await WaitForInternetConnectionAsync();
+
+            while (!internetAvailable)
+            {
+                // Show a dialog to the user that the app can't run without internet connection and wait for the user to click close or retry
+                MessageDialogResult msgResult = await this.ShowMessageAsync("No Internet Connection",
+                    "It seems that no internet connection could be established.\n\nDo you want to retry or close Songify?", MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings { AffirmativeButtonText = "Retry", NegativeButtonText = "Close" });
+                switch (msgResult)
+                {
+                    case MessageDialogResult.Canceled:
+                        this.Close();
+                        break;
+                    case MessageDialogResult.Negative:
+                        this.Close();
+                        break;
+                    case MessageDialogResult.Affirmative:
+                        internetAvailable = await WaitForInternetConnectionAsync();
+                        break;
+                    case MessageDialogResult.FirstAuxiliary:
+                        break;
+                    case MessageDialogResult.SecondAuxiliary:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
             if (internetAvailable)
             {
                 await HandleSpotifyInitializationAsync();
@@ -410,6 +437,8 @@ namespace Songify_Slim.Views
 
         private static async Task<bool> WaitForInternetConnectionAsync()
         {
+            int tries = 0;
+            int maxRetries = 12;
             using HttpClient httpClient = new HttpClient
             {
                 Timeout = TimeSpan.FromSeconds(5) // Set a timeout for the request
@@ -426,6 +455,8 @@ namespace Songify_Slim.Views
 
             while (true)
             {
+                if (tries >= maxRetries)
+                    return false;
                 try
                 {
                     // Create tasks for all URLs
@@ -447,7 +478,7 @@ namespace Songify_Slim.Views
                 }
 
                 Logger.LogStr("CORE: No Internet Connection");
-
+                tries++;
                 // Wait for a short period before retrying
                 await Task.Delay(5000);
             }
