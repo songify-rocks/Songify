@@ -179,6 +179,9 @@
     <Compile Include="UserControls\UC_PlaylistItem.xaml.cs">
       <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_TwitchReward.xaml.cs">
+      <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
     <Compile Include="Util\General\Enums.cs" />
@@ -349,6 +352,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_PlaylistItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_TwitchReward.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

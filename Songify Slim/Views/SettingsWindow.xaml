@@ -43,187 +43,198 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-                    <Grid Margin="10,12,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Label
-                            Padding="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}" />
-                        <Label
-                            Grid.Row="0"
-                            Margin="0,13,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_translated}"
-                            FontSize="9"
-                            FontStyle="Italic" />
-                        <ComboBox
-                            x:Name="CbxLanguage"
-                            Grid.Row="0"
-                            Width="220"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            DisplayMemberPath="Value"
-                            SelectedValuePath="Key"
-                            SelectionChanged="ComboBox_SelectionChanged" />
-                        <controls:ToggleSwitch
-                            x:Name="ChbxAutostart"
-                            Grid.Row="2"
-                            Width="467"
-                            Padding="0"
-                            VerticalAlignment="Top"
-                            BorderThickness="0"
-                            Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
-                            ContentPadding="0"
-                            Focusable="False"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            Toggled="ChbxAutostartChecked" />
-                        <controls:ToggleSwitch
-                            x:Name="ChbxMinimizeSystray"
-                            Grid.Row="3"
-                            Width="467"
-                            Height="32"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
-                            ContentPadding="0"
-                            Focusable="False"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            Toggled="ChbxMinimizeSystrayChecked" />
-                        <StackPanel Grid.Row="4" Orientation="Vertical">
+                    <ScrollViewer>
+                        <Grid Margin="10,12,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label
+                                Padding="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}" />
+                            <Label
+                                Grid.Row="0"
+                                Margin="0,13,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_tcSystem_translated}"
+                                FontSize="9"
+                                FontStyle="Italic" />
+                            <ComboBox
+                                x:Name="CbxLanguage"
+                                Grid.Row="0"
+                                Width="220"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                DisplayMemberPath="Value"
+                                SelectedValuePath="Key"
+                                SelectionChanged="ComboBox_SelectionChanged" />
+                            <Label
+                                Grid.Row="1"
+                                Padding="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_tcSystem_Behavior}"
+                                FontSize="16" />
+                            <StackPanel Grid.Row="2" Orientation="Vertical">
+                                <controls:ToggleSwitch
+                                    x:Name="ChbxAutostart"
+                                    Grid.Row="2"
+                                    Width="467"
+                                    Padding="0"
+                                    VerticalAlignment="Top"
+                                    BorderThickness="0"
+                                    Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
+                                    ContentPadding="0"
+                                    Focusable="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    Toggled="ChbxAutostartChecked" />
+                                <controls:ToggleSwitch
+                                    x:Name="ChbxMinimizeSystray"
+                                    Grid.Row="3"
+                                    Width="467"
+                                    Height="32"
+                                    VerticalAlignment="Top"
+                                    Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
+                                    ContentPadding="0"
+                                    Focusable="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    Toggled="ChbxMinimizeSystrayChecked" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBetaUpdates"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
+                                    Toggled="TglBetaUpdates_Toggled" />
+                                <controls:ToggleSwitch
+                                    x:Name="ChbxOpenQueueOnStartup"
+                                    Width="467"
+                                    Height="32"
+                                    VerticalAlignment="Top"
+                                    Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
+                                    ContentPadding="0"
+                                    Focusable="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    Toggled="ChbxOpenQueueOnStartup_Toggled" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglDonationReminder"
+                                    Width="467"
+                                    Height="32"
+                                    VerticalAlignment="Top"
+                                    Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
+                                    ContentPadding="0"
+                                    Focusable="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    Toggled="TglDonationReminder_OnToggled" />
+                            </StackPanel>
+                            <Label
+                                Grid.Row="3"
+                                Padding="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" />
+                            <controls:NumericUpDown
+                                x:Name="NudChrome"
+                                Grid.Row="3"
+                                Width="145"
+                                Height="28"
+                                Padding="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Interval="1"
+                                Maximum="10"
+                                Minimum="1"
+                                NumericInputMode="Numbers"
+                                ValueChanged="NudChrome_ValueChanged" />
                             <controls:ToggleSwitch
-                                x:Name="ChbxOpenQueueOnStartup"
+                                x:Name="TglUseDefaultBrowser"
+                                Grid.Row="4"
                                 Width="467"
                                 Height="32"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
+                                Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
                                 ContentPadding="0"
                                 Focusable="False"
                                 FontFamily="Segoe UI"
                                 FontSize="12"
-                                Toggled="ChbxOpenQueueOnStartup_Toggled" />
-                            <controls:ToggleSwitch
-                                x:Name="TglDonationReminder"
-                                Width="467"
-                                Height="32"
+                                Toggled="TglUseDefaultBrowser_OnToggled" />
+                            <Label
+                                Grid.Row="5"
+                                Padding="0,5,5,5"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
+                                Content="{x:Static local:Resources.Sw_System_PrivacyHeader}"
+                                FontSize="16" />
+                            <controls:ToggleSwitch
+                                x:Name="ToggleSwitchPrivacy"
+                                Grid.Row="6"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
                                 ContentPadding="0"
-                                Focusable="False"
                                 FontFamily="Segoe UI"
                                 FontSize="12"
-                                Toggled="TglDonationReminder_OnToggled" />
-                        </StackPanel>
+                                OffContent="{x:Static local:Resources.Sw_System_Privacy}"
+                                OnContent="{x:Static local:Resources.Sw_System_Privacy}"
+                                Toggled="ToggleSwitchPrivacy_Toggled" />
+                            <Label
+                                Grid.Row="7"
+                                Padding="0,5,5,5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_tc_Appearance}"
+                                FontSize="16" />
+                            <Label
+                                x:Name="LabelColor"
+                                Grid.Row="8"
+                                Width="71"
+                                Padding="5"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{x:Static local:Resources.sw_Appearance_Color}"
+                                Visibility="Collapsed" />
+                            <ComboBox
+                                x:Name="ComboBoxColor"
+                                Grid.Row="8"
+                                Width="234"
+                                Height="23"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                SelectionChanged="ComboBoxColorSelectionChanged" />
+                            <controls:ToggleSwitch
+                                x:Name="ThemeToggleSwitch"
+                                Grid.Row="8"
+                                Width="145"
+                                Height="32"
+                                Padding="5,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                ContentPadding="0"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                OffContent="{x:Static local:Resources.sw_Appearance_ThemeLight}"
+                                OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}"
+                                Toggled="ThemeToggleSwitchIsCheckedChanged" />
 
-                        <Label
-                            Grid.Row="5"
-                            Padding="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" />
-                        <controls:NumericUpDown
-                            x:Name="NudChrome"
-                            Grid.Row="5"
-                            Width="145"
-                            Height="28"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Interval="1"
-                            Maximum="10"
-                            Minimum="1"
-                            NumericInputMode="Numbers"
-                            ValueChanged="NudChrome_ValueChanged" />
-                        <controls:ToggleSwitch
-                            x:Name="TglUseDefaultBrowser"
-                            Grid.Row="6"
-                            Width="467"
-                            Height="32"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
-                            ContentPadding="0"
-                            Focusable="False"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            Toggled="TglUseDefaultBrowser_OnToggled" />
-                        <Label
-                            Grid.Row="7"
-                            Padding="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.Sw_System_PrivacyHeader}"
-                            FontSize="16" />
-                        <controls:ToggleSwitch
-                            x:Name="ToggleSwitchPrivacy"
-                            Grid.Row="8"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            ContentPadding="0"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            OffContent="{x:Static local:Resources.Sw_System_Privacy}"
-                            OnContent="{x:Static local:Resources.Sw_System_Privacy}"
-                            Toggled="ToggleSwitchPrivacy_Toggled" />
-                        <Label
-                            x:Name="LabelColor"
-                            Grid.Row="10"
-                            Width="71"
-                            Padding="5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_Appearance_Color}" />
-                        <ComboBox
-                            x:Name="ComboBoxColor"
-                            Grid.Row="11"
-                            Width="234"
-                            Height="23"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            SelectionChanged="ComboBoxColorSelectionChanged" />
-                        <controls:ToggleSwitch
-                            x:Name="ThemeToggleSwitch"
-                            Grid.Row="11"
-                            Width="145"
-                            Height="32"
-                            Padding="5,0,0,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            ContentPadding="0"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            OffContent="{x:Static local:Resources.sw_Appearance_ThemeLight}"
-                            OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}"
-                            Toggled="ThemeToggleSwitchIsCheckedChanged" />
-                        <Label
-                            Grid.Row="9"
-                            Padding="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tc_Appearance}"
-                            FontSize="16" />
-                        <Label
-                            Grid.Row="1"
-                            Padding="0,5,5,5"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcSystem_Behavior}"
-                            FontSize="16" />
-                    </Grid>
+                        </Grid>
+                    </ScrollViewer>
                 </Border>
             </TabItem>
             <TabItem Header="{x:Static local:Resources.sw_tc_Output}">
@@ -1011,45 +1022,21 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox
-                                    x:Name="TxtbxRewardId"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Width="264"
-                                    Height="23"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    controls:TextBoxHelper.Watermark="Reward ID"
-                                    IsReadOnly="True"
-                                    Text=""
-                                    TextChanged="txtbx_RewardID_TextChanged"
-                                    Visibility="Collapsed" />
-                                <CheckBox
-                                    x:Name="ChbxMessageLogging"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="0,4,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="Chbx_MessageLogging_Checked"
-                                    Content="{x:Static local:Resources.sw_SpotifySR_MessageLogging}"
-                                    Unchecked="Chbx_MessageLogging_Checked"
-                                    Visibility="Hidden" />
+
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="0"
@@ -1059,7 +1046,10 @@
                                 <StackPanel
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Orientation="Vertical">
+                                    Width="300"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Vertical"
+                                    Visibility="Collapsed">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -1109,7 +1099,6 @@
                                     <Label Margin="0,8,0,0" Content="{x:Static local:Resources.sw_rewards_enabledRewards}" />
                                     <ListBox x:Name="LbRewards" SelectionMode="Single" />
                                 </StackPanel>
-
                                 <StackPanel
                                     Grid.Row="0"
                                     Grid.Column="1"
@@ -1164,6 +1153,18 @@
                                     Tag="skip"
                                     Visibility="Collapsed" />
 
+                                <ListBox
+                                    x:Name="ListboxRewards"
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    PreviewMouseWheel="MyListBox_OnPreviewMouseWheel"
+                                    ScrollViewer.CanContentScroll="True"
+                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                    SelectionMode="Single"
+                                    VirtualizingStackPanel.ScrollUnit="Item" />
+
+
                                 <Button
                                     x:Name="BtnCreateNewReward"
                                     Grid.Row="11"
@@ -1173,176 +1174,7 @@
                                     Click="BtnCreateNewReward_Click"
                                     Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}"
                                     IsEnabled="False" />
-                                <TextBlock
-                                    Grid.Row="4"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Margin="0,6,0,6"
-                                    Text="{x:Static local:Resources.Sw_Integration_RefundOn}"
-                                    Visibility="Collapsed" />
-                                <Grid
-                                    x:Name="GridNonManageable"
-                                    Grid.Row="5"
-                                    Grid.RowSpan="5"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Panel.ZIndex="1"
-                                    Background="{DynamicResource MahApps.Brushes.Window.Background}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        x:Name="TextRefundDisclaimer"
-                                        Grid.Row="0"
-                                        Width="329"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.sw_Integration_RefundDisclaimer}"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        Visibility="Collapsed" />
-                                    <TextBlock
-                                        x:Name="Smiley"
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="27"
-                                        FontWeight="Bold"
-                                        RenderTransformOrigin="0.5,0.5"
-                                        Text=":)"
-                                        Visibility="Collapsed">
-                                        <TextBlock.RenderTransform>
-                                            <TransformGroup>
-                                                <ScaleTransform />
-                                                <SkewTransform />
-                                                <RotateTransform Angle="90" />
-                                                <TranslateTransform />
-                                            </TransformGroup>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
-                                </Grid>
-                                <CheckBox
-                                    x:Name="ChkRefundUserLevel"
-                                    Grid.Row="5"
-                                    Grid.Column="0"
-                                    Margin="5,0,0,4"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="0"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundUserBlocked"
-                                    Grid.Row="5"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,4"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="1"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundUSerBlocked}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundSpotifyNotConnected"
-                                    Grid.Row="6"
-                                    Grid.Column="0"
-                                    Margin="5,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="2"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSpotifyNotConnected}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundSongUnavailable"
-                                    Grid.Row="6"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="3"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongNotAvailable}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundArtistBlocked"
-                                    Grid.Row="7"
-                                    Grid.Column="0"
-                                    Margin="5,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="4"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundArtistBlocked}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundSongLength"
-                                    Grid.Row="7"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="5"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongTooLong}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundSongInQueue"
-                                    Grid.Row="8"
-                                    Grid.Column="0"
-                                    Margin="5,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="6"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAlreadyInQueue}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundNothingFound"
-                                    Grid.Row="8"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="7"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundNoSongFound}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundSongAdded"
-                                    Grid.Row="9"
-                                    Grid.Column="0"
-                                    Margin="5,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    Tag="8"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAdded}" TextWrapping="Wrap" />
-                                </CheckBox>
-                                <CheckBox
-                                    x:Name="ChkRefundEverything"
-                                    Grid.Row="9"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,4"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Checked="CheckRefundChecked"
-                                    FontWeight="Bold"
-                                    Tag="-1"
-                                    Unchecked="CheckRefundUnchecked">
-                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap" />
-                                </CheckBox>
+
                             </Grid>
                         </TabItem>
                         <TabItem
@@ -2798,14 +2630,6 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <controls:ToggleSwitch
-                            x:Name="TglBetaUpdates"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
-                            Toggled="TglBetaUpdates_Toggled" />
                         <Button
                             x:Name="BtnExportConfig"
                             Grid.Row="0"
