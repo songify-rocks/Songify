@@ -1040,8 +1040,7 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchYTM(YTMDResponse response = null)
         {
-
-            response ??= await WebHelper.GetYTMData();
+            response ??= await WebHelper.GetYtmData();
             if (response == null || response == new YTMDResponse())
             {
                 return;
@@ -1049,6 +1048,7 @@ namespace Songify_Slim.Util.Songify
 
             if (GlobalObjects.CurrentSong == null)
                 GlobalObjects.CurrentSong = new TrackInfo();
+
             try
             {
 

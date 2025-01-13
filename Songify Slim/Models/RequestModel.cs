@@ -23,6 +23,14 @@ public class RequestObject
     [JsonProperty("albumcover")]
     public string Albumcover { get; set; }
 
+    public RequestPlayerType PlayerType { get; set; }
+
     public bool IsLiked { get; set; } = false;
 
+}
+
+public enum RequestPlayerType
+{
+    Spotify,
+    Youtube
 }

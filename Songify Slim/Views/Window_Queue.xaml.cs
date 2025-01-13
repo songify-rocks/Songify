@@ -298,7 +298,7 @@ namespace Songify_Slim.Views
                     _lastBackButtonClickTime = currentTime;
                     break;
                 case 6:
-                    await WebHelper.YTMDPrevious();
+                    await WebHelper.YtmdPrevious();
                     break;
             }
         }
@@ -311,7 +311,7 @@ namespace Songify_Slim.Views
                     await SpotifyApiHandler.SkipSong();
                     break;
                 case 6:
-                    await WebHelper.YTMDNext();
+                    await WebHelper.YtmdNext();
                     break;
             }
             await SpotifyApiHandler.SkipSong();
@@ -335,7 +335,7 @@ namespace Songify_Slim.Views
                         break;
                     }
                 case 6:
-                    await WebHelper.YTMDPlayPause();
+                    await WebHelper.YtmdPlayPause();
                     break;
             }
         }

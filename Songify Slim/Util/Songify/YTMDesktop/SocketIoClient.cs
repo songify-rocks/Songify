@@ -9,6 +9,7 @@ using System.Windows;
 using ControlzEx.Standard;
 using Newtonsoft.Json;
 using SocketIOClient;
+using Songify_Slim.Models;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Views;
 using Unosquare.Swan.Formatters;
@@ -52,17 +53,29 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                 if (Settings.Settings.Player != 6)
                     return;
 
-
-
                 _lastUpdateTime = DateTime.Now; // Update the timestamp
 
                 // Process the response
                 try
                 {
                     string res = response.ToString();
-                    //Debug.WriteLine(res);
                     List<YTMDResponse> yTmdResponseList = JsonConvert.DeserializeObject<List<YTMDResponse>>(res);
                     YTMDResponse yTmdResponse = yTmdResponseList.First();
+
+                    // Calculate percentage
+                    double percentage = (yTmdResponse.Player.VideoProgress / yTmdResponse.Video.DurationSeconds) * 100;
+                    Debug.WriteLine(percentage);
+
+                    if (percentage > 99.0)
+                    {
+                        if (GlobalObjects.ReqList.Any(req => req.PlayerType == RequestPlayerType.Youtube))
+                        {
+                            await WebHelper.YtmdPlayVideo(GlobalObjects.ReqList.First(req => req.PlayerType == RequestPlayerType.Youtube).Trackid);
+                            GlobalObjects.ReqList.RemoveAt(0);
+                        }
+                        await WebHelper.YtmdPlayVideo("09LTT0xwdfw");
+                    }
+
                     // Check if enough time has passed since the last update
                     if (prevResponse.Player != null && yTmdResponse.Player.TrackState == prevResponse.Player.TrackState)
                         if (DateTime.Now - _lastUpdateTime < _throttleInterval)

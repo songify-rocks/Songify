@@ -497,7 +497,7 @@ namespace Songify_Slim.Views
 
         private async void SetPSAs()
         {
-            PSAs = await WebHelper.GetPSA();
+            PSAs = await WebHelper.GetPsa();
             if (PSAs == null || PSAs.Count == 0)
             {
                 PnlMotds.Children.Clear();
