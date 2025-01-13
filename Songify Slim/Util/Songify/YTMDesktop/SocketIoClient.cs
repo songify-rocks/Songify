@@ -19,6 +19,8 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 {
     public class SocketIoClient(string url, string token)
     {
+        private bool trackChanged;
+
         private readonly SocketIOClient.SocketIO _client = new(url, new SocketIOOptions
         {
             Transport = SocketIOClient.Transport.TransportProtocol.WebSocket, // WebSocket only
@@ -26,7 +28,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             ConnectionTimeout = new TimeSpan(0, 0, 0, 5)
         });
 
-        private YTMDResponse prevResponse = new YTMDResponse();
+        private YTMDResponse _prevResponse = new YTMDResponse();
         private DateTime _lastUpdateTime = DateTime.MinValue; // To track the last processed time
         private readonly TimeSpan _throttleInterval = TimeSpan.FromSeconds(0.5); // Throttle interval
 
@@ -41,7 +43,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
         public async Task ConnectAsync()
         {
             // Handle connection success
-            _client.OnConnected += async (sender, e) =>
+            _client.OnConnected += (_, _) =>
             {
                 Debug.WriteLine("Connected to the server.");
                 Logger.LogStr("YTMD: Connected to the server.");
@@ -64,39 +66,56 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 
                     // Calculate percentage
                     double percentage = (yTmdResponse.Player.VideoProgress / yTmdResponse.Video.DurationSeconds) * 100;
-                    Debug.WriteLine(percentage);
+                    Debug.WriteLine($"Progress: {percentage:F2}%");
 
-                    if (percentage > 99.0)
+                    switch (percentage)
                     {
-                        if (GlobalObjects.ReqList.Any(req => req.PlayerType == RequestPlayerType.Youtube))
+                        // Handle track change and queuing logic
+                        case > 99.0 when trackChanged:
+                            return;
+                        case > 99.0:
                         {
-                            await WebHelper.YtmdPlayVideo(GlobalObjects.ReqList.First(req => req.PlayerType == RequestPlayerType.Youtube).Trackid);
-                            GlobalObjects.ReqList.RemoveAt(0);
+                            if (GlobalObjects.ReqList.Any(req => req.PlayerType == RequestPlayerType.Youtube))
+                            {
+                                RequestObject req = GlobalObjects.ReqList.First(req => req.PlayerType == RequestPlayerType.Youtube);
+                                await WebHelper.YtmdPlayVideo(req.Trackid);
+                                GlobalObjects.ReqList.Remove(req);
+                            }
+                            trackChanged = true;
+                            break;
                         }
-                        await WebHelper.YtmdPlayVideo("09LTT0xwdfw");
+                        case > 1.0 and < 5.0 when trackChanged:
+                            // Reset trackChanged within 1-5% of the new track
+                            Debug.WriteLine("Resetting trackChanged flag.");
+                            trackChanged = false;
+                            break;
                     }
 
-                    // Check if enough time has passed since the last update
-                    if (prevResponse.Player != null && yTmdResponse.Player.TrackState == prevResponse.Player.TrackState)
+                    // Throttle updates for UI or further actions
+                    if (_prevResponse.Player != null && yTmdResponse.Player.TrackState == _prevResponse.Player.TrackState)
+                    {
                         if (DateTime.Now - _lastUpdateTime < _throttleInterval)
                             return;
+                    }
+
                     // Update the UI using the dispatcher
-                    prevResponse = yTmdResponse;
+                    _prevResponse = yTmdResponse;
                     await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYTM(yTmdResponse)!);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error processing state-update: {ex.Message}");
+                    Console.WriteLine($@"Error processing state-update: {ex.Message}");
                 }
             });
 
-            _client.OnDisconnected += async (sender, e) =>
+
+            _client.OnDisconnected += (_, _) =>
             {
                 Debug.WriteLine("Disconnected from the server.");
                 Logger.LogStr("YTMD: Disconnected from websocket server");
             };
 
-            _client.OnError += async (sender, e) =>
+            _client.OnError += (_, e) =>
             {
                 Debug.WriteLine("Connection error: " + e);
                 Logger.LogStr($"YTMD: {e}");
@@ -112,26 +131,6 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             {
                 Debug.WriteLine($"Failed to connect: {ex.Message}");
             }
-        }
-
-        /// <summary>
-        /// Disconnects from the Socket.IO server.
-        /// </summary>
-        public async Task DisconnectAsync()
-        {
-            await _client.DisconnectAsync();
-            Debug.WriteLine("Disconnected from the server.");
-        }
-
-        /// <summary>
-        /// Emits an event to the server.
-        /// </summary>
-        /// <param name="eventName">The event name.</param>
-        /// <param name="data">The data to send with the event.</param>
-        public async Task EmitAsync(string eventName, object data)
-        {
-            await _client.EmitAsync(eventName, data);
-            Debug.WriteLine($"Event '{eventName}' emitted with data: {data}");
         }
     }
 }
