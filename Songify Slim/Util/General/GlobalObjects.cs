@@ -377,7 +377,7 @@ namespace Songify_Slim.Util.General
 
                     break;
                 case 6:
-                    YTMDResponse response = await WebHelper.GetYTMData();
+                    YTMDResponse response = await WebHelper.GetYtmData();
                     if (response == null)
                     {
                         return;
