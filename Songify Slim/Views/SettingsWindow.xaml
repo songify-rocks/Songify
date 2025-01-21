@@ -121,6 +121,7 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top"
                                     Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
+                                    FontSize="12"
                                     Toggled="TglBetaUpdates_Toggled" />
                                 <controls:ToggleSwitch
                                     x:Name="ChbxOpenQueueOnStartup"
