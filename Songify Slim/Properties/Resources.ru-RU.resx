@@ -820,4 +820,10 @@
   <data name="s_TrackAdded" xml:space="preserve">
     <value>Трек добавлен в очередь.</value>
   </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Введите идентификатор клиента Spotify и секретный код.</value>
+  </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

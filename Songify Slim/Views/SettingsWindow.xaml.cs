@@ -120,7 +120,7 @@ namespace Songify_Slim.Views
             TbClientId.Text = Settings.ClientId;
             TbClientSecret.Password = Settings.ClientSecret;
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
-            TglswSpotify.IsOn = Settings.UseOwnApp;
+            TglswSpotify.IsOn = true;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             //TxtbxRewardId.Text = Settings.TwRewardId;
             TxtbxTwChannel.Text = Settings.TwChannel;
@@ -444,7 +444,7 @@ namespace Songify_Slim.Views
 
         private void btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start($"{GlobalObjects.BaseUrl}/faq.html#appid");
+            Process.Start("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
         }
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
@@ -465,6 +465,23 @@ namespace Songify_Slim.Views
 
         private async void btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(Settings.ClientId) || string.IsNullOrEmpty(Settings.ClientSecret))
+            {
+                // Shows a message box if the client id or secret is missing
+                MessageDialogResult result = await this.ShowMessageAsync(
+                    "Error",
+                    Properties.Resources.s_FillClientIdAndSecret,
+                    MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
+                    {
+                        AffirmativeButtonText = Properties.Resources.s_OK,
+                        NegativeButtonText = "How to get Client ID and Secret"
+                    });
+                if (result == MessageDialogResult.Negative)
+                    Process.Start("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+
+                return;
+            }
+
             // Links Spotify
             Settings.SpotifyRefreshToken = "";
             try
@@ -510,7 +527,7 @@ namespace Songify_Slim.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Opens twitchapps to generate a TMI oAuth Token
-            Process.Start("https://twitchapps.com/tmi/");
+            Process.Start("https://twitchtokengenerator.com/");
         }
 
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
@@ -852,7 +869,7 @@ namespace Songify_Slim.Views
 
         private void Tglsw_Spotify_IsCheckedChanged(object sender, EventArgs e)
         {
-            Settings.UseOwnApp = TglswSpotify.IsOn;
+            //Settings.UseOwnApp = TglswSpotify.IsOn;
             //if (_appIdInitialValue != Settings.UseOwnApp)
             //{
             //    btn_save.Visibility = Visibility.Visible;
@@ -971,22 +988,22 @@ namespace Songify_Slim.Views
             switch (((ComboBox)sender)?.Tag.ToString())
             {
                 case "sr":
-                {
-                    if (rewardId == null) break;
-                    break;
-                }
+                    {
+                        if (rewardId == null) break;
+                        break;
+                    }
                 case "skip":
-                {
-                    if (rewardId != null)
-                        Settings.TwRewardSkipId = rewardId;
-                    break;
-                }
+                    {
+                        if (rewardId != null)
+                            Settings.TwRewardSkipId = rewardId;
+                        break;
+                    }
                 case "reward":
-                {
-                    if (rewardId != null)
-                        Settings.TwRewardGoalRewardId = rewardId;
-                    break;
-                }
+                    {
+                        if (rewardId != null)
+                            Settings.TwRewardGoalRewardId = rewardId;
+                        break;
+                    }
             }
         }
 
@@ -1543,9 +1560,9 @@ namespace Songify_Slim.Views
                                              playlist.Owner.Id == GlobalObjects.SpotifyProfile?.Id))
                             {
                                 CbSpotifyPlaylist.Items.Add(new ComboBoxItem
-                                    { Content = new UcPlaylistItem(playlist) });
+                                { Content = new UcPlaylistItem(playlist) });
                                 CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
-                                    { Content = new UcPlaylistItem(playlist) });
+                                { Content = new UcPlaylistItem(playlist) });
                                 playlistCache.Add(playlist);
                                 Thread.Sleep(100);
                             }
@@ -1610,7 +1627,7 @@ namespace Songify_Slim.Views
                         {
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                             CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
-                                { Content = new UcPlaylistItem(playlist) });
+                            { Content = new UcPlaylistItem(playlist) });
                         }
 
                         if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
@@ -1816,7 +1833,7 @@ namespace Songify_Slim.Views
         {
             const string baseUrl = "http://localhost:9863/api/v1/";
             YTMDAuthentication auth = new(baseUrl);
-            
+
             try
             {
                 // Step 1: Request the auth code

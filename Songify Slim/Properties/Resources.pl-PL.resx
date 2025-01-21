@@ -816,4 +816,13 @@
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
     <value>Odpowiedzi na prośby o piosenkę</value>
   </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Utwór został dodany do kolejki.</value>
+  </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Proszę wprowadzić identyfikator klienta Spotify i klucz tajny</value>
+  </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

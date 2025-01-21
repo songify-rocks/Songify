@@ -48,25 +48,35 @@ namespace Songify_Slim.Util.Songify
         {
             string url = altUrl ? GlobalObjects.AltAuthUrl : GlobalObjects.AuthUrl;
             Debug.WriteLine(url);
-            if (Settings.Settings.UseOwnApp)
-            {
-                _auth = new TokenSwapAuth(
-                    $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
-                    "&secret=" + Settings.Settings.ClientSecret,
-                    "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
-                );
-            }
-            else
-            {
-                _auth = new TokenSwapAuth(
-                    $"{url}/auth/_index.php",
-                    "http://localhost:4002/auth",
-                    Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-                    Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
-                );
-            }
+
+            _auth = new TokenSwapAuth(
+                $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
+                "&secret=" + Settings.Settings.ClientSecret,
+                "http://localhost:4002/auth",
+                Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
+                Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
+            );
+
+            //if (Settings.Settings.UseOwnApp)
+            //{
+            //    _auth = new TokenSwapAuth(
+            //        $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
+            //        "&secret=" + Settings.Settings.ClientSecret,
+            //        "http://localhost:4002/auth",
+            //        Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
+            //        Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
+            //    );
+
+            //}
+            //else
+            //{
+            //    _auth = new TokenSwapAuth(
+            //        $"{url}/auth/_index.php",
+            //        "http://localhost:4002/auth",
+            //        Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
+            //        Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
+            //    );
+            //}
 
             try
             {
@@ -411,7 +421,7 @@ namespace Songify_Slim.Util.Songify
             }
             return false;
         }
-        
+
         private static int LevenshteinDistance(string source, string target)
         {
             if (string.IsNullOrEmpty(source))
@@ -441,7 +451,7 @@ namespace Songify_Slim.Util.Songify
 
             return distance[sourceLength, targetLength];
         }
-        
+
         public static async Task<ErrorResponse> SkipSong()
         {
             try
@@ -449,7 +459,7 @@ namespace Songify_Slim.Util.Songify
                 return await Spotify.SkipPlaybackToNextAsync();
 
             }
-            catch (Exception )
+            catch (Exception)
             {
                 //ignored
                 return null;
@@ -467,7 +477,7 @@ namespace Songify_Slim.Util.Songify
             {
                 await Spotify.SkipPlaybackToPreviousAsync(Settings.Settings.SpotifyDeviceId);
             }
-            catch (Exception )
+            catch (Exception)
             {
                 //ignored
             }
@@ -479,7 +489,7 @@ namespace Songify_Slim.Util.Songify
             {
                 await Spotify.SeekPlaybackAsync(0, Settings.Settings.SpotifyDeviceId);
             }
-            catch (Exception )
+            catch (Exception)
             {
                 //ignored
             }
@@ -496,7 +506,7 @@ namespace Songify_Slim.Util.Songify
                 else
                     await Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, null, 0);
             }
-            catch (Exception )
+            catch (Exception)
             {
                 //ignored
             }

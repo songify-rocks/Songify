@@ -2377,18 +2377,33 @@
                             ContentPadding="0"
                             FontFamily="Segoe UI"
                             FontSize="12"
+                            IsOn="True"
                             OffContent="{x:Static local:Resources.sw_tcSpotify_UseSongifyApp}"
                             OnContent="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}"
-                            Toggled="Tglsw_Spotify_IsCheckedChanged" />
-                        <TextBox
-                            x:Name="TbClientId"
+                            Toggled="Tglsw_Spotify_IsCheckedChanged"
+                            Visibility="Collapsed" />
+                        <StackPanel
                             Grid.Row="2"
-                            Width="270"
-                            Height="23"
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            TextChanged="tb_ClientID_TextChanged"
-                            TextWrapping="Wrap" />
+                            Orientation="Horizontal">
+                            <TextBox
+                                x:Name="TbClientId"
+                                Width="232"
+                                Height="23"
+                                Margin="0,0,6,0"
+                                VerticalAlignment="Top"
+                                TextChanged="tb_ClientID_TextChanged"
+                                TextWrapping="Wrap" />
+                            <Button
+                                x:Name="BtnOwnAppHelp"
+                                Width="32"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Center"
+                                Click="btn_OwnAppHelp_Click"
+                                Content="?" />
+                        </StackPanel>
                         <PasswordBox
                             x:Name="TbClientSecret"
                             Grid.Row="3"
@@ -2409,15 +2424,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Content="Client Secret" />
-                        <Button
-                            x:Name="BtnOwnAppHelp"
-                            Grid.Row="1"
-                            Width="32"
-                            Margin="0,0,0,6"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Stretch"
-                            Click="btn_OwnAppHelp_Click"
-                            Content="?" />
+
                         <Label
                             Grid.Row="4"
                             Content="{x:Static local:Resources.sw_tcSpotify_SongLikeLabel}"

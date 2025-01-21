@@ -1000,4 +1000,10 @@
   <data name="s_TrackAdded" xml:space="preserve">
     <value>Track has been added to the queue.</value>
   </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Please enter the Spotify client ID and Secret</value>
+  </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>

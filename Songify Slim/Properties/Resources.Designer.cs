@@ -979,6 +979,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter the Spotify client ID and Secret.
+        /// </summary>
+        public static string s_FillClientIdAndSecret {
+            get {
+                return ResourceManager.GetString("s_FillClientIdAndSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Follower.
         /// </summary>
         public static string s_Follower {
@@ -1011,6 +1020,15 @@ namespace Songify_Slim.Properties {
         public static string s_Name {
             get {
                 return ResourceManager.GetString("s_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string s_OK {
+            get {
+                return ResourceManager.GetString("s_OK", resourceCulture);
             }
         }
         

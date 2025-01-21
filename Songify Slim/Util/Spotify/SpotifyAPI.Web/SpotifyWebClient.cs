@@ -105,7 +105,16 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 Logger.LogExc(error);
                 IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/json.txt", response.Item2);
 
-                return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
+                string safeErrorMessage = error.Message
+                    .Replace("{", "{{")
+                    .Replace("}", "}}");
+
+                return new Tuple<ResponseInfo, T>(
+                    response.Item1,
+                    JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, safeErrorMessage), JsonSettings)
+                );
+
+                //return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
             }
         }
 

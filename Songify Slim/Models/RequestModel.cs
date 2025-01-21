@@ -8,6 +8,8 @@ public class RequestObject
     public int Queueid { get; set; }
     [JsonProperty("uuid")]
     public string Uuid { get; set; }
+    [JsonProperty("playerType")]
+    public string PlayerType { get; set; }
     [JsonProperty("trackid")]
     public string Trackid { get; set; }
     [JsonProperty("artist")]

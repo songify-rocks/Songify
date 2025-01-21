@@ -49,6 +49,7 @@ using System.Web.UI.WebControls;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Web.UI;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
+using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using TwitchLib.Api.Interfaces;
 
@@ -478,6 +479,7 @@ namespace Songify_Slim.Util.Songify
 
                     Settings.Settings.TwitchUser = user;
                     Settings.Settings.TwitchChannelId = user.Id;
+                    Settings.Settings.TwChannel = user.Login;
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
 
@@ -1191,6 +1193,18 @@ namespace Songify_Slim.Util.Songify
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
             (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
+
+            //// Get Subscriber status for the user and determine if they are t1 t2 or t3
+            //GetBroadcasterSubscriptionsResponse temp = await TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(Settings.Settings.TwitchUser.Id,
+            //    20, null, Settings.Settings.TwitchAccessToken);
+
+            //if (temp != null)
+            //{
+            //    if (temp.Data.Any(sub => sub.UserId == e.ChatMessage.UserId))
+            //    {
+            //        userLevel = TwitchUserLevels.Subscriber;
+            //    }
+            //}
 
             if (existingUser == null)
             {
@@ -2884,6 +2898,7 @@ namespace Songify_Slim.Util.Songify
                     queueItem = new RequestObject
                     {
                         Trackid = track.Id,
+                        PlayerType = "",
                         Artist = artists,
                         Title = track.Name,
                         Length = length,

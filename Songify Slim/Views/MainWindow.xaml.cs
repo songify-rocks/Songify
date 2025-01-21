@@ -368,6 +368,27 @@ namespace Songify_Slim.Views
             SetupUiAndThemes();
             CheckAndNotifyConfigurationIssues();
             SetupDisclaimer();
+            SetupMotdTimer();
+
+            if (!Settings.UseOwnApp)
+            {
+                GrdDisclaimer.Visibility = Visibility.Collapsed;
+
+                MessageDialogResult result = await this.ShowMessageAsync(
+                    "Warning",
+                    "Songify now needs your own Spotify credentials (Client ID and Secret). Please follow the linked guide to set them up. This will help you avoid Spotify rate limits and ensure faster updates.",
+                    MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
+                    {
+                        AffirmativeButtonText = "Open Guide",
+                        NegativeButtonText = Properties.Resources.s_OK,
+                    }
+                );
+                if (result == MessageDialogResult.Affirmative)
+                    Process.Start(
+                    "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+                Settings.UseOwnApp = true;
+            }
+
 
             bool internetAvailable = await WaitForInternetConnectionAsync();
 
@@ -397,21 +418,11 @@ namespace Songify_Slim.Views
                 }
             }
 
-            if (internetAvailable)
-            {
-                await HandleSpotifyInitializationAsync();
-                await HandleTwitchInitializationAsync();
-                await FinalSetupAndUpdatesAsync();
-                await StartYtmdSocketIoClient();
-            }
-            else
-            {
-                //Show a message to the user that the app can't run without internet connection and close the app after the user clicked ok
-                MessageBox.Show("Songify requires an internet connection to work properly. Please check your connection and restart the app.", "No Internet Connection", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-            }
+            await HandleSpotifyInitializationAsync();
+            await HandleTwitchInitializationAsync();
+            await FinalSetupAndUpdatesAsync();
+            await StartYtmdSocketIoClient();
 
-            SetupMotdTimer();
         }
 
         public async Task StartYtmdSocketIoClient()

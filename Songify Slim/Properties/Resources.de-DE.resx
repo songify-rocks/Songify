@@ -817,4 +817,13 @@
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
     <value>Antworten auf Songanfragen</value>
   </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Der Titel wurde zur Warteschlange hinzugefügt.</value>
+  </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Bitte geben Sie die Spotify-Client-ID und das Secret ein</value>
+  </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
 </root>
