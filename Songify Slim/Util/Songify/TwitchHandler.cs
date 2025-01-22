@@ -47,6 +47,7 @@ using Timer = System.Timers.Timer;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
+using System.ComponentModel;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -57,7 +58,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _onCooldown;
         private static bool _skipCooldown;
         private static readonly List<string> SkipVotes = [];
-        private static readonly List<TwitchUser> Users = [];
+        private static Subscription[] subscriptions = [];
         private static readonly Stopwatch CooldownStopwatch = new();
         private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds };
         private static readonly Timer SkipCooldownTimer = new() { Interval = TimeSpan.FromSeconds(5).TotalMilliseconds };
@@ -589,7 +590,7 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(e.ChatMessage.Channel, "No song found.");
                 return;
             }
-            
+
             if (trackId == "shortened")
             {
                 SendChatMessage(Settings.Settings.TwChannel,
@@ -660,7 +661,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
-   
+
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
 
@@ -1023,7 +1024,7 @@ namespace Songify_Slim.Util.Songify
             if (o.IsVip) userLevels.Add(TwitchUserLevels.Vip);
             if (o.IsSubscriber) userLevels.Add(TwitchUserLevels.Subscriber);
 
-            TwitchUser user = Users.FirstOrDefault(user => user.UserId == o.UserId);
+            TwitchUser user = GlobalObjects.TwitchUsers.FirstOrDefault(user => user.UserId == o.UserId);
             if (user?.IsFollowing == true)
             {
                 userLevels.Add(TwitchUserLevels.Follower);
@@ -1093,21 +1094,37 @@ namespace Songify_Slim.Util.Songify
         }
         private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+
             // Attempt to find the user in the existing list.
-            TwitchUser existingUser = Users.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
+            TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
             (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e.ChatMessage, 1);
 
-            //// Get Subscriber status for the user and determine if they are t1 t2 or t3
-            //GetBroadcasterSubscriptionsResponse temp = await TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(Settings.Settings.TwitchUser.Id,
-            //    20, null, Settings.Settings.TwitchAccessToken);
+            // Get Subscriber status for the user and determine if they are t1 t2 or t3
+            GetBroadcasterSubscriptionsResponse temp = await TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(Settings.Settings.TwitchUser.Id,
+                100, null, Settings.Settings.TwitchAccessToken);
 
-            //if (temp != null)
-            //{
-            //    if (temp.Data.Any(sub => sub.UserId == e.ChatMessage.UserId))
-            //    {
-            //        userLevel = TwitchUserLevels.Subscriber;
-            //    }
-            //}
+            if (temp != null)
+            {
+                if (temp.Data.Length > 0)
+                {
+                    subscriptions = temp.Data;
+                }
+            }
+
+            int subtier = 0;
+            // Await the following status check for the user
+            if (subscriptions.Any(s => s.UserId == e.ChatMessage.UserId))
+            {
+                int.TryParse(subscriptions.First(s => s.UserId == e.ChatMessage.UserId).Tier,
+                    out int subscriptionTier);
+                subtier = subscriptionTier switch
+                {
+                    1000 => 1,
+                    2000 => 2,
+                    3000 => 3,
+                    _ => subtier
+                };
+            }
 
             if (existingUser == null)
             {
@@ -1116,7 +1133,7 @@ namespace Songify_Slim.Util.Songify
                 if (isUserFollowing.Item1 == null)
                     Logger.LogStr("TWITCH: Can't fetch follower status without the required scope. Please re-authorize using with Twitch (log out and back in)");
 
-                // Await the following status check for the user
+
 
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
@@ -1127,9 +1144,14 @@ namespace Songify_Slim.Util.Songify
                     DisplayName = e.ChatMessage.DisplayName,
                     UserLevel = (int)userLevel,  // Convert enum to int for storage
                     IsFollowing = isUserFollowing.Item1,
-                    FollowInformation = isUserFollowing.Item2
+                    FollowInformation = isUserFollowing.Item2,
+                    SubTier = subtier,
+                    IsSrBlocked = IsUserBlocked(e.ChatMessage.DisplayName)
                 };
-                Users.Add(newUser);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    GlobalObjects.TwitchUsers.Add(newUser);
+                });
                 existingUser = newUser;
             }
             else
@@ -1139,8 +1161,10 @@ namespace Songify_Slim.Util.Songify
                 Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(e.ChatMessage.UserId);
                 if (isFollowing != isUserFollowing.Item1)
                     newFollowingState = isUserFollowing.Item1 ?? false;
-                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel, newFollowingState);
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel, newFollowingState, subtier, IsUserBlocked(e.ChatMessage.DisplayName));
             }
+
+
 
             if (Settings.Settings.TwRewardId.Count > 0 &&
                 Settings.Settings.TwRewardId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled &&
@@ -2475,7 +2499,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.TwRewardId.Any(o => o == reward.Id))
             {
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
-                int userlevel = Users.Find(o => o.UserId == redeemedUser.Id).UserLevel;
+                int userlevel = GlobalObjects.TwitchUsers.First(o => o.UserId == redeemedUser.Id).UserLevel;
                 Logger.LogStr(
                     $"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(TwitchUserLevels), userlevel)})");
                 string msg;
@@ -2777,7 +2801,7 @@ namespace Songify_Slim.Util.Songify
                     queueItem = new RequestObject
                     {
                         Trackid = track.Id,
-                        PlayerType = "",
+                        PlayerType = RequestPlayerType.Spotify,
                         Artist = artists,
                         Title = track.Name,
                         Length = length,
@@ -2797,23 +2821,171 @@ namespace Songify_Slim.Util.Songify
         }
     }
 
-    public class TwitchUser
+
+    public class TwitchUser : INotifyPropertyChanged
     {
-        public string DisplayName { get; set; }
-        public string UserId { get; set; }
-        public int UserLevel { get; set; }
-        public string UserName { get; set; }
-        public DateTime? LastCommandTime { get; set; } = null;
-
-        public bool? IsFollowing { get; set; } = null;
-        public ChannelFollower FollowInformation { get; set; }
-
-        public void Update(string username, string displayname, int userlevel, bool isFollowing)
+        private string _displayName;
+        private string _userId;
+        private int _userLevel;
+        private int _subTier;
+        private string _userName;
+        private DateTime? _lastCommandTime = null;
+        private bool? _isFollowing = null;
+        private bool _isSrBlocked;
+        private ChannelFollower _followInformation;
+        public bool IsSrAllowed
         {
+            get => !IsSrBlocked;  // Invert the existing property
+            set => IsSrBlocked = !value;
+        }
+        // Public event required by INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Helper method to raise the event
+        protected void OnPropertyChanged(string propertyName)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        // For convenience in C# 5+: 
+        //   protected void OnPropertyChanged([CallerMemberName] string propName = null) =>
+        //       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+
+        public string DisplayName
+        {
+            get => _displayName;
+            set
+            {
+                if (_displayName != value)
+                {
+                    _displayName = value;
+                    OnPropertyChanged(nameof(DisplayName));
+                }
+            }
+        }
+
+        public string UserId
+        {
+            get => _userId;
+            set
+            {
+                if (_userId != value)
+                {
+                    _userId = value;
+                    OnPropertyChanged(nameof(UserId));
+                }
+            }
+        }
+
+        public int UserLevel
+        {
+            get => _userLevel;
+            set
+            {
+                if (_userLevel != value)
+                {
+                    _userLevel = value;
+                    OnPropertyChanged(nameof(UserLevel));
+                    // Also raise on "ReadableUserLevel" since it depends on UserLevel
+                    OnPropertyChanged(nameof(ReadableUserLevel));
+                }
+            }
+        }
+
+        public int SubTier
+        {
+            get => _subTier;
+            set
+            {
+                if (_subTier != value)
+                {
+                    _subTier = value;
+                    OnPropertyChanged(nameof(SubTier));
+                }
+            }
+        }
+
+        public string UserName
+        {
+            get => _userName;
+            set
+            {
+                if (_userName != value)
+                {
+                    _userName = value;
+                    OnPropertyChanged(nameof(UserName));
+                }
+            }
+        }
+
+        public DateTime? LastCommandTime
+        {
+            get => _lastCommandTime;
+            set
+            {
+                if (_lastCommandTime != value)
+                {
+                    _lastCommandTime = value;
+                    OnPropertyChanged(nameof(LastCommandTime));
+                }
+            }
+        }
+
+        public bool? IsFollowing
+        {
+            get => _isFollowing;
+            set
+            {
+                if (_isFollowing != value)
+                {
+                    _isFollowing = value;
+                    OnPropertyChanged(nameof(IsFollowing));
+                }
+            }
+        }
+
+        public ChannelFollower FollowInformation
+        {
+            get => _followInformation;
+            set
+            {
+                if (_followInformation != value)
+                {
+                    _followInformation = value;
+                    OnPropertyChanged(nameof(FollowInformation));
+                }
+            }
+        }
+
+        public bool IsSrBlocked
+        {
+            get => _isSrBlocked;
+            set
+            {
+                if (_isSrBlocked != value)
+                {
+                    _isSrBlocked = value;
+                    OnPropertyChanged(nameof(IsSrBlocked));
+                }
+            }
+        }
+
+        public string ReadableUserLevel =>
+            ((TwitchUserLevels)UserLevel).ToString();
+
+        public void Update(
+            string username,
+            string displayname,
+            int userlevel,
+            bool isFollowing,
+            int subTier = 0,
+            bool isSrBlocked = false)
+        {
+            // As you set each property, OnPropertyChanged will be raised:
             UserName = username;
             DisplayName = displayname;
             UserLevel = userlevel;
             IsFollowing = isFollowing;
+            SubTier = subTier;
+            IsSrBlocked = isSrBlocked;
         }
 
         public bool IsCooldownExpired(TimeSpan cooldown)
@@ -2829,6 +3001,7 @@ namespace Songify_Slim.Util.Songify
             LastCommandTime = DateTime.Now;
         }
     }
+
 
     internal class QueueItem
     {

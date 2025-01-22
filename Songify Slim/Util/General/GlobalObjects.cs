@@ -55,11 +55,13 @@ namespace Songify_Slim.Util.General
         private static readonly TaskQueue UpdateQueueWindowTasks = new();
         public static List<PlaylistTrack> LikedPlaylistTracks = [];
         public static Tuple<bool, string> Canvas;
+        public static ObservableCollection<TwitchUser> TwitchUsers = [];
 
 
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
+
 
 
         public static T FindChild<T>(DependencyObject parent, string childName)

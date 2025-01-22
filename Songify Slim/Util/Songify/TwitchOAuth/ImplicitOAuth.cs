@@ -56,9 +56,10 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             "client_id=" + ApplicationDetails.TwitchClientId + "&" +
             "redirect_uri=" + ApplicationDetails.RedirectUri + "&" +
             "state=" + authStateVerify + "&" +
-            "scope=" + string.Join("+", Scopes.GetScopes());
+            "scope=" + string.Join("+", Scopes.GetScopes()) + "&" +
+            "force_verify=true";
             // End
-
+            
             // Start a local webserver that twitch can redirect us back to after authentication.
             InitializeLocalWebServers();
 

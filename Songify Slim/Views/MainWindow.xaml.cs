@@ -174,12 +174,10 @@ namespace Songify_Slim.Views
             MenuItem item = (MenuItem)sender;
             if (item.Tag.ToString().Contains("Window"))
             {
-                if (!IsWindowOpen<HistoryWindow>())
-                {
-                    // Opens the 'History'-Window
-                    HistoryWindow hW = new() { Top = Top, Left = Left };
-                    hW.ShowDialog();
-                }
+                if (IsWindowOpen<HistoryWindow>()) return;
+                // Opens the 'History'-Window
+                HistoryWindow hW = new() { Top = Top, Left = Left };
+                hW.ShowDialog();
             }
             // Opens the Queue in the Browser
             else if (item.Tag.ToString().Contains("Browser"))
@@ -1361,6 +1359,14 @@ namespace Songify_Slim.Views
                 CoverCanvas.Close();     // Close the MediaElement to release resources (optional, see note)
                 CoverCanvas.Source = null; // Set Source to null to release the file lock
             }
+        }
+
+        private void BtnMenuViewUserList_Click(object sender, RoutedEventArgs e)
+        {
+            //Check if a window of type Window_Userlist is open. Focus it if it is, if not open a new one
+            if (IsWindowOpen<Window_Userlist>()) return;
+            Window_Userlist wU = new() { Top = Top, Left = Left };
+            wU.Show();
         }
     }
 }

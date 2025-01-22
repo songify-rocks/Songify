@@ -182,6 +182,9 @@
     <Compile Include="UserControls\UC_TwitchReward.xaml.cs">
       <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_ViewerItem.xaml.cs">
+      <DependentUpon>UC_ViewerItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
     <Compile Include="Util\General\Enums.cs" />
@@ -343,6 +346,9 @@
     <Compile Include="Views\Window_UniversalDialog.xaml.cs">
       <DependentUpon>Window_UniversalDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Window_Userlist.xaml.cs">
+      <DependentUpon>Window_Userlist.xaml</DependentUpon>
+    </Compile>
     <Page Include="UserControls\PsaControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -356,6 +362,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_TwitchReward.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_ViewerItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -424,6 +434,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_UniversalDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_Userlist.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

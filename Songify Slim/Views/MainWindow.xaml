@@ -353,6 +353,7 @@
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
                 <MenuItem Click="BtnMenuViewConsole_Click" Header="{x:Static local:Resources.mw_menu_Console}" />
+                <MenuItem Click ="BtnMenuViewUserList_Click" Header="User list"/>
                 <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
             </MenuItem>
         </Menu>

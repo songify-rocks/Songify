@@ -20,20 +20,22 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             List<string> s = new()
             {
                 "channel:manage:redemptions",
+                "channel:moderate",
                 "channel:read:redemptions",
+                "channel:read:subscriptions",
                 "chat:edit",
                 "chat:read",
-                "moderator:manage:banned_users",
-                "moderator:read:blocked_terms",
-                "moderator:manage:blocked_terms",
-                "moderator:manage:automod",
-                "moderator:read:automod_settings",
-                "moderator:manage:automod_settings",
-                "moderator:read:chat_settings",
-                "moderator:manage:chat_settings",
                 "moderator:manage:announcements",
-                "channel:moderate",
-                "moderator:read:followers"
+                "moderator:manage:automod",
+                "moderator:manage:automod_settings",
+                "moderator:manage:banned_users",
+                "moderator:manage:blocked_terms",
+                "moderator:manage:chat_settings",
+                "moderator:read:automod_settings",
+                "moderator:read:blocked_terms",
+                "moderator:read:chat_settings",
+                "moderator:read:chatters",
+                "moderator:read:followers",
                 //s.Add("user:read:follows");
                 //s.Add("user:read:subscriptions");
                 //s.Add("analytics:read:extensions");
@@ -56,7 +58,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 //s.Add("channel:read:subscriptions");
                 //s.Add("clips:edit");
                 //s.Add("moderation:read");
-                ////s.Add("user:edit");
+                //s.Add("user:edit");
                 //s.Add("user:edit:follows");
                 //s.Add("user:manage:blocked_users");
                 //s.Add("user:read:blocked_users");
