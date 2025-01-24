@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
+using TwitchLib.Api;
+using TwitchLib.Api.Interfaces;
+using TwitchLib.Api.Helix.Models.Subscriptions;
+
+namespace Songify_Slim.Util.Songify
+{
+    internal class TwitchApiHelper
+    {
+        public static async Task<List<Subscription>> GetAllSubscribersAsync()
+        {
+            List<Subscription> allSubscribers = [];
+            string pagination = null;
+
+            do
+            {
+                // Get Subscriber status for the user and determine if they are t1 t2 or t3
+                GetBroadcasterSubscriptionsResponse subscriptionsResponse =
+                    await TwitchHandler.TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(
+                        Settings.Settings.TwitchUser.Id,
+                        100,
+                        pagination,
+                        Settings.Settings.TwitchAccessToken);
+                if (subscriptionsResponse?.Data != null)
+                {
+                    allSubscribers.AddRange(subscriptionsResponse.Data);
+                }
+
+                pagination = subscriptionsResponse?.Pagination?.Cursor;
+            } while (!string.IsNullOrEmpty(pagination));
+
+            return allSubscribers;
+        }
+
+        public static async Task<List<Chatter>> GetAllChattersAsync()
+        {
+            List<Chatter> allChatters = [];
+            string pagination = null;
+
+            do
+            {
+                // Fetch a page of chatters
+                GetChattersResponse chattersResponse = await TwitchHandler.TwitchApi.Helix.Chat.GetChattersAsync(
+                    Settings.Settings.TwitchUser.Id,
+                    Settings.Settings.TwitchUser.Id,
+                    100,
+                    pagination,
+                    Settings.Settings.TwitchAccessToken);
+
+                // Add chatters from the current page to the list
+                if (chattersResponse?.Data != null)
+                {
+                    allChatters.AddRange(chattersResponse.Data);
+                }
+
+                // Update the pagination token for the next page
+                pagination = chattersResponse?.Pagination?.Cursor;
+
+            } while (!string.IsNullOrEmpty(pagination));
+
+            return allChatters;
+        }
+    }
+}

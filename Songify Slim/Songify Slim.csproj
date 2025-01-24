@@ -196,6 +196,7 @@
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
+    <Compile Include="Util\Songify\TwitchApiHelper.cs" />
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />

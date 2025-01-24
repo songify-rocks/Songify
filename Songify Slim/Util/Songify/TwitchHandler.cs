@@ -48,6 +48,7 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -80,6 +81,11 @@ namespace Songify_Slim.Util.Songify
         private static readonly DispatcherTimer StreamUpTimer = new()
         {
             Interval = TimeSpan.FromSeconds(5)
+        };
+
+        private static readonly DispatcherTimer TwitchUserSyncTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(30)
         };
 
         public static void ApiConnect(TwitchAccount account)
@@ -482,6 +488,10 @@ namespace Songify_Slim.Util.Songify
                     StreamUpTimer.Tick += _streamUpTimer_Tick;
                     StreamUpTimer.Start();
 
+                    TwitchUserSyncTimer.Tick += TwitchUserSyncTimer_Tick;
+                    TwitchUserSyncTimer.Start();
+
+
                     //TODO: Enable PubSub when it's fixed in TwitchLib
                     if (PubSubEnabled)
                         CreatePubSubsConnection();
@@ -543,6 +553,90 @@ namespace Songify_Slim.Util.Songify
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
         }
+
+        private static async void TwitchUserSyncTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                await RunTwitchUserSync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(@$"Error in TwitchUserSyncTimer_Tick: {ex.Message}");
+            }
+        }
+
+        private static async Task RunTwitchUserSync()
+        {
+            Debug.WriteLine("Fetching Users");
+            try
+            {
+                // Fetch all chatters and subscribers
+                List<Chatter> chatters = await TwitchApiHelper.GetAllChattersAsync();
+                List<Subscription> subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
+
+                if (chatters == null || subscribers == null)
+                    return;
+
+                // Create a dictionary for fast lookup of subscribers
+                Dictionary<string, Subscription> subscriberDict = subscribers.ToDictionary(sub => sub.UserId);
+
+                foreach (Chatter chatter in chatters)
+                {
+                    int subtier = 0;
+
+                    // Check subscription status
+                    if (subscriberDict.TryGetValue(chatter.UserId, out Subscription sub))
+                    {
+                        int.TryParse(sub.Tier, out int subscriptionTier);
+                        subtier = subscriptionTier switch
+                        {
+                            1000 => 1,
+                            2000 => 2,
+                            3000 => 3,
+                            _ => 0
+                        };
+                    }
+
+                    // Get follow status
+                    (bool? isFollowing, ChannelFollower followInfo) = await GetIsUserFollowing(chatter.UserId);
+
+                    // Check if the user exists in the global list
+                    TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(c => c.UserId == chatter.UserId);
+
+                    if (existingUser != null)
+                    {
+                        existingUser.Update(
+                            chatter.UserLogin,
+                            chatter.UserName,
+                            0,
+                            false,
+                            subtier,
+                            IsUserBlocked(chatter.UserName)
+                        );
+                    }
+                    else
+                    {
+                        GlobalObjects.TwitchUsers.Add(new TwitchUser
+                        {
+                            DisplayName = chatter.UserName,
+                            UserId = chatter.UserId,
+                            SubTier = subtier,
+                            UserName = chatter.UserLogin,
+                            IsFollowing = isFollowing,
+                            FollowInformation = followInfo,
+                            IsSrBlocked = IsUserBlocked(chatter.UserName)
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle exceptions here
+                Console.WriteLine(@$"Error in TwitchUserSyncTimer_Tick: {ex.Message}");
+            }
+        }
+
 
         public static void ResetVotes()
         {
