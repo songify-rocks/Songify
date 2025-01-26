@@ -1017,234 +1017,82 @@
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
                     <TabControl Margin="10,12,0,0">
-                        <TabItem Header="Song Requests">
-                            <Grid x:Name="GrdTwitchReward">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                        <Grid x:Name="GrdTwitchReward">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Margin="0,0,0,6"
-                                    VerticalAlignment="Top"
-                                    Text="{x:Static local:Resources.sw_Spotify_RewardSR}" />
-                                <StackPanel
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Width="300"
-                                    HorizontalAlignment="Right"
-                                    Orientation="Vertical"
-                                    Visibility="Collapsed">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <ComboBox
-                                            x:Name="CbxRewards"
-                                            Grid.Column="0"
-                                            Height="23"
-                                            Margin="3"
-                                            SelectionChanged="CbxRewards_OnSelectionChanged"
-                                            Tag="sr" />
-                                        <Button
-                                            x:Name="BtnAddReward"
-                                            Grid.Column="1"
-                                            Width="23"
-                                            Height="23"
-                                            Margin="3"
-                                            Click="BtnAddReward_Click"
-                                            Content="+" />
-                                        <Button
-                                            x:Name="BtnRemoveReward"
-                                            Grid.Column="2"
-                                            Width="23"
-                                            Height="23"
-                                            Margin="3"
-                                            Click="BtnRemoveReward_Click"
-                                            Content="-"
-                                            Visibility="Collapsed" />
-                                    </Grid>
-                                    <StackPanel
-                                        Margin="0,0,10,0"
-                                        HorizontalAlignment="Right"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,3,0"
-                                            VerticalAlignment="Bottom"
-                                            Text="{x:Static local:Resources.sw_rewards_ClickReminder}" />
-                                        <Grid VerticalAlignment="Center">
-                                            <iconPacks:PackIconMaterial
-                                                Width="12"
-                                                Height="12"
-                                                Kind="ArrowUpRight" />
-                                        </Grid>
-                                    </StackPanel>
-                                    <Label Margin="0,8,0,0" Content="{x:Static local:Resources.sw_rewards_enabledRewards}" />
-                                    <ListBox x:Name="LbRewards" SelectionMode="Single" />
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,6"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    Orientation="Horizontal">
-                                    <Button
-                                        x:Name="BtnUpdateRewards"
-                                        Width="26"
-                                        Height="26"
-                                        Margin="15,0,0,0"
-                                        Click="BtnUpdateRewards_Click">
-                                        <Button.Content>
-                                            <iconPacks:PackIconForkAwesome
-                                                Width="12"
-                                                Height="12"
-                                                Kind="Refresh" />
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-
-
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    Margin="0,0,0,6"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="Disabled due to issues with PubSub"
-                                    Visibility="Collapsed" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="0,0,0,6"
-                                    VerticalAlignment="Center"
-                                    IsEnabled="False"
-                                    Text="{x:Static local:Resources.sw_Spotify_RewardSkip}"
-                                    Visibility="Collapsed" />
-                                <ComboBox
-                                    x:Name="CbxRewardsSkip"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Height="23"
-                                    Margin="0,0,0,6"
-                                    VerticalAlignment="Center"
-                                    Panel.ZIndex="-1"
-                                    IsEnabled="False"
-                                    Opacity="0.1"
-                                    SelectionChanged="CbxRewards_OnSelectionChanged"
-                                    Tag="skip"
-                                    Visibility="Collapsed" />
-
-                                <ListBox
-                                    x:Name="ListboxRewards"
-                                    Grid.Row="3"
-                                    Grid.Column="0"
-                                    Grid.ColumnSpan="2"
-                                    PreviewMouseWheel="MyListBox_OnPreviewMouseWheel"
-                                    ScrollViewer.CanContentScroll="True"
-                                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                    SelectionMode="Single"
-                                    VirtualizingStackPanel.ScrollUnit="Item" />
-
-
-                                <Button
-                                    x:Name="BtnCreateNewReward"
-                                    Grid.Row="11"
-                                    Grid.Column="1"
-                                    Margin="4,0,4,4"
-                                    VerticalAlignment="Bottom"
-                                    Click="BtnCreateNewReward_Click"
-                                    Content="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}"
-                                    IsEnabled="False" />
-
-                            </Grid>
-                        </TabItem>
-                        <TabItem
-                            Header="|"
-                            IsEnabled="False"
-                            IsHitTestVisible="False"
-                            Visibility="Collapsed" />
-                        <TabItem Header="Reward Goal" Visibility="Collapsed">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Content="State" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Content="Song URL" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="2"
-                                    Content="Amount needed" />
-                                <Label
-                                    Grid.Row="0"
-                                    Grid.Column="3"
-                                    Content="Reward" />
-                                <controls:ToggleSwitch
-                                    x:Name="ToggleRewardGoalEnabled"
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    MinWidth="0"
-                                    Margin="0,0,6,0"
-                                    Content="Enabled"
-                                    Toggled="ToggleRewardGoalEnabled_Toggled" />
-                                <TextBox
-                                    x:Name="TextBoxRewardGoalSong"
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="0,0,6,0"
-                                    controls:TextBoxHelper.Watermark="Song Link"
-                                    TextChanged="TextBoxRewardGoalSong_TextChanged" />
-                                <controls:NumericUpDown
-                                    x:Name="NumUpDpwnRewardGoalAmount"
-                                    Grid.Row="1"
-                                    Grid.Column="2"
-                                    Margin="0,0,6,0"
-                                    Minimum="0"
-                                    NumericInputMode="Numbers"
-                                    ParsingNumberStyle="Integer"
-                                    ValueChanged="NumUpDpwnRewardGoalAmount_ValueChanged" />
-                                <ComboBox
-                                    x:Name="ComboboxRewardGoalReward"
-                                    Grid.Row="1"
-                                    Grid.Column="3"
-                                    SelectionChanged="CbxRewards_OnSelectionChanged"
-                                    Tag="reward" />
-                            </Grid>
-                        </TabItem>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,0,6"
+                                VerticalAlignment="Top"
+                                Text="{x:Static local:Resources.sw_Spotify_RewardSR}" />
+                            <Button
+                                x:Name="BtnCreateNewReward"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Width="26"
+                                Height="26"
+                                Margin="0,0,32,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Click="BtnCreateNewReward_Click"
+                                IsEnabled="False"
+                                ToolTip="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}">
+                                <Button.Content>
+                                    <iconPacks:PackIconMaterial
+                                        Width="12"
+                                        Height="12"
+                                        Kind="Plus" />
+                                </Button.Content>
+                            </Button>
+                            <Button
+                                x:Name="BtnUpdateRewards"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Width="26"
+                                Height="26"
+                                Margin="0,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Click="BtnUpdateRewards_Click"
+                                ToolTip="Reload Rewards">
+                                <Button.Content>
+                                    <iconPacks:PackIconForkAwesome
+                                        Width="12"
+                                        Height="12"
+                                        Kind="Refresh" />
+                                </Button.Content>
+                            </Button>
+                            <ListBox
+                                x:Name="ListboxRewards"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="6"
+                                IsEnabled="True"
+                                PreviewMouseWheel="MyListBox_OnPreviewMouseWheel"
+                                ScrollViewer.CanContentScroll="True"
+                                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                SelectionMode="Single"
+                                VirtualizingStackPanel.ScrollUnit="Item" />
+                        </Grid>
                     </TabControl>
                 </Border>
             </TabItem>
@@ -2345,14 +2193,20 @@
                                 Height="60"
                                 BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
                                 BorderThickness="3"
-                                CornerRadius="40">
+                                CornerRadius="30">
                                 <Border.Background>
                                     <ImageBrush
                                         x:Name="ImgSpotifyProfile"
-                                        ImageSource="/songify.ico"
                                         Opacity="1"
                                         Stretch="Fill" />
                                 </Border.Background>
+                                <iconPacks:PackIconBootstrapIcons
+                                    x:Name="ImgSpotifyProfilePlaceholder"
+                                    Width="35"
+                                    Height="35"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="Person" />
                             </Border>
                             <Label
                                 x:Name="LblSpotifyAcc"

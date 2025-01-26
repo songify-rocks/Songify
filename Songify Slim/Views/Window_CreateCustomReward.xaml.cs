@@ -65,14 +65,9 @@ namespace Songify_Slim.Views
             foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(Window_Settings))
                 {
-                    await ((Window_Settings)window).LoadRewards();
-                    //(window as Window_Settings).CbxRewards.SelectedItem = (window as Window_Settings).GetItemFromList((window as Window_Settings).CbxRewards, response.Data[0].Id);
-                    ((Window_Settings)window).LbRewards.Items.Add(new ListBoxItem
-                    {
-                        Content = new UcRewardItem(response.Data[0], true)
-                    });
                     Settings.TwRewardId.Add(response.Data[0].Id);
                     Settings.TwRewardId = Settings.TwRewardId;
+                    await ((Window_Settings)window).LoadRewards();
                 }
         }
     }

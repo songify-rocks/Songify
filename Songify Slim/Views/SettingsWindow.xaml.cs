@@ -37,6 +37,9 @@ using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using File = System.IO.File;
+using System.Drawing;
+using Brushes = System.Windows.Media.Brushes;
+using Color = System.Windows.Media.Color;
 
 namespace Songify_Slim.Views
 {
@@ -46,7 +49,6 @@ namespace Songify_Slim.Views
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
-        private readonly List<int> _refundConditions = [];
 
         private Dictionary<string, string> _supportedLanguages = new()
         {
@@ -155,11 +157,6 @@ namespace Songify_Slim.Views
             ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
             ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
-            ToggleRewardGoalEnabled.IsOn = Settings.RewardGoalEnabled;
-            TextBoxRewardGoalSong.Text = Settings.RewardGoalSong;
-            NumUpDpwnRewardGoalAmount.ValueChanged -= NumUpDpwnRewardGoalAmount_ValueChanged;
-            NumUpDpwnRewardGoalAmount.Value = Settings.RewardGoalAmount;
-            NumUpDpwnRewardGoalAmount.ValueChanged += NumUpDpwnRewardGoalAmount_ValueChanged;
             Cctrl.Content = new UcBotResponses();
             TglBotcmdPos.IsOn = Settings.BotCmdPos;
             TglBotcmdSong.IsOn = Settings.BotCmdSong;
@@ -226,22 +223,26 @@ namespace Songify_Slim.Views
                 LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
                 try
                 {
-                    BitmapImage bitmap = new();
-                    bitmap.BeginInit();
-
-                    if (profile.Images is { Count: > 0 })
+                    if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
                     {
-                        if (!string.IsNullOrEmpty(profile.Images[0].Url))
-                            bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                        bitmap.EndInit();
+                        ImgSpotifyProfile.ImageSource = bitmap;
+                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
                     }
-
-                    bitmap.EndInit();
-                    ImgSpotifyProfile.ImageSource = bitmap;
+                    else
+                    {
+                        ImgSpotifyProfile.ImageSource = null;
+                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+                    }
                 }
                 catch (Exception ex)
                 {
                     Logger.LogExc(ex);
                 }
+
 
                 await LoadSpotifyPlaylists();
             }
@@ -891,12 +892,6 @@ namespace Songify_Slim.Views
 
         }
 
-        private void txtbx_RewardID_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Saves the RewardID
-            //Settings.TwRewardId = TxtbxRewardId.Text;
-        }
-
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Sets the twitch channel
@@ -976,37 +971,6 @@ namespace Songify_Slim.Views
             Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
         }
 
-        private void CbxRewards_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!IsLoaded)
-                return;
-            UcRewardItem item = ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content as UcRewardItem);
-            if (item == null)
-                return;
-            string rewardId = item.Reward == null ? "" : item.Reward.Id;
-
-            switch (((ComboBox)sender)?.Tag.ToString())
-            {
-                case "sr":
-                    {
-                        if (rewardId == null) break;
-                        break;
-                    }
-                case "skip":
-                    {
-                        if (rewardId != null)
-                            Settings.TwRewardSkipId = rewardId;
-                        break;
-                    }
-                case "reward":
-                    {
-                        if (rewardId != null)
-                            Settings.TwRewardGoalRewardId = rewardId;
-                        break;
-                    }
-            }
-        }
-
         private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
         {
             TabItemTwitch.Focus();
@@ -1026,15 +990,7 @@ namespace Songify_Slim.Views
         {
             if (TwitchHandler.TokenCheck == null)
                 return;
-            CbxRewards.IsEnabled = false;
-            CbxRewardsSkip.IsEnabled = false;
-            CbxRewards.SelectionChanged -= CbxRewards_OnSelectionChanged;
-            CbxRewardsSkip.SelectionChanged -= CbxRewards_OnSelectionChanged;
-            ComboboxRewardGoalReward.SelectionChanged -= CbxRewards_OnSelectionChanged;
-            CbxRewards.Items.Clear();
-            CbxRewardsSkip.Items.Clear();
-            LbRewards.Items.Clear();
-            ComboboxRewardGoalReward.Items.Clear();
+
             if (Settings.TwitchUser.BroadcasterType != "")
                 try
                 {
@@ -1052,41 +1008,14 @@ namespace Songify_Slim.Views
 
                     if (rewards.Count > 0)
                     {
-                        foreach (CustomReward reward in rewards)
+                        foreach (CustomReward reward in rewards.OrderBy(o=>o.Cost))
                         {
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
                             ListboxRewards.Items.Add(new UC_TwitchReward(reward));
-
-
-                            CbxRewards.Items.Add(new ComboBoxItem
-                            {
-                                Content = new UcRewardItem(reward, managable)
-                            });
-
-                            CbxRewardsSkip.Items.Add(new ComboBoxItem
-                            {
-                                Content = new UcRewardItem(reward, managable)
-                            });
-                            ComboboxRewardGoalReward.Items.Add(new ComboBoxItem
-                            {
-                                Content = new UcRewardItem(reward, managable)
-                            });
-
-                            if (Settings.TwRewardId.Any(o => o == reward.Id))
-                            {
-                                LbRewards.Items.Add(new ListBoxItem
-                                {
-                                    Content = new UcRewardItem(reward, managable, true)
-                                });
-                            }
+                            
                         }
-
-                        CbxRewards.SelectedIndex = 0;
                     }
-
-                    CbxRewards.IsEnabled = true;
-                    CbxRewardsSkip.IsEnabled = TwitchHandler.PubSubEnabled;
                     BtnCreateNewReward.IsEnabled = true;
                 }
                 catch (Exception e)
@@ -1094,52 +1023,6 @@ namespace Songify_Slim.Views
                     Logger.LogExc(e);
                 }
 
-            CbxRewards.SelectionChanged += CbxRewards_OnSelectionChanged;
-            CbxRewardsSkip.SelectionChanged += CbxRewards_OnSelectionChanged;
-            ComboboxRewardGoalReward.SelectionChanged += CbxRewards_OnSelectionChanged;
-        }
-
-        public object GetItemFromList(ItemsControl comboBox, string s)
-        {
-            return comboBox.Items.Cast<ComboBoxItem>().FirstOrDefault(item =>
-                ((UcRewardItem)item.Content).Reward != null && ((UcRewardItem)item.Content).Reward.Id == s);
-        }
-
-        private void CheckRefundChecked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            _refundConditions.Add(int.Parse(((CheckBox)sender).Tag.ToString()));
-            if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
-            {
-                foreach (UIElement child in GrdTwitchReward.Children)
-                {
-                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund"))
-                    {
-                        box.IsChecked = true;
-                    }
-                }
-            }
-
-            //Debug.WriteLine(string.Join(", ", refundConditons));
-            Settings.RefundConditons = _refundConditions.ToArray();
-
-        }
-
-        private void CheckRefundUnchecked(object sender, RoutedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            _refundConditions.Remove(int.Parse(((CheckBox)sender).Tag.ToString()));
-            if (int.Parse(((CheckBox)sender).Tag.ToString()) == -1)
-                foreach (UIElement child in GrdTwitchReward.Children)
-                {
-                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund"))
-                    {
-                        box.IsChecked = false;
-                    }
-                }
-
-            //Debug.WriteLine(string.Join(", ", refundConditons));
-            Settings.RefundConditons = _refundConditions.ToArray();
         }
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
@@ -1282,22 +1165,6 @@ namespace Songify_Slim.Views
         private void ComboboxfetchPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Settings.TwitchFetchPort = (int)ComboboxfetchPort.SelectedItem;
-        }
-
-        private void ToggleRewardGoalEnabled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.RewardGoalEnabled = ToggleRewardGoalEnabled.IsOn;
-        }
-
-        private void TextBoxRewardGoalSong_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.RewardGoalSong = TextBoxRewardGoalSong.Text;
-        }
-
-        private void NumUpDpwnRewardGoalAmount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            if (NumUpDpwnRewardGoalAmount.Value != null)
-                Settings.RewardGoalAmount = (int)NumUpDpwnRewardGoalAmount.Value;
         }
 
         private void tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
@@ -1589,7 +1456,6 @@ namespace Songify_Slim.Views
                     catch (Exception ex)
                     {
                         Logger.LogExc(ex);
-                        return;
                     }
                 }
                 else
@@ -1665,37 +1531,6 @@ namespace Songify_Slim.Views
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
                 return;
             Settings.SpotifySongLimitPlaylist = item.Playlist.Id;
-        }
-
-        private void BtnAddReward_Click(object sender, RoutedEventArgs e)
-        {
-            if (CbxRewards.SelectedItem == null)
-                return;
-
-            if (LbRewards.Items.Cast<ListBoxItem>().Any(lbRewardsItem =>
-                    ((UcRewardItem)(lbRewardsItem.Content)).Reward.Id ==
-                    ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward.Id))
-            {
-                return;
-            }
-
-            LbRewards.Items.Add(new ListBoxItem
-            {
-                Content = new UcRewardItem(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward,
-                    ((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).IsManagable, true)
-            });
-            Settings.TwRewardId.Add(((UcRewardItem)((ComboBoxItem)CbxRewards.SelectedItem).Content).Reward.Id);
-            Settings.TwRewardId = Settings.TwRewardId;
-
-        }
-
-        private void BtnRemoveReward_Click(object sender, RoutedEventArgs e)
-        {
-            if (LbRewards.SelectedItem == null)
-                return;
-            Settings.TwRewardId.Remove(((UcRewardItem)((ListBoxItem)LbRewards.SelectedItem).Content).Reward.Id);
-            Settings.TwRewardId = Settings.TwRewardId;
-            LbRewards.Items.Remove(LbRewards.SelectedItem);
         }
 
         private void Chbx_BlockAllExplicit_Checked(object sender, RoutedEventArgs e)
@@ -1782,17 +1617,6 @@ namespace Songify_Slim.Views
         private void ChbxSpacesSplitFiles_Checked(object sender, RoutedEventArgs e)
         {
             Settings.AppendSpacesSplitFiles = (bool)((CheckBox)sender).IsChecked;
-        }
-
-        public void RemoveRewardFromList(string rewardId)
-        {
-            // Remove item from LbRewards.Items where the item.id = rewardId
-            foreach (ListBoxItem item in LbRewards.Items)
-            {
-                if (((UcRewardItem)item.Content).Reward.Id != rewardId) continue;
-                LbRewards.Items.Remove(item);
-                break;
-            }
         }
 
         private void TglBotQueue_OnToggled(object sender, RoutedEventArgs e)

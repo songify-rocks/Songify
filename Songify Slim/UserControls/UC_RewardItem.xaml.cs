@@ -65,7 +65,7 @@ namespace Songify_Slim.UserControls
             return new SolidColorBrush(Color.FromRgb(r, g, b));
         }
 
-        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             Settings.TwRewardId.Remove(RewardId);
             Settings.TwRewardId = Settings.TwRewardId;
@@ -75,7 +75,7 @@ namespace Songify_Slim.UserControls
                 {
                     if (currentWindow is Window_Settings settings)
                     {
-                        settings.RemoveRewardFromList(RewardId);
+                        await settings.LoadRewards();
                     }
                 }
 
