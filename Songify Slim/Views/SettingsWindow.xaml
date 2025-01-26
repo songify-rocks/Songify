@@ -1202,13 +1202,35 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
+                                                    x:Name="ChckUlCommandSubT2"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsCommandChecked"
+                                                    Content="Subscriber T2"
+                                                    Tag="3"
+                                                    Unchecked="CbxUserLevelsCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlCommandSubT3"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsCommandChecked"
+                                                    Content="Subscriber T3"
+                                                    Tag="4"
+                                                    Unchecked="CbxUserLevelsCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
                                                     x:Name="ChckUlCommandVip"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="{x:Static local:Resources.s_VIP}"
-                                                    Tag="3"
+                                                    Tag="5"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1219,7 +1241,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsCommandChecked"
                                                     Content="{x:Static local:Resources.s_Moderator}"
-                                                    Tag="4"
+                                                    Tag="6"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>
@@ -1284,13 +1306,35 @@
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
                                                 <CheckBox
+                                                    x:Name="ChckUlRewardSubT2"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsRewardChecked"
+                                                    Content="Subscriber T2"
+                                                    Tag="3"
+                                                    Unchecked="CbxUserLevelsRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUlRewardSubT3"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUserLevelsRewardChecked"
+                                                    Content="Subscriber T3"
+                                                    Tag="4"
+                                                    Unchecked="CbxUserLevelsRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
                                                     x:Name="ChckUlRewardVip"
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="{x:Static local:Resources.s_VIP}"
-                                                    Tag="3"
+                                                    Tag="5"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                             <ComboBoxItem Margin="0" Padding="0">
@@ -1301,7 +1345,7 @@
                                                     Margin="1,0,0,0"
                                                     Checked="CbxUserLevelsRewardChecked"
                                                     Content="{x:Static local:Resources.s_Moderator}"
-                                                    Tag="4"
+                                                    Tag="6"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
                                         </ComboBox.Items>

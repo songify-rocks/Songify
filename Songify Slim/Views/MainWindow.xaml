@@ -281,6 +281,7 @@
                     <MenuItem Click="BtnGitHub_Click" Header="GitHub" />
                     <MenuItem Click="BtnDiscord_Click" Header="Discord" />
                     <MenuItem Click="BtnLogFolderClick" Header="{x:Static local:Resources.mw_menu_Help_LogFolder}" />
+                    <MenuItem Click="BtnAppFolderClick" Header="Songify Folder"/>
                     <MenuItem Click="BtnAboutClick" Header="{x:Static local:Resources.mw_menu_Help_About}" />
                 </MenuItem>
                 <MenuItem

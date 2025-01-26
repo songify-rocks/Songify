@@ -171,12 +171,17 @@
             BeginningEdit="dgv_Queue_BeginningEdit"
             CanUserAddRows="False"
             CanUserSortColumns="False"
+            DataContext=""
             EnableColumnVirtualization="False"
             EnableRowVirtualization="False"
             HorizontalScrollBarVisibility="Disabled"
             SelectionMode="Single"
+            SelectionUnit="FullRow"
             SourceUpdated="Dgv_Queue_OnSourceUpdated">
             <DataGrid.Resources>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Padding" Value="8" />
+                </Style>
                 <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->
                 <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
                     <Setter Property="Foreground" Value="White" />

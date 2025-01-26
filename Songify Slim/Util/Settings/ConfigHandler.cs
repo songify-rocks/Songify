@@ -231,8 +231,9 @@ namespace Songify_Slim.Util.Settings
         public bool BotOnlyWorkWhenLive { get; set; }
         public bool CustomPauseTextEnabled { get; set; }
         public bool DonationReminder { get; set; }
-        public bool DownloadCover { get; set; }
         public bool DownloadCanvas { get; set; }
+        public bool DownloadCover { get; set; }
+        public bool KeepAlbumCover { get; set; } = false;
         public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }
         public bool OpenQueueOnStartup { get; set; }
@@ -271,6 +272,8 @@ namespace Songify_Slim.Util.Settings
         public int TwSrMaxReqFollower { get; set; } = 3;
         public int TwSrMaxReqModerator { get; set; } = 3;
         public int TwSrMaxReqSubscriber { get; set; } = 3;
+        public int TwSrMaxReqSubscriberT2 { get; set; } = 3;
+        public int TwSrMaxReqSubscriberT3 { get; set; } = 3;
         public int TwSrMaxReqVip { get; set; } = 3;
         public int TwSrPerUserCooldown { get; set; } = 0;
         public int TwSrUserLevel { get; set; } = 1;
@@ -300,8 +303,6 @@ namespace Songify_Slim.Util.Settings
         public string TwRewardGoalRewardId { get; set; } = "";
         public string TwRewardSkipId { get; set; } = "";
         public string Uuid { get; set; } = "";
-        public bool KeepAlbumCover { get; set; } = false;
-
         public string WebUserAgent = "Songify Data Provider";
         public string YTMDToken;
     }

@@ -25,12 +25,14 @@ namespace Songify_Slim.Util.General
         //create a list with Twitch UserTypes and assign int values to them
         public enum TwitchUserLevels
         {
-            Everyone = 0,
-            Follower = 1,
-            Subscriber = 2,
-            Vip = 3,
-            Moderator = 4,
-            Broadcaster = 5
+            Everyone,
+            Follower,
+            Subscriber,
+            SubscriberT2,
+            SubscriberT3,
+            Vip,
+            Moderator,
+            Broadcaster
         }
 
         public enum PauseOptions

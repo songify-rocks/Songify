@@ -204,14 +204,18 @@ namespace Songify_Slim.Views
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
             ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
-            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(3);
-            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(4);
+            ChckUlCommandSubT2.IsChecked = Settings.UserLevelsCommand.Contains(3);
+            ChckUlCommandSubT3.IsChecked = Settings.UserLevelsCommand.Contains(4);
+            ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(5);
+            ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(6);
 
             ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
             ChckUlRewardFollower.IsChecked = Settings.UserLevelsReward.Contains(1);
             ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(2);
-            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(3);
-            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(4);
+            ChckUlRewardSubT2.IsChecked = Settings.UserLevelsReward.Contains(3);
+            ChckUlRewardSubT3.IsChecked = Settings.UserLevelsReward.Contains(4);
+            ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(5);
+            ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(6);
 
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
@@ -254,19 +258,6 @@ namespace Songify_Slim.Views
             CbxLanguage.ItemsSource = _supportedLanguages;
             CbxLanguage.SelectedValue = Settings.Language;
 
-            //CbxLanguage.SelectedIndex = Settings.Language switch
-            //{
-            //    "en" => 0,
-            //    "de-DE" => 1,
-            //    "ru-RU" => 2,
-            //    "es" => 3,
-            //    "fr" => 4,
-            //    "pl-PL" => 5,
-            //    "pt-PT" => 6,
-            //    "it-IT" => 7,
-            //    "be-BY" => 8,
-            //    _ => CbxLanguage.SelectedIndex
-            //};
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
             CbAccountSelection.SelectionChanged -= CbAccountSelection_SelectionChanged;
             CbAccountSelection.Items.Clear();
@@ -312,8 +303,6 @@ namespace Songify_Slim.Views
                     }
                 }
             }
-
-            return;
         }
 
         private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn,
@@ -802,6 +791,12 @@ namespace Songify_Slim.Views
                 case Enums.TwitchUserLevels.Subscriber:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
                     break;
+                case Enums.TwitchUserLevels.SubscriberT2:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriberT2 = (int)NudMaxReq.Value;
+                    break;
+                case Enums.TwitchUserLevels.SubscriberT3:
+                    if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriberT3 = (int)NudMaxReq.Value;
+                    break;
                 case Enums.TwitchUserLevels.Moderator:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
                     break;
@@ -953,6 +948,8 @@ namespace Songify_Slim.Views
                 Enums.TwitchUserLevels.Follower => Settings.TwSrMaxReqFollower,
                 Enums.TwitchUserLevels.Vip => Settings.TwSrMaxReqVip,
                 Enums.TwitchUserLevels.Subscriber => Settings.TwSrMaxReqSubscriber,
+                Enums.TwitchUserLevels.SubscriberT2 => Settings.TwSrMaxReqSubscriberT2,
+                Enums.TwitchUserLevels.SubscriberT3 => Settings.TwSrMaxReqSubscriberT3,
                 Enums.TwitchUserLevels.Moderator => Settings.TwSrMaxReqModerator,
                 Enums.TwitchUserLevels.Broadcaster => Settings.TwSrMaxReqBroadcaster,
                 _ => throw new ArgumentOutOfRangeException()
@@ -967,8 +964,11 @@ namespace Songify_Slim.Views
             Settings.TwSrMaxReqFollower = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqSubscriberT2 = (int)NudMaxReq.Value;
+            Settings.TwSrMaxReqSubscriberT3 = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
+
         }
 
         private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
@@ -1008,12 +1008,12 @@ namespace Songify_Slim.Views
 
                     if (rewards.Count > 0)
                     {
-                        foreach (CustomReward reward in rewards.OrderBy(o=>o.Cost))
+                        foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
                         {
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
                             ListboxRewards.Items.Add(new UC_TwitchReward(reward));
-                            
+
                         }
                     }
                     BtnCreateNewReward.IsEnabled = true;

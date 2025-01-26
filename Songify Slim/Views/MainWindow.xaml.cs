@@ -1368,5 +1368,11 @@ namespace Songify_Slim.Views
             Window_Userlist wU = new() { Top = Top, Left = Left };
             wU.Show();
         }
+
+        private void BtnAppFolderClick(object sender, RoutedEventArgs e)
+        {
+            string direcotry = Directory.GetCurrentDirectory();
+            Process.Start(direcotry);
+        }
     }
 }

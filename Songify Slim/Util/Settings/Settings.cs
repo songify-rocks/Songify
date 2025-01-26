@@ -572,7 +572,8 @@ namespace Songify_Slim.Util.Settings
 
         public static int TwSrPerUserCooldown
         {
-            get => GetTwSrPerUserCooldown(); set => SetTwSrPerUserCooldown(value); }
+            get => GetTwSrPerUserCooldown(); set => SetTwSrPerUserCooldown(value);
+        }
         public static bool TwSrReward
         {
             get => GetTwSrReward();
@@ -641,7 +642,36 @@ namespace Songify_Slim.Util.Settings
 
         public static string WebUserAgent => GetWebua();
         public static bool DownloadCanvas { get => GetDownloadCanvas(); set => SetDownloadCanvas(value); }
-        public static string YTMDToken { get => GetYTMDToken(); set=> SetYTMDToken(value); }
+        public static string YTMDToken { get => GetYTMDToken(); set => SetYTMDToken(value); }
+
+        public static int TwSrMaxReqSubscriberT3 { get => GetTwSrMaxReqSubscriberT3(); set => SetTwSrMaxReqSubscriberT3(value); }
+
+        private static int GetTwSrMaxReqSubscriberT3()
+        {
+            return _currentConfig.AppConfig.TwSrMaxReqSubscriberT3;
+        }
+
+        private static void SetTwSrMaxReqSubscriberT3(int value)
+        {
+            _currentConfig.AppConfig.TwSrMaxReqSubscriberT3 = value;
+            ConfigHandler.WriteAllConfig(_currentConfig);
+        }
+
+
+        public static int TwSrMaxReqSubscriberT2 { get => GetTwSrMaxReqSubscriberT2(); set => SetTwSrMaxReqSubscriberT2(value); }
+
+        private static int GetTwSrMaxReqSubscriberT2()
+        {
+            return _currentConfig.AppConfig.TwSrMaxReqSubscriberT2;
+        }
+
+        private static void SetTwSrMaxReqSubscriberT2(int value)
+        {
+            _currentConfig.AppConfig.TwSrMaxReqSubscriberT2 = value;
+            ConfigHandler.WriteAllConfig(_currentConfig);
+        }
+
+
 
         private static void SetYTMDToken(string value)
         {
@@ -807,6 +837,8 @@ namespace Songify_Slim.Util.Settings
                 TwSrMaxReqFollower = GetTwSrMaxReqFollower(),
                 TwSrMaxReqModerator = GetTwSrMaxReqModerator(),
                 TwSrMaxReqSubscriber = GetTwSrMaxReqSubscriber(),
+                TwSrMaxReqSubscriberT2 = GetTwSrMaxReqSubscriberT2(),
+                TwSrMaxReqSubscriberT3 = GetTwSrMaxReqSubscriberT3(),
                 TwSrMaxReqVip = GetTwSrMaxReqVip(),
                 TwSrPerUserCooldown = GetTwSrPerUserCooldown(),
                 TwSrReward = GetTwSrReward(),

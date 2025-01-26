@@ -8,7 +8,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="auto"
-    Height="50"
+    Height="40"
     mc:Ignorable="d">
     <Grid Margin="12,0">
         <Grid.ColumnDefinitions>
@@ -23,13 +23,13 @@
             Orientation="Horizontal">
             <Border
                 x:Name="ImgBorder"
-                Width="40"
-                Height="40"
+                Width="30"
+                Height="30"
                 CornerRadius="2">
                 <Image
                     x:Name="ImgReward"
-                    Width="30"
-                    Height="30"
+                    Width="20"
+                    Height="20"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Source="/Resources/img/default-1.png" />
