@@ -996,4 +996,10 @@
   <data name="s_TrackAdded" xml:space="preserve">
     <value>Песня была дададзены ў чаргу.</value>
   </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Калі ласка ўвядзіце ID кліента Spotify і сакрэтны код.</value>
+  </data>
 </root>
