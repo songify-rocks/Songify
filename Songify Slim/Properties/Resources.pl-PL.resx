@@ -142,10 +142,10 @@
     <value>Utwór został pomyślnie dodany</value>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">
-    <value>Dodać</value>
+    <value>Dodaj</value>
   </data>
   <data name="bw_btnClear" xml:space="preserve">
-    <value>Jasne</value>
+    <value>Wyczyść</value>
   </data>
   <data name="bw_cbArtist" xml:space="preserve">
     <value>Artysta</value>
@@ -160,25 +160,25 @@
     <value>Zablokowani użytkownicy</value>
   </data>
   <data name="bw_menu_Delete" xml:space="preserve">
-    <value>Usuwać</value>
+    <value>Usuń</value>
   </data>
   <data name="lang_deDE" xml:space="preserve">
     <value>Niemiecki</value>
   </data>
   <data name="lang_en" xml:space="preserve">
-    <value>język angielski</value>
+    <value>Angielski</value>
   </data>
   <data name="mw_menu_Blacklist" xml:space="preserve">
     <value>Lista zablokowanych</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Łączyć</value>
+    <value>Połącz</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
-    <value>Rozłączyć się</value>
+    <value>Rozłącz się</value>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
-    <value>Wyjście</value>
+    <value>Wyjdź</value>
   </data>
   <data name="mw_menu_File" xml:space="preserve">
     <value>Plik</value>
@@ -223,10 +223,10 @@
     <value>Kolor:</value>
   </data>
   <data name="sw_Appearance_ThemeDark" xml:space="preserve">
-    <value>Ciemny schemat</value>
+    <value>Ciemny motyw</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
-    <value>Lekki motyw</value>
+    <value>Jasny motyw</value>
   </data>
   <data name="sw_Config_Export" xml:space="preserve">
     <value>EKSPORT KONFIGURACJI</value>
@@ -253,10 +253,10 @@
     <value>Kanał, do którego chcesz dołączyć</value>
   </data>
   <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
-    <value>Identyfikator nagrody w postaci punktów kanału</value>
+    <value>Nazwa nagrody za punkty kanału</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>Wyczyść kolejkę przy uruchomieniu</value>
+    <value>Wyczyść kolejkę przy starcie</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Maksymalna długość utworu (w minutach)</value>
@@ -271,7 +271,7 @@
     <value>Włącz SR (nagrody za kanał)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
-    <value>dodawaj spacje</value>
+    <value>Dodawaj spacje</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
     <value>Katalog wyjściowy</value>
@@ -301,7 +301,7 @@
     <value>Użyj własnego identyfikatora aplikacji</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>autostart z Windowsem</value>
+    <value>Autostart z Windowsem</value>
   </data>
   <data name="sw_tcSystem_Behavior" xml:space="preserve">
     <value>Zachowanie</value>
@@ -328,7 +328,7 @@
     <value>Konfig</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Skurcz</value>
+    <value>Twitch</value>
   </data>
   <data name="sw_tc_Output" xml:space="preserve">
     <value>Wyjście</value>
