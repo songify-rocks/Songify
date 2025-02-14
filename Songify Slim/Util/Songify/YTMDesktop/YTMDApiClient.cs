@@ -1,11 +1,11 @@
-﻿using Songify_Slim.Util.General;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Util.General;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Slim.Util.Songify.YTMDesktop
 {
     public class YtmdApiClient(string baseUrl)
     {

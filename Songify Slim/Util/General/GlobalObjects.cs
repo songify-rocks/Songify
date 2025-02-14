@@ -21,6 +21,7 @@ using TwitchLib.Api.Helix;
 using System.Collections;
 using System.Windows.Threading;
 using Songify_Slim.Models.YTMD;
+using Songify_Slim.Util.Spotify;
 using Queue = Songify_Slim.Models.YTMD.Queue;
 using QueueItem = Songify_Slim.Models.YTMD.QueueItem;
 

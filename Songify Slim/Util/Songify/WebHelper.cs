@@ -10,6 +10,7 @@ using Unosquare.Swan.Formatters;
 using Application = System.Windows.Application;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
+using Songify_Slim.Util.Songify.YTMDesktop;
 
 namespace Songify_Slim.Util.Songify
 {

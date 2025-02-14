@@ -38,6 +38,7 @@ using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using File = System.IO.File;
 using System.Drawing;
+using Songify_Slim.Util.Spotify;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using TabControl = System.Windows.Controls.TabControl;

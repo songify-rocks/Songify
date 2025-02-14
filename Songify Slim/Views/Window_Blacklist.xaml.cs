@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.Views

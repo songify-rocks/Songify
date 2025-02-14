@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Media;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using Application = System.Windows.Application;
@@ -157,7 +158,7 @@ namespace Songify_Slim.Util.General
                 webSocketContext?.WebSocket?.Dispose();
             }
         }
-        
+
         private async Task<string> ProcessCommand(string message)
         {
             string command = message.ToLower();
@@ -192,19 +193,24 @@ namespace Songify_Slim.Util.General
                 case "block_artist":
                     BlockArtist();
                     return "Artist blocked";
+
                 case "block_all_artists":
                     BlockAllArtists();
                     return "All artists blocked";
+
                 case "block_song":
                     BlockSong();
                     return "Song blocked";
+
                 case "block_user":
                     string user = BlockUser();
                     return !string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block";
+
                 case "skip":
                 case "next":
                     await SpotifyApiHandler.SkipSong();
                     return "Song skipped";
+
                 case "play_pause":
                 case "pause":
                 case "play":
@@ -216,6 +222,7 @@ namespace Songify_Slim.Util.General
                     }
                     await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
                     return "Playback resumed";
+
                 case "stop_sr_reward":
                     foreach (string s in Settings.Settings.TwRewardId)
                     {
@@ -226,6 +233,7 @@ namespace Songify_Slim.Util.General
                             }, Settings.Settings.TwitchAccessToken);
                     }
                     break;
+
                 case "vol_up":
                     device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
                     if (device == null)
@@ -235,6 +243,7 @@ namespace Songify_Slim.Util.General
 
                     await SpotifyApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent + 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent + 5, 0, 100) + "%";
+
                 case "vol_down":
                     device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices.FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
                     if (device == null)
@@ -244,6 +253,7 @@ namespace Songify_Slim.Util.General
 
                     await SpotifyApiHandler.Spotify.SetVolumeAsync(MathUtils.Clamp(device.VolumePercent - 5, 0, 100), device.Id);
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
+
                 default:
                     return $"Unknown command: {message}";
             }
@@ -329,7 +339,6 @@ namespace Songify_Slim.Util.General
 
         public void StopWebServer()
         {
-
             Run = false;
             Logger.LogStr("WebServer: Started stopped");
             Application.Current.Dispatcher.Invoke(() =>
@@ -357,7 +366,6 @@ namespace Songify_Slim.Util.General
             // If any of these checks return true, the port is in use
             return !(isTcpPortUsed || isTcpListenerUsed || isUdpListenerUsed);
         }
-
 
         private void ProcessHttpRequest(HttpListenerContext context)
         {

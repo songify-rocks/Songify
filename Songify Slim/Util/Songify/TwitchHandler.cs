@@ -51,6 +51,7 @@ using System.ComponentModel;
 using System.Configuration;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
+using Songify_Slim.Util.Spotify;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using TwitchLib.PubSub.Models.Responses;

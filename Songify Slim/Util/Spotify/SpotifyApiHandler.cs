@@ -1,31 +1,27 @@
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Enums;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using Songify_Slim.Views;
 using Timer = System.Timers.Timer;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using Unosquare.Swan.Formatters;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Web.Util;
-using System.Windows.Forms;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Slim.Util.Spotify
 {
     // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler

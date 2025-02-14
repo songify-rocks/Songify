@@ -48,6 +48,7 @@ using MahApps.Metro.Controls;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Properties;
+using Songify_Slim.Util.Spotify;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 

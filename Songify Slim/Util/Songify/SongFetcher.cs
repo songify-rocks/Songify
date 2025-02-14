@@ -24,6 +24,7 @@ using Utils = MahApps.Metro.Controls.Utils;
 using System.Web.UI.WebControls;
 using System.Dynamic;
 using Songify_Slim.Models.YTMD;
+using Songify_Slim.Util.Spotify;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 
 namespace Songify_Slim.Util.Songify
