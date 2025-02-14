@@ -8,7 +8,7 @@ namespace Songify_Slim.Util.General
 {
     public static class RegisterFirewall
     {
-        private static readonly string ruleName = "Songify";
+        private static readonly string RuleName = "Songify";
 
         public static void Register()
         {
@@ -51,7 +51,7 @@ namespace Songify_Slim.Util.General
         private static void AddFirewallRule()
         {
             string applicationPath = Assembly.GetExecutingAssembly().Location;
-            ProcessStartInfo startInfo = new("netsh", $"advfirewall firewall add rule name=\"{ruleName}\" dir=in action=allow program=\"{applicationPath}\" enable=yes")
+            ProcessStartInfo startInfo = new("netsh", $"advfirewall firewall add rule name=\"{RuleName}\" dir=in action=allow program=\"{applicationPath}\" enable=yes")
             {
                 Verb = "runas", // Request elevation
                 CreateNoWindow = true,
@@ -88,7 +88,7 @@ namespace Songify_Slim.Util.General
             proc.WaitForExit();
 
             // Check if our rule name is in the output
-            return output.Contains(ruleName);
+            return output.Contains(RuleName);
         }
 
 

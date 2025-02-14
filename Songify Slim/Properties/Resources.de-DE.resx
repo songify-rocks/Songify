@@ -410,7 +410,7 @@
     <value>Konsole</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Überspringt den aktuellen Song (Broadcaster / Mod / Requester)</value>
+    <value>Überspringt den aktuellen Song</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Startet eine Abstimmung, um den aktuellen Song zu überspringen</value>
@@ -825,5 +825,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Das Benutzerlevel ist zu niedrig für den Befehl !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Das Benutzerlevel ist für die Belohnung für Songwünsche zu niedrig</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Benutzerlevel-Abzeichen anzeigen</value>
   </data>
 </root>

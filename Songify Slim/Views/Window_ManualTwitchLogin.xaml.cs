@@ -21,22 +21,20 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_ManualTwitchLogin.xaml
     /// </summary>
-    public partial class Window_ManualTwitchLogin
+    public partial class WindowManualTwitchLogin
     {
-        private Enums.TwitchAccount _accountType;
-        public Window_ManualTwitchLogin(Enums.TwitchAccount accountType)
+        private readonly Enums.TwitchAccount _accountType;
+
+        public WindowManualTwitchLogin(Enums.TwitchAccount accountType)
         {
             InitializeComponent();
-            this._accountType = accountType;
-            switch (accountType)
+            _accountType = accountType;
+            Title = accountType switch
             {
-                case Enums.TwitchAccount.Main:
-                    Title = "Twitch Account Linking: MAIN ACCOUNT";
-                    break;
-                case Enums.TwitchAccount.Bot:
-                    Title = "Twitch Account Linking: BOT ACCOUNT";
-                    break;
-            }
+                Enums.TwitchAccount.Main => "Twitch Account Linking: MAIN ACCOUNT",
+                Enums.TwitchAccount.Bot => "Twitch Account Linking: BOT ACCOUNT",
+                _ => Title
+            };
         }
 
         private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
@@ -48,7 +46,7 @@ namespace Songify_Slim.Views
         {
             if (string.IsNullOrEmpty(TextBoxTwitchCode.Password))
                 return;
-            this.IsEnabled = false;
+            IsEnabled = false;
             try
             {
                 switch (_accountType)
@@ -57,10 +55,12 @@ namespace Songify_Slim.Views
                         Settings.TwitchAccessToken = TextBoxTwitchCode.Password;
                         await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
                         break;
+
                     case Enums.TwitchAccount.Bot:
                         Settings.TwitchBotToken = TextBoxTwitchCode.Password;
                         await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
                         break;
+
                     default:
                         break;
                 }

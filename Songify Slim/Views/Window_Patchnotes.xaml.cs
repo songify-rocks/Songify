@@ -54,20 +54,19 @@ namespace Songify_Slim.Views
             LbxVersions.SelectedIndex = 0;
             LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
         }
+
         private void LbxVersions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string markdownTxt = (string)LbxVersions.SelectedValue;
-            markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
+            markdownTxt = $"{markdownTxt.Split(["Checksum"], StringSplitOptions.None)[0]}";
             MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
             string xaml = Markdown.ToXaml(markdownTxt, pipeline);
             using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
             {
-                using (XamlXmlReader reader = new(stream, new MyXamlSchemaContext()))
+                using XamlXmlReader reader = new(stream, new MyXamlSchemaContext());
+                if (XamlReader.Load(reader) is FlowDocument document)
                 {
-                    if (XamlReader.Load(reader) is FlowDocument document)
-                    {
-                        RtbPatchnotes.Document = document;
-                    }
+                    RtbPatchnotes.Document = document;
                 }
             }
 
@@ -149,7 +148,7 @@ namespace Songify_Slim.Views
             Process.Start(e.Parameter.ToString());
         }
 
-        class MyXamlSchemaContext : XamlSchemaContext
+        private class MyXamlSchemaContext : XamlSchemaContext
         {
             public override bool TryGetCompatibleXamlNamespace(string xamlNamespace, out string compatibleNamespace)
             {

@@ -10,7 +10,7 @@ namespace Songify_Slim.Util.General
     {
         public static bool IsDefault<T>(T value)
         {
-            return EqualityComparer<T>.Default.Equals(value, default(T));
+            return EqualityComparer<T>.Default.Equals(value, default);
         }
     }
 }

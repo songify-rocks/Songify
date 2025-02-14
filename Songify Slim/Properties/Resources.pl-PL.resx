@@ -412,7 +412,7 @@
     <value>Konsola</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Pomija bieżący utwór (nadawca / mod / requester)</value>
+    <value>Pomija bieżący utwór</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Rozpoczyna głosowanie za pominięciem bieżącego utworu</value>
@@ -824,5 +824,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Poziom użytkownika jest zbyt niski dla polecenia !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Poziom użytkownika jest zbyt niski, aby otrzymać nagrodę za prośbę o piosenkę</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Pokaż odznaki poziomu użytkownika</value>
   </data>
 </root>

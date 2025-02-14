@@ -116,9 +116,9 @@ namespace Songify_Slim
             if (MessageBox.Show("Restart Songify?", "Songify", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
                 MessageBoxResult.Yes) return;
             // Pass an argument to indicate this is a restart
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            ProcessStartInfo startInfo = new()
             {
-                FileName = System.Reflection.Assembly.GetExecutingAssembly().Location,
+                FileName = Assembly.GetExecutingAssembly().Location,
                 Arguments = "--restart", // Custom argument
                 UseShellExecute = false
             };
@@ -127,7 +127,7 @@ namespace Songify_Slim
             Process.Start(startInfo);
 
             // Shutdown the current instance
-            Application.Current.Shutdown();
+            Current.Shutdown();
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -155,13 +155,13 @@ namespace Songify_Slim
 
         private void StartPipeServer()
         {
-            Thread pipeThread = new Thread(() =>
+            Thread pipeThread = new(() =>
             {
                 while (true)
                 {
                     try
                     {
-                        using NamedPipeServerStream server = new NamedPipeServerStream(PipeName, PipeDirection.In);
+                        using NamedPipeServerStream server = new(PipeName, PipeDirection.In);
                         // Wait for a connection (blocking)
                         server.WaitForConnection();
 
@@ -189,7 +189,7 @@ namespace Songify_Slim
         private static void RestoreWindow()
         {
             // Your logic to restore the window from the tray.
-            Window win = Application.Current.MainWindow;
+            Window win = Current.MainWindow;
 
             if (win is MainWindow)
             {

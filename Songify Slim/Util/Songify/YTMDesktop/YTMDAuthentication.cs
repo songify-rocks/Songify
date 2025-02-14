@@ -9,19 +9,10 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Songify_Slim.Util.Songify.YTMDesktop
 {
-
-
-
-    public class YTMDAuthentication
+    public class YtmdAuthentication(string baseUrl)
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
-
-        public YTMDAuthentication(string baseUrl)
-        {
-            _httpClient = new HttpClient();
-            _baseUrl = baseUrl.TrimEnd('/');
-        }
+        private readonly HttpClient _httpClient = new();
+        private readonly string _baseUrl = baseUrl.TrimEnd('/');
 
         /// <summary>
         /// Requests an authorization code.

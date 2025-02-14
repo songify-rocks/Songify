@@ -5,12 +5,12 @@ namespace Songify_Slim.UserControls
     /// <summary>
     /// Interaction logic for UC_AccountItem.xaml
     /// </summary>
-    public partial class UC_AccountItem : UserControl
+    public partial class UcAccountItem : UserControl
     {
         public string Username;
         public string OAuth;
 
-        public UC_AccountItem(string username, string oauth)
+        public UcAccountItem(string username, string oauth)
         {
             InitializeComponent();
             Username = username;

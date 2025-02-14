@@ -128,12 +128,11 @@ namespace Songify_Slim.Util.Settings
 
         public static string GenerateAccessKey()
         {
-            string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
-            string key = new(Enumerable.Repeat(allowedChars, 1)
+            const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
+            string key = new([.. Enumerable.Repeat(allowedChars, 1)
                 .SelectMany(s => s)
                 .Take(128)
-                .OrderBy(s => Guid.NewGuid())
-                .ToArray());
+                .OrderBy(_ => Guid.NewGuid())]);
 
             return key;
         }
@@ -198,7 +197,7 @@ namespace Songify_Slim.Util.Settings
         public string BotCmdPlayPauseTrigger { get; set; } = "!play, !pause";
         public string BotCmdSkipVoteTrigger { get; set; } = "!voteskip";
         public string BotCmdVolTrigger { get; set; } = "!vol";
-        public string BotCmdCommandsTrigger { get; set; }  = "!songcommands";
+        public string BotCmdCommandsTrigger { get; set; } = "!songcommands";
         public string BotCmdNextTrigger { get; set; } = "next";
         public string BotCmdPosTrigger { get; set; } = "pos";
         public string BotCmdQueueTrigger { get; set; } = "queue";
@@ -229,6 +228,11 @@ namespace Songify_Slim.Util.Settings
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
         public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
+
+        public string BotRespUserLevelTooLowCommand { get; set; } =
+            "Sorry, only {userlevel} or higher can request songs using the command.";
+
+        public string BotRespUserLevelTooLowReward { get; set; } = "Sorry, only {userlevel} or higher can request songs using the reward.";
     }
 
     public class BotCommandInfo
@@ -355,7 +359,9 @@ namespace Songify_Slim.Util.Settings
         public string TwRewardGoalRewardId { get; set; } = "";
         public string TwRewardSkipId { get; set; } = "";
         public string Uuid { get; set; } = "";
+        public bool ShowUserLevelBadges { get; set; } = true;
+
         public string WebUserAgent = "Songify Data Provider";
-        public string YTMDToken;
+        public string YtmdToken;
     }
 }

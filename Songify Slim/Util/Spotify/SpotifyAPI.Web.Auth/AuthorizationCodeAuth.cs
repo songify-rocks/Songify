@@ -12,16 +12,16 @@ using Unosquare.Labs.EmbedIO.Modules;
 
 namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 {
-    public class AuthorizationCodeAuth : SpotifyAuthServer<AuthorizationCode>
+    public class AuthorizationCodeAuth(
+        string redirectUri,
+        string serverUri,
+        Scope scope = Scope.None,
+        string state = "")
+        : SpotifyAuthServer<AuthorizationCode>("code", "AuthorizationCodeAuth", redirectUri, serverUri, scope, state)
     {
         public string SecretId { get; set; }
 
         public ProxyConfig ProxyConfig { get; set; }
-
-        public AuthorizationCodeAuth(string redirectUri, string serverUri, Scope scope = Scope.None, string state = "")
-            : base("code", "AuthorizationCodeAuth", redirectUri, serverUri, scope, state)
-        {
-        }
 
         public AuthorizationCodeAuth(string clientId, string secretId, string redirectUri, string serverUri,
             Scope scope = Scope.None, string state = "") : this(redirectUri, serverUri, scope, state)
@@ -50,23 +50,23 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
         public async Task<Token> RefreshToken(string refreshToken)
         {
-            List<KeyValuePair<string, string>> args = new()
-            {
+            List<KeyValuePair<string, string>> args =
+            [
                 new KeyValuePair<string, string>("grant_type", "refresh_token"),
                 new KeyValuePair<string, string>("refresh_token", refreshToken)
-            };
+            ];
 
             return await GetToken(args);
         }
 
         public async Task<Token> ExchangeCode(string code)
         {
-            List<KeyValuePair<string, string>> args = new()
-            {
+            List<KeyValuePair<string, string>> args =
+            [
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code", code),
                 new KeyValuePair<string, string>("redirect_uri", RedirectUri)
-            };
+            ];
 
             return await GetToken(args);
         }
@@ -92,7 +92,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         public string Error { get; set; }
     }
 
-    internal class AuthorizationCodeAuthController : WebApiController
+    internal class AuthorizationCodeAuthController(IHttpContext context) : WebApiController(context)
     {
         [WebApiHandler(HttpVerbs.Get, "/")]
         public Task<bool> GetEmpty()
@@ -130,10 +130,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
 
             string uri = auth.GetUri();
             return HttpContext.Redirect(uri, false);
-        }
-
-        public AuthorizationCodeAuthController(IHttpContext context) : base(context)
-        {
         }
     }
 }

@@ -38,11 +38,11 @@ namespace Songify_Slim.Util.General
         public static TrackInfo CurrentSong;
         public static bool DetachConsole = false;
         public static bool IsInPlaylist;
-        public static ObservableCollection<RequestObject> ReqList = new();
+        public static ObservableCollection<RequestObject> ReqList = [];
         public static string Requester = "";
         public static int RewardGoalCount = 0;
-        public static List<RequestObject> SkipList = new();
-        public static ObservableCollection<RequestObject> QueueTracks { get; set; } = new ObservableCollection<RequestObject>();
+        public static List<RequestObject> SkipList = [];
+        public static ObservableCollection<RequestObject> QueueTracks { get; set; } = [];
 
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new();
@@ -57,11 +57,11 @@ namespace Songify_Slim.Util.General
         public static Tuple<bool, string> Canvas;
         public static ObservableCollection<TwitchUser> TwitchUsers = [];
         public static bool IoClientConnected = false;
-        
+
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
-        
+
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
         {
@@ -75,8 +75,7 @@ namespace Songify_Slim.Util.General
             {
                 DependencyObject child = VisualTreeHelper.GetChild(parent, i);
                 // If the child is not of the request child type child
-                T childType = child as T;
-                if (childType == null)
+                if (child is not T childType)
                 {
                     // recursively drill down the tree
                     foundChild = FindChild<T>(child, childName);
@@ -86,19 +85,18 @@ namespace Songify_Slim.Util.General
                 }
                 else if (!string.IsNullOrEmpty(childName))
                 {
-                    FrameworkElement frameworkElement = child as FrameworkElement;
                     // If the child's name is set for search
-                    if (frameworkElement != null && frameworkElement.Name == childName)
+                    if (childType is FrameworkElement frameworkElement && frameworkElement.Name == childName)
                     {
                         // if the child's name is of the request name
-                        foundChild = (T)child;
+                        foundChild = childType;
                         break;
                     }
                 }
                 else
                 {
                     // child element found.
-                    foundChild = (T)child;
+                    foundChild = childType;
                     break;
                 }
             }
@@ -224,7 +222,6 @@ namespace Songify_Slim.Util.General
                             }
                         }
 
-
                         bool isLikedSongsPlaylist = false;
 
                         await Application.Current.Dispatcher.Invoke(async () =>
@@ -232,7 +229,7 @@ namespace Songify_Slim.Util.General
                             try
                             {
                                 // Clear the tracks in the queue (ObservableCollection will notify the UI)
-                                Dictionary<string, bool> isInLikedSongs = new();
+                                Dictionary<string, bool> isInLikedSongs = [];
                                 try
                                 {
                                     if (!string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
@@ -252,7 +249,6 @@ namespace Songify_Slim.Util.General
                                         isLikedSongsPlaylist = false;
                                         await LoadLikedPlaylistTracks();
                                     }
-
                                 }
                                 catch (Exception)
                                 {
@@ -261,7 +257,7 @@ namespace Songify_Slim.Util.General
 
                                 List<RequestObject> tempQueueList = [];
                                 // Dictionary to keep track of replacements
-                                Dictionary<string, bool> replacementTracker = new();
+                                Dictionary<string, bool> replacementTracker = [];
 
                                 // Process the queue
                                 foreach (FullTrack fullTrack in queue.Queue)
@@ -376,8 +372,9 @@ namespace Songify_Slim.Util.General
                     }
 
                     break;
+
                 case 6:
-                    YTMDResponse response = await WebHelper.GetYtmData();
+                    YtmdResponse response = await WebHelper.GetYtmData();
                     if (response == null)
                     {
                         return;
@@ -432,7 +429,7 @@ namespace Songify_Slim.Util.General
                                 Trackid = response.Video.Id,
                                 Artist = response.Video.Author,
                                 Title = response.Video.Title,
-                                Length = SecondsToMMSS(response.Video.DurationSeconds),
+                                Length = SecondsToMmss(response.Video.DurationSeconds),
                                 Requester = "YouTube",
                                 Played = -1,
                                 Albumcover = response.Video.Thumbnails.Last().Url,
@@ -445,12 +442,11 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        public static string SecondsToMMSS(int totalSeconds)
+        public static string SecondsToMmss(int totalSeconds)
         {
             TimeSpan timeSpan = TimeSpan.FromSeconds(totalSeconds);
             return $"{(int)timeSpan.TotalMinutes:D2}:{timeSpan.Seconds:D2}";
         }
-
 
         public static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
         {
@@ -497,7 +493,6 @@ namespace Songify_Slim.Util.General
                 LikedPlaylistTracks.AddRange(tracks.Items);
                 firstFetch = false;
             } while (tracks.HasNextPage());
-
         }
 
         public static string GetReadablePlayer()

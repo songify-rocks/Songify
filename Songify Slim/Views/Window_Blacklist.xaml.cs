@@ -68,7 +68,7 @@ namespace Songify_Slim.Views
                 ListView_Blacklist.Items.Add(s);
         }
 
-        private void btn_Add_Click(object sender, RoutedEventArgs e)
+        private void Btn_Add_Click(object sender, RoutedEventArgs e)
         {
             //This adds to the blacklist.
             AddToBlacklist(tb_Blacklist.Text);
@@ -99,37 +99,40 @@ namespace Songify_Slim.Views
                     {
                         case <= 0:
                             return;
-                        case > 1:
-                        {
-                            dgv_Artists.Items.Clear();
-                            int count = 1;
-                            foreach (FullArtist artist in searchItem.Artists.Items)
-                            {
-                                dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
-                                count++;
-                            }
-                            cc_Content.Visibility = Visibility.Visible;
-                            break;
-                        }
-                        default:
-                        {
-                            FullArtist fullartist = searchItem.Artists.Items[0];
 
-                            if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
+                        case > 1:
                             {
-                                return;
+                                dgv_Artists.Items.Clear();
+                                int count = 1;
+                                foreach (FullArtist artist in searchItem.Artists.Items)
+                                {
+                                    dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
+                                    count++;
+                                }
+                                cc_Content.Visibility = Visibility.Visible;
+                                break;
                             }
-                            ListView_Blacklist.Items.Add(fullartist.Name);
-                            break;
-                        }
+                        default:
+                            {
+                                FullArtist fullartist = searchItem.Artists.Items[0];
+
+                                if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
+                                {
+                                    return;
+                                }
+                                ListView_Blacklist.Items.Add(fullartist.Name);
+                                break;
+                            }
                     }
 
                     break;
+
                 case 1:
                     ListView_UserBlacklist.Items.Add(search);
                     break;
+
                 case 2: // Song Blacklist
-                    List<FullTrack> tracks = new();
+                    List<FullTrack> tracks = [];
                     string trackId;
                     if (SpotifyApiHandler.Spotify == null)
                     {
@@ -144,7 +147,6 @@ namespace Songify_Slim.Views
                         // add the track to the spotify queue and pass the OnMessageReceivedArgs (contains user who requested the song etc)
                         tracks.Add(await SpotifyApiHandler.GetTrack(trackId));
                     }
-
                     else if (search.StartsWith("https://open.spotify.com/track/"))
                     {
                         trackId = search.Replace("https://open.spotify.com/track/", "");
@@ -178,7 +180,7 @@ namespace Songify_Slim.Views
         public void SaveBlacklist()
         {
             //Artist Blacklist
-            List<string> tempList = new();
+            List<string> tempList = [];
             if (ListView_Blacklist.Items.Count > 0)
             {
                 tempList.AddRange(from object item in ListView_Blacklist.Items where (string)item != "" select (string)item);
@@ -186,14 +188,12 @@ namespace Songify_Slim.Views
             Settings.ArtistBlacklist = tempList;
 
             //User Blacklist
-            tempList = new List<string>();
+            tempList = [];
             if (ListView_UserBlacklist.Items.Count > 0)
             {
                 tempList.AddRange(from object item in ListView_UserBlacklist.Items where (string)item != "" select (string)item);
-
             }
             Settings.UserBlacklist = tempList;
-
 
             //Song Blacklist
             Settings.SongBlacklist.Clear();
@@ -205,7 +205,7 @@ namespace Songify_Slim.Views
             LoadBlacklists();
         }
 
-        private async void btn_Clear_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Clear_Click(object sender, RoutedEventArgs e)
         {
             // after user confirmation clear the list
             switch (cbx_Type.SelectedIndex)
@@ -221,6 +221,7 @@ namespace Songify_Slim.Views
                     }
 
                     break;
+
                 case 1:
                     msgResult = await this.ShowMessageAsync("Notification",
                         "Do you really want to clear the User blocklist?", MessageDialogStyle.AffirmativeAndNegative,
@@ -237,15 +238,18 @@ namespace Songify_Slim.Views
 
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!(sender is MenuItem mnu)) return;
+            if (sender is not MenuItem mnu) return;
 
             ListBox listView = ((ContextMenu)mnu.Parent).PlacementTarget as ListBox;
 
-            // right-click context menu to delete single blacklist entries
-            if (listView != null && listView.SelectedItem == null)
-                return;
+            switch (listView)
+            {
+                // right-click context menu to delete single blacklist entries
+                case { SelectedItem: null }:
+                case null:
+                    return;
+            }
 
-            if (listView == null) return;
             MessageDialogResult msgResult = await this.ShowMessageAsync("Notification",
                 "Delete " + listView.SelectedValue + "?", MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
@@ -254,7 +258,7 @@ namespace Songify_Slim.Views
             SaveBlacklist();
         }
 
-        private void tb_Blacklist_KeyDown(object sender, KeyEventArgs e)
+        private void Tb_Blacklist_KeyDown(object sender, KeyEventArgs e)
         {
             // on enter key save to the blacklist
             if (e.Key == Key.Enter)
@@ -294,7 +298,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void btn_AddArtists_Click(object sender, RoutedEventArgs e)
+        private void Btn_AddArtists_Click(object sender, RoutedEventArgs e)
         {
             foreach (BlockListArtists row in dgv_Artists.Items)
             {
@@ -307,7 +311,6 @@ namespace Songify_Slim.Views
                     {
                         alreadyIn = true;
                         break;
-
                     }
                 if (!alreadyIn)
                     ListView_Blacklist.Items.Add(row.Artist);
@@ -317,13 +320,13 @@ namespace Songify_Slim.Views
             SaveBlacklist();
         }
 
-        private void btn_CancelArtists_Click(object sender, RoutedEventArgs e)
+        private void Btn_CancelArtists_Click(object sender, RoutedEventArgs e)
         {
             dgv_Artists.Items.Clear();
             cc_Content.Visibility = Visibility.Hidden;
         }
 
-        private void cbx_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Cbx_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch (((ComboBox)sender).SelectedIndex)
             {
@@ -331,17 +334,17 @@ namespace Songify_Slim.Views
                     tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
                         Properties.Resources.bw_cbArtist);
                     break;
+
                 case 1:
                     tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
                         Properties.Resources.bw_cbUser);
                     break;
+
                 case 2:
                     tb_Blacklist.SetValue(TextBoxHelper.WatermarkProperty,
                         "Song");
                     break;
             }
-
-
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)

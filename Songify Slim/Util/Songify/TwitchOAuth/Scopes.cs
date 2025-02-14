@@ -69,7 +69,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             //s.Add("whispers:read");
             //s.Add("whispers:edit");
 
-            return s.ToArray();
+            return [.. s];
         }
     }
 }

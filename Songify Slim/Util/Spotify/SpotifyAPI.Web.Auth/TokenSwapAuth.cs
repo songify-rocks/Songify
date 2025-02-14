@@ -23,12 +23,12 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
     /// A version of <see cref="AuthorizationCodeAuth"/> that does not store your client secret, client ID or redirect URI, enforcing a secure authorization flow. Requires an exchange server that will return the authorization code to its callback server via GET request.
     /// </para>
     /// <para>
-    /// It's recommended that you use <see cref="TokenSwapWebAPIFactory"/> if you would like to use the TokenSwap method.
+    /// It's recommended that you use <see cref="TokenSwapWebApiFactory"/> if you would like to use the TokenSwap method.
     /// </para>
     /// </summary>
     public class TokenSwapAuth : SpotifyAuthServer<AuthorizationCode>
     {
-        readonly string _exchangeServerUri;
+        private readonly string _exchangeServerUri;
 
         /// <summary>
         /// The HTML to respond with when the callback server (serverUri) is reached. The default value will close the window on arrival.
@@ -93,7 +93,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         /// <param name="refreshToken">This needs to be defined if "grantType" is "refresh_token".</param>
         /// <param name="currentRetries">Does not need to be defined. Used internally for retry attempt recursion.</param>
         /// <returns>Attempts to return a full <see cref="Token"/>, but after retry attempts, may return a <see cref="Token"/> with no <see cref="Token.AccessToken"/>, or null.</returns>
-        async Task<Token> GetToken(string grantType, string authorizationCode = "", string refreshToken = "",
+        private async Task<Token> GetToken(string grantType, string authorizationCode = "", string refreshToken = "",
           int currentRetries = 0)
         {
             FormUrlEncodedContent content = new(new Dictionary<string, string>
@@ -140,7 +140,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
             }
         }
 
-        System.Timers.Timer _accessTokenExpireTimer;
+        private System.Timers.Timer _accessTokenExpireTimer;
 
         /// <summary>
         /// When Spotify authorization has expired. Will only trigger if <see cref="TimeAccessExpiry"/> is true.
@@ -151,7 +151,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         /// If <see cref="TimeAccessExpiry"/> is true, sets a timer for how long access will take to expire.
         /// </summary>
         /// <param name="token"></param>
-        void SetAccessExpireTimer(Token token)
+        private void SetAccessExpireTimer(Token token)
         {
             if (!TimeAccessExpiry) return;
 
@@ -203,11 +203,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         }
     }
 
-    internal class TokenSwapAuthController : WebApiController
+    internal class TokenSwapAuthController(IHttpContext context) : WebApiController(context)
     {
-        public TokenSwapAuthController(IHttpContext context) : base(context)
-        { }
-
         [WebApiHandler(HttpVerbs.Get, "/auth")]
         public Task<bool> GetAuth()
         {

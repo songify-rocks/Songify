@@ -19,7 +19,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 {
     public class SocketIoClient(string url, string token)
     {
-        private bool trackChanged;
+        private bool _trackChanged;
 
         private readonly SocketIOClient.SocketIO _client = new(url, new SocketIOOptions
         {
@@ -28,10 +28,9 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             ConnectionTimeout = new TimeSpan(0, 0, 0, 5)
         });
 
-        private YTMDResponse _prevResponse = new YTMDResponse();
+        private YtmdResponse _prevResponse = new();
         private DateTime _lastUpdateTime = DateTime.MinValue; // To track the last processed time
         private readonly TimeSpan _throttleInterval = TimeSpan.FromSeconds(0.5); // Throttle interval
-
 
         // Initialize the Socket.IO client with options
         // WebSocket only
@@ -61,8 +60,8 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                 try
                 {
                     string res = response.ToString();
-                    List<YTMDResponse> yTmdResponseList = JsonConvert.DeserializeObject<List<YTMDResponse>>(res);
-                    YTMDResponse yTmdResponse = yTmdResponseList.First();
+                    List<YtmdResponse> yTmdResponseList = JsonConvert.DeserializeObject<List<YtmdResponse>>(res);
+                    YtmdResponse yTmdResponse = yTmdResponseList.First();
 
                     // Calculate percentage
                     double percentage = (yTmdResponse.Player.VideoProgress / yTmdResponse.Video.DurationSeconds) * 100;
@@ -71,8 +70,9 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                     switch (percentage)
                     {
                         // Handle track change and queuing logic
-                        case > 99.0 when trackChanged:
+                        case > 99.0 when _trackChanged:
                             return;
+
                         case > 99.0:
                             {
                                 if (GlobalObjects.ReqList.Any(req => req.PlayerType == Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube)))
@@ -81,13 +81,13 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                                     await WebHelper.YtmdPlayVideo(req.Trackid);
                                     GlobalObjects.ReqList.Remove(req);
                                 }
-                                trackChanged = true;
+                                _trackChanged = true;
                                 break;
                             }
-                        case > 1.0 and < 5.0 when trackChanged:
+                        case > 1.0 and < 5.0 when _trackChanged:
                             // Reset trackChanged within 1-5% of the new track
                             Debug.WriteLine("Resetting trackChanged flag.");
-                            trackChanged = false;
+                            _trackChanged = false;
                             break;
                     }
 
@@ -100,14 +100,13 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 
                     // Update the UI using the dispatcher
                     _prevResponse = yTmdResponse;
-                    await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYTM(yTmdResponse)!);
+                    await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYtm(yTmdResponse)!);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($@"Error processing state-update: {ex.Message}");
                 }
             });
-
 
             _client.OnDisconnected += (_, _) =>
             {

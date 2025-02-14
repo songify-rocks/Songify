@@ -33,7 +33,7 @@
             Margin="6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top"
-            KeyDown="tb_Blacklist_KeyDown"
+            KeyDown="Tb_Blacklist_KeyDown"
             TabIndex="1"
             TextWrapping="Wrap" />
         <StackPanel
@@ -50,7 +50,7 @@
                 Margin="0,0,6,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Click="btn_Add_Click"
+                Click="Btn_Add_Click"
                 Content="{x:Static local:Resources.bw_btnAdd}"
                 TabIndex="3" />
             <Button
@@ -61,7 +61,7 @@
                 Padding="5,6"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Click="btn_Clear_Click"
+                Click="Btn_Clear_Click"
                 Content="{x:Static local:Resources.bw_btnClear}"
                 Grid.IsSharedSizeScope="True"
                 TabIndex="4" />
@@ -76,7 +76,7 @@
             VerticalAlignment="Center"
             RenderTransformOrigin="0.5,0.5"
             SelectedIndex="0"
-            SelectionChanged="cbx_Type_SelectionChanged"
+            SelectionChanged="Cbx_Type_SelectionChanged"
             TabIndex="2">
             <ComboBoxItem Content="{x:Static local:Resources.bw_cbArtist}" />
             <ComboBoxItem Content="{x:Static local:Resources.bw_cbUser}" />
@@ -197,7 +197,7 @@
                     Margin="245,383,106,10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Click="btn_CancelArtists_Click"
+                    Click="Btn_CancelArtists_Click"
                     Content="Cancel" />
 
                 <Button
@@ -206,9 +206,8 @@
                     Margin="336,383,15,10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Click="btn_AddArtists_Click"
+                    Click="Btn_AddArtists_Click"
                     Content="Add selected" />
-
             </Grid>
         </ContentControl>
     </Grid>

@@ -413,7 +413,7 @@
     <value>Console</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Ignore la musique en cours (Diffuseur / Modérateur / Demandeur)</value>
+    <value>Ignore la musique en cours</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Démarre un vote pour ignorer la musique en cours</value>
@@ -828,5 +828,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>D'ACCORD</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Le niveau d'utilisateur est trop bas pour la commande !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Le niveau d'utilisateur est trop bas pour la récompense de demande de chanson</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Afficher les badges de niveau d'utilisateur</value>
   </data>
 </root>

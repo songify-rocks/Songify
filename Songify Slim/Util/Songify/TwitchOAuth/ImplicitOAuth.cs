@@ -8,20 +8,22 @@ using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
-    public class ImplicitOAuth
+    public class ImplicitOAuth(int stateSalt = 42)
     {
         #region Variables
+
         // Privates
         private const string TwitchAuthUrl = "https://id.twitch.tv/oauth2/authorize";
-        private readonly int _salt;
 
         // Listener for twitch redirect.
         private readonly HttpListener _redirectListener = new();
+
         // Listener for fetching info from the redirect listener.
         private readonly HttpListener _fetchListener = new();
 
         // Events
         public delegate void UpdatedValuesEvent(string state, string token);
+
         /// <summary>
         /// Called when the HttpListeners has recieved all data needed.
         /// </summary>
@@ -30,13 +32,10 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// Make sure to compare the state before trusting the token.
         /// </remarks>
         public event UpdatedValuesEvent OnRevcievedValues;
-        #endregion
+
+        #endregion Variables
 
         #region Public Methods
-        public ImplicitOAuth(int stateSalt = 42)
-        {
-            _salt = stateSalt;
-        }
 
         /// <summary>
         /// Request the user to Authorize the application through twitch.
@@ -48,7 +47,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         public string RequestClientAuthorization()
         {
             // Create a "random" number to use as verification.
-            string authStateVerify = ((Int64)(DateTime.UtcNow.AddYears(_salt).Subtract(new DateTime(1939, 11, 30))).TotalSeconds).ToString();
+            string authStateVerify = ((Int64)(DateTime.UtcNow.AddYears(stateSalt).Subtract(new DateTime(1939, 11, 30))).TotalSeconds).ToString();
 
             // Assign value to string
             string queryParams =
@@ -59,7 +58,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             "scope=" + string.Join("+", Scopes.GetScopes()) + "&" +
             "force_verify=true";
             // End
-            
+
             // Start a local webserver that twitch can redirect us back to after authentication.
             InitializeLocalWebServers();
 
@@ -68,11 +67,13 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             {
                 if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") && !Settings.Settings.UseDefaultBrowser)
                 {
-                    Process process = new();
-                    process.StartInfo = new ProcessStartInfo
+                    Process process = new()
                     {
-                        FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                        Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+                            Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
+                        }
                     };
                     process.Start();
                 }
@@ -88,9 +89,11 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 
             return authStateVerify;
         }
-        #endregion
+
+        #endregion Public Methods
 
         #region Private Methods
+
         /// <summary>
         /// Start 2 local HttpListeners and have them wait for data
         /// </summary>
@@ -151,7 +154,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// <summary>
         /// Get the data from the URL hash and send it to the other listener.
         /// </summary>
-        void IncommingTwitchRequest(IAsyncResult result)
+        private void IncommingTwitchRequest(IAsyncResult result)
         {
             HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
@@ -235,7 +238,6 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 			";
             responseString = responseString.Replace("VARIABLE_FETCHURI", ApplicationDetails.FetchUri);
 
-
             // Save html to buffer and send to browser
             byte[] buffer = Encoding.UTF8.GetBytes(responseString);
             httpResponse.ContentLength64 = buffer.Length;
@@ -243,10 +245,10 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             output.Write(buffer, 0, buffer.Length);
             output.Close();
 
-
             // Stop the local webserver.
             httpListener.Stop();
         }
-        #endregion
+
+        #endregion Private Methods
     }
 }

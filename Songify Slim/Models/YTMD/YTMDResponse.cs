@@ -8,7 +8,7 @@ namespace Songify_Slim.Models.YTMD
 {
     using System.Collections.Generic;
 
-    public class YTMDResponse
+    public class YtmdResponse
     {
         public Player Player { get; set; }
         public Video Video { get; set; }
@@ -101,5 +101,4 @@ namespace Songify_Slim.Models.YTMD
         Uploaded = 2,
         Podcast = 3
     }
-
 }

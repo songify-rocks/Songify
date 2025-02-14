@@ -41,7 +41,8 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     AcceptsReturn="False"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="Tb_Song_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
@@ -71,7 +72,8 @@
                     MinHeight="27"
                     VerticalAlignment="Center"
                     AcceptsReturn="True"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="TbRemove_TextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
@@ -102,7 +104,8 @@
                     MinHeight="23"
                     VerticalAlignment="Center"
                     AcceptsReturn="True"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="Tb_Pos_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
@@ -139,7 +142,8 @@
                     MinHeight="23"
                     VerticalAlignment="Center"
                     AcceptsReturn="True"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="Tb_Next_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
@@ -176,12 +180,14 @@
                     MinHeight="26"
                     VerticalAlignment="Center"
                     AcceptsReturn="True"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="Tb_SongLike_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
             </DockPanel>
             <!--#endregion-->
+
             <!--#region Song Request Related Responses-->
             <TextBlock
                 Margin="0,16,0,6"
@@ -201,8 +207,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_Success_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_Success_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -223,8 +230,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_SongInQueue_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_SongInQueue_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -245,10 +253,12 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_MaxSongs_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_MaxSongs_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
+
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
@@ -267,10 +277,61 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_MaxLength_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_MaxLength_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
+            <Border
+                Margin="0,12,0,6"
+                VerticalAlignment="Bottom"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderThickness="1" />
+
+            <TextBlock
+                Margin="0,0,0,6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="{x:Static properties:Resources.brw_UserLevelTooLowCommand}"
+                TextWrapping="Wrap" />
+
+            <TextBox
+                x:Name="TbSrCommandUSerlevelTooLow"
+                MinHeight="23"
+                VerticalAlignment="Center"
+                AcceptsReturn="True"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_UserLevelTooLowCommand_TextChanged"
+                TextWrapping="Wrap"
+                ToolTip="{DynamicResource ParamTooltip}" />
+
+            <Border
+                Margin="0,12,0,6"
+                VerticalAlignment="Bottom"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderThickness="1" />
+
+            <TextBlock
+                Margin="0,0,0,6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="14"
+                Text="{x:Static properties:Resources.brw_UserLevelTooLowReward}"
+                TextWrapping="Wrap" />
+
+            <TextBox
+                x:Name="TbSrRewardUSerlevelTooLow"
+                MinHeight="23"
+                VerticalAlignment="Center"
+                AcceptsReturn="True"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_UserLevelTooLowReward_TextChanged"
+                TextWrapping="Wrap"
+                ToolTip="{DynamicResource ParamTooltip}" />
+
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
@@ -289,8 +350,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_ArtistBlocked_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_ArtistBlocked_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -311,7 +373,8 @@
                 MinHeight="27"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
                 TextChanged="TbExplicit_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
@@ -333,7 +396,8 @@
                 MinHeight="27"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
                 TextChanged="TbSrCooldown_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
@@ -355,7 +419,8 @@
                 MinHeight="27"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
                 TextChanged="TbSrUserCooldown_OnTextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
@@ -377,8 +442,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_ModSkip_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_ModSkip_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -399,8 +465,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_VoteSkip_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_VoteSkip_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -421,7 +488,8 @@
                 MinHeight="27"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
                 TextChanged="TbNotFoundInPlaylist_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
@@ -443,8 +511,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_Error_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_Error_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -465,8 +534,9 @@
                 MinHeight="23"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="tb_NoSong_TextChanged"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
+                TextChanged="Tb_NoSong_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
@@ -487,7 +557,8 @@
                 MinHeight="27"
                 VerticalAlignment="Center"
                 AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
+                GotFocus="Tb__GotFocus"
+                LostFocus="Tb_LostFocus"
                 TextChanged="TbnoTrackFound_TextChanged"
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
@@ -505,7 +576,8 @@
                     MinHeight="23"
                     VerticalAlignment="Center"
                     AcceptsReturn="True"
-                    GotFocus="tb__GotFocus"
+                    GotFocus="Tb__GotFocus"
+                    LostFocus="Tb_LostFocus"
                     TextChanged="Tb_Refund_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />

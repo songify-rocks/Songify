@@ -410,7 +410,7 @@
     <value>Консоль</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Пропускает текущую песню (Стример / Модератор / Заказчик)</value>
+    <value>Пропускает текущую песню</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Начинает голосование за пропуск текущей песни</value>
@@ -821,9 +821,18 @@
     <value>Трек добавлен в очередь.</value>
   </data>
   <data name="s_FillClientIdAndSecret" xml:space="preserve">
-    <value>Введите идентификатор клиента Spotify и секретный код.</value>
+    <value>Введите идентификатор клиента Spotify и секретный код</value>
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Уровень пользователя слишком низок для получения вознаграждения за запрос песни</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Уровень пользователя слишком низок для команды !ssr</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Показать значки уровня пользователя</value>
   </data>
 </root>

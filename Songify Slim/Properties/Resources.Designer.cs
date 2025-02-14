@@ -151,7 +151,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skips the current song (Broadcaster / Mod / Requester).
+        ///   Looks up a localized string similar to Skips the current song.
         /// </summary>
         public static string brw_cmd_skip {
             get {
@@ -408,6 +408,24 @@ namespace Songify_Slim.Properties {
         public static string brw_tc_Responses {
             get {
                 return ResourceManager.GetString("brw_tc_Responses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Userlevel is too low for !ssr command.
+        /// </summary>
+        public static string brw_UserLevelTooLowCommand {
+            get {
+                return ResourceManager.GetString("brw_UserLevelTooLowCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Userlevel is too low for song request reward.
+        /// </summary>
+        public static string brw_UserLevelTooLowReward {
+            get {
+                return ResourceManager.GetString("brw_UserLevelTooLowReward", resourceCulture);
             }
         }
         
@@ -1741,6 +1759,15 @@ namespace Songify_Slim.Properties {
         public static string sw_tc_WebServer {
             get {
                 return ResourceManager.GetString("sw_tc_WebServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show user level badges.
+        /// </summary>
+        public static string sw_tcCommands_ShowUserLevelBadges {
+            get {
+                return ResourceManager.GetString("sw_tcCommands_ShowUserLevelBadges", resourceCulture);
             }
         }
         

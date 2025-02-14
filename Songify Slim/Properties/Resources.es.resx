@@ -407,7 +407,7 @@
     <value>Consola</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Salta la canción actual (Streamer / Mod / Solicitante)</value>
+    <value>Salta la canción actual</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Inicia una votación para saltar la canción actual</value>
@@ -825,5 +825,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>El nivel de usuario es demasiado bajo para el comando !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>El nivel de usuario es demasiado bajo para la recompensa por solicitud de canción</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Mostrar insignias de nivel de usuario</value>
   </data>
 </root>

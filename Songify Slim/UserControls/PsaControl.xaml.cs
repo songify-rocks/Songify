@@ -25,7 +25,7 @@ namespace Songify_Slim.UserControls
     /// </summary>
     public partial class PsaControl : UserControl
     {
-        public PSA Psa;
+        public Psa Psa;
 
         private readonly PackIconMaterial _readIcon = new()
         {
@@ -35,21 +35,20 @@ namespace Songify_Slim.UserControls
             VerticalAlignment = VerticalAlignment.Center
         };
 
-        public PsaControl(PSA psa, bool byPassLimit = false)
+        public PsaControl(Psa psa, bool byPassLimit = false)
         {
             InitializeComponent();
-            this.Psa = psa;
-            TbAuthor.Text = this.Psa.Author;
-            TbDate.Text = this.Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
-            TbSeverity.Text = this.Psa.Severity;
+            Psa = psa;
+            TbAuthor.Text = Psa.Author;
+            TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
+            TbSeverity.Text = Psa.Severity;
 
-            TbMessage.Text = IOManager.InterpretEscapeCharacters(this.Psa.MessageText);
+            TbMessage.Text = IoManager.InterpretEscapeCharacters(Psa.MessageText);
             if (!byPassLimit)
-                DisplayMessageWithReadMore(IOManager.InterpretEscapeCharacters(this.Psa.MessageText));
+                DisplayMessageWithReadMore(IoManager.InterpretEscapeCharacters(Psa.MessageText));
             // if the message is longer than 200 characters, add a "read more" clickable text that opens the message in a new window
 
-
-            Brush severitybrush = this.Psa.Severity switch
+            Brush severitybrush = Psa.Severity switch
             {
                 "Low" => Brushes.ForestGreen,
                 "Medium" => Brushes.DarkOrange,
@@ -60,17 +59,17 @@ namespace Songify_Slim.UserControls
             BorderSeverity.BorderBrush = severitybrush;
             BorderSeverity.Background = severitybrush;
 
-            if (this.Psa.Severity == "High")
+            if (Psa.Severity == "High")
             {
                 BorderMotd.BorderBrush = severitybrush;
             }
 
             if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
             {
-
                 btnRead.Content = _readIcon;
             }
         }
+
         private void DisplayMessageWithReadMore(string message)
         {
             const int maxLength = 150;

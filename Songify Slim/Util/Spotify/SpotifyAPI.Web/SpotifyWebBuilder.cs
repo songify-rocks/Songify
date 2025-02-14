@@ -12,7 +12,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     /// </summary>
     public class SpotifyWebBuilder
     {
-        public const string APIBase = "https://api.spotify.com/v1";
+        public const string ApiBase = "https://api.spotify.com/v1";
 
         #region Search
 
@@ -28,7 +28,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SearchItems(string q, SearchType type, int limit = 20, int offset = 0, string market = "")
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new(APIBase + "/search");
+            StringBuilder builder = new(ApiBase + "/search");
             builder.Append("?q=" + q);
             builder.Append("&type=" + type.GetStringAttribute(","));
             builder.Append("&limit=" + limit);
@@ -54,7 +54,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetAlbumTracks(string id, int limit = 20, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/albums/" + id + "/tracks");
+            StringBuilder builder = new(ApiBase + "/albums/" + id + "/tracks");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(market))
@@ -70,7 +70,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetAlbum(string id, string market = "")
         {
-            return string.IsNullOrEmpty(market) ? $"{APIBase}/albums/{id}" : $"{APIBase}/albums/{id}?market={market}";
+            return string.IsNullOrEmpty(market) ? $"{ApiBase}/albums/{id}" : $"{ApiBase}/albums/{id}?market={market}";
         }
 
         /// <summary>
@@ -82,8 +82,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetSeveralAlbums(List<string> ids, string market = "")
         {
             return string.IsNullOrEmpty(market) ?
-              $"{APIBase}/albums?ids={string.Join(",", ids.Take(20))}" :
-              $"{APIBase}/albums?market={market}&ids={string.Join(",", ids.Take(20))}";
+              $"{ApiBase}/albums?ids={string.Join(",", ids.Take(20))}" :
+              $"{ApiBase}/albums?market={market}&ids={string.Join(",", ids.Take(20))}";
         }
 
         #endregion Albums
@@ -97,7 +97,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetArtist(string id)
         {
-            return $"{APIBase}/artists/{id}";
+            return $"{ApiBase}/artists/{id}";
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetRelatedArtists(string id)
         {
-            return $"{APIBase}/artists/{id}/related-artists";
+            return $"{ApiBase}/artists/{id}/related-artists";
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetArtistsTopTracks(string id, string country)
         {
-            return $"{APIBase}/artists/{id}/top-tracks?country={country}";
+            return $"{ApiBase}/artists/{id}/top-tracks?country={country}";
         }
 
         /// <summary>
@@ -141,7 +141,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetArtistsAlbums(string id, AlbumType type = AlbumType.All, int limit = 20, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/artists/" + id + "/albums");
+            StringBuilder builder = new(ApiBase + "/artists/" + id + "/albums");
             builder.Append("?album_type=" + type.GetStringAttribute(","));
             builder.Append("&limit=" + limit);
             builder.Append("&offset=" + offset);
@@ -157,7 +157,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetSeveralArtists(List<string> ids)
         {
-            return $"{APIBase}/artists?ids={string.Join(",", ids.Take(50))}";
+            return $"{ApiBase}/artists?ids={string.Join(",", ids.Take(50))}";
         }
 
         #endregion Artists
@@ -176,17 +176,17 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <param name="limit">The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.</param>
         /// <param name="offset">The index of the first item to return. Default: 0</param>
         /// <remarks>AUTH NEEDED</remarks>
-        public string GetFeaturedPlaylists(string locale = "", string country = "", DateTime timestamp = default(DateTime), int limit = 20, int offset = 0)
+        public string GetFeaturedPlaylists(string locale = "", string country = "", DateTime timestamp = default, int limit = 20, int offset = 0)
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/browse/featured-playlists");
+            StringBuilder builder = new(ApiBase + "/browse/featured-playlists");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(locale))
                 builder.Append("&locale=" + locale);
             if (!string.IsNullOrEmpty(country))
                 builder.Append("&country=" + country);
-            if (timestamp != default(DateTime))
+            if (timestamp != default)
                 builder.Append("&timestamp=" + timestamp.ToString("yyyy-MM-ddTHH:mm:ss"));
             return builder.ToString();
         }
@@ -202,7 +202,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetNewAlbumReleases(string country = "", int limit = 20, int offset = 0)
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/browse/new-releases");
+            StringBuilder builder = new(ApiBase + "/browse/new-releases");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(country))
@@ -228,7 +228,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetCategories(string country = "", string locale = "", int limit = 20, int offset = 0)
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new(APIBase + "/browse/categories");
+            StringBuilder builder = new(ApiBase + "/browse/categories");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(country))
@@ -254,7 +254,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetCategory(string categoryId, string country = "", string locale = "")
         {
-            StringBuilder builder = new(APIBase + "/browse/categories/" + categoryId);
+            StringBuilder builder = new(ApiBase + "/browse/categories/" + categoryId);
             if (!string.IsNullOrEmpty(country))
                 builder.Append("?country=" + country);
             if (!string.IsNullOrEmpty(locale))
@@ -274,7 +274,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetCategoryPlaylists(string categoryId, string country = "", int limit = 20, int offset = 0)
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new(APIBase + "/browse/categories/" + categoryId + "/playlists");
+            StringBuilder builder = new(ApiBase + "/browse/categories/" + categoryId + "/playlists");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(country))
@@ -308,7 +308,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
           TuneableTrack target = null, TuneableTrack min = null, TuneableTrack max = null, int limit = 20, string market = "")
         {
             limit = Math.Min(100, limit);
-            StringBuilder builder = new($"{APIBase}/recommendations");
+            StringBuilder builder = new($"{ApiBase}/recommendations");
             builder.Append("?limit=" + limit);
             if (artistSeed?.Count > 0)
                 builder.Append("&seed_artists=" + string.Join(",", artistSeed));
@@ -334,7 +334,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetRecommendationSeedsGenres()
         {
-            return $"{APIBase}/recommendations/available-genre-seeds";
+            return $"{ApiBase}/recommendations/available-genre-seeds";
         }
 
         #endregion Browse
@@ -352,7 +352,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         {
             limit = Math.Min(limit, 50);
             const FollowType followType = FollowType.Artist; //currently only artist is supported.
-            StringBuilder builder = new(APIBase + "/me/following?type=" + followType.GetStringAttribute());
+            StringBuilder builder = new(ApiBase + "/me/following?type=" + followType.GetStringAttribute());
             builder.Append("&limit=" + limit);
             if (!string.IsNullOrEmpty(after))
                 builder.Append("&after=" + after);
@@ -367,7 +367,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string Follow(FollowType followType)
         {
-            return $"{APIBase}/me/following?type={followType.GetStringAttribute()}";
+            return $"{ApiBase}/me/following?type={followType.GetStringAttribute()}";
         }
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string Unfollow(FollowType followType)
         {
-            return $"{APIBase}/me/following?type={followType.GetStringAttribute()}";
+            return $"{ApiBase}/me/following?type={followType.GetStringAttribute()}";
         }
 
         /// <summary>
@@ -390,7 +390,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string IsFollowing(FollowType followType, List<string> ids)
         {
-            return $"{APIBase}/me/following/contains?type={followType.GetStringAttribute()}&ids={string.Join(",", ids)}";
+            return $"{ApiBase}/me/following/contains?type={followType.GetStringAttribute()}&ids={string.Join(",", ids)}";
         }
 
         /// <summary>
@@ -404,7 +404,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string FollowPlaylist(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}/followers";
+            return $"{ApiBase}/playlists/{playlistId}/followers";
         }
 
         /// <summary>
@@ -415,7 +415,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string UnfollowPlaylist(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}/followers";
+            return $"{ApiBase}/playlists/{playlistId}/followers";
         }
 
         /// <summary>
@@ -427,7 +427,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string IsFollowingPlaylist(string playlistId, List<string> ids)
         {
-            return $"{APIBase}/playlists/{playlistId}/followers/contains?ids={string.Join(",", ids)}";
+            return $"{ApiBase}/playlists/{playlistId}/followers/contains?ids={string.Join(",", ids)}";
         }
 
         #endregion Follow
@@ -441,7 +441,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string SaveTracks()
         {
-            return APIBase + "/me/tracks/";
+            return ApiBase + "/me/tracks/";
         }
 
         /// <summary>
@@ -455,7 +455,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetSavedTracks(int limit = 20, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/me/tracks");
+            StringBuilder builder = new(ApiBase + "/me/tracks");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(market))
@@ -470,7 +470,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string RemoveSavedTracks()
         {
-            return APIBase + "/me/tracks/";
+            return ApiBase + "/me/tracks/";
         }
 
         /// <summary>
@@ -481,7 +481,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string CheckSavedTracks(List<string> ids)
         {
-            return APIBase + "/me/tracks/contains?ids=" + string.Join(",", ids);
+            return ApiBase + "/me/tracks/contains?ids=" + string.Join(",", ids);
         }
 
         /// <summary>
@@ -491,7 +491,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string SaveAlbums()
         {
-            return $"{APIBase}/me/albums";
+            return $"{ApiBase}/me/albums";
         }
 
         /// <summary>
@@ -505,7 +505,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetSavedAlbums(int limit = 20, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/me/albums");
+            StringBuilder builder = new(ApiBase + "/me/albums");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             if (!string.IsNullOrEmpty(market))
@@ -520,7 +520,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string RemoveSavedAlbums()
         {
-            return APIBase + "/me/albums/";
+            return ApiBase + "/me/albums/";
         }
 
         /// <summary>
@@ -531,7 +531,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string CheckSavedAlbums(List<string> ids)
         {
-            return APIBase + "/me/albums/contains?ids=" + string.Join(",", ids);
+            return ApiBase + "/me/albums/contains?ids=" + string.Join(",", ids);
         }
 
         #endregion Library
@@ -551,7 +551,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetUsersTopTracks(TimeRangeType timeRange = TimeRangeType.MediumTerm, int limit = 20, int offest = 0)
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new($"{APIBase}/me/top/tracks");
+            StringBuilder builder = new($"{ApiBase}/me/top/tracks");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offest);
             builder.Append("&time_range=" + timeRange.GetStringAttribute());
@@ -571,7 +571,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetUsersTopArtists(TimeRangeType timeRange = TimeRangeType.MediumTerm, int limit = 20, int offest = 0)
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new($"{APIBase}/me/top/artists");
+            StringBuilder builder = new($"{ApiBase}/me/top/artists");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offest);
             builder.Append("&time_range=" + timeRange.GetStringAttribute());
@@ -589,7 +589,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetUsersRecentlyPlayedTracks(int limit = 20, DateTime? after = null, DateTime? before = null)
         {
             limit = Math.Min(50, limit);
-            StringBuilder builder = new($"{APIBase}/me/player/recently-played");
+            StringBuilder builder = new($"{ApiBase}/me/player/recently-played");
             builder.Append("?limit=" + limit);
             if (after.HasValue)
                 builder.Append("&after=" + after.Value.ToUnixTimeMillisecondsPoly());
@@ -613,7 +613,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetUserPlaylists(string userId, int limit = 20, int offset = 0)
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists");
+            StringBuilder builder = new(ApiBase + "/users/" + userId + "/playlists");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             return builder.ToString();
@@ -633,7 +633,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetPlaylist(string userId, string playlistId, string fields = "", string market = "")
         {
-            StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists/" + playlistId);
+            StringBuilder builder = new(ApiBase + "/users/" + userId + "/playlists/" + playlistId);
             builder.Append("?fields=" + fields);
             if (!string.IsNullOrEmpty(market))
                 builder.Append("&market=" + market);
@@ -653,7 +653,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetPlaylist(string playlistId, string fields = "", string market = "")
         {
-            StringBuilder builder = new(APIBase + "/playlists/" + playlistId);
+            StringBuilder builder = new(ApiBase + "/playlists/" + playlistId);
             builder.Append("?fields=" + fields);
             if (!string.IsNullOrEmpty(market))
                 builder.Append("&market=" + market);
@@ -677,7 +677,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetPlaylistTracks(string userId, string playlistId, string fields = "", int limit = 100, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 100);
-            StringBuilder builder = new(APIBase + "/users/" + userId + "/playlists/" + playlistId + "/tracks");
+            StringBuilder builder = new(ApiBase + "/users/" + userId + "/playlists/" + playlistId + "/tracks");
             builder.Append("?fields=" + fields);
             builder.Append("&limit=" + limit);
             builder.Append("&offset=" + offset);
@@ -702,7 +702,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetPlaylistTracks(string playlistId, string fields = "", int limit = 100, int offset = 0, string market = "")
         {
             limit = Math.Min(limit, 100);
-            StringBuilder builder = new(APIBase + "/playlists/" + playlistId + "/tracks");
+            StringBuilder builder = new(ApiBase + "/playlists/" + playlistId + "/tracks");
             builder.Append("?fields=" + fields);
             builder.Append("&limit=" + limit);
             builder.Append("&offset=" + offset);
@@ -727,7 +727,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string CreatePlaylist(string userId, string playlistName, bool isPublic = true)
         {
-            return $"{APIBase}/users/{userId}/playlists";
+            return $"{ApiBase}/users/{userId}/playlists";
         }
 
         /// <summary>
@@ -739,7 +739,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string UpdatePlaylist(string userId, string playlistId)
         {
-            return $"{APIBase}/users/{userId}/playlists/{playlistId}";
+            return $"{ApiBase}/users/{userId}/playlists/{playlistId}";
         }
 
         /// <summary>
@@ -750,7 +750,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string UpdatePlaylist(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}";
+            return $"{ApiBase}/playlists/{playlistId}";
         }
 
         /// <summary>
@@ -763,7 +763,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string ReplacePlaylistTracks(string userId, string playlistId)
         {
-            return $"{APIBase}/users/{userId}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/users/{userId}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -775,7 +775,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string ReplacePlaylistTracks(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -791,7 +791,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string RemovePlaylistTracks(string userId, string playlistId, List<DeleteTrackUri> uris)
         {
-            return $"{APIBase}/users/{userId}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/users/{userId}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -806,7 +806,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string RemovePlaylistTracks(string playlistId, List<DeleteTrackUri> uris)
         {
-            return $"{APIBase}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -821,8 +821,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string AddPlaylistTracks(string userId, string playlistId, List<string> uris, int? position = null)
         {
             return position == null ?
-              $"{APIBase}/users/{userId}/playlists/{playlistId}/tracks" :
-              $"{APIBase}/users/{userId}/playlists/{playlistId}/tracks?position={position}";
+              $"{ApiBase}/users/{userId}/playlists/{playlistId}/tracks" :
+              $"{ApiBase}/users/{userId}/playlists/{playlistId}/tracks?position={position}";
         }
 
         /// <summary>
@@ -836,8 +836,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string AddPlaylistTracks(string playlistId, List<string> uris, int? position = null)
         {
             return position == null ?
-              $"{APIBase}/playlists/{playlistId}/tracks" :
-              $"{APIBase}/playlists/{playlistId}/tracks?position={position}";
+              $"{ApiBase}/playlists/{playlistId}/tracks" :
+              $"{ApiBase}/playlists/{playlistId}/tracks?position={position}";
         }
 
         /// <summary>
@@ -849,7 +849,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string ReorderPlaylist(string userId, string playlistId)
         {
-            return $"{APIBase}/users/{userId}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/users/{userId}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -860,7 +860,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string ReorderPlaylist(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}/tracks";
+            return $"{ApiBase}/playlists/{playlistId}/tracks";
         }
 
         /// <summary>
@@ -872,7 +872,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string UploadPlaylistImage(string userId, string playlistId)
         {
-            return $"{APIBase}/users/{userId}/playlists/{playlistId}/images";
+            return $"{ApiBase}/users/{userId}/playlists/{playlistId}/images";
         }
 
         /// <summary>
@@ -883,7 +883,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string UploadPlaylistImage(string playlistId)
         {
-            return $"{APIBase}/playlists/{playlistId}/images";
+            return $"{ApiBase}/playlists/{playlistId}/images";
         }
 
         #endregion Playlists
@@ -897,7 +897,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetPrivateProfile()
         {
-            return $"{APIBase}/me";
+            return $"{ApiBase}/me";
         }
 
         /// <summary>
@@ -907,7 +907,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetPublicProfile(string userId)
         {
-            return $"{APIBase}/users/{userId}";
+            return $"{ApiBase}/users/{userId}";
         }
 
         #endregion Profiles
@@ -923,8 +923,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetSeveralTracks(List<string> ids, string market = "")
         {
             return string.IsNullOrEmpty(market) ?
-              $"{APIBase}/tracks?ids={string.Join(",", ids.Take(50))}" :
-              $"{APIBase}/tracks?market={market}&ids={string.Join(",", ids.Take(50))}";
+              $"{ApiBase}/tracks?ids={string.Join(",", ids.Take(50))}" :
+              $"{ApiBase}/tracks?market={market}&ids={string.Join(",", ids.Take(50))}";
         }
 
         /// <summary>
@@ -935,12 +935,12 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetTrack(string id, string market = "")
         {
-            return string.IsNullOrEmpty(market) ? $"{APIBase}/tracks/{id}" : $"{APIBase}/tracks/{id}?market={market}";
+            return string.IsNullOrEmpty(market) ? $"{ApiBase}/tracks/{id}" : $"{ApiBase}/tracks/{id}?market={market}";
         }
 
         public string GetQueue()
         {
-            return $"{APIBase}/me/player/queue";
+            return $"{ApiBase}/me/player/queue";
         }
 
         /// <summary>
@@ -951,7 +951,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetAudioAnalysis(string id)
         {
-            return $"{APIBase}/audio-analysis/{id}";
+            return $"{ApiBase}/audio-analysis/{id}";
         }
 
         /// <summary>
@@ -962,7 +962,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetAudioFeatures(string id)
         {
-            return $"{APIBase}/audio-features/{id}";
+            return $"{ApiBase}/audio-features/{id}";
         }
 
         /// <summary>
@@ -973,7 +973,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <remarks>AUTH NEEDED</remarks>
         public string GetSeveralAudioFeatures(List<string> ids)
         {
-            return $"{APIBase}/audio-features?ids={string.Join(",", ids.Take(100))}";
+            return $"{ApiBase}/audio-features?ids={string.Join(",", ids.Take(100))}";
         }
 
         #endregion Tracks
@@ -986,7 +986,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetDevices()
         {
-            return $"{APIBase}/me/player/devices";
+            return $"{ApiBase}/me/player/devices";
         }
 
         /// <summary>
@@ -996,7 +996,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string GetPlayback(string market = "")
         {
-            return string.IsNullOrEmpty(market) ? $"{APIBase}/me/player" : $"{APIBase}/me/player?market={market}";
+            return string.IsNullOrEmpty(market) ? $"{ApiBase}/me/player" : $"{ApiBase}/me/player?market={market}";
         }
 
         /// <summary>
@@ -1007,8 +1007,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetPlayingTrack(string market = "")
         {
             return string.IsNullOrEmpty(market) ?
-              $"{APIBase}/me/player/currently-playing" :
-              $"{APIBase}/me/player/currently-playing?market={market}";
+              $"{ApiBase}/me/player/currently-playing" :
+              $"{ApiBase}/me/player/currently-playing?market={market}";
         }
 
         /// <summary>
@@ -1017,7 +1017,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         /// <returns></returns>
         public string TransferPlayback()
         {
-            return $"{APIBase}/me/player";
+            return $"{ApiBase}/me/player";
         }
 
         /// <summary>
@@ -1028,8 +1028,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string ResumePlayback(string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/play" :
-              $"{APIBase}/me/player/play?device_id={deviceId}";
+              $"{ApiBase}/me/player/play" :
+              $"{ApiBase}/me/player/play?device_id={deviceId}";
         }
 
         /// <summary>
@@ -1040,8 +1040,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string PausePlayback(string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/pause" :
-              $"{APIBase}/me/player/pause?device_id={deviceId}";
+              $"{ApiBase}/me/player/pause" :
+              $"{ApiBase}/me/player/pause?device_id={deviceId}";
         }
 
         /// <summary>
@@ -1052,8 +1052,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SkipPlaybackToNext(string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/next" :
-              $"{APIBase}/me/player/next?device_id={deviceId}";
+              $"{ApiBase}/me/player/next" :
+              $"{ApiBase}/me/player/next?device_id={deviceId}";
         }
 
         /// <summary>
@@ -1066,8 +1066,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SkipPlaybackToPrevious(string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/previous" :
-              $"{APIBase}/me/player/previous?device_id={deviceId}";
+              $"{ApiBase}/me/player/previous" :
+              $"{ApiBase}/me/player/previous?device_id={deviceId}";
         }
 
         /// <summary>
@@ -1080,8 +1080,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SeekPlayback(int positionMs, string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/seek?position_ms={positionMs}" :
-              $"{APIBase}/me/player/seek?position_ms={positionMs}&device_id={deviceId}";
+              $"{ApiBase}/me/player/seek?position_ms={positionMs}" :
+              $"{ApiBase}/me/player/seek?position_ms={positionMs}&device_id={deviceId}";
         }
 
         /// <summary>
@@ -1093,8 +1093,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SetRepeatMode(RepeatState repeatState, string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/repeat?state={repeatState.GetStringAttribute()}" :
-              $"{APIBase}/me/player/repeat?state={repeatState.GetStringAttribute()}&device_id={deviceId}";
+              $"{ApiBase}/me/player/repeat?state={repeatState.GetStringAttribute()}" :
+              $"{ApiBase}/me/player/repeat?state={repeatState.GetStringAttribute()}&device_id={deviceId}";
         }
 
         /// <summary>
@@ -1106,8 +1106,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SetVolume(int volumePercent, string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/volume?volume_percent={volumePercent}" :
-              $"{APIBase}/me/player/volume?volume_percent={volumePercent}&device_id={deviceId}";
+              $"{ApiBase}/me/player/volume?volume_percent={volumePercent}" :
+              $"{ApiBase}/me/player/volume?volume_percent={volumePercent}&device_id={deviceId}";
         }
 
         /// <summary>
@@ -1119,8 +1119,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string SetShuffle(bool shuffle, string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/shuffle?state={shuffle}" :
-              $"{APIBase}/me/player/shuffle?state={shuffle}&device_id={deviceId}";
+              $"{ApiBase}/me/player/shuffle?state={shuffle}" :
+              $"{ApiBase}/me/player/shuffle?state={shuffle}&device_id={deviceId}";
         }
 
         /// <summary>
@@ -1132,8 +1132,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string AddToQueue(string uri, string deviceId = "")
         {
             return string.IsNullOrEmpty(deviceId) ?
-              $"{APIBase}/me/player/queue?uri={uri}" :
-              $"{APIBase}/me/player/queue?uri={uri}&device_id={deviceId}";
+              $"{ApiBase}/me/player/queue?uri={uri}" :
+              $"{ApiBase}/me/player/queue?uri={uri}&device_id={deviceId}";
         }
         #endregion
 
@@ -1141,7 +1141,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public string GetCurrentUserPlaylists(int limit, int offset)
         {
             limit = Math.Min(limit, 50);
-            StringBuilder builder = new(APIBase + "/me/playlists");
+            StringBuilder builder = new(ApiBase + "/me/playlists");
             builder.Append("?limit=" + limit);
             builder.Append("&offset=" + offset);
             return builder.ToString();

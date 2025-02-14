@@ -30,7 +30,7 @@ namespace Songify_Slim.Util.Songify
     // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler
     {
-        private static PlaylistInfo playlistInfo;
+        private static PlaylistInfo _playlistInfo;
         public static SpotifyWebAPI Spotify;
         private static Token _lastToken;
         public static bool Authed;
@@ -159,14 +159,12 @@ namespace Songify_Slim.Util.Songify
                                     "Spotify Premium is required to perform song requests. This is a limitation by Spotify, not by us.",
                                     "Spotify Premium required", MessageBoxButton.OK, MessageBoxImage.Warning);
                             }));
-
                     }
                     catch (Exception e)
                     {
                         Logger.LogStr("Error while saving Spotify tokens");
                         Logger.LogExc(e);
                     }
-
                 };
 
                 // automatically refreshes the token after it expires
@@ -268,7 +266,7 @@ namespace Songify_Slim.Util.Songify
                         FullPlaylist playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
                         if (playlist != null || !GlobalObjects.IsObjectDefault(playlist))
                         {
-                            playlistInfo = new PlaylistInfo
+                            _playlistInfo = new PlaylistInfo
                             {
                                 Name = playlist.Name,
                                 Id = playlist.Id,
@@ -283,7 +281,7 @@ namespace Songify_Slim.Util.Songify
             catch (Exception)
             {
                 // ignored because it's not important if the playlist info can't be fetched
-                playlistInfo = null;
+                _playlistInfo = null;
             }
 
             return new TrackInfo
@@ -298,7 +296,7 @@ namespace Songify_Slim.Util.Songify
                 DurationPercentage = (int)percentage,
                 DurationTotal = (int)context.Item.DurationMs,
                 Progress = context.ProgressMs,
-                Playlist = playlistInfo,
+                Playlist = _playlistInfo,
                 FullArtists = context.Item.Artists
             };
         }
@@ -343,7 +341,6 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(e);
                 return null;
             }
-
         }
 
         public static async Task<FullTrack> GetTrack(string id)
@@ -359,7 +356,6 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(e);
                 return null;
             }
-
         }
 
         public static SearchItem FindTrack(string searchQuery)
@@ -422,42 +418,11 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static int LevenshteinDistance(string source, string target)
-        {
-            if (string.IsNullOrEmpty(source))
-                return string.IsNullOrEmpty(target) ? 0 : target.Length;
-
-            if (string.IsNullOrEmpty(target))
-                return source.Length;
-
-            int sourceLength = source.Length;
-            int targetLength = target.Length;
-
-            int[,] distance = new int[sourceLength + 1, targetLength + 1];
-
-            for (int i = 0; i <= sourceLength; distance[i, 0] = i++) ;
-            for (int j = 0; j <= targetLength; distance[0, j] = j++) ;
-
-            for (int i = 1; i <= sourceLength; i++)
-            {
-                for (int j = 1; j <= targetLength; j++)
-                {
-                    int cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
-                    distance[i, j] = Math.Min(
-                        Math.Min(distance[i - 1, j] + 1, distance[i, j - 1] + 1),
-                        distance[i - 1, j - 1] + cost);
-                }
-            }
-
-            return distance[sourceLength, targetLength];
-        }
-
         public static async Task<ErrorResponse> SkipSong()
         {
             try
             {
                 return await Spotify.SkipPlaybackToNextAsync();
-
             }
             catch (Exception)
             {

@@ -79,7 +79,6 @@ namespace Songify_Slim.Views
                 //if (IsFileLocked(new FileInfo(_path)))
                 //    return;
 
-
                 dgvHistorySongs.Dispatcher.Invoke(
                     DispatcherPriority.Normal,
                     new Action(() => { dgvHistorySongs.Items.Clear(); }));
@@ -88,8 +87,8 @@ namespace Songify_Slim.Views
                     new Action(() => { LbxHistory.Items.Clear(); }));
 
                 _doc = XDocument.Load(_path);
-                List<DateTime> list = new();
-                List<string> dateList = new();
+                List<DateTime> list = [];
+                List<string> dateList = [];
 
                 if (_doc.Root != null)
                     foreach (XElement elem in _doc.Root.Elements())
@@ -131,7 +130,7 @@ namespace Songify_Slim.Views
             dgvHistorySongs.Items.Clear();
             XElement root = _doc.Descendants("d_" + LbxHistory.SelectedItem).FirstOrDefault();
 
-            List<XElement> nodes = new();
+            List<XElement> nodes = [];
 
             if (root != null) nodes.AddRange(root.Elements());
 

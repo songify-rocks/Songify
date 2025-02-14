@@ -23,7 +23,7 @@
                 x:Name="btnFontSizeDown"
                 Height="26"
                 Padding="5,5,5,5"
-                Click="btnFontSizeDown_Click"
+                Click="BtnFontSizeDown_Click"
                 Focusable="False"
                 Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
@@ -36,7 +36,7 @@
                 x:Name="btnFontSizeUp"
                 Height="26"
                 Padding="5,5,5,5"
-                Click="btnFontSizeUp_Click"
+                Click="BtnFontSizeUp_Click"
                 Focusable="False"
                 Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
                 <iconPacks:PackIconMaterial
@@ -166,9 +166,9 @@
             x:Name="dgv_Queue"
             Grid.Row="1"
             Margin="10,10,10,10"
-            AddingNewItem="dgv_Queue_AddingNewItem"
+            AddingNewItem="Dgv_Queue_AddingNewItem"
             AutoGenerateColumns="False"
-            BeginningEdit="dgv_Queue_BeginningEdit"
+            BeginningEdit="Dgv_Queue_BeginningEdit"
             CanUserAddRows="False"
             CanUserSortColumns="False"
             DataContext=""

@@ -1,5 +1,5 @@
 ﻿<controls:MetroWindow
-    x:Class="Songify_Slim.Views.Window_Userlist"
+    x:Class="Songify_Slim.Views.WindowUserlist"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -18,7 +18,6 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
-
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -62,7 +61,7 @@
             </ListBox.ItemContainerStyle>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <userControls:UC_ViewerItem />
+                    <userControls:UcViewerItem />
                 </DataTemplate>
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
@@ -131,7 +130,6 @@
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
                     Width="*"
@@ -160,7 +158,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">

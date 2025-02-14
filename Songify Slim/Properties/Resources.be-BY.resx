@@ -450,7 +450,7 @@
     <comment>MenuItem content for "Console"</comment>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Прапускае бягучую песню (стрымер / мадэратар / заказчык)</value>
+    <value>Прапускае бягучую песню</value>
     <comment>Label content for "Skips the current song (Broadcaster / Mod / Requester)"</comment>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
@@ -1000,6 +1000,15 @@
     <value>OK</value>
   </data>
   <data name="s_FillClientIdAndSecret" xml:space="preserve">
-    <value>Калі ласка ўвядзіце ID кліента Spotify і сакрэтны код.</value>
+    <value>Калі ласка ўвядзіце ID кліента Spotify і сакрэтны код</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Узровень карыстальніка занадта нізкі для каманды !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Узровень карыстальніка занадта нізкі для ўзнагароды за запыт песні</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Паказаць значкі ўзроўню карыстальніка</value>
   </data>
 </root>

@@ -21,11 +21,11 @@ namespace Songify_Slim.UserControls
     /// <summary>
     /// Interaction logic for UC_TwitchReward.xaml
     /// </summary>
-    public partial class UC_TwitchReward
+    public partial class UcTwitchReward
     {
-        private CustomReward _reward;
+        private readonly CustomReward _reward;
 
-        public UC_TwitchReward(CustomReward reward)
+        public UcTwitchReward(CustomReward reward)
         {
             InitializeComponent();
             _reward = reward;

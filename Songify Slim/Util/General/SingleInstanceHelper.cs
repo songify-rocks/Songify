@@ -17,9 +17,9 @@ namespace Songify_Slim.Util.General
         {
             try
             {
-                using NamedPipeClientStream client = new NamedPipeClientStream(".", PipeName, PipeDirection.Out);
+                using NamedPipeClientStream client = new(".", PipeName, PipeDirection.Out);
                 client.Connect(2000);
-                using StreamWriter writer = new StreamWriter(client);
+                using StreamWriter writer = new(client);
                 writer.AutoFlush = true;
                 writer.WriteLine("SHOW");
             }

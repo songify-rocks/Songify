@@ -48,9 +48,12 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
+using System.Configuration;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
+using TwitchLib.Api.Helix.Models.Soundtrack;
+using TwitchLib.PubSub.Models.Responses;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -413,7 +416,7 @@ namespace Songify_Slim.Util.Songify
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
 
-                    StreamUpTimer.Tick += _streamUpTimer_Tick;
+                    StreamUpTimer.Tick += StreamUpTimer_Tick;
                     StreamUpTimer.Start();
 
                     TwitchUserSyncTimer.Tick += TwitchUserSyncTimer_Tick;
@@ -579,7 +582,7 @@ namespace Songify_Slim.Util.Songify
         }
 
         // Counter for consecutive failures
-        private static async void _streamUpTimer_Tick(object sender, EventArgs e)
+        private static async void StreamUpTimer_Tick(object sender, EventArgs e)
         {
             bool isStreamUp = await CheckStreamIsUp();
 
@@ -705,7 +708,7 @@ namespace Songify_Slim.Util.Songify
                 Albumcover = track.Album.Images[0].Url,
             };
 
-            await UploadToQueue(o, e.ChatMessage.DisplayName);
+            await UploadToQueue(o);
             GlobalObjects.QueueUpdateQueueWindow();
         }
 
@@ -829,7 +832,7 @@ namespace Songify_Slim.Util.Songify
             };
 
             // Upload the track and who requested it to the queue on the server
-            await UploadToQueue(o, username);
+            await UploadToQueue(o);
 
             // Add the song to the internal queue and update the queue window if its open
             Application.Current.Dispatcher.Invoke(() =>
@@ -1186,15 +1189,18 @@ namespace Songify_Slim.Util.Songify
                 Settings.Settings.TwSrReward)
             {
                 Settings.Settings.IsLive = await CheckStreamIsUp();
-
                 // Check if the user level is lower than broadcaster or not allowed to request songs
                 if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
                 {
                     if (!isAllowed)
                     {
                         // Send a message to the user that their user level is too low to request songs
-                        SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
+                        string response = Settings.Settings.BotRespUserlevelTooLowCommand;
+                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                        response = response.Replace("{userlevel}", $"{Enum.GetName(typeof(TwitchUserLevels), userLevel)}");
+
+                        // Send a message to the user that their user level is too low to request songs
+                        SendChatMessage(e.ChatMessage.Channel, response);
                         return;
                     }
                 }
@@ -1238,14 +1244,19 @@ namespace Songify_Slim.Util.Songify
                         Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                     }
 
+                string response;
+
                 (userLevel, isAllowed) = CheckUserLevel(e.ChatMessage);
                 if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
                 {
                     if (!isAllowed)
                     {
+                        response = Settings.Settings.BotRespUserlevelTooLowCommand;
+                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
+                        response = response.Replace("{userlevel}", $"{Enum.GetName(typeof(TwitchUserLevels), userLevel)}");
+
                         // Send a message to the user that their user level is too low to request songs
-                        SendChatMessage(e.ChatMessage.Channel,
-                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
+                        SendChatMessage(e.ChatMessage.Channel, response);
                         return;
                     }
                 }
@@ -1268,7 +1279,7 @@ namespace Songify_Slim.Util.Songify
                         ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
                         : $"{remaining.Seconds} seconds";
 
-                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                     {
                         User = e.ChatMessage.DisplayName,
                         MaxReq = $"{Settings.Settings.TwSrMaxReq}",
@@ -1278,7 +1289,7 @@ namespace Songify_Slim.Util.Songify
                         Req = GlobalObjects.Requester,
                         Cd = time
                     }, Settings.Settings.BotRespUserCooldown);
-                    SendChatMessage(e.ChatMessage.Channel, msg);
+                    SendChatMessage(e.ChatMessage.Channel, response);
                     return;
                 }
 
@@ -1399,7 +1410,7 @@ namespace Songify_Slim.Util.Songify
                     Albumcover = videoThumbailUrl,
                 };
 
-                await UploadToQueue(o, e.ChatMessage.DisplayName);
+                await UploadToQueue(o);
             }
 
             // Skip Command for mods (!skip)
@@ -2208,7 +2219,7 @@ namespace Songify_Slim.Util.Songify
             catch (Exception e)
             {
                 Logger.LogExc(e);
-                IOManager.WriteOutput($"{GlobalObjects.RootDirectory}/dev_log.txt", Json.Serialize(track));
+                IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/dev_log.txt", Json.Serialize(track));
             }
 
             response = response.Replace("{user}", displayName);
@@ -2691,31 +2702,18 @@ namespace Songify_Slim.Util.Songify
             // Checks if the requester already reached max songrequests
             List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Requester == requester).ToList();
 
-            switch ((TwitchUserLevels)userLevel)
+            maxreq = (TwitchUserLevels)userLevel switch
             {
-                case TwitchUserLevels.Everyone:
-                    maxreq = Settings.Settings.TwSrMaxReqEveryone;
-                    break;
-
-                case TwitchUserLevels.Vip:
-                    maxreq = Settings.Settings.TwSrMaxReqVip;
-                    break;
-
-                case TwitchUserLevels.Subscriber:
-                    maxreq = Settings.Settings.TwSrMaxReqSubscriber;
-                    break;
-
-                case TwitchUserLevels.Moderator:
-                    maxreq = Settings.Settings.TwSrMaxReqModerator;
-                    break;
-
-                case TwitchUserLevels.Broadcaster:
-                    maxreq = 999;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                TwitchUserLevels.Broadcaster => 999,
+                TwitchUserLevels.Everyone => Settings.Settings.TwSrMaxReqEveryone,
+                TwitchUserLevels.Follower => Settings.Settings.TwSrMaxReqFollower,
+                TwitchUserLevels.Moderator => Settings.Settings.TwSrMaxReqModerator,
+                TwitchUserLevels.Subscriber => Settings.Settings.TwSrMaxReqSubscriber,
+                TwitchUserLevels.SubscriberT2 => Settings.Settings.TwSrMaxReqSubscriberT2,
+                TwitchUserLevels.SubscriberT3 => Settings.Settings.TwSrMaxReqSubscriberT3,
+                TwitchUserLevels.Vip => Settings.Settings.TwSrMaxReqVip,
+                _ => throw new ArgumentOutOfRangeException()
+            };
 
             return temp.Count >= maxreq;
         }
@@ -3213,7 +3211,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async Task UploadToQueue(RequestObject track, string displayName)
+        private static async Task UploadToQueue(RequestObject track)
         {
             try
             {

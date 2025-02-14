@@ -518,7 +518,7 @@
     <comment>MenuItem content for "Console"</comment>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Skips the current song (Broadcaster / Mod / Requester)</value>
+    <value>Skips the current song</value>
     <comment>Label content for "Skips the current song (Broadcaster / Mod / Requester)"</comment>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
@@ -1005,5 +1005,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Userlevel is too low for !ssr command</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Userlevel is too low for song request reward</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Show user level badges</value>
   </data>
 </root>

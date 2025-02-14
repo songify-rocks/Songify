@@ -143,6 +143,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Models\BotResponseItem.cs" />
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />

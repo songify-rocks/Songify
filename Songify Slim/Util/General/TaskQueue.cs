@@ -7,24 +7,24 @@ namespace Songify_Slim.Util.General
 {
     internal class TaskQueue
     {
-        private readonly ConcurrentQueue<Func<Task>> tasks = new();
-        private readonly SemaphoreSlim signal = new(0);
-        private readonly CancellationTokenSource cancellationTokenSource = new();
-        private bool isProcessing = false;
+        private readonly ConcurrentQueue<Func<Task>> _tasks = new();
+        private readonly SemaphoreSlim _signal = new(0);
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private bool _isProcessing = false;
 
         public TaskQueue()
         {
-            Task.Run(async () => await ProcessQueueAsync(cancellationTokenSource.Token));
+            Task.Run(async () => await ProcessQueueAsync(_cancellationTokenSource.Token));
         }
 
         public void Enqueue(Func<Task> taskGenerator)
         {
             if (taskGenerator == null) throw new ArgumentNullException(nameof(taskGenerator));
 
-            tasks.Enqueue(taskGenerator);
-            if (!isProcessing)
+            _tasks.Enqueue(taskGenerator);
+            if (!_isProcessing)
             {
-                signal.Release();
+                _signal.Release();
             }
         }
 
@@ -32,11 +32,11 @@ namespace Songify_Slim.Util.General
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                await signal.WaitAsync(cancellationToken);
+                await _signal.WaitAsync(cancellationToken);
 
-                while (tasks.TryDequeue(out Func<Task> taskGenerator))
+                while (_tasks.TryDequeue(out Func<Task> taskGenerator))
                 {
-                    isProcessing = true;
+                    _isProcessing = true;
                     try
                     {
                         Task task = taskGenerator.Invoke();
@@ -47,7 +47,7 @@ namespace Songify_Slim.Util.General
                         // Log or handle exceptions
                     }
                 }
-                isProcessing = false;
+                _isProcessing = false;
             }
         }
     }

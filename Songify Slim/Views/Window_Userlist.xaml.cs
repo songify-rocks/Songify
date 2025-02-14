@@ -23,9 +23,9 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_Userlist.xaml
     /// </summary>
-    public partial class Window_Userlist
+    public partial class WindowUserlist
     {
-        public Window_Userlist()
+        public WindowUserlist()
         {
             InitializeComponent();
 

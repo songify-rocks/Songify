@@ -21,11 +21,11 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowUniversalDialog
     {
-        public WindowUniversalDialog(PSA psa, string title)
+        public WindowUniversalDialog(Psa psa, string title)
         {
             InitializeComponent();
-            this.Title = title;
-            this.ContentControl.Content = new PsaControl(psa, true);
+            Title = title;
+            ContentControl.Content = new PsaControl(psa, true);
         }
     }
 }

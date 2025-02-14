@@ -23,7 +23,7 @@ namespace Songify_Slim.Util.General
 
             // Convert BitmapImage (BitmapSource) to System.Drawing.Bitmap
             Bitmap bitmap;
-            using (MemoryStream outStream = new MemoryStream())
+            using (MemoryStream outStream = new())
             {
                 // Use a BitmapEncoder to save the BitmapImage to the stream
                 BitmapEncoder encoder = new PngBitmapEncoder(); // or BmpBitmapEncoder

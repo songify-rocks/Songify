@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Songify_Slim.Util.Songify
 {
-    public class YTMDApiClient(string baseUrl)
+    public class YtmdApiClient(string baseUrl)
     {
         private readonly HttpClient _httpClient = new();
 
@@ -16,7 +16,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 _httpClient.DefaultRequestHeaders.Remove("Authorization");
-                _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YTMDToken);
+                _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YtmdToken);
                 HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}");
 
                 return response.StatusCode switch
@@ -39,7 +39,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 _httpClient.DefaultRequestHeaders.Remove("Authorization");
-                _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YTMDToken);
+                _httpClient.DefaultRequestHeaders.Add("Authorization", Settings.Settings.YtmdToken);
                 StringContent content = new(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync($"{baseUrl}/command", content);
                 return response.StatusCode switch

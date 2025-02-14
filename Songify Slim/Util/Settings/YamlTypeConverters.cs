@@ -25,7 +25,7 @@ namespace Songify_Slim.Util.Settings
                 else if (parser.TryConsume<SequenceStart>(out SequenceStart _))
                 {
                     // If the node is a sequence, deserialize it as a list of strings
-                    List<string> list = new();
+                    List<string> list = [];
                     while (!parser.TryConsume<SequenceEnd>(out SequenceEnd _))
                     {
                         string item = parser.Consume<Scalar>().Value;

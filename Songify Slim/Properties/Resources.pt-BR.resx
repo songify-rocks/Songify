@@ -415,7 +415,7 @@
     <value>Console</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
-    <value>Ignora a música atual (Broadcaster/Mod/Requester)</value>
+    <value>Ignora a música atual</value>
   </data>
   <data name="brw_cmd_skipvote" xml:space="preserve">
     <value>Inicia uma votação para pular a música atual</value>
@@ -824,5 +824,14 @@
   </data>
   <data name="s_OK" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>O nível do usuário é muito baixo para o comando !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>O nível do usuário é muito baixo para a recompensa por solicitação de música</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Mostrar emblemas de nível de usuário</value>
   </data>
 </root>

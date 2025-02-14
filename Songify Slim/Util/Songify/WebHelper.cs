@@ -20,7 +20,7 @@ namespace Songify_Slim.Util.Songify
         /// </summary>
 
         private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
-        private static readonly YTMDApiClient ApiClientYtm = new("http://localhost:9863/api/v1");
+        private static readonly YtmdApiClient ApiClientYtm = new("http://localhost:9863/api/v1");
 
         internal enum RequestMethod
         {
@@ -58,6 +58,7 @@ namespace Songify_Slim.Util.Songify
                             Logger.LogExc(e);
                         }
                         break;
+
                     case RequestMethod.Post:
                         result = await ApiClient.Post("queue", payload);
                         if (string.IsNullOrEmpty(result))
@@ -98,19 +99,21 @@ namespace Songify_Slim.Util.Songify
                             }));
                             UpdateQueueWindow();
                         }
-
                         catch (Exception e)
                         {
                             Logger.LogExc(e);
                         }
 
                         break;
+
                     case RequestMethod.Patch:
                         await ApiClient.Patch("queue", payload);
                         break;
+
                     case RequestMethod.Clear:
                         await ApiClient.Clear("queue_delete", payload);
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
                 }
@@ -147,13 +150,17 @@ namespace Songify_Slim.Util.Songify
             {
                 case RequestMethod.Get:
                     break;
+
                 case RequestMethod.Post:
                     await ApiClient.Post("history", payload);
                     break;
+
                 case RequestMethod.Patch:
                     break;
+
                 case RequestMethod.Clear:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(method), method, null);
             }
@@ -167,7 +174,7 @@ namespace Songify_Slim.Util.Songify
                 key = Settings.Settings.AccessKey,
                 song = currSong,
                 cover = coverUrl,
-                song_id = GlobalObjects.CurrentSong == null ? null : GlobalObjects.CurrentSong.SongId,
+                song_id = GlobalObjects.CurrentSong?.SongId,
                 playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType)
             };
             SongRequest(RequestMethod.Post, Json.Serialize(payload));
@@ -181,7 +188,7 @@ namespace Songify_Slim.Util.Songify
             {
                 id = Settings.Settings.Uuid,
                 tst = unixTimestamp,
-                song = song,
+                song,
                 key = Settings.Settings.AccessKey
             };
             HistoryRequest(RequestMethod.Post, Json.Serialize(payload));
@@ -189,16 +196,14 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task<string> GetBetaPatchNotes(string url)
         {
-            using (HttpClient httpClient = new())
-            {
-                HttpResponseMessage response = await httpClient.GetAsync(url);
-                response.EnsureSuccessStatusCode();
-                string content = await response.Content.ReadAsStringAsync();
-                return content;
-            }
+            using HttpClient httpClient = new();
+            HttpResponseMessage response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            string content = await response.Content.ReadAsStringAsync();
+            return content;
         }
 
-        public static async Task<List<PSA>> GetPsa()
+        public static async Task<List<Psa>> GetPsa()
         {
             string result = await ApiClient.Get("motd", "");
             if (string.IsNullOrEmpty(result))
@@ -207,7 +212,7 @@ namespace Songify_Slim.Util.Songify
             }
             try
             {
-                List<PSA> psas = JsonConvert.DeserializeObject<List<PSA>>(result);
+                List<Psa> psas = JsonConvert.DeserializeObject<List<Psa>>(result);
                 return psas.Count == 0 ? null : psas;
             }
             catch (Exception e)
@@ -229,18 +234,18 @@ namespace Songify_Slim.Util.Songify
             return result != "No canvas found" ? new Tuple<bool, string>(true, result) : new Tuple<bool, string>(false, "");
         }
 
-        internal static async Task<YTMDResponse> GetYtmData()
+        internal static async Task<YtmdResponse> GetYtmData()
         {
-            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YtmdToken))
                 return null;
 
             string result = await ApiClientYtm.Get("state");
-            return string.IsNullOrEmpty(result) ? null : JsonConvert.DeserializeObject<YTMDResponse>(result);
+            return string.IsNullOrEmpty(result) ? null : JsonConvert.DeserializeObject<YtmdResponse>(result);
         }
 
         public static async Task YtmdPlayPause()
         {
-            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YtmdToken))
                 return;
             dynamic payload = new
             {
@@ -252,7 +257,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task YtmdPlayVideo(string videoId)
         {
-            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YtmdToken))
                 return;
             dynamic payload = new
             {
@@ -268,7 +273,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task YtmdNext()
         {
-            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YtmdToken))
                 return;
             dynamic payload = new
             {
@@ -276,12 +281,11 @@ namespace Songify_Slim.Util.Songify
             };
 
             await ApiClientYtm.Post(Json.Serialize(payload));
-
         }
 
         public static async Task YtmdPrevious()
         {
-            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YtmdToken))
                 return;
             dynamic payload = new
             {
@@ -289,7 +293,6 @@ namespace Songify_Slim.Util.Songify
             };
 
             await ApiClientYtm.Post(Json.Serialize(payload));
-
         }
     }
 }

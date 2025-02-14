@@ -34,13 +34,13 @@ namespace Songify_Slim.Views
         {
             InitializeComponent();
             _timer.Interval = TimeSpan.FromSeconds(1);
-            _timer.Tick += _timer_Tick;
+            _timer.Tick += Timer_Tick;
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             if (GlobalObjects.CurrentSong == null) return;
-            Grid grd = new Grid();
+            Grid grd = new();
             if (!GlobalObjects.CurrentSong.IsPlaying)
                 grd.Margin = new Thickness(3, 0, 0, 0);
             grd.Children.Add(GlobalObjects.CurrentSong.IsPlaying
@@ -78,7 +78,6 @@ namespace Songify_Slim.Views
             tbFontSize.Text = $"{fSize}";
             dgv_Queue.FontSize = fSize;
             _timer.IsEnabled = true;
-
 
             if (!Settings.SpotifyControlVisible)
             {
@@ -151,12 +150,12 @@ namespace Songify_Slim.Views
             GlobalObjects.QueueUpdateQueueWindow();
         }
 
-        private void dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        private void Dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
             e.Cancel = true;
         }
 
-        private void btnFontSizeDown_Click(object sender, RoutedEventArgs e)
+        private void BtnFontSizeDown_Click(object sender, RoutedEventArgs e)
         {
             int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize - 2, 12, 72);
             Settings.FontsizeQueue = fontSize;
@@ -164,7 +163,7 @@ namespace Songify_Slim.Views
             tbFontSize.Text = fontSize.ToString();
         }
 
-        private void btnFontSizeUp_Click(object sender, RoutedEventArgs e)
+        private void BtnFontSizeUp_Click(object sender, RoutedEventArgs e)
         {
             int fontSize = MathUtils.Clamp((int)dgv_Queue.FontSize + 2, 12, 72);
             Settings.FontsizeQueue = fontSize;
@@ -270,9 +269,8 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void dgv_Queue_AddingNewItem(object sender, AddingNewItemEventArgs e)
+        private void Dgv_Queue_AddingNewItem(object sender, AddingNewItemEventArgs e)
         {
-
         }
 
         private async void BtnBack_OnClick(object sender, RoutedEventArgs e)
@@ -297,6 +295,7 @@ namespace Songify_Slim.Views
                     // Update the last click time
                     _lastBackButtonClickTime = currentTime;
                     break;
+
                 case 6:
                     await WebHelper.YtmdPrevious();
                     break;
@@ -310,6 +309,7 @@ namespace Songify_Slim.Views
                 case 0:
                     await SpotifyApiHandler.SkipSong();
                     break;
+
                 case 6:
                     await WebHelper.YtmdNext();
                     break;
@@ -325,7 +325,7 @@ namespace Songify_Slim.Views
                     {
                         bool isPlaying = await SpotifyApiHandler.PlayPause();
 
-                        Grid grd = new Grid();
+                        Grid grd = new();
                         if (!isPlaying)
                             grd.Margin = new Thickness(3, 0, 0, 0);
                         grd.Children.Add(isPlaying

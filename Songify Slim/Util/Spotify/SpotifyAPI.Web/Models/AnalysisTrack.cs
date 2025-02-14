@@ -11,7 +11,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models
     public double Duration { get; set; }
 
     [JsonProperty("sample_md5")]
-    public string SampleMD5 { get; set; }
+    public string SampleMd5 { get; set; }
 
     [JsonProperty("offset_seconds")]
     public double OffsetSeconds { get; set; }

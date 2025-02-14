@@ -652,8 +652,45 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string WebUserAgent => GetWebua();
-        public static string YTMDToken { get => GetYTMDToken(); set => SetYTMDToken(value); }
+        public static string YtmdToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
         public static string BotCmdCommandsTrigger { get => GetBotCmdCommandsTrigger(); set => SetBotCmdCommandsTrigger(value); }
+        public static string BotRespUserlevelTooLowCommand { get => GetBotRespUserlevelTooLowCommand(); set => SetBotRespUserlevelTooLowCommand(value); }
+        public static bool ShowUserLevelBadges { get => GetShowUserLevelBadges(); set => SetShowUserLevelBadges(value); }
+
+        private static void SetShowUserLevelBadges(bool value)
+        {
+            CurrentConfig.AppConfig.ShowUserLevelBadges = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetShowUserLevelBadges()
+        {
+            return CurrentConfig.AppConfig.ShowUserLevelBadges;
+        }
+
+        private static void SetBotRespUserlevelTooLowCommand(string value)
+        {
+            CurrentConfig.BotConfig.BotRespUserLevelTooLowCommand = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetBotRespUserlevelTooLowCommand()
+        {
+            return CurrentConfig.BotConfig.BotRespUserLevelTooLowCommand;
+        }
+
+        public static string BotRespUserlevelTooLowReward { get => GetBotRespUserlevelTooLowReward(); set => SetBotRespUserlevelTooLowReward(value); }
+
+        private static void SetBotRespUserlevelTooLowReward(string value)
+        {
+            CurrentConfig.BotConfig.BotRespUserLevelTooLowReward = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetBotRespUserlevelTooLowReward()
+        {
+            return CurrentConfig.BotConfig.BotRespUserLevelTooLowReward;
+        }
 
         private static void SetBotCmdCommandsTrigger(string value)
         {
@@ -739,6 +776,8 @@ namespace Songify_Slim.Util.Settings
                 BotRespSuccess = GetBot_Resp_Success(),
                 BotRespUnavailable = GetBot_Resp_SongUnavailable(),
                 BotRespUserCooldown = GetBotRespUserCooldown(),
+                BotRespUserLevelTooLowCommand = GetBotRespUserlevelTooLowCommand(),
+                BotRespUserLevelTooLowReward = GetBotRespUserlevelTooLowReward(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 ChatLiveStatus = GetChatLiveStatus(),
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
@@ -765,8 +804,8 @@ namespace Songify_Slim.Util.Settings
                 CustomPauseTextEnabled = GetCustomPauseTextEnabled(),
                 Directory = GetDirectory(),
                 DonationReminder = GetDonationReminder(),
-                DownloadCover = GetDownloadCover(),
                 DownloadCanvas = GetDownloadCanvas(),
+                DownloadCover = GetDownloadCover(),
                 FontSize = GetFontSize(),
                 FontsizeQueue = GetFontSizeQueue(),
                 KeepAlbumCover = GetKeepAlubmCover(),
@@ -790,6 +829,7 @@ namespace Songify_Slim.Util.Settings
                 RewardGoalEnabled = GetRewardGoalEnabled(),
                 RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
+                ShowUserLevelBadges = GetShowUserLevelBadges(),
                 SongBlacklist = GetSongBlacklist(),
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
@@ -831,7 +871,7 @@ namespace Songify_Slim.Util.Settings
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
-                YTMDToken = GetYTMDToken(),
+                YtmdToken = GetYtmdToken(),
             };
 
             return new Configuration
@@ -1575,9 +1615,9 @@ namespace Songify_Slim.Util.Settings
             return "Songify Data Provider";
         }
 
-        private static string GetYTMDToken()
+        private static string GetYtmdToken()
         {
-            return CurrentConfig.AppConfig.YTMDToken;
+            return CurrentConfig.AppConfig.YtmdToken;
         }
 
         private static void SetAccessKey(string value)
@@ -2438,9 +2478,9 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetYTMDToken(string value)
+        private static void SetYtmdToken(string value)
         {
-            CurrentConfig.AppConfig.YTMDToken = value;
+            CurrentConfig.AppConfig.YtmdToken = value;
             ConfigHandler.WriteAllConfig(CurrentConfig);
         }
     }

@@ -33,7 +33,7 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
-            this.RewardId = customReward.Id;
+            RewardId = customReward.Id;
             TbRewardName.Text = Reward.Title;
             TbRewardCost.Text = Reward.Cost.ToString();
             if (Reward.BackgroundColor != null)
@@ -78,7 +78,6 @@ namespace Songify_Slim.UserControls
                         await settings.LoadRewards();
                     }
                 }
-
             }
             catch (Exception exception)
             {
