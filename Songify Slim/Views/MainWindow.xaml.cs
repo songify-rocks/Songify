@@ -45,6 +45,7 @@ using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Net.NetworkInformation;
 using MahApps.Metro.Controls;
+using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Properties;
 
@@ -264,10 +265,16 @@ namespace Songify_Slim.Views
             if (_selectedSource == PlayerType.SpotifyWeb)
                 img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    if ((_selectedSource == PlayerType.SpotifyWeb || _selectedSource == PlayerType.YTMDesktop) && Settings.DownloadCover)
+                    if (_selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover)
+                    {
                         img_cover.Visibility = Visibility.Visible;
+                        GrdCover.Visibility = Visibility.Visible;
+                    }
                     else
+                    {
                         img_cover.Visibility = Visibility.Collapsed;
+                        GrdCover.Visibility = Visibility.Collapsed;
+                    }
                 }));
         }
 
@@ -1041,9 +1048,23 @@ namespace Songify_Slim.Views
             _timerFetcher.Elapsed -= OnTimedEvent;
             _sCts = new CancellationTokenSource();
 
+            
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
+                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+
+                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover
+                    ? 500
+                    : (int)Width - 6;
+
+                if (img_cover.Visibility != vis)
+                    img_cover.Visibility = vis;
+                if (GrdCover.Visibility != vis)
+                    GrdCover.Visibility = vis;
+                if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
+                    TxtblockLiveoutput.MaxWidth = maxWidth;
             }));
 
             try
@@ -1151,10 +1172,12 @@ namespace Songify_Slim.Views
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
                     if (Settings.Player != 0 && Settings.DownloadCover)
                     {
+                        GrdCover.Visibility = Visibility.Collapsed;
                         CoverCanvas.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
+                        GrdCover.Visibility = Visibility.Visible;
                         CoverCanvas.Visibility = Visibility.Visible;
                     }
                     img_cover.Visibility = Visibility.Collapsed;
@@ -1199,13 +1222,15 @@ namespace Songify_Slim.Views
                     if ((Settings.Player == 0 || Settings.Player == 6) && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;
+                        GrdCover.Visibility = Visibility.Visible;
                     }
                     else
                     {
                         img_cover.Visibility = Visibility.Collapsed;
+                        GrdCover.Visibility = Visibility.Collapsed;
                     }
-
                     CoverCanvas.Visibility = Visibility.Collapsed;
+
                     Logger.LogStr("COVER: Set succesfully");
                     break;
                 }

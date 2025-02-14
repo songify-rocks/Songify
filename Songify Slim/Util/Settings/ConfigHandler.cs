@@ -38,14 +38,17 @@ namespace Songify_Slim.Util.Settings
                     path += "/SpotifyCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as SpotifyCredentials ?? throw new InvalidOperationException());
                     break;
+
                 case Enums.ConfigTypes.TwitchCredentials:
                     path += "/TwitchCredentials" + fileEnding;
                     yaml = serializer.Serialize(o as TwitchCredentials ?? throw new InvalidOperationException());
                     break;
+
                 case Enums.ConfigTypes.BotConfig:
                     path += "/BotConfig" + fileEnding;
                     yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
                     break;
+
                 case Enums.ConfigTypes.AppConfig:
                     try
                     {
@@ -58,11 +61,13 @@ namespace Songify_Slim.Util.Settings
                         return;
                     }
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(configType), configType, null);
             }
             File.WriteAllText(path, yaml);
         }
+
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
         {
             string yamlPath = $@"{path}\{fileName}.yaml";
@@ -100,15 +105,19 @@ namespace Songify_Slim.Util.Settings
                     case Enums.ConfigTypes.SpotifyCredentials:
                         config.SpotifyCredentials = LoadOrCreateConfig<SpotifyCredentials>(path, "SpotifyCredentials", deserializer);
                         break;
+
                     case Enums.ConfigTypes.TwitchCredentials:
                         config.TwitchCredentials = LoadOrCreateConfig<TwitchCredentials>(path, "TwitchCredentials", deserializer);
                         break;
+
                     case Enums.ConfigTypes.BotConfig:
                         config.BotConfig = LoadOrCreateConfig<BotConfig>(path, "BotConfig", deserializer);
                         break;
+
                     case Enums.ConfigTypes.AppConfig:
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -182,9 +191,14 @@ namespace Songify_Slim.Util.Settings
         public bool BotCmdSonglike { get; set; }
         public bool BotCmdVol { get; set; }
         public bool BotCmdVolIgnoreMod { get; set; }
+        public bool BotCmdCommands { get; set; }
         public bool ChatLiveStatus { get; set; }
         public bool OnlyWorkWhenLive { get; set; }
         public int BotCmdSkipVoteCount { get; set; } = 5;
+        public string BotCmdPlayPauseTrigger { get; set; } = "!play, !pause";
+        public string BotCmdSkipVoteTrigger { get; set; } = "!voteskip";
+        public string BotCmdVolTrigger { get; set; } = "!vol";
+        public string BotCmdCommandsTrigger { get; set; }  = "!songcommands";
         public string BotCmdNextTrigger { get; set; } = "next";
         public string BotCmdPosTrigger { get; set; } = "pos";
         public string BotCmdQueueTrigger { get; set; } = "queue";
@@ -215,6 +229,44 @@ namespace Songify_Slim.Util.Settings
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
         public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
+    }
+
+    public class BotCommandInfo
+    {
+        public string CommandName { get; set; }
+        public string Trigger { get; set; }
+    }
+
+    public static class BotConfigExtensions
+    {
+        /// <summary>
+        /// Returns a list of bot command names (the bool property name) that are enabled (true)
+        /// along with their corresponding trigger (if one exists).
+        /// </summary>
+        public static IEnumerable<BotCommandInfo> GetEnabledBotCommands(BotConfig config)
+        {
+            Type type = typeof(BotConfig);
+
+            // Get all public instance properties that are booleans and start with "BotCmd"
+            IEnumerable<PropertyInfo> boolProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType == typeof(bool) && p.Name.StartsWith("BotCmd"));
+
+            foreach (PropertyInfo boolProp in boolProperties)
+            {
+                bool enabled = (bool)boolProp.GetValue(config);
+                if (!enabled) continue;
+                // Construct the expected trigger property name (e.g., BotCmdNext -> BotCmdNextTrigger)
+                string triggerPropName = boolProp.Name + "Trigger";
+                PropertyInfo triggerProp = type.GetProperty(triggerPropName);
+                string triggerValue = triggerProp != null ? (string)triggerProp.GetValue(config) : null;
+
+                yield return new BotCommandInfo
+                {
+                    CommandName = boolProp.Name,
+                    Trigger = triggerValue
+                };
+            }
+        }
     }
 
     public class AppConfig

@@ -1579,12 +1579,20 @@
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
                     <ScrollViewer>
-                        <StackPanel Margin="10,16,0,0" Orientation="Vertical">
+                        <StackPanel Margin="10,16,6,0" Orientation="Vertical">
 
                             <!--  Header Row  -->
-                            <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="76" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="75" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <TextBlock
-                                    Width="80"
+                                    Grid.Column="0"
                                     Padding="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
@@ -1593,7 +1601,7 @@
                                     Text="{x:Static local:Resources.brw_cmd_trigger}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
-                                    Width="341"
+                                    Grid.Column="1"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="10"
@@ -1601,358 +1609,442 @@
                                     Text="{x:Static local:Resources.brw_cmd_description}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
-                                    Width="106"
+                                    Grid.Column="2"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     FontSize="10"
                                     FontStyle="Italic"
                                     Text="{x:Static local:Resources.brw_cmd_enabled}"
                                     TextWrapping="Wrap" />
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  SSR Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerSsr"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="ssr"
-                                            Text="ssr"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
-                                        TextWrapping="Wrap" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdSsr"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" />
-                                </StackPanel>
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerSsr"
+                                        HorizontalAlignment="Stretch"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="ssr"
+                                        Text="ssr"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.sw_SpotifySR_SRCommand}"
+                                    TextWrapping="Wrap" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdSsr"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" />
                                 <WrapPanel
                                     x:Name="PnlSongrequestUserlevels"
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="7" />
-                                    <customControl:UcUserLevelItem UserLevel="6" />
-                                    <customControl:UcUserLevelItem UserLevel="5" />
-                                    <customControl:UcUserLevelItem UserLevel="4" />
-                                    <customControl:UcUserLevelItem UserLevel="3" />
-                                    <customControl:UcUserLevelItem UserLevel="2" />
-                                    <customControl:UcUserLevelItem UserLevel="1" />
-                                    <customControl:UcUserLevelItem UserLevel="0" />
-                                    <customControl:UcUserLevelItem UserLevel="-1" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="7" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="6" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="5" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="4" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="3" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="2" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="1" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="-1" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Song Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerSong"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="song"
+                                        Text="song"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                                    <!--  Left "column" with trigger text and TextBox  -->
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerSong"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="song"
-                                            Text="song"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
-                                    <!--  Middle "column"  -->
-                                    <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_song}" />
-                                    <!--  Right "column"  -->
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdSong"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="tgl_botcmd_song_Toggled" />
-                                </StackPanel>
+                                    Text="{x:Static local:Resources.brw_cmd_song}" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdSong"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="tgl_botcmd_song_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="0" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Pos Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerPos"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="pos"
-                                            Text="pos"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_pos}"
-                                        TextWrapping="WrapWithOverflow" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdPos"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="tgl_botcmd_pos_Toggled" />
-                                </StackPanel>
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerPos"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="pos"
+                                        Text="pos"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_pos}"
+                                    TextWrapping="WrapWithOverflow" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdPos"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="tgl_botcmd_pos_Toggled" />
+
                                 <WrapPanel
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     MaxWidth="518"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="0" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Queue Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerQueue"
-                                            VerticalAlignment="Top"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="queue"
-                                            Text="queue"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_QueueReturn}"
-                                        TextWrapping="Wrap" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotQueue"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerQueue"
                                         VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="TglBotQueue_OnToggled" />
-                                </StackPanel>
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="queue"
+                                        Text="queue"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_QueueReturn}"
+                                    TextWrapping="Wrap" />
+
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotQueue"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="TglBotQueue_OnToggled" />
 
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="0" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
+
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Next Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerNext"
-                                            VerticalAlignment="Top"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="next"
-                                            Text="next"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_next}"
-                                        TextWrapping="WrapWithOverflow" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdNext"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerNext"
                                         VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="tgl_botcmd_next_Toggled" />
-                                </StackPanel>
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="next"
+                                        Text="next"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_next}"
+                                    TextWrapping="WrapWithOverflow" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdNext"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="tgl_botcmd_next_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="0" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Skip Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerSkip"
-                                            VerticalAlignment="Top"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="skip"
-                                            Text="skip"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_skip}"
-                                        TextWrapping="WrapWithOverflow" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdSkip"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerSkip"
                                         VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="tgl_botcmd_skip_Toggled" />
-                                </StackPanel>
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="skip"
+                                        Text="skip"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="340"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_skip}"
+                                    TextWrapping="WrapWithOverflow" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdSkip"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="tgl_botcmd_skip_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
                                     <customControl:UcUserLevelItem UserLevel="7" />
                                     <customControl:UcUserLevelItem UserLevel="6" />
-                                    <customControl:UcUserLevelItem UserLevel="-1" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="-1" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Voteskip Command Row  -->
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                <StackPanel
-                                    Width="80"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
                                         Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
@@ -1960,37 +2052,45 @@
                                         Text="!" />
                                     <TextBox
                                         x:Name="TextBoxTriggerVoteskip"
-                                        VerticalAlignment="Top"
+                                        VerticalAlignment="Center"
                                         PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
                                         Style="{StaticResource TextBoxTextBlock}"
                                         Tag="voteskip"
                                         Text="voteskip"
                                         TextChanged="TextBoxTrigger_TextChanged" />
-                                </StackPanel>
+                                </DockPanel>
+
                                 <TextBlock
-                                    Width="340"
-                                    Margin="0,0,5,0"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Text="{x:Static local:Resources.brw_cmd_skipvote}"
                                     TextWrapping="WrapWithOverflow" />
                                 <controls:ToggleSwitch
                                     x:Name="TglBotcmdSkipvote"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
                                     MinWidth="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                    OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                    OffContent=""
+                                    OnContent=""
                                     Toggled="tgl_botcmd_skipvote_Toggled" />
-                            </StackPanel>
-
-                            <!--  Skip Vote Count Row  -->
-                            <StackPanel Orientation="Vertical">
-
+                                <WrapPanel
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    Margin="0,6,0,0"
+                                    HorizontalAlignment="Left">
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
+                                </WrapPanel>
                                 <StackPanel
-                                    Margin="266,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Right"
                                     Orientation="Horizontal">
                                     <Label HorizontalAlignment="Right" Content="{x:Static local:Resources.brw_cmd_skipvotecount}" />
                                     <controls:NumericUpDown
@@ -2003,211 +2103,263 @@
                                         ParsingNumberStyle="Integer"
                                         ValueChanged="NudSkipVoteCount_ValueChanged" />
                                 </StackPanel>
-                                <WrapPanel
-                                    MaxWidth="518"
-                                    Margin="0,6,0,0"
-                                    HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="0" />
-                                </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Remove Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerRemove"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="remove"
-                                            Text="remove"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_remove}" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdRemove"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="Tgl_botcmd_remove_OnToggled_Toggled" />
-                                </StackPanel>
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerRemove"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="remove"
+                                        Text="remove"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_remove}" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdRemove"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="Tgl_botcmd_remove_OnToggled_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
                                     <customControl:UcUserLevelItem UserLevel="7" />
                                     <customControl:UcUserLevelItem UserLevel="6" />
-                                    <customControl:UcUserLevelItem UserLevel="-1" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="-1" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Songlike Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!" />
-                                        <TextBox
-                                            x:Name="TextBoxTriggerSonglike"
-                                            PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
-                                            Style="{StaticResource TextBoxTextBlock}"
-                                            Tag="like"
-                                            Text="songlike"
-                                            TextChanged="TextBoxTrigger_TextChanged" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_songlike}" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdSonglike"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="Tgl_botcmd_songlike_OnToggled_Toggled" />
-                                </StackPanel>
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerSonglike"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="like"
+                                        Text="songlike"
+                                        TextChanged="TextBoxTrigger_TextChanged" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_songlike}" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdSonglike"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="Tgl_botcmd_songlike_OnToggled_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
                                     <customControl:UcUserLevelItem UserLevel="7" />
                                     <customControl:UcUserLevelItem UserLevel="6" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Play/Pause Command Row  -->
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                    <StackPanel
-                                        Width="80"
-                                        Height="32"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="6,0,0,0"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Text="!play !pause" />
-                                    </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
-                                        Width="340"
-                                        Margin="0,0,5,0"
+                                        Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.brw_cmd_playpause}" />
-                                    <controls:ToggleSwitch
-                                        x:Name="TglBotcmdPlayPause"
-                                        Height="32"
-                                        MinWidth="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
-                                        Toggled="Tgl_botcmd_PlayPause_OnToggled_Toggled" />
-                                </StackPanel>
+                                        Text="!play !pause" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static local:Resources.brw_cmd_playpause}" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdPlayPause"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="Tgl_botcmd_PlayPause_OnToggled_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
                                     <customControl:UcUserLevelItem UserLevel="7" />
                                     <customControl:UcUserLevelItem UserLevel="6" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
+
                             <!--  Separator  -->
-                            <Border Margin="-10,8" BorderThickness="0,1,0,0">
+                            <Border Margin="-10,8" BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
                             </Border>
 
                             <!--  Volume Command Row  -->
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                <StackPanel
-                                    Width="80"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
                                     <TextBlock
                                         Margin="6,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         Text="!vol #" />
-                                </StackPanel>
+
+                                </DockPanel>
                                 <TextBlock
-                                    Width="340"
-                                    Margin="0,0,5,0"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Margin="6,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Text="{x:Static local:Resources.brw_cmd_vol}"
                                     TextWrapping="Wrap" />
                                 <controls:ToggleSwitch
                                     x:Name="TglBotcmdVol"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
                                     Height="32"
                                     MinWidth="0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                    OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                    OffContent=""
+                                    OnContent=""
                                     Toggled="Tgl_botcmd_Vol_OnToggled_Toggled" />
-                            </StackPanel>
 
-                            <!--  Volume Ignore Mod Row  -->
-                            <StackPanel Orientation="Vertical">
-
+                                <WrapPanel
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
+                                    Margin="0,6,0,0"
+                                    HorizontalAlignment="Left">
+                                    <customControl:UcUserLevelItem UserLevel="7" />
+                                    <customControl:UcUserLevelItem UserLevel="6" />
+                                </WrapPanel>
                                 <StackPanel
-                                    Margin="80,0,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Right"
                                     Orientation="Horizontal">
                                     <TextBlock
-                                        Width="341"
                                         Margin="0,0,5,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
@@ -2219,18 +2371,78 @@
                                         MinWidth="0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                        OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                        OffContent=""
+                                        OnContent=""
                                         Toggled="TglBotcmdVolIgnoreMod_OnToggled" />
                                 </StackPanel>
+                            </Grid>
+
+                            <!--  Separator  -->
+                            <Border Margin="-10,8" BorderThickness="2">
+                                <Border.BorderBrush>
+                                    <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
+                                </Border.BorderBrush>
+                            </Border>
+
+                            <!--  Play/Pause Command Row  -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <DockPanel
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    LastChildFill="True">
+                                    <TextBlock
+                                        Margin="6,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Text="!" />
+                                    <TextBox
+                                        x:Name="TextBoxTriggerCommands"
+                                        MaxWidth="60"
+                                        PreviewKeyDown="TextBoxTrigger_PreviewKeyDown"
+                                        Style="{StaticResource TextBoxTextBlock}"
+                                        Tag="commands"
+                                        Text="cmds"
+                                        TextChanged="TextBoxTrigger_TextChanged"
+                                        TextWrapping="NoWrap" />
+                                </DockPanel>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Width="340"
+                                    Margin="6,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Text="Sends a list of active commansd to the chat." />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBotcmdCommands"
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Height="32"
+                                    MinWidth="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="Tgl_botcmd_Commands_OnToggled_Toggled" />
+
                                 <WrapPanel
-                                    MaxWidth="518"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="3"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Left">
-                                    <customControl:UcUserLevelItem UserLevel="7" />
-                                    <customControl:UcUserLevelItem UserLevel="6" />
+                                    <customControl:UcUserLevelItem LongName="True" UserLevel="0" />
                                 </WrapPanel>
-                            </StackPanel>
+                            </Grid>
 
                         </StackPanel>
                         <!--#region Bot Commands-->
@@ -2294,7 +2506,7 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2332,15 +2544,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="tgl_botcmd_song_Toggled" />
                             <Border
                                 Grid.Row="4"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2382,15 +2594,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="tgl_botcmd_pos_Toggled" />
                             <Border
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2433,15 +2645,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="tgl_botcmd_next_Toggled" />
                             <Border
                                 Grid.Row="6"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2484,8 +2696,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="tgl_botcmd_skip_Toggled" />
 
                             <DockPanel
@@ -2525,8 +2737,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="tgl_botcmd_skipvote_Toggled" />
 
                             <Label
@@ -2551,7 +2763,7 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2594,15 +2806,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="Tgl_botcmd_ssr_OnToggled_Toggled" />
                             <Border
                                 Grid.Row="8"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2640,8 +2852,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="Tgl_botcmd_remove_OnToggled_Toggled" />
 
                             <Border
@@ -2649,7 +2861,7 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2687,15 +2899,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="Tgl_botcmd_songlike_OnToggled_Toggled" />
                             <Border
                                 Grid.Row="10"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2729,15 +2941,15 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="Tgl_botcmd_PlayPause_OnToggled_Toggled" />
                             <Border
                                 Grid.Row="11"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2769,8 +2981,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="Tgl_botcmd_Vol_OnToggled_Toggled" />
                             <TextBlock
                                 Grid.Row="12"
@@ -2788,8 +3000,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="TglBotcmdVolIgnoreMod_OnToggled" />
 
                             <Border
@@ -2797,7 +3009,7 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
                                 Margin="-10,0"
-                                BorderThickness="0,1,0,0">
+                                BorderThickness="2">
                                 <Border.BorderBrush>
                                     <SolidColorBrush Color="{DynamicResource MahApps.Colors.Accent3}" />
                                 </Border.BorderBrush>
@@ -2837,8 +3049,8 @@
                                 MinWidth="0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                OffContent="{x:Static local:Resources.brw_cmd_off}"
-                                OnContent="{x:Static local:Resources.brw_cmd_on}"
+                                OffContent=""
+                                OnContent=""
                                 Toggled="TglBotQueue_OnToggled" />
                         </Grid>-->
                         <!--#endregion-->

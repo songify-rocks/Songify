@@ -13,15 +13,15 @@
             <Setter Property="Background" Value="Transparent" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
-                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="Background" Value="SteelBlue" />
                     <Setter Property="ToolTip" Value="Requester" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
-                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="Background" Value="SteelBlue" />
                     <Setter Property="ToolTip" Value="Everyone" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
-                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="Background" Value="SteelBlue" />
                     <Setter Property="ToolTip" Value="Follower" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
@@ -90,34 +90,101 @@
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
                     <Setter Property="Text" Value="R" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Requester" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
                     <Setter Property="Text" Value="E" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Everyone" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
                     <Setter Property="Text" Value="F" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Follower" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
                     <Setter Property="Text" Value="" />
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Subscriber" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3">
                     <Setter Property="Text" Value="T2" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Subscriber T2" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4">
                     <Setter Property="Text" Value="T3" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Subscriber T3" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5">
                     <Setter Property="Text" Value="" />
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="VIP" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6">
                     <Setter Property="Text" Value="" />
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Moderator" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7">
                     <Setter Property="Text" Value="" />
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7" />
+                        <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Text" Value="Broadcaster" />
+                    <Setter Property="Visibility" Value="Visible" />
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>

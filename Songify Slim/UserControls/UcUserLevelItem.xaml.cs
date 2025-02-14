@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.UI.Composition;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.General;
 
@@ -33,6 +34,19 @@ namespace Songify_Slim.UserControls
             set => SetValue(UserLevelProperty, value);
         }
 
+        public bool LongName
+        {
+            get => (bool)GetValue(LongNameProperty);
+            set => SetValue(LongNameProperty, value);
+        }
+
+        public static readonly DependencyProperty LongNameProperty =
+            DependencyProperty.Register(
+                nameof(LongName),
+                typeof(bool),
+                typeof(UcUserLevelItem),
+                new FrameworkPropertyMetadata(false, null, null));
+
         public static readonly DependencyProperty UserLevelProperty =
             DependencyProperty.Register(
                 nameof(UserLevel),
@@ -51,7 +65,6 @@ namespace Songify_Slim.UserControls
                 _ => value
             };
         }
-
         private static bool ValidateUserLevel(object value)
         {
             int level = (int)value;

@@ -51,7 +51,7 @@ namespace Songify_Slim.Views
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
 
-        private Dictionary<string, string> _supportedLanguages = new()
+        private readonly Dictionary<string, string> _supportedLanguages = new()
         {
             { "en", "English" },
             { "de-DE", "German" },
@@ -168,6 +168,7 @@ namespace Songify_Slim.Views
             TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
             TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
             TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
+            TglBotcmdCommands.IsOn = Settings.BotCmdCommands;
             TglDonationReminder.IsOn = Settings.DonationReminder;
             NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
             TglBotcmdVol.IsOn = Settings.BotCmdVol;
@@ -289,18 +290,6 @@ namespace Songify_Slim.Views
             await LoadRewards();
 
             PnlSongrequestUserlevels.Children.Clear();
-            PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
-            {
-                UserLevel = 7
-            });
-            foreach (int i in Settings.UserLevelsCommand)
-            {
-                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
-                {
-                    UserLevel = i
-                });
-            }
-
             if (Settings.RefundConditons == null) return;
             foreach (int condition in Settings.RefundConditons)
             {
@@ -1217,6 +1206,12 @@ namespace Songify_Slim.Views
                         ? "queue"
                         : ((TextBox)sender).Text;
                     break;
+
+                case "commands":
+                    Settings.BotCmdCommandsTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
+                    ? "cmds"
+                    : ((TextBox)sender).Text;
+                    break;
             }
         }
 
@@ -1290,10 +1285,10 @@ namespace Songify_Slim.Views
                Broadcaster = 4
              */
 
-            if (!(sender is CheckBox checkBox)) return;
+            if (sender is not CheckBox checkBox) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (Settings.UserLevelsReward.Contains(value)) return;
-            List<int> list = new(Settings.UserLevelsReward) { value };
+            List<int> list = [.. Settings.UserLevelsReward, value];
             Settings.UserLevelsReward = list;
         }
 
@@ -1709,11 +1704,17 @@ namespace Songify_Slim.Views
             });
             foreach (int i in Settings.UserLevelsCommand.OrderByDescending(n => n).ToList())
             {
-                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem
                 {
-                    UserLevel = i
+                    UserLevel = i,
+                    LongName = i is 0 or 1
                 });
             }
+        }
+
+        private void Tgl_botcmd_Commands_OnToggled_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BotCmdCommands = ((ToggleSwitch)sender).IsOn;
         }
     }
 }
