@@ -16,7 +16,9 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
     {
         private readonly SpotifyWebBuilder _builder;
 
-        public SpotifyWebAPI() : this(null) { }
+        public SpotifyWebAPI() : this(null)
+        {
+        }
 
         public SpotifyWebAPI(ProxyConfig proxyConfig)
         {
@@ -1289,7 +1291,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             return DownloadDataAsync<CursorPaging<PlayHistory>>(_builder.GetUsersRecentlyPlayedTracks(limit, after, before));
         }
 
-        #endregion
+        #endregion Personalization
 
         #region Playlists
 
@@ -1945,8 +1947,9 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
         public async Task<ErrorResponse> AddPlaylistTracksAsync(string playlistId, List<string> uris, int? position = null)
         {
             JObject body = new()
-            { { "uris", JArray.FromObject(uris.Take(100)) }
-      };
+            {
+                { "uris", JArray.FromObject(uris.Take(100)) }
+            };
             return await UploadDataAsync<ErrorResponse>(_builder.AddPlaylistTracks(playlistId, uris, position), body.ToString(Formatting.None)).ConfigureAwait(false) ?? new ErrorResponse();
         }
 
@@ -2662,7 +2665,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             return UploadDataAsync<ErrorResponse>(_builder.AddToQueue(uri, deviceId), string.Empty);
         }
 
-        #endregion
+        #endregion Player
 
         #region Util
 
@@ -2753,7 +2756,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 lastError = data.Error;
 
                 triesLeft -= 1;
-
             } while (UseAutoRetry && triesLeft > 0 && lastError != null && RetryErrorCodes.Contains(lastError.Status));
 
             return data;
@@ -2774,7 +2776,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 lastError = data.Error;
 
                 triesLeft -= 1;
-
             } while (UseAutoRetry && triesLeft > 0 && lastError != null && RetryErrorCodes.Contains(lastError.Status));
 
             return data;
@@ -2814,9 +2815,10 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             do
             {
                 Dictionary<string, string> headers = new()
-                { { "Authorization", TokenType + " " + AccessToken },
-          { "Content-Type", "application/json" }
-        };
+                {
+                    { "Authorization", TokenType + " " + AccessToken },
+                    { "Content-Type", "application/json" }
+                };
 
                 if (response != null) { Thread.Sleep(RetryAfter); }
                 response = WebClient.UploadJson<T>(url, uploadData, method, headers);
@@ -2824,7 +2826,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 response.Item2.AddResponseInfo(response.Item1);
                 lastError = response.Item2.Error;
                 triesLeft -= 1;
-
             } while (UseAutoRetry && triesLeft > 0 && lastError != null && RetryErrorCodes.Contains(lastError.Status));
 
             return response.Item2;
@@ -2842,9 +2843,10 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             do
             {
                 Dictionary<string, string> headers = new()
-                { { "Authorization", TokenType + " " + AccessToken },
-          { "Content-Type", "application/json" }
-        };
+                {
+                    { "Authorization", TokenType + " " + AccessToken },
+                    { "Content-Type", "application/json" }
+                };
 
                 if (response != null) { await Task.Delay(RetryAfter).ConfigureAwait(false); }
                 response = await WebClient.UploadJsonAsync<T>(url, uploadData, method, headers).ConfigureAwait(false);
@@ -2853,7 +2855,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 lastError = response.Item2.Error;
 
                 triesLeft -= 1;
-
             } while (UseAutoRetry && triesLeft > 0 && lastError != null && RetryErrorCodes.Contains(lastError.Status));
 
             return response.Item2;
@@ -2874,7 +2875,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 lastError = response.Item2.Error;
 
                 triesLeft -= 1;
-
             } while (UseAutoRetry && triesLeft > 0 && lastError != null && RetryErrorCodes.Contains(lastError.Status));
 
             return response.Item2;
@@ -2927,7 +2927,6 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                 {
                     triesLeft -= 1;
                 }
-
             } while (UseAutoRetry &&
               triesLeft > 0 &&
               (GetTooManyRequests(response.Item1) != -1 ||

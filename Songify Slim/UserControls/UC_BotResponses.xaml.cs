@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace Songify_Slim.UserControls
@@ -16,6 +17,30 @@ namespace Songify_Slim.UserControls
     /// </summary>
     public partial class UcBotResponses
     {
+        private readonly Dictionary<string, string> _textBoxDefaults = new()
+        {
+            {"TbArtistBlocked","@{user} the Artist: {artist} has been blacklisted by the broadcaster."},
+            {"TbSrCooldown","The command is on cooldown. Try again in {cd} seconds."},
+            {"TbError","@{user} there was an error adding your Song to the queue. Error message: {errormsg}"},
+            {"TbExplicit","This Song containts explicit content and is not allowed."},
+            {"TbSongInQueue","@{user} this song is already in the queue."},
+            {"TbMaxLength","@{user} the song you requested exceeded the maximum song length ({maxlength})."},
+            {"TbMaxSongs","@{user} maximum number of songs in queue reached ({maxreq})."},
+            {"TbModSkip","@{user} skipped the current song."},
+            {"TbNext","@{user} {song}"},
+            {"TbNoSong","@{user} please specify a song to add to the queue."},
+            {"TbnoTrackFound","No track found."},
+            {"TbNotFoundInPlaylist","This song was not found in the allowed playlist.({playlist_name} {playlist_url})"},
+            {"TbPos","@{user} {songs}{pos} {song}{/songs}"},
+            {"TbRefund","Your points have been refunded."},
+            {"TbRemove","{user} your previous request ({song}) will be skipped."},
+            {"TbSong","@{user} {song}"},
+            {"TbSongLike","The Song {song} has been added to the playlist."},
+            {"TbSuccess","{artist} - {title} requested by @{user} has been added to the queue."},
+            {"TbVoteSkip","@{user} voted to skip the current song. ({votes})"},
+            {"TbSrUserCooldown","@{user} you have to wait {cd} before you can request a song again."},
+        };
+
         public UcBotResponses()
         {
             InitializeComponent();
@@ -37,7 +62,6 @@ namespace Songify_Slim.UserControls
             bool? isChecked = ((CheckBox)sender)?.IsChecked;
             if (isChecked != null && (bool)!isChecked)
             {
-
                 if (cbx == null) return;
                 if (!tbx.Text.StartsWith("[announce ")) return;
                 cbx.SelectedIndex = 0;
@@ -55,7 +79,6 @@ namespace Songify_Slim.UserControls
         private static void SetPreview(TextBox tb)
         {
             string response = tb.Text;
-
 
             Dictionary<string, string> replacements = new()
             {
@@ -75,7 +98,6 @@ namespace Songify_Slim.UserControls
                 {"{playlist_name}", "My Super Cool Playlist"},
                 {"{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"},
                 {"{cd}", "5"}
-
             };
 
             response = replacements.Aggregate(response, (current, pair) => current.Replace(pair.Key, pair.Value));
@@ -97,7 +119,6 @@ namespace Songify_Slim.UserControls
                 tb.Text = GetStringAndColor(tb.Text, ((ComboBoxItem)cb.SelectedItem).Content.ToString().ToLower());
             else
                 tb.Text = "[announce " + ((ComboBoxItem)cb.SelectedItem).Content.ToString().ToLower() + "]" + tb.Text;
-
         }
 
         private void tb__GotFocus(object sender, RoutedEventArgs e)
@@ -170,16 +191,19 @@ namespace Songify_Slim.UserControls
             Settings.BotRespIsInQueue = TbSongInQueue.Text;
             SetPreview(sender as TextBox);
         }
+
         private void tb_Success_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespSuccess = TbSuccess.Text;
             SetPreview(sender as TextBox);
         }
+
         private void tb_VoteSkip_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespVoteSkip = TbVoteSkip.Text;
             SetPreview(sender as TextBox);
         }
+
         private void Tb_SongLike_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespSongLike = TbSongLike.Text;
@@ -209,9 +233,63 @@ namespace Songify_Slim.UserControls
             TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
             TbSrUserCooldown.Text = Settings.BotRespUserCooldown;
 
+            TbTriggerSong.Text = $"!{Settings.BotCmdSongTrigger}";
+            TbTriggerRemove.Text = $"!{Settings.BotCmdRemoveTrigger}";
+            TbTriggerPos.Text = $"!{Settings.BotCmdPosTrigger}";
+            TbTriggerNext.Text = $"!{Settings.BotCmdNextTrigger}";
+            TbTriggerLike.Text = $"!{Settings.BotCmdSonglikeTrigger}";
+
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
                 box.SelectedIndex = 0;
+            }
+
+            foreach (TextBox textBox in GlobalObjects.FindVisualChildren<TextBox>(this))
+            {
+                // Optionally store the default text in the Tag (or another property) if you want to reset later
+                textBox.Tag = textBox.Text; // assuming initial text is your default
+
+                // Create a new context menu for this TextBox
+                ContextMenu contextMenu = new();
+
+                // Create the Cut menu item and wire up its Click event
+                MenuItem cutItem = new() { Header = "Cut", Command = ApplicationCommands.Cut, CommandTarget = textBox };
+ 
+                // Create the Copy menu item
+                MenuItem copyItem = new() { Header = "Copy", Command = ApplicationCommands.Copy, CommandTarget = textBox };
+
+                // Create the Paste menu item
+                MenuItem pasteItem = new() { Header = "Paste", Command = ApplicationCommands.Paste, CommandTarget = textBox };
+
+                // Create the Reset menu item
+                MenuItem resetItem = new() { Header = "Reset to default" };
+                resetItem.Click += (_, _) =>
+                {
+                    // Reset the TextBox text to the default stored in Tag
+                    textBox.Text = _textBoxDefaults[textBox.Name];
+                };
+
+                // Add the items to the context menu
+                contextMenu.Items.Add(cutItem);
+                contextMenu.Items.Add(copyItem);
+                contextMenu.Items.Add(pasteItem);
+                contextMenu.Items.Add(new Separator()); // optional: add a separator
+                contextMenu.Items.Add(resetItem);
+
+                // When the context menu opens, update the enabled state based on the TextBox state
+                contextMenu.Opened += (_, _) =>
+                {
+                    // Enable Cut and Copy only if there is a text selection
+                    bool hasSelection = !string.IsNullOrEmpty(textBox.SelectedText);
+                    cutItem.IsEnabled = hasSelection;
+                    copyItem.IsEnabled = hasSelection;
+
+                    // Optionally, enable Paste only if the clipboard contains text
+                    pasteItem.IsEnabled = Clipboard.ContainsText();
+                };
+
+                // Assign the context menu to the TextBox
+                textBox.ContextMenu = contextMenu;
             }
         }
 

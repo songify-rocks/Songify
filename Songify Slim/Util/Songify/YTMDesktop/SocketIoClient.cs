@@ -66,7 +66,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 
                     // Calculate percentage
                     double percentage = (yTmdResponse.Player.VideoProgress / yTmdResponse.Video.DurationSeconds) * 100;
-                    Debug.WriteLine($"Progress: {percentage:F2}%");
+                    //Debug.WriteLine($"Progress: {percentage:F2}%");
 
                     switch (percentage)
                     {
@@ -74,16 +74,16 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                         case > 99.0 when trackChanged:
                             return;
                         case > 99.0:
-                        {
-                            if (GlobalObjects.ReqList.Any(req => req.PlayerType == RequestPlayerType.Youtube))
                             {
-                                RequestObject req = GlobalObjects.ReqList.First(req => req.PlayerType == RequestPlayerType.Youtube);
-                                await WebHelper.YtmdPlayVideo(req.Trackid);
-                                GlobalObjects.ReqList.Remove(req);
+                                if (GlobalObjects.ReqList.Any(req => req.PlayerType == Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube)))
+                                {
+                                    RequestObject req = GlobalObjects.ReqList.First(req => req.PlayerType == Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube));
+                                    await WebHelper.YtmdPlayVideo(req.Trackid);
+                                    GlobalObjects.ReqList.Remove(req);
+                                }
+                                trackChanged = true;
+                                break;
                             }
-                            trackChanged = true;
-                            break;
-                        }
                         case > 1.0 and < 5.0 when trackChanged:
                             // Reset trackChanged within 1-5% of the new track
                             Debug.WriteLine("Resetting trackChanged flag.");

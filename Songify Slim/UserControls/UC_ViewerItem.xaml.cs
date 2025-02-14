@@ -18,7 +18,7 @@ namespace Songify_Slim.UserControls
     /// <summary>
     /// Interaction logic for UC_ViewerItem.xaml
     /// </summary>
-    public partial class UC_ViewerItem : UserControl
+    public partial class UC_ViewerItem
     {
         public UC_ViewerItem()
         {

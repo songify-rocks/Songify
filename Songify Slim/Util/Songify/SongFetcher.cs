@@ -228,7 +228,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.Upload)
                 try
                 {
-                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "), null, Enums.RequestPlayerType.Other);
                 }
                 catch (Exception ex)
                 {
@@ -707,7 +707,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static Task WriteSongInfo(TrackInfo songInfo)
+        private static Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
             string title = songInfo.Title;
 
@@ -901,7 +901,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.Upload)
                 try
                 {
-                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl);
+                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType);
                 }
                 catch (Exception ex)
                 {
@@ -1078,13 +1078,12 @@ namespace Songify_Slim.Util.Songify
 
 
                 UpdateWebServerResponse(trackInfo);
-                if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
-                    return;
+                //if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
+                //    return;
 
-                await WriteSongInfo(trackInfo);
+                await WriteSongInfo(trackInfo, Enums.RequestPlayerType.Youtube);
                 GlobalObjects.CurrentSong = trackInfo;
                 GlobalObjects.QueueUpdateQueueWindow();
-
             }
             catch (Exception)
             {

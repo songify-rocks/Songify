@@ -89,6 +89,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
+                Logger.LogStr($"API: Error posting to {endpoint}");
                 Logger.LogExc(e);
             }
             return null;

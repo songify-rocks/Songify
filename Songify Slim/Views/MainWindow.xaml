@@ -281,7 +281,7 @@
                     <MenuItem Click="BtnGitHub_Click" Header="GitHub" />
                     <MenuItem Click="BtnDiscord_Click" Header="Discord" />
                     <MenuItem Click="BtnLogFolderClick" Header="{x:Static local:Resources.mw_menu_Help_LogFolder}" />
-                    <MenuItem Click="BtnAppFolderClick" Header="Songify Folder"/>
+                    <MenuItem Click="BtnAppFolderClick" Header="Songify Folder" />
                     <MenuItem Click="BtnAboutClick" Header="{x:Static local:Resources.mw_menu_Help_About}" />
                 </MenuItem>
                 <MenuItem
@@ -320,7 +320,7 @@
                     Click="Mi_TW_BotResponses_Click"
                     Header="{x:Static local:Resources.mw_menu_Twitch_Bot}"
                     Visibility="Collapsed">
-                    <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click"/>-->
+                    <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click" />-->
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_SongRequests}">
@@ -354,7 +354,7 @@
             </MenuItem>
             <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
                 <MenuItem Click="BtnMenuViewConsole_Click" Header="{x:Static local:Resources.mw_menu_Console}" />
-                <MenuItem Click ="BtnMenuViewUserList_Click" Header="User list"/>
+                <MenuItem Click ="BtnMenuViewUserList_Click" Header="User list" />
                 <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
             </MenuItem>
         </Menu>
@@ -709,8 +709,6 @@
                         <iconPacks:PackIconBootstrapIcons.Style>
                             <Style TargetType="iconPacks:PackIconBootstrapIcons">
                                 <Style.Triggers>
-
-
 
                                     <Trigger Property="Foreground" Value="IndianRed">
                                         <Setter Property="ToolTip">

@@ -20,111 +20,167 @@
                 FontSize="18"
                 FontWeight="Bold"
                 Text="{x:Static properties:Resources.UC_BotResponses_CommandResponses}" />
-            <TextBlock
-                Margin="0,0,6,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="{x:Static properties:Resources.brw_Song}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="TbSong"
-                MinHeight="23"
-                VerticalAlignment="Center"
-                AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="Tb_Song_OnTextChanged"
-                TextWrapping="Wrap"
-                ToolTip="{DynamicResource ParamTooltip}" />
+            <DockPanel
+                Margin="0,0,6,3"
+                HorizontalAlignment="Stretch"
+                LastChildFill="True">
+                <Border
+                    MinWidth="60"
+                    Margin="0,0,6,0"
+                    Padding="6,3"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="TbTriggerSong"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+                <TextBox
+                    x:Name="TbSong"
+                    MinHeight="23"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="False"
+                    GotFocus="tb__GotFocus"
+                    TextChanged="Tb_Song_OnTextChanged"
+                    TextWrapping="Wrap"
+                    ToolTip="{DynamicResource ParamTooltip}" />
+            </DockPanel>
             <Border
                 Margin="0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
-            <TextBlock
-                Margin="0,0,6,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="{x:Static properties:Resources.brw_Remove}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="TbRemove"
-                MinHeight="27"
-                VerticalAlignment="Center"
-                AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="TbRemove_TextChanged"
-                TextWrapping="Wrap"
-                ToolTip="{DynamicResource ParamTooltip}" />
-
+            <DockPanel
+                Margin="0,0,6,3"
+                HorizontalAlignment="Stretch"
+                LastChildFill="True">
+                <Border
+                    MinWidth="60"
+                    Margin="0,0,6,0"
+                    Padding="6,3"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="TbTriggerRemove"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+                <TextBox
+                    x:Name="TbRemove"
+                    MinHeight="27"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="True"
+                    GotFocus="tb__GotFocus"
+                    TextChanged="TbRemove_TextChanged"
+                    TextWrapping="Wrap"
+                    ToolTip="{DynamicResource ParamTooltip}" />
+            </DockPanel>
             <Border
                 Margin="0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
+            <DockPanel
+                Margin="0,0,6,3"
+                HorizontalAlignment="Stretch"
+                LastChildFill="True">
+                <Border
+                    MinWidth="60"
+                    Margin="0,0,6,0"
+                    Padding="6,3"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="TbTriggerPos"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
 
-            <TextBlock
-                Margin="0,0,6,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="{x:Static properties:Resources.brw_Pos}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="TbPos"
-                MinHeight="23"
-                VerticalAlignment="Center"
-                AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="Tb_Pos_OnTextChanged"
-                TextWrapping="Wrap"
-                ToolTip="{DynamicResource ParamTooltip}" />
+                <TextBox
+                    x:Name="TbPos"
+                    MinHeight="23"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="True"
+                    GotFocus="tb__GotFocus"
+                    TextChanged="Tb_Pos_OnTextChanged"
+                    TextWrapping="Wrap"
+                    ToolTip="{DynamicResource ParamTooltip}" />
+            </DockPanel>
             <Border
                 Margin="0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
-
-            <TextBlock
-                Margin="0,0,6,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="{x:Static properties:Resources.brw_Next}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="TbNext"
-                MinHeight="23"
-                VerticalAlignment="Center"
-                AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="Tb_Next_OnTextChanged"
-                TextWrapping="Wrap"
-                ToolTip="{DynamicResource ParamTooltip}" />
+            <DockPanel
+                Margin="0,0,6,3"
+                HorizontalAlignment="Stretch"
+                LastChildFill="True">
+                <Border
+                    MinWidth="60"
+                    Margin="0,0,6,0"
+                    Padding="6,3"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="TbTriggerNext"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+                <!--<TextBlock
+                    Margin="0,0,6,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Text="{x:Static properties:Resources.brw_Next}"
+                    TextWrapping="Wrap" />-->
+                <TextBox
+                    x:Name="TbNext"
+                    MinHeight="23"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="True"
+                    GotFocus="tb__GotFocus"
+                    TextChanged="Tb_Next_OnTextChanged"
+                    TextWrapping="Wrap"
+                    ToolTip="{DynamicResource ParamTooltip}" />
+            </DockPanel>
             <Border
                 Margin="0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
-
-            <TextBlock
-                Margin="0,0,6,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="14"
-                Text="{x:Static properties:Resources.brw_SongLike}"
-                TextWrapping="Wrap" />
-            <TextBox
-                x:Name="TbSongLike"
-                MinHeight="26"
-                VerticalAlignment="Center"
-                AcceptsReturn="True"
-                GotFocus="tb__GotFocus"
-                TextChanged="Tb_SongLike_OnTextChanged"
-                TextWrapping="Wrap"
-                ToolTip="{DynamicResource ParamTooltip}" />
-
+            <DockPanel
+                Margin="0,0,6,3"
+                HorizontalAlignment="Stretch"
+                LastChildFill="True">
+                <Border
+                    MinWidth="60"
+                    Margin="0,0,6,0"
+                    Padding="6,3"
+                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    CornerRadius="8">
+                    <TextBlock
+                        x:Name="TbTriggerLike"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                </Border>
+                <!--<TextBlock
+                    Margin="0,0,6,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="14"
+                    Text="{x:Static properties:Resources.brw_SongLike}"
+                    TextWrapping="Wrap" />-->
+                <TextBox
+                    x:Name="TbSongLike"
+                    MinHeight="26"
+                    VerticalAlignment="Center"
+                    AcceptsReturn="True"
+                    GotFocus="tb__GotFocus"
+                    TextChanged="Tb_SongLike_OnTextChanged"
+                    TextWrapping="Wrap"
+                    ToolTip="{DynamicResource ParamTooltip}" />
+            </DockPanel>
             <!--#endregion-->
             <!--#region Song Request Related Responses-->
             <TextBlock
@@ -134,7 +190,7 @@
                 Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,6,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -150,13 +206,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -172,13 +228,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -194,13 +250,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -216,13 +272,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -238,13 +294,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -260,14 +316,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -283,13 +338,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -305,13 +360,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -327,14 +382,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -350,13 +404,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -372,14 +426,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -395,13 +448,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -417,14 +470,13 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <Border
-                Margin="0,6"
+                Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-
             <TextBlock
-                Margin="0,0,6,0"
+                Margin="0,0,0,6"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
                 FontSize="14"
@@ -440,10 +492,9 @@
                 TextWrapping="Wrap"
                 ToolTip="{DynamicResource ParamTooltip}" />
             <!--#endregion-->
-
             <Grid Visibility="Collapsed">
                 <TextBlock
-                    Margin="0,0,6,0"
+                    Margin="0,0,0,6"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="14"
@@ -459,7 +510,7 @@
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
                 <Border
-                    Margin="0,6"
+                    Margin="0,12,0,6"
                     VerticalAlignment="Bottom"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="1" />

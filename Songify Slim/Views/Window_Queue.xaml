@@ -179,7 +179,7 @@
             SelectionUnit="FullRow"
             SourceUpdated="Dgv_Queue_OnSourceUpdated">
             <DataGrid.Resources>
-                <Style TargetType="DataGridColumnHeader">
+                <Style BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" TargetType="DataGridColumnHeader">
                     <Setter Property="Padding" Value="8" />
                 </Style>
                 <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->

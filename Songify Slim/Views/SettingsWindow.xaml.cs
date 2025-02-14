@@ -40,6 +40,7 @@ using File = System.IO.File;
 using System.Drawing;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
+using TabControl = System.Windows.Controls.TabControl;
 
 namespace Songify_Slim.Views
 {
@@ -220,7 +221,6 @@ namespace Songify_Slim.Views
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
 
-
             if (SpotifyApiHandler.Spotify != null)
             {
                 PrivateProfile profile = await SpotifyApiHandler.Spotify.GetPrivateProfileAsync();
@@ -247,11 +247,8 @@ namespace Songify_Slim.Views
                     Logger.LogExc(ex);
                 }
 
-
                 await LoadSpotifyPlaylists();
             }
-
-
 
             ThemeHandler.ApplyTheme();
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
@@ -291,6 +288,19 @@ namespace Songify_Slim.Views
             CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
             await LoadRewards();
 
+            PnlSongrequestUserlevels.Children.Clear();
+            PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+            {
+                UserLevel = 7
+            });
+            foreach (int i in Settings.UserLevelsCommand)
+            {
+                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+                {
+                    UserLevel = i
+                });
+            }
+
             if (Settings.RefundConditons == null) return;
             foreach (int condition in Settings.RefundConditons)
             {
@@ -325,6 +335,7 @@ namespace Songify_Slim.Views
                     lbl.Content += $"{user.DisplayName} (Token Expired)";
 
                     break;
+
                 default:
                     btnAlt.Visibility = Visibility.Collapsed;
                     btn.Visibility = Visibility.Collapsed;
@@ -347,6 +358,7 @@ namespace Songify_Slim.Views
                         img.ImageSource =
                             new FormatConvertedBitmap(bitmap, PixelFormats.Gray8, BitmapPalettes.Gray256, 0);
                         break;
+
                     default:
                         img.ImageSource = bitmap;
                         break;
@@ -589,70 +601,14 @@ namespace Songify_Slim.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbxLanguage.SelectedValue is string selectedLanguageCode)
-            {
-                // Update the current UI culture and settings
-                Thread.CurrentThread.CurrentUICulture = new CultureInfo(selectedLanguageCode);
-                Settings.Language = selectedLanguageCode;
+            if (CbxLanguage.SelectedValue is not string selectedLanguageCode) return;
+            // Update the current UI culture and settings
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(selectedLanguageCode);
+            Settings.Language = selectedLanguageCode;
 
-                // Restart the application to apply the language change
-                Process.Start(Application.ResourceAssembly.Location);
-                Application.Current.Shutdown();
-            }
-
-
-
-            //switch (CbxLanguage.SelectedIndex)
-            //{
-            //    case 0:
-            //        // English
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
-            //        Settings.Language = "en";
-            //        break;
-            //    case 1:
-            //        // German
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("de-DE");
-            //        Settings.Language = "de-DE";
-            //        break;
-            //    case 2:
-            //        // Russian
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
-            //        Settings.Language = "ru-RU";
-            //        break;
-            //    case 3:
-            //        // Spansih
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("es");
-            //        Settings.Language = "es";
-            //        break;
-            //    case 4:
-            //        // Spansih
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("fr");
-            //        Settings.Language = "fr";
-            //        break;
-            //    case 5:
-            //        // Polish
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("pl-PL");
-            //        Settings.Language = "pl-PL";
-            //        break;
-            //    case 6:
-            //        // Portuguese
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-PT");
-            //        Settings.Language = "pt-PT";
-            //        break;
-            //    case 7:
-            //        // Italian
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("it-IT");
-            //        Settings.Language = "it-IT";
-            //        break;
-            //    case 8:
-            //        // Brazilian Portuguese
-            //        Thread.CurrentThread.CurrentUICulture = new CultureInfo("pt-BR");
-            //        Settings.Language = "pt-BR";
-            //        break;
-            //}
-
-            //Process.Start(Application.ResourceAssembly.Location);
-            //Application.Current.Shutdown();
+            // Restart the application to apply the language change
+            Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -782,27 +738,35 @@ namespace Songify_Slim.Views
                 case Enums.TwitchUserLevels.Everyone:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.Follower:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqFollower = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.Vip:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqVip = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.Subscriber:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriber = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.SubscriberT2:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriberT2 = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.SubscriberT3:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqSubscriberT3 = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.Moderator:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
                     break;
+
                 case Enums.TwitchUserLevels.Broadcaster:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -884,11 +848,11 @@ namespace Songify_Slim.Views
             Settings.Theme = ThemeToggleSwitch.IsOn ? "Dark" : "Light";
 
             ThemeHandler.ApplyTheme();
-
         }
 
         private void txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ((TextBox)sender).Text = ((TextBox)sender).Text.ToLower().Trim();
             // Sets the twitch channel
             Settings.TwChannel = TxtbxTwChannel.Text.Trim();
         }
@@ -968,7 +932,6 @@ namespace Songify_Slim.Views
             Settings.TwSrMaxReqSubscriberT3 = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqModerator = (int)NudMaxReq.Value;
             Settings.TwSrMaxReqBroadcaster = (int)NudMaxReq.Value;
-
         }
 
         private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
@@ -1013,7 +976,6 @@ namespace Songify_Slim.Views
                             bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
                             ListboxRewards.Items.Add(new UC_TwitchReward(reward));
-
                         }
                     }
                     BtnCreateNewReward.IsEnabled = true;
@@ -1022,7 +984,6 @@ namespace Songify_Slim.Views
                 {
                     Logger.LogExc(e);
                 }
-
         }
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
@@ -1042,7 +1003,6 @@ namespace Songify_Slim.Views
                 PnlTwich.Visibility = Visibility.Visible;
                 PnlSpotify.Visibility = Visibility.Visible;
             }
-
         }
 
         private void BtnWebserverStart_Click(object sender, RoutedEventArgs e)
@@ -1126,6 +1086,7 @@ namespace Songify_Slim.Views
                     Settings.TwitchAccessToken = "";
                     Settings.TwitchUser = null;
                     break;
+
                 case "bot":
                     Settings.TwitchBotToken = "";
                     Settings.TwitchBotUser = null;
@@ -1154,7 +1115,6 @@ namespace Songify_Slim.Views
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)
         {
             TwitchHandler.ApiConnect(Enums.TwitchAccount.Bot);
-
         }
 
         private void ComboboxRedirectPort_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1209,41 +1169,49 @@ namespace Songify_Slim.Views
                         ? "song"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "pos":
                     Settings.BotCmdPosTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "pos"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "next":
                     Settings.BotCmdNextTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "next"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "skip":
                     Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "skip"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "voteskip":
                     Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "voteskip"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "ssr":
                     Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "ssr"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "remove":
                     Settings.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "remove"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "like":
                     Settings.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "like"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "queue":
                     Settings.BotCmdQueueTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "queue"
@@ -1576,8 +1544,10 @@ namespace Songify_Slim.Views
                 case MessageDialogResult.Negative:
                     Process.Start("https://ko-fi.com/overcodetv");
                     return;
+
                 case MessageDialogResult.Affirmative:
                     break;
+
                 case MessageDialogResult.Canceled:
                 case MessageDialogResult.FirstAuxiliary:
                 case MessageDialogResult.SecondAuxiliary:
@@ -1665,18 +1635,14 @@ namespace Songify_Slim.Views
                 string appName = "Songify";
                 string appVersion = FormatAppVersion(GlobalObjects.AppVersion);
 
-                Debug.WriteLine("Requesting authorization code...");
                 string authCode = await auth.RequestAuthCodeAsync(appId, appName, appVersion);
-                Debug.WriteLine($"Received authorization code: {authCode}");
 
                 TbYTMDesktopAuthcode.Text = $"AUTH CODE: {authCode}";
                 PnlYTMDesktopAuthcode.Visibility = Visibility.Visible;
                 Activate();
 
                 // Step 2: Request the token using the auth code
-                Debug.WriteLine("Requesting token...");
                 string token = await auth.RequestTokenAsync(appId, authCode);
-                Debug.WriteLine($"Received token: {token}");
                 if (string.IsNullOrEmpty(token)) return;
                 TbYTMDesktopToken.Password = token;
                 Settings.YTMDToken = token;
@@ -1684,7 +1650,7 @@ namespace Songify_Slim.Views
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error: {ex.Message}");
+                Logger.LogExc(ex);
             }
         }
 
@@ -1730,6 +1696,23 @@ namespace Songify_Slim.Views
                         }
                     }
                 }
+            }
+        }
+
+        private void Tabcontrol_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((TabControl)sender).SelectedIndex != 5) return;
+            PnlSongrequestUserlevels.Children.Clear();
+            PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+            {
+                UserLevel = 7
+            });
+            foreach (int i in Settings.UserLevelsCommand.OrderByDescending(n => n).ToList())
+            {
+                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+                {
+                    UserLevel = i
+                });
             }
         }
     }

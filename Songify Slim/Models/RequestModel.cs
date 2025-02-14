@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Models;
 
@@ -25,7 +26,7 @@ public class RequestObject
     public string Albumcover { get; set; }
 
     [JsonProperty("playerType")]
-    public RequestPlayerType PlayerType { get; set; }
+    public string PlayerType { get; set; }
 
     public bool IsLiked { get; set; } = false;
 

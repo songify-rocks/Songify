@@ -27,7 +27,8 @@ namespace Songify_Slim.Util.General
             { "API", Colors.LightGreen },
             { "COVER", Colors.Yellow },
             { "SPOTIFY", Color.FromRgb(30, 215, 96) },
-            { "YTMD", Color.FromRgb(255, 0, 51) }
+            { "YTMD", Color.FromRgb(255, 0, 51) },
+            { "DEBUG", Colors.DodgerBlue}
         };
 
 

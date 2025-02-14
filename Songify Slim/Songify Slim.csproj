@@ -101,6 +101,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL" Condition=" '$(Configuration)' == 'Release' ">
       <HintPath>..\packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
@@ -173,6 +176,9 @@
     <Compile Include="UserControls\PsaControl.xaml.cs">
       <DependentUpon>PsaControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UcUserLevelItem.xaml.cs">
+      <DependentUpon>UcUserLevelItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UC_AccountItem.xaml.cs">
       <DependentUpon>UC_AccountItem.xaml</DependentUpon>
     </Compile>
@@ -192,11 +198,13 @@
     <Compile Include="Util\General\IOManager.cs" />
     <Compile Include="Util\General\MathUtils.cs" />
     <Compile Include="Util\General\RegisterFirewall.cs" />
+    <Compile Include="Util\General\SingleInstanceHelper.cs" />
     <Compile Include="Util\General\TaskQueue.cs" />
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Songify\TwitchApiHelper.cs" />
+    <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
@@ -354,6 +362,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\UcUserLevelItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\UC_AccountItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -497,6 +509,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="songify.ico" />
@@ -548,6 +561,9 @@
       <Version>6.9.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="HtmlAgilityPack">
+      <Version>1.11.72</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
       <Version>2.4.10</Version>

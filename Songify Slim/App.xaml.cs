@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -22,6 +23,7 @@ namespace Songify_Slim
     {
         private static Mutex _mutex;
         public static bool IsBeta = true;
+        private const string PipeName = "SongifyPipe";
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
@@ -65,12 +67,14 @@ namespace Songify_Slim
                     _mutex = Mutex.OpenExisting(appName);
                     if (_mutex != null)
                     {
-                        Window mainWindow = Current.MainWindow;
-                        if (mainWindow != null)
-                        {
-                            mainWindow.Show();
-                            mainWindow.Activate();
-                        }
+                        SingleInstanceHelper.NotifyFirstInstance();
+                        Environment.Exit(0);
+                        //Window mainWindow = Current.MainWindow;
+                        //if (mainWindow != null)
+                        //{
+                        //    mainWindow.Show();
+                        //    mainWindow.Activate();
+                        //}
                     }
                     Current.Shutdown();
                     return;
@@ -82,7 +86,7 @@ namespace Songify_Slim
             currentDomain.UnhandledException += MyHandler;
 
             base.OnStartup(e);
-
+            StartPipeServer();
         }
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
@@ -147,6 +151,54 @@ namespace Songify_Slim
             };
 
             main.Show();
+        }
+
+        private void StartPipeServer()
+        {
+            Thread pipeThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        using NamedPipeServerStream server = new NamedPipeServerStream(PipeName, PipeDirection.In);
+                        // Wait for a connection (blocking)
+                        server.WaitForConnection();
+
+                        using StreamReader reader = new(server);
+                        string message = reader.ReadLine();
+                        if (message == "SHOW")
+                        {
+                            // Use the dispatcher to interact with UI elements.
+                            Current.Dispatcher.Invoke(RestoreWindow);
+                        }
+                    }
+                    catch
+                    {
+                        // Handle exceptions if needed (for example, log them)
+                    }
+                }
+            })
+            {
+                IsBackground = true
+            };
+
+            pipeThread.Start();
+        }
+
+        private static void RestoreWindow()
+        {
+            // Your logic to restore the window from the tray.
+            Window win = Application.Current.MainWindow;
+
+            if (win is MainWindow)
+            {
+                // For example:
+                win.Show();
+                win.WindowState = WindowState.Normal;
+                Thread.Sleep(1000);
+                win.Activate();
+            }
         }
     }
 }

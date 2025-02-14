@@ -56,14 +56,12 @@ namespace Songify_Slim.Util.General
         public static List<PlaylistTrack> LikedPlaylistTracks = [];
         public static Tuple<bool, string> Canvas;
         public static ObservableCollection<TwitchUser> TwitchUsers = [];
-
-
+        public static bool IoClientConnected = false;
+        
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
-
-
-
+        
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
         {
@@ -178,7 +176,7 @@ namespace Songify_Slim.Util.General
                         // Remove all songs from the web queue that are not in the current playback queue
                         if (ReqList?.Count > 0)
                         {
-                            List<RequestObject> itemsToRemove = new List<RequestObject>();
+                            List<RequestObject> itemsToRemove = [];
 
                             foreach (RequestObject requestObject in ReqList)
                             {

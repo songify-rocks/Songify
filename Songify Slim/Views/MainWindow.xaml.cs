@@ -56,6 +56,7 @@ namespace Songify_Slim.Views
     {
         #region Variables
 
+        public SocketIoClient IoClient;
         private bool _forceClose;
         private CancellationTokenSource _sCts;
         private DispatcherTimer _disclaimerTimer = new();
@@ -70,6 +71,7 @@ namespace Songify_Slim.Views
         public SongFetcher Sf = new();
         public string SongArtist, SongTitle;
         public List<PSA> PSAs;
+
         #endregion Variables
 
         private static async void TelemetryTask(object sender, ElapsedEventArgs e)
@@ -203,7 +205,6 @@ namespace Songify_Slim.Views
             }
             else
             {
-
                 // Opens the 'Settings'-Window
                 Window_Settings sW = new() { Top = Top, Left = Left };
                 sW.Show();
@@ -315,6 +316,7 @@ namespace Songify_Slim.Views
                 case PlayerType.SpotifyWeb:
                     await Sf.FetchSpotifyWeb();
                     break;
+
                 case PlayerType.YTMDesktop:
                     //await Sf.FetchYTM();
                     break;
@@ -387,7 +389,6 @@ namespace Songify_Slim.Views
                 Settings.UseOwnApp = true;
             }
 
-
             bool internetAvailable = await WaitForInternetConnectionAsync();
 
             while (!internetAvailable)
@@ -401,16 +402,21 @@ namespace Songify_Slim.Views
                     case MessageDialogResult.Canceled:
                         this.Close();
                         break;
+
                     case MessageDialogResult.Negative:
                         this.Close();
                         break;
+
                     case MessageDialogResult.Affirmative:
                         internetAvailable = await WaitForInternetConnectionAsync();
                         break;
+
                     case MessageDialogResult.FirstAuxiliary:
                         break;
+
                     case MessageDialogResult.SecondAuxiliary:
                         break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -420,7 +426,6 @@ namespace Songify_Slim.Views
             await HandleTwitchInitializationAsync();
             await FinalSetupAndUpdatesAsync();
             await StartYtmdSocketIoClient();
-
         }
 
         public async Task StartYtmdSocketIoClient()
@@ -430,13 +435,13 @@ namespace Songify_Slim.Views
             string token = Settings.YTMDToken;
 
             // Initialize the Socket.IO client
-            SocketIoClient socketClient = new SocketIoClient(serverUrl, token);
+            IoClient = new SocketIoClient(serverUrl, token);
 
             // Run connection in a separate task
             try
             {
-                await socketClient.ConnectAsync();
-                Debug.WriteLine("YTMD: Socket.IO connected.");
+                await IoClient.ConnectAsync();
+                GlobalObjects.IoClientConnected = true;
             }
             catch (Exception ex)
             {
@@ -536,7 +541,7 @@ namespace Songify_Slim.Views
                             .AddText(msg)
                             .AddAttributionText(highSeverityPsa.CreatedAtDateTime.ToString())
                             .Show(); // Not seeing the Show() method? Make sure you have versionversion 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
-                        // store the already shown psa id and don't show it again
+                                     // store the already shown psa id and don't show it again
                         Settings.LastShownMotdId = highSeverityPsa.Id;
                     }
                 }
@@ -565,7 +570,6 @@ namespace Songify_Slim.Views
                     });
                 }
             }
-
         }
 
         public void SetUnreadBadge()
@@ -683,6 +687,7 @@ namespace Songify_Slim.Views
 
             return argsDictionary;
         }
+
         private void SetupUiAndThemes()
         {
             SetIconColors();
@@ -820,6 +825,7 @@ namespace Songify_Slim.Views
                     case true:
                         Logger.LogStr("Stream is LIVE");
                         break;
+
                     case false:
                         Logger.LogStr("Stream is NOT live");
                         break;
@@ -840,10 +846,7 @@ namespace Songify_Slim.Views
             }
 
             CheckForUpdates();
-
         }
-
-
 
         private void DisclaimerTimerOnTick(object sender, EventArgs e)
         {
@@ -1040,7 +1043,6 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-
                 img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YTMDesktop && Settings.DownloadCover ? Visibility.Visible : Visibility.Collapsed;
             }));
 
@@ -1103,6 +1105,7 @@ namespace Songify_Slim.Views
                     // stop the timer if the player is YTMDesktop
                     _timerFetcher.Enabled = false;
                     break;
+
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
@@ -1310,7 +1313,6 @@ namespace Songify_Slim.Views
             }
 
             FlyMotd.IsOpen = !FlyMotd.IsOpen;
-
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)

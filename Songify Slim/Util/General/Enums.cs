@@ -16,6 +16,13 @@ namespace Songify_Slim.Util.General
             AppConfig
         }
 
+        public enum RequestPlayerType
+        {
+            Spotify,
+            Youtube,
+            Other
+        }
+
         public enum TwitchAccount
         {
             Main,

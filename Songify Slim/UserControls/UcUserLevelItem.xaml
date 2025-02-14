@@ -1,0 +1,154 @@
+﻿<UserControl
+    x:Class="Songify_Slim.UserControls.UcUserLevelItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:Songify_Slim.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <!--  Border style  -->
+        <Style x:Key="UserLevelBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="Transparent" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
+                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="ToolTip" Value="Requester" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
+                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="ToolTip" Value="Everyone" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
+                    <Setter Property="Background" Value="DimGray" />
+                    <Setter Property="ToolTip" Value="Follower" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
+                    <Setter Property="Background" Value="DarkGoldenrod" />
+                    <Setter Property="ToolTip" Value="Subscriber" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3">
+                    <Setter Property="Background" Value="DarkGoldenrod" />
+                    <Setter Property="ToolTip" Value="Subscriber T2" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4">
+                    <Setter Property="Background" Value="DarkGoldenrod" />
+                    <Setter Property="ToolTip" Value="Subscriber T3" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5">
+                    <Setter Property="Background" Value="#E105BA" />
+                    <Setter Property="ToolTip" Value="VIP" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6">
+                    <Setter Property="Background" Value="#05AF08" />
+                    <Setter Property="ToolTip" Value="Moderator" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7">
+                    <Setter Property="Background" Value="#e91a17" />
+                    <Setter Property="ToolTip" Value="Broadcaster" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--  Icon style  -->
+        <Style x:Key="UserLevelIconStyle" TargetType="iconPacks:PackIconMaterial">
+            <Setter Property="Kind" Value="Video" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
+                    <Setter Property="Kind" Value="AccountPlus" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
+                    <Setter Property="Kind" Value="Account" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
+                    <Setter Property="Kind" Value="AccountCheck" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
+                    <Setter Property="Kind" Value="Star" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3">
+                    <Setter Property="Kind" Value="Star" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4">
+                    <Setter Property="Kind" Value="Star" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5">
+                    <Setter Property="Kind" Value="Diamond" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6">
+                    <Setter Property="Kind" Value="Sword" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7">
+                    <Setter Property="Kind" Value="Video" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--  TextBlock style  -->
+        <Style x:Key="UserLevelTextStyle" TargetType="TextBlock">
+            <Setter Property="Text" Value="Moderator" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
+                    <Setter Property="Text" Value="R" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
+                    <Setter Property="Text" Value="E" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
+                    <Setter Property="Text" Value="F" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
+                    <Setter Property="Text" Value="" />
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3">
+                    <Setter Property="Text" Value="T2" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4">
+                    <Setter Property="Text" Value="T3" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5">
+                    <Setter Property="Text" Value="" />
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6">
+                    <Setter Property="Text" Value="" />
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7">
+                    <Setter Property="Text" Value="" />
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="3">
+        <Border
+            x:Name="Border"
+            Height="24"
+            MinWidth="24"
+            Padding="6,6"
+            CornerRadius="8"
+            Style="{StaticResource UserLevelBorderStyle}">
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconMaterial
+                    x:Name="Icon"
+                    Width="12"
+                    Height="12"
+                    Margin="0,0,0,0"
+                    VerticalAlignment="Center"
+                    Foreground="White"
+                    Style="{StaticResource UserLevelIconStyle}"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="Text"
+                    Margin="6,0,3,0"
+                    VerticalAlignment="Center"
+                    FontSize="10"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Style="{StaticResource UserLevelTextStyle}" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

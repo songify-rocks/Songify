@@ -159,7 +159,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static void UploadSong(string currSong, string coverUrl = null)
+        public static void UploadSong(string currSong, string coverUrl = null, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
             dynamic payload = new
             {
@@ -167,7 +167,8 @@ namespace Songify_Slim.Util.Songify
                 key = Settings.Settings.AccessKey,
                 song = currSong,
                 cover = coverUrl,
-                song_id = GlobalObjects.CurrentSong == null ? null : GlobalObjects.CurrentSong.SongId
+                song_id = GlobalObjects.CurrentSong == null ? null : GlobalObjects.CurrentSong.SongId,
+                playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType)
             };
             SongRequest(RequestMethod.Post, Json.Serialize(payload));
         }
@@ -246,12 +247,12 @@ namespace Songify_Slim.Util.Songify
                 command = "playPause"
             };
 
-            await ApiClientYtm.Post( Json.Serialize(payload));
+            await ApiClientYtm.Post(Json.Serialize(payload));
         }
 
         public static async Task YtmdPlayVideo(string videoId)
         {
-            if(string.IsNullOrEmpty(Settings.Settings.YTMDToken))
+            if (string.IsNullOrEmpty(Settings.Settings.YTMDToken))
                 return;
             dynamic payload = new
             {
@@ -260,7 +261,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     videoId,
                 }
-            };  
+            };
 
             await ApiClientYtm.Post(Json.Serialize(payload));
         }
@@ -274,7 +275,7 @@ namespace Songify_Slim.Util.Songify
                 command = "next"
             };
 
-            await ApiClientYtm.Post( Json.Serialize(payload));
+            await ApiClientYtm.Post(Json.Serialize(payload));
 
         }
 

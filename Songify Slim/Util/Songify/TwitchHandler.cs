@@ -49,6 +49,9 @@ using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
+using System.Web;
+using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
+
 
 namespace Songify_Slim.Util.Songify
 {
@@ -627,7 +630,6 @@ namespace Songify_Slim.Util.Songify
 
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
-
             if (track == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
@@ -678,7 +680,29 @@ namespace Songify_Slim.Util.Songify
             response = CreateSuccessResponse(track, e.ChatMessage.DisplayName);
 
             SendChatMessage(e.ChatMessage.Channel, response);
-            await UploadToQueue(track, e.ChatMessage.DisplayName);
+
+            // this will take the first 4 artists and join their names with ", "
+            string artists = string.Join(", ", track.Artists
+                .Take(4)
+                .Select(a => a.Name));
+
+            string length = FormattedTime((int)track.DurationMs);
+
+
+            RequestObject o = new()
+            {
+                Trackid = track.Id,
+                PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Spotify),
+                Artist = artists,
+                Title = track.Name,
+                Length = length,
+                Requester = e.ChatMessage.DisplayName,
+                Played = 0,
+                Albumcover = track.Album.Images[0].Url,
+            };
+
+
+            await UploadToQueue(o, e.ChatMessage.DisplayName);
             GlobalObjects.QueueUpdateQueueWindow();
         }
 
@@ -785,8 +809,29 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{errormsg}", "");
 
+
+            // this will take the first 4 artists and join their names with ", "
+            string artists2 = string.Join(", ", track.Artists
+                .Take(4)
+                .Select(a => a.Name));
+
+            string length = FormattedTime((int)track.DurationMs);
+
+
+            RequestObject o = new()
+            {
+                Trackid = track.Id,
+                PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Spotify),
+                Artist = artists2,
+                Title = track.Name,
+                Length = length,
+                Requester = username,
+                Played = 0,
+                Albumcover = track.Album.Images[0].Url,
+            };
+
             // Upload the track and who requested it to the queue on the server
-            await UploadToQueue(track, username);
+            await UploadToQueue(o, username);
 
             // Add the song to the internal queue and update the queue window if its open
             Application.Current.Dispatcher.Invoke(() =>
@@ -1140,8 +1185,6 @@ namespace Songify_Slim.Util.Songify
                 existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, (int)userLevel, newFollowingState, subtier, IsUserBlocked(e.ChatMessage.DisplayName));
             }
 
-
-
             if (Settings.Settings.TwRewardId.Count > 0 &&
                 Settings.Settings.TwRewardId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled &&
                 Settings.Settings.TwSrReward)
@@ -1184,7 +1227,6 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.Player == 0 && Settings.Settings.TwSrCommand &&
                 e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdSsrTrigger.ToLower()} ", StringComparison.CurrentCultureIgnoreCase))
             {
-
                 if (Settings.Settings.BotOnlyWorkWhenLive)
                     try
                     {
@@ -1265,6 +1307,106 @@ namespace Songify_Slim.Util.Songify
                 existingUser.UpdateCommandTime();
             }
 
+            if (Settings.Settings.Player == 6 &&
+                e.ChatMessage.Message.StartsWith($"!ytsr ", StringComparison.CurrentCultureIgnoreCase))
+            {
+                //if (!GlobalObjects.IoClientConnected)
+                //    return;
+
+                if (Settings.Settings.BotOnlyWorkWhenLive)
+                    try
+                    {
+                        if (!CheckLiveStatus())
+                        {
+                            if (Settings.Settings.ChatLiveStatus)
+                                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                            return;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                    }
+
+                (userLevel, isAllowed) = CheckUserLevel(e.ChatMessage);
+                if (userLevel < TwitchUserLevels.Broadcaster || !e.ChatMessage.IsBroadcaster)
+                {
+                    if (!isAllowed)
+                    {
+                        // Send a message to the user that their user level is too low to request songs
+                        SendChatMessage(e.ChatMessage.Channel,
+                            $"Sorry, {Enum.GetName(typeof(TwitchUserLevels), userLevel)}s are not allowed to request songs.");
+                        return;
+                    }
+                }
+
+                // Do nothing if the user is blocked, don't even reply
+                if (IsUserBlocked(e.ChatMessage.DisplayName))
+                {
+                    return;
+                }
+
+                TimeSpan cooldown =
+                    TimeSpan.FromSeconds(Settings.Settings.TwSrPerUserCooldown); // Set your cooldown time here
+                if (!existingUser.IsCooldownExpired(cooldown))
+                {
+                    // Inform user about the cooldown
+                    if (existingUser.LastCommandTime == null) return;
+                    TimeSpan remaining = cooldown - (DateTime.Now - existingUser.LastCommandTime.Value);
+                    Logger.LogStr($"{existingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
+                    // if remaining is more than 1 minute format to mm:ss, else to ss
+                    string time = remaining.Minutes >= 1
+                        ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
+                        : $"{remaining.Seconds} seconds";
+
+                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                    {
+                        User = e.ChatMessage.DisplayName,
+                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+                        ErrorMsg = null,
+                        MaxLength = $"{Settings.Settings.MaxSongLength}",
+                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                        Req = GlobalObjects.Requester,
+                        Cd = time
+                    }, Settings.Settings.BotRespUserCooldown);
+                    SendChatMessage(e.ChatMessage.Channel, msg);
+                    return;
+                }
+
+                // if onCooldown skips
+                if (_onCooldown)
+                {
+                    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e));
+                    return;
+                }
+
+                string videoId = ExtractYouTubeVideoIdFromText(e.ChatMessage.Message);
+
+                string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                string videoThumbailUrl = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+                Debug.WriteLine($"{title} | thumb: {videoThumbailUrl}");
+                SendChatMessage(e.ChatMessage.Channel, title);
+
+                //TODO: Add song to the queue and start playing
+
+                RequestObject o = new()
+                {
+                    Uuid = Settings.Settings.Uuid,
+                    Trackid = videoId,
+                    PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube),
+                    Artist = "",
+                    Title = title,
+                    Length = "",
+                    Requester = e.ChatMessage.DisplayName,
+                    Played = 0,
+                    Albumcover = videoThumbailUrl,
+                };
+
+                await UploadToQueue(o, e.ChatMessage.DisplayName);
+
+            }
+
             // Skip Command for mods (!skip)
             if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSkipTrigger.ToLower()}" &&
                 Settings.Settings.BotCmdSkip)
@@ -1298,6 +1440,7 @@ namespace Songify_Slim.Util.Songify
                         if (firstRequest != null && firstRequest.Trackid == GlobalObjects.CurrentSong.SongId)
                         {
                             name = firstRequest.Requester;
+                            GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)?.UpdateCommandTime(true);
                         }
                     }
                 });
@@ -1620,6 +1763,16 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.ReqList.Remove(reqObj);
                 }));
 
+                switch (modAction)
+                {
+                    case true:
+                        GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName.Equals(reqObj.Requester, StringComparison.CurrentCultureIgnoreCase))?.UpdateCommandTime(true);
+                        break;
+                    case false:
+                        GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId)?.UpdateCommandTime(true);
+                        break;
+                }
+
                 GlobalObjects.QueueUpdateQueueWindow();
 
                 string response = modAction
@@ -1781,6 +1934,108 @@ namespace Songify_Slim.Util.Songify
                         }
 
                 }
+        }
+        /// <summary>
+        /// Splits the input on whitespace and tries to extract a YouTube Video ID
+        /// from each token. Returns the first found ID, or null if none found.
+        /// </summary>
+        /// <param name="input">A string that may contain a YouTube URL among other text.</param>
+        /// <returns>YouTube video ID, or null if not found.</returns>
+        public static string ExtractYouTubeVideoIdFromText(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            // Split on whitespace
+            var tokens = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var token in tokens)
+            {
+                var videoId = ExtractYouTubeVideoId(token);
+                if (!string.IsNullOrEmpty(videoId))
+                {
+                    return videoId;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Extracts a YouTube video ID from a single token (URL string).
+        /// For example:
+        ///   - https://youtu.be/VIDEOID
+        ///   - https://www.youtube.com/watch?v=VIDEOID
+        ///   - https://youtube.com/embed/VIDEOID
+        ///   - https://youtube.com/shorts/VIDEOID
+        /// Returns null if no valid YouTube ID is found.
+        /// </summary>
+        private static string ExtractYouTubeVideoId(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            // Attempt to parse as a Uri. If it fails, try prefixing with "https://"
+            // in case the user provided a URL without scheme.
+            if (!Uri.TryCreate(input, UriKind.Absolute, out Uri uri))
+            {
+                if (!Uri.TryCreate("https://" + input, UriKind.Absolute, out uri))
+                {
+                    return null;
+                }
+            }
+
+            // Normalize host by removing "www." prefix for easier comparison
+            string host = uri.Host.ToLower();
+            if (host.StartsWith("www."))
+            {
+                host = host.Substring(4);
+            }
+
+            // Check for common YouTube hosts
+            if (host == "youtube.com" || host == "youtu.be" ||
+                host == "youtube-nocookie.com" || host == "m.youtube.com")
+            {
+                // 1) If link is in the form "youtu.be/VIDEOID"
+                //    The video ID is in the first path segment
+                if (host == "youtu.be")
+                {
+                    // Path looks like "/VIDEOID", so strip the leading slash
+                    return uri.AbsolutePath.TrimStart('/');
+                }
+
+                // 2) For youtube.com-like domains, we look for:
+                //    - watch?v=VIDEOID
+                //    - embed/VIDEOID
+                //    - shorts/VIDEOID
+                var pathSegments = uri.AbsolutePath.Trim('/').Split('/');
+
+                // Check for query param ?v=VIDEOID
+                var query = HttpUtility.ParseQueryString(uri.Query);
+                if (query.AllKeys != null && query["v"] != null)
+                {
+                    return query["v"];
+                }
+
+                // Check for "/embed/VIDEOID"
+                // PathSegments: [ "embed", "VIDEOID", ... ]
+                if (pathSegments.Length >= 2 &&
+                    pathSegments[0].Equals("embed", StringComparison.OrdinalIgnoreCase))
+                {
+                    return pathSegments[1];
+                }
+
+                // Check for "/shorts/VIDEOID"
+                // PathSegments: [ "shorts", "VIDEOID", ... ]
+                if (pathSegments.Length >= 2 &&
+                    pathSegments[0].Equals("shorts", StringComparison.OrdinalIgnoreCase))
+                {
+                    return pathSegments[1];
+                }
+            }
+
+            // No recognized pattern -> return null
+            return null;
         }
 
         private static async void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
@@ -2049,19 +2304,24 @@ namespace Songify_Slim.Util.Songify
         private static string GetNextSong()
         {
             int index = 0;
-            if (GlobalObjects.ReqList.Count == 0)
+            switch (GlobalObjects.ReqList.Count)
             {
-                return "There is no song next up.";
-            }
+                case 0:
+                    {
+                        // Get the first song from the Spotify queue
+                        RequestObject song = GlobalObjects.QueueTracks.First();
+                        return song != null ? $"{song.Artist} - {song.Title}" : "There is no song next up.";
+                    }
+                case > 0 when GlobalObjects.ReqList[0].Trackid == GlobalObjects.CurrentSong.SongId:
+                    {
+                        if (GlobalObjects.ReqList.Count <= 1)
+                        {
+                            return "There is no song next up.";
+                        }
 
-            if (GlobalObjects.ReqList.Count > 0 && GlobalObjects.ReqList[0].Trackid == GlobalObjects.CurrentSong.SongId)
-            {
-                if (GlobalObjects.ReqList.Count <= 1)
-                {
-                    return "There is no song next up.";
-                }
-
-                index = 1;
+                        index = 1;
+                        break;
+                    }
             }
 
             return $"{GlobalObjects.ReqList[index].Artist} - {GlobalObjects.ReqList[index].Title}";
@@ -2874,8 +3134,17 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
+            //Logger.LogStr($"DEBUG: TRYING TO SEND CHAT TO: {channel}");
+            //Logger.LogStr($"DEBUG: Client Connected: {Client.IsConnected}");
+            //Logger.LogStr($"DEBUG: Client User: {Client.TwitchUsername}");
+            //Logger.LogStr($"DEBUG: Joined Channels: {string.Join(", ", Client.JoinedChannels.Select(c => c.Channel).ToList())}");
+
+
+
             if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
                 Client.SendMessage(channel, message);
+            else
+                Logger.LogStr("DEBUG: Client.IsConnected returned FALSE or Client.JoinedChannels is NULL");
         }
 
         private static async Task SetSpotifyVolume(OnMessageReceivedArgs e)
@@ -2934,24 +3203,10 @@ namespace Songify_Slim.Util.Songify
                 Console.WriteLine(@$"Error in TwitchUserSyncTimer_Tick: {ex.Message}");
             }
         }
-        private static async Task UploadToQueue(FullTrack track, string displayName)
+        private static async Task UploadToQueue(RequestObject track, string displayName)
         {
             try
             {
-                string artists = "";
-                int counter = 0;
-                // put all artists from the song in one string
-                foreach (SimpleArtist artist in track.Artists.Where(artist => counter <= 3))
-                {
-                    artists += artist.Name + ", ";
-                    counter++;
-                }
-
-                // remove the last ", "
-                artists = artists.Remove(artists.Length - 2, 2);
-
-                string length = FormattedTime((int)track.DurationMs);
-
                 // upload to the queue
                 //WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
 
@@ -2959,17 +3214,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     uuid = Settings.Settings.Uuid,
                     key = Settings.Settings.AccessKey,
-                    queueItem = new RequestObject
-                    {
-                        Trackid = track.Id,
-                        PlayerType = RequestPlayerType.Spotify,
-                        Artist = artists,
-                        Title = track.Name,
-                        Length = length,
-                        Requester = displayName,
-                        Played = 0,
-                        Albumcover = track.Album.Images[0].Url,
-                    }
+                    queueItem = track
                 };
 
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
@@ -3151,9 +3396,9 @@ namespace Songify_Slim.Util.Songify
             IsSrBlocked = isSrBlocked;
         }
 
-        public void UpdateCommandTime()
+        public void UpdateCommandTime(bool reset = false)
         {
-            LastCommandTime = DateTime.Now;
+            LastCommandTime = reset ? null : DateTime.Now;
         }
 
         // Helper method to raise the event
