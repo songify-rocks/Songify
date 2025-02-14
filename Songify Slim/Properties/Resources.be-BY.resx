@@ -1006,7 +1006,7 @@
     <value>Узровень карыстальніка занадта нізкі для каманды !ssr</value>
   </data>
   <data name="brw_UserLevelTooLowReward" xml:space="preserve">
-    <value>Узровень карыстальніка занадта нізкі для ўзнагароды за запыт песні</value>
+    <value>Узровень карыстальніка занадта нізкі для запыту песні</value>
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Паказаць значкі ўзроўню карыстальніка</value>
