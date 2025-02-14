@@ -348,7 +348,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 FullTrack x = await Spotify.GetTrackAsync(id, "");
-                Debug.WriteLine(Json.Serialize(x));
+                //Debug.WriteLine(Json.Serialize(x));
                 return x;
             }
             catch (Exception e)
