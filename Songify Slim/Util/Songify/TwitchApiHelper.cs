@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
+using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Interfaces;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 
@@ -60,10 +62,65 @@ namespace Songify_Slim.Util.Songify
 
                 // Update the pagination token for the next page
                 pagination = chattersResponse?.Pagination?.Cursor;
-
             } while (!string.IsNullOrEmpty(pagination));
 
             return allChatters;
+        }
+
+        public static async Task<List<Moderator>> GetAllModeratorsAsync()
+        {
+            List<Moderator> allModerators = [];
+            string pagination = null;
+
+            do
+            {
+                // Fetch a page of chatters
+                GetModeratorsResponse moderatorsResponse = await TwitchHandler.TwitchApi.Helix.Moderation.GetModeratorsAsync(
+                    Settings.Settings.TwitchUser.Id,
+                    null,
+                    100,
+                    pagination,
+                    Settings.Settings.TwitchAccessToken);
+
+                // Add chatters from the current page to the list
+                if (moderatorsResponse?.Data != null)
+                {
+                    allModerators.AddRange(moderatorsResponse.Data);
+                }
+
+                // Update the pagination token for the next page
+                pagination = moderatorsResponse?.Pagination?.Cursor;
+            } while (!string.IsNullOrEmpty(pagination));
+
+            return allModerators;
+        }
+
+        public static async Task<List<ChannelVIPsResponseModel>> GetAllVipsAsync()
+        {
+            List<ChannelVIPsResponseModel> allVips = [];
+            string pagination = null;
+
+            do
+            {
+                // Fetch a page of chatters
+                GetChannelVIPsResponse vipsResponse = await TwitchHandler.TwitchApi.Helix.Channels.GetVIPsAsync(
+                    Settings.Settings.TwitchUser.Id,
+                    null,
+                    100,
+                    pagination,
+                    Settings.Settings.TwitchAccessToken);
+
+                // Add chatters from the current page to the list
+                if (vipsResponse?.Data != null)
+                {
+                    allVips.AddRange(vipsResponse.Data);
+                }
+
+                // Update the pagination token for the next page
+                pagination = vipsResponse?.Pagination?.Cursor;
+            } while (!string.IsNullOrEmpty(pagination));
+
+            return allVips;
         }
     }
 }

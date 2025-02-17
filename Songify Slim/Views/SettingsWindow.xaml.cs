@@ -606,7 +606,6 @@ namespace Songify_Slim.Views
         {
             // sets the color, when selecting yellow it changes foreground color because else its hard to read
             Settings.Color = (string)(ComboBoxColor.SelectedItem as ComboBoxItem)?.Content;
-            ThemeHandler.ApplyTheme();
             if (Settings.Color != "Yellow")
             {
                 ((MainWindow)_mW).LblStatus.Foreground = Brushes.White;
@@ -617,6 +616,7 @@ namespace Songify_Slim.Views
                 ((MainWindow)_mW).LblStatus.Foreground = Brushes.Black;
                 ((MainWindow)_mW).LblCopyright.Foreground = Brushes.Black;
             }
+            ThemeHandler.ApplyTheme();
         }
 
         private void MenuBtnArtist_Click(object sender, RoutedEventArgs e)
@@ -726,7 +726,7 @@ namespace Songify_Slim.Views
             //Sets max requests per user value
             switch ((Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
             {
-                case Enums.TwitchUserLevels.Everyone:
+                case Enums.TwitchUserLevels.Viewer:
                     if (NudMaxReq.Value != null) Settings.TwSrMaxReqEveryone = (int)NudMaxReq.Value;
                     break;
 
@@ -899,7 +899,7 @@ namespace Songify_Slim.Views
             NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
             NudMaxReq.Value = (Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex switch
             {
-                Enums.TwitchUserLevels.Everyone => Settings.TwSrMaxReqEveryone,
+                Enums.TwitchUserLevels.Viewer => Settings.TwSrMaxReqEveryone,
                 Enums.TwitchUserLevels.Follower => Settings.TwSrMaxReqFollower,
                 Enums.TwitchUserLevels.Vip => Settings.TwSrMaxReqVip,
                 Enums.TwitchUserLevels.Subscriber => Settings.TwSrMaxReqSubscriber,

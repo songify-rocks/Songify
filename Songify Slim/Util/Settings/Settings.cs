@@ -520,7 +520,7 @@ namespace Songify_Slim.Util.Settings
             set => SetTwRewardId(value);
         }
 
-        public static string TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
+        public static List<string> TwRewardSkipId { get => GetTwRewardSkipId(); set => SetTwRewardSkipId(value); }
 
         public static bool TwSrCommand
         {
@@ -1480,7 +1480,7 @@ namespace Songify_Slim.Util.Settings
             return CurrentConfig.AppConfig.TwRewardId;
         }
 
-        private static string GetTwRewardSkipId()
+        private static List<string> GetTwRewardSkipId()
         {
             return CurrentConfig.AppConfig.TwRewardSkipId;
         }
@@ -2319,12 +2319,14 @@ namespace Songify_Slim.Util.Settings
         private static void SetTwRewardId(List<string> value)
         {
             CurrentConfig.AppConfig.TwRewardId = value;
+            CurrentConfig.AppConfig.TwRewardId.RemoveAll(string.IsNullOrEmpty);
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetTwRewardSkipId(string value)
+        private static void SetTwRewardSkipId(List<string> value)
         {
             CurrentConfig.AppConfig.TwRewardSkipId = value;
+            CurrentConfig.AppConfig.TwRewardSkipId.RemoveAll(string.IsNullOrEmpty);
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

@@ -65,12 +65,21 @@
             Margin="12,0,0,0"
             VerticalAlignment="Center"
             Orientation="Horizontal">
+            <ComboBox
+                x:Name="CbxAction"
+                Width="110"
+                SelectionChanged="CbxAction_OnSelectionChanged" Style="{DynamicResource MahApps.Styles.ComboBox.Virtualized}">
+                <ComboBoxItem Content="-" />
+                <ComboBoxItem Content="Song Request" />
+                <ComboBoxItem Content="Skip Song" />
+            </ComboBox>
             <mah:ToggleSwitch
                 x:Name="TglRewardActive"
                 Width="45"
                 MinWidth="0"
                 Content=""
-                Toggled="TglRewardActive_Toggled" />
+                Toggled="TglRewardActive_Toggled"
+                Visibility="Collapsed" />
         </StackPanel>
     </Grid>
 </UserControl>

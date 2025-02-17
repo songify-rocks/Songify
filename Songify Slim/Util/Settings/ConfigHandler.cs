@@ -14,6 +14,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static System.Convert;
 using Application = System.Windows.Application;
+using static Songify_Slim.Util.Settings.YamlTypeConverters;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -93,6 +94,7 @@ namespace Songify_Slim.Util.Settings
             path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new SingleStringToListConverter())
                 .IgnoreUnmatchedProperties()
                 .Build();
 
@@ -341,6 +343,7 @@ namespace Songify_Slim.Util.Settings
         public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
         public List<string> ArtistBlacklist { get; set; } = [];
         public List<string> TwRewardId { get; set; } = [];
+        public List<string> TwRewardSkipId { get; set; } = [];
         public List<string> UserBlacklist { get; set; } = [];
         public List<TrackItem> SongBlacklist { get; set; } = [];
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
@@ -357,7 +360,6 @@ namespace Songify_Slim.Util.Settings
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public string Theme { get; set; } = "Light";
         public string TwRewardGoalRewardId { get; set; } = "";
-        public string TwRewardSkipId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;
 

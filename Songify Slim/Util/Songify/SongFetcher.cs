@@ -917,9 +917,11 @@ namespace Songify_Slim.Util.Songify
                 }
 
             //Write History
-            if (Settings.Settings.SaveHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
-                currentSongOutput.Trim() != Settings.Settings.CustomPauseText)
+            string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";
+            if (Settings.Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
+                historySongOutput.Trim() != Settings.Settings.CustomPauseText)
             {
+
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
                 //save the history file
@@ -938,13 +940,13 @@ namespace Songify_Slim.Util.Songify
                     doc.Descendants("History").FirstOrDefault()
                         ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
 
-                XElement elem = new("Song", currentSongOutput.Trim());
+                XElement elem = new("Song", historySongOutput);
                 elem.Add(new XAttribute("Time", unixTimestamp));
                 XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
                 XNode lastNode = x.LastNode;
                 if (lastNode != null)
                 {
-                    if (currentSongOutput.Trim() != ((XElement)lastNode).Value)
+                    if (historySongOutput != ((XElement)lastNode).Value)
                         x?.Add(elem);
                 }
                 else

@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Songify_Slim.Util.General;
@@ -37,20 +38,60 @@ namespace Songify_Slim.Views
                     ListSortDirection.Descending
                     )
                 );
-            LbxUsers.ItemsSource = view;
             DgvViewers.Items.Clear();
             DgvViewers.ItemsSource = view;
         }
 
-        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        private async void BtnRefresh_OnClick(object sender, RoutedEventArgs e)
         {
-            if (LbxUsers.SelectedItem is not TwitchUser user)
-                return;
-            List<string> tempList = Settings.UserBlacklist;
-            if (tempList.Any(o => o.Equals(user.DisplayName, StringComparison.OrdinalIgnoreCase)))
-                return;
-            tempList.Add(user.DisplayName);
-            Settings.UserBlacklist = tempList;
+            DgvViewers.IsEnabled = false;
+            GrdLoading.Visibility = Visibility.Visible;
+            // Play Button animation
+            await TwitchHandler.RunTwitchUserSync();
+            // Stop Button Animation
+            DgvViewers.IsEnabled = true;
+            GrdLoading.Visibility = Visibility.Hidden;
+        }
+
+        private void BtnRefresh_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // Remove any lingering finishing animation so the infinite spin can start fresh.
+            if (IconContainer.RenderTransform is RotateTransform rt)
+            {
+                rt.BeginAnimation(RotateTransform.AngleProperty, null);
+            }
+        }
+
+        private void BtnRefresh_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (IconContainer.RenderTransform is RotateTransform rt)
+            {
+                // Stop the infinite spin storyboard.
+                SpinBeginStoryboard.Storyboard.Stop(IconContainer);
+
+                // Get the current angle.
+                double currentAngle = rt.Angle;
+
+                // Calculate how much remains to reach the next full rotation.
+                double remainder = currentAngle % 360;
+                double additionalRotation = (360 - remainder) % 360; // if remainder is 0, no extra rotation needed
+
+                // If the icon is nearly complete, no finishing animation is needed.
+                if (additionalRotation < 0.5)
+                    return;
+
+                // Animate from the current angle to the next full rotation.
+                DoubleAnimation finishingAnimation = new DoubleAnimation
+                {
+                    From = currentAngle,
+                    To = currentAngle + additionalRotation,
+                    Duration = TimeSpan.FromMilliseconds(300),
+                    // Using FillBehavior.HoldEnd will hold the final value until cleared.
+                    FillBehavior = FillBehavior.HoldEnd
+                };
+
+                rt.BeginAnimation(RotateTransform.AngleProperty, finishingAnimation);
+            }
         }
     }
 }

@@ -35,7 +35,9 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 "moderator:read:blocked_terms",
                 "moderator:read:chat_settings",
                 "moderator:read:chatters",
-                "moderator:read:followers"
+                "moderator:read:followers",
+                "moderation:read",
+                "channel:read:vips"
                 //s.Add("user:read:follows");
                 //s.Add("user:read:subscriptions");
                 //s.Add("analytics:read:extensions");

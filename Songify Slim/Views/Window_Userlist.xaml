@@ -14,77 +14,25 @@
     mc:Ignorable="d">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<TextBlock
-            Grid.Row="0"
-            Grid.Column="0"
-            Margin="6,0,0,0"
-            Text="SR" />
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="6,0,0,0"
-            Text="Name" />
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="2"
-            Margin="6,0,0,0"
-            Text="Userlevel" />
-        <TextBlock
-            Grid.Row="0"
-            Grid.Column="3"
-            Margin="6,0,0,0"
-            Text="Sub Tier" />-->
-
-        <ListBox
-            x:Name="LbxUsers"
-            Grid.Row="1"
-            Grid.Column="0"
-            Grid.ColumnSpan="4"
-            Margin="6"
-            SelectionMode="Single"
-            Visibility="Collapsed">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Margin" Value="0" />
-                    <Setter Property="Padding" Value="0" />
-                </Style>
-            </ListBox.ItemContainerStyle>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <userControls:UcViewerItem />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Click="MenuItem_OnClick" Header="Block user from song requests" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
         <DataGrid
             x:Name="DgvViewers"
-            Grid.Row="1"
+            Grid.Row="0"
             Grid.Column="0"
-            Grid.ColumnSpan="4"
-            AlternatingRowBackground="#0fffffff"
+            HorizontalAlignment="Stretch"
             AutoGenerateColumns="False"
             CanUserAddRows="False">
-
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="auto" Header="SR">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <iconPacks:PackIconMaterial Grid.Column="3">
+                                <iconPacks:PackIconMaterial>
                                     <iconPacks:PackIconMaterial.Style>
                                         <Style TargetType="iconPacks:PackIconMaterial">
                                             <Style.Triggers>
@@ -113,14 +61,23 @@
                                     <iconPacks:PackIconMaterial.Style>
                                         <Style TargetType="iconPacks:PackIconMaterial">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="5">
-                                                    <Setter Property="Kind" Value="VideoAccount" />
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="7">
+                                                    <Setter Property="Kind" Value="Video" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="4">
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="6">
                                                     <Setter Property="Kind" Value="Sword" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="3">
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="5">
                                                     <Setter Property="Kind" Value="DiamondOutline" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="4">
+                                                    <Setter Property="Kind" Value="StarBox" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="3">
+                                                    <Setter Property="Kind" Value="StarBox" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding UserLevel}" Value="2">
+                                                    <Setter Property="Kind" Value="StarBox" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -173,5 +130,63 @@
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>
+        <Button
+            x:Name="BtnRefresh"
+            Grid.Row="0"
+            Grid.Column="0"
+            Height="26"
+            Margin="6"
+            Padding="5"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Click="BtnRefresh_OnClick"
+            MouseEnter="BtnRefresh_MouseEnter"
+            MouseLeave="BtnRefresh_MouseLeave"
+            Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
+
+            <Button.Resources>
+                <!--  Define the infinite spinning storyboard  -->
+                <Storyboard x:Key="SpinStoryboard">
+                    <DoubleAnimation
+                        RepeatBehavior="Forever"
+                        Storyboard.TargetName="IconContainer"
+                        Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                        To="360"
+                        Duration="0:0:1" />
+                </Storyboard>
+            </Button.Resources>
+
+            <!--  Icon container with a centered render transform  -->
+            <Grid
+                x:Name="IconContainer"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <RotateTransform Angle="0" />
+                </Grid.RenderTransform>
+                <iconPacks:PackIconMaterial
+                    Width="15"
+                    Height="15"
+                    Margin="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Kind="Refresh" />
+            </Grid>
+
+            <!--  Start the infinite spin on mouse enter  -->
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard x:Name="SpinBeginStoryboard" Storyboard="{StaticResource SpinStoryboard}" />
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+
+        <Grid
+            x:Name="GrdLoading"
+            Background="#88000000"
+            Visibility="Hidden">
+            <controls:ProgressRing IsLarge="True" />
+        </Grid>
     </Grid>
 </controls:MetroWindow>

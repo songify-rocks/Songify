@@ -19,6 +19,7 @@ namespace Songify_Slim.Util.General
             string color = Settings.Settings.Color;
             string themeName = theme + "." + color;
             ThemeManager.Current.ChangeTheme(Application.Current, themeName);
+            ThemeManager.Current.SyncTheme();
         }
     }
 }
