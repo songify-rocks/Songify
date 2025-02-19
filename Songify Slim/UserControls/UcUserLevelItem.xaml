@@ -18,7 +18,7 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
                     <Setter Property="Background" Value="SteelBlue" />
-                    <Setter Property="ToolTip" Value="Everyone" />
+                    <Setter Property="ToolTip" Value="Viewer" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
                     <Setter Property="Background" Value="SteelBlue" />
@@ -58,7 +58,7 @@
                     <Setter Property="Kind" Value="AccountPlus" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
-                    <Setter Property="Kind" Value="Account" />
+                    <Setter Property="Kind" Value="Eye" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
                     <Setter Property="Kind" Value="AccountCheck" />
@@ -98,14 +98,14 @@
                     <Setter Property="Text" Value="Requester" />
                 </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
-                    <Setter Property="Text" Value="E" />
+                    <Setter Property="Text" Value="V" />
                 </DataTrigger>
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0" />
                         <Condition Binding="{Binding LongName, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True" />
                     </MultiDataTrigger.Conditions>
-                    <Setter Property="Text" Value="Everyone" />
+                    <Setter Property="Text" Value="Viewer" />
                 </MultiDataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
                     <Setter Property="Text" Value="F" />

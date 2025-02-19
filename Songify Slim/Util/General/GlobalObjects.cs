@@ -24,6 +24,10 @@ using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
 using Queue = Songify_Slim.Models.YTMD.Queue;
 using QueueItem = Songify_Slim.Models.YTMD.QueueItem;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
+using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
+using TwitchLib.Api.Helix.Models.Subscriptions;
 
 namespace Songify_Slim.Util.General
 {
@@ -44,7 +48,10 @@ namespace Songify_Slim.Util.General
         public static int RewardGoalCount = 0;
         public static List<RequestObject> SkipList = [];
         public static ObservableCollection<RequestObject> QueueTracks { get; set; } = [];
-
+        public static List<Chatter> chatters = [];
+        public static List<Subscription> subscribers = [];
+        public static List<Moderator> moderators = [];
+        public static List<ChannelVIPsResponseModel> vips = [];
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
@@ -152,6 +159,25 @@ namespace Songify_Slim.Util.General
 
                 foreach (T childOfChild in FindVisualChildren<T>(ithChild)) yield return childOfChild;
             }
+        }
+
+        // Helper method to find a child of a specific type in the visual tree.
+        public static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null)
+                return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T typedChild)
+                    return typedChild;
+
+                T childOfChild = FindVisualChild<T>(child);
+                if (childOfChild != null)
+                    return childOfChild;
+            }
+            return null;
         }
 
         public static void QueueUpdateQueueWindow()

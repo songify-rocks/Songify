@@ -16,7 +16,7 @@
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
             <!--#region Commands-->
-            <TextBlock
+            <!--<TextBlock
                 Margin="0,6"
                 FontSize="18"
                 FontWeight="Bold"
@@ -135,13 +135,13 @@
                         VerticalAlignment="Center"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                 </Border>
-                <!--<TextBlock
+                --><!--<TextBlock
                     Margin="0,0,6,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="14"
                     Text="{x:Static properties:Resources.brw_Next}"
-                    TextWrapping="Wrap" />-->
+                    TextWrapping="Wrap" />--><!--
                 <TextBox
                     x:Name="TbNext"
                     MinHeight="23"
@@ -174,13 +174,13 @@
                         VerticalAlignment="Center"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                 </Border>
-                <!--<TextBlock
+                --><!--<TextBlock
                     Margin="0,0,6,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="14"
                     Text="{x:Static properties:Resources.brw_SongLike}"
-                    TextWrapping="Wrap" />-->
+                    TextWrapping="Wrap" />--><!--
                 <TextBox
                     x:Name="TbSongLike"
                     MinHeight="26"
@@ -191,7 +191,7 @@
                     TextChanged="Tb_SongLike_OnTextChanged"
                     TextWrapping="Wrap"
                     ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>
+            </DockPanel>-->
             <!--#endregion-->
 
             <!--#region Song Request Related Responses-->
@@ -201,7 +201,7 @@
                 FontWeight="Bold"
                 Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
 
-            <Border
+            <!--<Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
@@ -227,7 +227,7 @@
                         TextWrapping="Wrap"
                         ToolTip="{DynamicResource ParamTooltip}" />
                 </StackPanel>
-            </Border>
+            </Border>-->
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
@@ -533,7 +533,7 @@
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                 BorderThickness="1" />
 
-            <Border
+            <!--<Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
@@ -564,9 +564,9 @@
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
+                BorderThickness="1" />-->
 
-            <Border
+            <!--<Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
@@ -597,7 +597,7 @@
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
                 BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
+                BorderThickness="1" />-->
 
             <Border
                 MinWidth="60"

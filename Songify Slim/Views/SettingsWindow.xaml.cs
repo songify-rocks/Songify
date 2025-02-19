@@ -38,9 +38,12 @@ using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using File = System.IO.File;
 using System.Drawing;
+using Songify_Slim.Models;
 using Songify_Slim.Util.Spotify;
+using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
+using ListBox = System.Windows.Controls.ListBox;
 using TabControl = System.Windows.Controls.TabControl;
 
 namespace Songify_Slim.Views
@@ -93,6 +96,16 @@ namespace Songify_Slim.Views
                         break;
                 }
             }
+
+            //LbCommands.ItemsSource = Settings.Commands;
+
+            StackCommands.Children.Clear();
+            foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))
+            {
+                bool showButtomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
+                StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showButtomBorder });
+            }
+
 
             NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
             CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
@@ -160,47 +173,7 @@ namespace Songify_Slim.Views
             ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
             ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
             Cctrl.Content = new UcBotResponses();
-            TglBotcmdPos.IsOn = Settings.BotCmdPos;
-            TglBotcmdSong.IsOn = Settings.BotCmdSong;
-            TglBotcmdNext.IsOn = Settings.BotCmdNext;
-            TglBotcmdSkip.IsOn = Settings.BotCmdSkip;
-            TglBotcmdSkipvote.IsOn = Settings.BotCmdSkipVote;
-            TglBotcmdSsr.IsOn = Settings.TwSrCommand;
-            TglBotcmdRemove.IsOn = Settings.BotCmdRemove;
-            TglBotcmdSonglike.IsOn = Settings.BotCmdSonglike;
-            TglBotcmdPlayPause.IsOn = Settings.BotCmdPlayPause;
-            TglBotcmdCommands.IsOn = Settings.BotCmdCommands;
             TglDonationReminder.IsOn = Settings.DonationReminder;
-            TglUserLevelBadges.IsOn = Settings.ShowUserLevelBadges;
-            NudSkipVoteCount.Value = Settings.BotCmdSkipVoteCount;
-            TglBotcmdVol.IsOn = Settings.BotCmdVol;
-            TglBotcmdVolIgnoreMod.IsOn = Settings.BotCmdVolIgnoreMod;
-            TglBotQueue.IsOn = Settings.BotCmdQueue;
-            TextBoxTriggerSong.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSongTrigger)
-                ? "song"
-                : Settings.BotCmdSongTrigger;
-            TextBoxTriggerPos.Text =
-                string.IsNullOrWhiteSpace(Settings.BotCmdPosTrigger) ? "pos" : Settings.BotCmdPosTrigger;
-            TextBoxTriggerNext.Text = string.IsNullOrWhiteSpace(Settings.BotCmdNextTrigger)
-                ? "next"
-                : Settings.BotCmdNextTrigger;
-            TextBoxTriggerSkip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSkipTrigger)
-                ? "skip"
-                : Settings.BotCmdSkipTrigger;
-            TextBoxTriggerVoteskip.Text = string.IsNullOrWhiteSpace(Settings.BotCmdVoteskipTrigger)
-                ? "voteskip"
-                : Settings.BotCmdVoteskipTrigger;
-            TextBoxTriggerSsr.Text =
-                string.IsNullOrWhiteSpace(Settings.BotCmdSsrTrigger) ? "ssr" : Settings.BotCmdSsrTrigger;
-            TextBoxTriggerRemove.Text = string.IsNullOrWhiteSpace(Settings.BotCmdRemoveTrigger)
-                ? "remove"
-                : Settings.BotCmdRemoveTrigger;
-            TextBoxTriggerSonglike.Text = string.IsNullOrWhiteSpace(Settings.BotCmdSonglikeTrigger)
-                ? "songlike"
-                : Settings.BotCmdSonglikeTrigger;
-            TextBoxTriggerQueue.Text = string.IsNullOrWhiteSpace(Settings.BotCmdQueueTrigger)
-                ? "queue"
-                : Settings.BotCmdQueueTrigger;
 
             Settings.UserLevelsCommand ??= [];
             Settings.UserLevelsReward ??= [];
@@ -291,7 +264,7 @@ namespace Songify_Slim.Views
             CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
             await LoadRewards();
 
-            PnlSongrequestUserlevels.Children.Clear();
+            
             if (Settings.RefundConditons == null) return;
             foreach (int condition in Settings.RefundConditons)
             {
@@ -655,21 +628,6 @@ namespace Songify_Slim.Views
 
         private async void MetroWindow_Closing(object sender, CancelEventArgs e)
         {
-            //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
-            Settings.BotCmdSongTrigger =
-                string.IsNullOrWhiteSpace(TextBoxTriggerSong.Text) ? "song" : TextBoxTriggerSong.Text;
-            Settings.BotCmdPosTrigger =
-                string.IsNullOrWhiteSpace(TextBoxTriggerPos.Text) ? "pos" : TextBoxTriggerPos.Text;
-            Settings.BotCmdNextTrigger =
-                string.IsNullOrWhiteSpace(TextBoxTriggerNext.Text) ? "next" : TextBoxTriggerNext.Text;
-            Settings.BotCmdSkipTrigger =
-                string.IsNullOrWhiteSpace(TextBoxTriggerSkip.Text) ? "skip" : TextBoxTriggerSkip.Text;
-            Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(TextBoxTriggerVoteskip.Text)
-                ? "voteskip"
-                : TextBoxTriggerVoteskip.Text;
-            Settings.BotCmdSsrTrigger =
-                string.IsNullOrWhiteSpace(TextBoxTriggerSsr.Text) ? "ssr" : TextBoxTriggerSsr.Text;
-
             ConfigHandler.WriteAllConfig(Settings.Export());
             if (_appIdInitialValue == Settings.UseOwnApp) return;
             e.Cancel = true;
@@ -1661,81 +1619,6 @@ namespace Songify_Slim.Views
                 throw new ArgumentException("App version must have at least three components.");
 
             return string.Join(".", parts[0], parts[1], parts[2]); // Join the first three parts
-        }
-
-        private void MyListBox_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (sender is System.Windows.Controls.ListBox listBox)
-            {
-                // Make sure the control is actually in the visual tree
-                if (VisualTreeHelper.GetChildrenCount(listBox) > 0)
-                {
-                    // The ListBox's template contains a Border -> ScrollViewer -> ...
-                    if (VisualTreeHelper.GetChild(listBox, 0) is Border border && VisualTreeHelper.GetChildrenCount(border) > 0)
-                    {
-                        // Get the ScrollViewer inside the Border
-                        if (VisualTreeHelper.GetChild(border, 0) is ScrollViewer scrollViewer)
-                        {
-                            // Now you can call LineUp/LineDown on the ScrollViewer
-                            if (e.Delta > 0)
-                            {
-                                scrollViewer.LineUp();
-                            }
-                            else
-                            {
-                                scrollViewer.LineDown();
-                            }
-
-                            // Mark the event as handled so the default scrolling doesn’t also occur
-                            e.Handled = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void Tabcontrol_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (((TabControl)sender).SelectedIndex != 5) return;
-
-            Visibility vis = Settings.ShowUserLevelBadges ? Visibility.Visible : Visibility.Collapsed;
-            SetWrapPanelVisibility(vis);
-
-            PnlSongrequestUserlevels.Children.Clear();
-            PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
-            {
-                UserLevel = 7
-            });
-            foreach (int i in Settings.UserLevelsCommand.OrderByDescending(n => n).ToList())
-            {
-                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem
-                {
-                    UserLevel = i,
-                    LongName = i is 0 or 1
-                });
-            }
-        }
-
-        private void Tgl_botcmd_Commands_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdCommands = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void TglUserLevelBadges_OnToggled(object sender, RoutedEventArgs e)
-        {
-            Settings.ShowUserLevelBadges = ((ToggleSwitch)sender).IsOn;
-
-            Visibility vis = ((ToggleSwitch)sender).IsOn ? Visibility.Visible : Visibility.Collapsed;
-
-            SetWrapPanelVisibility(vis);
-        }
-
-        private void SetWrapPanelVisibility(Visibility vis)
-        {
-            foreach (WrapPanel wrapPanel in GlobalObjects.FindVisualChildren<WrapPanel>(PnlCommands))
-            {
-                wrapPanel.Visibility = vis;
-            }
         }
     }
 }

@@ -27,6 +27,24 @@
             HorizontalAlignment="Stretch"
             AutoGenerateColumns="False"
             CanUserAddRows="False">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="MenuItem_BlockSr_Click">
+                        <MenuItem.Style>
+                            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="MenuItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsSrBlocked, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="True">
+                                        <Setter Property="Header" Value="Unblock User from SR" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsSrBlocked, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="False">
+                                        <Setter Property="Header" Value="Block User from SR" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Width="auto" Header="SR">
                     <DataGridTemplateColumn.CellTemplate>
@@ -61,22 +79,22 @@
                                     <iconPacks:PackIconMaterial.Style>
                                         <Style TargetType="iconPacks:PackIconMaterial">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="7">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="7">
                                                     <Setter Property="Kind" Value="Video" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="6">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="6">
                                                     <Setter Property="Kind" Value="Sword" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="5">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="5">
                                                     <Setter Property="Kind" Value="DiamondOutline" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="4">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="4">
                                                     <Setter Property="Kind" Value="StarBox" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="3">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="3">
                                                     <Setter Property="Kind" Value="StarBox" />
                                                 </DataTrigger>
-                                                <DataTrigger Binding="{Binding UserLevel}" Value="2">
+                                                <DataTrigger Binding="{Binding HighestUserLevel}" Value="2">
                                                     <Setter Property="Kind" Value="StarBox" />
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -118,15 +136,18 @@
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                    <Style.Setters>
+                        <Setter Property="Background" Value="Transparent" />
+
+                    </Style.Setters>
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
                         </Trigger>
-                        <!--<DataTrigger Binding="{Binding IsSrBlocked}" Value="true">
+                        <DataTrigger Binding="{Binding IsSrBlocked}" Value="true">
                             <Setter Property="Background" Value="IndianRed" />
-                        </DataTrigger>-->
+                        </DataTrigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="Transparent" />
                 </Style>
             </DataGrid.RowStyle>
         </DataGrid>

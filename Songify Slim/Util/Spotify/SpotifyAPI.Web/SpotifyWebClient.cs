@@ -217,11 +217,35 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
             Tuple<ResponseInfo, string> response = await UploadAsync(url, body, method, headers).ConfigureAwait(false);
             try
             {
-                return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(response.Item2, JsonSettings));
+                if (IsJson(response.Item2))
+                {
+                    // If it's valid JSON, deserialize as usual.
+                    T result = JsonConvert.DeserializeObject<T>(response.Item2, JsonSettings);
+                    return new Tuple<ResponseInfo, T>(response.Item1, result);
+                }
+                else
+                {
+                    // Non-JSON response. Spotify returns a plain string sometimes.
+                    // If the status code is OK we assume it's a valid, non-error response.
+                    // If not, you might consider assigning the text to an error message if T supports it.
+                    T result = Activator.CreateInstance<T>();
+
+                    // Optional: if you have an error property on T and the status code indicates a problem,
+                    // you can assign the plain text as an error message.
+                    if (response.Item1.StatusCode != HttpStatusCode.OK && result is ErrorResponse errorResponse)
+                    {
+                        errorResponse.Error = new Error { Message = response.Item2 };
+                    }
+
+                    return new Tuple<ResponseInfo, T>(response.Item1, result);
+                }
             }
             catch (JsonException error)
             {
-                return new Tuple<ResponseInfo, T>(response.Item1, JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, error.Message), JsonSettings));
+                // If deserialization fails, create a fallback error instance.
+                string errorJson = string.Format(UnknownErrorJson, error.Message);
+                T fallbackResult = JsonConvert.DeserializeObject<T>(errorJson, JsonSettings);
+                return new Tuple<ResponseInfo, T>(response.Item1, fallbackResult);
             }
         }
 

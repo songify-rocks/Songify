@@ -405,9 +405,10 @@ namespace Songify_Slim.Util.Spotify
                         $"spotify:track:{trackId}");
                     return x == null || x.HasError();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     Logger.LogStr("Error adding song to playlist");
+                    Logger.LogExc(ex);
                     return true;
                 }
             }

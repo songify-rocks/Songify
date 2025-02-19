@@ -148,6 +148,8 @@
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Models\TwitchCommand.cs" />
+    <Compile Include="Models\TwitchCommandParams.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -183,6 +185,9 @@
     <Compile Include="UserControls\UC_AccountItem.xaml.cs">
       <DependentUpon>UC_AccountItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_CommandItem.xaml.cs">
+      <DependentUpon>UC_CommandItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UC_PlaylistItem.xaml.cs">
       <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
     </Compile>
@@ -191,17 +196,21 @@
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
+    <Compile Include="Util\General\EnumExtension.cs" />
     <Compile Include="Util\General\Enums.cs" />
     <Compile Include="Util\General\ImageConverter.cs" />
     <Compile Include="Util\General\IOManager.cs" />
+    <Compile Include="Util\General\ListItemVisibilityConverter.cs" />
     <Compile Include="Util\General\MathUtils.cs" />
     <Compile Include="Util\General\RegisterFirewall.cs" />
     <Compile Include="Util\General\SingleInstanceHelper.cs" />
+    <Compile Include="Util\General\SubtractConverter.cs" />
     <Compile Include="Util\General\TaskQueue.cs" />
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Songify\TwitchApiHelper.cs" />
+    <Compile Include="Util\Songify\TwitchCommandHandler.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
@@ -365,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_AccountItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_CommandItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

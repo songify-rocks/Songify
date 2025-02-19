@@ -119,17 +119,17 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-        private void Tb_ModSkip_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespModSkip = TbModSkip.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_ModSkip_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespModSkip = TbModSkip.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
-        private void Tb_Next_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespNext = TbNext.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_Next_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespNext = TbNext.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
         private void Tb_NoSong_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -137,11 +137,11 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-        private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespPos = TbPos.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_Pos_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespPos = TbPos.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
         private void Tb_Refund_OnTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -149,11 +149,11 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-        private void Tb_Song_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespSong = TbSong.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_Song_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespSong = TbSong.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
         private void Tb_SongInQueue_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -161,23 +161,23 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-        private void Tb_Success_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespSuccess = TbSuccess.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_Success_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespSuccess = TbSuccess.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
-        private void Tb_VoteSkip_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespVoteSkip = TbVoteSkip.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_VoteSkip_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespVoteSkip = TbVoteSkip.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
-        private void Tb_SongLike_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespSongLike = TbSongLike.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void Tb_SongLike_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespSongLike = TbSongLike.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -186,17 +186,17 @@ namespace Songify_Slim.UserControls
             TbMaxSongs.Text = Settings.BotRespMaxReq;
             TbMaxLength.Text = Settings.BotRespLength;
             TbError.Text = Settings.BotRespError;
-            TbSuccess.Text = Settings.BotRespSuccess;
+            //TbSuccess.Text = Settings.BotRespSuccess;
             TbNoSong.Text = Settings.BotRespNoSong;
-            TbModSkip.Text = Settings.BotRespModSkip;
-            TbVoteSkip.Text = Settings.BotRespVoteSkip;
-            TbPos.Text = Settings.BotRespPos;
-            TbNext.Text = Settings.BotRespNext;
-            TbSong.Text = Settings.BotRespSong;
+            //TbModSkip.Text = Settings.BotRespModSkip;
+            //TbVoteSkip.Text = Settings.BotRespVoteSkip;
+            //TbPos.Text = Settings.BotRespPos;
+            //TbNext.Text = Settings.BotRespNext;
+            //TbSong.Text = Settings.BotRespSong;
             TbRefund.Text = Settings.BotRespRefund;
-            TbSongLike.Text = Settings.BotRespSongLike;
+            //TbSongLike.Text = Settings.BotRespSongLike;
             TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
-            TbRemove.Text = Settings.BotRespRemove;
+            //TbRemove.Text = Settings.BotRespRemove;
             TbExplicit.Text = Settings.BotRespTrackExplicit;
             TbSrCooldown.Text = Settings.BotRespCooldown;
             TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
@@ -204,11 +204,11 @@ namespace Songify_Slim.UserControls
             TbSrCommandUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowCommand;
             TbSrRewardUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowReward;
 
-            TbTriggerSong.Text = $"!{Settings.BotCmdSongTrigger}";
-            TbTriggerRemove.Text = $"!{Settings.BotCmdRemoveTrigger}";
-            TbTriggerPos.Text = $"!{Settings.BotCmdPosTrigger}";
-            TbTriggerNext.Text = $"!{Settings.BotCmdNextTrigger}";
-            TbTriggerLike.Text = $"!{Settings.BotCmdSonglikeTrigger}";
+            //TbTriggerSong.Text = $"!{Settings.BotCmdSongTrigger}";
+            //TbTriggerRemove.Text = $"!{Settings.BotCmdRemoveTrigger}";
+            //TbTriggerPos.Text = $"!{Settings.BotCmdPosTrigger}";
+            //TbTriggerNext.Text = $"!{Settings.BotCmdNextTrigger}";
+            //TbTriggerLike.Text = $"!{Settings.BotCmdSonglikeTrigger}";
 
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
@@ -263,7 +263,7 @@ namespace Songify_Slim.UserControls
                 textBox.ContextMenu = contextMenu;
             }
 
-            TbSong.Focus();
+            //TbSong.Focus();
         }
 
         private void TbNotFoundInPlaylist_TextChanged(object sender, TextChangedEventArgs e)
@@ -272,11 +272,11 @@ namespace Songify_Slim.UserControls
             SetPreview(sender as TextBox);
         }
 
-        private void TbRemove_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            Settings.BotRespRemove = TbRemove.Text;
-            SetPreview(sender as TextBox);
-        }
+        //private void TbRemove_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    Settings.BotRespRemove = TbRemove.Text;
+        //    SetPreview(sender as TextBox);
+        //}
 
         private void TbExplicit_TextChanged(object sender, TextChangedEventArgs e)
         {

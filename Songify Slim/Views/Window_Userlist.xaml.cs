@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Windows.UI.Xaml.Controls.Primitives;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
@@ -34,7 +35,7 @@ namespace Songify_Slim.Views
             view.SortDescriptions.Clear();
             view.SortDescriptions.Add(
                 new SortDescription(
-                    nameof(TwitchUser.UserLevel),
+                    nameof(TwitchUser.HighestUserLevel),
                     ListSortDirection.Descending
                     )
                 );
@@ -92,6 +93,23 @@ namespace Songify_Slim.Views
 
                 rt.BeginAnimation(RotateTransform.AngleProperty, finishingAnimation);
             }
+        }
+
+        private void MenuItem_BlockSr_Click(object sender, RoutedEventArgs e)
+        {
+            if (DgvViewers.SelectedItem is not TwitchUser selectedItem) return;
+            if (Settings.UserBlacklist.Contains(selectedItem.DisplayName.ToLower()))
+            {
+                Settings.UserBlacklist.Remove(selectedItem.DisplayName.ToLower());
+                selectedItem.IsSrBlocked = false;
+            }
+            else
+            {
+                Settings.UserBlacklist.Add(selectedItem.DisplayName.ToLower());
+                selectedItem.IsSrBlocked = true;
+            }
+
+            Settings.UserBlacklist = Settings.UserBlacklist;
         }
     }
 }

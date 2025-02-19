@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections;
 using Songify_Slim.Views;
 using System.Collections.Generic;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using Songify_Slim.Models;
+using Songify_Slim.Util.Songify;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using Songify_Slim.UserControls;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -657,6 +664,25 @@ namespace Songify_Slim.Util.Settings
         public static string BotRespUserlevelTooLowCommand { get => GetBotRespUserlevelTooLowCommand(); set => SetBotRespUserlevelTooLowCommand(value); }
         public static bool ShowUserLevelBadges { get => GetShowUserLevelBadges(); set => SetShowUserLevelBadges(value); }
 
+        public static List<TwitchCommand> Commands
+        {
+            get => CurrentConfig.TwitchCommands.Commands;
+            set => CurrentConfig.TwitchCommands.Commands = value;
+        }
+
+        public static string TwitchUserColor { get => GetTwitchUserColor(); set => SetTwitchUserColor(value); }
+
+        private static string GetTwitchUserColor()
+        {
+            return CurrentConfig.TwitchCredentials.TwitchUserColor;
+        }
+
+        private static void SetTwitchUserColor(string value)
+        {
+            CurrentConfig.TwitchCredentials.TwitchUserColor = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
         private static void SetShowUserLevelBadges(bool value)
         {
             CurrentConfig.AppConfig.ShowUserLevelBadges = value;
@@ -726,6 +752,7 @@ namespace Songify_Slim.Util.Settings
                 ChannelName = GetTwChannel(),
                 TwitchBotToken = GetTwitchBotToken(),
                 TwitchUser = GetTwitchUser(),
+                TwitchUserColor = GetTwitchUserColor(),
             };
 
             BotConfig botConfig = new()
@@ -874,12 +901,18 @@ namespace Songify_Slim.Util.Settings
                 YtmdToken = GetYtmdToken(),
             };
 
+            TwitchCommands twitchCommands = new()
+            {
+                Commands = CurrentConfig.TwitchCommands.Commands
+            };
+
             return new Configuration
             {
                 AppConfig = appConfig,
                 SpotifyCredentials = spotifyCredentials,
                 TwitchCredentials = twitchCredentials,
-                BotConfig = botConfig
+                BotConfig = botConfig,
+                TwitchCommands = twitchCommands
             };
         }
 
@@ -2484,6 +2517,16 @@ namespace Songify_Slim.Util.Settings
         {
             CurrentConfig.AppConfig.YtmdToken = value;
             ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        public static void UpdateCommand(TwitchCommand command)
+        {
+            // Update the command in the config
+            int index = CurrentConfig.TwitchCommands.Commands.FindIndex(x => x.Name == command.Name);
+            if (index == -1) return;
+            CurrentConfig.TwitchCommands.Commands[index] = command;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+            TwitchHandler.InitializeCommands(Commands);
         }
     }
 }
