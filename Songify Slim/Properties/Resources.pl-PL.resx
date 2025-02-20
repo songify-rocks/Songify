@@ -283,7 +283,7 @@
     <value>Format wyjściowy (plik tekstowy i widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
-    <value>Wstrzymaj tekst</value>
+    <value>Brak odtwarzania muzyki</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
     <value>Niestandardowy tekst pauzy (pusty dla pustego pliku tekstowego)</value>
@@ -313,10 +313,10 @@
     <value>Szybkość pobierania Chrome (sekundy)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>minimalizuj do zasobnika systemowego</value>
+    <value>Minimalizuj do zasobnika systemowego</value>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>przesyłaj anonimowe dane</value>
+    <value>Przesyłaj anonimowe dane</value>
   </data>
   <data name="sw_tcSystem_Telemetry" xml:space="preserve">
     <value>Telemetria</value>
@@ -403,7 +403,7 @@
     <value>Opis zmian</value>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Folder dziennika</value>
+    <value>Folder dziennika zdarzeń</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Zaloguj się za pomocą Twitcha</value>
@@ -433,7 +433,7 @@
     <value>Ukryj nazwy kont i zdjęcia profilowe</value>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>otwórz okno kolejki podczas uruchamiania</value>
+    <value>Otwórz okno kolejki podczas uruchamiania</value>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
     <value>Automatycznie ogłaszaj utwór na czacie</value>
@@ -493,7 +493,7 @@
     <value>Zalogowałem się za pomocą Twitcha</value>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>nieograniczone prośby o utwory</value>
+    <value>Nielimitowane prośby o utwory</value>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
     <value>Prośby o piosenkę</value>
@@ -715,7 +715,7 @@
     <value>Nie rób nic</value>
   </data>
   <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
-    <value>Użyj niestandardowego tekstu pauzy</value>
+    <value>Użyj niestandardowego tekstu wstrzymanej piosenki</value>
   </data>
   <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
     <value>Wyczyść wszystkie dane wyjściowe</value>
@@ -793,13 +793,13 @@
     <value>Poziomy użytkownika (polecenie)</value>
   </data>
   <data name="s_Viewer" xml:space="preserve">
-    <value>Dozorca</value>
+    <value>Widz</value>
   </data>
   <data name="s_Follower" xml:space="preserve">
-    <value>Zwolennik</value>
+    <value>Obserwujący</value>
   </data>
   <data name="s_Subscriber" xml:space="preserve">
-    <value>Abonent</value>
+    <value>Subskrybent</value>
   </data>
   <data name="s_VIP" xml:space="preserve">
     <value>VIP</value>
