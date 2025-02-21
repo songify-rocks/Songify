@@ -272,7 +272,7 @@
                 <MenuItem Click="BtnSettings_Click" Header="{x:Static local:Resources.mw_menu_Settings}" />
                 <MenuItem Click="BtnWidget_Click" Header="{x:Static local:Resources.mw_menu_Widget}" />
                 <MenuItem
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     Click="BtnPatchNotes_Click"
                     Header="{x:Static local:Resources.mw_menu_PatchNotes}" />

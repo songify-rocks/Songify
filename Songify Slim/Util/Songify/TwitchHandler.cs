@@ -62,6 +62,7 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using TwitchLib.Api.Core.Models.Undocumented.Chatters;
+using TwitchLib.Api.V5.Models.Clips;
 
 
 namespace Songify_Slim.Util.Songify
@@ -453,13 +454,10 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 if (response == null) return;
+                response = response.Replace("{user}", message.DisplayName);
+                response = response.Replace("{vol}", vol.ToString());
 
-                if (cmd.IsAnnouncement)
-                {
-                    await AnnounceChatMessage(response.Replace("{vol}", vol.ToString()), cmd.AnnouncementColor);
-                }
-                else
-                    Client.SendMessage(message.Channel, response.Replace("{vol}", vol.ToString()));
+                SendOrAnnounceMessage(message.Channel, response, cmd);
             }
             else
             {
@@ -467,13 +465,11 @@ namespace Songify_Slim.Util.Songify
                 if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
                 PlaybackContext spotifyPlaybackAsync = await SpotifyApiHandler.Spotify.GetPlaybackAsync();
                 if (spotifyPlaybackAsync?.Device == null) return;
+                string response = cmd.Response;
+                response = response.Replace("{user}", message.DisplayName);
+                response = response.Replace("{vol}", spotifyPlaybackAsync?.Device.VolumePercent.ToString());
 
-                if (cmd.IsAnnouncement)
-                {
-                    await AnnounceChatMessage(cmd.Response.Replace("{vol}", spotifyPlaybackAsync.Device.VolumePercent.ToString()), cmd.AnnouncementColor);
-                }
-                else
-                    Client.SendMessage(message.Channel, cmd.Response.Replace("{vol}", spotifyPlaybackAsync.Device.VolumePercent.ToString()));
+                SendOrAnnounceMessage(message.Channel, response, cmd);
             }
         }
 
@@ -506,10 +502,8 @@ namespace Songify_Slim.Util.Songify
                 string response = cmd.Response;
                 response = response.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
 
-                if (cmd.IsAnnouncement)
-                    await AnnounceChatMessage(response, cmd.AnnouncementColor);
-                else
-                    SendChatMessage(message.Channel, response);
+
+                SendOrAnnounceMessage(message.Channel, response, cmd);
 
             }
             catch (Exception exception)
@@ -537,7 +531,7 @@ namespace Songify_Slim.Util.Songify
                     Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
                 }
 
-                string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                 {
                     User = message.DisplayName,
                     SingleArtist = GlobalObjects.CurrentSong.FullArtists != null
@@ -551,16 +545,13 @@ namespace Songify_Slim.Util.Songify
                     Cd = Settings.Settings.TwSrCooldown.ToString()
                 }, cmd.Response);
 
-                if (msg.Contains("{single_artist}"))
-                    msg = msg.Replace("{single_artist}", GlobalObjects.CurrentSong.FullArtists != null
+                if (response.Contains("{single_artist}"))
+                    response = response.Replace("{single_artist}", GlobalObjects.CurrentSong.FullArtists != null
                         ? GlobalObjects.CurrentSong.FullArtists.First().Name
                         : GlobalObjects.CurrentSong.Artists);
 
 
-                if (cmd.IsAnnouncement)
-                    await AnnounceChatMessage(msg, cmd.AnnouncementColor);
-                else
-                    SendChatMessage(message.Channel, msg);
+                SendOrAnnounceMessage(message.Channel, response, cmd);
             }
             catch
             {
@@ -661,10 +652,7 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{song}", tmp)
                 .Replace("{user}", message.DisplayName);
 
-            if (cmd.IsAnnouncement)
-                await AnnounceChatMessage(response, cmd.AnnouncementColor);
-            else
-                SendChatMessage(message.Channel, response);
+            SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
         private static async void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -692,13 +680,12 @@ namespace Songify_Slim.Util.Songify
                 output += " | ";
                 counter++;
             }
-
             output = output.TrimEnd(' ', '|');
-            // if output exceeds 500 characters, split at the last "|" before 500 characters
-            if (cmd.IsAnnouncement)
-                await AnnounceChatMessage(cmd.Response.Replace("{queue}", output), cmd.AnnouncementColor);
-            else
-                SendChatMessage(message.Channel, cmd.Response.Replace("{queue}", output));
+            string response = cmd.Response;
+            response = response.Replace("{queue}", output);
+            response = response.Replace("{user}", message.DisplayName);
+
+            SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
         private static async void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -740,11 +727,8 @@ namespace Songify_Slim.Util.Songify
 
                 between = tmp;
                 // Combine the 3 parts into one string
-                string output = before + between + after;
-                if (cmd.IsAnnouncement)
-                    await AnnounceChatMessage(output, cmd.AnnouncementColor);
-                else
-                    SendChatMessage(message.Channel, output);
+                response = before + between + after;
+                SendOrAnnounceMessage(message.Channel, response, cmd);
             }
             else
             {
@@ -805,7 +789,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleNextCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static void HandleNextCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
                 return;
@@ -828,10 +812,8 @@ namespace Songify_Slim.Util.Songify
             //if (GlobalObjects.ReqList.Count == 0)
             //    return;
             response = response.Replace("{song}", GetNextSong());
-            if (cmd.IsAnnouncement)
-                await AnnounceChatMessage(response, cmd.AnnouncementColor);
-            else
-                SendChatMessage(message.Channel, response);
+            SendOrAnnounceMessage(message.Channel, response, cmd);
+
         }
 
         private static async void HandleVoteSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -857,7 +839,7 @@ namespace Songify_Slim.Util.Songify
             if (SkipVotes.Any(o => o == message.DisplayName)) return;
             SkipVotes.Add(message.DisplayName);
 
-            string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
                 User = message.DisplayName,
                 MaxReq = $"{Settings.Settings.TwSrMaxReq}",
@@ -868,14 +850,7 @@ namespace Songify_Slim.Util.Songify
                 Cd = Settings.Settings.TwSrCooldown.ToString()
             }, cmd.Response);
 
-            if (cmd.IsAnnouncement)
-            {
-                await AnnounceChatMessage(msg, cmd.AnnouncementColor);
-            }
-            else
-            {
-                SendChatMessage(message.Channel, msg);
-            }
+            SendOrAnnounceMessage(message.Channel, response, cmd);
 
             if (SkipVotes.Count < Settings.Settings.BotCmdSkipVoteCount) return;
             await SpotifyApiHandler.SkipSong();
@@ -921,7 +896,7 @@ namespace Songify_Slim.Util.Songify
                     ?.UpdateCommandTime(true);
             });
 
-            string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
                 User = message.DisplayName,
                 MaxReq = $"{Settings.Settings.TwSrMaxReq}",
@@ -935,14 +910,8 @@ namespace Songify_Slim.Util.Songify
             await SpotifyApiHandler.SkipSong();
 
 
-            if (cmd.IsAnnouncement)
-            {
-                await AnnounceChatMessage(msg, cmd.AnnouncementColor);
-            }
-            else
-            {
-                SendChatMessage(message.Channel, msg);
-            }
+            SendOrAnnounceMessage(message.Channel, response, cmd);
+
 
             _skipCooldown = true;
             SkipCooldownTimer.Start();
@@ -1033,7 +1002,14 @@ namespace Songify_Slim.Util.Songify
             StartCooldown();
             cmdParams.ExistingUser.UpdateCommandTime();
         }
-        
+        private static async void SendOrAnnounceMessage(string channel, string message, TwitchCommand cmd)
+        {
+            if (cmd.IsAnnouncement)
+                await AnnounceChatMessage(message, cmd.AnnouncementColor);
+            else
+                SendChatMessage(channel, message);
+        }
+
         private static bool IsUserAllowed(List<int> allowedUserLevels, TwitchCommandParams cmdParams, bool messageIsBroadcaster)
         {
             if (allowedUserLevels.Count == 0)
@@ -1431,12 +1407,8 @@ namespace Songify_Slim.Util.Songify
             string successResponse = Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
             response = CreateSuccessResponse(track, e.DisplayName, successResponse);
             TwitchCommand cmd = Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request");
-            if (cmd.IsAnnouncement)
-            {
-                await AnnounceChatMessage(response, cmd.AnnouncementColor);
-            }
-            else
-                SendChatMessage(e.Channel, response);
+
+            SendOrAnnounceMessage(e.Channel, response, cmd);
 
             // this will take the first 4 artists and join their names with ", "
             string artists = string.Join(", ", track.Artists
@@ -3311,12 +3283,14 @@ namespace Songify_Slim.Util.Songify
                 {
                     response = Settings.Settings.BotRespIsInQueue;
                     response = response.Replace("{user}", e.DisplayName);
-                    response = response.Replace("{artist}", "");
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", "");
+                    response = response.Replace("{song}",
+                        $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}");
+                    response = response.Replace("{artist}", string.Join(", ", track.Artists.Select(a => a.Name).ToList()));
+                    response = response.Replace("{single_artist}", track.Artists.First().Name);
+                    response = response.Replace("{title}", track.Name);
+                    response = response.Replace("{maxreq}", Settings.Settings.TwSrMaxReq.ToString());
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
-
                     return true;
                 }
             }
@@ -3869,19 +3843,8 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void SendChatMessage(string channel, string message)
+        private static void SendChatMessage(string channel, string message)
         {
-            if (message.StartsWith("[announce "))
-            {
-                await AnnounceInChat(message);
-                return;
-            }
-
-            //Logger.LogStr($"DEBUG: TRYING TO SEND CHAT TO: {channel}");
-            //Logger.LogStr($"DEBUG: Client Connected: {Client.IsConnected}");
-            //Logger.LogStr($"DEBUG: Client User: {Client.TwitchUsername}");
-            //Logger.LogStr($"DEBUG: Joined Channels: {string.Join(", ", Client.JoinedChannels.Select(c => c.Channel).ToList())}");
-
             if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
                 Client.SendMessage(channel, message);
             else
