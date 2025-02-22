@@ -903,4 +903,7 @@
   <data name="sw_ResponseVariables" xml:space="preserve">
     <value>Variabili di risposta</value>
   </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>Bielorusso</value>
+  </data>
 </root>

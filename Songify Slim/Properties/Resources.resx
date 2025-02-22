@@ -1086,4 +1086,7 @@
   <data name="sw_ResponseVariables" xml:space="preserve">
     <value>Response Variables</value>
   </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>Belarusian</value>
+  </data>
 </root>

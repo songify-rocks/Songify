@@ -904,4 +904,7 @@
   <data name="sw_ResponseVariables" xml:space="preserve">
     <value>Antwortvariablen</value>
   </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>Weißrussisch</value>
+  </data>
 </root>

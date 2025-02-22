@@ -8,6 +8,7 @@ using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -51,7 +52,7 @@ namespace Songify_Slim.Views
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
         private Window_ResponseParams _wRp;
-        private readonly Dictionary<string, string> _supportedLanguages = new()
+        private Dictionary<string, string> _supportedLanguages = new()
         {
             { "en", "English" },
             { "de-DE", "German" },
@@ -582,15 +583,15 @@ namespace Songify_Slim.Views
             if (CbxLanguage.SelectedValue is not string selectedLanguageCode)
                 return;
 
-            CultureInfo newCulture = new CultureInfo(selectedLanguageCode);
+            CultureInfo newCulture = new(selectedLanguageCode);
             Thread.CurrentThread.CurrentUICulture = newCulture;
 
             // Create a new ResourceDictionary from the RESX for the selected culture.
             ResourceDictionary newLocalizationDict = ResxToDictionaryHelper.CreateResourceDictionary(newCulture);
 
             // Find the existing localization dictionary by checking for a known key.
-            var dictionaries = Application.Current.Resources.MergedDictionaries;
-            var localizationDict = dictionaries.FirstOrDefault(dict => dict.Contains("sw_tcSystem_lblLanguage"));
+            Collection<ResourceDictionary> dictionaries = Application.Current.Resources.MergedDictionaries;
+            ResourceDictionary localizationDict = dictionaries.FirstOrDefault(dict => dict.Contains("sw_tcSystem_lblLanguage"));
 
             if (localizationDict != null)
             {
@@ -603,6 +604,22 @@ namespace Songify_Slim.Views
                 // If no localization dictionary was found, simply add the new one.
                 dictionaries.Add(newLocalizationDict);
             }
+
+            _supportedLanguages = new Dictionary<string, string>
+            {
+                { "en", Application.Current.TryFindResource("lang_en") as string ?? "English"},
+                { "de-DE", Application.Current.TryFindResource("lang_deDE") as string ??"German" },
+                { "ru-RU", Application.Current.TryFindResource("lang_ru") as string ??"Russian" },
+                { "es", Application.Current.TryFindResource("lang_es") as string ??"Spanish" },
+                { "fr", Application.Current.TryFindResource("lang_fr") as string ??"French" },
+                { "pl-PL", Application.Current.TryFindResource("lang_pl") as string ??"Polish" },
+                { "pt-PT", Application.Current.TryFindResource("lang_pt") as string ?? "Portuguese" },
+                { "it-IT", Application.Current.TryFindResource("lang_it") as string ??"Italian" },
+                { "pt-BR", Application.Current.TryFindResource("lang_br") as string ??"Brazilian Portuguese" },
+                { "be-BY", Application.Current.TryFindResource("lang_beBY") as string ??"Belarusian" }
+            };
+            CbxLanguage.ItemsSource = _supportedLanguages;
+            CbxLanguage.SelectedValue = selectedLanguageCode;
 
             // Optionally update your settings.
             Settings.Language = selectedLanguageCode;
@@ -1554,6 +1571,11 @@ namespace Songify_Slim.Views
         {
             if (_wRp == null) return;
             _wRp.Height = Height;
+            _wRp.LocationChanged -= _wRp.Window_ResponseParams_OnLocationChanged;
+            _wRp.Left = Left + Width;
+            _wRp.Top = Top;
+            _wRp.LocationChanged += _wRp.Window_ResponseParams_OnLocationChanged;
+
         }
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)

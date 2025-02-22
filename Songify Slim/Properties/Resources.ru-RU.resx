@@ -904,4 +904,7 @@
   <data name="sw_ResponseVariables" xml:space="preserve">
     <value>Переменные ответа</value>
   </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>Белорусский</value>
+  </data>
 </root>

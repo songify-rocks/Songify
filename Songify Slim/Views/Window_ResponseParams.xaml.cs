@@ -31,8 +31,8 @@ namespace Songify_Slim.Views
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Top = Owner.Top;
-            Left = Owner.Left + Owner.Width;
+            //Top = Owner.Top;
+            //Left = Owner.Left + Owner.Width;
             LoadItems();
         }
 
@@ -173,6 +173,8 @@ namespace Songify_Slim.Views
 
         public void Window_ResponseParams_OnLocationChanged(object sender, EventArgs e)
         {
+            if (!IsLoaded)
+                return;
             if (Owner is not Window_Settings settings) return;
             settings.LocationChanged -= settings.MetroWindow_LocationChanged;
             settings.Left = Left - settings.Width;

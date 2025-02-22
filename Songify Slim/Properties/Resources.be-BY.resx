@@ -1080,4 +1080,7 @@
   <data name="sw_ResponseVariables" xml:space="preserve">
     <value>Зменныя адказу</value>
   </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>беларускі</value>
+  </data>
 </root>
