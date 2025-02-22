@@ -850,4 +850,61 @@
   <data name="brw_cmd_commands" xml:space="preserve">
     <value>Renvoie toutes les commandes Songify actives.</value>
   </data>
+  <data name="Param_User_Desc" xml:space="preserve">
+    <value>L'utilisateur qui a déclenché la commande ou la récompense du canal</value>
+  </data>
+  <data name="Param_Requester_Desc" xml:space="preserve">
+    <value>Le demandeur de la chanson actuelle</value>
+  </data>
+  <data name="Param_ConditionalText_Desc" xml:space="preserve">
+    <value>Le texte à l'intérieur de '{{' et '}}' ne sera publié que si la chanson actuelle est une demande de chanson</value>
+  </data>
+  <data name="Param_Artist_Desc" xml:space="preserve">
+    <value>Artistes pour la chanson actuelle ou demande de chanson</value>
+  </data>
+  <data name="Param_SingleArtist_Desc" xml:space="preserve">
+    <value>Artiste principal de la chanson en cours ou demande de chanson</value>
+  </data>
+  <data name="Param_ErrorMessage_Desc" xml:space="preserve">
+    <value>Message d'erreur si une erreur se produit</value>
+  </data>
+  <data name="Param_MaxLength_Desc" xml:space="preserve">
+    <value>Durée maximale de la chanson en minutes</value>
+  </data>
+  <data name="Param_MaxRequests_Desc" xml:space="preserve">
+    <value>Requêtes maximales par utilisateur</value>
+  </data>
+  <data name="Param_SongFormat_Desc" xml:space="preserve">
+    <value>{Artist} - {Title}</value>
+  </data>
+  <data name="Param_PlaylistName_Desc" xml:space="preserve">
+    <value>Nom de la playlist</value>
+  </data>
+  <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
+    <value>URL de la playlist</value>
+  </data>
+  <data name="Param_SongList_Desc" xml:space="preserve">
+    <value>Pour la commande !pos uniquement, crée une liste de chansons que l'utilisateur a dans la file d'attente avec leur position</value>
+  </data>
+  <data name="Param_Votes_Desc" xml:space="preserve">
+    <value>Nombre de votes pour votesskip votes/total</value>
+  </data>
+  <data name="Param_Cooldown_Desc" xml:space="preserve">
+    <value>Le temps de recharge en secondes (pour le CD global et le CD utilisateur)</value>
+  </data>
+  <data name="Param_Url_Desc" xml:space="preserve">
+    <value>URL de la chanson Spotify</value>
+  </data>
+  <data name="Param_Queue_Desc" xml:space="preserve">
+    <value>Les 5 prochaines chansons dans la file d'attente</value>
+  </data>
+  <data name="Param_Commands_Desc" xml:space="preserve">
+    <value>Liste de toutes les commandes actives</value>
+  </data>
+  <data name="s_Copied" xml:space="preserve">
+    <value>Copié</value>
+  </data>
+  <data name="sw_ResponseVariables" xml:space="preserve">
+    <value>Variables de réponse</value>
+  </data>
 </root>

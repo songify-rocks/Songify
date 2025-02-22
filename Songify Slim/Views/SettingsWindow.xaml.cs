@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Songify_Slim.Util.Songify.YTMDesktop;
@@ -32,20 +31,15 @@ using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using ComboBox = System.Windows.Controls.ComboBox;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using File = System.IO.File;
-using System.Drawing;
 using System.Windows.Navigation;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Spotify;
-using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
-using ListBox = System.Windows.Controls.ListBox;
-using TabControl = System.Windows.Controls.TabControl;
 using static Songify_Slim.App;
 
 namespace Songify_Slim.Views
@@ -353,6 +347,7 @@ namespace Songify_Slim.Views
             };
 
             // Get the current caret position and the length of the selected text
+            if (tb == null) return;
             int selectionStart = tb.SelectionStart;
             int selectionLength = tb.SelectionLength;
 
@@ -367,12 +362,14 @@ namespace Songify_Slim.Views
 
             // Place the caret after the inserted text
             tb.SelectionStart = selectionStart + text.Length;
+
+
             tb.SelectionLength = 0;
 
             //// Appends Rightclick-Text from the output text box (parameters)
             //tb?.AppendText(text);
             //tb?.Select(TxtbxOutputformat.Text.Length, 0);
-            if (tb?.ContextMenu != null) tb.ContextMenu.IsOpen = false;
+            if (tb.ContextMenu != null) tb.ContextMenu.IsOpen = false;
         }
 
         private void Btn_Botresponse_Click(object sender, RoutedEventArgs e)
@@ -609,6 +606,8 @@ namespace Songify_Slim.Views
 
             // Optionally update your settings.
             Settings.Language = selectedLanguageCode;
+
+            _wRp?.LoadItems();
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1114,117 +1113,6 @@ namespace Songify_Slim.Views
             Settings.TwitchFetchPort = (int)ComboboxfetchPort.SelectedItem;
         }
 
-        private void Tgl_botcmd_pos_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdPos = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void Tgl_botcmd_song_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSong = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void Tgl_botcmd_next_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void Tgl_botcmd_skip_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void Tgl_botcmd_skipvote_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSkipVote = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
-        {
-            double? value = ((NumericUpDown)sender).Value;
-            if (value != null)
-                Settings.BotCmdSkipVoteCount = (int)value;
-        }
-
-        private void TextBoxTrigger_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!IsLoaded) return;
-            switch ((sender as TextBox)?.Tag.ToString())
-            {
-                case "song":
-                    Settings.BotCmdSongTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "song"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "pos":
-                    Settings.BotCmdPosTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "pos"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "next":
-                    Settings.BotCmdNextTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "next"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "skip":
-                    Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "skip"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "voteskip":
-                    Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "voteskip"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "ssr":
-                    Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "ssr"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "remove":
-                    Settings.BotCmdRemoveTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "remove"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "like":
-                    Settings.BotCmdSonglikeTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "like"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "queue":
-                    Settings.BotCmdQueueTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                        ? "queue"
-                        : ((TextBox)sender).Text;
-                    break;
-
-                case "commands":
-                    Settings.BotCmdCommandsTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
-                    ? "cmds"
-                    : ((TextBox)sender).Text;
-                    break;
-            }
-        }
-
-        private void TextBoxTrigger_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Space)
-                e.Handled = true;
-            base.OnPreviewKeyDown(e);
-        }
-
-        private void Tgl_botcmd_ssr_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.TwSrCommand = ((ToggleSwitch)sender).IsOn;
-        }
-
         private void Cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
@@ -1232,16 +1120,6 @@ namespace Songify_Slim.Views
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
                 return;
             Settings.SpotifyPlaylistId = item.Playlist.Id;
-        }
-
-        private void Tgl_botcmd_remove_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdRemove = ((ToggleSwitch)sender).IsOn;
-        }
-
-        private void Tgl_botcmd_songlike_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdSonglike = ((ToggleSwitch)sender).IsOn;
         }
 
         private void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1260,11 +1138,6 @@ namespace Songify_Slim.Views
             TwitchHandler.BotConnect();
             TwitchHandler.MainConnect();
             _ = SetControls();
-        }
-
-        private void Tgl_botcmd_PlayPause_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdPlayPause = ((ToggleSwitch)sender).IsOn;
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1376,7 +1249,7 @@ namespace Songify_Slim.Views
                         });
 
                         Paging<SimplePlaylist> playlists =
-                            await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync(20, 0);
+                            await SpotifyApiHandler.Spotify.GetCurrentUsersPlaylistsAsync();
                         if (playlists == null) return;
                         List<SimplePlaylist> playlistCache = [];
                         CbSpotifyPlaylist.SelectionChanged -= Cb_SpotifyPlaylist_SelectionChanged;
@@ -1509,11 +1382,6 @@ namespace Songify_Slim.Views
             Settings.UseDefaultBrowser = ((ToggleSwitch)sender).IsOn;
         }
 
-        private void Tgl_botcmd_Vol_OnToggled_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdVol = ((ToggleSwitch)sender).IsOn;
-        }
-
         private async void TglDonationReminder_OnToggled(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded)
@@ -1561,11 +1429,6 @@ namespace Songify_Slim.Views
             manualTwitchLogin.ShowDialog();
         }
 
-        private void TglBotcmdVolIgnoreMod_OnToggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdVolIgnoreMod = ((ToggleSwitch)sender).IsOn;
-        }
-
         private void CbPauseOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
@@ -1577,12 +1440,9 @@ namespace Songify_Slim.Views
 
         private void ChbxSpacesSplitFiles_Checked(object sender, RoutedEventArgs e)
         {
-            Settings.AppendSpacesSplitFiles = (bool)((CheckBox)sender).IsChecked;
-        }
-
-        private void TglBotQueue_OnToggled(object sender, RoutedEventArgs e)
-        {
-            Settings.BotCmdQueue = ((ToggleSwitch)sender).IsOn;
+            bool? isChecked = ((CheckBox)sender).IsChecked;
+            if (isChecked != null)
+                Settings.AppendSpacesSplitFiles = (bool)isChecked;
         }
 
         private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender,

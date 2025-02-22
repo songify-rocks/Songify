@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Windows.UI.Xaml.Data;
 
 namespace Songify_Slim.Views
 {
@@ -23,33 +24,60 @@ namespace Songify_Slim.Views
         public Window_ResponseParams()
         {
             InitializeComponent();
+
         }
 
-        private readonly Dictionary<string, string> _responseParameters = new()
-        {
-            { "{user}", "The user who triggered the command or channel reward" },
-            { "{req}", "The requester of the current song"},
-            { "{{ }}", "The text inside of '{{' and '}}' will only be posted if the current song is a song request"},
-            { "{artist} ", "Artists for the current song or song request" },
-            { "{single_artist}", "Main artist for the current song or song request" },
-            { "{errormsg}", "Error message if an error occurs" },
-            { "{maxlength}", "Max song length in minutes" },
-            { "{maxreq}", "Max requests per user" },
-            { "{song}", "{Artist} - {Title}" },
-            { "{playlist_name} ", "Name of the playlist" },
-            { "{playlist_url}", "URL of the playlist" },
-            { "{songs}{pos} {song}{/songs}", "For !pos command only, creates a list of songs that user has in the queue with their position" },
-            { "{votes}", "Number of votes for voteskip votes/total" },
-            { "{cd}", "The cooldown of in seconds (for global cd and user cd)" },
-            { "{url}", "Spotify song URL" },
-            { "{queue}", "Next 5 songs in the queue" },
-            { "{commands}", "List of all active commands" },
-        };
+        private Dictionary<string, string> _responseParameters;
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Top = Owner.Top;
             Left = Owner.Left + Owner.Width;
+            LoadItems();
+        }
+
+        public void LoadItems()
+        {
+            _responseParameters = new Dictionary<string, string>
+            {
+                { "{user}", Application.Current.TryFindResource("Param_User_Desc") as string
+                    ?? "The user who triggered the command or channel reward" },
+                { "{req}", Application.Current.TryFindResource("Param_Requester_Desc") as string
+                    ?? "The requester of the current song" },
+                { "{{ }}", Application.Current.TryFindResource("Param_ConditionalText_Desc") as string
+                    ?? "The text inside of '{{' and '}}' will only be posted if the current song is a song request" },
+                { "{artist} ", Application.Current.TryFindResource("Param_Artist_Desc") as string
+                    ?? "Artists for the current song or song request" },
+                { "{single_artist}", Application.Current.TryFindResource("Param_SingleArtist_Desc") as string
+                    ?? "Main artist for the current song or song request" },
+                { "{errormsg}", Application.Current.TryFindResource("Param_ErrorMessage_Desc") as string
+                    ?? "Error message if an error occurs" },
+                { "{maxlength}", Application.Current.TryFindResource("Param_MaxLength_Desc") as string
+                    ?? "Max song length in minutes" },
+                { "{maxreq}", Application.Current.TryFindResource("Param_MaxRequests_Desc") as string
+                    ?? "Max requests per user" },
+                { "{song}", Application.Current.TryFindResource("Param_SongFormat_Desc") as string
+                    ?? "{Artist} - {Title}" },
+                { "{playlist_name} ", Application.Current.TryFindResource("Param_PlaylistName_Desc") as string
+                    ?? "Name of the playlist" },
+                { "{playlist_url}", Application.Current.TryFindResource("Param_PlaylistUrl_Desc") as string
+                    ?? "URL of the playlist" },
+                { "{songs}{pos} {song}{/songs}", Application.Current.TryFindResource("Param_SongList_Desc") as string
+                    ?? "For !pos command only, creates a list of songs that user has in the queue with their position" },
+                { "{votes}", Application.Current.TryFindResource("Param_Votes_Desc") as string
+                    ?? "Number of votes for voteskip votes/total" },
+                { "{cd}", Application.Current.TryFindResource("Param_Cooldown_Desc") as string
+                    ?? "The cooldown of in seconds (for global cd and user cd)" },
+                { "{url}", Application.Current.TryFindResource("Param_Url_Desc") as string
+                    ?? "Spotify song URL" },
+                { "{queue}", Application.Current.TryFindResource("Param_Queue_Desc") as string
+                    ?? "Next 5 songs in the queue" },
+                { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string
+                    ?? "List of all active commands" }
+            };
+
+            PnlParams.Children.Clear();
+
             foreach (KeyValuePair<string, string> responseParameter in _responseParameters)
             {
                 Button btn = new()
@@ -100,6 +128,7 @@ namespace Songify_Slim.Views
                 };
                 PnlParams.Children.Add(border);
             }
+
         }
 
         private async void BtnOnClick(object sender, RoutedEventArgs e)
@@ -117,7 +146,8 @@ namespace Songify_Slim.Views
                 if (pnlChild is not TextBlock tb) continue;
 
                 tb.Opacity = 0;
-                tb.Text = "Copied!";
+                tb.Text = Application.Current.TryFindResource("s_Copied") as string ?? "Copied";
+                tb.Text += "!";
 
                 // Fade in over 5 steps (each step is 0.2 opacity, 10ms delay each)
                 for (int i = 0; i < 5; i++)

@@ -48,8 +48,9 @@
         <controls:WindowCommands>
             <Button
                 x:Name="BtnResponseParams"
+                d:Content="{x:Static local:Resources.sw_ResponseVariables}"
                 Click="BtnResponseParams_OnClick"
-                Content="Response Parameters" />
+                Content="{DynamicResource sw_ResponseVariables}" />
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>

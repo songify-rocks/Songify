@@ -1006,6 +1006,159 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Artists for the current song or song request.
+        /// </summary>
+        public static string Param_Artist_Desc {
+            get {
+                return ResourceManager.GetString("Param_Artist_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to List of all active commands.
+        /// </summary>
+        public static string Param_Commands_Desc {
+            get {
+                return ResourceManager.GetString("Param_Commands_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The text inside of &apos;{{&apos; and &apos;}}&apos; will only be posted if the current song is a song request.
+        /// </summary>
+        public static string Param_ConditionalText_Desc {
+            get {
+                return ResourceManager.GetString("Param_ConditionalText_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The cooldown in seconds (for global cd and user cd).
+        /// </summary>
+        public static string Param_Cooldown_Desc {
+            get {
+                return ResourceManager.GetString("Param_Cooldown_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error message if an error occurs.
+        /// </summary>
+        public static string Param_ErrorMessage_Desc {
+            get {
+                return ResourceManager.GetString("Param_ErrorMessage_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max song length in minutes.
+        /// </summary>
+        public static string Param_MaxLength_Desc {
+            get {
+                return ResourceManager.GetString("Param_MaxLength_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max requests per user.
+        /// </summary>
+        public static string Param_MaxRequests_Desc {
+            get {
+                return ResourceManager.GetString("Param_MaxRequests_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the playlist.
+        /// </summary>
+        public static string Param_PlaylistName_Desc {
+            get {
+                return ResourceManager.GetString("Param_PlaylistName_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL of the playlist.
+        /// </summary>
+        public static string Param_PlaylistUrl_Desc {
+            get {
+                return ResourceManager.GetString("Param_PlaylistUrl_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next 5 songs in the queue.
+        /// </summary>
+        public static string Param_Queue_Desc {
+            get {
+                return ResourceManager.GetString("Param_Queue_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The requester of the current song.
+        /// </summary>
+        public static string Param_Requester_Desc {
+            get {
+                return ResourceManager.GetString("Param_Requester_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main artist for the current song or song request.
+        /// </summary>
+        public static string Param_SingleArtist_Desc {
+            get {
+                return ResourceManager.GetString("Param_SingleArtist_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {Artist} - {Title}.
+        /// </summary>
+        public static string Param_SongFormat_Desc {
+            get {
+                return ResourceManager.GetString("Param_SongFormat_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For !pos command only, creates a list of songs that the user has in the queue with their position.
+        /// </summary>
+        public static string Param_SongList_Desc {
+            get {
+                return ResourceManager.GetString("Param_SongList_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify song URL.
+        /// </summary>
+        public static string Param_Url_Desc {
+            get {
+                return ResourceManager.GetString("Param_Url_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user who triggered the command or channel reward.
+        /// </summary>
+        public static string Param_User_Desc {
+            get {
+                return ResourceManager.GetString("Param_User_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of votes for voteskip votes/total.
+        /// </summary>
+        public static string Param_Votes_Desc {
+            get {
+                return ResourceManager.GetString("Param_Votes_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Columns.
         /// </summary>
         public static string s_Columns {
@@ -1020,6 +1173,15 @@ namespace Songify_Slim.Properties {
         public static string s_Connected {
             get {
                 return ResourceManager.GetString("s_Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied.
+        /// </summary>
+        public static string s_Copied {
+            get {
+                return ResourceManager.GetString("s_Copied", resourceCulture);
             }
         }
         
@@ -1507,6 +1669,15 @@ namespace Songify_Slim.Properties {
         public static string Sw_intergration_AutoAnnounce {
             get {
                 return ResourceManager.GetString("Sw_intergration_AutoAnnounce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response Variables.
+        /// </summary>
+        public static string sw_ResponseVariables {
+            get {
+                return ResourceManager.GetString("sw_ResponseVariables", resourceCulture);
             }
         }
         

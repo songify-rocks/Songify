@@ -1028,4 +1028,62 @@
   <data name="brw_cmd_commands" xml:space="preserve">
     <value>Returns all active Songify commands.</value>
   </data>
+  <data name="Param_User_Desc" xml:space="preserve">
+    <value>The user who triggered the command or channel reward</value>
+  </data>
+  <data name="Param_Requester_Desc" xml:space="preserve">
+    <value>The requester of the current song</value>
+  </data>
+  <data name="Param_ConditionalText_Desc" xml:space="preserve">
+    <value>The text inside of '{{' and '}}' will only be posted if the current song is a song request</value>
+  </data>
+  <data name="Param_Artist_Desc" xml:space="preserve">
+    <value>Artists for the current song or song request</value>
+  </data>
+  <data name="Param_SingleArtist_Desc" xml:space="preserve">
+    <value>Main artist for the current song or song request</value>
+  </data>
+  <data name="Param_ErrorMessage_Desc" xml:space="preserve">
+    <value>Error message if an error occurs</value>
+  </data>
+  <data name="Param_MaxLength_Desc" xml:space="preserve">
+    <value>Max song length in minutes</value>
+  </data>
+  <data name="Param_MaxRequests_Desc" xml:space="preserve">
+    <value>Max requests per user</value>
+  </data>
+  <data name="Param_SongFormat_Desc" xml:space="preserve">
+    <value>{Artist} - {Title}</value>
+  </data>
+  <data name="Param_PlaylistName_Desc" xml:space="preserve">
+    <value>Name of the playlist</value>
+  </data>
+  <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
+    <value>URL of the playlist</value>
+  </data>
+  <data name="Param_SongList_Desc" xml:space="preserve">
+    <value>For !pos command only, creates a list of songs that the user has in the queue with their position</value>
+  </data>
+  <data name="Param_Votes_Desc" xml:space="preserve">
+    <value>Number of votes for voteskip votes/total</value>
+  </data>
+  <data name="Param_Cooldown_Desc" xml:space="preserve">
+    <value>The cooldown in seconds (for global cd and user cd)</value>
+  </data>
+  <data name="Param_Url_Desc" xml:space="preserve">
+    <value>Spotify song URL</value>
+  </data>
+  <data name="Param_Queue_Desc" xml:space="preserve">
+    <value>Next 5 songs in the queue</value>
+  </data>
+  <data name="Param_Commands_Desc" xml:space="preserve">
+    <value>List of all active commands</value>
+  </data>
+  <data name="s_Copied" xml:space="preserve">
+    <value>Copied</value>
+    <comment>The word "Copied"</comment>
+  </data>
+  <data name="sw_ResponseVariables" xml:space="preserve">
+    <value>Response Variables</value>
+  </data>
 </root>

@@ -847,4 +847,61 @@
   <data name="brw_cmd_commands" xml:space="preserve">
     <value>Возвращает все активные команды Songify.</value>
   </data>
+  <data name="Param_User_Desc" xml:space="preserve">
+    <value>Пользователь, который активировал команду или канал вознаграждения</value>
+  </data>
+  <data name="Param_Requester_Desc" xml:space="preserve">
+    <value>Запросчик текущей песни</value>
+  </data>
+  <data name="Param_ConditionalText_Desc" xml:space="preserve">
+    <value>Текст внутри '{{' и '}}' будет опубликован только в том случае, если текущая песня является запрошенной песней.</value>
+  </data>
+  <data name="Param_Artist_Desc" xml:space="preserve">
+    <value>Исполнители текущей песни или запроса песни</value>
+  </data>
+  <data name="Param_SingleArtist_Desc" xml:space="preserve">
+    <value>Основной исполнитель текущей песни или запроса песни</value>
+  </data>
+  <data name="Param_ErrorMessage_Desc" xml:space="preserve">
+    <value>Сообщение об ошибке, если произошла ошибка</value>
+  </data>
+  <data name="Param_MaxLength_Desc" xml:space="preserve">
+    <value>Максимальная продолжительность песни в минутах</value>
+  </data>
+  <data name="Param_MaxRequests_Desc" xml:space="preserve">
+    <value>Макс. количество запросов для пользователя</value>
+  </data>
+  <data name="Param_SongFormat_Desc" xml:space="preserve">
+    <value>{Artist} - {Title}</value>
+  </data>
+  <data name="Param_PlaylistName_Desc" xml:space="preserve">
+    <value>Название плейлиста</value>
+  </data>
+  <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
+    <value>URL-адрес плейлиста</value>
+  </data>
+  <data name="Param_SongList_Desc" xml:space="preserve">
+    <value>Только для команды !pos создает список песен, которые пользователь имеет в очереди, с указанием его позиции.</value>
+  </data>
+  <data name="Param_Votes_Desc" xml:space="preserve">
+    <value>Количество голосов за пропуск голосования/всего голосов</value>
+  </data>
+  <data name="Param_Cooldown_Desc" xml:space="preserve">
+    <value>Время восстановления в секундах (для глобального и пользовательского CD)</value>
+  </data>
+  <data name="Param_Url_Desc" xml:space="preserve">
+    <value>URL-адрес песни Spotify</value>
+  </data>
+  <data name="Param_Queue_Desc" xml:space="preserve">
+    <value>Следующие 5 песен в очереди</value>
+  </data>
+  <data name="Param_Commands_Desc" xml:space="preserve">
+    <value>Список всех активных команд</value>
+  </data>
+  <data name="s_Copied" xml:space="preserve">
+    <value>Скопировано</value>
+  </data>
+  <data name="sw_ResponseVariables" xml:space="preserve">
+    <value>Переменные ответа</value>
+  </data>
 </root>
