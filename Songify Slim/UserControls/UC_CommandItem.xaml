@@ -267,8 +267,7 @@
                     Grid.ColumnSpan="2"
                     Margin="0,6,0,0"
                     MaxLines="10"
-                    TextChanged="TbResponse_OnTextChanged"
-                    TextWrapping="Wrap" />
+                    TextChanged="TbResponse_OnTextChanged" />
 
                 <StackPanel
                     x:Name="PnlVoteSkipExtras"

@@ -1,0 +1,22 @@
+﻿<mah:MetroWindow
+    x:Class="Songify_Slim.Views.Window_ResponseParams"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Songify_Slim.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Response Parameters"
+    Width="400"
+    Height="450"
+    Loaded="MetroWindow_Loaded"
+    LocationChanged="Window_ResponseParams_OnLocationChanged"
+    ResizeMode="NoResize"
+    WindowStartupLocation="Manual"
+    mc:Ignorable="d">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel x:Name="PnlParams" Orientation="Vertical" />
+        </ScrollViewer>
+    </Grid>
+</mah:MetroWindow>

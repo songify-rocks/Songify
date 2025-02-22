@@ -477,7 +477,6 @@ namespace Songify_Slim.Util.General
 
         public static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
         {
-            Debug.WriteLine("Check Playlist");
             if (trackInfo.SongId == null)
                 return false;
             string id = trackInfo.SongId;

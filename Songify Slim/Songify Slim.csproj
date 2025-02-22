@@ -359,6 +359,9 @@
     <Compile Include="Views\Window_Queue.xaml.cs">
       <DependentUpon>Window_Queue.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Window_ResponseParams.xaml.cs">
+      <DependentUpon>Window_ResponseParams.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Window_UniversalDialog.xaml.cs">
       <DependentUpon>Window_UniversalDialog.xaml</DependentUpon>
     </Compile>
@@ -450,6 +453,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_Queue.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_ResponseParams.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

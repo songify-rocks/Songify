@@ -70,6 +70,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Returns all active Songify commands..
+        /// </summary>
+        public static string brw_cmd_commands {
+            get {
+                return ResourceManager.GetString("brw_cmd_commands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Description.
         /// </summary>
         public static string brw_cmd_description {
@@ -115,11 +124,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Resumes or pauses the current playback..
+        ///   Looks up a localized string similar to Pauses the current playback..
         /// </summary>
-        public static string brw_cmd_playpause {
+        public static string brw_cmd_pause {
             get {
-                return ResourceManager.GetString("brw_cmd_playpause", resourceCulture);
+                return ResourceManager.GetString("brw_cmd_pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resumes the current playback..
+        /// </summary>
+        public static string brw_cmd_play {
+            get {
+                return ResourceManager.GetString("brw_cmd_play", resourceCulture);
             }
         }
         
@@ -129,6 +147,15 @@ namespace Songify_Slim.Properties {
         public static string brw_cmd_pos {
             get {
                 return ResourceManager.GetString("brw_cmd_pos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
+        /// </summary>
+        public static string brw_cmd_queue {
+            get {
+                return ResourceManager.GetString("brw_cmd_queue", resourceCulture);
             }
         }
         
@@ -975,6 +1002,15 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_Widget_disclaimer {
             get {
                 return ResourceManager.GetString("mw_menu_Widget_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string s_Columns {
+            get {
+                return ResourceManager.GetString("s_Columns", resourceCulture);
             }
         }
         

@@ -7,18 +7,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:lex="http://wpflocalizeextension.codeplex.com"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:settings="clr-namespace:Songify_Slim.Util.Settings"
     xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
-    Title="Settings"
+    Title="{DynamicResource mw_menu_Settings}"
     Width="860"
     Height="490"
-    
     MinHeight="400"
+    d:Title="{x:Static local:Resources.mw_menu_Settings}"
     Closing="MetroWindow_Closing"
     Loaded="SettingsWindow_Loaded"
+    LocationChanged="MetroWindow_LocationChanged"
     ResizeMode="CanResizeWithGrip"
+    SizeChanged="MetroWindow_SizeChanged"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <controls:MetroWindow.Resources>
@@ -41,11 +44,17 @@
             </Style.Triggers>
         </Style>
     </controls:MetroWindow.Resources>
+    <controls:MetroWindow.RightWindowCommands>
+        <controls:WindowCommands>
+            <Button
+                x:Name="BtnResponseParams"
+                Click="BtnResponseParams_OnClick"
+                Content="Response Parameters" />
+        </controls:WindowCommands>
+    </controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <TabControl
-            Margin="10,0,10,0"
-            TabStripPlacement="Left">
-            <TabItem Header="{x:Static local:Resources.sw_tc_System}">
+        <TabControl Margin="10,0,10,0" TabStripPlacement="Left">
+            <TabItem d:Header="{x:Static local:Resources.sw_tc_System}" Header="{DynamicResource sw_tc_System}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -66,19 +75,22 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Label
-                                Padding="0,5,5,5"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}" />
-                            <Label
-                                Grid.Row="0"
-                                Margin="0,13,0,0"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_tcSystem_translated}"
-                                FontSize="9"
-                                FontStyle="Italic" />
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <Label
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    d:Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}"
+                                    Content="{DynamicResource sw_tcSystem_lblLanguage}" />
+                                <TextBlock
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="9">
+                                    <Run>(</Run>
+                                    <Hyperlink NavigateUri="https://translate.songify.rocks/" RequestNavigate="Hyperlink_OnRequestNavigate">
+                                        Translate!
+                                    </Hyperlink>
+                                    <Run>)</Run></TextBlock>
+                            </StackPanel>
                             <ComboBox
                                 x:Name="CbxLanguage"
                                 Grid.Row="0"
@@ -87,26 +99,29 @@
                                 VerticalAlignment="Center"
                                 DisplayMemberPath="Value"
                                 SelectedValuePath="Key"
-                                SelectionChanged="ComboBox_SelectionChanged" />
+                                SelectionChanged="ComboBox_SelectionChanged"
+                                TabIndex="1" />
                             <Label
                                 Grid.Row="1"
                                 Padding="0,5,5,5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_tcSystem_Behavior}" />
+                                d:Content="{x:Static local:Resources.sw_tcSystem_Behavior}"
+                                Content="{DynamicResource sw_tcSystem_Behavior}" />
                             <StackPanel Grid.Row="2" Orientation="Vertical">
                                 <controls:ToggleSwitch
                                     x:Name="ChbxAutostart"
-                                    Grid.Row="2"
                                     Width="467"
                                     Padding="0"
                                     VerticalAlignment="Top"
+                                    d:Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
                                     BorderThickness="0"
-                                    Content="{x:Static local:Resources.sw_tcSystem_Autostart}"
+                                    Content="{DynamicResource sw_tcSystem_Autostart}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
+                                    TabIndex="2"
                                     Toggled="ChbxAutostartChecked" />
                                 <controls:ToggleSwitch
                                     x:Name="ChbxMinimizeSystray"
@@ -114,11 +129,13 @@
                                     Width="467"
                                     Height="32"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
+                                    d:Content="{x:Static local:Resources.sw_tcSystem_Minimize}"
+                                    Content="{DynamicResource sw_tcSystem_Minimize}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
+                                    TabIndex="3"
                                     Toggled="ChbxMinimizeSystrayChecked" />
                                 <controls:ToggleSwitch
                                     x:Name="TglBetaUpdates"
@@ -126,30 +143,36 @@
                                     Grid.Column="0"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
+                                    d:Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
+                                    Content="{DynamicResource sw_Config_GetBetaUpdates}"
                                     FontSize="12"
+                                    TabIndex="4"
                                     Toggled="TglBetaUpdates_Toggled" />
                                 <controls:ToggleSwitch
                                     x:Name="ChbxOpenQueueOnStartup"
                                     Width="467"
                                     Height="32"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
+                                    d:Content="{x:Static local:Resources.Sw_System_OpenQueueOnStartup}"
+                                    Content="{DynamicResource Sw_System_OpenQueueOnStartup}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
+                                    TabIndex="5"
                                     Toggled="ChbxOpenQueueOnStartup_Toggled" />
                                 <controls:ToggleSwitch
                                     x:Name="TglDonationReminder"
                                     Width="467"
                                     Height="32"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
+                                    d:Content="{x:Static local:Resources.Sw_System_DisableDonationReminder}"
+                                    Content="{DynamicResource Sw_System_DisableDonationReminder}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
+                                    TabIndex="6"
                                     Toggled="TglDonationReminder_OnToggled" />
                             </StackPanel>
                             <Label
@@ -157,7 +180,8 @@
                                 Padding="0,5,5,5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}" />
+                                d:Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}"
+                                Content="{DynamicResource sw_tcSystem_ChromeFetchRate}" />
                             <controls:NumericUpDown
                                 x:Name="NudChrome"
                                 Grid.Row="3"
@@ -170,6 +194,7 @@
                                 Maximum="10"
                                 Minimum="1"
                                 NumericInputMode="Numbers"
+                                TabIndex="7"
                                 ValueChanged="NudChrome_ValueChanged" />
                             <controls:ToggleSwitch
                                 x:Name="TglUseDefaultBrowser"
@@ -177,18 +202,21 @@
                                 Width="467"
                                 Height="32"
                                 VerticalAlignment="Top"
+                                d:Content="{DynamicResource sw_tcSystem_UseDefaultBrowser}"
                                 Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
                                 ContentPadding="0"
                                 Focusable="False"
                                 FontFamily="Segoe UI"
                                 FontSize="12"
+                                TabIndex="8"
                                 Toggled="TglUseDefaultBrowser_OnToggled" />
                             <Label
                                 Grid.Row="5"
                                 Padding="0,5,5,5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.Sw_System_PrivacyHeader}"
+                                d:Content="{x:Static local:Resources.Sw_System_PrivacyHeader}"
+                                Content="{DynamicResource Sw_System_PrivacyHeader}"
                                 FontSize="16"
                                 Visibility="Collapsed" />
                             <controls:ToggleSwitch
@@ -196,11 +224,13 @@
                                 Grid.Row="6"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
+                                d:OffContent="{x:Static local:Resources.Sw_System_Privacy}"
+                                d:OnContent="{x:Static local:Resources.Sw_System_Privacy}"
                                 ContentPadding="0"
                                 FontFamily="Segoe UI"
                                 FontSize="12"
-                                OffContent="{x:Static local:Resources.Sw_System_Privacy}"
-                                OnContent="{x:Static local:Resources.Sw_System_Privacy}"
+                                OffContent="{DynamicResource Sw_System_Privacy}"
+                                OnContent="{DynamicResource Sw_System_Privacy}"
                                 Toggled="ToggleSwitchPrivacy_Toggled"
                                 Visibility="Collapsed" />
                             <Label
@@ -208,7 +238,8 @@
                                 Padding="0,5,5,5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_tc_Appearance}"
+                                d:Content="{x:Static local:Resources.sw_tc_Appearance}"
+                                Content="{DynamicResource sw_tc_Appearance}"
                                 FontSize="16" />
                             <Label
                                 x:Name="LabelColor"
@@ -217,7 +248,8 @@
                                 Padding="5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
-                                Content="{x:Static local:Resources.sw_Appearance_Color}"
+                                d:Content="{x:Static local:Resources.sw_Appearance_Color}"
+                                Content="{DynamicResource sw_Appearance_Color}"
                                 Visibility="Collapsed" />
                             <ComboBox
                                 x:Name="ComboBoxColor"
@@ -226,7 +258,8 @@
                                 Height="23"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                SelectionChanged="ComboBoxColorSelectionChanged" />
+                                SelectionChanged="ComboBoxColorSelectionChanged"
+                                TabIndex="9" />
                             <controls:ToggleSwitch
                                 x:Name="ThemeToggleSwitch"
                                 Grid.Row="8"
@@ -235,17 +268,20 @@
                                 Padding="5,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
+                                d:OffContent="{x:Static local:Resources.sw_Appearance_ThemeLight}"
+                                d:OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}"
                                 ContentPadding="0"
                                 FontFamily="Segoe UI"
                                 FontSize="12"
-                                OffContent="{x:Static local:Resources.sw_Appearance_ThemeLight}"
-                                OnContent="{x:Static local:Resources.sw_Appearance_ThemeDark}"
+                                OffContent="{DynamicResource sw_Appearance_ThemeLight}"
+                                OnContent="{DynamicResource sw_Appearance_ThemeDark}"
+                                TabIndex="10"
                                 Toggled="ThemeToggleSwitchIsCheckedChanged" />
                         </Grid>
                     </ScrollViewer>
                 </Border>
             </TabItem>
-            <TabItem Header="{x:Static local:Resources.sw_tc_Output}">
+            <TabItem d:Header="{x:Static local:Resources.sw_tc_Output}" Header="{DynamicResource sw_tc_Output}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -273,7 +309,8 @@
                             Height="32"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_tcOutput_Directory}" />
+                            d:Content="{x:Static local:Resources.sw_tcOutput_Directory}"
+                            Content="{DynamicResource sw_tcOutput_Directory}" />
                         <TextBox
                             x:Name="TxtbxOutputdirectory"
                             Grid.Row="0"
@@ -320,7 +357,8 @@
                             Height="32"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_tcOutput_Format}" />
+                            d:Content="{x:Static local:Resources.sw_tcOutput_Format}"
+                            Content="{DynamicResource sw_tcOutput_Format}" />
                         <TextBox
                             x:Name="TxtbxOutputformat"
                             Grid.Row="1"
@@ -369,7 +407,8 @@
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_tcOutput_pause}" />
+                            d:Content="{x:Static local:Resources.sw_tcOutput_pause}"
+                            Content="{DynamicResource sw_tcOutput_pause}" />
                         <!--<controls:ToggleSwitch
                             x:Name="ChbxCustomPause"
                             Grid.Row="4"
@@ -390,9 +429,9 @@
                                 Height="26"
                                 Margin="0,0,0,6"
                                 SelectionChanged="CbPauseOptions_SelectionChanged">
-                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_DoNothing}" />
-                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_UseCustomPauseText}" />
-                                <ComboBoxItem Content="{x:Static local:Resources.sw_tcOutput_onPause_ClearAllOutput}" />
+                                <ComboBoxItem d:Content="{x:Static local:Resources.sw_tcOutput_onPause_DoNothing}" Content="{DynamicResource sw_tcOutput_onPause_DoNothing}" />
+                                <ComboBoxItem d:Content="{x:Static local:Resources.sw_tcOutput_onPause_UseCustomPauseText}" Content="{DynamicResource sw_tcOutput_onPause_UseCustomPauseText}" />
+                                <ComboBoxItem d:Content="{x:Static local:Resources.sw_tcOutput_onPause_ClearAllOutput}" Content="{DynamicResource sw_tcOutput_onPause_ClearAllOutput}" />
                             </ComboBox>
                             <controls:ToggleSwitch
                                 x:Name="tgl_KeepCover"
@@ -417,7 +456,7 @@
                                 x:Name="TxtbxCustompausetext"
                                 Height="26"
                                 VerticalAlignment="Center"
-                                controls:TextBoxHelper.Watermark="{x:Static local:Resources.sw_tcOutput_PauseWatermark}"
+                                controls:TextBoxHelper.Watermark="{DynamicResource sw_tcOutput_PauseWatermark}"
                                 TextChanged="TxtbxCustompausetext_TextChanged"
                                 TextWrapping="Wrap">
                                 <TextBox.Style>
@@ -439,7 +478,8 @@
                             Grid.Column="0"
                             Height="32"
                             HorizontalAlignment="Stretch"
-                            Content="{x:Static local:Resources.sw_tcOutput_UploadSongInfo}"
+                            d:Content="{x:Static local:Resources.sw_tcOutput_UploadSongInfo}"
+                            Content="{DynamicResource sw_tcOutput_UploadSongInfo}"
                             ContentDirection="RightToLeft"
                             ContentPadding="0"
                             Focusable="False"
@@ -453,7 +493,8 @@
                             Grid.ColumnSpan="2"
                             Height="32"
                             HorizontalAlignment="Stretch"
-                            Content="{x:Static local:Resources.sw_tcOutput_DownloadAlbum}"
+                            d:Content="{x:Static local:Resources.sw_tcOutput_DownloadAlbum}"
+                            Content="{DynamicResource sw_tcOutput_DownloadAlbum}"
                             ContentPadding="0"
                             Focusable="False"
                             FontFamily="Segoe UI"
@@ -466,7 +507,8 @@
                             Grid.ColumnSpan="2"
                             Height="32"
                             HorizontalAlignment="Stretch"
-                            Content="{x:Static local:Resources.sw_tcOutput_DownloadCanvas}"
+                            d:Content="{x:Static local:Resources.sw_tcOutput_DownloadCanvas}"
+                            Content="{DynamicResource sw_tcOutput_DownloadCanvas}"
                             ContentPadding="0"
                             Focusable="False"
                             FontFamily="Segoe UI"
@@ -494,7 +536,8 @@
                             Grid.ColumnSpan="2"
                             Height="32"
                             HorizontalAlignment="Stretch"
-                            Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}"
+                            d:Content="{x:Static local:Resources.sw_tcOutput_SplitArtist}"
+                            Content="{DynamicResource sw_tcOutput_SplitArtist}"
                             ContentPadding="0"
                             Focusable="False"
                             FontFamily="Segoe UI"
@@ -528,8 +571,9 @@
                                 Height="18"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
+                                d:Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
                                 Checked="ChbxSpaces_Checked"
-                                Content="{x:Static local:Resources.sw_tcOutput_AddSpaces}"
+                                Content="{DynamicResource sw_tcOutput_AddSpaces}"
                                 RenderTransformOrigin="0.47,1.039"
                                 Unchecked="ChbxSpaces_Checked" />
                             <controls:NumericUpDown
@@ -553,8 +597,9 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 Margin="0,0,0,6"
+                                d:Content="{x:Static local:Resources.sw_tcOutput_ApplyToSplitFilesToo}"
                                 Checked="ChbxSpacesSplitFiles_Checked"
-                                Content="{x:Static local:Resources.sw_tcOutput_ApplyToSplitFilesToo}"
+                                Content="{DynamicResource sw_tcOutput_ApplyToSplitFilesToo}"
                                 Unchecked="ChbxSpacesSplitFiles_Checked" />
                         </Grid>
 
@@ -565,7 +610,8 @@
                             MinWidth="160"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_tcOutput_Format2}"
+                            d:Content="{x:Static local:Resources.sw_tcOutput_Format2}"
+                            Content="{DynamicResource sw_tcOutput_Format2}"
                             Visibility="Collapsed" />
                         <TextBox
                             x:Name="TxtbxOutputformat2"
@@ -609,7 +655,10 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem x:Name="TabItemTwitch" Header="{x:Static local:Resources.sw_tc_Integration}">
+            <TabItem
+                x:Name="TabItemTwitch"
+                d:Header="{x:Static local:Resources.sw_tc_Integration}"
+                Header="{DynamicResource sw_tc_Integration}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -670,7 +719,8 @@
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            Content="{x:Static local:Resources.sw_Integration_Twitch}"
+                                            d:Content="{DynamicResource sw_Integration_Twitch}"
+                                            Content="{DynamicResource sw_Integration_Twitch}"
                                             Tag="main" />
                                         <Button
                                             x:Name="BtnTwitchLogout"
@@ -776,7 +826,10 @@
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:ForkAwesome Kind="Twitch" />
-                                            <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
+                                            <TextBlock
+                                                Margin="6,0,0,0"
+                                                d:Text="{DynamicResource mw_menu_Twitch_TwitchLogin}"
+                                                Text="{DynamicResource mw_menu_Twitch_TwitchLogin}" />
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
@@ -788,7 +841,7 @@
                                     Click="BtnLogInTwitchAlt_Click"
                                     Tag="main">
                                     <Button.Content>
-                                        <TextBlock Text="{x:Static local:Resources.mw_menu_Twitch_dw}" />
+                                        <TextBlock d:Text="{DynamicResource mw_menu_Twitch_dw}" Text="{DynamicResource mw_menu_Twitch_dw}" />
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
@@ -805,7 +858,10 @@
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:ForkAwesome Kind="Twitch" />
-                                            <TextBlock Margin="6,0,0,0" Text="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
+                                            <TextBlock
+                                                Margin="6,0,0,0"
+                                                d:Text="{DynamicResource mw_menu_Twitch_TwitchLogin}"
+                                                Text="{DynamicResource mw_menu_Twitch_TwitchLogin}" />
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
@@ -817,7 +873,7 @@
                                     Click="BtnLogInTwitchAlt_Click"
                                     Tag="bot">
                                     <Button.Content>
-                                        <TextBlock Text="{x:Static local:Resources.mw_menu_Twitch_dw}" />
+                                        <TextBlock d:Text="{DynamicResource mw_menu_Twitch_dw}" Text="{DynamicResource mw_menu_Twitch_dw}" />
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
@@ -830,7 +886,8 @@
                             Grid.Column="1"
                             Margin="0,6,0,6"
                             HorizontalAlignment="Right"
-                            Content="{x:Static local:Resources.sw_Integration_ShowCreds}"
+                            d:Content="{DynamicResource sw_Integration_ShowCreds}"
+                            Content="{DynamicResource sw_Integration_ShowCreds}"
                             IsOn="False" />
                         <Label
                             Grid.Row="1"
@@ -946,7 +1003,8 @@
                             Margin="0,4"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
+                            d:Content="{x:Static local:Resources.sw_Integration_Autoconnect}"
+                            Content="{DynamicResource sw_Integration_Autoconnect}"
                             Toggled="Chbx_TwAutoconnect_Checked" />
                         <controls:ToggleSwitch
                             x:Name="TglAnnounceInChat"
@@ -956,7 +1014,8 @@
                             Margin="0,4,0,4"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}"
+                            d:Content="{x:Static local:Resources.Sw_intergration_AutoAnnounce}"
+                            Content="{DynamicResource Sw_intergration_AutoAnnounce}"
                             Toggled="Tgl_AnnounceInChat_Toggled" />
                         <StackPanel
                             Grid.Row="6"
@@ -975,7 +1034,8 @@
                                     <TextBlock
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}"
+                                        d:Text="{x:Static local:Resources.Sw_Integration_OnlyWorkWhenLive}"
+                                        Text="{DynamicResource Sw_Integration_OnlyWorkWhenLive}"
                                         TextWrapping="Wrap" />
                                 </controls:ToggleSwitch.Content>
                             </controls:ToggleSwitch>
@@ -992,7 +1052,8 @@
                                     <TextBlock
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.Sw_Integration_StreamNotLifeNotification}"
+                                        d:Text="{x:Static local:Resources.Sw_Integration_StreamNotLifeNotification}"
+                                        Text="{DynamicResource Sw_Integration_StreamNotLifeNotification}"
                                         TextWrapping="Wrap" />
                                 </controls:ToggleSwitch.Content>
                             </controls:ToggleSwitch>
@@ -1004,8 +1065,9 @@
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Margin="0,4"
+                            d:Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}"
                             Click="Btn_Botresponse_Click"
-                            Content="{x:Static local:Resources.sw_Integration_ConfigureResponses}"
+                            Content="{DynamicResource sw_Integration_ConfigureResponses}"
                             FontSize="14"
                             Visibility="Collapsed" />
                     </Grid>
@@ -1014,7 +1076,8 @@
             <TabItem
                 x:Name="TabItemTwitchReward"
                 Padding="20,0,0,0"
-                Header="{x:Static local:Resources.Sw_Integtation_Tc_Rewards}"
+                d:Header="{x:Static local:Resources.Sw_Integtation_Tc_Rewards}"
+                Header="{DynamicResource Sw_Integtation_Tc_Rewards}"
                 Visibility="Visible">
                 <Border
                     Margin="10,0,0,0"
@@ -1046,7 +1109,8 @@
                                 Grid.Column="0"
                                 Margin="0,0,0,6"
                                 VerticalAlignment="Top"
-                                Text="{x:Static local:Resources.sw_Spotify_RewardSR}" />
+                                d:Text="{x:Static local:Resources.sw_Spotify_RewardSR}"
+                                Text="{DynamicResource sw_Spotify_RewardSR}" />
                             <Button
                                 x:Name="BtnCreateNewReward"
                                 Grid.Row="0"
@@ -1138,7 +1202,8 @@
                                         Height="36"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_SRReward}"
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_SRReward}"
+                                        Content="{DynamicResource sw_SpotifySR_SRReward}"
                                         ContentPadding="0"
                                         Focusable="False"
                                         FontFamily="Segoe UI"
@@ -1146,15 +1211,17 @@
                                         Toggled="Chbx_TwReward_Checked" />
                                     <Button
                                         x:Name="BtnFocusRewards"
+                                        d:Content="{x:Static local:Resources.Sw_Integration_ManageRewards}"
                                         Click="BtnFocusRewards_Click"
-                                        Content="{x:Static local:Resources.Sw_Integration_ManageRewards}" />
+                                        Content="{DynamicResource Sw_Integration_ManageRewards}" />
                                 </DockPanel>
                                 <controls:ToggleSwitch
                                     x:Name="ChbxAutoClear"
                                     Width="470"
                                     Height="36"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}"
+                                    d:Content="{x:Static local:Resources.sw_SpotifySR_ClearQ}"
+                                    Content="{DynamicResource sw_SpotifySR_ClearQ}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
@@ -1166,7 +1233,8 @@
                                     <Label
                                         Padding="0,5,5,5"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_command}" />
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_command}"
+                                        Content="{DynamicResource sw_SpotifySR_Userlevel_command}" />
                                     <ComboBox
                                         x:Name="CbxAllowedUserLevelsCommand"
                                         Width="185"
@@ -1175,7 +1243,7 @@
                                         SelectedIndex="0"
                                         SelectionChanged="Selector_OnSelectionChanged">
                                         <ComboBox.Items>
-                                            <ComboBoxItem Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsCommand}">
+                                            <ComboBoxItem d:Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsCommand}" Content="{DynamicResource sw_SpotifySr_UserLevelsCommand}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
@@ -1192,8 +1260,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Viewer}"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="{x:Static local:Resources.s_Viewer}"
+                                                    Content="{DynamicResource s_Viewer}"
                                                     Tag="0"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
@@ -1203,8 +1272,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Follower}"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="{x:Static local:Resources.s_Follower}"
+                                                    Content="{DynamicResource s_Follower}"
                                                     Tag="1"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
@@ -1214,8 +1284,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Subscriber}"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="{x:Static local:Resources.s_Subscriber}"
+                                                    Content="{DynamicResource s_Subscriber}"
                                                     Tag="2"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
@@ -1247,8 +1318,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_VIP}"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="{x:Static local:Resources.s_VIP}"
+                                                    Content="{DynamicResource s_VIP}"
                                                     Tag="5"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
@@ -1258,8 +1330,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Moderator}"
                                                     Checked="CbxUserLevelsCommandChecked"
-                                                    Content="{x:Static local:Resources.s_Moderator}"
+                                                    Content="{DynamicResource s_Moderator}"
                                                     Tag="6"
                                                     Unchecked="CbxUserLevelsCommandUnchecked" />
                                             </ComboBoxItem>
@@ -1270,7 +1343,8 @@
                                     <Label
                                         Padding="0,5,5,5"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_reward}" />
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_Userlevel_reward}"
+                                        Content="{DynamicResource sw_SpotifySR_Userlevel_reward}" />
                                     <ComboBox
                                         x:Name="CbxAllowedUserLevelsReward"
                                         Width="185"
@@ -1279,7 +1353,7 @@
                                         SelectedIndex="0"
                                         SelectionChanged="Selector_OnSelectionChanged">
                                         <ComboBox.Items>
-                                            <ComboBoxItem Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsReward}">
+                                            <ComboBoxItem d:Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsReward}" Content="{DynamicResource sw_SpotifySr_UserLevelsReward}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
@@ -1296,8 +1370,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Viewer}"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="{x:Static local:Resources.s_Viewer}"
+                                                    Content="{DynamicResource s_Viewer}"
                                                     Tag="0"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
@@ -1307,8 +1382,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Follower}"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="{x:Static local:Resources.s_Follower}"
+                                                    Content="{DynamicResource s_Follower}"
                                                     Tag="1"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
@@ -1318,8 +1394,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Subscriber}"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="{x:Static local:Resources.s_Subscriber}"
+                                                    Content="{DynamicResource s_Subscriber}"
                                                     Tag="2"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
@@ -1351,8 +1428,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_VIP}"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="{x:Static local:Resources.s_VIP}"
+                                                    Content="{DynamicResource s_VIP}"
                                                     Tag="5"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
@@ -1362,8 +1440,9 @@
                                                     Width="180"
                                                     Height="22"
                                                     Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Moderator}"
                                                     Checked="CbxUserLevelsRewardChecked"
-                                                    Content="{x:Static local:Resources.s_Moderator}"
+                                                    Content="{DynamicResource s_Moderator}"
                                                     Tag="6"
                                                     Unchecked="CbxUserLevelsRewardUnchecked" />
                                             </ComboBoxItem>
@@ -1375,7 +1454,8 @@
                                         Padding="0,5,5,5"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.Sw_Integration_MinUserLevel}" />
+                                        d:Content="{x:Static local:Resources.Sw_Integration_MinUserLevel}"
+                                        Content="{DynamicResource Sw_Integration_MinUserLevel}" />
                                     <ComboBox
                                         x:Name="CbxUserLevels"
                                         Width="151"
@@ -1393,7 +1473,8 @@
                                         Margin="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Text="{x:Static local:Resources.Sw_Integration_MaxSrUser}"
+                                        d:Text="{x:Static local:Resources.Sw_Integration_MaxSrUser}"
+                                        Text="{DynamicResource Sw_Integration_MaxSrUser}"
                                         TextWrapping="WrapWithOverflow" />
                                     <StackPanel
                                         HorizontalAlignment="Center"
@@ -1476,14 +1557,16 @@
                                 <controls:ToggleSwitch
                                     x:Name="ToggleSwitchUnlimitedSr"
                                     HorizontalAlignment="Right"
-                                    Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}"
+                                    d:Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}"
+                                    Content="{DynamicResource Sw_SpotifySR_UnlimitedSRs}"
                                     Toggled="ToggleSwitchUnlimitedSR_Toggled" />
                                 <DockPanel Margin="0,6,0,0">
                                     <Label
                                         Margin="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}" />
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}"
+                                        Content="{DynamicResource sw_SpotifySR_CommandCD}" />
                                     <StackPanel
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
@@ -1513,7 +1596,8 @@
                                         Margin="0,0,0,0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_CommandCDUser}" />
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_CommandCDUser}"
+                                        Content="{DynamicResource sw_SpotifySR_CommandCDUser}" />
                                     <StackPanel
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Top"
@@ -1541,7 +1625,8 @@
                                     <Label
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
-                                        Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}" />
+                                        d:Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}"
+                                        Content="{DynamicResource sw_SpotifySR_MaxLength}" />
                                     <controls:NumericUpDown
                                         x:Name="NudMaxlength"
                                         Width="151"
@@ -1562,7 +1647,8 @@
                                     Width="470"
                                     Height="36"
                                     VerticalAlignment="Top"
-                                    Content="{x:Static local:Resources.sw_SpotifySR_BlockAllExplicit}"
+                                    d:Content="{x:Static local:Resources.sw_SpotifySR_BlockAllExplicit}"
+                                    Content="{DynamicResource sw_SpotifySR_BlockAllExplicit}"
                                     ContentPadding="0"
                                     Focusable="False"
                                     FontFamily="Segoe UI"
@@ -1576,7 +1662,8 @@
             <TabItem
                 x:Name="TabItemTwitchBotCommands"
                 Padding="20,0,0,0"
-                Header="{x:Static local:Resources.brw_tc_Commands}">
+                d:Header="{x:Static local:Resources.brw_tc_Commands}"
+                Header="{DynamicResource brw_tc_Commands}">
                 <Border
                     x:Name="BorderCommands"
                     Margin="10,0,0,0"
@@ -1600,12 +1687,18 @@
                             Text="Rightclick on a command to adjust who can use it." />
 
                         <ScrollViewer Grid.Row="1" Margin="6">
-                            <StackPanel x:Name="StackCommands" Orientation="Vertical" Margin="0,0,6,0" />
+                            <StackPanel
+                                x:Name="StackCommands"
+                                Margin="0,0,6,0"
+                                Orientation="Vertical" />
                         </ScrollViewer>
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Padding="20,0,0,0" Header="{x:Static local:Resources.brw_tc_Responses}">
+            <TabItem
+                Padding="20,0,0,0"
+                d:Header="{x:Static local:Resources.brw_tc_Responses}"
+                Header="{DynamicResource brw_tc_Responses}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -1621,7 +1714,8 @@
                             Margin="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="{x:Static local:Resources.brw_Header}"
+                            d:Content="{x:Static local:Resources.brw_Header}"
+                            Content="{DynamicResource brw_Header}"
                             Visibility="Collapsed" />
                         <ScrollViewer
                             Grid.Row="1"
@@ -1700,7 +1794,8 @@
                                 Margin="16,0,0,0"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}" />
+                                d:Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
+                                Content="{DynamicResource sw_Integration_SpotifyLinked}" />
                         </DockPanel>
                         <Button
                             x:Name="BtnSpotifyLink"
@@ -1708,20 +1803,23 @@
                             Width="90"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            d:Content="{x:Static local:Resources.sw_Integration_btnLink}"
                             Click="Btn_spotifyLink_Click"
-                            Content="{x:Static local:Resources.sw_Integration_btnLink}" />
+                            Content="{DynamicResource sw_Integration_btnLink}" />
                         <controls:ToggleSwitch
                             x:Name="TglswSpotify"
                             Grid.Row="1"
                             Margin="0,0,0,6"
                             Padding="5,0,0,0"
                             VerticalAlignment="Top"
+                            d:OffContent="{x:Static local:Resources.sw_tcSpotify_UseSongifyApp}"
+                            d:OnContent="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}"
                             ContentPadding="0"
                             FontFamily="Segoe UI"
                             FontSize="12"
                             IsOn="True"
-                            OffContent="{x:Static local:Resources.sw_tcSpotify_UseSongifyApp}"
-                            OnContent="{x:Static local:Resources.sw_tcSpotify_UseOwnApp}"
+                            OffContent="{DynamicResource sw_tcSpotify_UseSongifyApp}"
+                            OnContent="{DynamicResource sw_tcSpotify_UseOwnApp}"
                             Toggled="Tglsw_Spotify_IsCheckedChanged"
                             Visibility="Collapsed" />
                         <StackPanel
@@ -1769,7 +1867,8 @@
 
                         <Label
                             Grid.Row="4"
-                            Content="{x:Static local:Resources.sw_tcSpotify_SongLikeLabel}"
+                            d:Content="{x:Static local:Resources.sw_tcSpotify_SongLikeLabel}"
+                            Content="{DynamicResource sw_tcSpotify_SongLikeLabel}"
                             ToolTip="{x:Static local:Resources.sw_tcSpotify_SongLikeLabelTooltip}" />
                         <StackPanel
                             Grid.Row="4"
@@ -1804,7 +1903,8 @@
                             <TextBlock
                                 Width="223"
                                 Padding="0,5,5,5"
-                                Text="{x:Static local:Resources.sw_tc_Spotify_AddSongsToPlaylist}"
+                                d:Text="{DynamicResource sw_tc_Spotify_AddSongsToPlaylist}"
+                                Text="{DynamicResource sw_tc_Spotify_AddSongsToPlaylist}"
                                 TextWrapping="Wrap" />
                             <controls:ToggleSwitch
                                 x:Name="TglAddToPlaylist"
@@ -1820,7 +1920,8 @@
                             Width="250"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Text="{x:Static local:Resources.sw_tc_Spotify_OnlyAllowFromPlaylist}" />
+                            d:Text="{DynamicResource sw_tc_Spotify_OnlyAllowFromPlaylist}"
+                            Text="{DynamicResource sw_tc_Spotify_OnlyAllowFromPlaylist}" />
                         <StackPanel
                             Grid.Row="6"
                             HorizontalAlignment="Right"
@@ -1867,7 +1968,10 @@
                             Click="Btn_YTMDesktopLink_Click">
                             <Button.Content>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Margin="0,0,8,0" Text="{x:Static local:Resources.sw_Integration_btnLink}" />
+                                    <TextBlock
+                                        Margin="0,0,8,0"
+                                        d:Text="{DynamicResource sw_Integration_btnLink}"
+                                        Text="{DynamicResource sw_Integration_btnLink}" />
                                     <iconPacks:FontAwesome Kind="LinkSolid" />
                                 </StackPanel>
                             </Button.Content>
@@ -1887,7 +1991,8 @@
                             <TextBlock
                                 MaxWidth="400"
                                 HorizontalAlignment="Center"
-                                Text="{x:Static local:Resources.sw_YTMDesktop_disclaimer}"
+                                d:Text="{DynamicResource sw_YTMDesktop_disclaimer}"
+                                Text="{DynamicResource sw_YTMDesktop_disclaimer}"
                                 TextAlignment="Center"
                                 TextWrapping="Wrap" />
                             <TextBlock
@@ -1899,7 +2004,7 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="{x:Static local:Resources.sw_tc_WebServer}">
+            <TabItem d:Header="{x:Static local:Resources.sw_tc_WebServer}" Header="{DynamicResource sw_tc_WebServer}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -1918,7 +2023,8 @@
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_WebServer_Port}" />
+                            d:Content="{x:Static local:Resources.sw_WebServer_Port}"
+                            Content="{DynamicResource sw_WebServer_Port}" />
                         <controls:NumericUpDown
                             x:Name="NudServerPort"
                             Grid.Row="0"
@@ -1938,8 +2044,9 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            d:Content="{x:Static local:Resources.sw_WebServer_StartWebServer}"
                             Click="BtnWebserverStart_Click"
-                            Content="{x:Static local:Resources.sw_WebServer_StartWebServer}" />
+                            Content="{DynamicResource sw_WebServer_StartWebServer}" />
                         <controls:ToggleSwitch
                             x:Name="TglAutoStartWebserver"
                             Grid.Row="1"
@@ -1949,7 +2056,8 @@
                             Margin="0,4,0,4"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_WebServer_AutoStart}"
+                            d:Content="{x:Static local:Resources.sw_WebServer_AutoStart}"
+                            Content="{DynamicResource sw_WebServer_AutoStart}"
                             Toggled="TglAutoStartWebserver_Toggled" />
                         <Button
                             x:Name="BtnWebserverOpenUrl"
@@ -1957,12 +2065,13 @@
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            d:Content="{x:Static local:Resources.sw_WebServer_OpenWebsite}"
                             Click="BtnWebserverOpenUrl_OnClick"
-                            Content="{x:Static local:Resources.sw_WebServer_OpenWebsite}" />
+                            Content="{DynamicResource sw_WebServer_OpenWebsite}" />
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="{x:Static local:Resources.sw_tc_Config}">
+            <TabItem d:Header="{x:Static local:Resources.sw_tc_Config}" Header="{DynamicResource sw_tc_Config}">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -1985,8 +2094,9 @@
                             Width="170"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
+                            d:Content="{x:Static local:Resources.sw_Config_Export}"
                             Click="Btn_ExportConfig_Click"
-                            Content="{x:Static local:Resources.sw_Config_Export}" />
+                            Content="{DynamicResource sw_Config_Export}" />
                         <Button
                             x:Name="BtnImportConfig"
                             Grid.Row="1"
@@ -1994,8 +2104,9 @@
                             Width="170"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
+                            d:Content="{x:Static local:Resources.sw_Config_Import}"
                             Click="Btn_ImportConfig_Click"
-                            Content="{x:Static local:Resources.sw_Config_Import}"
+                            Content="{DynamicResource sw_Config_Import}"
                             Visibility="Visible" />
                         <Button
                             x:Name="BtnResetConfig"
@@ -2004,8 +2115,9 @@
                             Width="170"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
+                            d:Content="{x:Static local:Resources.sw_Config_ResetConfig}"
                             Click="Btn_ResetConfig_Click"
-                            Content="{x:Static local:Resources.sw_Config_ResetConfig}" />
+                            Content="{DynamicResource sw_Config_ResetConfig}" />
                         <Label
                             Grid.Row="2"
                             Grid.Column="0"

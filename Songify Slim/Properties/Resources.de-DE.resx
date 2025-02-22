@@ -631,9 +631,6 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Fügt den aktuellen Titel der in der Spotify-Konfiguration ausgewählten Playlist hinzu.</value>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Setzt die aktuelle Wiedergabe fort oder hält sie an.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Userlevel für SR-Befehl</value>
   </data>
@@ -743,7 +740,7 @@
     <value>Spendenerinnerung deaktivieren</value>
   </data>
   <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
-    <value>Verwenden Canvas, falls verfügbar</value>
+    <value>Verwende Canvas, falls verfügbar</value>
   </data>
   <data name="WinQueue_NowPlaying" xml:space="preserve">
     <value>Jetzt läuft</value>
@@ -834,5 +831,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Benutzerlevel-Abzeichen anzeigen</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Spalten</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Setzt die aktuelle Wiedergabe fort.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Gibt die ersten 5 Songs der aktuellen Wiedergabewarteschlange zurück</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Pausiert die aktuelle Wiedergabe.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Gibt alle aktiven Songify-Befehle zurück.</value>
   </data>
 </root>

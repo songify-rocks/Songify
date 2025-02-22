@@ -633,9 +633,6 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Dodaje bieżący utwór do listy odtwarzania wybranej w konfiguracji Spotify.</value>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Wznawia lub wstrzymuje bieżące odtwarzanie.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Dozwolone poziomy użytkowników dla polecenia SR</value>
   </data>
@@ -833,5 +830,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Pokaż odznaki poziomu użytkownika</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Kolumny</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Wznawia bieżące odtwarzanie.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Zwraca pierwsze 5 utworów z bieżącej kolejki odtwarzania</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Wstrzymuje bieżące odtwarzanie.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Zwraca wszystkie aktywne polecenia Songify.</value>
   </data>
 </root>

@@ -684,9 +684,6 @@
     <value>Дадае бягучую песню ў плэй-ліст, абраны ў канфігурацыі Spotify.</value>
     <comment>Comman description</comment>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Узнаўляе альбо спыняе бягучае прайграванне.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
     <value>Дазволеныя ўзроўні карыстальнікаў для ўзнагароды SR</value>
   </data>
@@ -1010,5 +1007,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Паказаць значкі ўзроўню карыстальніка</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Стоўбцы</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Аднаўленне бягучага прайгравання.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Вяртае 5 першых песень з бягучай чаргі прайгравання</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Прыпыняе бягучае прайграванне.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Вяртае ўсе актыўныя каманды Songify.</value>
   </data>
 </root>

@@ -38,6 +38,7 @@ using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
 using File = System.IO.File;
 using System.Drawing;
+using System.Windows.Navigation;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Spotify;
 using Brush = System.Windows.Media.Brush;
@@ -45,6 +46,7 @@ using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using ListBox = System.Windows.Controls.ListBox;
 using TabControl = System.Windows.Controls.TabControl;
+using static Songify_Slim.App;
 
 namespace Songify_Slim.Views
 {
@@ -54,7 +56,7 @@ namespace Songify_Slim.Views
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
-
+        private Window_ResponseParams _wRp;
         private readonly Dictionary<string, string> _supportedLanguages = new()
         {
             { "en", "English" },
@@ -72,7 +74,6 @@ namespace Songify_Slim.Views
         public Window_Settings()
         {
             InitializeComponent();
-            Title = Properties.Resources.mw_menu_Settings;
             if (Settings.Language == "en") return;
             Width = MinWidth = 830;
         }
@@ -102,8 +103,16 @@ namespace Songify_Slim.Views
             StackCommands.Children.Clear();
             foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))
             {
-                bool showButtomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
-                StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showButtomBorder });
+                bool showBottomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
+                if (command.CommandType is Enums.CommandType.SongRequest or Enums.CommandType.Play
+                    or Enums.CommandType.Pause)
+                {
+                    bool isEnabled = Settings.SpotifyProfile.Product != null && Settings.SpotifyProfile.Product == "premium";
+                    command.IsEnabled = false;
+                    StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder, IsEnabled = isEnabled });
+                    continue;
+                }
+                StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder });
             }
 
 
@@ -264,7 +273,7 @@ namespace Songify_Slim.Views
             CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
             await LoadRewards();
 
-            
+
             if (Settings.RefundConditons == null) return;
             foreach (int condition in Settings.RefundConditons)
             {
@@ -565,14 +574,41 @@ namespace Songify_Slim.Views
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (CbxLanguage.SelectedValue is not string selectedLanguageCode) return;
-            // Update the current UI culture and settings
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(selectedLanguageCode);
-            Settings.Language = selectedLanguageCode;
+            //if (CbxLanguage.SelectedValue is not string selectedLanguageCode) return;
+            //// Update the current UI culture and settings
+            //Settings.Language = selectedLanguageCode;
+            //// Restart the application to apply the language change
+            //Process.Start(Application.ResourceAssembly.Location);
+            //Application.Current.Shutdown();
 
-            // Restart the application to apply the language change
-            Process.Start(Application.ResourceAssembly.Location);
-            Application.Current.Shutdown();
+
+            if (CbxLanguage.SelectedValue is not string selectedLanguageCode)
+                return;
+
+            CultureInfo newCulture = new CultureInfo(selectedLanguageCode);
+            Thread.CurrentThread.CurrentUICulture = newCulture;
+
+            // Create a new ResourceDictionary from the RESX for the selected culture.
+            ResourceDictionary newLocalizationDict = ResxToDictionaryHelper.CreateResourceDictionary(newCulture);
+
+            // Find the existing localization dictionary by checking for a known key.
+            var dictionaries = Application.Current.Resources.MergedDictionaries;
+            var localizationDict = dictionaries.FirstOrDefault(dict => dict.Contains("sw_tcSystem_lblLanguage"));
+
+            if (localizationDict != null)
+            {
+                int index = dictionaries.IndexOf(localizationDict);
+                dictionaries.Remove(localizationDict);
+                dictionaries.Insert(index, newLocalizationDict);
+            }
+            else
+            {
+                // If no localization dictionary was found, simply add the new one.
+                dictionaries.Add(newLocalizationDict);
+            }
+
+            // Optionally update your settings.
+            Settings.Language = selectedLanguageCode;
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1619,6 +1655,51 @@ namespace Songify_Slim.Views
                 throw new ArgumentException("App version must have at least three components.");
 
             return string.Join(".", parts[0], parts[1], parts[2]); // Join the first three parts
+        }
+
+        private void BtnResponseParams_OnClick(object sender, RoutedEventArgs e)
+        {
+            _wRp ??= new Window_ResponseParams
+            {
+                Left = Left + Width,
+                Top = Top,
+                Owner = this,
+                Height = Height
+            };
+            if (!_wRp.IsLoaded)
+                _wRp = new Window_ResponseParams
+                {
+                    Left = Left + Width,
+                    Top = Top,
+                    Owner = this,
+                    Height = Height
+                };
+            if (_wRp.IsVisible)
+                _wRp.Hide();
+            else
+                _wRp.Show();
+        }
+
+        public void MetroWindow_LocationChanged(object sender, EventArgs e)
+        {
+            if (_wRp is not { } responseParams) return;
+            responseParams.LocationChanged -= responseParams.Window_ResponseParams_OnLocationChanged;
+            responseParams.Left = Left + Width;
+            responseParams.Top = Top;
+            responseParams.LocationChanged += responseParams.Window_ResponseParams_OnLocationChanged;
+
+        }
+
+        private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_wRp == null) return;
+            _wRp.Height = Height;
+        }
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

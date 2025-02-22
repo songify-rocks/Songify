@@ -631,9 +631,6 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Добавляет текущую песню в плейлист, выбранный в конфигурации Spotify.</value>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Возобновляет или приостанавливает текущее воспроизведение.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Разрешенные уровни пользователей для команды SR</value>
   </data>
@@ -834,5 +831,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Показать значки уровня пользователя</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Колонны</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Возобновляет текущее воспроизведение.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Возвращает первые 5 песен текущей очереди воспроизведения</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Приостанавливает текущее воспроизведение.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Возвращает все активные команды Songify.</value>
   </data>
 </root>

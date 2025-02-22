@@ -15,191 +15,13 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
-            <!--#region Commands-->
-            <!--<TextBlock
-                Margin="0,6"
-                FontSize="18"
-                FontWeight="Bold"
-                Text="{x:Static properties:Resources.UC_BotResponses_CommandResponses}" />
-            <DockPanel
-                Margin="0,0,6,3"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <Border
-                    MinWidth="60"
-                    Margin="0,0,6,0"
-                    Padding="6,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                    CornerRadius="8">
-                    <TextBlock
-                        x:Name="TbTriggerSong"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                </Border>
-                <TextBox
-                    x:Name="TbSong"
-                    MinHeight="23"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="False"
-                    GotFocus="Tb__GotFocus"
-                    LostFocus="Tb_LostFocus"
-                    TextChanged="Tb_Song_OnTextChanged"
-                    TextWrapping="Wrap"
-                    ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>
-            <Border
-                Margin="0,6"
-                VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
-            <DockPanel
-                Margin="0,0,6,3"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <Border
-                    MinWidth="60"
-                    Margin="0,0,6,0"
-                    Padding="6,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                    CornerRadius="8">
-                    <TextBlock
-                        x:Name="TbTriggerRemove"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                </Border>
-                <TextBox
-                    x:Name="TbRemove"
-                    MinHeight="27"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="True"
-                    GotFocus="Tb__GotFocus"
-                    LostFocus="Tb_LostFocus"
-                    TextChanged="TbRemove_TextChanged"
-                    TextWrapping="Wrap"
-                    ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>
-            <Border
-                Margin="0,6"
-                VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
-            <DockPanel
-                Margin="0,0,6,3"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <Border
-                    MinWidth="60"
-                    Margin="0,0,6,0"
-                    Padding="6,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                    CornerRadius="8">
-                    <TextBlock
-                        x:Name="TbTriggerPos"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                </Border>
-
-                <TextBox
-                    x:Name="TbPos"
-                    MinHeight="23"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="True"
-                    GotFocus="Tb__GotFocus"
-                    LostFocus="Tb_LostFocus"
-                    TextChanged="Tb_Pos_OnTextChanged"
-                    TextWrapping="Wrap"
-                    ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>
-            <Border
-                Margin="0,6"
-                VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
-            <DockPanel
-                Margin="0,0,6,3"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <Border
-                    MinWidth="60"
-                    Margin="0,0,6,0"
-                    Padding="6,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                    CornerRadius="8">
-                    <TextBlock
-                        x:Name="TbTriggerNext"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                </Border>
-                --><!--<TextBlock
-                    Margin="0,0,6,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    FontSize="14"
-                    Text="{x:Static properties:Resources.brw_Next}"
-                    TextWrapping="Wrap" />--><!--
-                <TextBox
-                    x:Name="TbNext"
-                    MinHeight="23"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="True"
-                    GotFocus="Tb__GotFocus"
-                    LostFocus="Tb_LostFocus"
-                    TextChanged="Tb_Next_OnTextChanged"
-                    TextWrapping="Wrap"
-                    ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>
-            <Border
-                Margin="0,6"
-                VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                BorderThickness="1" />
-            <DockPanel
-                Margin="0,0,6,3"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <Border
-                    MinWidth="60"
-                    Margin="0,0,6,0"
-                    Padding="6,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
-                    CornerRadius="8">
-                    <TextBlock
-                        x:Name="TbTriggerLike"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                </Border>
-                --><!--<TextBlock
-                    Margin="0,0,6,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    FontSize="14"
-                    Text="{x:Static properties:Resources.brw_SongLike}"
-                    TextWrapping="Wrap" />--><!--
-                <TextBox
-                    x:Name="TbSongLike"
-                    MinHeight="26"
-                    VerticalAlignment="Center"
-                    AcceptsReturn="True"
-                    GotFocus="Tb__GotFocus"
-                    LostFocus="Tb_LostFocus"
-                    TextChanged="Tb_SongLike_OnTextChanged"
-                    TextWrapping="Wrap"
-                    ToolTip="{DynamicResource ParamTooltip}" />
-            </DockPanel>-->
-            <!--#endregion-->
-
+           
             <!--#region Song Request Related Responses-->
             <TextBlock
                 Margin="0,16,0,6"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
+                Text="{DynamicResource UC_BotResponses_SongRequestResponses}" d:Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
 
             <!--<Border
                 MinWidth="60"
@@ -214,7 +36,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_Success}"
+                        Text="{DynamicResource brw_Success}" d:Text="{x:Static properties:Resources.brw_Success}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSuccess"
@@ -247,7 +69,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_SongInQueue}"
+                        Text="{DynamicResource brw_SongInQueue}" d:Text="{x:Static properties:Resources.brw_SongInQueue}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSongInQueue"
@@ -280,7 +102,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_MaxSongs}"
+                        Text="{DynamicResource brw_MaxSongs}" d:Text="{x:Static properties:Resources.brw_MaxSongs}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbMaxSongs"
@@ -314,7 +136,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_SongTooLong}"
+                        Text="{DynamicResource brw_SongTooLong}" d:Text="{x:Static properties:Resources.brw_SongTooLong}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbMaxLength"
@@ -347,7 +169,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_UserLevelTooLowCommand}"
+                        Text="{DynamicResource brw_UserLevelTooLowCommand}" d:Text="{x:Static properties:Resources.brw_UserLevelTooLowCommand}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrCommandUSerlevelTooLow"
@@ -380,7 +202,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_UserLevelTooLowReward}"
+                        Text="{DynamicResource brw_UserLevelTooLowReward}" d:Text="{x:Static properties:Resources.brw_UserLevelTooLowReward}"
                         TextWrapping="Wrap" />
 
                     <TextBox
@@ -414,7 +236,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_ArtistBlocked}"
+                        Text="{DynamicResource brw_ArtistBlocked}" d:Text="{x:Static properties:Resources.brw_ArtistBlocked}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbArtistBlocked"
@@ -447,7 +269,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_ExplicitSongs}"
+                        Text="{DynamicResource brw_ExplicitSongs}" d:Text="{x:Static properties:Resources.brw_ExplicitSongs}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbExplicit"
@@ -480,7 +302,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_CommandOnCooldown}"
+                        Text="{DynamicResource brw_CommandOnCooldown}" d:Text="{x:Static properties:Resources.brw_CommandOnCooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrCooldown"
@@ -513,7 +335,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_CommandOnUserCooldown}"
+                        Text="{DynamicResource brw_CommandOnUserCooldown}" d:Text="{x:Static properties:Resources.brw_CommandOnUserCooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrUserCooldown"
@@ -546,7 +368,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_ModSkip}"
+                        Text="{DynamicResource brw_ModSkip}" d:Text="{x:Static properties:Resources.brw_ModSkip}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbModSkip"
@@ -579,7 +401,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_VoteSkip}"
+                        Text="{DynamicResource brw_VoteSkip}" d:Text="{x:Static properties:Resources.brw_VoteSkip}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbVoteSkip"
@@ -612,7 +434,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}"
+                        Text="{DynamicResource brw_SongNotFoundInPlaylist}" d:Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbNotFoundInPlaylist"
@@ -646,7 +468,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_FetchError}"
+                        Text="{DynamicResource brw_FetchError}" d:Text="{x:Static properties:Resources.brw_FetchError}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbError"
@@ -679,7 +501,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_NoSong}"
+                        Text="{DynamicResource brw_NoSong}" d:Text="{x:Static properties:Resources.brw_NoSong}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbNoSong"
@@ -712,7 +534,7 @@
                         VerticalAlignment="Center"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{x:Static properties:Resources.brw_NoTrackFound}"
+                        Text="{DynamicResource brw_NoTrackFound}" d:Text="{x:Static properties:Resources.brw_NoTrackFound}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbnoTrackFound"
@@ -733,7 +555,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     FontSize="14"
-                    Text="{x:Static properties:Resources.brw_Refund}"
+                    Text="{DynamicResource brw_Refund}" d:Text="{x:Static properties:Resources.brw_Refund}"
                     TextWrapping="Wrap" />
                 <TextBox
                     x:Name="TbRefund"

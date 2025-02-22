@@ -631,9 +631,6 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Agrega la canción actual a la lista de reproducción seleccionada en la configuración de Spotify.</value>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Reanuda o pausa la reproducción actual.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Niveles de usuario permitidos para el comando SR</value>
   </data>
@@ -834,5 +831,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Mostrar insignias de nivel de usuario</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Columnas</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Reanuda la reproducción actual.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Devuelve las primeras 5 canciones de la cola de reproducción actual</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Pausa la reproducción actual.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Devuelve todos los comandos activos de Songify.</value>
   </data>
 </root>

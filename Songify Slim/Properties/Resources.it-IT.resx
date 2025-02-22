@@ -328,7 +328,7 @@
     <value>Configurazione</value>
   </data>
   <data name="sw_tc_Integration" xml:space="preserve">
-    <value>Contrazione</value>
+    <value>Twitch</value>
   </data>
   <data name="sw_tc_Output" xml:space="preserve">
     <value>Produzione</value>
@@ -633,9 +633,6 @@
   <data name="brw_cmd_songlike" xml:space="preserve">
     <value>Aggiunge il brano corrente alla playlist selezionata nella configurazione di Spotify.</value>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Riprende o mette in pausa la riproduzione corrente.</value>
-  </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Livelli utente consentiti per il comando SR</value>
   </data>
@@ -833,5 +830,20 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Mostra i badge di livello utente</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Colonne</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Riprende la riproduzione corrente.</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Restituisce i primi 5 brani della coda di riproduzione corrente</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Mette in pausa la riproduzione corrente.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Restituisce tutti i comandi Songify attivi.</value>
   </data>
 </root>

@@ -805,8 +805,8 @@
     <value>Adds the current song to the playlist selected in Spotify config.</value>
     <comment>Comman description</comment>
   </data>
-  <data name="brw_cmd_playpause" xml:space="preserve">
-    <value>Resumes or pauses the current playback.</value>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Resumes the current playback.</value>
   </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
     <value>Allowed user levels for SR command</value>
@@ -1014,5 +1014,18 @@
   </data>
   <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
     <value>Show user level badges</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Columns</value>
+    <comment>The word "Columns"</comment>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Returns the first 5 songs of the current playback queue</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Pauses the current playback.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Returns all active Songify commands.</value>
   </data>
 </root>

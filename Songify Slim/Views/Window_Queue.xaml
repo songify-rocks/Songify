@@ -9,9 +9,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    Title="{x:Static properties:Resources.WinTitle_Queue}"
+    Title="{DynamicResource WinTitle_Queue}"
     Width="600"
     Height="444"
+    d:Title="{x:Static properties:Resources.WinTitle_Queue}"
     Loaded="MetroWindow_Loaded"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="Manual"
@@ -73,7 +74,8 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="{x:Static properties:Resources.WinQueue_NowPlaying}" />
+                    d:Text="{x:Static properties:Resources.WinQueue_NowPlaying}"
+                    Text="{DynamicResource WinQueue_NowPlaying}" />
             </Border>
             <Border
                 Width="auto"
@@ -84,7 +86,8 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="{x:Static properties:Resources.WinQueue_SongRequest}" />
+                    d:Text="{x:Static properties:Resources.WinQueue_SongRequest}"
+                    Text="{DynamicResource WinQueue_SongRequest}" />
             </Border>
             <Border
                 Width="auto"
@@ -95,73 +98,80 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    Text="{x:Static properties:Resources.WinQueue_Skipping}" />
+                    d:Text="{x:Static properties:Resources.WinQueue_Skipping}"
+                    Text="{DynamicResource WinQueue_Skipping}" />
             </Border>
         </StackPanel>
-        <Button
-            x:Name="BtnClearQueue"
-            Grid.Row="0"
-            Margin="0,10,120,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Click="BtnClearQueue_Click"
-            Content="{x:Static properties:Resources.mw_menu_Queue_Clear}" />
-        <Expander
-            x:Name="DropDownCols"
+        <StackPanel
             Grid.Row="0"
             Grid.RowSpan="2"
-            Width="107"
-            Margin="0,10,10,0"
             HorizontalAlignment="Right"
-            VerticalAlignment="Top"
-            Panel.ZIndex="6"
-            Background="{StaticResource MahApps.Brushes.Control.Background}"
-            Header="Columns">
-            <StackPanel x:Name="stackCols" Orientation="Vertical">
-                <CheckBox
-                    x:Name="CheckColQueueID"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.Window_Queue_QueueId}"
-                    Tag="0"
-                    Unchecked="ColVisChecked" />
-                <CheckBox
-                    x:Name="CheckColArtist"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.bw_cbArtist}"
-                    Tag="1"
-                    Unchecked="ColVisChecked" />
-                <CheckBox
-                    x:Name="CheckColTitle"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.crw_RewardTitle}"
-                    Tag="2"
-                    Unchecked="ColVisChecked" />
-                <CheckBox
-                    x:Name="CheckColLength"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.s_Length}"
-                    Tag="3"
-                    Unchecked="ColVisChecked" />
-                <CheckBox
-                    x:Name="CheckColRequester"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.s_Requester}"
-                    Tag="4"
-                    Unchecked="ColVisChecked" />
-                <CheckBox
-                    x:Name="CheckColAction"
-                    Margin="3"
-                    Checked="ColVisChecked"
-                    Content="{x:Static properties:Resources.WinQueue_Actions}"
-                    Tag="5"
-                    Unchecked="ColVisChecked" />
-            </StackPanel>
-        </Expander>
+            Orientation="Horizontal"
+            ZIndex="10001">
+            <Button
+                x:Name="BtnClearQueue"
+                Margin="0,10,6,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Click="BtnClearQueue_Click"
+                Content="{x:Static properties:Resources.mw_menu_Queue_Clear}" />
+            <Expander
+                Width="150"
+                x:Name="DropDownCols"
+                Margin="0,10,10,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Panel.ZIndex="6"
+                d:Header="{DynamicResource s_Columns}"
+                Background="{StaticResource MahApps.Brushes.Control.Background}"
+                Header="{DynamicResource s_Columns}">
+                <StackPanel x:Name="stackCols" Orientation="Vertical">
+                    <CheckBox
+                        x:Name="CheckColQueueID"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.Window_Queue_QueueId}"
+                        Tag="0"
+                        Unchecked="ColVisChecked" />
+                    <CheckBox
+                        x:Name="CheckColArtist"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.bw_cbArtist}"
+                        Tag="1"
+                        Unchecked="ColVisChecked" />
+                    <CheckBox
+                        x:Name="CheckColTitle"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.crw_RewardTitle}"
+                        Tag="2"
+                        Unchecked="ColVisChecked" />
+                    <CheckBox
+                        x:Name="CheckColLength"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.s_Length}"
+                        Tag="3"
+                        Unchecked="ColVisChecked" />
+                    <CheckBox
+                        x:Name="CheckColRequester"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.s_Requester}"
+                        Tag="4"
+                        Unchecked="ColVisChecked" />
+                    <CheckBox
+                        x:Name="CheckColAction"
+                        Margin="3"
+                        Checked="ColVisChecked"
+                        Content="{x:Static properties:Resources.WinQueue_Actions}"
+                        Tag="5"
+                        Unchecked="ColVisChecked" />
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+
         <DataGrid
             x:Name="dgv_Queue"
             Grid.Row="1"
@@ -225,30 +235,35 @@
                 <DataGridTextColumn
                     x:Name="ColArtist"
                     Width="*"
+                    d:Header="{x:Static properties:Resources.bw_cbArtist}"
                     Binding="{Binding Path=Artist}"
-                    Header="{x:Static properties:Resources.bw_cbArtist}"
+                    Header="{DynamicResource bw_cbArtist}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColTitle"
                     Width="*"
+                    d:Header="{x:Static properties:Resources.crw_RewardTitle}"
                     Binding="{Binding Path=Title}"
-                    Header="{x:Static properties:Resources.crw_RewardTitle}"
+                    Header="{DynamicResource crw_RewardTitle}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColLength"
                     Width="*"
+                    d:Header="{x:Static properties:Resources.s_Length}"
                     Binding="{Binding Path=Length}"
-                    Header="{x:Static properties:Resources.s_Length}"
+                    Header="{DynamicResource s_Length}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColRequester"
                     Width="*"
+                    d:Header="{x:Static properties:Resources.s_Requester}"
                     Binding="{Binding Path=Requester}"
-                    Header="{x:Static properties:Resources.s_Requester}"
+                    Header="{DynamicResource s_Requester}"
                     Visibility="Visible" />
                 <DataGridTemplateColumn
                     x:Name="colDeleteButton"
-                    Header="{x:Static properties:Resources.WinQueue_Actions}"
+                    d:Header="{x:Static properties:Resources.WinQueue_Actions}"
+                    Header="{DynamicResource WinQueue_Actions}"
                     Visibility="Visible">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

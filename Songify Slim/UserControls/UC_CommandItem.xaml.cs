@@ -18,6 +18,7 @@ using Markdig.Parsers;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Markdig.Wpf;
+using Songify_Slim.Views;
 
 namespace Songify_Slim.UserControls
 {
@@ -40,22 +41,8 @@ namespace Songify_Slim.UserControls
                 typeof(UcUserLevelItem),
                 new FrameworkPropertyMetadata(false, null, null));
 
+        public Dictionary<Enums.CommandType, string> Map { get; private set; }
 
-        public static readonly Dictionary<Enums.CommandType, string> Map = new()
-        {
-            { Enums.CommandType.SongRequest,Properties.Resources.sw_SpotifySR_SRCommand},
-            { Enums.CommandType.Next,Properties.Resources.brw_cmd_next },
-            { Enums.CommandType.Play,Properties.Resources.brw_cmd_playpause },
-            { Enums.CommandType.Voteskip,Properties.Resources.brw_cmd_skipvote},
-            { Enums.CommandType.Position,Properties.Resources.brw_cmd_pos},
-            { Enums.CommandType.Song,Properties.Resources.brw_cmd_song},
-            { Enums.CommandType.Skip,Properties.Resources.brw_cmd_skip},
-            { Enums.CommandType.Remove,Properties.Resources.brw_cmd_remove},
-            { Enums.CommandType.Songlike,Properties.Resources.brw_cmd_songlike},
-            { Enums.CommandType.Volume,Properties.Resources.brw_cmd_vol},
-            { Enums.CommandType.Queue,Properties.Resources.brw_cmd_QueueReturn},
-            { Enums.CommandType.Commands,"Sends a list of active commansd to the chat."}
-        };
 
         private static readonly List<int> AllUsers = [0, 1, 2, 3, 4, 5, 6];
         private bool _isUpdating = false;
@@ -65,6 +52,24 @@ namespace Songify_Slim.UserControls
         public UC_CommandItem(TwitchCommand cmd)
         {
             InitializeComponent();
+
+            Map = new Dictionary<Enums.CommandType, string>
+            {
+                { Enums.CommandType.SongRequest, Application.Current.TryFindResource("sw_SpotifySR_SRCommand") as string ?? "Fallback SongRequest" },
+                { Enums.CommandType.Next, Application.Current.TryFindResource("brw_cmd_next") as string ?? "Fallback Next" },
+                { Enums.CommandType.Play, Application.Current.TryFindResource("brw_cmd_play") as string ?? "Fallback Play" },
+                { Enums.CommandType.Voteskip, Application.Current.TryFindResource("brw_cmd_skipvote") as string ?? "Fallback Voteskip" },
+                { Enums.CommandType.Position, Application.Current.TryFindResource("brw_cmd_pos") as string ?? "Fallback Position" },
+                { Enums.CommandType.Song, Application.Current.TryFindResource("brw_cmd_song") as string ?? "Fallback Song" },
+                { Enums.CommandType.Skip, Application.Current.TryFindResource("brw_cmd_skip") as string ?? "Fallback Skip" },
+                { Enums.CommandType.Remove, Application.Current.TryFindResource("brw_cmd_remove") as string ?? "Fallback Remove" },
+                { Enums.CommandType.Songlike, Application.Current.TryFindResource("brw_cmd_songlike") as string ?? "Fallback Songlike" },
+                { Enums.CommandType.Volume, Application.Current.TryFindResource("brw_cmd_vol") as string ?? "Fallback Volume" },
+                { Enums.CommandType.Queue, Application.Current.TryFindResource("brw_cmd_queue") as string ?? "Fallback Queue" },
+                { Enums.CommandType.Commands, Application.Current.TryFindResource("brw_cmd_commands") as string ?? "Fallback Commands" },
+                { Enums.CommandType.Pause, Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause" }
+            };
+
             Command = cmd;
             Loaded += UC_CommandItem_Loaded;
         }

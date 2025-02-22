@@ -3281,6 +3281,21 @@ namespace Songify_Slim.Util.Songify
             {
                 if (IsInQueue(track.Id))
                 {
+
+                    Dictionary<string, string> parameters = new()
+                    {
+                        {"user", e.DisplayName},
+                        {"song", $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}"},
+                        {"artist", string.Join(", ", track.Artists.Select(a => a.Name).ToList())},
+                        {"single_artist", track.Artists.First().Name},
+                        {"title", track.Name},
+                        {"maxreq", Settings.Settings.TwSrMaxReq.ToString()},
+                        {"errormsg", ""}
+                    };
+
+                    response = ReplaceParameters(Settings.Settings.BotRespIsInQueue, parameters);
+                    return true;
+
                     response = Settings.Settings.BotRespIsInQueue;
                     response = response.Replace("{user}", e.DisplayName);
                     response = response.Replace("{song}",
@@ -3428,6 +3443,17 @@ namespace Songify_Slim.Util.Songify
             return Settings.Settings.UserBlacklist.Any(s =>
                 s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
         }
+
+        public static string ReplaceParameters(string source, Dictionary<string, string> parameters)
+        {
+            if (string.IsNullOrEmpty(source) || parameters == null || parameters.Count == 0)
+            {
+                return source;
+            }
+
+            return parameters.Aggregate(source, (current, parameter) => current.Replace($"{{{parameter.Key}}}", parameter.Value));
+        }
+
 
         private static bool MaxQueueItems(string requester, int userLevel)
         {

@@ -268,30 +268,30 @@
             Padding="0"
             VerticalAlignment="Top"
             Background="Transparent">
-            <MenuItem Header="{x:Static local:Resources.mw_menu_File}">
-                <MenuItem Click="BtnSettings_Click" Header="{x:Static local:Resources.mw_menu_Settings}" />
-                <MenuItem Click="BtnWidget_Click" Header="{x:Static local:Resources.mw_menu_Widget}" />
+            <MenuItem Header="{DynamicResource mw_menu_File}" d:Header="{x:Static local:Resources.mw_menu_File}">
+                <MenuItem Click="BtnSettings_Click" Header="{DynamicResource mw_menu_Settings}" d:Header="{x:Static local:Resources.mw_menu_Settings}" />
+                <MenuItem Click="BtnWidget_Click" Header="{DynamicResource mw_menu_Widget}" d:Header="{x:Static local:Resources.mw_menu_Widget}" />
                 <MenuItem
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     Click="BtnPatchNotes_Click"
-                    Header="{x:Static local:Resources.mw_menu_PatchNotes}" />
-                <MenuItem Header="{x:Static local:Resources.mw_menu_Help}">
+                    Header="{DynamicResource mw_menu_PatchNotes}" d:Header="{x:Static local:Resources.mw_menu_PatchNotes}" />
+                <MenuItem Header="{DynamicResource mw_menu_Help}" d:Header="{x:Static local:Resources.mw_menu_Help}">
                     <MenuItem Click="BtnFAQ_Click" Header="FAQ" />
                     <MenuItem Click="BtnGitHub_Click" Header="GitHub" />
                     <MenuItem Click="BtnDiscord_Click" Header="Discord" />
-                    <MenuItem Click="BtnLogFolderClick" Header="{x:Static local:Resources.mw_menu_Help_LogFolder}" />
+                    <MenuItem Click="BtnLogFolderClick" Header="{DynamicResource mw_menu_Help_LogFolder}" d:Header="{x:Static local:Resources.mw_menu_Help_LogFolder}" />
                     <MenuItem Click="BtnAppFolderClick" Header="Songify Folder" />
-                    <MenuItem Click="BtnAboutClick" Header="{x:Static local:Resources.mw_menu_Help_About}" />
+                    <MenuItem Click="BtnAboutClick" Header="{DynamicResource mw_menu_Help_About}" d:Header="{x:Static local:Resources.mw_menu_Help_About}" />
                 </MenuItem>
                 <MenuItem
                     x:Name="mi_Update"
                     Click="Mi_Update_OnClick"
-                    Header="{x:Static local:Resources.mw_menu_CheckUpdates}" />
+                    Header="{DynamicResource mw_menu_CheckUpdates}" d:Header="{x:Static local:Resources.mw_menu_CheckUpdates}" />
                 <MenuItem
                     x:Name="mi_Exit"
                     Click="Mi_Exit_Click"
-                    Header="{x:Static local:Resources.mw_menu_Exit}" />
+                    Header="{DynamicResource mw_menu_Exit}" d:Header="{x:Static local:Resources.mw_menu_Exit}" />
             </MenuItem>
             <MenuItem
                 Header="Twitch"
@@ -300,60 +300,60 @@
                 <MenuItem
                     x:Name="mi_TwitchAPI"
                     Click="Mi_TwitchAPI_Click"
-                    Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
+                    Header="{DynamicResource mw_menu_Twitch_TwitchLogin}" d:Header="{x:Static local:Resources.mw_menu_Twitch_TwitchLogin}" />
                 <MenuItem
                     x:Name="mi_TwitchConnect"
                     Click="BtnTwitch_Click"
-                    Header="{x:Static local:Resources.mw_menu_Connect}"
+                    Header="{DynamicResource mw_menu_Connect}" d:Header="{x:Static local:Resources.mw_menu_Connect}"
                     Tag="Connect" />
                 <MenuItem
                     x:Name="mi_TwitchDisconnect"
                     Click="BtnTwitch_Click"
-                    Header="{x:Static local:Resources.mw_menu_Disconnect}"
+                    Header="{DynamicResource mw_menu_Disconnect}" d:Header="{x:Static local:Resources.mw_menu_Disconnect}"
                     IsEnabled="False"
                     Tag="Disconnect" />
                 <MenuItem
                     x:Name="mi_TwitchCheckOnlineStatus"
                     Click="Mi_TwitchCheckOnlineStatus_OnClick"
-                    Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}" />
+                    Header="{DynamicResource mw_menu_Twitch_CheckOnlineStatus}" d:Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}" />
                 <MenuItem
                     Click="Mi_TW_BotResponses_Click"
-                    Header="{x:Static local:Resources.mw_menu_Twitch_Bot}"
+                    Header="{DynamicResource mw_menu_Twitch_Bot}" d:Header="{x:Static local:Resources.mw_menu_Twitch_Bot}"
                     Visibility="Collapsed">
-                    <!--<MenuItem Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click" />-->
+                    <!--<MenuItem Header="{DynamicResource sw_Integration_ConfigureResponses}" d:Header="{x:Static local:Resources.sw_Integration_ConfigureResponses}" x:Name="mi_TW_BotResponses" Click="mi_TW_BotResponses_Click" />-->
                 </MenuItem>
             </MenuItem>
-            <MenuItem Header="{x:Static local:Resources.mw_menu_SongRequests}">
+            <MenuItem Header="{DynamicResource mw_menu_SongRequests}" d:Header="{x:Static local:Resources.mw_menu_SongRequests}">
                 <MenuItem
                     x:Name="mi_Queue"
                     Click="Mi_Queue_Click"
-                    Header="{x:Static local:Resources.mw_menu_Queue_Window}"
+                    Header="{DynamicResource mw_menu_Queue_Window}" d:Header="{x:Static local:Resources.mw_menu_Queue_Window}"
                     Tag="Window" />
                 <MenuItem
                     Click="Mi_Queue_Click"
-                    Header="{x:Static local:Resources.mw_menu_Queue_Browser}"
+                    Header="{DynamicResource mw_menu_Queue_Browser}" d:Header="{x:Static local:Resources.mw_menu_Queue_Browser}"
                     Tag="Browser" />
                 <MenuItem
                     x:Name="mi_QueueClear"
                     Click="Mi_QueueClear_Click"
-                    Header="{x:Static local:Resources.mw_menu_Queue_Clear}" />
+                    Header="{DynamicResource mw_menu_Queue_Clear}" d:Header="{x:Static local:Resources.mw_menu_Queue_Clear}" />
                 <MenuItem
                     x:Name="mi_Blacklist"
                     Click="Mi_Blacklist_Click"
-                    Header="{x:Static local:Resources.mw_menu_Blacklist}" />
+                    Header="{DynamicResource mw_menu_Blacklist}" d:Header="{x:Static local:Resources.mw_menu_Blacklist}" />
             </MenuItem>
-            <MenuItem Header="{x:Static local:Resources.mw_menu_History}">
+            <MenuItem Header="{DynamicResource mw_menu_History}" d:Header="{x:Static local:Resources.mw_menu_History}">
                 <MenuItem
                     Click="BtnHistory_Click"
-                    Header="{x:Static local:Resources.mw_menu_History_Window}"
+                    Header="{DynamicResource mw_menu_History_Window}" d:Header="{x:Static local:Resources.mw_menu_History_Window}"
                     Tag="Window" />
                 <MenuItem
                     Click="BtnHistory_Click"
-                    Header="{x:Static local:Resources.mw_menu_History_Browser}"
+                    Header="{DynamicResource mw_menu_History_Browser}" d:Header="{x:Static local:Resources.mw_menu_History_Browser}"
                     Tag="Browser" />
             </MenuItem>
-            <MenuItem Header="{x:Static local:Resources.mw_menu_View}">
-                <MenuItem Click="BtnMenuViewConsole_Click" Header="{x:Static local:Resources.mw_menu_Console}" />
+            <MenuItem Header="{DynamicResource mw_menu_View}" d:Header="{x:Static local:Resources.mw_menu_View}">
+                <MenuItem Click="BtnMenuViewConsole_Click" Header="{DynamicResource mw_menu_Console}" d:Header="{x:Static local:Resources.mw_menu_Console}" />
                 <MenuItem Click="BtnMenuViewUserList_Click" Header="Viewer list" />
                 <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
             </MenuItem>
@@ -518,7 +518,7 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     SnapsToDevicePixels="True"
-                    Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
+                    Text="{DynamicResource mw_LiveOutputPlaceholder}" d:Text="{x:Static local:Resources.mw_LiveOutputPlaceholder}"
                     TextOptions.TextFormattingMode="Display"
                     TextWrapping="Wrap"
                     UseLayoutRounding="True" />
@@ -566,7 +566,7 @@
                     Cursor="Hand">
                     <StackPanel Orientation="Horizontal">
                         <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
-                        <TextBlock VerticalAlignment="Center" Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" />
+                        <TextBlock VerticalAlignment="Center" Text="{DynamicResource mw_menu_BuyUsACoffee}" d:Text="{x:Static local:Resources.mw_menu_BuyUsACoffee}" />
                     </StackPanel>
                     <Border.RenderTransform>
                         <TransformGroup>

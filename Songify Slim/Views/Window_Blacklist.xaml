@@ -6,9 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="{x:Static local:Resources.WinTitle_Blocklist}"
+    Title="{DynamicResource WinTitle_Blocklist}"
     Width="658"
     Height="506"
+    d:Title="{x:Static local:Resources.WinTitle_Blocklist}"
     Closing="MetroWindow_Closing"
     Loaded="MetroWindow_Loaded"
     WindowStartupLocation="CenterOwner"
@@ -50,8 +51,9 @@
                 Margin="0,0,6,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
+                d:Content="{x:Static local:Resources.bw_btnAdd}"
                 Click="Btn_Add_Click"
-                Content="{x:Static local:Resources.bw_btnAdd}"
+                Content="{DynamicResource bw_btnAdd}"
                 TabIndex="3" />
             <Button
                 x:Name="btn_Clear"
@@ -61,8 +63,9 @@
                 Padding="5,6"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
+                d:Content="{x:Static local:Resources.bw_btnClear}"
                 Click="Btn_Clear_Click"
-                Content="{x:Static local:Resources.bw_btnClear}"
+                Content="{DynamicResource bw_btnClear}"
                 Grid.IsSharedSizeScope="True"
                 TabIndex="4" />
         </StackPanel>
@@ -78,9 +81,9 @@
             SelectedIndex="0"
             SelectionChanged="Cbx_Type_SelectionChanged"
             TabIndex="2">
-            <ComboBoxItem Content="{x:Static local:Resources.bw_cbArtist}" />
-            <ComboBoxItem Content="{x:Static local:Resources.bw_cbUser}" />
-            <ComboBoxItem Content="{x:Static local:Resources.s_Song}" />
+            <ComboBoxItem d:Content="{x:Static local:Resources.bw_cbArtist}" Content="{DynamicResource bw_cbArtist}" />
+            <ComboBoxItem d:Content="{x:Static local:Resources.bw_cbUser}" Content="{DynamicResource bw_cbUser}" />
+            <ComboBoxItem d:Content="{x:Static local:Resources.s_Song}" Content="{DynamicResource s_Song}" />
         </ComboBox>
         <ListBox
             x:Name="ListView_Blacklist"
@@ -91,7 +94,10 @@
             KeyDown="ListView_Blacklist_KeyDown">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="MenuItem_Click" Header="{x:Static local:Resources.bw_menu_Delete}" />
+                    <MenuItem
+                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        Click="MenuItem_Click"
+                        Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -104,7 +110,10 @@
             KeyDown="ListView_UserBlacklist_KeyDown">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="MenuItem_Click" Header="{x:Static local:Resources.bw_menu_Delete}" />
+                    <MenuItem
+                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        Click="MenuItem_Click"
+                        Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -119,7 +128,10 @@
             SelectedValuePath="ReadableName">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="MenuItem_Click" Header="{x:Static local:Resources.bw_menu_Delete}" />
+                    <MenuItem
+                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        Click="MenuItem_Click"
+                        Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -128,17 +140,20 @@
             Grid.Column="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            Content="{x:Static local:Resources.bw_lblBlockedArtists}" />
+            d:Content="{x:Static local:Resources.bw_lblBlockedArtists}"
+            Content="{DynamicResource bw_lblBlockedArtists}" />
         <Label
             Grid.Row="1"
             Grid.Column="1"
             VerticalAlignment="Top"
-            Content="{x:Static local:Resources.bw_lblBlockedUsers}" />
+            d:Content="{x:Static local:Resources.bw_lblBlockedUsers}"
+            Content="{DynamicResource bw_lblBlockedUsers}" />
         <Label
             Grid.Row="1"
             Grid.Column="2"
             VerticalAlignment="Top"
-            Content="{x:Static local:Resources.bw_lblBlockedSongs}" />
+            d:Content="{x:Static local:Resources.bw_lblBlockedSongs}"
+            Content="{DynamicResource bw_lblBlockedSongs}" />
         <ContentControl
             x:Name="cc_Content"
             Grid.Row="1"

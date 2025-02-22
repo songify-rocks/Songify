@@ -2,6 +2,7 @@
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -9,6 +10,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -85,9 +87,41 @@ namespace Songify_Slim
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
 
+
             base.OnStartup(e);
+
+            // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
+            CultureInfo defaultCulture = CultureInfo.CurrentUICulture;
+            // Or for a fixed default, for example:
+            // CultureInfo defaultCulture = new CultureInfo("en");
+
+            // Create a localization dictionary from your RESX file.
+            ResourceDictionary defaultLocalizationDict = ResxToDictionaryHelper.CreateResourceDictionary(defaultCulture);
+
+            // Add it to the merged dictionaries so that your UI has access to the keys from the start.
+            Application.Current.Resources.MergedDictionaries.Add(defaultLocalizationDict);
+
             StartPipeServer();
         }
+
+
+        public static class ResxToDictionaryHelper
+        {
+            public static ResourceDictionary CreateResourceDictionary(CultureInfo culture)
+            {
+                ResourceDictionary dict = new ResourceDictionary();
+                ResourceManager rm = Songify_Slim.Properties.Resources.ResourceManager;
+                // Retrieve the resource set for the specified culture.
+                ResourceSet resourceSet = rm.GetResourceSet(culture, true, true);
+                foreach (DictionaryEntry entry in resourceSet)
+                {
+                    // Add each key/value pair to the dictionary.
+                    dict.Add(entry.Key, entry.Value);
+                }
+                return dict;
+            }
+        }
+
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
