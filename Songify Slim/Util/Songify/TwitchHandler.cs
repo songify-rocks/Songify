@@ -2983,7 +2983,7 @@ namespace Songify_Slim.Util.Songify
 
         private static string GetCurrentSong()
         {
-            string currentSong = Settings.Settings.BotRespSong;
+            string currentSong = Settings.Settings.Commands.First(c => c.CommandType == CommandType.Song).Response;
 
             currentSong = currentSong.Format(
                             singleArtist => GlobalObjects.CurrentSong.FullArtists != null ? GlobalObjects.CurrentSong.FullArtists.FirstOrDefault().Name : GlobalObjects.CurrentSong.Artists,
@@ -2993,6 +2993,9 @@ namespace Songify_Slim.Util.Songify
                             uri => GlobalObjects.CurrentSong.SongId,
                             url => GlobalObjects.CurrentSong.Url
                     ).Format();
+            currentSong = Regex.Replace(currentSong, @"@?\{user\}", "");
+
+            currentSong = currentSong.Trim();
 
             RequestObject rq = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == GlobalObjects.CurrentSong.SongId);
             if (rq != null)

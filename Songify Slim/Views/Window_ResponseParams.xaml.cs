@@ -24,7 +24,6 @@ namespace Songify_Slim.Views
         public Window_ResponseParams()
         {
             InitializeComponent();
-
         }
 
         private Dictionary<string, string> _responseParameters;
@@ -73,7 +72,8 @@ namespace Songify_Slim.Views
                 { "{queue}", Application.Current.TryFindResource("Param_Queue_Desc") as string
                     ?? "Next 5 songs in the queue" },
                 { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string
-                    ?? "List of all active commands" }
+                    ?? "List of all active commands" },
+                { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string ?? "The users userlevel (Folower, Subscriber etc)"}
             };
 
             PnlParams.Children.Clear();
