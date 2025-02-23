@@ -1009,7 +1009,7 @@
     <value>Паказаць значкі ўзроўню карыстальніка</value>
   </data>
   <data name="s_Columns" xml:space="preserve">
-    <value>Стоўбцы</value>
+    <value>Слупкі</value>
   </data>
   <data name="brw_cmd_play" xml:space="preserve">
     <value>Аднаўленне бягучага прайгравання.</value>
@@ -1027,7 +1027,7 @@
     <value>Карыстальнік, які запусціў каманду або ўзнагароду канала</value>
   </data>
   <data name="Param_Requester_Desc" xml:space="preserve">
-    <value>Запытальнік бягучай песні</value>
+    <value>Заказчык бягучай песні</value>
   </data>
   <data name="Param_ConditionalText_Desc" xml:space="preserve">
     <value>Тэкст унутры '{{' і '}}' будзе апублікаваны, толькі калі бягучая песня з'яўляецца запытам песні</value>
@@ -1039,7 +1039,7 @@
     <value>Галоўны выканаўца для бягучай песні або запыту на песню</value>
   </data>
   <data name="Param_ErrorMessage_Desc" xml:space="preserve">
-    <value>Паведамленне пра памылку, калі ўзнікае памылка</value>
+    <value>Паведамленне пра памылку, калі яна ўзнікла</value>
   </data>
   <data name="Param_MaxLength_Desc" xml:space="preserve">
     <value>Максімальная працягласць песні ў хвілінах</value>
@@ -1057,13 +1057,13 @@
     <value>URL плэйліста</value>
   </data>
   <data name="Param_SongList_Desc" xml:space="preserve">
-    <value>Толькі для каманды !pos стварае спіс песень, якія карыстальнік мае ў чарзе з іх пазіцыяй</value>
+    <value>Толькі для каманды !pos, стварае спіс песень, якія карыстальнік мае ў чарзе, з іх пазіцыяй</value>
   </data>
   <data name="Param_Votes_Desc" xml:space="preserve">
-    <value>Колькасць галасоў за пропуск галасоў/усяго</value>
+    <value>Колькасць галасоў за пропуск галасавання галасы/усяго</value>
   </data>
   <data name="Param_Cooldown_Desc" xml:space="preserve">
-    <value>Перазарадка ў секундах (для глабальнага кд і карыстальніцкага кд)</value>
+    <value>Перазарадка ў секундах (для глабальнага і карыстальніцкага)</value>
   </data>
   <data name="Param_Url_Desc" xml:space="preserve">
     <value>URL песні Spotify</value>
@@ -1081,6 +1081,6 @@
     <value>Зменныя адказу</value>
   </data>
   <data name="lang_beBY" xml:space="preserve">
-    <value>беларускі</value>
+    <value>Беларуская</value>
   </data>
 </root>
