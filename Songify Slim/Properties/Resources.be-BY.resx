@@ -478,7 +478,7 @@
     <comment>ToggleSwitch content for "open queue window on startup"</comment>
   </data>
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Аўтаматычна аб'яўляць песню ў чаце</value>
+    <value>Аўтаматычна аб'яўляць песню ў чаце (выкарыстоўваецца адказ !song)</value>
     <comment>TollgeSwitch content for "Automatically Announce Song To Chat"</comment>
   </data>
   <data name="Sw_Integration_ManageRewards" xml:space="preserve">

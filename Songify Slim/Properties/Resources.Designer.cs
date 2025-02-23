@@ -1682,7 +1682,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically announce song to chat.
+        ///   Looks up a localized string similar to Automatically announce song to chat (uses the !song response).
         /// </summary>
         public static string Sw_intergration_AutoAnnounce {
             get {

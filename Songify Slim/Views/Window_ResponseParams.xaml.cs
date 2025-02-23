@@ -30,8 +30,6 @@ namespace Songify_Slim.Views
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //Top = Owner.Top;
-            //Left = Owner.Left + Owner.Width;
             LoadItems();
         }
 
@@ -73,7 +71,8 @@ namespace Songify_Slim.Views
                     ?? "Next 5 songs in the queue" },
                 { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string
                     ?? "List of all active commands" },
-                { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string ?? "The users userlevel (Folower, Subscriber etc)"}
+                { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string
+                    ?? "The users userlevel (Folower, Subscriber etc)"}
             };
 
             PnlParams.Children.Clear();
@@ -133,7 +132,6 @@ namespace Songify_Slim.Views
 
         private async void BtnOnClick(object sender, RoutedEventArgs e)
         {
-
             if (sender is not Button button) return;
 
             if (button.Content is TextBlock tbx)
@@ -167,7 +165,6 @@ namespace Songify_Slim.Views
                 }
                 tb.Opacity = 0;
                 tb.Text = "";
-
             }
         }
 

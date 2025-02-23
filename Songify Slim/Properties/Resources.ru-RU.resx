@@ -430,9 +430,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Открыть окно очереди при запуске</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Автоматически объявлять песню в чате</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Ограничить активность Twitch, чтобы реагировать только во время трансляции (требуется вход в Twitch)</value>
   </data>
@@ -909,5 +906,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>Уровень пользователя (Последователь, Подписчик и т. д.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Автоматически объявлять песню в чате (использует ответ !song)</value>
   </data>
 </root>

@@ -427,9 +427,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>abrir ventana de cola al iniciar</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>anunciar las canciones en el chat automáticamente</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>limita la actividad de Twitch para que sólo funcione cuando la transmisión se encuentre en vivo (necesitas iniciar sesión en Twitch)</value>
   </data>
@@ -909,5 +906,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>El nivel de usuario del usuario (Seguidor, Suscriptor, etc.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Anuncia automáticamente la canción para chatear (usa la respuesta !song)</value>
   </data>
 </root>

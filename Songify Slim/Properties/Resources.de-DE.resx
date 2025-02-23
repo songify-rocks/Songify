@@ -439,9 +439,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Warteschlangenfenster beim Start öffnen</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Lied automatisch im Chat ankündigen</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Funktion auf Live-status limitieren. (Funktioniert mit Login über Twitch)</value>
   </data>
@@ -909,5 +906,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>Die Benutzerebene des Benutzers (Follower, Abonnent usw.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Song automatisch im Chat ankündigen (verwendet die !song Antwort)</value>
   </data>
 </root>

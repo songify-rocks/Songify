@@ -435,9 +435,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Otwórz okno kolejki podczas uruchamiania</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Automatycznie ogłaszaj utwór na czacie</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Ogranicz aktywność Twitcha, aby działała tylko wtedy, gdy transmisja jest na żywo (wymagane jest logowanie na Twitchu)</value>
   </data>
@@ -908,5 +905,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>Poziom użytkownika (obserwujący, subskrybent itp.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Automatyczne ogłaszanie piosenki na czacie (używa odpowiedzi !song)</value>
   </data>
 </root>

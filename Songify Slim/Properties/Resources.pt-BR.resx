@@ -438,9 +438,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Abrir janela de fila na inicialização</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Anunciar a música automaticamente no bate-papo</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limite a atividade do Twitch para funcionar apenas quando a transmissão estiver ao vivo (é necessário fazer login no Twitch)</value>
   </data>
@@ -908,5 +905,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>O nível de usuário dos usuários (seguidor, assinante etc.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Anunciar música automaticamente no chat (usa a resposta !song)</value>
   </data>
 </root>

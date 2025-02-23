@@ -435,9 +435,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>finestra della coda aperta all'avvio</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Annuncia automaticamente la canzone per chattare</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limita l'attività di Twitch in modo che funzioni solo quando lo streaming è in diretta (è necessario l'accesso a Twitch)</value>
   </data>
@@ -908,5 +905,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>Il livello utente dell'utente (folower, subscriber ecc.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Annuncia automaticamente la canzone nella chat (utilizza la risposta !song)</value>
   </data>
 </root>

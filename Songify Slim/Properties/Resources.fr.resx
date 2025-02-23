@@ -433,9 +433,6 @@
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Ouvrir la fenêtre de la file d'attente au démarrage</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
-    <value>Annoncer automatiquement la musique dans le chat</value>
-  </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>Limiter l'activité Twitch pour qu'elle ne fonctionne que lorsque le flux est en direct (nécessite une connexion Twitch)</value>
   </data>
@@ -912,5 +909,8 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>Le niveau d'utilisateur des utilisateurs (Folower, Subscriber, etc.)</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Annoncer automatiquement la chanson dans le chat (utilise la réponse !song)</value>
   </data>
 </root>
