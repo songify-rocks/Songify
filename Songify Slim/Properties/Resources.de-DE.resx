@@ -907,4 +907,7 @@
   <data name="lang_beBY" xml:space="preserve">
     <value>Weißrussisch</value>
   </data>
+  <data name="Param_Userlevel_Desc" xml:space="preserve">
+    <value>Die Benutzerebene des Benutzers (Follower, Abonnent usw.)</value>
+  </data>
 </root>

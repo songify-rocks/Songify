@@ -910,4 +910,7 @@
   <data name="lang_beBY" xml:space="preserve">
     <value>Biélorusse</value>
   </data>
+  <data name="Param_Userlevel_Desc" xml:space="preserve">
+    <value>Le niveau d'utilisateur des utilisateurs (Folower, Subscriber, etc.)</value>
+  </data>
 </root>

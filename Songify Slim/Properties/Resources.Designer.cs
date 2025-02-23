@@ -1159,6 +1159,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The users userlevel (Folower, Subscriber etc).
+        /// </summary>
+        public static string Param_Userlevel_Desc {
+            get {
+                return ResourceManager.GetString("Param_Userlevel_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of votes for voteskip votes/total.
         /// </summary>
         public static string Param_Votes_Desc {

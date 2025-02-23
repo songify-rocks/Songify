@@ -1083,4 +1083,7 @@
   <data name="lang_beBY" xml:space="preserve">
     <value>Беларуская</value>
   </data>
+  <data name="Param_Userlevel_Desc" xml:space="preserve">
+    <value>Узровень карыстальніка (падпісчык, падпісчык і г.д.)</value>
+  </data>
 </root>

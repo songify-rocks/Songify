@@ -906,4 +906,7 @@
   <data name="lang_beBY" xml:space="preserve">
     <value>Białoruski</value>
   </data>
+  <data name="Param_Userlevel_Desc" xml:space="preserve">
+    <value>Poziom użytkownika (obserwujący, subskrybent itp.)</value>
+  </data>
 </root>
