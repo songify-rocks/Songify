@@ -671,6 +671,31 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string TwitchUserColor { get => GetTwitchUserColor(); set => SetTwitchUserColor(value); }
+        public static List<int> UnlimitedSrUserlevelsReward { get => GetUnlimitedSrUserlevelsReward(); set => SetUnlimitedSrUserlevelsReward(value); }
+
+        private static void SetUnlimitedSrUserlevelsReward(List<int> value)
+        {
+            CurrentConfig.AppConfig.UnlimitedSrUserlevelsReward = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static List<int> GetUnlimitedSrUserlevelsReward()
+        {
+            return CurrentConfig.AppConfig.UnlimitedSrUserlevelsReward;
+        }
+
+        public static List<int> UnlimitedSrUserlevelsCommand { get => GetUnlimitedSrUserlevelsCommand(); set => SetUnlimitedSrUserlevelsCommand(value); }
+
+        private static void SetUnlimitedSrUserlevelsCommand(List<int> value)
+        {
+            CurrentConfig.AppConfig.UnlimitedSrUserlevelsCommand = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static List<int> GetUnlimitedSrUserlevelsCommand()
+        {
+            return CurrentConfig.AppConfig.UnlimitedSrUserlevelsCommand;
+        }
 
         private static string GetTwitchUserColor()
         {
@@ -857,6 +882,8 @@ namespace Songify_Slim.Util.Settings
                 RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
                 ShowUserLevelBadges = GetShowUserLevelBadges(),
+                UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
+                UnlimitedSrUserlevelsCommand = GetUnlimitedSrUserlevelsCommand(),
                 SongBlacklist = GetSongBlacklist(),
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),

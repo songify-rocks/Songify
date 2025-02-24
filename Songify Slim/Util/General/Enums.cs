@@ -9,6 +9,12 @@ namespace Songify_Slim.Util.General;
 
 public static class Enums
 {
+
+    public enum SongRequestSource
+    {
+        Reward,
+        Command
+    }
     public enum CommandType
     {
         [Description("Song Request")]

@@ -1472,6 +1472,7 @@
                                     <TextBlock
                                         MaxWidth="250"
                                         Margin="0,0,0,0"
+                                        Padding="0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         d:Text="{x:Static local:Resources.Sw_Integration_MaxSrUser}"
@@ -1489,20 +1490,7 @@
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"
                                             SelectedIndex="0"
-                                            SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged">
-                                            <ComboBox.Style>
-                                                <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
-                                                            <Setter Property="IsEnabled" Value="False" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
-                                                            <Setter Property="IsEnabled" Value="True" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </ComboBox.Style>
-                                        </ComboBox>
+                                            SelectionChanged="CbxUserLevelsMaxReq_SelectionChanged" />
                                         <controls:NumericUpDown
                                             x:Name="NudMaxReq"
                                             Width="119"
@@ -1517,20 +1505,7 @@
                                             Minimum="1"
                                             NumericInputMode="Numbers"
                                             UpDownButtonsWidth="22"
-                                            ValueChanged="NudMaxReq_ValueChanged">
-                                            <controls:NumericUpDown.Style>
-                                                <Style TargetType="controls:NumericUpDown">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
-                                                            <Setter Property="IsEnabled" Value="False" />
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
-                                                            <Setter Property="IsEnabled" Value="True" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </controls:NumericUpDown.Style>
-                                        </controls:NumericUpDown>
+                                            ValueChanged="NudMaxReq_ValueChanged" />
                                         <Button
                                             x:Name="BtnSync"
                                             Height="28"
@@ -1555,15 +1530,251 @@
                                         </Button>
                                     </StackPanel>
                                 </DockPanel>
-                                <controls:ToggleSwitch
-                                    x:Name="ToggleSwitchUnlimitedSr"
-                                    HorizontalAlignment="Right"
-                                    d:Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}"
-                                    Content="{DynamicResource Sw_SpotifySR_UnlimitedSRs}"
-                                    Toggled="ToggleSwitchUnlimitedSR_Toggled" />
+                                <StackPanel HorizontalAlignment="Right" Orientation="Vertical">
+                                    <controls:ToggleSwitch
+                                        x:Name="ToggleSwitchUnlimitedSr"
+                                        HorizontalAlignment="Right"
+                                        d:Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}"
+                                        Content="{DynamicResource Sw_SpotifySR_UnlimitedSRs}"
+                                        IsOn="True"
+                                        Toggled="ToggleSwitchUnlimitedSR_Toggled" />
+                                    <ComboBox
+                                        x:Name="CbxUnlimitedUserLevelsCommand"
+                                        Width="185"
+                                        Margin="0,6,0,0"
+                                        HorizontalAlignment="Right"
+                                        IsReadOnly="True"
+                                        SelectedIndex="0"
+                                        SelectionChanged="Selector_OnSelectionChanged">
+                                        <ComboBox.Style>
+                                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                        <ComboBox.Items>
+                                            <ComboBoxItem d:Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsCommand}" Content="{DynamicResource sw_SpotifySr_UserLevelsCommand}">
+                                                <ComboBoxItem.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsReward}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ComboBoxItem.Style>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandViewer"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Viewer}"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="{DynamicResource s_Viewer}"
+                                                    Tag="0"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Follower}"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="{DynamicResource s_Follower}"
+                                                    Tag="1"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandSub"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Subscriber}"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="{DynamicResource s_Subscriber}"
+                                                    Tag="2"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandSubT2"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="Subscriber T2"
+                                                    Tag="3"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandSubT3"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="Subscriber T3"
+                                                    Tag="4"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandVip"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_VIP}"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="{DynamicResource s_VIP}"
+                                                    Tag="5"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedCommandMod"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Moderator}"
+                                                    Checked="CbxUnlimitedCommandChecked"
+                                                    Content="{DynamicResource s_Moderator}"
+                                                    Tag="6"
+                                                    Unchecked="CbxUnlimitedCommandUnchecked" />
+                                            </ComboBoxItem>
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                    <ComboBox
+                                        x:Name="CbxUnlimitedUserLevelsReward"
+                                        Width="185"
+                                        Margin="0,6,0,0"
+                                        HorizontalAlignment="Right"
+                                        IsReadOnly="True"
+                                        SelectedIndex="0"
+                                        SelectionChanged="Selector_OnSelectionChanged">
+                                        <ComboBox.Style>
+                                            <Style BasedOn="{StaticResource {x:Type ComboBox}}" TargetType="ComboBox">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ElementName=ToggleSwitchUnlimitedSr, Path=IsOn}" Value="False">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                        <ComboBox.Items>
+                                            <ComboBoxItem d:Content="{x:Static local:Resources.sw_SpotifySr_UserLevelsReward}" Content="{DynamicResource sw_SpotifySr_UserLevelsReward}">
+                                                <ComboBoxItem.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsReward}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ComboBoxItem.Style>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardViewer"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Viewer}"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="{DynamicResource s_Viewer}"
+                                                    Tag="0"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardFollower"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Follower}"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="{DynamicResource s_Follower}"
+                                                    Tag="1"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardSub"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Subscriber}"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="{DynamicResource s_Subscriber}"
+                                                    Tag="2"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardSubT2"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="Subscriber T2"
+                                                    Tag="3"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardSubT3"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="Subscriber T3"
+                                                    Tag="4"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardVip"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_VIP}"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="{DynamicResource s_VIP}"
+                                                    Tag="5"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckUnlimitedRewardMod"
+                                                    Width="180"
+                                                    Height="22"
+                                                    Margin="1,0,0,0"
+                                                    d:Content="{x:Static local:Resources.s_Moderator}"
+                                                    Checked="CbxUnlimitedRewardChecked"
+                                                    Content="{DynamicResource s_Moderator}"
+                                                    Tag="6"
+                                                    Unchecked="CbxUnlimitedRewardUnchecked" />
+                                            </ComboBoxItem>
+                                        </ComboBox.Items>
+                                    </ComboBox>
+                                </StackPanel>
                                 <DockPanel Margin="0,6,0,0">
                                     <Label
                                         Margin="0,0,0,0"
+                                        Padding="0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         d:Content="{x:Static local:Resources.sw_SpotifySR_CommandCD}"
@@ -1595,6 +1806,7 @@
                                 <DockPanel Margin="0,6,0,0">
                                     <Label
                                         Margin="0,0,0,0"
+                                        Padding="0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         d:Content="{x:Static local:Resources.sw_SpotifySR_CommandCDUser}"
@@ -1624,6 +1836,7 @@
                                 </DockPanel>
                                 <DockPanel Margin="0,6,0,0">
                                     <Label
+                                        Padding="0"
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         d:Content="{x:Static local:Resources.sw_SpotifySR_MaxLength}"

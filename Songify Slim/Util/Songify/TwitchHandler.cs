@@ -996,12 +996,16 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            AddSong(await GetTrackIdFromInput(Regex.Replace(message.Message, $"!{cmd.Trigger}", "", RegexOptions.IgnoreCase).Trim()), message);
+            string trackId =
+                await GetTrackIdFromInput(Regex.Replace(message.Message, $"!{cmd.Trigger}", "", RegexOptions.IgnoreCase)
+                    .Trim());
+            AddSong(trackId, message, SongRequestSource.Command, cmdParams.ExistingUser);
 
             // start the command cooldown
             StartCooldown();
             cmdParams.ExistingUser.UpdateCommandTime();
         }
+
         private static async void SendOrAnnounceMessage(string channel, string message, TwitchCommand cmd)
         {
             if (cmd.IsAnnouncement)
@@ -1324,7 +1328,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void AddSong(string trackId, ChatMessage e)
+        private static async void AddSong(string trackId, ChatMessage e, SongRequestSource source, TwitchUser user)
         {
             if (string.IsNullOrWhiteSpace(trackId))
             {
@@ -1394,11 +1398,21 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (IsUserAtMaxRequests(e, out response))
+            bool unlimitedSr = source switch
             {
-                SendChatMessage(e.Channel, response);
-                return;
-            }
+                SongRequestSource.Reward => Settings.Settings.UnlimitedSrUserlevelsReward.Intersect(user.UserLevels)
+                    .Any(),
+                SongRequestSource.Command => Settings.Settings.UnlimitedSrUserlevelsCommand.Intersect(user.UserLevels)
+                    .Any(),
+                _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
+            };
+
+            if (!unlimitedSr)
+                if (IsUserAtMaxRequests(e, user, out response))
+                {
+                    SendChatMessage(e.Channel, response);
+                    return;
+                }
 
             SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
 
@@ -1861,8 +1875,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (!e.ChatMessage.Message.StartsWith("!") && string.IsNullOrEmpty(e.ChatMessage.CustomRewardId))
                 return;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
+
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
 
@@ -1892,9 +1905,6 @@ namespace Songify_Slim.Util.Songify
             {
                 userLevels = existingUser.UserLevels;
             }
-
-            stopwatch.Stop();
-            Debug.Write(stopwatch.Elapsed);
 
             if (Settings.Settings.TwRewardSkipId.Count > 0 &&
                 Settings.Settings.TwRewardSkipId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled)
@@ -1947,7 +1957,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e.ChatMessage);
+                AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e.ChatMessage, SongRequestSource.Reward, existingUser);
                 return;
             }
 
@@ -3408,24 +3418,20 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static bool IsUserAtMaxRequests(ChatMessage e, out string response)
+        private static bool IsUserAtMaxRequests(ChatMessage e, TwitchUser user, out string response)
         {
             response = string.Empty;
 
             try
             {
-                // Get user level and allowed status
-                (TwitchUserLevels userLevel, bool isAllowed) = CheckUserLevel(e, 1);
-
                 // Check if the maximum queue items have been reached for the user level
-                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(e.DisplayName, (int)userLevel))
+                if (MaxQueueItems(e.DisplayName, user.UserLevels.Max()))
                 {
                     response = Settings.Settings.BotRespMaxReq;
                     response = response.Replace("{user}", e.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}",
-                        $"{userLevel} {GetMaxRequestsForUserLevel((int)userLevel)}");
+                    response = response.Replace("{maxreq}", $"{user.UserLevels.Max()} {GetMaxRequestsForUserLevel(user.UserLevels.Max())}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;

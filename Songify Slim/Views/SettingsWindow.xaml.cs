@@ -182,6 +182,10 @@ namespace Songify_Slim.Views
             Settings.UserLevelsCommand ??= [];
             Settings.UserLevelsReward ??= [];
 
+            Settings.UnlimitedSrUserlevelsCommand ??= [];
+            Settings.UnlimitedSrUserlevelsReward ??= [];
+
+
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
             ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
@@ -197,6 +201,22 @@ namespace Songify_Slim.Views
             ChckUlRewardSubT3.IsChecked = Settings.UserLevelsReward.Contains(4);
             ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(5);
             ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(6);
+
+            ChckUnlimitedCommandViewer.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(0);
+            ChckUnlimitedCommandFollower.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(1);
+            ChckUnlimitedCommandSub.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(2);
+            ChckUnlimitedCommandSubT2.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(3);
+            ChckUnlimitedCommandSubT3.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(4);
+            ChckUnlimitedCommandVip.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(5);
+            ChckUnlimitedCommandMod.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(6);
+
+            ChckUnlimitedRewardViewer.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(0);
+            ChckUnlimitedRewardFollower.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(1);
+            ChckUnlimitedRewardSub.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(2);
+            ChckUnlimitedRewardSubT2.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(3);
+            ChckUnlimitedRewardSubT3.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(4);
+            ChckUnlimitedRewardVip.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(5);
+            ChckUnlimitedRewardMod.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(6);
 
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
@@ -1165,14 +1185,6 @@ namespace Songify_Slim.Views
 
         private void CbxUserLevelsRewardChecked(object sender, RoutedEventArgs e)
         {
-            /*
-               Everyone = 0,
-               Subscriber = 1,
-               Vip = 2,
-               Moderator = 3,
-               Broadcaster = 4
-             */
-
             if (sender is not CheckBox checkBox) return;
             int value = Convert.ToInt32(checkBox.Tag);
             if (Settings.UserLevelsReward.Contains(value)) return;
@@ -1582,6 +1594,44 @@ namespace Songify_Slim.Views
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void CbxUnlimitedRewardChecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.UnlimitedSrUserlevelsReward.Contains(value)) return;
+            List<int> list = [.. Settings.UnlimitedSrUserlevelsReward, value];
+            Settings.UnlimitedSrUserlevelsReward = list;
+        }
+
+        private void CbxUnlimitedRewardUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.UnlimitedSrUserlevelsReward.Contains(value)) return;
+            List<int> list = [.. Settings.UnlimitedSrUserlevelsReward];
+            list.Remove(value);
+            Settings.UnlimitedSrUserlevelsReward = list;
+        }
+
+        private void CbxUnlimitedCommandUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.UnlimitedSrUserlevelsCommand.Contains(value)) return;
+            List<int> list = [.. Settings.UnlimitedSrUserlevelsCommand];
+            list.Remove(value);
+            Settings.UnlimitedSrUserlevelsCommand = list;
+        }
+
+        private void CbxUnlimitedCommandChecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.UnlimitedSrUserlevelsCommand.Contains(value)) return;
+            List<int> list = [.. Settings.UnlimitedSrUserlevelsCommand, value];
+            Settings.UnlimitedSrUserlevelsCommand = list;
         }
     }
 }
