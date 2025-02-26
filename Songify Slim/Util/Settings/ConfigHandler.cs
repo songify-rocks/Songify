@@ -19,6 +19,7 @@ using static Songify_Slim.Util.Settings.YamlTypeConverters;
 using Markdig.Wpf;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
+using Unosquare.Swan;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Settings
@@ -30,13 +31,13 @@ namespace Songify_Slim.Util.Settings
     internal class ConfigHandler
     {
         public static List<TwitchCommand> DefaultCommands { get; set; } =
-       [
+        [
            new()
             {
                 CommandType = CommandType.SongRequest,
-                Trigger = "ssr",
+                Trigger = Settings.BotCmdSsrTrigger,
                 Response = "{artist} - {title} requested by @{user} has been added to the queue.",
-                IsEnabled = false,
+                IsEnabled = Settings.TwSrCommand,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -46,9 +47,9 @@ namespace Songify_Slim.Util.Settings
            new()
             {
                 CommandType = CommandType.Next,
-                Trigger = "next",
+                Trigger = Settings.BotCmdNextTrigger,
                 Response = "@{user} {song}",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdNext,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Primary,
@@ -60,7 +61,7 @@ namespace Songify_Slim.Util.Settings
                 CommandType = CommandType.Play,
                 Trigger = "play",
                 Response = "Playback resumed.",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdPlayPause,
                 AllowedUserLevels = [6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -72,7 +73,7 @@ namespace Songify_Slim.Util.Settings
                 CommandType = CommandType.Pause,
                 Trigger = "pause",
                 Response = "Playback stopped.",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdPlayPause,
                 AllowedUserLevels = [6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -82,9 +83,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Position,
-                Trigger = "pos",
+                Trigger = Settings.BotCmdPosTrigger,
                 Response = "@{user} {songs}{pos} {song}{/songs}",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdPos,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -94,9 +95,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Queue,
-                Trigger = "queue",
+                Trigger = Settings.BotCmdQueueTrigger,
                 Response = "{queue}",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdQueue,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -106,9 +107,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Remove,
-                Trigger = "remove",
+                Trigger = Settings.BotCmdRemoveTrigger,
                 Response = "{user} your previous request ({song}) will be skipped.",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdRemove,
                 AllowedUserLevels = [0,1,2,3,4,5,6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -118,9 +119,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Skip,
-                Trigger = "skip",
+                Trigger = Settings.BotCmdSkipTrigger,
                 Response = "@{user} skipped the current song.",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdSkip,
                 AllowedUserLevels = [6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -132,7 +133,7 @@ namespace Songify_Slim.Util.Settings
                 CommandType = CommandType.Voteskip,
                 Trigger = "voteskip",
                 Response = "@{user} voted to skip the current song. ({votes})",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdSkipVote,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -145,9 +146,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Song,
-                Trigger = "song",
+                Trigger = Settings.BotCmdSongTrigger,
                 Response = "@{user} {title} by {single_artist} {{requested by @{req}}}",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdSong,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -157,9 +158,9 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Songlike,
-                Trigger = "songlike",
+                Trigger = Settings.BotCmdSonglikeTrigger,
                 Response = "The Song {song} has been added to the playlist {playlist}.",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdSonglike,
                 AllowedUserLevels = [6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -171,7 +172,7 @@ namespace Songify_Slim.Util.Settings
                 CommandType = CommandType.Volume,
                 Trigger = "vol",
                 Response = "Spotify volume at {vol}%",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdVol,
                 AllowedUserLevels = [6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
@@ -184,15 +185,15 @@ namespace Songify_Slim.Util.Settings
             new()
             {
                 CommandType = CommandType.Commands,
-                Trigger = "cmds",
+                Trigger = Settings.BotCmdCommandsTrigger,
                 Response = "Active Songify commands: {commands}",
-                IsEnabled = false,
+                IsEnabled = Settings.BotCmdCommands,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>()
             }
-       ];
+        ];
 
         public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
@@ -288,9 +289,18 @@ namespace Songify_Slim.Util.Settings
                     case ConfigTypes.TwitchCommands:
                         config.TwitchCommands = LoadOrCreateConfig<TwitchCommands>(path, "TwitchCommands", deserializer);
 
+                        // If no commands were loaded, assign all defaults.
                         if (config.TwitchCommands.Commands.Count == 0)
                         {
                             config.TwitchCommands.Commands = DefaultCommands;
+                        }
+                        else
+                        {
+                            // Ensure each default command exists in the loaded commands.
+                            foreach (TwitchCommand defaultCmd in DefaultCommands.Where(defaultCmd => config.TwitchCommands.Commands.All(c => c.CommandType != defaultCmd.CommandType)))
+                            {
+                                config.TwitchCommands.Commands.Add(defaultCmd);
+                            }
                         }
 
                         break;

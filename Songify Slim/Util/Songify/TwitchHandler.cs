@@ -1295,14 +1295,11 @@ namespace Songify_Slim.Util.Songify
             msg = msg.Replace("{title}", $"{GlobalObjects.CurrentSong.Title}");
             msg = msg.Replace(@"\n", " - ").Replace("  ", " ");
 
-            if (msg.StartsWith("[announce "))
-            {
-                await AnnounceInChat(msg);
-            }
+            TwitchCommand cmd = Settings.Settings.Commands.Find(c => c.CommandType == CommandType.Song);
+            if (cmd.IsAnnouncement)
+                await AnnounceChatMessage(msg, cmd.AnnouncementColor);
             else
-            {
                 SendChatMessage(Settings.Settings.TwChannel, msg);
-            }
         }
 
         // Counter for consecutive failures

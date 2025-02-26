@@ -127,12 +127,7 @@ namespace Songify_Slim.Util.General
                         // Process the command
                         string response = await ProcessCommand(message);
 
-                        if (response == "")
-                        {
-                            // If the command is not recognized, send an appropriate response
-                            response = "Unknown command: " + response;
-                        }
-                        else if (!string.IsNullOrEmpty(response))
+                        if (!string.IsNullOrEmpty(response))
                         {
                             // If the command is recognized but has no response, send an appropriate response
                             response = "Command executed: " + response;
@@ -162,6 +157,8 @@ namespace Songify_Slim.Util.General
         private async Task<string> ProcessCommand(string message)
         {
             string command = message.ToLower();
+            if (string.IsNullOrEmpty(command))
+                return "";
             Logger.LogStr($"WEBSOCKET: Command '{message}' received");
             // Here, we're assuming commands are simple text commands. Adjust parsing logic as necessary.
             Device device;
@@ -190,6 +187,10 @@ namespace Songify_Slim.Util.General
 
             switch (command)
             {
+                case "send_to_chat":
+                    TwitchHandler.SendCurrSong();
+                    break;
+
                 case "block_artist":
                     BlockArtist();
                     return "Artist blocked";

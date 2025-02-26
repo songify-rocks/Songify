@@ -25,32 +25,29 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowPatchnotes
     {
-
+        // Constructor to initialize the window
         public WindowPatchnotes()
         {
             InitializeComponent();
         }
 
+        // Event handler for when the window is loaded
         private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // Create a GitHub client to fetch release information
             GitHubClient client = new(new ProductHeaderValue("SongifyInfo"));
             IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("songify-rocks", "Songify");
+
+            // Add each release to the ComboBox
             foreach (Release release in releases)
             {
-                //LbxVersions.Items.Add(new ReleaseObject { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
                 CbxVersions.Items.Add(new ReleaseObject() { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
             }
 
+            // If the application is in beta, fetch and add beta patch notes
             if (App.IsBeta)
             {
                 string patchnotes = await WebHelper.GetBetaPatchNotes($"{GlobalObjects.BaseUrl}/beta_update.md");
-
-                //LbxVersions.Items.Insert(0, new ReleaseObject
-                //{
-                //    Version = $"{GlobalObjects.AppVersion}_beta",
-                //    Content = patchnotes,
-                //    Url = ""
-                //});
                 CbxVersions.Items.Insert(0, new ReleaseObject
                 {
                     Version = $"{GlobalObjects.AppVersion}_beta",
@@ -59,11 +56,11 @@ namespace Songify_Slim.Views
                 });
             }
 
+            // Select the first item in the ComboBox
             CbxVersions.SelectedIndex = 0;
-            //LbxVersions.SelectedIndex = 0;
-            //LbxVersions.ScrollIntoView(LbxVersions.SelectedItem);
         }
 
+        // Class to represent a release object with version, content, and URL
         private class ReleaseObject
         {
             public string Version { get; set; }
@@ -71,16 +68,19 @@ namespace Songify_Slim.Views
             public string Url { get; set; }
         }
 
+        // Event handler for when a hyperlink is clicked
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(((Hyperlink)sender).NavigateUri.ToString());
         }
 
+        // Command handler to open a hyperlink
         private void OpenHyperlink(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
         {
             Process.Start(e.Parameter.ToString());
         }
 
+        // Custom XAML schema context to handle namespace compatibility
         private class MyXamlSchemaContext : XamlSchemaContext
         {
             public override bool TryGetCompatibleXamlNamespace(string xamlNamespace, out string compatibleNamespace)
@@ -94,10 +94,14 @@ namespace Songify_Slim.Views
             }
         }
 
+        // Event handler for when the selected item in the ComboBox changes
         private void CbxVersions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // Get the selected markdown text
             string markdownTxt = (string)((ComboBox)sender).SelectedValue;
-            markdownTxt = $"{markdownTxt.Split(["Checksum"], StringSplitOptions.None)[0]}";
+            markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
+
+            // Convert markdown to XAML
             MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
             string xaml = Markdown.ToXaml(markdownTxt, pipeline);
             using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
@@ -109,11 +113,14 @@ namespace Songify_Slim.Views
                 }
             }
 
+            // Set the foreground color of the document blocks
             foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
             {
                 Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
                 documentBlock.Foreground = new SolidColorBrush(themeForeground);
             }
+
+            // Enable or disable the hyperlink based on the selected item's URL
             string uri = (((ComboBox)sender).SelectedItem as ReleaseObject)?.Url;
             if (!string.IsNullOrWhiteSpace(uri))
             {
@@ -124,8 +131,6 @@ namespace Songify_Slim.Views
             {
                 Hyperlink.IsEnabled = false;
             }
-
         }
-
     }
 }
