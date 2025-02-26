@@ -99,14 +99,6 @@ namespace Songify_Slim.Views
             foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))
             {
                 bool showBottomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
-                if (command.CommandType is Enums.CommandType.SongRequest or Enums.CommandType.Play
-                    or Enums.CommandType.Pause)
-                {
-                    bool isEnabled = Settings.SpotifyProfile.Product != null && Settings.SpotifyProfile.Product == "premium";
-                    command.IsEnabled = false;
-                    StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder, IsEnabled = isEnabled });
-                    continue;
-                }
                 StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder });
             }
 
