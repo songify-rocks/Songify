@@ -11,6 +11,7 @@ using Application = System.Windows.Application;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
+using TwitchLib.Api.Helix.Models.Soundtrack;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -167,7 +168,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static void UploadSong(string currSong, string coverUrl = null, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
+        public static void UploadSong(string currSong, string coverUrl = null, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other, string artist = "", string title = "", string requester = "")
         {
             dynamic payload = new
             {
@@ -176,7 +177,10 @@ namespace Songify_Slim.Util.Songify
                 song = currSong,
                 cover = coverUrl,
                 song_id = GlobalObjects.CurrentSong?.SongId,
-                playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType)
+                playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType),
+                artist,
+                title,
+                requester
             };
             SongRequest(RequestMethod.Post, Json.Serialize(payload));
         }

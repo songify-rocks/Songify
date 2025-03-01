@@ -696,7 +696,7 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.QueueUpdateQueueWindow();
 
                     // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
-                    await WriteSongInfo(songInfo);
+                    await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
@@ -904,7 +904,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.Upload)
                 try
                 {
-                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType);
+                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType, songInfo.Artists, songInfo.Title, GlobalObjects.Requester);
                 }
                 catch (Exception ex)
                 {
