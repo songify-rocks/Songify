@@ -1,4 +1,4 @@
-# Patchnotes 1.6.8
+# Patchnotes 1.6.8 (BETA)
 
 ## New Features
 ### 🎵 YouTube Music Desktop Support
