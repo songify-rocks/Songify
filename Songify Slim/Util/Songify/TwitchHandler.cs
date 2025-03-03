@@ -1972,7 +1972,7 @@ namespace Songify_Slim.Util.Songify
             if (!executed)
             {
                 // Optionally handle the case where no command matched.
-                Console.WriteLine("Command not found or not enabled.");
+                Logger.LogStr("Command not found or not enabled.");
             }
 
             return;

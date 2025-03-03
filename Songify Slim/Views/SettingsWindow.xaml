@@ -2333,11 +2333,12 @@
                             Click="Btn_ResetConfig_Click"
                             Content="{DynamicResource sw_Config_ResetConfig}" />
                         <Label
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="0"
                             Content="Twitch Auth Ports" />
                         <StackPanel
-                            Grid.Row="3"
+                            Grid.Row="1"
+                            Grid.RowSpan="2"
                             Grid.Column="0"
                             Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
