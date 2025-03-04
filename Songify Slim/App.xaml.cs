@@ -13,8 +13,11 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Markdig;
 
 namespace Songify_Slim
 {
@@ -89,6 +92,20 @@ namespace Songify_Slim
 
 
             base.OnStartup(e);
+
+            // Override the Markdig CodeStyleKey at runtime
+            if (Application.Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
+            {
+                Style newStyle = new Style(typeof(Run));
+
+                newStyle.Setters.Add(new Setter(TextElement.ForegroundProperty, new SolidColorBrush(Colors.White)));
+                newStyle.Setters.Add(new Setter(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Black)));
+                newStyle.Setters.Add(new Setter(TextElement.FontFamilyProperty, new FontFamily("Consolas")));
+                newStyle.Setters.Add(new Setter(TextElement.FontSizeProperty, 14.0));
+
+                // Override the existing Markdig Code Style
+                Application.Current.Resources[Markdig.Wpf.Styles.CodeStyleKey] = newStyle;
+            }
 
             // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
             CultureInfo defaultCulture = CultureInfo.CurrentUICulture;

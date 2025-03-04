@@ -97,39 +97,46 @@ namespace Songify_Slim.Views
         // Event handler for when the selected item in the ComboBox changes
         private void CbxVersions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Get the selected markdown text
-            string markdownTxt = (string)((ComboBox)sender).SelectedValue;
-            markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
-
-            // Convert markdown to XAML
-            MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            string xaml = Markdown.ToXaml(markdownTxt, pipeline);
-            using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
+            try
             {
-                using XamlXmlReader reader = new(stream, new MyXamlSchemaContext());
-                if (XamlReader.Load(reader) is FlowDocument document)
+                // Get the selected markdown text
+                string markdownTxt = (string)((ComboBox)sender).SelectedValue;
+                markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
+
+                // Convert markdown to XAML
+                MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                string xaml = Markdown.ToXaml(markdownTxt, pipeline);
+                using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
                 {
-                    RtbPatchnotes.Document = document;
+                    using XamlXmlReader reader = new(stream, new MyXamlSchemaContext());
+                    if (XamlReader.Load(reader) is FlowDocument document)
+                    {
+                        RtbPatchnotes.Document = document;
+                    }
+                }
+
+                // Set the foreground color of the document blocks
+                foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
+                {
+                    Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
+                    documentBlock.Foreground = new SolidColorBrush(themeForeground);
+                }
+
+                // Enable or disable the hyperlink based on the selected item's URL
+                string uri = (((ComboBox)sender).SelectedItem as ReleaseObject)?.Url;
+                if (!string.IsNullOrWhiteSpace(uri))
+                {
+                    Hyperlink.IsEnabled = true;
+                    Hyperlink.NavigateUri = new Uri(uri);
+                }
+                else
+                {
+                    Hyperlink.IsEnabled = false;
                 }
             }
-
-            // Set the foreground color of the document blocks
-            foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
+            catch
             {
-                Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
-                documentBlock.Foreground = new SolidColorBrush(themeForeground);
-            }
-
-            // Enable or disable the hyperlink based on the selected item's URL
-            string uri = (((ComboBox)sender).SelectedItem as ReleaseObject)?.Url;
-            if (!string.IsNullOrWhiteSpace(uri))
-            {
-                Hyperlink.IsEnabled = true;
-                Hyperlink.NavigateUri = new Uri(uri);
-            }
-            else
-            {
-                Hyperlink.IsEnabled = false;
+                // ignore
             }
         }
     }

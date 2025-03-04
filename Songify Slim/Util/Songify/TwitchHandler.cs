@@ -1141,8 +1141,7 @@ namespace Songify_Slim.Util.Songify
 
                     // Get User Color:
                     GetUserChatColorResponse chatColorResponse = await TwitchApi.Helix.Chat.GetUserChatColorAsync([user.Id], Settings.Settings.TwitchAccessToken);
-                    if (chatColorResponse.Data.Any())
-                        Settings.Settings.TwitchUserColor = chatColorResponse.Data[0].Color;
+                    Settings.Settings.TwitchUserColor = chatColorResponse.Data.Any() ? chatColorResponse.Data[0].Color : "#f8953c";
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
 
