@@ -355,6 +355,9 @@ namespace Songify_Slim.Util.Settings
         public string TwitchBotToken { get; set; } = "";
         public User BotUser { get; set; }
         public string TwitchUserColor { get; set; }
+        public DateTime AccessTokenExpiryDate { get; set; }
+        public DateTime BotTokenExpiryDate { get; set; }
+
     }
 
     public class BotConfig

@@ -295,7 +295,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private static void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn,
+        private void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn,
             int account, UIElement btnAlt)
         {
             if (user == null)
@@ -309,18 +309,30 @@ namespace Songify_Slim.Views
             switch (account)
             {
                 case 0 when GlobalObjects.TwitchUserTokenExpired:
+                    btn.Visibility = Visibility.Visible;
+                    btnAlt.Visibility = Visibility.Visible;
+                    lbl.Content += $"{user.DisplayName} (Token Expired)";
+                    break;
                 case 1 when GlobalObjects.TwitchBotTokenExpired:
                     btn.Visibility = Visibility.Visible;
                     btnAlt.Visibility = Visibility.Visible;
                     lbl.Content += $"{user.DisplayName} (Token Expired)";
-
                     break;
 
                 default:
                     btnAlt.Visibility = Visibility.Collapsed;
                     btn.Visibility = Visibility.Collapsed;
                     lbl.Content += $"{user.DisplayName}";
+                    break;
+            }
 
+            switch (account)
+            {
+                case 0:
+                    LblMainExpiry.Content = $"Expires on {Settings.TwitchAccessTokenExpiryDate}";
+                    break;
+                case 1:
+                    LblBotExpiry.Content = $"Expires on {Settings.BotAccessTokenExpiryDate}";
                     break;
             }
 

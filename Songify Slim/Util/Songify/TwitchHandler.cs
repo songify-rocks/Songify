@@ -49,10 +49,12 @@ using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
 using System.Configuration;
+using System.Globalization;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
 using System.Windows.Interop;
 using Windows.Media.Playback;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Util.Spotify;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
@@ -1078,7 +1080,6 @@ namespace Songify_Slim.Util.Songify
                     };
 
                     TokenCheck = await TwitchApi.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchAccessToken);
-
                     if (TokenCheck == null)
                     {
                         GlobalObjects.TwitchUserTokenExpired = true;
@@ -1104,6 +1105,11 @@ namespace Songify_Slim.Util.Songify
                         });
                         return;
                     }
+
+                    DateTime tokenExpiryDate = DateTime.Now.AddSeconds(TokenCheck.ExpiresIn);
+
+                    Settings.Settings.TwitchAccessTokenExpiryDate = tokenExpiryDate;
+
 
                     GlobalObjects.TwitchUserTokenExpired = false;
                     _userId = TokenCheck.UserId;
@@ -1187,6 +1193,10 @@ namespace Songify_Slim.Util.Songify
                         });
                         return;
                     }
+
+                    DateTime botTokenExpiryDate = DateTime.Now.AddSeconds(BotTokenCheck.ExpiresIn);
+
+                    Settings.Settings.BotAccessTokenExpiryDate = botTokenExpiryDate;
 
                     GlobalObjects.TwitchBotTokenExpired = false;
 
@@ -2648,10 +2658,32 @@ namespace Songify_Slim.Util.Songify
             ];
 
             string userId = o.UserId;
+            try
+            {
+                GlobalObjects.subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
+                GlobalObjects.moderators = await TwitchApiHelper.GetAllModeratorsAsync();
+                GlobalObjects.vips = await TwitchApiHelper.GetAllVipsAsync();
+            }
+            catch (Exception e)
+            {
+                // Missing scopes, prompt to reconnect Twitch
+                Logger.LogExc(e);
+                Logger.LogStr("TWITCH: MISSING SCOPES, PLEASE RE-LINK TWITCH");
+                try
+                {
+                    new ToastContentBuilder()
+                        .AddText($"Songify")
+                        .AddText($"Can't fetch Twitch Users, please re-link Twitch")
+                        .AddAttributionText(DateTime.Now.ToString(CultureInfo.CurrentCulture))
+                        .Show();
+                }
+                catch (Exception exception)
+                {
+                    Logger.LogExc(exception);
+                }
+                return userLevels;
+            }
 
-            GlobalObjects.subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
-            GlobalObjects.moderators = await TwitchApiHelper.GetAllModeratorsAsync();
-            GlobalObjects.vips = await TwitchApiHelper.GetAllVipsAsync();
 
             // Check if the user is a moderator
             bool isModerator = GlobalObjects.moderators.Any(m => m.UserId == userId);

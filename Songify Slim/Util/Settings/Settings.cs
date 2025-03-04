@@ -672,6 +672,32 @@ namespace Songify_Slim.Util.Settings
 
         public static string TwitchUserColor { get => GetTwitchUserColor(); set => SetTwitchUserColor(value); }
         public static List<int> UnlimitedSrUserlevelsReward { get => GetUnlimitedSrUserlevelsReward(); set => SetUnlimitedSrUserlevelsReward(value); }
+        public static DateTime TwitchAccessTokenExpiryDate { get => GetTwitchAccessTokenExpiryDate(); set => SetTwitchAccessTokenExpiryDate(value); }
+
+        private static void SetTwitchAccessTokenExpiryDate(DateTime value)
+        {
+            CurrentConfig.TwitchCredentials.AccessTokenExpiryDate = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static DateTime GetTwitchAccessTokenExpiryDate()
+        {
+            return CurrentConfig.TwitchCredentials.AccessTokenExpiryDate;
+        }
+
+        public static DateTime BotAccessTokenExpiryDate { get => GetBotAccessTokenExpiryDate(); set => SetBotAccessTokenExpiryDate(value); }
+
+        private static void SetBotAccessTokenExpiryDate(DateTime value)
+        {
+            CurrentConfig.TwitchCredentials.BotTokenExpiryDate = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static DateTime GetBotAccessTokenExpiryDate()
+        {
+            return CurrentConfig.TwitchCredentials.BotTokenExpiryDate;
+        }
+
 
         private static void SetUnlimitedSrUserlevelsReward(List<int> value)
         {
@@ -778,6 +804,8 @@ namespace Songify_Slim.Util.Settings
                 TwitchBotToken = GetTwitchBotToken(),
                 TwitchUser = GetTwitchUser(),
                 TwitchUserColor = GetTwitchUserColor(),
+                BotTokenExpiryDate = GetBotAccessTokenExpiryDate(),
+                AccessTokenExpiryDate = GetBotAccessTokenExpiryDate()
             };
 
             BotConfig botConfig = new()

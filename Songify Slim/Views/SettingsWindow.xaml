@@ -714,17 +714,37 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
                                         <Label
                                             x:Name="LblTwitchName"
+                                            Grid.Row="0"
                                             Grid.Column="0"
+                                            Margin="0"
+                                            Padding="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             d:Content="{DynamicResource sw_Integration_Twitch}"
                                             Content="{DynamicResource sw_Integration_Twitch}"
                                             Tag="main" />
+                                        <Label
+                                            x:Name="LblMainExpiry"
+                                            Grid.Row="1"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="3"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Content="Expires on"
+                                             />
                                         <Button
                                             x:Name="BtnTwitchLogout"
+                                            Grid.Row="0"
                                             Grid.Column="1"
                                             Margin="16,0,0,0"
                                             VerticalAlignment="Center"
@@ -747,6 +767,31 @@
                                                 Width="15"
                                                 Height="15"
                                                 Kind="SignOut" />
+                                        </Button>
+                                        <Button
+                                            x:Name="BtnTwitchRefreshMain"
+                                            Grid.Row="0"
+                                            Grid.Column="2"
+                                            Margin="6,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Click="BtnLogInTwitch_Click"
+                                            Tag="Main">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Collapsed">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Visible">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                            <iconPacks:ForkAwesome
+                                                Width="15"
+                                                Height="15"
+                                                Kind="Refresh" />
                                         </Button>
                                     </Grid>
                                 </StackPanel>
@@ -778,16 +823,34 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
                                         <Label
                                             x:Name="LblTwitchBotName"
                                             Grid.Column="0"
+                                            Margin="0"
+                                            Padding="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Content="Twitch Bot"
                                             Tag="bot" />
+                                        <Label
+                                            x:Name="LblBotExpiry"
+                                            Grid.Row="1"
+                                            Grid.ColumnSpan="3"
+                                            Grid.Column="0"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Content="Expires on" />
                                         <Button
                                             x:Name="BtnTwitchBotLogout"
+                                            Grid.Row="0"
                                             Grid.Column="1"
                                             Margin="16,0,0,0"
                                             VerticalAlignment="Center"
@@ -811,6 +874,31 @@
                                                 </Style>
                                             </Button.Style>
                                         </Button>
+                                        <Button
+                                            x:Name="BtnTwitchRefreshBot"
+                                            Grid.Row="0"
+                                            Grid.Column="2"
+                                            Margin="6,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Click="BtnTwitchLogout_OnClick"
+                                            Tag="Main">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Collapsed">
+                                                            <Setter Property="Visibility" Value="Visible" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding ElementName=BtnLogInTwitch, Path=Visibility}" Value="Visible">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                            <iconPacks:ForkAwesome
+                                                Width="15"
+                                                Height="15"
+                                                Kind="Refresh" />
+                                        </Button>
                                     </Grid>
                                 </StackPanel>
                             </DockPanel>
@@ -823,7 +911,8 @@
                                     Width="160"
                                     Margin="6,0,0,0"
                                     VerticalAlignment="Bottom"
-                                    Click="BtnLogInTwitch_Click">
+                                    Click="BtnLogInTwitch_Click"
+                                    Visibility="Visible">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
                                             <iconPacks:ForkAwesome Kind="Twitch" />
