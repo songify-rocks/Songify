@@ -49,6 +49,7 @@ namespace Songify_Slim.Util.General
             File.AppendAllText(fileName, @"Songify Log File" + Environment.NewLine);
             File.AppendAllText(fileName, @"====================" + Environment.NewLine);
             File.AppendAllText(fileName, @"Version: " + GlobalObjects.AppVersion + Environment.NewLine);
+            if(App.IsBeta) File.AppendAllText(fileName, @"!! BETA !!" + Environment.NewLine);
             File.AppendAllText(fileName, @"Date: " + date + Environment.NewLine);
             File.AppendAllText(fileName, @"====================" + Environment.NewLine);
             return fileName;
