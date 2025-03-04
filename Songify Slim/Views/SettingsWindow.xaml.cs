@@ -42,6 +42,8 @@ using Songify_Slim.Util.Spotify;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using static Songify_Slim.App;
+using TwitchLib.Api;
+using System.Drawing;
 
 namespace Songify_Slim.Views
 {
@@ -75,6 +77,9 @@ namespace Songify_Slim.Views
 
         public async Task SetControls()
         {
+            GridLoading.Visibility = Visibility.Visible;
+            TabCtrl.IsEnabled = false;
+
             // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
             CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
             CbxUserLevels.Items.Clear();
@@ -252,6 +257,8 @@ namespace Songify_Slim.Views
             CbAccountSelection.Items.Clear();
             if (Settings.TwitchUser != null)
             {
+                BtnTwitchLogout.Visibility = Visibility.Visible;
+                BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
                 UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0,
                     BtnLogInTwitchAlt);
                 //TxtbxTwChannel.Text = Settings.TwitchUser.Login;
@@ -260,15 +267,61 @@ namespace Songify_Slim.Views
                     Content = new UcAccountItem(Settings.TwitchUser.Login, Settings.TwitchAccessToken)
                 });
             }
+            else
+            {
+                BtnLogInTwitch.Visibility = Visibility.Visible;
+                BtnLogInTwitchAlt.Visibility = Visibility.Visible;
+                LblMainExpiry.Visibility = Visibility.Collapsed;
+                Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
+                Bitmap bitmap = icon.ToBitmap();
+                MemoryStream ms = new MemoryStream();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ms.Position = 0;
+                BitmapImage bitmapImage = new();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = ms;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                ImgTwitchProfile.ImageSource = bitmapImage;
+
+                BtnTwitchLogout.Visibility = Visibility.Collapsed;
+                BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
+
+                LblTwitchName.Content = "Main Account:";
+            }
 
             if (Settings.TwitchBotUser != null)
             {
+                BtnTwitchBotLogout.Visibility = Visibility.Visible;
+                BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
                 UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1,
                     BtnLogInTwitchAltBot);
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UcAccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
                 });
+            }
+            else
+            {
+                BtnLogInTwitchBot.Visibility = Visibility.Visible;
+                BtnLogInTwitchAltBot.Visibility = Visibility.Visible;
+                LblBotExpiry.Visibility = Visibility.Collapsed;
+                Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
+                Bitmap bitmap = icon.ToBitmap();
+                MemoryStream ms = new MemoryStream();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                ms.Position = 0;
+                BitmapImage bitmapImage = new();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = ms;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                ImgTwitchBotProfile.ImageSource = bitmapImage;
+
+                BtnTwitchBotLogout.Visibility = Visibility.Collapsed;
+                BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
+
+                LblTwitchBotName.Content = "Bot Account:";
             }
 
             if (string.IsNullOrEmpty(Settings.TwAcc))
@@ -278,7 +331,8 @@ namespace Songify_Slim.Views
                     ((UcAccountItem)item.Content).Username != null &&
                     ((UcAccountItem)item.Content).Username == Settings.TwAcc);
             CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
-            await LoadRewards();
+            if (TwitchHandler.TwitchApi != null)
+                await LoadRewards();
 
 
             if (Settings.RefundConditons == null) return;
@@ -293,6 +347,10 @@ namespace Songify_Slim.Views
                     }
                 }
             }
+
+            GridLoading.Visibility = Visibility.Collapsed;
+            TabCtrl.IsEnabled = true;
+
         }
 
         private void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn,
@@ -976,6 +1034,8 @@ namespace Songify_Slim.Views
 
         public async Task LoadRewards()
         {
+            if (TwitchHandler.TwitchApi == null)
+                return;
             if (TwitchHandler.TokenCheck == null)
                 return;
 
@@ -1105,13 +1165,14 @@ namespace Songify_Slim.Views
             Settings.TwSrUnlimitedSr = ToggleSwitchUnlimitedSr.IsOn;
         }
 
-        private void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
+        private async void BtnTwitchLogout_OnClick(object sender, RoutedEventArgs e)
         {
             switch (((Button)sender).Tag.ToString().ToLower())
             {
                 case "main":
                     Settings.TwitchAccessToken = "";
                     Settings.TwitchUser = null;
+                    TwitchHandler.TwitchApi = null;
                     break;
 
                 case "bot":
@@ -1120,8 +1181,7 @@ namespace Songify_Slim.Views
                     break;
             }
 
-            Process.Start(Application.ResourceAssembly.Location);
-            Application.Current.Shutdown();
+            await SetControls();
         }
 
         private void NudServerPort_MinimumReached(object sender, RoutedEventArgs e)

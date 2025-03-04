@@ -54,7 +54,28 @@
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <TabControl Margin="10,0,10,0" TabStripPlacement="Left">
+        <Grid
+            x:Name="GridLoading"
+            Background="#CC000000"
+            Visibility="Collapsed"
+            ZIndex="10001">
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Orientation="Vertical">
+                <TextBlock
+                    Margin="0,0,0,6"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="White"
+                    Text="Getting things ready" />
+                <controls:ProgressRing Foreground="{DynamicResource MahApps.Brushes.Accent}" />
+            </StackPanel>
+        </Grid>
+        <TabControl
+            x:Name="TabCtrl"
+            Margin="10,0,10,0"
+            TabStripPlacement="Left">
             <TabItem d:Header="{x:Static local:Resources.sw_tc_System}" Header="{DynamicResource sw_tc_System}">
                 <Border
                     Margin="10,0,0,0"
@@ -741,7 +762,7 @@
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             Content="Expires on"
-                                             />
+                                            FontSize="10" />
                                         <Button
                                             x:Name="BtnTwitchLogout"
                                             Grid.Row="0"
@@ -841,13 +862,15 @@
                                         <Label
                                             x:Name="LblBotExpiry"
                                             Grid.Row="1"
-                                            Grid.ColumnSpan="3"
                                             Grid.Column="0"
+                                            Grid.ColumnSpan="3"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            Content="Expires on" />
+                                            Content="Expires on"
+                                            FontSize="10" />
+
                                         <Button
                                             x:Name="BtnTwitchBotLogout"
                                             Grid.Row="0"

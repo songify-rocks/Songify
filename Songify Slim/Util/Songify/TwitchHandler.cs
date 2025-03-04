@@ -54,6 +54,7 @@ using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
 using System.Windows.Interop;
 using Windows.Media.Playback;
+using Markdig.Syntax;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Util.Spotify;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
@@ -65,6 +66,8 @@ using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using TwitchLib.Api.Core.Models.Undocumented.Chatters;
 using TwitchLib.Api.V5.Models.Clips;
+using Newtonsoft.Json.Linq;
+using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
 
 
 namespace Songify_Slim.Util.Songify
@@ -84,6 +87,7 @@ namespace Songify_Slim.Util.Songify
         private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds };
         private static readonly Timer SkipCooldownTimer = new() { Interval = TimeSpan.FromSeconds(5).TotalMilliseconds };
         private static readonly List<string> SkipVotes = [];
+        private static bool toastSent = false;
 
         private static readonly DispatcherTimer StreamUpTimer = new()
         {
@@ -198,7 +202,7 @@ namespace Songify_Slim.Util.Songify
                                     ? Settings.Settings.TwitchUser.Login
                                     : Settings.Settings.TwitchBotUser.Login;
 
-                                
+
                                 return Task.CompletedTask;
                             });
                     }
@@ -211,8 +215,9 @@ namespace Songify_Slim.Util.Songify
                             foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
                             {
                                 Client.LeaveChannel(clientJoinedChannel);
+                                Debug.WriteLine($"Leaving Channel: {clientJoinedChannel.Channel}");
                             }
-                            Client.Disconnect();
+
                             Client = null;
                         }
                         catch (Exception e)
@@ -226,7 +231,12 @@ namespace Songify_Slim.Util.Songify
                     {
                         try
                         {
-                            _mainClient.Disconnect();
+                            foreach (JoinedChannel mainClientJoinedChannel in _mainClient.JoinedChannels)
+                            {
+                                _mainClient.LeaveChannel(mainClientJoinedChannel);
+
+                            }
+
                             _mainClient = null;
                         }
                         catch (Exception e)
@@ -235,8 +245,9 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
+
                     await BotConnect();
-                    await MainConnect();
+
 
                     dynamic telemetryPayload = new
                     {
@@ -251,7 +262,11 @@ namespace Songify_Slim.Util.Songify
                         playertype = GlobalObjects.GetReadablePlayer(),
                     };
                     string json = Json.Serialize(telemetryPayload);
+                    Debug.WriteLine($"Sending Telemetry");
+
                     await WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, json);
+                    Debug.WriteLine($"Done");
+
                 });
             };
 
@@ -286,7 +301,7 @@ namespace Songify_Slim.Util.Songify
                                 //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
                                 ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
                     });
-                    return ;
+                    return;
 
                 }
 
@@ -519,7 +534,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static  void HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static void HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             try
             {
@@ -661,7 +676,7 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static  void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
             try
@@ -694,7 +709,7 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static  void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
             try
@@ -1005,6 +1020,7 @@ namespace Songify_Slim.Util.Songify
             string trackId =
                 await GetTrackIdFromInput(Regex.Replace(message.Message, $"!{cmd.Trigger}", "", RegexOptions.IgnoreCase)
                     .Trim());
+
             AddSong(trackId, message, SongRequestSource.Command, cmdParams.ExistingUser);
 
             // start the command cooldown
@@ -1032,6 +1048,9 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 if (TokenCheck == null) return false;
+                if (TwitchApi == null) return false;
+                if (Settings.Settings.TwitchUser == null) return false;
+                if (string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken)) return false;
                 GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                     [Settings.Settings.TwitchUser.Id], null, Settings.Settings.TwitchAccessToken);
                 if (x.Streams.Length != 0)
@@ -1111,6 +1130,30 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     DateTime tokenExpiryDate = DateTime.Now.AddSeconds(TokenCheck.ExpiresIn);
+
+                    List<string> missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
+
+                    if (!missingItems.Any())
+                    {
+                        Debug.WriteLine("All elements are present in the list.");
+                    }
+                    else
+                    {
+                        MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
+                            "Missing Twitch Scopes",
+                            $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
+                            MessageDialogStyle.AffirmativeAndNegative,
+                            new MetroDialogSettings
+                            { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                        if (msgResult == MessageDialogResult.Affirmative)
+                        {
+                            Settings.Settings.TwitchUser = null;
+                            Settings.Settings.TwitchAccessToken = "";
+                            TwitchApi = null;
+                            ApiConnect(TwitchAccount.Main);
+                            return;
+                        }
+                    }
 
                     Settings.Settings.TwitchAccessTokenExpiryDate = tokenExpiryDate;
 
@@ -1411,14 +1454,30 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            bool unlimitedSr = source switch
+            bool unlimitedSr = false;
+
+            if (user.UserLevels is { Count: > 0 })
             {
-                SongRequestSource.Reward => Settings.Settings.UnlimitedSrUserlevelsReward.Intersect(user.UserLevels)
-                    .Any(),
-                SongRequestSource.Command => Settings.Settings.UnlimitedSrUserlevelsCommand.Intersect(user.UserLevels)
-                    .Any(),
-                _ => throw new ArgumentOutOfRangeException(nameof(source), source, null)
-            };
+                switch (source)
+                {
+                    case SongRequestSource.Reward:
+                        if (Settings.Settings.UnlimitedSrUserlevelsReward != null &&
+                            Settings.Settings.UnlimitedSrUserlevelsReward.Count > 0)
+                        {
+                            unlimitedSr = Settings.Settings.UnlimitedSrUserlevelsReward.Intersect(user.UserLevels).Any();
+                        }
+                        break;
+                    case SongRequestSource.Command:
+                        if (Settings.Settings.UnlimitedSrUserlevelsCommand != null &&
+                            Settings.Settings.UnlimitedSrUserlevelsCommand.Count > 0)
+                        {
+                            unlimitedSr = Settings.Settings.UnlimitedSrUserlevelsCommand.Intersect(user.UserLevels).Any();
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(source), source, null);
+                }
+            }
 
             if (!unlimitedSr)
                 if (IsUserAtMaxRequests(e, user, out response))
@@ -1991,669 +2050,669 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("Command not found or not enabled.");
             }
 
-            return;
-
-            if (Settings.Settings.Player == 6 &&
-                e.ChatMessage.Message.StartsWith($"!ytsr ", StringComparison.CurrentCultureIgnoreCase))
-            {
-                // TODO: UNFINISHED
-                if (Settings.Settings.BotOnlyWorkWhenLive)
-                    try
-                    {
-                        if (!CheckLiveStatus())
-                        {
-                            if (Settings.Settings.ChatLiveStatus)
-                                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                            return;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                    }
-
-                // Do nothing if the user is blocked, don't even reply
-                if (IsUserBlocked(e.ChatMessage.DisplayName))
-                {
-                    return;
-                }
-
-                TimeSpan cooldown =
-                    TimeSpan.FromSeconds(Settings.Settings.TwSrPerUserCooldown); // Set your cooldown time here
-                if (!existingUser.IsCooldownExpired(cooldown))
-                {
-                    // Inform user about the cooldown
-                    if (existingUser.LastCommandTime == null) return;
-                    TimeSpan remaining = cooldown - (DateTime.Now - existingUser.LastCommandTime.Value);
-                    Logger.LogStr($"{existingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
-                    // if remaining is more than 1 minute format to mm:ss, else to ss
-                    string time = remaining.Minutes >= 1
-                        ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
-                        : $"{remaining.Seconds} seconds";
-
-                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                    {
-                        User = e.ChatMessage.DisplayName,
-                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
-                        ErrorMsg = null,
-                        MaxLength = $"{Settings.Settings.MaxSongLength}",
-                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
-                        Req = GlobalObjects.Requester,
-                        Cd = time
-                    }, Settings.Settings.BotRespUserCooldown);
-                    SendChatMessage(e.ChatMessage.Channel, msg);
-                    return;
-                }
-
-                // if onCooldown skips
-                if (_onCooldown)
-                {
-                    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e.ChatMessage));
-                    return;
-                }
-
-                string videoId = ExtractYouTubeVideoIdFromText(e.ChatMessage.Message);
-
-                string title =
-                    await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                string videoThumbailUrl = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
-
-                Debug.WriteLine($"{title} | thumb: {videoThumbailUrl}");
-                SendChatMessage(e.ChatMessage.Channel, title);
-
-                //TODO: Add song to the queue and start playing
-
-                RequestObject o = new()
-                {
-                    Uuid = Settings.Settings.Uuid,
-                    Trackid = videoId,
-                    PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube),
-                    Artist = "",
-                    Title = title,
-                    Length = "",
-                    Requester = e.ChatMessage.DisplayName,
-                    Played = 0,
-                    Albumcover = videoThumbailUrl,
-                };
-
-                await UploadToQueue(o);
-            }
-
-            // Skip Command for mods (!skip)
-            if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower() ==
-                $"!{Settings.Settings.BotCmdSkipTrigger.ToLower()}" &&
-                Settings.Settings.BotCmdSkip)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                if (_skipCooldown)
-                    return;
-
-                int count = 0;
-                string name = "";
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    count = GlobalObjects.ReqList.Count;
-                    if (count > 0)
-                    {
-                        RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
-                        if (firstRequest != null && firstRequest.Trackid == GlobalObjects.CurrentSong.SongId)
-                        {
-                            name = firstRequest.Requester;
-                            GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)
-                                ?.UpdateCommandTime(true);
-                        }
-                    }
-                });
-
-                if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
-                    (count > 0 && name == e.ChatMessage.DisplayName))
-                {
-                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                    {
-                        User = e.ChatMessage.DisplayName,
-                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
-                        ErrorMsg = null,
-                        MaxLength = $"{Settings.Settings.MaxSongLength}",
-                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
-                        Req = GlobalObjects.Requester,
-                        Cd = Settings.Settings.TwSrCooldown.ToString()
-                    }, Settings.Settings.BotRespModSkip);
-
-                    await SpotifyApiHandler.SkipSong();
-
-                    {
-                        if (msg.StartsWith("[announce "))
-                        {
-                            await AnnounceInChat(msg);
-                        }
-                        else
-                        {
-                            SendChatMessage(e.ChatMessage.Channel, msg);
-                        }
-
-                        _skipCooldown = true;
-                        SkipCooldownTimer.Start();
-                    }
-                }
-            }
-
-            // Voteskip command (!voteskip)
-            else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdVoteskipTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdSkipVote)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                if (_skipCooldown)
-                    return;
-                //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
-                if (SkipVotes.Any(o => o == e.ChatMessage.DisplayName)) return;
-                SkipVotes.Add(e.ChatMessage.DisplayName);
-
-                string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                {
-                    User = e.ChatMessage.DisplayName,
-                    MaxReq = $"{Settings.Settings.TwSrMaxReq}",
-                    ErrorMsg = null,
-                    MaxLength = $"{Settings.Settings.MaxSongLength}",
-                    Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
-                    Req = GlobalObjects.Requester,
-                    Cd = Settings.Settings.TwSrCooldown.ToString()
-                }, Settings.Settings.BotRespVoteSkip);
-
-                if (msg.StartsWith("[announce "))
-                {
-                    await AnnounceInChat(msg);
-                }
-                else
-                {
-                    SendChatMessage(e.ChatMessage.Channel, msg);
-                }
-
-                if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
-                {
-                    await SpotifyApiHandler.SkipSong();
-
-                    SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
-
-                    SkipVotes.Clear();
-                    _skipCooldown = true;
-                    SkipCooldownTimer.Start();
-                }
-            }
-
-            // Song command (!song)
-            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSongTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdSong)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-
-                    //string msg = GetCurrentSong();
-                    //string artist = GlobalObjects.CurrentSong.Artists;
-                    //string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
-                    //    ? GlobalObjects.CurrentSong.Title
-                    //    : "";
-                    //msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
-                    //msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
-
-                    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                    {
-                        User = e.ChatMessage.DisplayName,
-                        SingleArtist = GlobalObjects.CurrentSong.FullArtists != null
-                            ? GlobalObjects.CurrentSong.FullArtists.First().Name
-                            : GlobalObjects.CurrentSong.Artists,
-                        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
-                        ErrorMsg = null,
-                        MaxLength = $"{Settings.Settings.MaxSongLength}",
-                        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
-                        Req = GlobalObjects.Requester,
-                        Cd = Settings.Settings.TwSrCooldown.ToString()
-                    }, Settings.Settings.BotRespSong);
-
-                    if (msg.Contains("{single_artist}"))
-                        msg = msg.Replace("{single_artist}",
-                            GlobalObjects.CurrentSong.FullArtists != null
-                                ? GlobalObjects.CurrentSong.FullArtists.First().Name
-                                : GlobalObjects.CurrentSong.Artists);
-
-                    if (msg.StartsWith("[announce "))
-                    {
-                        await AnnounceInChat(msg);
-                    }
-                    else
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, msg);
-                    }
-                }
-                catch
-                {
-                    Logger.LogStr("Error sending song info.");
-                }
-            }
-
-            // Pos command (!pos)
-            else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdPosTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdPos)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
-                if (queueItems.Count != 0)
-                {
-                    if (Settings.Settings.BotRespPos == null)
-                        return;
-                    string response = Settings.Settings.BotRespPos;
-                    if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
-                    //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                    string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
-                    string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
-                    string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
-                    string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
-
-                    string tmp = "";
-                    for (int i = 0; i < queueItems.Count; i++)
-                    {
-                        QueueItem item = queueItems[i];
-                        tmp += between.Replace("{pos}", "#" + item.Position).Replace("{song}", item.Title);
-                        //If the song is the last one, don't add a newline
-                        if (i != queueItems.Count - 1)
-                            tmp += " | ";
-                    }
-
-                    between = tmp;
-                    // Combine the 3 parts into one string
-                    string output = before + between + after;
-                    if (response.StartsWith("[announce "))
-                    {
-                        await AnnounceInChat(response);
-                    }
-                    else
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, output);
-                    }
-                }
-                else
-                {
-                    SendChatMessage(e.ChatMessage.Channel,
-                        $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
-                }
-            }
-
-            // Next command (!next)
-            else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdNextTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdNext)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                string response = Settings.Settings.BotRespNext;
-                response = response.Replace("{user}", e.ChatMessage.DisplayName);
-
-                //if (GlobalObjects.ReqList.Count == 0)
-                //    return;
-                response = response.Replace("{song}", GetNextSong());
-                if (response.StartsWith("[announce "))
-                {
-                    await AnnounceInChat(response);
-                }
-                else
-                {
-                    SendChatMessage(e.ChatMessage.Channel, response);
-                }
-            }
-
-            // Remove command (!remove)
-            else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger.ToLower()}",
-                         StringComparison.CurrentCultureIgnoreCase) &&
-                     Settings.Settings.BotCmdRemove)
-            {
-                try
-                {
-                    if (!CheckLiveStatus())
-                    {
-                        if (Settings.Settings.ChatLiveStatus)
-                            SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
-                        return;
-                    }
-                }
-                catch (Exception)
-                {
-                    Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-                }
-
-                bool modAction = false;
-                RequestObject reqObj;
-
-                string[] words = e.ChatMessage.Message.Split(' ');
-                if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster)
-                {
-                    if (words.Length > 1)
-                    {
-                        string arg = words[1];
-
-                        // Check if the argument is an ID (number)
-                        if (int.TryParse(arg, out int queueId))
-                        {
-                            modAction = true;
-                            reqObj = GlobalObjects.ReqList.FirstOrDefault(o => o.Queueid == queueId);
-                        }
-                        else
-                        {
-                            // Remove '@' if present
-                            if (arg.StartsWith("@"))
-                            {
-                                arg = arg.Substring(1);
-                            }
-
-                            // Treat the argument as a username
-                            string usernameToRemove = arg;
-
-                            modAction = true;
-                            reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                                o.Requester.Equals(usernameToRemove, StringComparison.InvariantCultureIgnoreCase));
-                        }
-                    }
-                    else
-                    {
-                        // No argument provided, remove the moderator's own last request
-                        reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                            o.Requester.Equals(e.ChatMessage.DisplayName,
-                                StringComparison.InvariantCultureIgnoreCase));
-                    }
-                }
-                else
-                {
-                    // Remove the user's own last request
-                    reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
-                        o.Requester.Equals(e.ChatMessage.DisplayName, StringComparison.InvariantCultureIgnoreCase));
-                }
-
-                if (reqObj == null)
-                    return;
-
-                string tmp = $"{reqObj.Artist} - {reqObj.Title}";
-                GlobalObjects.SkipList.Add(reqObj);
-
-                dynamic payload = new
-                {
-                    uuid = Settings.Settings.Uuid,
-                    key = Settings.Settings.AccessKey,
-                    queueid = reqObj.Queueid,
-                };
-
-                await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
-
-                await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    GlobalObjects.ReqList.Remove(reqObj);
-                }));
-
-                switch (modAction)
-                {
-                    case true:
-                        GlobalObjects.TwitchUsers.FirstOrDefault(o =>
-                                o.DisplayName.Equals(reqObj.Requester, StringComparison.CurrentCultureIgnoreCase))
-                            ?.UpdateCommandTime(true);
-                        break;
-
-                    case false:
-                        GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId)
-                            ?.UpdateCommandTime(true);
-                        break;
-                }
-
-                GlobalObjects.QueueUpdateQueueWindow();
-
-                string response = modAction
-                    ? $"The request {tmp} requested by @{reqObj.Requester} has been removed."
-                    : Settings.Settings.BotRespRemove;
-
-                response = response
-                    .Replace("{song}", tmp)
-                    .Replace("{user}", e.ChatMessage.DisplayName);
-
-                if (response.StartsWith("[announce "))
-                {
-                    await AnnounceInChat(response);
-                }
-                else
-                {
-                    SendChatMessage(e.ChatMessage.Channel, response);
-                }
-            }
-
-            // Songlike command (!songlike)
-            else if (Settings.Settings.Player == 0 &&
-                     e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
-                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
-            {
-                if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
-                {
-                    SendChatMessage(Settings.Settings.TwChannel,
-                        "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
-                    return;
-                }
-
-                try
-                {
-                    if (await AddToPlaylist(GlobalObjects.CurrentSong.SongId, true)) return;
-
-                    string response = Settings.Settings.BotRespSongLike;
-                    response = response.Replace("{song}",
-                        $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-                    if (response.StartsWith("[announce "))
-                    {
-                        await AnnounceInChat(response);
-                    }
-                    else
-                    {
-                        SendChatMessage(e.ChatMessage.Channel, response);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    Logger.LogStr("SPOTIFY: Error while adding song to playlist");
-                    Logger.LogExc(exception);
-                }
-            }
-
-            // Vol command (!vol)
-            else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") &&
-                     Settings.Settings.BotCmdVol)
-            {
-                if (Settings.Settings.BotCmdVolIgnoreMod)
-                {
-                    await SetSpotifyVolume(e.ChatMessage);
-                }
-                else if (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator)
-                {
-                    await SetSpotifyVolume(e.ChatMessage);
-                }
-            }
-
-            // Queue command (!queue)
-            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdQueueTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdQueue)
-            {
-                string output = "";
-                int counter = 1;
-                foreach (RequestObject requestObject in GlobalObjects.QueueTracks.Take(5))
-                {
-                    output += $"#{counter} {requestObject.Artist} - {requestObject.Title}";
-                    if (requestObject.Requester != "Spotify")
-                        output += $" (@{requestObject.Requester})";
-                    output += " | ";
-                    counter++;
-                }
-
-                output = output.TrimEnd(' ', '|');
-                // if output exceeds 500 characters, split at the last "|" before 500 characters
-                SendChatMessage(e.ChatMessage.Channel, output);
-            }
-
-            // Commands command (!cmd)
-            else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdCommandsTrigger.ToLower()}" &&
-                     Settings.Settings.BotCmdCommands)
-            {
-                IEnumerable<BotCommandInfo> enabledCommands =
-                    BotConfigExtensions.GetAllBotCommands(Settings.Settings.CurrentConfig.BotConfig, true);
-
-                List<string> commands =
-                    enabledCommands.Select(cmd =>
-                        cmd.Trigger.StartsWith("!") ? cmd.Trigger : "!" + cmd.Trigger).ToList();
-                if (Settings.Settings.TwSrCommand)
-                    commands.Insert(0, $"!{Settings.Settings.BotCmdSsrTrigger}");
-
-                SendChatMessage(e.ChatMessage.Channel,
-                    $"Active Songify commands: {string.Join(", ", commands)}");
-            }
-
-            // Play command (!play)
-            else if (e.ChatMessage.Message.ToLower() == "!play" &&
-                     ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
-                      Settings.Settings.BotCmdPlayPause))
-            {
-                try
-                {
-                    await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId,
-                        "", null, "");
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            // Pause command (!pause)
-            else if (e.ChatMessage.Message.ToLower() == "!pause" &&
-                     ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
-                      Settings.Settings.BotCmdPlayPause))
-            {
-                try
-                {
-                    await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
-            // Vol coammand without arguments (!vol)
-            else if (e.ChatMessage.Message.ToLower() == "!vol" && Settings.Settings.BotCmdVol)
-            {
-                bool isBroadcasterOrModerator = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
-
-                if (Settings.Settings.BotCmdVolIgnoreMod)
-                {
-                    Client.SendMessage(e.ChatMessage.Channel,
-                        $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
-                }
-                else
-                {
-                    if (isBroadcasterOrModerator)
-                    {
-                        // Always send the message if BotCmdVol is true and BotCmdVolIgnoreMod is false
-                        Client.SendMessage(e.ChatMessage.Channel,
-                            $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
-                    }
-                }
-            }
-
-            // Bansong command (!bansong)
-            else if (e.ChatMessage.Message.ToLower() == "!bansong" &&
-                     (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator))
-            {
-                TrackInfo currentSong = GlobalObjects.CurrentSong;
-                if (currentSong == null ||
-                    Settings.Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
-                    return;
-
-                List<TrackItem> blacklist = Settings.Settings.SongBlacklist;
-                blacklist.Add(new TrackItem
-                {
-                    Artists = currentSong.Artists,
-                    TrackName = currentSong.Title,
-                    TrackId = currentSong.SongId,
-                    TrackUri = $"spotify:track:{currentSong.SongId}",
-                    ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
-                });
-                Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
-
-                string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                {
-                    User = e.ChatMessage.DisplayName,
-                    MaxReq = $"{Settings.Settings.TwSrMaxReq}",
-                    ErrorMsg = null,
-                    MaxLength = $"{Settings.Settings.MaxSongLength}",
-                    Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
-                    Req = GlobalObjects.Requester,
-                    Cd = Settings.Settings.TwSrCooldown.ToString()
-                }, "The song {song} has been added to the blocklist.");
-
-                SendChatMessage(e.ChatMessage.Channel, msg);
-
-                await SpotifyApiHandler.SkipSong();
-            }
+            //return;
+
+            //if (Settings.Settings.Player == 6 &&
+            //    e.ChatMessage.Message.StartsWith($"!ytsr ", StringComparison.CurrentCultureIgnoreCase))
+            //{
+            //    // TODO: UNFINISHED
+            //    if (Settings.Settings.BotOnlyWorkWhenLive)
+            //        try
+            //        {
+            //            if (!CheckLiveStatus())
+            //            {
+            //                if (Settings.Settings.ChatLiveStatus)
+            //                    SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                return;
+            //            }
+            //        }
+            //        catch (Exception)
+            //        {
+            //            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //        }
+
+            //    // Do nothing if the user is blocked, don't even reply
+            //    if (IsUserBlocked(e.ChatMessage.DisplayName))
+            //    {
+            //        return;
+            //    }
+
+            //    TimeSpan cooldown =
+            //        TimeSpan.FromSeconds(Settings.Settings.TwSrPerUserCooldown); // Set your cooldown time here
+            //    if (!existingUser.IsCooldownExpired(cooldown))
+            //    {
+            //        // Inform user about the cooldown
+            //        if (existingUser.LastCommandTime == null) return;
+            //        TimeSpan remaining = cooldown - (DateTime.Now - existingUser.LastCommandTime.Value);
+            //        Logger.LogStr($"{existingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
+            //        // if remaining is more than 1 minute format to mm:ss, else to ss
+            //        string time = remaining.Minutes >= 1
+            //            ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
+            //            : $"{remaining.Seconds} seconds";
+
+            //        string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            //        {
+            //            User = e.ChatMessage.DisplayName,
+            //            MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+            //            ErrorMsg = null,
+            //            MaxLength = $"{Settings.Settings.MaxSongLength}",
+            //            Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+            //            Req = GlobalObjects.Requester,
+            //            Cd = time
+            //        }, Settings.Settings.BotRespUserCooldown);
+            //        SendChatMessage(e.ChatMessage.Channel, msg);
+            //        return;
+            //    }
+
+            //    // if onCooldown skips
+            //    if (_onCooldown)
+            //    {
+            //        Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e.ChatMessage));
+            //        return;
+            //    }
+
+            //    string videoId = ExtractYouTubeVideoIdFromText(e.ChatMessage.Message);
+
+            //    string title =
+            //        await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+            //    string videoThumbailUrl = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+            //    Debug.WriteLine($"{title} | thumb: {videoThumbailUrl}");
+            //    SendChatMessage(e.ChatMessage.Channel, title);
+
+            //    //TODO: Add song to the queue and start playing
+
+            //    RequestObject o = new()
+            //    {
+            //        Uuid = Settings.Settings.Uuid,
+            //        Trackid = videoId,
+            //        PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube),
+            //        Artist = "",
+            //        Title = title,
+            //        Length = "",
+            //        Requester = e.ChatMessage.DisplayName,
+            //        Played = 0,
+            //        Albumcover = videoThumbailUrl,
+            //    };
+
+            //    await UploadToQueue(o);
+            //}
+
+            //// Skip Command for mods (!skip)
+            //if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower() ==
+            //    $"!{Settings.Settings.BotCmdSkipTrigger.ToLower()}" &&
+            //    Settings.Settings.BotCmdSkip)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //    }
+
+            //    if (_skipCooldown)
+            //        return;
+
+            //    int count = 0;
+            //    string name = "";
+
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        count = GlobalObjects.ReqList.Count;
+            //        if (count > 0)
+            //        {
+            //            RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
+            //            if (firstRequest != null && firstRequest.Trackid == GlobalObjects.CurrentSong.SongId)
+            //            {
+            //                name = firstRequest.Requester;
+            //                GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)
+            //                    ?.UpdateCommandTime(true);
+            //            }
+            //        }
+            //    });
+
+            //    if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster ||
+            //        (count > 0 && name == e.ChatMessage.DisplayName))
+            //    {
+            //        string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            //        {
+            //            User = e.ChatMessage.DisplayName,
+            //            MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+            //            ErrorMsg = null,
+            //            MaxLength = $"{Settings.Settings.MaxSongLength}",
+            //            Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+            //            Req = GlobalObjects.Requester,
+            //            Cd = Settings.Settings.TwSrCooldown.ToString()
+            //        }, Settings.Settings.BotRespModSkip);
+
+            //        await SpotifyApiHandler.SkipSong();
+
+            //        {
+            //            if (msg.StartsWith("[announce "))
+            //            {
+            //                await AnnounceInChat(msg);
+            //            }
+            //            else
+            //            {
+            //                SendChatMessage(e.ChatMessage.Channel, msg);
+            //            }
+
+            //            _skipCooldown = true;
+            //            SkipCooldownTimer.Start();
+            //        }
+            //    }
+            //}
+
+            //// Voteskip command (!voteskip)
+            //else if (Settings.Settings.Player == 0 &&
+            //         e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdVoteskipTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdSkipVote)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //    }
+
+            //    if (_skipCooldown)
+            //        return;
+            //    //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
+            //    if (SkipVotes.Any(o => o == e.ChatMessage.DisplayName)) return;
+            //    SkipVotes.Add(e.ChatMessage.DisplayName);
+
+            //    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            //    {
+            //        User = e.ChatMessage.DisplayName,
+            //        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+            //        ErrorMsg = null,
+            //        MaxLength = $"{Settings.Settings.MaxSongLength}",
+            //        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+            //        Req = GlobalObjects.Requester,
+            //        Cd = Settings.Settings.TwSrCooldown.ToString()
+            //    }, Settings.Settings.BotRespVoteSkip);
+
+            //    if (msg.StartsWith("[announce "))
+            //    {
+            //        await AnnounceInChat(msg);
+            //    }
+            //    else
+            //    {
+            //        SendChatMessage(e.ChatMessage.Channel, msg);
+            //    }
+
+            //    if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
+            //    {
+            //        await SpotifyApiHandler.SkipSong();
+
+            //        SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+
+            //        SkipVotes.Clear();
+            //        _skipCooldown = true;
+            //        SkipCooldownTimer.Start();
+            //    }
+            //}
+
+            //// Song command (!song)
+            //else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSongTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdSong)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+
+            //        //string msg = GetCurrentSong();
+            //        //string artist = GlobalObjects.CurrentSong.Artists;
+            //        //string title = !string.IsNullOrEmpty(GlobalObjects.CurrentSong.Title)
+            //        //    ? GlobalObjects.CurrentSong.Title
+            //        //    : "";
+            //        //msg = msg.Replace("{user}", e.ChatMessage.DisplayName);
+            //        //msg = msg.Replace("{song}", $"{artist} {(title != "" ? " - " + title : "")}");
+
+            //        string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            //        {
+            //            User = e.ChatMessage.DisplayName,
+            //            SingleArtist = GlobalObjects.CurrentSong.FullArtists != null
+            //                ? GlobalObjects.CurrentSong.FullArtists.First().Name
+            //                : GlobalObjects.CurrentSong.Artists,
+            //            MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+            //            ErrorMsg = null,
+            //            MaxLength = $"{Settings.Settings.MaxSongLength}",
+            //            Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+            //            Req = GlobalObjects.Requester,
+            //            Cd = Settings.Settings.TwSrCooldown.ToString()
+            //        }, Settings.Settings.BotRespSong);
+
+            //        if (msg.Contains("{single_artist}"))
+            //            msg = msg.Replace("{single_artist}",
+            //                GlobalObjects.CurrentSong.FullArtists != null
+            //                    ? GlobalObjects.CurrentSong.FullArtists.First().Name
+            //                    : GlobalObjects.CurrentSong.Artists);
+
+            //        if (msg.StartsWith("[announce "))
+            //        {
+            //            await AnnounceInChat(msg);
+            //        }
+            //        else
+            //        {
+            //            SendChatMessage(e.ChatMessage.Channel, msg);
+            //        }
+            //    }
+            //    catch
+            //    {
+            //        Logger.LogStr("Error sending song info.");
+            //    }
+            //}
+
+            //// Pos command (!pos)
+            //else if (Settings.Settings.Player == 0 &&
+            //         e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdPosTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdPos)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //    }
+
+            //    List<QueueItem> queueItems = GetQueueItems(e.ChatMessage.DisplayName);
+            //    if (queueItems.Count != 0)
+            //    {
+            //        if (Settings.Settings.BotRespPos == null)
+            //            return;
+            //        string response = Settings.Settings.BotRespPos;
+            //        if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
+            //        //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
+            //        string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
+            //        string before = split[0].Replace("{user}", e.ChatMessage.DisplayName);
+            //        string between = split[1].Replace("{user}", e.ChatMessage.DisplayName);
+            //        string after = split[2].Replace("{user}", e.ChatMessage.DisplayName);
+
+            //        string tmp = "";
+            //        for (int i = 0; i < queueItems.Count; i++)
+            //        {
+            //            QueueItem item = queueItems[i];
+            //            tmp += between.Replace("{pos}", "#" + item.Position).Replace("{song}", item.Title);
+            //            //If the song is the last one, don't add a newline
+            //            if (i != queueItems.Count - 1)
+            //                tmp += " | ";
+            //        }
+
+            //        between = tmp;
+            //        // Combine the 3 parts into one string
+            //        string output = before + between + after;
+            //        if (response.StartsWith("[announce "))
+            //        {
+            //            await AnnounceInChat(response);
+            //        }
+            //        else
+            //        {
+            //            SendChatMessage(e.ChatMessage.Channel, output);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        SendChatMessage(e.ChatMessage.Channel,
+            //            $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
+            //    }
+            //}
+
+            //// Next command (!next)
+            //else if (Settings.Settings.Player == 0 &&
+            //         e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdNextTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdNext)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //    }
+
+            //    string response = Settings.Settings.BotRespNext;
+            //    response = response.Replace("{user}", e.ChatMessage.DisplayName);
+
+            //    //if (GlobalObjects.ReqList.Count == 0)
+            //    //    return;
+            //    response = response.Replace("{song}", GetNextSong());
+            //    if (response.StartsWith("[announce "))
+            //    {
+            //        await AnnounceInChat(response);
+            //    }
+            //    else
+            //    {
+            //        SendChatMessage(e.ChatMessage.Channel, response);
+            //    }
+            //}
+
+            //// Remove command (!remove)
+            //else if (Settings.Settings.Player == 0 &&
+            //         e.ChatMessage.Message.StartsWith($"!{Settings.Settings.BotCmdRemoveTrigger.ToLower()}",
+            //             StringComparison.CurrentCultureIgnoreCase) &&
+            //         Settings.Settings.BotCmdRemove)
+            //{
+            //    try
+            //    {
+            //        if (!CheckLiveStatus())
+            //        {
+            //            if (Settings.Settings.ChatLiveStatus)
+            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //            return;
+            //        }
+            //    }
+            //    catch (Exception)
+            //    {
+            //        Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            //    }
+
+            //    bool modAction = false;
+            //    RequestObject reqObj;
+
+            //    string[] words = e.ChatMessage.Message.Split(' ');
+            //    if (e.ChatMessage.IsModerator || e.ChatMessage.IsBroadcaster)
+            //    {
+            //        if (words.Length > 1)
+            //        {
+            //            string arg = words[1];
+
+            //            // Check if the argument is an ID (number)
+            //            if (int.TryParse(arg, out int queueId))
+            //            {
+            //                modAction = true;
+            //                reqObj = GlobalObjects.ReqList.FirstOrDefault(o => o.Queueid == queueId);
+            //            }
+            //            else
+            //            {
+            //                // Remove '@' if present
+            //                if (arg.StartsWith("@"))
+            //                {
+            //                    arg = arg.Substring(1);
+            //                }
+
+            //                // Treat the argument as a username
+            //                string usernameToRemove = arg;
+
+            //                modAction = true;
+            //                reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+            //                    o.Requester.Equals(usernameToRemove, StringComparison.InvariantCultureIgnoreCase));
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // No argument provided, remove the moderator's own last request
+            //            reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+            //                o.Requester.Equals(e.ChatMessage.DisplayName,
+            //                    StringComparison.InvariantCultureIgnoreCase));
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // Remove the user's own last request
+            //        reqObj = GlobalObjects.ReqList.LastOrDefault(o =>
+            //            o.Requester.Equals(e.ChatMessage.DisplayName, StringComparison.InvariantCultureIgnoreCase));
+            //    }
+
+            //    if (reqObj == null)
+            //        return;
+
+            //    string tmp = $"{reqObj.Artist} - {reqObj.Title}";
+            //    GlobalObjects.SkipList.Add(reqObj);
+
+            //    dynamic payload = new
+            //    {
+            //        uuid = Settings.Settings.Uuid,
+            //        key = Settings.Settings.AccessKey,
+            //        queueid = reqObj.Queueid,
+            //    };
+
+            //    await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+
+            //    await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            //    {
+            //        GlobalObjects.ReqList.Remove(reqObj);
+            //    }));
+
+            //    switch (modAction)
+            //    {
+            //        case true:
+            //            GlobalObjects.TwitchUsers.FirstOrDefault(o =>
+            //                    o.DisplayName.Equals(reqObj.Requester, StringComparison.CurrentCultureIgnoreCase))
+            //                ?.UpdateCommandTime(true);
+            //            break;
+
+            //        case false:
+            //            GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId)
+            //                ?.UpdateCommandTime(true);
+            //            break;
+            //    }
+
+            //    GlobalObjects.QueueUpdateQueueWindow();
+
+            //    string response = modAction
+            //        ? $"The request {tmp} requested by @{reqObj.Requester} has been removed."
+            //        : Settings.Settings.BotRespRemove;
+
+            //    response = response
+            //        .Replace("{song}", tmp)
+            //        .Replace("{user}", e.ChatMessage.DisplayName);
+
+            //    if (response.StartsWith("[announce "))
+            //    {
+            //        await AnnounceInChat(response);
+            //    }
+            //    else
+            //    {
+            //        SendChatMessage(e.ChatMessage.Channel, response);
+            //    }
+            //}
+
+            //// Songlike command (!songlike)
+            //else if (Settings.Settings.Player == 0 &&
+            //         e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdSonglikeTrigger.ToLower()}" &&
+            //         (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) && Settings.Settings.BotCmdSonglike)
+            //{
+            //    if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
+            //    {
+            //        SendChatMessage(Settings.Settings.TwChannel,
+            //            "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
+            //        return;
+            //    }
+
+            //    try
+            //    {
+            //        if (await AddToPlaylist(GlobalObjects.CurrentSong.SongId, true)) return;
+
+            //        string response = Settings.Settings.BotRespSongLike;
+            //        response = response.Replace("{song}",
+            //            $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+            //        if (response.StartsWith("[announce "))
+            //        {
+            //            await AnnounceInChat(response);
+            //        }
+            //        else
+            //        {
+            //            SendChatMessage(e.ChatMessage.Channel, response);
+            //        }
+            //    }
+            //    catch (Exception exception)
+            //    {
+            //        Logger.LogStr("SPOTIFY: Error while adding song to playlist");
+            //        Logger.LogExc(exception);
+            //    }
+            //}
+
+            //// Vol command (!vol)
+            //else if (Settings.Settings.Player == 0 && e.ChatMessage.Message.ToLower().StartsWith("!vol ") &&
+            //         Settings.Settings.BotCmdVol)
+            //{
+            //    if (Settings.Settings.BotCmdVolIgnoreMod)
+            //    {
+            //        await SetSpotifyVolume(e.ChatMessage);
+            //    }
+            //    else if (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator)
+            //    {
+            //        await SetSpotifyVolume(e.ChatMessage);
+            //    }
+            //}
+
+            //// Queue command (!queue)
+            //else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdQueueTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdQueue)
+            //{
+            //    string output = "";
+            //    int counter = 1;
+            //    foreach (RequestObject requestObject in GlobalObjects.QueueTracks.Take(5))
+            //    {
+            //        output += $"#{counter} {requestObject.Artist} - {requestObject.Title}";
+            //        if (requestObject.Requester != "Spotify")
+            //            output += $" (@{requestObject.Requester})";
+            //        output += " | ";
+            //        counter++;
+            //    }
+
+            //    output = output.TrimEnd(' ', '|');
+            //    // if output exceeds 500 characters, split at the last "|" before 500 characters
+            //    SendChatMessage(e.ChatMessage.Channel, output);
+            //}
+
+            //// Commands command (!cmd)
+            //else if (e.ChatMessage.Message.ToLower() == $"!{Settings.Settings.BotCmdCommandsTrigger.ToLower()}" &&
+            //         Settings.Settings.BotCmdCommands)
+            //{
+            //    IEnumerable<BotCommandInfo> enabledCommands =
+            //        BotConfigExtensions.GetAllBotCommands(Settings.Settings.CurrentConfig.BotConfig, true);
+
+            //    List<string> commands =
+            //        enabledCommands.Select(cmd =>
+            //            cmd.Trigger.StartsWith("!") ? cmd.Trigger : "!" + cmd.Trigger).ToList();
+            //    if (Settings.Settings.TwSrCommand)
+            //        commands.Insert(0, $"!{Settings.Settings.BotCmdSsrTrigger}");
+
+            //    SendChatMessage(e.ChatMessage.Channel,
+            //        $"Active Songify commands: {string.Join(", ", commands)}");
+            //}
+
+            //// Play command (!play)
+            //else if (e.ChatMessage.Message.ToLower() == "!play" &&
+            //         ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
+            //          Settings.Settings.BotCmdPlayPause))
+            //{
+            //    try
+            //    {
+            //        await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId,
+            //            "", null, "");
+            //    }
+            //    catch
+            //    {
+            //        // ignored
+            //    }
+            //}
+
+            //// Pause command (!pause)
+            //else if (e.ChatMessage.Message.ToLower() == "!pause" &&
+            //         ((e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator) &&
+            //          Settings.Settings.BotCmdPlayPause))
+            //{
+            //    try
+            //    {
+            //        await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+            //    }
+            //    catch
+            //    {
+            //        // ignored
+            //    }
+            //}
+
+            //// Vol coammand without arguments (!vol)
+            //else if (e.ChatMessage.Message.ToLower() == "!vol" && Settings.Settings.BotCmdVol)
+            //{
+            //    bool isBroadcasterOrModerator = e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator;
+
+            //    if (Settings.Settings.BotCmdVolIgnoreMod)
+            //    {
+            //        Client.SendMessage(e.ChatMessage.Channel,
+            //            $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+            //    }
+            //    else
+            //    {
+            //        if (isBroadcasterOrModerator)
+            //        {
+            //            // Always send the message if BotCmdVol is true and BotCmdVolIgnoreMod is false
+            //            Client.SendMessage(e.ChatMessage.Channel,
+            //                $"Spotify volume is at {(await SpotifyApiHandler.Spotify.GetPlaybackAsync()).Device.VolumePercent}%");
+            //        }
+            //    }
+            //}
+
+            //// Bansong command (!bansong)
+            //else if (e.ChatMessage.Message.ToLower() == "!bansong" &&
+            //         (e.ChatMessage.IsBroadcaster || e.ChatMessage.IsModerator))
+            //{
+            //    TrackInfo currentSong = GlobalObjects.CurrentSong;
+            //    if (currentSong == null ||
+            //        Settings.Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
+            //        return;
+
+            //    List<TrackItem> blacklist = Settings.Settings.SongBlacklist;
+            //    blacklist.Add(new TrackItem
+            //    {
+            //        Artists = currentSong.Artists,
+            //        TrackName = currentSong.Title,
+            //        TrackId = currentSong.SongId,
+            //        TrackUri = $"spotify:track:{currentSong.SongId}",
+            //        ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
+            //    });
+            //    Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+
+            //    string msg = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+            //    {
+            //        User = e.ChatMessage.DisplayName,
+            //        MaxReq = $"{Settings.Settings.TwSrMaxReq}",
+            //        ErrorMsg = null,
+            //        MaxLength = $"{Settings.Settings.MaxSongLength}",
+            //        Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+            //        Req = GlobalObjects.Requester,
+            //        Cd = Settings.Settings.TwSrCooldown.ToString()
+            //    }, "The song {song} has been added to the blocklist.");
+
+            //    SendChatMessage(e.ChatMessage.Channel, msg);
+
+            //    await SpotifyApiHandler.SkipSong();
+            //}
         }
 
         private static async Task<List<int>> GetUserLevels(ChatMessage o)
@@ -2677,11 +2736,13 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH: MISSING SCOPES, PLEASE RE-LINK TWITCH");
                 try
                 {
-                    new ToastContentBuilder()
+                    if (!toastSent)
+                        new ToastContentBuilder()
                         .AddText($"Songify")
                         .AddText($"Can't fetch Twitch Users, please re-link Twitch")
                         .AddAttributionText(DateTime.Now.ToString(CultureInfo.CurrentCulture))
                         .Show();
+                    toastSent = true;
                 }
                 catch (Exception exception)
                 {
@@ -2837,10 +2898,6 @@ namespace Songify_Slim.Util.Songify
 
         private static async void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
-            foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
-            {
-                Debug.WriteLine(clientJoinedChannel.Channel);
-            }
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
 
             try
@@ -2848,12 +2905,12 @@ namespace Songify_Slim.Util.Songify
                 // Validate TwitchApi and AccessToken
                 if (TwitchApi == null)
                 {
-                    throw new NullReferenceException("TwitchApi is not initialized.");
+                    Logger.LogStr("TWITCH: TwitchApi is not initialized.");
                 }
 
                 if (string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken))
                 {
-                    throw new NullReferenceException("TwitchAccessToken is null or empty.");
+                    Logger.LogStr("TWITCH: TwitchAccessToken is null or empty.");
                 }
 
                 // Ensure e.Channel is valid
@@ -2862,7 +2919,6 @@ namespace Songify_Slim.Util.Songify
                     throw new ArgumentException(@"Channel name is null or empty.", nameof(e.Channel));
                 }
 
-                Debug.WriteLine($"Token: {Settings.Settings.TwitchAccessToken}");
 
                 // Corrected array creation for e.Channel
                 GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(
@@ -2871,7 +2927,6 @@ namespace Songify_Slim.Util.Songify
 
                 if (channels.Users is not { Length: > 0 }) return;
 
-                Debug.WriteLine($"Joined {channels.Users[0].DisplayName} ({channels.Users[0].Id})");
                 _joinedChannelId = channels.Users[0].Id;
             }
             catch (Exception exception)
@@ -3816,6 +3871,7 @@ namespace Songify_Slim.Util.Songify
 
         public static async Task RunTwitchUserSync()
         {
+            if (TwitchApi == null) return;
             try
             {
                 // Fetch all chatters and subscribers

@@ -553,8 +553,8 @@ namespace Songify_Slim.Util.Settings
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;
-        public List<int> UnlimitedSrUserlevelsReward { get; set; }
-        public List<int> UnlimitedSrUserlevelsCommand { get; set; }
+        public List<int> UnlimitedSrUserlevelsReward { get; set; } = [];
+        public List<int> UnlimitedSrUserlevelsCommand { get; set; } = [];
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
