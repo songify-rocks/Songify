@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -82,7 +83,7 @@ namespace Songify_Slim.UserControls
         private void UpdateUi()
         {
             _isUpdating = true;
-            MenuItemColorPrimary.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
+            MenuItemColorPrimary.BorderBrush = string.IsNullOrEmpty(Settings.TwitchUserColor) ? new SolidColorBrush(Colors.Coral) : new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
             TbTrigger.Text = Command.Trigger;
             TglEnabled.IsOn = Command.IsEnabled;
             TbResponse.Text = Command.Response;

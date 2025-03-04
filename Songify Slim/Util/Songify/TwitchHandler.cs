@@ -197,6 +197,8 @@ namespace Songify_Slim.Util.Songify
                                 Settings.Settings.TwAcc = account == TwitchAccount.Main
                                     ? Settings.Settings.TwitchUser.Login
                                     : Settings.Settings.TwitchBotUser.Login;
+
+                                
                                 return Task.CompletedTask;
                             });
                     }
@@ -219,6 +221,7 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
+
                     if (_mainClient != null)
                     {
                         try
@@ -232,8 +235,8 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
-                    BotConnect();
-                    MainConnect();
+                    await BotConnect();
+                    await MainConnect();
 
                     dynamic telemetryPayload = new
                     {
@@ -256,11 +259,11 @@ namespace Songify_Slim.Util.Songify
             _currentState = ioa.RequestClientAuthorization();
         }
 
-        public static void BotConnect()
+        public static async Task BotConnect()
         {
             try
             {
-                MainConnect();
+                await MainConnect();
                 switch (Client)
                 {
                     case { IsConnected: true }:
@@ -283,7 +286,8 @@ namespace Songify_Slim.Util.Songify
                                 //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
                                 ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
                     });
-                    return;
+                    return ;
+
                 }
 
                 // creates new connection based on the credentials in settings
@@ -515,7 +519,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static  void HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             try
             {
@@ -657,7 +661,7 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static async void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static  void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
             try
@@ -690,7 +694,7 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static async void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static  void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
             try
@@ -1217,17 +1221,17 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static void MainConnect()
+        public static Task MainConnect()
         {
             switch (_mainClient)
             {
                 case { IsConnected: true }:
-                    return;
+                    return Task.CompletedTask;
 
                 case { IsConnected: false }:
                     _mainClient.Connect();
                     _mainClient.JoinChannel(Settings.Settings.TwChannel);
-                    return;
+                    return Task.CompletedTask;
 
                 default:
                     try
@@ -1246,10 +1250,12 @@ namespace Songify_Slim.Util.Songify
                                         //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
                                         ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
                             });
-                            return;
+                            return Task.CompletedTask;
+
                         }
 
-                        if (Settings.Settings.TwitchUser == null) return;
+                        if (Settings.Settings.TwitchUser == null) return Task.CompletedTask;
+
                         // creates new connection based on the credentials in settings
                         ConnectionCredentials credentials =
                             new(Settings.Settings.TwitchUser.DisplayName,
@@ -1271,6 +1277,7 @@ namespace Songify_Slim.Util.Songify
 
                     break;
             }
+            return Task.CompletedTask;
         }
 
         public static void ResetVotes()

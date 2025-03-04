@@ -998,8 +998,8 @@ namespace Songify_Slim.Views
                     {
                         foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
                         {
-                            bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
 
+                            bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
                             ListboxRewards.Items.Add(new UcTwitchReward(reward));
                         }
                     }

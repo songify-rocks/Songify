@@ -758,8 +758,8 @@ namespace Songify_Slim.Views
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect)
             {
-                TwitchHandler.MainConnect();
-                TwitchHandler.BotConnect();
+                await TwitchHandler.MainConnect();
+                await TwitchHandler.BotConnect();
             }
             if (Settings.AutoClearQueue)
             {
