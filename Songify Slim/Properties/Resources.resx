@@ -873,10 +873,6 @@
   <data name="brw_cmd_vol" xml:space="preserve">
     <value>Returns the current volume or sets it. '!vol [0-100]'</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="lang_br" xml:space="preserve">
     <value>Brazilian Portuguese</value>
     <comment>Language name for "Brazilian Portuguese"</comment>
@@ -1091,5 +1087,9 @@
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>The users userlevel (Folower, Subscriber etc)</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

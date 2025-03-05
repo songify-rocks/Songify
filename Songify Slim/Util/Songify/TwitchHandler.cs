@@ -941,16 +941,30 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleSongRequestCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
+            //PrintObjectProperties(cmdParams.ExistingUser);
+
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
             {
                 string response = Settings.Settings.BotRespUserlevelTooLowCommand;
                 response = response.Replace("{user}", message.DisplayName);
-                response = response.Replace("{userlevel}", $"{Enum.GetName(typeof(TwitchUserLevels), cmdParams.UserLevel)}");
 
-                // Send a message to the user that their user level is too low to request songs
+                List<string> allowedUserLevels = Settings.Settings.Commands
+                    .First(c => c.CommandType == CommandType.SongRequest)
+                    .AllowedUserLevels
+                    .Where(level => Enum.IsDefined(typeof(TwitchUserLevels), level)) // Ensure valid enums
+                    .Select(level => ((TwitchUserLevels)level).ToString()) // Convert to name
+                    .ToList();
+
+                // Join the list into a single string
+                string allowedUserLevelsString = string.Join(", ", allowedUserLevels);
+                
+                
+                response = response.Replace("{userlevel}", allowedUserLevelsString);
+
                 SendChatMessage(message.Channel, response);
                 return;
             }
+
 
             try
             {
@@ -1479,7 +1493,7 @@ namespace Songify_Slim.Util.Songify
                 }
             }
 
-            if (!unlimitedSr)
+            if (!unlimitedSr && !e.IsBroadcaster)
                 if (IsUserAtMaxRequests(e, user, out response))
                 {
                     SendChatMessage(e.Channel, response);
@@ -1506,7 +1520,7 @@ namespace Songify_Slim.Util.Songify
             RequestObject o = new()
             {
                 Trackid = track.Id,
-                PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Spotify),
+                PlayerType = Enums.RequestPlayerType.Spotify.ToString(),
                 Artist = artists,
                 Title = track.Name,
                 Length = length,
@@ -3521,7 +3535,7 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{user}", e.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", $"{user.UserLevels.Max()} {GetMaxRequestsForUserLevel(user.UserLevels.Max())}");
+                    response = response.Replace("{maxreq}", $"{GetMaxRequestsForUserLevel(user.UserLevels.Max())}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -3552,7 +3566,6 @@ namespace Songify_Slim.Util.Songify
 
             return parameters.Aggregate(source, (current, parameter) => current.Replace($"{{{parameter.Key}}}", parameter.Value));
         }
-
 
         private static bool MaxQueueItems(string requester, int userLevel)
         {
@@ -4045,6 +4058,24 @@ namespace Songify_Slim.Util.Songify
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        public static void PrintObjectProperties(object obj)
+        {
+            if (obj == null)
+            {
+                Logger.LogStr($"DEBUG: Object is null");
+                return;
+            }
+
+            Type type = obj.GetType();
+            Logger.LogStr($"DEBUG: Object Type: {type.Name}");
+
+            foreach (PropertyInfo prop in type.GetProperties())
+            {
+                object value = prop.GetValue(obj, null);
+                Logger.LogStr($"DEBUG: {prop.Name}: {value}");
             }
         }
     }
