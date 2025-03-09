@@ -36,7 +36,7 @@ namespace Songify_Slim.Util.Songify
     {
         private static readonly string SongPath = GlobalObjects.RootDirectory + "/Songify.txt";
         private static readonly string CoverPath = GlobalObjects.RootDirectory + "/cover.png";
-        private static readonly string CavnasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
+        private static readonly string CanvasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
         private static int _id;
         private readonly List<string> _browsers = ["chrome", "opera", "msedge"];
 
@@ -724,7 +724,10 @@ namespace Songify_Slim.Util.Songify
                         if (!File.Exists(SongPath)) File.Create(SongPath).Close();
                         IoManager.WriteOutput(SongPath, Settings.Settings.CustomPauseText);
                         if (!Settings.Settings.KeepAlbumCover)
+                        {
                             if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IoManager.DownloadCover(null, CoverPath);
+                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText) IoManager.DownloadCanvas(null, CanvasPath);
+                        }
                         if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
 
                         if (Settings.Settings.Upload)
@@ -734,7 +737,10 @@ namespace Songify_Slim.Util.Songify
 
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.Settings.KeepAlbumCover)
+                        {
                             if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) IoManager.DownloadCover(null, CoverPath);
+                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText) IoManager.DownloadCanvas(null, CanvasPath);
+                        }
                         IoManager.WriteOutput(SongPath, "");
                         if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
                         if (Settings.Settings.Upload)
@@ -991,7 +997,7 @@ namespace Songify_Slim.Util.Songify
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
             if (Settings.Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
-                IoManager.DownloadCanvas(_canvasResponse.Item2, CavnasPath);
+                IoManager.DownloadCanvas(_canvasResponse.Item2, CanvasPath);
                 IoManager.DownloadCover(null, CoverPath);
             }
             else if (Settings.Settings.DownloadCover)
