@@ -724,6 +724,12 @@ namespace Songify_Slim.Views
                 ((MainWindow)_mW).LblCopyright.Foreground = Brushes.Black;
             }
             ThemeHandler.ApplyTheme();
+
+            foreach (Window currentWindow in Application.Current.Windows)
+            {
+                if(currentWindow is not Window_ResponseParams @params) continue;
+                @params.LoadItems();
+            }
         }
 
         private void MenuBtnArtist_Click(object sender, RoutedEventArgs e)

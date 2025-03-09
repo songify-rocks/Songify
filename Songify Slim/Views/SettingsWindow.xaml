@@ -722,7 +722,7 @@
                                     <Border.Background>
                                         <ImageBrush
                                             x:Name="ImgTwitchProfile"
-                                            ImageSource="/songify.ico"
+                                            ImageSource="/Resources/songify.ico"
                                             Stretch="Fill" />
                                     </Border.Background>
                                 </Border>
@@ -831,7 +831,7 @@
                                     <Border.Background>
                                         <ImageBrush
                                             x:Name="ImgTwitchBotProfile"
-                                            ImageSource="/songify.ico"
+                                            ImageSource="/Resources/songify.ico"
                                             Stretch="Fill" />
                                     </Border.Background>
                                 </Border>

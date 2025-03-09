@@ -146,7 +146,7 @@ namespace Songify_Slim.Util.Settings
             {
                 CommandType = CommandType.Song,
                 Trigger = "song",
-                Response = "@{user} {title} by {single_artist} {{requested by @{req}}}",
+                Response = "@{user} {single_artist} - {title} {{requested by @{req}}}",
                 IsEnabled = false,
                 AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
                 IsAnnouncement = false,

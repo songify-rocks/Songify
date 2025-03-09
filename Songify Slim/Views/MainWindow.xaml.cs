@@ -49,6 +49,7 @@ using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
+using Windows.UI.Xaml.Controls.Maps;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -105,6 +106,7 @@ namespace Songify_Slim.Views
         }
 
         public MainWindow()
+
         {
             InitializeComponent();
             Timer.Elapsed += TelemetryTask;
@@ -554,8 +556,11 @@ namespace Songify_Slim.Views
                         }
                         catch (Exception e)
                         {
+                            Logger.LogExc(e);
+                        }
+                        finally
+                        {
                             Settings.LastShownMotdId = highSeverityPsa.Id;
-                            throw;
                         }
 
                     }
@@ -617,6 +622,8 @@ namespace Songify_Slim.Views
 
         private void InitialSetup()
         {
+            AppIcon.Source = Icon;
+
             if (Settings.Systray)
                 MinimizeToSysTray();
             // Initialize toast notification system (if needed)
@@ -715,7 +722,7 @@ namespace Songify_Slim.Views
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             LblCopyright.Content = App.IsBeta ? $"Songify v1.6.8 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-            BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
+            //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
             TxtblockLiveoutput.FontSize = Settings.Fontsize;

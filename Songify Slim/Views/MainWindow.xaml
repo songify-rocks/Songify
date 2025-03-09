@@ -169,6 +169,7 @@
     </controls:MetroWindow.RightWindowCommands>
     <controls:MetroWindow.LeftWindowCommands>
         <controls:WindowCommands ShowSeparators="False">
+            <Image x:Name="AppIcon" Margin="3" />
             <Border
                 x:Name="BetaPanel"
                 Width="60"
@@ -177,7 +178,8 @@
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Background="Black"
-                CornerRadius="10">
+                CornerRadius="10"
+                Visibility="Collapsed">
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
