@@ -125,7 +125,7 @@ namespace Songify_Slim.Util.General
                                     if (IsFileLocked(new FileInfo(canvasPath)))
                                     {
                                         Thread.Sleep(1000);
-                                        if (i != tries) continue;
+                                        if (i < tries) continue;
                                         return;
                                     }
 

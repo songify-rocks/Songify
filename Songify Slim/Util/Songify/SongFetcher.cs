@@ -726,7 +726,11 @@ namespace Songify_Slim.Util.Songify
                         if (!Settings.Settings.KeepAlbumCover)
                         {
                             if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IoManager.DownloadCover(null, CoverPath);
-                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText) IoManager.DownloadCanvas(null, CanvasPath);
+                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)
+                            {
+                                IoManager.DownloadCanvas(null, CanvasPath);
+                                GlobalObjects.Canvas = null;
+                            }
                         }
                         if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
 
@@ -739,7 +743,11 @@ namespace Songify_Slim.Util.Songify
                         if (!Settings.Settings.KeepAlbumCover)
                         {
                             if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) IoManager.DownloadCover(null, CoverPath);
-                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText) IoManager.DownloadCanvas(null, CanvasPath);
+                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)
+                            {
+                                IoManager.DownloadCanvas(null, CanvasPath);
+                                GlobalObjects.Canvas = null;
+                            }
                         }
                         IoManager.WriteOutput(SongPath, "");
                         if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
