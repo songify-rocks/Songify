@@ -798,7 +798,7 @@ namespace Songify_Slim.Util.Songify
             // this only is used for Spotify because here the artist and title are split
             // replace parameters with actual info
             currentSongOutput = currentSongOutput.Format(
-                singleArtist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
+                single_artist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",
@@ -913,6 +913,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(songInfo.Artists, songInfo.Title, "", rq?.Requester);
+            IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
 
             // if upload is enabled
             if (Settings.Settings.Upload)

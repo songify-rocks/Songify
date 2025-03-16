@@ -34,8 +34,8 @@ namespace Songify_Slim.Util.General
     public static class GlobalObjects
     {
         public const string ApiUrl = "https://api.songify.rocks/v2";
-        public static string BaseUrl = Settings.Settings.BaseUrl;
-        public static string AuthUrl = Settings.Settings.BaseUrl;
+        public static string BaseUrl = "https://songify.rocks";
+        public static string AuthUrl = "https://songify.rocks";
         public const string AltAuthUrl = "https://songify.bloemacher.com";
         public static string ApiResponse;
         public static string AppVersion;
