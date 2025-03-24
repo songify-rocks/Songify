@@ -6,7 +6,7 @@ Your number one companion for all your musical needs while streaming.
 
 [![Dotnet](https://img.shields.io/badge/platform-windows-blue?style=for-the-badge&color=%23159643)]() 
 [![Dotnet](https://img.shields.io/badge/written_in-C%23-blue?style=for-the-badge&color=%23159643)]() 
-[![Static Badge](https://img.shields.io/badge/downloads-108k-blue?style=for-the-badge&color=%23159643)]()
+[![Static Badge](https://img.shields.io/badge/downloads-150k-blue?style=for-the-badge&color=%23159643)]()
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/songify-rocks/Songify?style=for-the-badge&color=%23159643)](https://github.com/songify-rocks/Songify/stargazers) 
 [![GitHub contributors](https://img.shields.io/github/contributors/songify-rocks/Songify?style=for-the-badge&color=%23159643)](https://github.com/songify-rocks/Songify/graphs/contributors)
@@ -89,3 +89,12 @@ Ready to take your stream to the next level? Check out our guides and FAQ to get
   - [Troubleshooting](https://github.com/songify-rocks/Songify/wiki/Troubleshooting)  
 
 Don’t let your music be an afterthought—make it the centerpiece of your stream with Songify!
+
+---
+
+We're proudly using JetBrains tools provided under the [Open Source Development License](https://www.jetbrains.com/community/opensource/)  
+
+[![jetbrains-mono-white-half-size](https://github.com/user-attachments/assets/32974de8-43fd-493d-b674-7c87e0c2a0b0)](https://www.jetbrains.com/)  
+
+![Rider](https://github.com/user-attachments/assets/7da72b01-f1f9-463f-b83d-9f999bc586ed)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![DataGrip](https://github.com/user-attachments/assets/8ae6799c-e9be-42df-b389-d37d3e1e021f)
+
