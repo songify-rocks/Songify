@@ -227,21 +227,19 @@ namespace Songify_Slim.Util.Songify
             {
                 IoManager.WriteSplitOutput(trackinfo?.Artists, trackinfo?.Title, "");
             }
-
-            if (Settings.Settings.Upload)
-                try
+            try
+            {
+                WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                // if error occurs write text to the status asynchronous
+                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "), null, Enums.RequestPlayerType.Other);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // if error occurs write text to the status asynchronous
-                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
-                    }));
-                }
+                    (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
+                }));
+            }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -268,10 +266,7 @@ namespace Songify_Slim.Util.Songify
                     IoManager.WriteOutput(SongPath, Settings.Settings.CustomPauseText);
                     if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) IoManager.DownloadCover(null, CoverPath);
                     if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
-
-                    if (Settings.Settings.Upload)
-                        WebHelper.UploadSong(Settings.Settings.CustomPauseText);
-
+                    WebHelper.UploadSong(Settings.Settings.CustomPauseText);
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -287,8 +282,7 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) IoManager.DownloadCover(null, CoverPath);
                     IoManager.WriteOutput(SongPath, "");
                     if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
-                    if (Settings.Settings.Upload)
-                        WebHelper.UploadSong("");
+                    WebHelper.UploadSong("");
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -333,7 +327,7 @@ namespace Songify_Slim.Util.Songify
                 AutomationElement elm =
                     _parent ?? AutomationElement.FromHandle(procBrowser.MainWindowHandle);
 
-                string formattedString = "";
+                string formattedString;
                 if (_id == 0)
                     // find the automation element
                     try
@@ -509,20 +503,19 @@ namespace Songify_Slim.Util.Songify
                 IoManager.WriteSplitOutput(songInfo?.Artists, songInfo?.Title, "");
             }
 
-            if (Settings.Settings.Upload)
-                try
+            try
+            {
+                WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                // if error occurs write text to the status asynchronous
+                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // if error occurs write text to the status asynchronous
-                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
-                    }));
-                }
+                    (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
+                }));
+            }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -613,6 +606,12 @@ namespace Songify_Slim.Util.Songify
                     _isLocalTrack = songInfo.SongId == null;
                     _localTrackTitle = songInfo.Title;
                     _trackChanged = true;
+
+                    if (songInfo.Playlist?.Url != null)
+                    {
+                        if (songInfo.Playlist.Url != $"https://open.spotify.com/playlist/{songInfo.Playlist.Url.Split(':').Last()}")
+                            songInfo.Playlist.Url = $"https://open.spotify.com/playlist/{songInfo.Playlist.Url.Split(':').Last()}";
+                    }
 
                     if (GlobalObjects.CurrentSong != null)
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
@@ -732,10 +731,9 @@ namespace Songify_Slim.Util.Songify
                                 GlobalObjects.Canvas = null;
                             }
                         }
-                        if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
+                        IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
 
-                        if (Settings.Settings.Upload)
-                            WebHelper.UploadSong(Settings.Settings.CustomPauseText);
+                        WebHelper.UploadSong(Settings.Settings.CustomPauseText);
 
                         break;
 
@@ -750,9 +748,8 @@ namespace Songify_Slim.Util.Songify
                             }
                         }
                         IoManager.WriteOutput(SongPath, "");
-                        if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
-                        if (Settings.Settings.Upload)
-                            WebHelper.UploadSong("");
+                        IoManager.WriteSplitOutput("", "", "");
+                        WebHelper.UploadSong("");
                         break;
 
                     default:
@@ -912,24 +909,23 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr($"File {SongPath} couldn't be accessed.");
             }
 
-            if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(songInfo.Artists, songInfo.Title, "", rq?.Requester);
+            IoManager.WriteSplitOutput(songInfo.Artists, songInfo.Title, "", rq?.Requester);
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
 
             // if upload is enabled
-            if (Settings.Settings.Upload)
-                try
+            try
+            {
+                WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType, songInfo.Artists, songInfo.Title, GlobalObjects.Requester);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                // if error occurs write text to the status asynchronous
+                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    WebHelper.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType, songInfo.Artists, songInfo.Title, GlobalObjects.Requester);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // if error occurs write text to the status asynchronous
-                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
-                    }));
-                }
+                    ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                }));
+            }
 
             //Write History
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";

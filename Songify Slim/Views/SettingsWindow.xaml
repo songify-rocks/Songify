@@ -3,15 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:customControl="clr-namespace:Songify_Slim.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-    xmlns:lex="http://wpflocalizeextension.codeplex.com"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:settings="clr-namespace:Songify_Slim.Util.Settings"
-    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="{DynamicResource mw_menu_Settings}"
     Width="860"
     Height="490"
@@ -316,7 +312,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="38" />
-                            <RowDefinition Height="38" />
+                            <RowDefinition Height="0" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
                             <RowDefinition Height="38" />
@@ -507,7 +503,8 @@
                             Focusable="False"
                             FontFamily="Segoe UI"
                             FontSize="12"
-                            Toggled="ChbxUpload_Checked" />
+                            Toggled="ChbxUpload_Checked"
+                            Visibility="Collapsed" />
                         <controls:ToggleSwitch
                             x:Name="ChbxCover"
                             Grid.Row="8"
@@ -536,21 +533,28 @@
                             FontFamily="Segoe UI"
                             FontSize="12"
                             Toggled="TglCanvas_OnToggled" />
-                        <Button
-                            x:Name="BtnCopyUrl"
+                        <StackPanel
                             Grid.Row="5"
                             Grid.Column="1"
-                            Width="26"
-                            Height="26"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Click="BtnCopyURL_Click">
-                            <iconPacks:PackIconFontAwesome
-                                Width="15"
-                                Height="15"
-                                Margin="-1,-2,-1,-2"
-                                Kind="LinkSolid" />
-                        </Button>
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Margin="6"
+                                VerticalAlignment="Center"
+                                Text="Copy song url" />
+                            <Button
+                                x:Name="BtnCopyUrl"
+                                Width="26"
+                                Height="26"
+                                VerticalAlignment="Center"
+                                Click="BtnCopyURL_Click">
+                                <iconPacks:PackIconFontAwesome
+                                    Width="15"
+                                    Height="15"
+                                    Margin="-1,-2,-1,-2"
+                                    Kind="LinkSolid" />
+                            </Button>
+                        </StackPanel>
                         <controls:ToggleSwitch
                             x:Name="ChbxSplit"
                             Grid.Row="6"
@@ -564,7 +568,8 @@
                             Focusable="False"
                             FontFamily="Segoe UI"
                             FontSize="12"
-                            Toggled="ChbxSplit_Checked" />
+                            Toggled="ChbxSplit_Checked"
+                            Visibility="Collapsed" />
                         <Label
                             Grid.Row="7"
                             Grid.Column="0"

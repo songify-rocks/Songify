@@ -369,19 +369,12 @@ namespace Songify_Slim.Util.Songify
                 switch (command.CommandType)
                 {
                     case CommandType.SongRequest:
-                        break;
                     case CommandType.Next:
-                        break;
                     case CommandType.Play:
-                        break;
                     case CommandType.Pause:
-                        break;
                     case CommandType.Position:
-                        break;
                     case CommandType.Queue:
-                        break;
                     case CommandType.Remove:
-                        break;
                     case CommandType.Skip:
                         break;
                     case CommandType.Voteskip:
@@ -391,7 +384,6 @@ namespace Songify_Slim.Util.Songify
                         }
                         break;
                     case CommandType.Song:
-                        break;
                     case CommandType.Songlike:
                         break;
                     case CommandType.Volume:
@@ -1429,11 +1421,28 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            if (trackId == "shortened")
+            // Switch on trackId
+            switch (trackId)
             {
-                SendChatMessage(Settings.Settings.TwChannel,
-                    "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
-                return;
+                case "shortened":
+                    SendChatMessage(Settings.Settings.TwChannel,
+                        "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
+                    return;
+                case "episode":
+                    SendChatMessage(Settings.Settings.TwChannel, "Episodes are not supported. Please specify a track!");
+                    return;
+                case "artist":
+                    SendChatMessage(Settings.Settings.TwChannel, "Artist links are not supported. Please specify a track!");
+                    return;
+                case "album":
+                    SendChatMessage(Settings.Settings.TwChannel, "Album links are not supported. Please specify a track!");
+                    return;
+                case "playlist":
+                    SendChatMessage(Settings.Settings.TwChannel, "Playlist links are not supported. Please specify a track!");
+                    return;
+                case "audiobook":
+                    SendChatMessage(Settings.Settings.TwChannel, "Audiobook links are not supported. Please specify a track!");
+                    return;
             }
 
             if (Settings.Settings.LimitSrToPlaylist &&
@@ -3300,6 +3309,36 @@ namespace Songify_Slim.Util.Songify
             {
                 // search for a track with the id
                 return input.Replace("spotify:track:", "");
+            }
+
+            // If the input is a Spotify episode, return an empty string
+            if (input.StartsWith("https://open.spotify.com/episode/") || input.Contains("/episode/"))
+            {
+                return "episode";
+            }
+
+            // If the input is a Spotify episode, return an empty string
+            if (input.StartsWith("https://open.spotify.com/artist/") || input.Contains("/artist/"))
+            {
+                return "artist";
+            }
+
+            // If the input is a Spotify episode, return an empty string
+            if (input.StartsWith("https://open.spotify.com/album/") || input.Contains("/album/"))
+            {
+                return "album";
+            }
+
+            // If the input is a Spotify episode, return an empty string
+            if (input.StartsWith("https://open.spotify.com/playlist/") || input.Contains("/playlist/"))
+            {
+                return "playlist";
+            }
+
+            // If the input is a Spotify episode, return an empty string
+            if (input.StartsWith("https://open.spotify.com/audiobook/") || input.Contains("/audiobook/"))
+            {
+                return "audiobook";
             }
 
             if (input.StartsWith("https://open.spotify.com/"))
