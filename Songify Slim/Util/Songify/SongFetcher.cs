@@ -910,6 +910,8 @@ namespace Songify_Slim.Util.Songify
             }
 
             IoManager.WriteSplitOutput(songInfo.Artists, songInfo.Title, "", rq?.Requester);
+            IoManager.DownloadImage(rq?.FullRequester?.ProfileImageUrl,
+                GlobalObjects.RootDirectory + "/requester.png");
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
 
             // if upload is enabled
@@ -1003,7 +1005,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
                 IoManager.DownloadCanvas(_canvasResponse.Item2, CanvasPath);
-                IoManager.DownloadCover(null, CoverPath);
+                IoManager.DownloadCover(albumUrl, CoverPath);
             }
             else if (Settings.Settings.DownloadCover)
             {

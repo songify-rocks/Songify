@@ -526,15 +526,19 @@
                     VerticalAlignment="Center"
                     Stretch="UniformToFill"
                     Visibility="Collapsed" />
-                <MediaElement
-                    x:Name="CoverCanvas"
-                    Margin="10"
-                    IsMuted="True"
-                    LoadedBehavior="Manual"
-                    MediaEnded="CoverCanvas_OnMediaEnded"
-                    Stretch="UniformToFill"
-                    UnloadedBehavior="Stop"
-                    Visibility="Collapsed" />
+                <Grid ClipToBounds="True">
+                    <MediaElement
+                        x:Name="CoverCanvas"
+                        Margin="10"
+                        VerticalAlignment="Center"
+                        IsMuted="True"
+                        LoadedBehavior="Manual"
+                        MediaEnded="CoverCanvas_OnMediaEnded"
+                        RenderTransformOrigin="0.5,0.5"
+                        Stretch="UniformToFill"
+                        UnloadedBehavior="Stop"
+                        Visibility="Collapsed" />
+                </Grid>
             </Grid>
 
             <Viewbox

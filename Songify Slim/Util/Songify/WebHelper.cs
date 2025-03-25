@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using TwitchLib.Api.Helix.Models.Soundtrack;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -36,95 +37,133 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                string result;
                 switch (method)
                 {
                     case RequestMethod.Get:
-                        result = await ApiClient.Get("queue", Settings.Settings.Uuid).ConfigureAwait(false);
-                        if (string.IsNullOrEmpty(result))
-                            return;
-
-                        try
-                        {
-                            List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
-                            List<Task> tasks = [];
-                            tasks.AddRange(from q in queue
-                                           where GlobalObjects.ReqList.Count == 0 || GlobalObjects.ReqList.All(o => o.Queueid != q.Queueid)
-                                           select new { uuid = Settings.Settings.Uuid, key = Settings.Settings.AccessKey, queueid = q.Queueid }
-                                into pL
-                                           select QueueRequest(RequestMethod.Patch, Json.Serialize(pL)));
-                            await Task.WhenAll(tasks).ConfigureAwait(false);
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogExc(e);
-                        }
-                        break;
+                        await HandleGetRequest().ConfigureAwait(false);
+                        return;
 
                     case RequestMethod.Post:
-                        result = await ApiClient.Post("queue", payload);
-                        if (string.IsNullOrEmpty(result))
-                        {
-                            if (payload != null)
-                            {
-                                JObject x = JObject.Parse(payload);
-                                GlobalObjects.ReqList.Add(new RequestObject
-                                {
-                                    Queueid = GlobalObjects.ReqList.Count + 1,
-                                    Uuid = Settings.Settings.Uuid,
-                                    Trackid = (string)x["queueItem"]?["Trackid"],
-                                    Artist = (string)x["queueItem"]?["Artist"],
-                                    Title = (string)x["queueItem"]?["Title"],
-                                    Length = (string)x["queueItem"]?["Length"],
-                                    Requester = (string)x["queueItem"]?["Requester"],
-                                    Played = 0,
-                                    Albumcover = (string)x["queueItem"]?["Albumcover"],
-                                });
-                            }
-
-                            //Update indexes of the queue
-                            for (int i = 0; i < GlobalObjects.ReqList.Count; i++)
-                            {
-                                GlobalObjects.ReqList[i].Queueid = i + 1;
-                            }
-
-                            UpdateQueueWindow();
-
-                            return;
-                        }
-                        try
-                        {
-                            RequestObject response = Json.Deserialize<RequestObject>(result);
-                            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                            {
-                                GlobalObjects.ReqList.Add(response);
-                            }));
-                            UpdateQueueWindow();
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogExc(e);
-                        }
-
-                        break;
+                        await HandlePostRequest(payload).ConfigureAwait(false);
+                        return;
 
                     case RequestMethod.Patch:
-                        await ApiClient.Patch("queue", payload);
-                        break;
+                        await ApiClient.Patch("queue", payload).ConfigureAwait(false);
+                        return;
 
                     case RequestMethod.Clear:
-                        await ApiClient.Clear("queue_delete", payload);
-                        break;
+                        await ApiClient.Clear("queue_delete", payload).ConfigureAwait(false);
+                        return;
 
                     default:
                         throw new ArgumentOutOfRangeException(nameof(method), method, null);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Console.WriteLine(e);
+                Logger.LogExc(ex);
             }
         }
+
+        private static async Task HandleGetRequest()
+        {
+            string result = await ApiClient.Get("queue", Settings.Settings.Uuid).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(result)) return;
+
+            try
+            {
+                List<Models.QueueItem> queue = Json.Deserialize<List<Models.QueueItem>>(result);
+                var tasks = queue
+                    .Where(q => GlobalObjects.ReqList.All(o => o.Queueid != q.Queueid))
+                    .Select(q =>
+                    {
+                        var pL = new { uuid = Settings.Settings.Uuid, key = Settings.Settings.AccessKey, queueid = q.Queueid };
+                        return QueueRequest(RequestMethod.Patch, Json.Serialize(pL));
+                    }).ToList();
+
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private static async Task HandlePostRequest(string payload)
+        {
+            string result = await ApiClient.Post("queue", payload).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(result))
+            {
+                AddRequestLocally(payload);
+                UpdateQueueWindow();
+                return;
+            }
+
+            try
+            {
+                RequestObject response = Json.Deserialize<RequestObject>(result);
+                if (response.FullRequester == null)
+                {
+                    response.FullRequester = ExtractFullRequester(payload);
+                }
+
+                await Application.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    GlobalObjects.ReqList.Add(response);
+                    UpdateQueueWindow();
+                });
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private static void AddRequestLocally(string payload)
+        {
+            if (string.IsNullOrEmpty(payload)) return;
+
+            JObject x = JObject.Parse(payload);
+            GlobalObjects.ReqList.Add(new RequestObject
+            {
+                Queueid = GlobalObjects.ReqList.Count + 1,
+                Uuid = Settings.Settings.Uuid,
+                Trackid = (string)x["queueItem"]?["Trackid"],
+                Artist = (string)x["queueItem"]?["Artist"],
+                Title = (string)x["queueItem"]?["Title"],
+                Length = (string)x["queueItem"]?["Length"],
+                Requester = (string)x["queueItem"]?["Requester"],
+                Played = 0,
+                Albumcover = (string)x["queueItem"]?["Albumcover"],
+                FullRequester = x["queueItem"]?["FullRequester"]?.ToObject<SimpleTwitchUser>()
+            });
+
+            // Recalculate Queue IDs
+            for (int i = 0; i < GlobalObjects.ReqList.Count; i++)
+            {
+                GlobalObjects.ReqList[i].Queueid = i + 1;
+            }
+        }
+
+        private static SimpleTwitchUser ExtractFullRequester(string payload)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(payload))
+                {
+                    JObject x = JObject.Parse(payload);
+                    return x["queueItem"]?["FullRequester"]?.ToObject<SimpleTwitchUser>();
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
+            return null;
+        }
+
 
         private static void UpdateQueueWindow()
         {

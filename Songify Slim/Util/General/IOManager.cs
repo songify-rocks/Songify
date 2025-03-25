@@ -174,7 +174,7 @@ namespace Songify_Slim.Util.General
 
         public static async void DownloadCover(string cover, string coverPath)
         {
-            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp.png";
+            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{coverPath.Split('/').Last()}.png";
             try
             {
                 Application.Current.Dispatcher.Invoke(() =>
@@ -256,6 +256,88 @@ namespace Songify_Slim.Util.General
                         main.SetCoverImage(coverPath);
                     }));
                 });
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        public static async void DownloadImage(string cover, string coverPath)
+        {
+            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{coverPath.Split('/').Last()}.png";
+            try
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    MainWindow main = Application.Current.MainWindow as MainWindow;
+                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        main.StopCanvas();
+                    }));
+                });
+
+                if (string.IsNullOrEmpty(cover))
+                {
+                    // create Empty png file
+                    Bitmap bmp = new(640, 640);
+                    Graphics g = Graphics.FromImage(bmp);
+
+                    g.Clear(Color.Transparent);
+                    g.Flush();
+                    bmp.Save(coverPath, ImageFormat.Png);
+                }
+                else
+                {
+                    WebClient webClient = new();
+
+                    webClient.DownloadFileCompleted += (sender, e) =>
+                    {
+                        if (e.Error != null)
+                        {
+                            Logger.LogExc(e.Error);
+                        }
+
+                        const int tries = 5;
+                        if (coverPath == "" || coverTemp == "") return;
+                        try
+                        {
+                            for (int i = 0; i < tries; i++)
+                            {
+                                if (IsFileLocked(new FileInfo(coverPath)))
+                                {
+                                    Thread.Sleep(1000);
+                                    if (i != tries) continue;
+                                    return;
+                                }
+
+                                break;
+                            }
+                            File.Delete(coverPath);
+                        }
+                        catch (Exception)
+                        {
+                            //Debug.WriteLine(exception);
+                        }
+
+                        try
+                        {
+                            File.Move(coverTemp, coverPath);
+                        }
+                        catch (Exception)
+                        {
+                            //Debug.WriteLine(exception);
+                        }
+                        _isWriting = false;
+                    };
+
+                    Uri uri = new(cover);
+                    // Downloads the album cover to the filesystem
+
+                    if (_isWriting) return;
+                    _isWriting = true;
+                    await webClient.DownloadFileTaskAsync(uri, coverTemp);
+                }
             }
             catch (Exception ex)
             {

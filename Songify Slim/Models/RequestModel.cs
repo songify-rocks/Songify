@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Util.General;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Models;
 
@@ -29,7 +30,7 @@ public class RequestObject
     public string PlayerType { get; set; }
 
     public bool IsLiked { get; set; } = false;
-
+    public SimpleTwitchUser FullRequester { get; set; } = null;
 }
 
 public enum RequestPlayerType

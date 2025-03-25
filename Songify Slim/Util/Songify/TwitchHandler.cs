@@ -1549,6 +1549,15 @@ namespace Songify_Slim.Util.Songify
 
             string length = FormattedTime((int)track.DurationMs);
 
+            // Get the Requester Twitch User Object from the api 
+            GetUsersResponse x = await TwitchApi.Helix.Users.GetUsersAsync([e.UserId], null, Settings.Settings.TwitchAccessToken);
+            SimpleTwitchUser requestUser = null;
+            if (x.Users.Length > 0)
+            {
+                requestUser = x.Users[0].ToSimpleUser();
+            }
+
+
             RequestObject o = new()
             {
                 Trackid = track.Id,
@@ -1557,13 +1566,14 @@ namespace Songify_Slim.Util.Songify
                 Title = track.Name,
                 Length = length,
                 Requester = e.DisplayName,
+                FullRequester = requestUser,
                 Played = 0,
                 Albumcover = track.Album.Images[0].Url,
             };
 
             await UploadToQueue(o);
             GlobalObjects.QueueUpdateQueueWindow();
-        }
+         }
 
         private static async Task<ReturnObject> AddSong2(string trackId, string username)
         {

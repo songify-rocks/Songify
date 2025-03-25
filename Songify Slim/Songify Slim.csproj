@@ -148,6 +148,7 @@
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
     <Compile Include="Models\QueueItem.cs" />
+    <Compile Include="Models\SimpleTwitchUser.cs" />
     <Compile Include="Models\TwitchCommand.cs" />
     <Compile Include="Models\TwitchCommandParams.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
