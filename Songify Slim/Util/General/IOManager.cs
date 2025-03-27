@@ -172,178 +172,152 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        public static async void DownloadCover(string cover, string coverPath)
+        private static readonly SemaphoreSlim _downloadSemaphore = new(1, 1);
+
+        public static async Task DownloadCover(string cover, string coverPath)
         {
-            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{coverPath.Split('/').Last()}.png";
+            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{Path.GetFileName(coverPath)}";
+
             try
             {
+                // Stop the animation before downloading
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    if (Application.Current.MainWindow is MainWindow main)
                     {
                         main.StopCanvas();
-                    }));
+                    }
                 });
+
+                await _downloadSemaphore.WaitAsync(); // Prevent overlapping downloads
 
                 if (string.IsNullOrEmpty(cover))
                 {
-                    // create Empty png file
-                    Bitmap bmp = new(640, 640);
-                    Graphics g = Graphics.FromImage(bmp);
-
+                    // Create an empty transparent PNG
+                    using Bitmap bmp = new(640, 640);
+                    using Graphics g = Graphics.FromImage(bmp);
                     g.Clear(Color.Transparent);
-                    g.Flush();
                     bmp.Save(coverPath, ImageFormat.Png);
                 }
                 else
                 {
-                    WebClient webClient = new();
-
-                    webClient.DownloadFileCompleted += (sender, e) =>
+                    try
                     {
-                        if (e.Error != null)
+                        using WebClient webClient = new();
+                        Uri uri = new(cover);
+                        await webClient.DownloadFileTaskAsync(uri, coverTemp);
+
+                        // Wait for the file to be unlocked if necessary
+                        const int tries = 5;
+                        for (int i = 0; i < tries; i++)
                         {
-                            Logger.LogExc(e.Error);
+                            if (IsFileLocked(new FileInfo(coverPath)))
+                            {
+                                await Task.Delay(1000);
+                                continue;
+                            }
+                            break;
                         }
 
-                        const int tries = 5;
-                        if (coverPath == "" || coverTemp == "") return;
-                        try
+                        if (File.Exists(coverPath))
                         {
-                            for (int i = 0; i < tries; i++)
-                            {
-                                if (IsFileLocked(new FileInfo(coverPath)))
-                                {
-                                    Thread.Sleep(1000);
-                                    if (i != tries) continue;
-                                    return;
-                                }
-
-                                break;
-                            }
                             File.Delete(coverPath);
                         }
-                        catch (Exception)
-                        {
-                            //Debug.WriteLine(exception);
-                        }
 
-                        try
-                        {
-                            File.Move(coverTemp, coverPath);
-                        }
-                        catch (Exception)
-                        {
-                            //Debug.WriteLine(exception);
-                        }
-                        _isWriting = false;
-                    };
-
-                    Uri uri = new(cover);
-                    // Downloads the album cover to the filesystem
-
-                    if (_isWriting) return;
-                    _isWriting = true;
-                    await webClient.DownloadFileTaskAsync(uri, coverTemp);
+                        File.Move(coverTemp, coverPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                    }
                 }
 
+                // Update the image in the UI
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    if (Application.Current.MainWindow is MainWindow main)
                     {
                         main.SetCoverImage(coverPath);
-                    }));
+                    }
                 });
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
             }
+            finally
+            {
+                _downloadSemaphore.Release();
+            }
         }
 
-        public static async void DownloadImage(string cover, string coverPath)
+
+        private static readonly SemaphoreSlim _imageDownloadLock = new(1, 1);
+
+        public static async Task DownloadImage(string cover, string coverPath)
         {
-            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{coverPath.Split('/').Last()}.png";
+            string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{Path.GetFileName(coverPath)}";
+
             try
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    if (Application.Current.MainWindow is MainWindow main)
                     {
                         main.StopCanvas();
-                    }));
+                    }
                 });
+
+                await _imageDownloadLock.WaitAsync();
 
                 if (string.IsNullOrEmpty(cover))
                 {
-                    // create Empty png file
-                    Bitmap bmp = new(640, 640);
-                    Graphics g = Graphics.FromImage(bmp);
-
+                    using Bitmap bmp = new(640, 640);
+                    using Graphics g = Graphics.FromImage(bmp);
                     g.Clear(Color.Transparent);
-                    g.Flush();
                     bmp.Save(coverPath, ImageFormat.Png);
                 }
                 else
                 {
-                    WebClient webClient = new();
-
-                    webClient.DownloadFileCompleted += (sender, e) =>
+                    try
                     {
-                        if (e.Error != null)
-                        {
-                            Logger.LogExc(e.Error);
-                        }
+                        using WebClient webClient = new();
+                        Uri uri = new(cover);
+                        await webClient.DownloadFileTaskAsync(uri, coverTemp);
 
+                        // Wait for the cover file to be ready
                         const int tries = 5;
-                        if (coverPath == "" || coverTemp == "") return;
-                        try
+                        for (int i = 0; i < tries; i++)
                         {
-                            for (int i = 0; i < tries; i++)
+                            if (IsFileLocked(new FileInfo(coverPath)))
                             {
-                                if (IsFileLocked(new FileInfo(coverPath)))
-                                {
-                                    Thread.Sleep(1000);
-                                    if (i != tries) continue;
-                                    return;
-                                }
-
-                                break;
+                                await Task.Delay(1000);
+                                continue;
                             }
+                            break;
+                        }
+
+                        if (File.Exists(coverPath))
                             File.Delete(coverPath);
-                        }
-                        catch (Exception)
-                        {
-                            //Debug.WriteLine(exception);
-                        }
 
-                        try
-                        {
-                            File.Move(coverTemp, coverPath);
-                        }
-                        catch (Exception)
-                        {
-                            //Debug.WriteLine(exception);
-                        }
-                        _isWriting = false;
-                    };
-
-                    Uri uri = new(cover);
-                    // Downloads the album cover to the filesystem
-
-                    if (_isWriting) return;
-                    _isWriting = true;
-                    await webClient.DownloadFileTaskAsync(uri, coverTemp);
+                        File.Move(coverTemp, coverPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
             }
+            finally
+            {
+                _imageDownloadLock.Release();
+            }
         }
+
 
         private static bool IsFileLocked(FileInfo file)
         {
