@@ -4,8 +4,8 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,16 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Unosquare.Swan.Formatters;
 using System.Windows.Threading;
-using MahApps.Metro.Controls;
-using TwitchLib.Api.Helix.Models.Soundtrack;
 using System.Reflection;
 using System.Xml.Linq;
-using Utils = MahApps.Metro.Controls.Utils;
-using System.Web.UI.WebControls;
-using System.Dynamic;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
@@ -32,6 +26,7 @@ namespace Songify_Slim.Util.Songify
     /// <summary>
     ///     This class is for retrieving data of currently playing songs
     /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
         private static readonly string SongPath = GlobalObjects.RootDirectory + "/Songify.txt";
@@ -155,10 +150,10 @@ namespace Songify_Slim.Util.Songify
 
                         case "foobar2000":
                             // Splitting the win title which is always Artist - Title
-                            if (wintitle.StartsWith("foobar2000"))
+                            if (wintitle.StartsWith("foobar2000") && Settings.Settings.CustomPauseTextEnabled)
                             {
-                                if (Settings.Settings.CustomPauseTextEnabled)
-                                    trackinfo = new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" };
+                                trackinfo = new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" };
+                                break; // Exit early, do NOT continue with the parsing
                             }
 
                             wintitle = wintitle.Replace(" [foobar2000]", "");
@@ -173,11 +168,7 @@ namespace Songify_Slim.Util.Songify
                             {
                                 Logger.LogExc(ex);
                             }
-                            finally
-                            {
-                                artist = wintitle;
-                                title = "";
-                            }
+
                             int dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
                             if (dashIndex != -1)
                             {
@@ -185,8 +176,15 @@ namespace Songify_Slim.Util.Songify
                                 dashIndex += 3;
                                 title = wintitle.Substring(dashIndex, wintitle.Length - dashIndex).Trim();
                             }
+                            else
+                            {
+                                artist = wintitle;
+                                title = "";
+                            }
+
                             trackinfo = new TrackInfo { Artists = artist, Title = title };
                             break;
+
                     }
                 }
 
@@ -206,7 +204,7 @@ namespace Songify_Slim.Util.Songify
 
             output = output.Format(
                 artist => trackinfo.Artists ?? "",
-                singleArtist => trackinfo.Artists ?? "",
+                single_artist => trackinfo.Artists ?? "",
                 title => trackinfo.Title ?? "",
                 extra => "",
                 uri => trackinfo.SongId ?? "",
@@ -225,7 +223,7 @@ namespace Songify_Slim.Util.Songify
 
             if (Settings.Settings.SplitOutput)
             {
-                IoManager.WriteSplitOutput(trackinfo?.Artists, trackinfo?.Title, "");
+                IoManager.WriteSplitOutput(trackinfo.Artists, trackinfo.Title, "");
             }
             try
             {
@@ -709,8 +707,6 @@ namespace Songify_Slim.Util.Songify
 
         private static Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
-            string title = songInfo.Title;
-
             if (!songInfo.IsPlaying)
             {
                 switch (Settings.Settings.PauseOption)
@@ -804,7 +800,7 @@ namespace Songify_Slim.Util.Songify
             ).Format();
 
             currentSongOutputTwitch = currentSongOutputTwitch.Format(
-                singleArtist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
+                single_artist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
                 artist => songInfo.Artists,
                 title => songInfo.Title,
                 extra => "",
@@ -909,7 +905,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr($"File {SongPath} couldn't be accessed.");
             }
 
-            IoManager.WriteSplitOutput(songInfo.Artists, songInfo.Title, "", rq?.Requester);
+            IoManager.WriteSplitOutput(Settings.Settings.OutputString.Contains("{single_artist}") ? songInfo.FullArtists.First().Name : songInfo.Artists, songInfo.Title, "", rq?.Requester);
             IoManager.DownloadImage(rq?.FullRequester?.ProfileImageUrl,
                 GlobalObjects.RootDirectory + "/requester.png");
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
@@ -956,11 +952,11 @@ namespace Songify_Slim.Util.Songify
                 XElement elem = new("Song", historySongOutput);
                 elem.Add(new XAttribute("Time", unixTimestamp));
                 XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
-                XNode lastNode = x.LastNode;
+                XNode lastNode = x?.LastNode;
                 if (lastNode != null)
                 {
                     if (historySongOutput != ((XElement)lastNode).Value)
-                        x?.Add(elem);
+                        x.Add(elem);
                 }
                 else
                 {
@@ -986,7 +982,7 @@ namespace Songify_Slim.Util.Songify
                     // Writing to the statusstrip label
                     Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading history";
+                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading history";
                     }));
                 }
             }
