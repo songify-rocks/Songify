@@ -25,9 +25,9 @@ namespace Songify_Slim.Util.General
             try
             {
                 string interpretedText = InterpretEscapeCharacters(currSong);
-                if (songPath.ToLower().Contains("songify.txt") && Settings.Settings.AppendSpaces)
+                if (songPath.ToLower().Contains("songify.txt") && Settings.Settings.AppendSpaces && !string.IsNullOrEmpty(currSong))
                     interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
-                else if (Settings.Settings.AppendSpacesSplitFiles)
+                else if (Settings.Settings.AppendSpacesSplitFiles && !string.IsNullOrEmpty(currSong))
                     interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
                 File.WriteAllText(songPath, interpretedText);
             }
