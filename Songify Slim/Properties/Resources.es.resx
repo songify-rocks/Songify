@@ -910,4 +910,7 @@
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
     <value>Anuncia automáticamente la canción para chatear (usa la respuesta !song)</value>
   </data>
+  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+    <value>La hora en mm:ss cuando se reproducirá la canción solicitada.</value>
+  </data>
 </root>

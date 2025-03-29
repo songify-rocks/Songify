@@ -67,6 +67,7 @@ using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using TwitchLib.Api.Core.Models.Undocumented.Chatters;
 using TwitchLib.Api.V5.Models.Clips;
 using Newtonsoft.Json.Linq;
+using TwitchLib.PubSub.Enums;
 using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
 
 
@@ -1536,11 +1537,10 @@ namespace Songify_Slim.Util.Songify
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
+
             string successResponse = Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
             response = CreateSuccessResponse(track, e.DisplayName, successResponse);
             TwitchCommand cmd = Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request");
-
-            SendOrAnnounceMessage(e.Channel, response, cmd);
 
             // this will take the first 4 artists and join their names with ", "
             string artists = string.Join(", ", track.Artists
@@ -1551,6 +1551,7 @@ namespace Songify_Slim.Util.Songify
 
             // Get the Requester Twitch User Object from the api 
             GetUsersResponse x = await TwitchApi.Helix.Users.GetUsersAsync([e.UserId], null, Settings.Settings.TwitchAccessToken);
+
             SimpleTwitchUser requestUser = null;
             if (x.Users.Length > 0)
             {
@@ -1573,7 +1574,53 @@ namespace Songify_Slim.Util.Songify
 
             await UploadToQueue(o);
             GlobalObjects.QueueUpdateQueueWindow();
-         }
+
+
+            if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
+            {
+                await Task.Delay(2000);
+
+                int trackIndex = GlobalObjects.QueueTracks.IndexOf(
+                    GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
+
+                TimeSpan timeToplay = TimeSpan.Zero;
+
+                for (int i = 0; i < trackIndex; i++)
+                {
+                    RequestObject item = GlobalObjects.QueueTracks[i];
+
+                    if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+                    {
+                        TrackInfo tI = SpotifyApiHandler.GetSongInfo();
+                        if (tI == null) continue;
+                        int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
+                        timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                    }
+                    else
+                    {
+                        timeToplay += ParseLength(item.Length);
+                    }
+                }
+
+                response += $"{timeToplay.Minutes}m {timeToplay.Seconds}s";
+            }
+
+            SendOrAnnounceMessage(e.Channel, response, cmd);
+        }
+
+        public static TimeSpan ParseLength(string length)
+        {
+            string[] parts = length.Split(':');
+            if (parts.Length == 2 &&
+                int.TryParse(parts[0], out int minutes) &&
+                int.TryParse(parts[1], out int seconds))
+            {
+                return new TimeSpan(0, 0, minutes, seconds);
+            }
+
+            return TimeSpan.Zero;
+        }
+
 
         private static async Task<ReturnObject> AddSong2(string trackId, string username)
         {
@@ -3115,6 +3162,7 @@ namespace Songify_Slim.Util.Songify
             response = response.Replace("{title}", track.Name);
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
+            response = response.Replace("{pos}", $"{GlobalObjects.ReqList.Count}");
             response = response.Replace("{errormsg}", "");
             response = CleanFormatString(response);
 

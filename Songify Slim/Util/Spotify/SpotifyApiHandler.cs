@@ -20,6 +20,8 @@ using Songify_Slim.Views;
 using Timer = System.Timers.Timer;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls;
 
 namespace Songify_Slim.Util.Spotify
 {
@@ -107,7 +109,7 @@ namespace Songify_Slim.Util.Spotify
                 }
 
                 // if the auth was successful save the new tokens and
-                _auth.AuthReceived += async (sender, response) =>
+                _auth.AuthReceived += static async (sender, response) =>
                 {
                     if (Authed)
                         return;
@@ -130,7 +132,7 @@ namespace Songify_Slim.Util.Spotify
                         Authed = true;
                         AuthRefresh.Start();
                         await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                            new Action(async () =>
+                            new Action(async void () =>
                             {
                                 foreach (Window window in Application.Current.Windows)
                                 {
@@ -148,12 +150,16 @@ namespace Songify_Slim.Util.Spotify
                                 Logger.LogStr(
                                     $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                                 Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
+
+
+                                if (!Settings.Settings.HideSpotifyPremiumWarning)
+                                    await ShowPremiumRequiredDialogAsync();
+
+
                                 if (GlobalObjects.SpotifyProfile.Product == "premium") return;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                                     Brushes.DarkOrange;
-                                MessageBox.Show(
-                                    "Spotify Premium is required to perform song requests. This is a limitation by Spotify, not by us.",
-                                    "Spotify Premium required", MessageBoxButton.OK, MessageBoxImage.Warning);
+
                             }));
                     }
                     catch (Exception e)
@@ -200,6 +206,34 @@ namespace Songify_Slim.Util.Spotify
                 Logger.LogExc(ex);
             }
         }
+
+        public static async Task ShowPremiumRequiredDialogAsync()
+        {
+            MetroDialogSettings dialogSettings = new MetroDialogSettings
+            {
+                AffirmativeButtonText = "OK",
+                NegativeButtonText = "Don't Show Again",
+                AnimateShow = true,
+                AnimateHide = true,
+            };
+
+            // You need a reference to the dialog host (usually the main window)
+            MetroWindow mainWindow = (Application.Current.MainWindow as MetroWindow);
+            if (mainWindow == null)
+                return;
+
+            MessageDialogResult result = await mainWindow.ShowMessageAsync(
+                "Spotify Premium required",
+                "Spotify Premium is required to perform song requests. Songify was unable to verify your Spotify Premium status.",
+                MessageDialogStyle.AffirmativeAndNegative,
+                dialogSettings);
+
+            if (result == MessageDialogResult.Negative)
+            {
+                Settings.Settings.HideSpotifyPremiumWarning = true;
+            }
+        }
+
 
         private static async void AuthRefresh_Elapsed(object sender, ElapsedEventArgs e)
         {

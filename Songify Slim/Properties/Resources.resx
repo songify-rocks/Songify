@@ -1092,4 +1092,7 @@
   <data name="songify" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\songify.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+    <value>The time in mm:ss when the song request will play.</value>
+  </data>
 </root>

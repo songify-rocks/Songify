@@ -909,4 +909,7 @@
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
     <value>Annuncia automaticamente la canzone nella chat (utilizza la risposta !song)</value>
   </data>
+  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+    <value>Ora in mm:ss in cui verrà riprodotta la canzone richiesta.</value>
+  </data>
 </root>

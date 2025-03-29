@@ -909,4 +909,7 @@
   <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
     <value>Automatyczne ogłaszanie piosenki na czacie (używa odpowiedzi !song)</value>
   </data>
+  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+    <value>Czas w mm:ss, o którym nastąpi odtworzenie żądanej piosenki.</value>
+  </data>
 </root>

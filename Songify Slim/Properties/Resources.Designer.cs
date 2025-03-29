@@ -1141,6 +1141,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The time in mm:ss when the song request will play..
+        /// </summary>
+        public static string Param_TimeToPlay_Desc {
+            get {
+                return ResourceManager.GetString("Param_TimeToPlay_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spotify song URL.
         /// </summary>
         public static string Param_Url_Desc {

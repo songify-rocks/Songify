@@ -673,6 +673,18 @@ namespace Songify_Slim.Util.Settings
         public static string TwitchUserColor { get => GetTwitchUserColor(); set => SetTwitchUserColor(value); }
         public static List<int> UnlimitedSrUserlevelsReward { get => GetUnlimitedSrUserlevelsReward(); set => SetUnlimitedSrUserlevelsReward(value); }
         public static DateTime TwitchAccessTokenExpiryDate { get => GetTwitchAccessTokenExpiryDate(); set => SetTwitchAccessTokenExpiryDate(value); }
+        public static bool HideSpotifyPremiumWarning { get => GetHideSpotifyPremiumWarning(); set => SetHideSpotifyPremiumWarning(value); }
+
+        private static void SetHideSpotifyPremiumWarning(bool value)
+        {
+            CurrentConfig.AppConfig.HideSpotifyPremiumWarning = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetHideSpotifyPremiumWarning()
+        {
+            return CurrentConfig.AppConfig.HideSpotifyPremiumWarning;
+        }
 
         private static void SetTwitchAccessTokenExpiryDate(DateTime value)
         {
@@ -954,6 +966,7 @@ namespace Songify_Slim.Util.Settings
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 YtmdToken = GetYtmdToken(),
+                HideSpotifyPremiumWarning = GetHideSpotifyPremiumWarning(),
             };
 
             TwitchCommands twitchCommands = new()
