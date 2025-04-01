@@ -1414,7 +1414,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void AddSong(string trackId, ChatMessage e, SongRequestSource source, TwitchUser user)
+        public static async void AddSong(string trackId, ChatMessage e, SongRequestSource source, TwitchUser user)
         {
             if (string.IsNullOrWhiteSpace(trackId))
             {
@@ -1573,7 +1573,7 @@ namespace Songify_Slim.Util.Songify
             };
 
             await UploadToQueue(o);
-            GlobalObjects.QueueUpdateQueueWindow();
+            //GlobalObjects.QueueUpdateQueueWindow();
 
 
             if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
@@ -1607,6 +1607,84 @@ namespace Songify_Slim.Util.Songify
 
             SendOrAnnounceMessage(e.Channel, response, cmd);
         }
+
+        private static string ValidateTrackId(string trackId)
+        {
+            if (string.IsNullOrWhiteSpace(trackId))
+                return "No song found.";
+
+            return trackId switch
+            {
+                "shortened" => "Spotify short links are not supported. Please type in the full title or use the Spotify URI (starts with \"spotify:track:\")",
+                "episode" => "Episodes are not supported. Please specify a track!",
+                "artist" => "Artist links are not supported. Please specify a track!",
+                "album" => "Album links are not supported. Please specify a track!",
+                "playlist" => "Playlist links are not supported. Please specify a track!",
+                "audiobook" => "Audiobook links are not supported. Please specify a track!",
+                _ => null
+            };
+        }
+
+        private static async Task<(bool valid, FullTrack track, string message)> TryGetValidTrack(string trackId)
+        {
+            if (IsSongBlacklisted(trackId))
+                return (false, null, "This song is blocked.");
+
+            FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
+            if (track == null)
+                return (false, null, "No song found.");
+
+            if (IsTrackExplicit(track, null, out string msg)) return (false, null, msg);
+            if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
+            if (IsArtistBlacklisted(track, null, out msg)) return (false, null, msg);
+            if (IsTrackTooLong(track, null, out msg)) return (false, null, msg);
+            if (IsTrackAlreadyInQueue(track, null, out msg)) return (false, null, msg);
+
+            return (true, track, null);
+        }
+
+        private static RequestObject BuildRequestObject(FullTrack track)
+        {
+            string artists = string.Join(", ", track.Artists.Take(4).Select(a => a.Name));
+            string length = FormattedTime((int)track.DurationMs);
+
+            return new RequestObject
+            {
+                Trackid = track.Id,
+                PlayerType = Enums.RequestPlayerType.Spotify.ToString(),
+                Artist = artists,
+                Title = track.Name,
+                Length = length,
+                Requester = "WebSocket",
+                FullRequester = null,
+                Played = 0,
+                Albumcover = track.Album.Images.FirstOrDefault()?.Url
+            };
+        }
+
+        public static async Task<string> AddSongFromWebsocket(string trackId)
+        {
+            string validationError = ValidateTrackId(trackId);
+            if (validationError != null)
+                return validationError;
+
+            (bool valid, FullTrack track, string message) = await TryGetValidTrack(trackId);
+            if (!valid)
+                return message;
+
+            SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
+
+            if (Settings.Settings.AddSrToPlaylist)
+                await AddToPlaylist(track.Id);
+
+            RequestObject o = BuildRequestObject(track);
+            await UploadToQueue(o);
+
+            //GlobalObjects.QueueUpdateQueueWindow();
+
+            return $"{string.Join(", ", track.Artists.Take(2).Select(a => a.Name))} - {track.Name} by has been added to the queue.";
+        }
+
 
         public static TimeSpan ParseLength(string length)
         {
@@ -3355,7 +3433,7 @@ namespace Songify_Slim.Util.Songify
             return new Tuple<string, AnnouncementColors>(item1: response, item2: colors);
         }
 
-        private static async Task<string> GetTrackIdFromInput(string input)
+        public static async Task<string> GetTrackIdFromInput(string input)
         {
             if (input.StartsWith("https://spotify.link/"))
             {

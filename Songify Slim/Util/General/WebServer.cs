@@ -18,6 +18,7 @@ using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
+using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.General
@@ -125,7 +126,7 @@ namespace Songify_Slim.Util.General
                         string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
 
                         // Process the command
-                        string response = await ProcessCommand(message);
+                        string response = await Processmessage(message);
 
                         if (!string.IsNullOrEmpty(response))
                         {
@@ -154,20 +155,27 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        private async Task<string> ProcessCommand(string message)
+        private async Task<string> Processmessage(string message)
         {
-            string command = message.ToLower();
-            if (string.IsNullOrEmpty(command))
+            if (string.IsNullOrEmpty(message))
                 return "";
-            Logger.LogStr($"WEBSOCKET: Command '{message}' received");
-            // Here, we're assuming commands are simple text commands. Adjust parsing logic as necessary.
+            Logger.LogStr($"WEBSOCKET: message '{message}' received");
+            // Here, we're assuming messages are simple text messages. Adjust parsing logic as necessary.
             Device device;
 
-            // Check if the command starts with "vol_set_"
-            if (command.StartsWith("vol_set_"))
+            if (message.StartsWith("queue_add "))
             {
-                // Extract the numeric part of the command
-                string valuePart = command.Substring("vol_set_".Length);
+                string input = message.Replace("queue_add", "").Trim();
+                // Add the current song to the queue
+                string response = await TwitchHandler.AddSongFromWebsocket(await TwitchHandler.GetTrackIdFromInput(input));
+                return response;
+            }
+
+            // Check if the message starts with "vol_set_"
+            if (message.StartsWith("vol_set_"))
+            {
+                // Extract the numeric part of the message
+                string valuePart = message.Substring("vol_set_".Length);
 
                 // Attempt to parse the numeric value
                 if (int.TryParse(valuePart, out int value))
@@ -181,12 +189,13 @@ namespace Songify_Slim.Util.General
                 }
 
                 // Handle invalid value part
-                //Console.WriteLine("Invalid value for volume set command.");
-                return "Invalid value for volume set command.";
+                //Console.WriteLine("Invalid value for volume set message.");
+                return "Invalid value for volume set message.";
             }
 
-            switch (command)
+            switch (message)
             {
+
                 case "send_to_chat":
                     TwitchHandler.SendCurrSong();
                     break;
@@ -256,7 +265,7 @@ namespace Songify_Slim.Util.General
                     return "Volume set to " + MathUtils.Clamp(device.VolumePercent - 5, 0, 100) + "%";
 
                 default:
-                    return $"Unknown command: {message}";
+                    return $"Unknown message: {message}";
             }
 
             return "";

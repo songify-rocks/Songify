@@ -13,8 +13,10 @@ public static class Enums
     public enum SongRequestSource
     {
         Reward,
-        Command
+        Command,
+        Websocket
     }
+
     public enum CommandType
     {
         [Description("Song Request")]
