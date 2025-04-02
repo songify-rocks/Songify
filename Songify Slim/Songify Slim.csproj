@@ -144,16 +144,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Models\BotResponseItem.cs" />
-    <Compile Include="Models\PlaceholderContext.cs" />
-    <Compile Include="Models\PSA.cs" />
-    <Compile Include="Models\QueueAddData.cs" />
-    <Compile Include="Models\QueueItem.cs" />
-    <Compile Include="Models\SimpleTwitchUser.cs" />
-    <Compile Include="Models\TwitchCommand.cs" />
-    <Compile Include="Models\TwitchCommandParams.cs" />
-    <Compile Include="Models\VolumeData.cs" />
-    <Compile Include="Models\WebSocketCommand.cs" />
+    <Compile Include="Models\Responses\BotResponseItem.cs" />
+    <Compile Include="Models\Placeholders\PlaceholderContext.cs" />
+    <Compile Include="Models\Responses\PSA.cs" />
+    <Compile Include="Models\WebSocket\QueueAddData.cs" />
+    <Compile Include="Models\Queue\QueueItem.cs" />
+    <Compile Include="Models\Twitch\SimpleTwitchUser.cs" />
+    <Compile Include="Models\Twitch\TwitchCommand.cs" />
+    <Compile Include="Models\Twitch\TwitchCommandParams.cs" />
+    <Compile Include="Models\WebSocket\VolumeData.cs" />
+    <Compile Include="Models\WebSocket\WebSocketCommand.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -289,8 +289,8 @@
     </Compile>
     <Compile Include="Models\PlayerType.cs" />
     <Compile Include="Models\RequestModel.cs" />
-    <Compile Include="Models\SongInfo.cs" />
-    <Compile Include="Models\TrackInfo.cs" />
+    <Compile Include="Models\Spotify\SongInfo.cs" />
+    <Compile Include="Models\Spotify\TrackInfo.cs" />
     <Compile Include="Properties\Resources.de-DE.Designer.cs">
       <DependentUpon>Resources.de-DE.resx</DependentUpon>
       <AutoGen>True</AutoGen>

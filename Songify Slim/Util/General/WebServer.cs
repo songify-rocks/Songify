@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.IconPacks;
 using Songify_Slim.Views;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -20,7 +21,7 @@ using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Songify_Slim.Util.General
 {
@@ -166,7 +167,7 @@ namespace Songify_Slim.Util.General
             WebSocketCommand command;
             try
             {
-                command = JsonSerializer.Deserialize<WebSocketCommand>(message);
+                command = JsonConvert.DeserializeObject<WebSocketCommand>(message);
             }
             catch (JsonException)
             {
@@ -179,18 +180,20 @@ namespace Songify_Slim.Util.General
             switch (command.Action)
             {
                 case "queue_add":
-                    if (command.Data is null)
+                    if (command.Data == null)
                         return "Missing data for queue_add.";
 
-                    var queueData = command.Data.Value.Deserialize<QueueAddData>();
+                    QueueAddData queueData = command.Data.ToObject<QueueAddData>();
+
                     string trackId = await TwitchHandler.GetTrackIdFromInput(queueData.Track);
                     return await TwitchHandler.AddSongFromWebsocket(trackId, queueData.Requester ?? "WebSocket");
 
                 case "vol_set":
-                    if (command.Data is null)
+                    if (command.Data == null)
                         return "Missing data for vol_set.";
 
-                    var volData = command.Data.Value.Deserialize<VolumeData>();
+                    VolumeData volData = command.Data.ToObject<VolumeData>();
+
                     int volume = MathUtils.Clamp(volData.Value, 0, 100);
                     await SpotifyApiHandler.Spotify.SetVolumeAsync(volume);
                     return $"Volume set to {volume}%";
