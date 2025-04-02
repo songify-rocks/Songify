@@ -186,7 +186,7 @@ namespace Songify_Slim.Util.General
                     QueueAddData queueData = command.Data.ToObject<QueueAddData>();
 
                     string trackId = await TwitchHandler.GetTrackIdFromInput(queueData.Track);
-                    return await TwitchHandler.AddSongFromWebsocket(trackId, queueData.Requester ?? "WebSocket");
+                    return await TwitchHandler.AddSongFromWebsocket(trackId, queueData.Requester ?? "");
 
                 case "vol_set":
                     if (command.Data == null)
