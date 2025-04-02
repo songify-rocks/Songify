@@ -135,9 +135,6 @@
   <data name="brw_SongTooLong" xml:space="preserve">
     <value>Песня слишком длинная</value>
   </data>
-  <data name="brw_Success" xml:space="preserve">
-    <value>Песня успешно добавлена</value>
-  </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Добавить</value>
   </data>
@@ -912,5 +909,8 @@
   </data>
   <data name="Param_TimeToPlay_Desc" xml:space="preserve">
     <value>Время в формате мм:сс, когда будет воспроизведена запрошенная песня.</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Песня успешно добавлена (команда и награда)</value>
   </data>
 </root>

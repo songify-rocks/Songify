@@ -15,13 +15,14 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.ColumnSpan="2" Orientation="Vertical">
-           
+
             <!--#region Song Request Related Responses-->
             <TextBlock
                 Margin="0,16,0,6"
+                d:Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}"
                 FontSize="18"
                 FontWeight="Bold"
-                Text="{DynamicResource UC_BotResponses_SongRequestResponses}" d:Text="{x:Static properties:Resources.UC_BotResponses_SongRequestResponses}" />
+                Text="{DynamicResource UC_BotResponses_SongRequestResponses}" />
 
             <!--<Border
                 MinWidth="60"
@@ -67,9 +68,45 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_Success}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_SongInQueue}" d:Text="{x:Static properties:Resources.brw_SongInQueue}"
+                        Text="{DynamicResource brw_Success}"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="TbSrReward"
+                        MinHeight="23"
+                        VerticalAlignment="Center"
+                        AcceptsReturn="True"
+                        GotFocus="Tb__GotFocus"
+                        LostFocus="Tb_LostFocus"
+                        TextChanged="Tb_SrReward_TextChanged"
+                        TextWrapping="Wrap"
+                        ToolTip="{DynamicResource ParamTooltip}" />
+                </StackPanel>
+            </Border>
+            <Border
+                Margin="0,12,0,6"
+                VerticalAlignment="Bottom"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderThickness="1" />
+
+
+            <Border
+                MinWidth="60"
+                Margin="0,6"
+                Padding="6,6,6,8"
+                Background="{DynamicResource MahApps.Brushes.Accent}"
+                CornerRadius="8">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        Margin="0,0,0,6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_SongInQueue}"
+                        FontSize="14"
+                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Text="{DynamicResource brw_SongInQueue}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSongInQueue"
@@ -100,9 +137,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_MaxSongs}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_MaxSongs}" d:Text="{x:Static properties:Resources.brw_MaxSongs}"
+                        Text="{DynamicResource brw_MaxSongs}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbMaxSongs"
@@ -134,9 +172,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_SongTooLong}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_SongTooLong}" d:Text="{x:Static properties:Resources.brw_SongTooLong}"
+                        Text="{DynamicResource brw_SongTooLong}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbMaxLength"
@@ -167,9 +206,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_UserLevelTooLowCommand}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_UserLevelTooLowCommand}" d:Text="{x:Static properties:Resources.brw_UserLevelTooLowCommand}"
+                        Text="{DynamicResource brw_UserLevelTooLowCommand}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrCommandUSerlevelTooLow"
@@ -200,9 +240,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_UserLevelTooLowReward}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_UserLevelTooLowReward}" d:Text="{x:Static properties:Resources.brw_UserLevelTooLowReward}"
+                        Text="{DynamicResource brw_UserLevelTooLowReward}"
                         TextWrapping="Wrap" />
 
                     <TextBox
@@ -234,9 +275,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_ArtistBlocked}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_ArtistBlocked}" d:Text="{x:Static properties:Resources.brw_ArtistBlocked}"
+                        Text="{DynamicResource brw_ArtistBlocked}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbArtistBlocked"
@@ -267,9 +309,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_ExplicitSongs}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_ExplicitSongs}" d:Text="{x:Static properties:Resources.brw_ExplicitSongs}"
+                        Text="{DynamicResource brw_ExplicitSongs}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbExplicit"
@@ -300,9 +343,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_CommandOnCooldown}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_CommandOnCooldown}" d:Text="{x:Static properties:Resources.brw_CommandOnCooldown}"
+                        Text="{DynamicResource brw_CommandOnCooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrCooldown"
@@ -333,9 +377,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_CommandOnUserCooldown}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_CommandOnUserCooldown}" d:Text="{x:Static properties:Resources.brw_CommandOnUserCooldown}"
+                        Text="{DynamicResource brw_CommandOnUserCooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbSrUserCooldown"
@@ -432,9 +477,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_SongNotFoundInPlaylist}" d:Text="{x:Static properties:Resources.brw_SongNotFoundInPlaylist}"
+                        Text="{DynamicResource brw_SongNotFoundInPlaylist}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbNotFoundInPlaylist"
@@ -466,9 +512,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_FetchError}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_FetchError}" d:Text="{x:Static properties:Resources.brw_FetchError}"
+                        Text="{DynamicResource brw_FetchError}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbError"
@@ -499,9 +546,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_NoSong}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_NoSong}" d:Text="{x:Static properties:Resources.brw_NoSong}"
+                        Text="{DynamicResource brw_NoSong}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbNoSong"
@@ -532,9 +580,10 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_NoTrackFound}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_NoTrackFound}" d:Text="{x:Static properties:Resources.brw_NoTrackFound}"
+                        Text="{DynamicResource brw_NoTrackFound}"
                         TextWrapping="Wrap" />
                     <TextBox
                         x:Name="TbnoTrackFound"
@@ -554,8 +603,9 @@
                     Margin="0,0,0,6"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    d:Text="{x:Static properties:Resources.brw_Refund}"
                     FontSize="14"
-                    Text="{DynamicResource brw_Refund}" d:Text="{x:Static properties:Resources.brw_Refund}"
+                    Text="{DynamicResource brw_Refund}"
                     TextWrapping="Wrap" />
                 <TextBox
                     x:Name="TbRefund"

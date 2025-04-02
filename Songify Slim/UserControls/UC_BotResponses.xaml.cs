@@ -74,6 +74,8 @@ namespace Songify_Slim.UserControls
                     },
                     { "{cd}", "5" },
                     { "{userlevel}", "subscribers" },
+                    { "{ttp}", "1m 37s" },
+
                 };
                 response = replacements.Aggregate(response, (current, pair) => current.Replace(pair.Key, pair.Value));
             }
@@ -186,6 +188,7 @@ namespace Songify_Slim.UserControls
             TbMaxSongs.Text = Settings.BotRespMaxReq;
             TbMaxLength.Text = Settings.BotRespLength;
             TbError.Text = Settings.BotRespError;
+            TbSrReward.Text = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
             //TbSuccess.Text = Settings.BotRespSuccess;
             TbNoSong.Text = Settings.BotRespNoSong;
             //TbModSkip.Text = Settings.BotRespModSkip;
@@ -317,6 +320,12 @@ namespace Songify_Slim.UserControls
         private void Tb_LostFocus(object sender, RoutedEventArgs e)
         {
             SetPreview(null);
+        }
+
+        private void Tb_SrReward_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.Commands.First(cmd => cmd.Name == "Song Request").Response = TbSrReward.Text;
+            SetPreview(sender as TextBox);
         }
     }
 }

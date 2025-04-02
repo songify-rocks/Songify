@@ -146,7 +146,7 @@
     <comment>Header for the textbox when the song is too long</comment>
   </data>
   <data name="brw_Success" xml:space="preserve">
-    <value>Song added successfully</value>
+    <value>Song added successfully (command &amp; reward)</value>
     <comment>Header for the textbox when the song has been added successfully</comment>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">

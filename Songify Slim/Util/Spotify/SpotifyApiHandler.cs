@@ -249,14 +249,14 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        public static TrackInfo GetSongInfo()
+        public static async Task<TrackInfo> GetSongInfo()
         {
             // returns the trackinfo of the current playback (used in the fetch timer)
 
             PlaybackContext context;
             try
             {
-                context = Spotify.GetPlayback();
+                context = await Spotify.GetPlaybackAsync();
             }
             catch (Exception)
             {

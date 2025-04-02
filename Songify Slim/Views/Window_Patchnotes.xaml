@@ -7,11 +7,12 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+    xmlns:wpf1="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
     Title="Patch Notes"
     Width="800"
     Height="450"
     Loaded="MetroWindow_Loaded"
+    ResizeMode="CanResizeWithGrip"
     ShowMaxRestoreButton="False"
     ShowMinButton="False"
     SnapsToDevicePixels="True"
@@ -54,14 +55,13 @@
             DisplayMemberPath="Version"
             SelectedValuePath="Content"
             SelectionChanged="CbxVersions_OnSelectionChanged" />
-        <wpf:ChromiumWebBrowser
+
+        <wpf1:WebView2
             x:Name="WebBrowser"
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="2"
             Margin="0"
-            VerticalAlignment="Stretch"
-            DockPanel.Dock="Bottom"
             SnapsToDevicePixels="True" />
 
 

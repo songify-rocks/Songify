@@ -138,9 +138,6 @@
   <data name="brw_SongInQueue" xml:space="preserve">
     <value>Canzone già in coda</value>
   </data>
-  <data name="brw_Success" xml:space="preserve">
-    <value>Canzone aggiunta con successo</value>
-  </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Aggiungere</value>
   </data>
@@ -911,5 +908,8 @@
   </data>
   <data name="Param_TimeToPlay_Desc" xml:space="preserve">
     <value>Ora in mm:ss in cui verrà riprodotta la canzone richiesta.</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Canzone aggiunta con successo (comando e ricompensa)</value>
   </data>
 </root>

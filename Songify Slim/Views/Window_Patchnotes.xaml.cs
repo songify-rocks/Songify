@@ -10,14 +10,16 @@ using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xaml;
-using CefSharp;
-using CefSharp.Wpf;
-using Application = System.Windows.Application;
-using XamlReader = System.Windows.Markup.XamlReader;
+using Windows.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
+
+
+using ComboBox = System.Windows.Controls.ComboBox;
+using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 
 namespace Songify_Slim.Views
 {
@@ -73,11 +75,6 @@ namespace Songify_Slim.Views
         public WindowPatchnotes()
         {
             InitializeComponent();
-            WebBrowser.BrowserSettings = new CefSharp.BrowserSettings
-            {
-                WindowlessFrameRate = 60 // smooth resizing & scrolling
-            };
-
         }
 
         // Event handler for when the window is loaded
@@ -144,18 +141,30 @@ namespace Songify_Slim.Views
         }
 
         // Event handler for when the selected item in the ComboBox changes
-        private void CbxVersions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void CbxVersions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
-                string markdown = (string)((ComboBox)sender).SelectedValue;
-                string html = htmlTemplate.Replace("{{MARKDOWN_CONTENT}}", JsonSerializer.Serialize(markdown));
-                WebBrowser.LoadHtml(html, "http://local.songify/");
+                try
+                {
+                    string markdown = (string)((ComboBox)sender).SelectedValue;
+                    string html = htmlTemplate.Replace("{{MARKDOWN_CONTENT}}", JsonSerializer.Serialize(markdown));
+                    await WebBrowser.EnsureCoreWebView2Async(null); // Ensures runtime exists
+                    WebBrowser.NavigateToString(html); // Your HTML string
+                }
+                catch (WebView2RuntimeNotFoundException)
+                {
+                    MessageBox.Show("WebView2 Runtime is not installed. Opening patch notes in your browser instead.", "Missing WebView2", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    // Fallback: open external browser
+                    Process.Start(new ProcessStartInfo("https://your-site.com/pn/cached") { UseShellExecute = true });
+                    this.Close(); // Optional: close the window
+                }
             }
-            catch (Exception exception)
+            catch (Exception ex)
             {
                 Logger.LogStr("PATCHNOTES: Error displaying patch notes");
-                Logger.LogExc(exception);
+                Logger.LogExc(ex);
             }
         }
     }

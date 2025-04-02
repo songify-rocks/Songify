@@ -578,7 +578,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // gets the current playing song info
-            TrackInfo songInfo = SpotifyApiHandler.GetSongInfo();
+            TrackInfo songInfo = await SpotifyApiHandler.GetSongInfo();
 
             if (songInfo == null)
             {

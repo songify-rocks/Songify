@@ -657,7 +657,7 @@ namespace Songify_Slim.Util.Songify
                     break;
             }
 
-            GlobalObjects.QueueUpdateQueueWindow();
+            await GlobalObjects.QueueUpdateQueueWindow();
 
             string response = modAction
                 ? $"The request {tmp} requested by @{reqObj.Requester} has been removed."
@@ -1578,7 +1578,7 @@ namespace Songify_Slim.Util.Songify
 
             if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
             {
-                await Task.Delay(2000);
+                //await Task.Delay(2000);
 
                 int trackIndex = GlobalObjects.QueueTracks.IndexOf(
                     GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
@@ -1591,7 +1591,7 @@ namespace Songify_Slim.Util.Songify
 
                     if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
                     {
-                        TrackInfo tI = SpotifyApiHandler.GetSongInfo();
+                        TrackInfo tI = await SpotifyApiHandler.GetSongInfo();
                         if (tI == null) continue;
                         int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
                         timeToplay += TimeSpan.FromMilliseconds(timeLeft);
@@ -4251,7 +4251,7 @@ namespace Songify_Slim.Util.Songify
                 };
 
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
-                GlobalObjects.QueueUpdateQueueWindow();
+                await GlobalObjects.QueueUpdateQueueWindow();
             }
             catch (Exception ex)
             {

@@ -858,7 +858,11 @@ namespace Songify_Slim.Views
 
                 if (Settings.UpdateRequired)
                 {
-                    OpenPatchNotes();
+                    Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
+                    {
+                        UseShellExecute = true
+                    });
+
                     Settings.UpdateRequired = false;
                 }
             }
@@ -1106,7 +1110,12 @@ namespace Songify_Slim.Views
         private void BtnPatchNotes_Click(object sender, RoutedEventArgs e)
         {
             // Check if the patch notes window is already open, if not open it, else switch to it
-            OpenPatchNotes();
+            //OpenPatchNotes();
+
+            Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
+            {
+                UseShellExecute = true
+            });
         }
 
         private static void OpenPatchNotes()

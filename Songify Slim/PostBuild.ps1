@@ -7,7 +7,7 @@ $exeFilePath = "$releaseDir\Songify.exe"
 if (Test-Path -Path $zipFilePath) {
     Remove-Item -Path $zipFilePath -Force  # Remove old zip file if it exists
 }
-
+    
 Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath
 
 # Step 2: Calculate checksums for the zip file

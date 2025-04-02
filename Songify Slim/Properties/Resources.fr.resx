@@ -138,9 +138,6 @@
   <data name="brw_SongTooLong" xml:space="preserve">
     <value>Musique trop longue</value>
   </data>
-  <data name="brw_Success" xml:space="preserve">
-    <value>Musique ajoutée avec succès</value>
-  </data>
   <data name="bw_btnAdd" xml:space="preserve">
     <value>Ajouter</value>
   </data>
@@ -915,5 +912,8 @@
   </data>
   <data name="Param_TimeToPlay_Desc" xml:space="preserve">
     <value>L'heure en mm:ss à laquelle la demande de chanson sera lue.</value>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Chanson ajoutée avec succès (commande et récompense)</value>
   </data>
 </root>

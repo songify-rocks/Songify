@@ -134,7 +134,7 @@
     <comment>Header for the textbox when the song is already in queue</comment>
   </data>
   <data name="brw_Success" xml:space="preserve">
-    <value>Песня паспяхова дададзена</value>
+    <value>Песня паспяхова дададзена (каманда і ўзнагарода)</value>
     <comment>Header for the textbox when the song has been added successfully</comment>
   </data>
   <data name="bw_btnAdd" xml:space="preserve">
