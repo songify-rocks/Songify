@@ -147,10 +147,13 @@
     <Compile Include="Models\BotResponseItem.cs" />
     <Compile Include="Models\PlaceholderContext.cs" />
     <Compile Include="Models\PSA.cs" />
+    <Compile Include="Models\QueueAddData.cs" />
     <Compile Include="Models\QueueItem.cs" />
     <Compile Include="Models\SimpleTwitchUser.cs" />
     <Compile Include="Models\TwitchCommand.cs" />
     <Compile Include="Models\TwitchCommandParams.cs" />
+    <Compile Include="Models\VolumeData.cs" />
+    <Compile Include="Models\WebSocketCommand.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>

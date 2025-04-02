@@ -1643,7 +1643,7 @@ namespace Songify_Slim.Util.Songify
             return (true, track, null);
         }
 
-        private static RequestObject BuildRequestObject(FullTrack track)
+        private static RequestObject BuildRequestObject(FullTrack track, string requester = "")
         {
             string artists = string.Join(", ", track.Artists.Take(4).Select(a => a.Name));
             string length = FormattedTime((int)track.DurationMs);
@@ -1655,14 +1655,14 @@ namespace Songify_Slim.Util.Songify
                 Artist = artists,
                 Title = track.Name,
                 Length = length,
-                Requester = "WebSocket",
+                Requester = requester,
                 FullRequester = null,
                 Played = 0,
                 Albumcover = track.Album.Images.FirstOrDefault()?.Url
             };
         }
 
-        public static async Task<string> AddSongFromWebsocket(string trackId)
+        public static async Task<string> AddSongFromWebsocket(string trackId, string requester = "")
         {
             string validationError = ValidateTrackId(trackId);
             if (validationError != null)
@@ -1677,7 +1677,7 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
 
-            RequestObject o = BuildRequestObject(track);
+            RequestObject o = BuildRequestObject(track, requester);
             await UploadToQueue(o);
 
             //GlobalObjects.QueueUpdateQueueWindow();
