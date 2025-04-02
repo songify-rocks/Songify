@@ -8,14 +8,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xaml;
-using Songify_Slim.Util.Settings;
+using CefSharp;
+using CefSharp.Wpf;
 using Application = System.Windows.Application;
-using Markdown = Markdig.Wpf.Markdown;
 using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace Songify_Slim.Views
@@ -25,10 +26,58 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowPatchnotes
     {
+        private string htmlTemplate = """
+                              <!DOCTYPE html>
+                              <html>
+                              <head>
+                                <meta charset="utf-8" />
+                                <title>Patch Notes</title>
+                              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css">
+                              
+                                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+                                <style>
+                                  body {
+                                    background-color: #0d1117 !important;
+                                    color: #c9d1d9 !important;
+                                    font-family: system-ui, sans-serif !important;
+                                    padding: 2rem !important;
+                                  }
+                                  .markdown-body {
+                                    max-width: 768px;
+                                    margin: 0 auto;
+                                  }
+                                  pre, code {
+                                    background-color: #1e1e1e;
+                                    color: #f5f5f5;
+                                  }
+                                </style>
+                              </head>
+                              <body>
+                              <article class="markdown-body" id="markdown-content">Loading patch notes...</article>
+                              <script id="md" type="application/json">
+                                {{MARKDOWN_CONTENT}}
+                              </script>
+                              
+                              <script>
+                                const raw = JSON.parse(document.getElementById("md").textContent);
+                                document.getElementById("markdown-content").innerHTML = marked.parse(raw);
+                              </script>
+                              
+                              </body>
+                              </html>
+
+                              """;
+
+
         // Constructor to initialize the window
         public WindowPatchnotes()
         {
             InitializeComponent();
+            WebBrowser.BrowserSettings = new CefSharp.BrowserSettings
+            {
+                WindowlessFrameRate = 60 // smooth resizing & scrolling
+            };
+
         }
 
         // Event handler for when the window is loaded
@@ -99,44 +148,14 @@ namespace Songify_Slim.Views
         {
             try
             {
-                // Get the selected markdown text
-                string markdownTxt = (string)((ComboBox)sender).SelectedValue;
-                markdownTxt = $"{markdownTxt.Split(new[] { "Checksum" }, StringSplitOptions.None)[0]}";
-
-                // Convert markdown to XAML
-                MarkdownPipeline pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                string xaml = Markdown.ToXaml(markdownTxt, pipeline);
-                using (MemoryStream stream = new(Encoding.UTF8.GetBytes(xaml)))
-                {
-                    using XamlXmlReader reader = new(stream, new MyXamlSchemaContext());
-                    if (XamlReader.Load(reader) is FlowDocument document)
-                    {
-                        RtbPatchnotes.Document = document;
-                    }
-                }
-
-                // Set the foreground color of the document blocks
-                foreach (Block documentBlock in RtbPatchnotes.Document.Blocks)
-                {
-                    Color themeForeground = (Color)Application.Current.FindResource("MahApps.Colors.ThemeForeground");
-                    documentBlock.Foreground = new SolidColorBrush(themeForeground);
-                }
-
-                // Enable or disable the hyperlink based on the selected item's URL
-                string uri = (((ComboBox)sender).SelectedItem as ReleaseObject)?.Url;
-                if (!string.IsNullOrWhiteSpace(uri))
-                {
-                    Hyperlink.IsEnabled = true;
-                    Hyperlink.NavigateUri = new Uri(uri);
-                }
-                else
-                {
-                    Hyperlink.IsEnabled = false;
-                }
+                string markdown = (string)((ComboBox)sender).SelectedValue;
+                string html = htmlTemplate.Replace("{{MARKDOWN_CONTENT}}", JsonSerializer.Serialize(markdown));
+                WebBrowser.LoadHtml(html, "http://local.songify/");
             }
-            catch
+            catch (Exception exception)
             {
-                // ignore
+                Logger.LogStr("PATCHNOTES: Error displaying patch notes");
+                Logger.LogExc(exception);
             }
         }
     }

@@ -561,6 +561,9 @@
     <PackageReference Include="AvalonEdit">
       <Version>6.3.0.90</Version>
     </PackageReference>
+    <PackageReference Include="CefSharp.Wpf">
+      <Version>134.3.90</Version>
+    </PackageReference>
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>
     </PackageReference>
@@ -795,6 +798,7 @@
     <Resource Include="Resources\songifyBeta.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Content Include="Util\patchnotes.html" />
     <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\css\bulma.min.css" />
     <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\ImplicitGrantAuth\index.html" />
     <Resource Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\1.png" />

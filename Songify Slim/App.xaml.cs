@@ -18,6 +18,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Markdig;
+using CefSharp;
+using CefSharp.Wpf;
 
 namespace Songify_Slim
 {
@@ -89,6 +91,11 @@ namespace Songify_Slim
             // Register global unhandled exception handler
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
+
+            CefSettings settings = new CefSettings();
+            settings.CefCommandLineArgs.Add("enable-gpu", "1");
+            settings.CefCommandLineArgs.Add("disable-gpu-compositing", "0");
+            Cef.Initialize(settings);
 
 
             base.OnStartup(e);

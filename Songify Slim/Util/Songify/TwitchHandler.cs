@@ -1602,7 +1602,7 @@ namespace Songify_Slim.Util.Songify
                     }
                 }
 
-                response += $"{timeToplay.Minutes}m {timeToplay.Seconds}s";
+                response = response.Replace("{ttp}", $"{timeToplay.Minutes}m {timeToplay.Seconds}s");
             }
 
             SendOrAnnounceMessage(e.Channel, response, cmd);

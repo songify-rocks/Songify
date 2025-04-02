@@ -7,12 +7,14 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:markdig="clr-namespace:Markdig.Wpf;assembly=Markdig.Wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
     Title="Patch Notes"
     Width="800"
     Height="450"
     Loaded="MetroWindow_Loaded"
     ShowMaxRestoreButton="False"
     ShowMinButton="False"
+    SnapsToDevicePixels="True"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <FrameworkElement.CommandBindings>
@@ -23,34 +25,54 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <DockPanel Grid.Column="1" Margin="0">
-            <DockPanel
-                Margin="6"
-                DockPanel.Dock="Top"
-                LastChildFill="False">
-                <Label
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Content="Changes" />
-                <TextBlock Margin="6,0,0,0" VerticalAlignment="Center">
-                    <Hyperlink x:Name="Hyperlink" Click="Hyperlink_Click">
-                        See all changes on GitHub
-                    </Hyperlink>
-                </TextBlock>
-                <ComboBox
-                    x:Name="CbxVersions"
-                    Width="100"
-                    DisplayMemberPath="Version"
-                    DockPanel.Dock="Right"
-                    SelectedValuePath="Content"
-                    SelectionChanged="CbxVersions_OnSelectionChanged" />
-            </DockPanel>
-            <WebBrowser x:Name="Browser" Visibility="Collapsed" />
-            <FlowDocumentScrollViewer
-                x:Name="RtbPatchnotes"
-                Margin="0"
-                VerticalAlignment="Stretch"
-                DockPanel.Dock="Bottom" />
-        </DockPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            Orientation="Horizontal">
+            <Label
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="Changes" />
+            <TextBlock Margin="6,0,0,0" VerticalAlignment="Center">
+                <Hyperlink x:Name="Hyperlink" Click="Hyperlink_Click">
+                    See all changes on GitHub
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+        <ComboBox
+            x:Name="CbxVersions"
+            Grid.Row="0"
+            Grid.Column="1"
+            Width="120"
+            Margin="6"
+            HorizontalAlignment="Right"
+            DisplayMemberPath="Version"
+            SelectedValuePath="Content"
+            SelectionChanged="CbxVersions_OnSelectionChanged" />
+        <wpf:ChromiumWebBrowser
+            x:Name="WebBrowser"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0"
+            VerticalAlignment="Stretch"
+            DockPanel.Dock="Bottom"
+            SnapsToDevicePixels="True" />
+
+
+        <FlowDocumentScrollViewer
+            x:Name="RtbPatchnotes"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0"
+            VerticalAlignment="Stretch"
+            DockPanel.Dock="Bottom"
+            Visibility="Collapsed" />
     </Grid>
 </controls:MetroWindow>
