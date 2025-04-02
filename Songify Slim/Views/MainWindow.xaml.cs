@@ -401,18 +401,27 @@ namespace Songify_Slim.Views
 
             bool internetAvailable = await WaitForInternetConnectionAsync();
 
+            MetroDialogSettings dialogSettings = new()
+            {
+                AffirmativeButtonText = "Retry",
+                NegativeButtonText = "Close",
+                FirstAuxiliaryButtonText = "Ignore and Continue"
+            };
+
+
             while (!internetAvailable)
             {
                 // Show a dialog to the user that the app can't run without internet connection and wait for the user to click close or retry
-                MessageDialogResult msgResult = await this.ShowMessageAsync("No Internet Connection",
-                    "It seems that no internet connection could be established.\n\nDo you want to retry or close Songify?", MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings { AffirmativeButtonText = "Retry", NegativeButtonText = "Close" });
+                MessageDialogResult msgResult = await this.ShowMessageAsync(
+                    "No Internet Connection",
+                    "It seems that no internet connection could be established.\n\nDo you want to retry, close Songify, or continue without internet?",
+                    MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary,
+                    dialogSettings
+                );
+
                 switch (msgResult)
                 {
                     case MessageDialogResult.Canceled:
-                        Close();
-                        break;
-
                     case MessageDialogResult.Negative:
                         Close();
                         break;
@@ -422,13 +431,10 @@ namespace Songify_Slim.Views
                         break;
 
                     case MessageDialogResult.FirstAuxiliary:
-                        break;
-
                     case MessageDialogResult.SecondAuxiliary:
-                        break;
-
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        internetAvailable = true; // skip check and break the loop
+                        break;
                 }
             }
 
