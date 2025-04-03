@@ -1584,25 +1584,40 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
 
                 TimeSpan timeToplay = TimeSpan.Zero;
-
-                for (int i = 0; i < trackIndex; i++)
+                TrackInfo tI;
+                if (trackIndex == 0)
                 {
-                    RequestObject item = GlobalObjects.QueueTracks[i];
-
-                    if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+                    tI = await SpotifyApiHandler.GetSongInfo();
+                    if (tI != null)
                     {
-                        TrackInfo tI = await SpotifyApiHandler.GetSongInfo();
-                        if (tI == null) continue;
-                        int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
-                        timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                        if (tI.SongId != trackId)
+                        {
+                            timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    for (int i = 0; i < trackIndex; i++)
                     {
-                        timeToplay += ParseLength(item.Length);
+                        RequestObject item = GlobalObjects.QueueTracks[i];
+
+                        if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+                        {
+                            tI = await SpotifyApiHandler.GetSongInfo();
+                            if (tI == null) continue;
+                            int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
+                            timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                        }
+                        else
+                        {
+                            timeToplay += ParseLength(item.Length);
+                        }
                     }
                 }
 
-                response = response.Replace("{ttp}", $"{timeToplay.Minutes}m {timeToplay.Seconds}s");
+                string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
+                response = response.Replace("{ttp}", ttpString);
             }
 
             SendOrAnnounceMessage(e.Channel, response, cmd);
@@ -4251,7 +4266,6 @@ namespace Songify_Slim.Util.Songify
                 };
 
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Post, Json.Serialize(payload));
-                await GlobalObjects.QueueUpdateQueueWindow();
             }
             catch (Exception ex)
             {

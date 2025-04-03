@@ -96,7 +96,7 @@ namespace Songify_Slim.Util.Songify
             if (string.IsNullOrEmpty(result))
             {
                 AddRequestLocally(payload);
-                UpdateQueueWindow();
+                await GlobalObjects.QueueUpdateQueueWindow(); // <-- await here
                 return;
             }
 
@@ -108,17 +108,19 @@ namespace Songify_Slim.Util.Songify
                     response.FullRequester = ExtractFullRequester(payload);
                 }
 
-                await Application.Current.Dispatcher.BeginInvoke(() =>
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     GlobalObjects.ReqList.Add(response);
-                    UpdateQueueWindow();
                 });
+
+                await GlobalObjects.QueueUpdateQueueWindow(); // <-- only here, after ReqList is up to date
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
             }
         }
+
 
         private static void AddRequestLocally(string payload)
         {
