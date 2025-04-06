@@ -22,6 +22,11 @@ using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
 using Newtonsoft.Json;
+using Songify_Slim.Models.WebSocket;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+
 
 namespace Songify_Slim.Util.General
 {
@@ -29,6 +34,9 @@ namespace Songify_Slim.Util.General
     {
         public bool Run;
         private HttpListener _listener = new();
+        private static readonly ConcurrentDictionary<Guid, WebSocket> ConnectedClients = new();
+        private static readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, WebSocket>> ChannelClients = new();
+
 
         public void StartWebServer(int port)
         {
@@ -110,63 +118,96 @@ namespace Songify_Slim.Util.General
         private async void ProcessWebSocketRequest(HttpListenerContext context)
         {
             WebSocketContext webSocketContext = null;
+            Guid clientId = Guid.NewGuid();
+            string path = context.Request.Url.AbsolutePath;
+
             try
             {
-                webSocketContext = await context.AcceptWebSocketAsync(subProtocol: null);
-                WebSocket webSocket = webSocketContext.WebSocket;
+                webSocketContext = await context.AcceptWebSocketAsync(null);
+                WebSocket socket = webSocketContext.WebSocket;
 
-                while (webSocket.State == WebSocketState.Open)
+                // Add client to the appropriate channel
+                ConcurrentDictionary<Guid, WebSocket> clients = ChannelClients.GetOrAdd(path, _ => new ConcurrentDictionary<Guid, WebSocket>());
+                clients.TryAdd(clientId, socket);
+
+                while (socket.State == WebSocketState.Open)
                 {
                     ArraySegment<byte> buffer = new(new byte[4096]);
-                    WebSocketReceiveResult result;
-                    do
+                    WebSocketReceiveResult result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+
+                    if (buffer.Array == null) continue;
+
+                    string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
+                    string response = await ProcessMessage(message);
+
+                    if (!string.IsNullOrEmpty(response))
                     {
-                        result = await webSocket.ReceiveAsync(buffer, CancellationToken.None);
-
-                        // Decode the received message
-                        if (buffer.Array == null) continue;
-                        string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
-
-                        // Process the command
-                        string response = await ProcessMessage(message);
-
-                        if (!string.IsNullOrEmpty(response))
-                        {
-                            // If the command is recognized but has no response, send an appropriate response
-                            response = "Command executed: " + response;
-                        }
-
-                        // Encode the response message to byte array
-                        if (response == null) continue;
-                        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-                        ArraySegment<byte> responseBuffer = new(responseBytes);
-
-                        // Send the response back to the client
-                        await webSocket.SendAsync(responseBuffer, WebSocketMessageType.Text, true, CancellationToken.None);
-                    } while (!result.EndOfMessage);
+                        byte[] responseBytes = Encoding.UTF8.GetBytes("Command executed: " + response);
+                        await socket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                    }
                 }
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
-                // Handle exception
             }
             finally
             {
+                if (ChannelClients.TryGetValue(path, out var clients))
+                {
+                    clients.TryRemove(clientId, out _);
+                }
+
                 webSocketContext?.WebSocket?.Dispose();
             }
         }
+
+        public async Task BroadcastToChannelAsync(string path, string message)
+        {
+            if (!ChannelClients.TryGetValue(path, out var clients))
+                return;
+
+            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
+            var buffer = new ArraySegment<byte>(messageBytes);
+
+            foreach (KeyValuePair<Guid, WebSocket> pair in clients.ToArray())
+            {
+                Guid id = pair.Key;
+                WebSocket socket = pair.Value;
+
+                try
+                {
+                    if (socket.State == WebSocketState.Open)
+                    {
+                        await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                    }
+                    else
+                    {
+                        clients.TryRemove(id, out _);
+                        socket.Dispose();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    clients.TryRemove(id, out _);
+                    socket.Dispose();
+                }
+            }
+        }
+
 
         private async Task<string> ProcessMessage(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return "";
 
-            Logger.LogStr($"WEBSOCKET: message '{message}' received");
+            //Logger.LogStr($"WEBSOCKET: message '{message}' received");
 
             WebSocketCommand command;
             try
             {
+                Debug.WriteLine(message);
                 command = JsonConvert.DeserializeObject<WebSocketCommand>(message);
             }
             catch (JsonException)
@@ -179,6 +220,16 @@ namespace Songify_Slim.Util.General
 
             switch (command.Action)
             {
+                case "youtube":
+                    if (command.Data == null)
+                        return "Missing data for youtube.";
+                    YoutubeData youtubeData = command.Data.ToObject<YoutubeData>();
+                    if (youtubeData == null)
+                        return "Invalid data for youtube.";
+                    if (!Equals(GlobalObjects.YoutubeData, youtubeData))
+                        GlobalObjects.YoutubeData = youtubeData;
+                    return "";
+
                 case "queue_add":
                     if (command.Data == null)
                         return "Missing data for queue_add.";

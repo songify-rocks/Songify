@@ -154,6 +154,7 @@
     <Compile Include="Models\Twitch\TwitchCommandParams.cs" />
     <Compile Include="Models\WebSocket\VolumeData.cs" />
     <Compile Include="Models\WebSocket\WebSocketCommand.cs" />
+    <Compile Include="Models\WebSocket\YoutubeData.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -201,6 +202,7 @@
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
     <Compile Include="Util\General\EnumExtension.cs" />
+    <Compile Include="Util\General\EnumHelper.cs" />
     <Compile Include="Util\General\Enums.cs" />
     <Compile Include="Util\General\ImageConverter.cs" />
     <Compile Include="Util\General\IOManager.cs" />
@@ -287,7 +289,6 @@
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\PlayerType.cs" />
     <Compile Include="Models\RequestModel.cs" />
     <Compile Include="Models\Spotify\SongInfo.cs" />
     <Compile Include="Models\Spotify\TrackInfo.cs" />

@@ -29,6 +29,12 @@ namespace Songify_Slim.Util.General
                     interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
                 else if (Settings.Settings.AppendSpacesSplitFiles && !string.IsNullOrEmpty(currSong))
                     interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
+
+                if (interpretedText.Trim().StartsWith("-"))
+                {
+                    interpretedText = interpretedText.Remove(0, 1).Trim();
+                }
+
                 File.WriteAllText(songPath, interpretedText);
             }
             catch (Exception e)

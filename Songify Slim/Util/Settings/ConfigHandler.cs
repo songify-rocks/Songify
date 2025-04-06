@@ -507,7 +507,7 @@ namespace Songify_Slim.Util.Settings
         public int FontsizeQueue { get; set; } = 12;
         public int LastShownMotdId { get; set; }
         public int MaxSongLength { get; set; } = 10;
-        public int Player { get; internal set; }
+        public PlayerType Player { get; internal set; }
         public int PosX { get; set; } = 100;
         public int PosY { get; set; } = 100;
         public int RewardGoalAmount { get; set; }

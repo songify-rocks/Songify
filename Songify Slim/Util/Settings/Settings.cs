@@ -357,7 +357,7 @@ namespace Songify_Slim.Util.Settings
             set => SetPauseOption(value);
         }
 
-        public static int Player
+        public static Enums.PlayerType Player
         {
             get => GetSource();
             set => SetSource(value);
@@ -1446,7 +1446,7 @@ namespace Songify_Slim.Util.Settings
             return CurrentConfig.AppConfig.SongBlacklist;
         }
 
-        private static int GetSource()
+        private static Enums.PlayerType GetSource()
         {
             return CurrentConfig.AppConfig.Player;
         }
@@ -2261,7 +2261,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetSource(int value)
+        private static void SetSource(Enums.PlayerType value)
         {
             CurrentConfig.AppConfig.Player = value;
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);

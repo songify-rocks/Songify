@@ -50,6 +50,7 @@ using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
+using static Songify_Slim.Util.General.Enums;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -67,7 +68,7 @@ namespace Songify_Slim.Views
         private int _secondsRemaining = 4;
         private readonly ContextMenu _contextMenu = new();
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
-        private string _selectedSource;
+        private PlayerType _selectedSource;
         private Timer _timerFetcher = new();
         private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new();
@@ -138,17 +139,17 @@ namespace Songify_Slim.Views
 
         private void AddSourcesToSourceBox()
         {
-            string[] sourceBoxItems =
-            [
-                PlayerType.SpotifyWeb,
-                PlayerType.SpotifyLegacy,
-                PlayerType.Deezer,
-                PlayerType.FooBar2000,
-                PlayerType.Vlc,
-                PlayerType.Youtube,
-                PlayerType.YtmDesktop
-            ];
+            var sourceBoxItems = Enum.GetValues(typeof(PlayerType))
+                .Cast<PlayerType>()
+                .Select(p => new
+                {
+                    Value = p,
+                    Name = EnumHelper.GetDescription(p)
+                });
+
             cbx_Source.ItemsSource = sourceBoxItems;
+            cbx_Source.DisplayMemberPath = "Name";
+            cbx_Source.SelectedValuePath = "Value";
         }
 
         private void BtnAboutClick(object sender, RoutedEventArgs e)
@@ -255,31 +256,31 @@ namespace Songify_Slim.Views
         private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
-                // This prevents that the selected is always 0 (initialize components)
                 return;
 
-            _selectedSource = cbx_Source.SelectedValue.ToString();
+            _selectedSource = (PlayerType)cbx_Source.SelectedValue;
 
-            Settings.Player = cbx_Source.SelectedIndex;
+            // Store the actual enum value
+            Settings.Player = (PlayerType)cbx_Source.SelectedValue;
 
-            // Dpending on which source is chosen, it starts the timer that fetches the song info
             SetFetchTimer();
 
-            if (_selectedSource == PlayerType.SpotifyWeb)
-                img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                switch (Settings.Player)
                 {
-                    if (_selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop && Settings.DownloadCover)
-                    {
+                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
+                        break;
+                    default:
                         img_cover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
-                    }
-                }));
+                        break;
+                }
+            }));
         }
+
 
         private void FetchTimer(int ms)
         {
@@ -308,7 +309,7 @@ namespace Songify_Slim.Views
                     break;
 
                 case PlayerType.Youtube:
-                    await Sf.FetchBrowser("YouTube");
+                    await Sf.FetchYoutubeData();
                     break;
 
                 case PlayerType.Vlc:
@@ -721,8 +722,8 @@ namespace Songify_Slim.Views
             GlobalObjects.AppVersion = fvi.FileVersion;
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedIndex = Settings.Player;
-            _selectedSource = cbx_Source.SelectedValue.ToString();
+            cbx_Source.SelectedItem = Settings.Player;
+            _selectedSource = (PlayerType)cbx_Source.SelectedValue;
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
@@ -750,7 +751,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1067,11 +1068,11 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop && Settings.DownloadCover
+                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube && Settings.DownloadCover
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop && Settings.DownloadCover
+                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube && Settings.DownloadCover
                     ? 500
                     : (int)Width - 6;
 
@@ -1240,7 +1241,7 @@ namespace Songify_Slim.Views
                     }
 
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
-                    if ((Settings.Player == 0 || Settings.Player == 6) && Settings.DownloadCover)
+                    if ((Settings.Player == PlayerType.SpotifyWeb || Settings.Player == PlayerType.YtmDesktop || Settings.Player == PlayerType.Youtube) && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;

@@ -51,7 +51,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             // Listen for the 'state-update' event
             _client.On("state-update", async response =>
             {
-                if (Settings.Settings.Player != 6)
+                if (Settings.Settings.Player != Enums.PlayerType.YtmDesktop)
                     return;
 
                 _lastUpdateTime = DateTime.Now; // Update the timestamp

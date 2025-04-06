@@ -401,8 +401,10 @@
                 Padding="2"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
+                DisplayMemberPath="Name"
                 IsTabStop="False"
-                SelectedIndex="0" />
+                SelectedIndex="0"
+                SelectedValuePath="Value" />
             <controls:Badged
                 x:Name="Badge"
                 Margin="12,0,8,0"

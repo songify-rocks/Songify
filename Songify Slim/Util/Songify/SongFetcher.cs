@@ -20,6 +20,9 @@ using System.Xml.Linq;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
 using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
+using System.Web.UI.WebControls;
+using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -34,6 +37,7 @@ namespace Songify_Slim.Util.Songify
         private static readonly string CanvasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
         private static int _id;
         private readonly List<string> _browsers = ["chrome", "opera", "msedge"];
+        private YoutubeData currentYoutubeData = new();
 
         private static readonly List<string> AudioFileTypes =
         [
@@ -101,7 +105,7 @@ namespace Songify_Slim.Util.Songify
                             else if (wintitle is "Spotify" or "Spotify Premium")
                             {
                                 // we assume that the song is paused
-                               await ExecutePauseActions();
+                                await ExecutePauseActions();
                                 return;
                             }
                             break;
@@ -204,7 +208,7 @@ namespace Songify_Slim.Util.Songify
 
             output = output.Format(
                 artist => trackinfo.Artists ?? "",
-                single_artist => trackinfo.Artists ?? "",
+                single_artist => trackinfo.FullArtists == null ? "" : trackinfo.FullArtists.FirstOrDefault().Name,
                 title => trackinfo.Title ?? "",
                 extra => "",
                 uri => trackinfo.SongId ?? "",
@@ -268,7 +272,7 @@ namespace Songify_Slim.Util.Songify
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
                             main.SetTextPreview(Settings.Settings.CustomPauseText);
                         }));
@@ -284,7 +288,7 @@ namespace Songify_Slim.Util.Songify
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
                             main.SetTextPreview("");
                         }));
@@ -294,6 +298,52 @@ namespace Songify_Slim.Util.Songify
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public async Task FetchYoutubeData()
+        {
+            YoutubeData ytData = GlobalObjects.YoutubeData;
+            if (ytData == null)
+                return;
+
+            if (ytData.Artist == currentYoutubeData.Artist && ytData.Title == currentYoutubeData.Title && ytData.VideoId == currentYoutubeData.VideoId)
+                return;
+
+
+            Logger.LogStr($"CORE: Previous Song {currentYoutubeData.Artist} - {currentYoutubeData.Title}");
+
+            Logger.LogStr($"CORE: Now Playing {ytData.Artist} - {ytData.Title}");
+
+            currentYoutubeData = ytData;
+
+            TrackInfo songInfo = new()
+            {
+                Artists = ytData.Artist,
+                Title = ytData.Title,
+                Albums = !string.IsNullOrEmpty(ytData.Cover)
+                    ?
+                    [
+                        new Image
+                        {
+                            Url = ytData.Cover,
+                            Width = 0,
+                            Height = 0
+                        }
+                    ]
+                    : null,
+                SongId = ytData.VideoId,
+                DurationMs = 0,
+                IsPlaying = true,
+                Url = "",
+                DurationPercentage = 0,
+                DurationTotal = 0,
+                Progress = 0,
+                Playlist = null,
+                FullArtists = [],
+
+            };
+
+            await WriteSongInfo(songInfo);
         }
 
         /// <summary>
@@ -517,7 +567,7 @@ namespace Songify_Slim.Util.Songify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
                     main.SetTextPreview(output);
                 }));
@@ -788,13 +838,22 @@ namespace Songify_Slim.Util.Songify
             string currentSongOutput = Settings.Settings.OutputString;
             // this only is used for Spotify because here the artist and title are split
             // replace parameters with actual info
+            string s_singleArtist = songInfo.FullArtists?.FirstOrDefault() != null
+                ? songInfo.FullArtists.FirstOrDefault()?.Name
+                : "";
+
+            string s_artist = songInfo.Artists ?? "";
+            string s_title = songInfo.Title ?? "";
+            string s_uri = songInfo.SongId ?? "";
+            string s_url = songInfo.Url ?? "";
+
             currentSongOutput = currentSongOutput.Format(
-                single_artist => songInfo.FullArtists == null ? "" : songInfo.FullArtists.FirstOrDefault().Name,
-                artist => songInfo.Artists,
-                title => songInfo.Title,
+                single_artist => s_singleArtist,
+                artist => s_artist,
+                title => s_title,
                 extra => "",
-                uri => songInfo.SongId,
-                url => songInfo.Url
+                uri => s_uri,
+                url => s_url
             ).Format();
 
             if (_isLocalTrack && string.IsNullOrEmpty(songInfo.Artists))
@@ -877,11 +936,18 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr($"File {SongPath} couldn't be accessed.");
             }
 
-            IoManager.WriteSplitOutput(Settings.Settings.OutputString.Contains("{single_artist}") ? songInfo.FullArtists.First().Name : songInfo.Artists, songInfo.Title, "", rq?.Requester);
-            
+            IoManager.WriteSplitOutput(
+                Settings.Settings.OutputString.Contains("{single_artist}")
+                    ? songInfo.FullArtists?.FirstOrDefault()?.Name ?? ""
+                    : songInfo.Artists ?? "",
+                songInfo.Title ?? "",
+                "",
+                rq?.Requester ?? ""
+            );
+
             await IoManager.DownloadImage(rq?.FullRequester?.ProfileImageUrl,
                 GlobalObjects.RootDirectory + "/requester.png");
-            
+
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
 
             // if upload is enabled
@@ -987,6 +1053,11 @@ namespace Songify_Slim.Util.Songify
                 MainWindow main = Application.Current.MainWindow as MainWindow;
                 main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
+                    if (currentSongOutput.Trim().StartsWith("-"))
+                    {
+                        currentSongOutput = currentSongOutput.Remove(0, 1).Trim();
+                    }
+
                     main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
                 }));
             });
@@ -1002,7 +1073,7 @@ namespace Songify_Slim.Util.Songify
             return currentSongOutput;
         }
 
-        private static void UpdateWebServerResponse(TrackInfo track)
+        private static async Task UpdateWebServerResponse(TrackInfo track)
         {
             string j = Json.Serialize(track ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
@@ -1020,6 +1091,7 @@ namespace Songify_Slim.Util.Songify
             dictionary["Queue"] = GlobalObjects.ReqList;
             string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
+            await GlobalObjects.WebServer.BroadcastToChannelAsync("/ws/data", updatedJson);
         }
 
         public async Task FetchYtm(YtmdResponse response = null)

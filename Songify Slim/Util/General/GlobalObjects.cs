@@ -29,6 +29,7 @@ using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using System.Collections.Concurrent;
+using Songify_Slim.Models.WebSocket;
 
 namespace Songify_Slim.Util.General
 {
@@ -69,11 +70,13 @@ namespace Songify_Slim.Util.General
         private static readonly ConcurrentQueue<TaskCompletionSource<bool>> UpdateQueue = new();
         private static bool _isProcessingQueue;
         private static string _lastQueueHash = "";
+        public static YoutubeData YoutubeData = null;
 
 
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
+
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
@@ -430,7 +433,7 @@ namespace Songify_Slim.Util.General
                     break;
 
 
-                case 6:
+                case Enums.PlayerType.YtmDesktop:
                     YtmdResponse response = await WebHelper.GetYtmData();
                     if (response == null)
                     {
@@ -562,13 +565,13 @@ namespace Songify_Slim.Util.General
         {
             return Settings.Settings.Player switch
             {
-                0 => "Spotify API",
-                1 => "Spotify Legacy",
-                2 => "Deezer",
-                3 => "Foobar2000",
-                4 => "VLC",
-                5 => "YouTube",
-                6 => "YTM Desktop",
+                Enums.PlayerType.SpotifyWeb => "Spotify API",
+                Enums.PlayerType.SpotifyLegacy => "Spotify Legacy",
+                Enums.PlayerType.Deezer => "Deezer",
+                Enums.PlayerType.FooBar2000 => "Foobar2000",
+                Enums.PlayerType.Vlc => "VLC",
+                Enums.PlayerType.Youtube => "YouTube",
+                Enums.PlayerType.YtmDesktop => "YTM Desktop",
                 _ => ""
             };
         }
