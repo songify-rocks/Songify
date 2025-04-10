@@ -229,9 +229,10 @@ namespace Songify_Slim.Util.General
         }
         public static async Task UpdateQueueWindow()
         {
+            Debug.Write(Settings.Settings.Player);
             switch (Settings.Settings.Player)
             {
-                case 0:
+                case Enums.PlayerType.SpotifyWeb:
                     try
                     {
                         SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
@@ -431,8 +432,6 @@ namespace Songify_Slim.Util.General
                     }
 
                     break;
-
-
                 case Enums.PlayerType.YtmDesktop:
                     YtmdResponse response = await WebHelper.GetYtmData();
                     if (response == null)
@@ -500,6 +499,14 @@ namespace Songify_Slim.Util.General
                     });
 
                     break;
+                case Enums.PlayerType.SpotifyLegacy:
+                case Enums.PlayerType.Deezer:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.Youtube:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 

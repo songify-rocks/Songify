@@ -23,5 +23,8 @@ namespace Songify_Slim.Models.WebSocket
         public string Title { get; set; }
         [JsonProperty("channel")]
         public string Channel { get; set; }
+
+        [JsonProperty("hash")]
+        public string Hash { get; set; }
     }
 }

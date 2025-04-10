@@ -1578,48 +1578,60 @@ namespace Songify_Slim.Util.Songify
 
             if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
             {
-                //await Task.Delay(2000);
-
-                int trackIndex = GlobalObjects.QueueTracks.IndexOf(
-                    GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
-
-                TimeSpan timeToplay = TimeSpan.Zero;
-                TrackInfo tI;
-                if (trackIndex == 0)
+                try
                 {
-                    tI = await SpotifyApiHandler.GetSongInfo();
-                    if (tI != null)
+                    if (GlobalObjects.QueueTracks.Count > 0)
                     {
-                        if (tI.SongId != trackId)
-                        {
-                            timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
-                        }
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < trackIndex; i++)
-                    {
-                        RequestObject item = GlobalObjects.QueueTracks[i];
 
-                        if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+
+                        //await Task.Delay(2000);
+
+                        int trackIndex = GlobalObjects.QueueTracks.IndexOf(
+                            GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
+
+                        TimeSpan timeToplay = TimeSpan.Zero;
+                        TrackInfo tI;
+                        if (trackIndex == 0)
                         {
                             tI = await SpotifyApiHandler.GetSongInfo();
-                            if (tI == null) continue;
-                            int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
-                            timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                            if (tI != null)
+                            {
+                                if (tI.SongId != trackId)
+                                {
+                                    timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
+                                }
+                            }
                         }
                         else
                         {
-                            timeToplay += ParseLength(item.Length);
+                            for (int i = 0; i < trackIndex; i++)
+                            {
+                                RequestObject item = GlobalObjects.QueueTracks[i];
+
+                                if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+                                {
+                                    tI = await SpotifyApiHandler.GetSongInfo();
+                                    if (tI == null) continue;
+                                    int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
+                                    timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                                }
+                                else
+                                {
+                                    timeToplay += ParseLength(item.Length);
+                                }
+                            }
                         }
+                        string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
+                        response = response.Replace("{ttp}", ttpString);
                     }
                 }
-
-                string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
-                response = response.Replace("{ttp}", ttpString);
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
             }
 
+            response = response.Replace("{ttp}", "");
             SendOrAnnounceMessage(e.Channel, response, cmd);
         }
 

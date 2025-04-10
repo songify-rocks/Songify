@@ -197,7 +197,7 @@ namespace Songify_Slim.Util.General
         }
 
 
-        private async Task<string> ProcessMessage(string message)
+        private static async Task<string> ProcessMessage(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return "";

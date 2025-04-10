@@ -306,7 +306,7 @@ namespace Songify_Slim.Util.Songify
             if (ytData == null)
                 return;
 
-            if (ytData.Artist == currentYoutubeData.Artist && ytData.Title == currentYoutubeData.Title && ytData.VideoId == currentYoutubeData.VideoId)
+            if (ytData.Hash == currentYoutubeData.Hash)
                 return;
 
 
@@ -654,11 +654,11 @@ namespace Songify_Slim.Util.Songify
                     _localTrackTitle = songInfo.Title;
                     _trackChanged = true;
 
-                    if (songInfo.Playlist?.Url != null)
+                    if (!string.IsNullOrWhiteSpace(songInfo.Playlist?.Id))
                     {
-                        if (songInfo.Playlist.Url != $"https://open.spotify.com/playlist/{songInfo.Playlist.Url.Split(':').Last()}")
-                            songInfo.Playlist.Url = $"https://open.spotify.com/playlist/{songInfo.Playlist.Url.Split(':').Last()}";
+                        songInfo.Playlist.Url = $"https://open.spotify.com/playlist/{songInfo.Playlist.Id}";
                     }
+
 
                     if (GlobalObjects.CurrentSong != null)
                         Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
