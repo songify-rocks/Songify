@@ -272,6 +272,10 @@ namespace Songify_Slim.Views
                     case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
+                        GlobalObjects.CurrentSong = null;
+                        if(Settings.Player == PlayerType.YtmDesktop)
+                            if (IoClient != null)
+                                IoClient.PrevResponse = new YtmdResponse();
                         break;
                     default:
                         img_cover.Visibility = Visibility.Collapsed;

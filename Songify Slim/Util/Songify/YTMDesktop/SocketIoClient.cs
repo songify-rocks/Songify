@@ -28,7 +28,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             ConnectionTimeout = new TimeSpan(0, 0, 0, 5)
         });
 
-        private YtmdResponse _prevResponse = new();
+        public YtmdResponse PrevResponse = new();
         private DateTime _lastUpdateTime = DateTime.MinValue; // To track the last processed time
         private readonly TimeSpan _throttleInterval = TimeSpan.FromSeconds(0.5); // Throttle interval
 
@@ -93,14 +93,14 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                     }
 
                     // Throttle updates for UI or further actions
-                    if (_prevResponse.Player != null && yTmdResponse.Player.TrackState == _prevResponse.Player.TrackState)
+                    if (PrevResponse.Player != null && yTmdResponse.Player.TrackState == PrevResponse.Player.TrackState)
                     {
                         if (DateTime.Now - _lastUpdateTime < _throttleInterval)
                             return;
                     }
 
                     // Update the UI using the dispatcher
-                    _prevResponse = yTmdResponse;
+                    PrevResponse = yTmdResponse;
                     await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYtm(yTmdResponse)!);
                 }
                 catch (Exception ex)
