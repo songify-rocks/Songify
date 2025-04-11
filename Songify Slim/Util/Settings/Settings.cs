@@ -769,6 +769,18 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string BotRespUserlevelTooLowReward { get => GetBotRespUserlevelTooLowReward(); set => SetBotRespUserlevelTooLowReward(value); }
+        public static string SpotifyRedirectUri { get => GetSpotifyRedirectUri();  set => SetSpotifyRedirectUri(value); }
+
+        private static string GetSpotifyRedirectUri()
+        {
+            return CurrentConfig.SpotifyCredentials.RedirectUri;
+        }
+
+        private static void SetSpotifyRedirectUri(string value)
+        {
+            CurrentConfig.SpotifyCredentials.RedirectUri = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
 
         private static void SetBotRespUserlevelTooLowReward(string value)
         {
@@ -802,7 +814,8 @@ namespace Songify_Slim.Util.Settings
                 DeviceId = GetSpotifyDeviceId(),
                 RefreshToken = GetSpotifyRefreshToken(),
                 Profile = GetSpotifyProfile(),
-                PlaylistCache = GetSpotifyPlaylistCache()
+                PlaylistCache = GetSpotifyPlaylistCache(),
+                RedirectUri = GetSpotifyRedirectUri()                        
             };
 
             TwitchCredentials twitchCredentials = new()

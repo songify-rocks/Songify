@@ -47,10 +47,18 @@ namespace Songify_Slim.Util.Spotify
             string url = altUrl ? GlobalObjects.AltAuthUrl : GlobalObjects.AuthUrl;
             Debug.WriteLine(url);
 
+            string uriType = Settings.Settings.SpotifyRedirectUri switch
+            {
+                "localhost" => "name",
+                "127.0.0.1" => "ip",
+                _ => "name"
+            };
+
+            Debug.WriteLine($"{url}/auth/auth3.php?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}&uri_type={uriType}");
+
             _auth = new TokenSwapAuth(
-                $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
-                "&secret=" + Settings.Settings.ClientSecret,
-                "http://localhost:4002/auth",
+                $"{url}/auth/auth3.php?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}&uri_type={uriType}",
+                $"http://{Settings.Settings.SpotifyRedirectUri}:4002/auth",
                 Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
                 Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
             );

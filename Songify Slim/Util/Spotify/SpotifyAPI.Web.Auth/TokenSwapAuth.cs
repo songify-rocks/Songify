@@ -66,7 +66,7 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         public override string GetUri()
         {
             StringBuilder builder = new(_exchangeServerUri);
-            builder.Append("?");
+            builder.Append(_exchangeServerUri.Contains("?") ? "&" : "?");
             builder.Append("response_type=code");
             builder.Append("&state=" + State);
             builder.Append("&scope=" + Scope.GetStringAttribute(" "));

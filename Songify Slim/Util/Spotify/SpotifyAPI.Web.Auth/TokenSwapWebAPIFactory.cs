@@ -68,8 +68,9 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web.Auth
         /// <param name="timeout">The maximum time in seconds to wait for a SpotifyWebAPI to be returned. The timeout is cancelled early regardless if an auth success or failure occured.</param>
         /// <param name="autoRefresh">Access provided by Spotify expires after 1 hour. If true, access will attempt to be silently (without opening a browser) refreshed automatically.</param>
         /// <param name="openBrowser">Opens the user's browser and visits the exchange server for you, triggering the key exchange. This should be true unless you want to handle the key exchange in a nicer way.</param>
-        public TokenSwapWebApiFactory(string exchangeServerUri, Scope scope = Scope.None, string hostServerUri = "http://localhost:4002", int timeout = 10, bool autoRefresh = false, bool openBrowser = true)
+        public TokenSwapWebApiFactory(string exchangeServerUri, Scope scope = Scope.None, string hostServerUri = "", int timeout = 10, bool autoRefresh = false, bool openBrowser = true)
         {
+            hostServerUri = $"http://{Settings.Settings.SpotifyRedirectUri}:4002";
             AutoRefresh = autoRefresh;
             Timeout = timeout;
             Scope = scope;

@@ -342,6 +342,7 @@ namespace Songify_Slim.Util.Settings
         public string ClientSecret { get; set; } = "";
         public PrivateProfile Profile { get; set; } = new();
         public List<SimplePlaylist> PlaylistCache { get; set; } = [];
+        public string RedirectUri { get; set; } = "localhost";
     }
 
     public class TwitchCredentials

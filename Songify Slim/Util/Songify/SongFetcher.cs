@@ -877,6 +877,7 @@ namespace Songify_Slim.Util.Songify
                     currentSongOutput = currentSongOutput.Replace("}}", "");
                     currentSongOutput = currentSongOutput.Replace("{req}", rq.Requester);
                     GlobalObjects.Requester = rq.Requester;
+                    GlobalObjects.FullRequester = rq.FullRequester;
                 }
                 else
                 {
@@ -884,6 +885,7 @@ namespace Songify_Slim.Util.Songify
                     int end = currentSongOutput.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                     if (start >= 0) currentSongOutput = currentSongOutput.Remove(start, end - start);
                     GlobalObjects.Requester = "";
+                    GlobalObjects.FullRequester = null;
                 }
             }
             else
@@ -893,6 +895,7 @@ namespace Songify_Slim.Util.Songify
                     int start = currentSongOutput.IndexOf("{{", StringComparison.Ordinal);
                     int end = currentSongOutput.LastIndexOf("}}", StringComparison.Ordinal) + 2;
                     if (start >= 0) currentSongOutput = currentSongOutput.Remove(start, end - start);
+                    GlobalObjects.FullRequester = null;
                     GlobalObjects.Requester = "";
                 }
                 catch (Exception ex)
@@ -1085,6 +1088,7 @@ namespace Songify_Slim.Util.Songify
 
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
             dictionary["Requester"] = GlobalObjects.Requester;
+            dictionary["RequesterProfilePic"] = GlobalObjects.FullRequester == null ? "" : GlobalObjects.FullRequester.ProfileImageUrl;
             dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
             dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
             dictionary["QueueCount"] = GlobalObjects.ReqList.Count;

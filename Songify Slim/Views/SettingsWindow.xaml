@@ -2128,15 +2128,34 @@
                                 d:Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
                                 Content="{DynamicResource sw_Integration_SpotifyLinked}" />
                         </DockPanel>
-                        <Button
-                            x:Name="BtnSpotifyLink"
+                        <StackPanel
                             Grid.Row="0"
-                            Width="90"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            d:Content="{x:Static local:Resources.sw_Integration_btnLink}"
-                            Click="Btn_spotifyLink_Click"
-                            Content="{DynamicResource sw_Integration_btnLink}" />
+                            Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="Spotify redirect URI base " />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="?"
+                                TextDecorations="Underline"
+                                ToolTip="The base redirect URL. Change this to 127.0.0.1 if localhost is no longer working for you." />
+                            <ComboBox
+                                SelectionChanged="CbxSpotifyRedirectUri_OnSelectionChanged"
+                                x:Name="CbxSpotifyRedirectUri"
+                                Width="100"
+                                Margin="6,0"
+                                SelectedIndex="1">
+                                <ComboBoxItem Content="localhost" />
+                                <ComboBoxItem Content="127.0.0.1" />
+                            </ComboBox>
+                            <Button
+                                x:Name="BtnSpotifyLink"
+                                Width="90"
+                                d:Content="{x:Static local:Resources.sw_Integration_btnLink}"
+                                Click="Btn_spotifyLink_Click"
+                                Content="{DynamicResource sw_Integration_btnLink}" />
+                        </StackPanel>
+
                         <controls:ToggleSwitch
                             x:Name="TglswSpotify"
                             Grid.Row="1"

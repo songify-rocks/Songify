@@ -141,6 +141,14 @@ namespace Songify_Slim.Views
             TglswSpotify.IsOn = true;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             //TxtbxRewardId.Text = Settings.TwRewardId;
+
+            CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
+            {
+                "localhost" => 0,
+                "127.0.0.1" => 1,
+                _ => CbxSpotifyRedirectUri.SelectedIndex
+            };
+
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -727,7 +735,7 @@ namespace Songify_Slim.Views
 
             foreach (Window currentWindow in Application.Current.Windows)
             {
-                if(currentWindow is not Window_ResponseParams @params) continue;
+                if (currentWindow is not Window_ResponseParams @params) continue;
                 @params.LoadItems();
             }
         }
@@ -1702,6 +1710,18 @@ namespace Songify_Slim.Views
             if (Settings.UnlimitedSrUserlevelsCommand.Contains(value)) return;
             List<int> list = [.. Settings.UnlimitedSrUserlevelsCommand, value];
             Settings.UnlimitedSrUserlevelsCommand = list;
+        }
+
+        private void CbxSpotifyRedirectUri_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.SpotifyRedirectUri = ((ComboBox)sender).SelectedIndex switch
+            {
+                0 => "localhost",
+                1 => "127.0.0.1",
+                _ => Settings.SpotifyRedirectUri
+            };
         }
     }
 }
