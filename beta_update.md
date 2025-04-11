@@ -6,10 +6,13 @@
 ## 🔍 What’s New in This Update
 - Added **WebSocket command support** for external control [📄 WebSocket Docs](https://github.com/songify-rocks/Songify/blob/master/WebSockets.md)
 - New **“Ignore and Continue”** option for startup without internet
-- Added **Belarusian translation**
 - Added **Time-to-play estimation** (`{ttp}`) for song request replies
+- Removed the old way to fetch Youtube data and implemented support for [Youtube Music Desktop](https://github.com/ytmdesktop/ytmdesktop)
+  - Also added a new way to fetch Youtube & Youtube Music: The Songify Browser Extension
+    - It's not yet in the Chrom Web Store, an update on this will follow.   
 - Requester’s **profile picture now saved**
 - Fixed multiple crashes and visibility bugs
+- Fixed Spotify's new rule to use `http://127.0.0.1` instead of `http://localhost` (read more about it [here](https://developer.spotify.com/documentation/web-api/concepts/redirect_uri) and [here](https://developer.spotify.com/blog/2025-02-12-increasing-the-security-requirements-for-integrating-with-spotify)
 
 # 🔧 Full Changelog
 
