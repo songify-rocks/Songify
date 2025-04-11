@@ -840,7 +840,7 @@ namespace Songify_Slim.Util.Songify
             // replace parameters with actual info
             string s_singleArtist = songInfo.FullArtists?.FirstOrDefault() != null
                 ? songInfo.FullArtists.FirstOrDefault()?.Name
-                : "";
+                : songInfo.Artists ?? "";
 
             string s_artist = songInfo.Artists ?? "";
             string s_title = songInfo.Title ?? "";
@@ -1135,13 +1135,13 @@ namespace Songify_Slim.Util.Songify
                     FullArtists = null
                 };
 
-                UpdateWebServerResponse(trackInfo);
+                await UpdateWebServerResponse(trackInfo);
                 //if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
                 //    return;
 
                 await WriteSongInfo(trackInfo, Enums.RequestPlayerType.Youtube);
                 GlobalObjects.CurrentSong = trackInfo;
-                GlobalObjects.QueueUpdateQueueWindow();
+                await GlobalObjects.QueueUpdateQueueWindow();
             }
             catch (Exception)
             {

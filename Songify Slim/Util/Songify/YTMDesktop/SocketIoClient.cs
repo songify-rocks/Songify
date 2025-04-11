@@ -62,7 +62,8 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
                     string res = response.ToString();
                     List<YtmdResponse> yTmdResponseList = JsonConvert.DeserializeObject<List<YtmdResponse>>(res);
                     YtmdResponse yTmdResponse = yTmdResponseList.First();
-
+                    if(yTmdResponse.Player == null)
+                        return;
                     // Calculate percentage
                     double percentage = (yTmdResponse.Player.VideoProgress / yTmdResponse.Video.DurationSeconds) * 100;
                     //Debug.WriteLine($"Progress: {percentage:F2}%");
