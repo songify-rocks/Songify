@@ -159,12 +159,11 @@ namespace Songify_Slim.Util.Spotify
                                     $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                                 Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
 
+                                if (GlobalObjects.SpotifyProfile.Product == "premium") return;
 
                                 if (!Settings.Settings.HideSpotifyPremiumWarning)
                                     await ShowPremiumRequiredDialogAsync();
 
-
-                                if (GlobalObjects.SpotifyProfile.Product == "premium") return;
                                 ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                                     Brushes.DarkOrange;
 
