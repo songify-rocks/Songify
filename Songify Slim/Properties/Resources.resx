@@ -1095,4 +1095,7 @@
   <data name="Param_TimeToPlay_Desc" xml:space="preserve">
     <value>The time in mm:ss when the song request will play.</value>
   </data>
+  <data name="brw_cmd_bansong" xml:space="preserve">
+    <value>Adds the current song to the blocklist and skips it.</value>
+  </data>
 </root>

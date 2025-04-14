@@ -29,7 +29,8 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                // ignored
+                // Logger.LogExc(e);
             }
             return null;
         }

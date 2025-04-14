@@ -913,4 +913,7 @@
   <data name="brw_Success" xml:space="preserve">
     <value>Песня успешно добавлена (команда и награда)</value>
   </data>
+  <data name="brw_cmd_bansong" xml:space="preserve">
+    <value>Добавляет текущую песню в черный список и пропускает ее.</value>
+  </data>
 </root>

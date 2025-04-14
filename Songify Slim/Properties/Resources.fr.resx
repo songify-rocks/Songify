@@ -916,4 +916,7 @@
   <data name="brw_Success" xml:space="preserve">
     <value>Chanson ajoutée avec succès (commande et récompense)</value>
   </data>
+  <data name="brw_cmd_bansong" xml:space="preserve">
+    <value>Ajoute la chanson actuelle à la liste de blocage et l'ignore.</value>
+  </data>
 </root>

@@ -69,6 +69,7 @@ using TwitchLib.Api.V5.Models.Clips;
 using Newtonsoft.Json.Linq;
 using TwitchLib.PubSub.Enums;
 using TwitchLib.PubSub.Models.Responses.Messages.AutomodCaughtMessage;
+using Message = TwitchLib.PubSub.Models.Responses.Message;
 
 
 namespace Songify_Slim.Util.Songify
@@ -360,6 +361,7 @@ namespace Songify_Slim.Util.Songify
                     CommandType.Songlike => HandleSongLikeCommand,
                     CommandType.Volume => HandleVolumeCommand,
                     CommandType.Commands => HandleCommandsCommand,
+                    CommandType.BanSong => HandleBanSongCommand,
                     _ => null
                 };
 
@@ -394,12 +396,47 @@ namespace Songify_Slim.Util.Songify
                         }
                         break;
                     case CommandType.Commands:
+                    case CommandType.BanSong:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
                 TwitchCommandHandler.RegisterCommand(command, handler);
+            }
+        }
+
+        private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdparams)
+        {
+            try
+            {
+                TrackInfo currentSong = GlobalObjects.CurrentSong;
+                if (currentSong == null ||
+                    Settings.Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
+                    return;
+
+                List<TrackItem> blacklist = Settings.Settings.SongBlacklist;
+                blacklist.Add(new TrackItem
+                {
+                    Artists = currentSong.Artists,
+                    TrackName = currentSong.Title,
+                    TrackId = currentSong.SongId,
+                    TrackUri = $"spotify:track:{currentSong.SongId}",
+                    ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
+                });
+                Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+
+                string response = cmd.Response;
+                response = response.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+
+                SendOrAnnounceMessage(message.Channel, response, cmd);
+
+                await SpotifyApiHandler.SkipSong();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogStr("Error while banning song");
+                Logger.LogExc(ex);
             }
         }
 

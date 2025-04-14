@@ -23,6 +23,7 @@ using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 using System.Web.UI.WebControls;
 using Songify_Slim.Models.WebSocket;
 using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using TwitchLib.Api.Helix.Models.Soundtrack;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -32,9 +33,6 @@ namespace Songify_Slim.Util.Songify
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
-        private static readonly string SongPath = GlobalObjects.RootDirectory + "/Songify.txt";
-        private static readonly string CoverPath = GlobalObjects.RootDirectory + "/cover.png";
-        private static readonly string CanvasPath = GlobalObjects.RootDirectory + "/canvas.mp4";
         private static int _id;
         private readonly List<string> _browsers = ["chrome", "opera", "msedge"];
         private YoutubeData currentYoutubeData = new();
@@ -223,7 +221,8 @@ namespace Songify_Slim.Util.Songify
                 output = output.Substring(0, output.Length - 1);
             }
 
-            IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
+            //IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
+            IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "songify.txt"), output.Trim());
 
             if (Settings.Settings.SplitOutput)
             {
@@ -262,10 +261,11 @@ namespace Songify_Slim.Util.Songify
 
                 case Enums.PauseOptions.PauseText:
                     // read the text file
-                    if (!File.Exists(SongPath)) File.Create(SongPath).Close();
-                    IoManager.WriteOutput(SongPath, Settings.Settings.CustomPauseText);
-                    if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText))
-                        await IoManager.DownloadCover(null, CoverPath);
+                    if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
+                    IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.Settings.CustomPauseText);
+                    if (Settings.Settings.DownloadCover &&
+                        (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText))
+                        await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
                     WebHelper.UploadSong(Settings.Settings.CustomPauseText);
                     GlobalObjects.CurrentSong = new TrackInfo();
@@ -280,8 +280,8 @@ namespace Songify_Slim.Util.Songify
                     break;
 
                 case Enums.PauseOptions.ClearAll:
-                    if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, CoverPath);
-                    IoManager.WriteOutput(SongPath, "");
+                    if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                    IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                     if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
                     WebHelper.UploadSong("");
                     GlobalObjects.CurrentSong = new TrackInfo();
@@ -765,14 +765,14 @@ namespace Songify_Slim.Util.Songify
 
                     case Enums.PauseOptions.PauseText:
                         // read the text file
-                        if (!File.Exists(SongPath)) File.Create(SongPath).Close();
-                        IoManager.WriteOutput(SongPath, Settings.Settings.CustomPauseText);
+                        if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
+                        IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.Settings.CustomPauseText);
                         if (!Settings.Settings.KeepAlbumCover)
                         {
-                            if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, CoverPath);
+                            if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)
                             {
-                                IoManager.DownloadCanvas(null, CanvasPath);
+                                IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                                 GlobalObjects.Canvas = null;
                             }
                         }
@@ -785,14 +785,14 @@ namespace Songify_Slim.Util.Songify
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.Settings.KeepAlbumCover)
                         {
-                            if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, CoverPath);
+                            if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)
                             {
-                                IoManager.DownloadCanvas(null, CanvasPath);
+                                IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                                 GlobalObjects.Canvas = null;
                             }
                         }
-                        IoManager.WriteOutput(SongPath, "");
+                        IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                         IoManager.WriteSplitOutput("", "", "");
                         WebHelper.UploadSong("");
                         break;
@@ -908,11 +908,11 @@ namespace Songify_Slim.Util.Songify
             currentSongOutput = CleanFormatString(currentSongOutput);
 
             // read the text file
-            if (!File.Exists(SongPath))
+            if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")))
             {
                 try
                 {
-                    File.Create(SongPath).Close();
+                    File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
                 }
                 catch (Exception e)
                 {
@@ -921,8 +921,8 @@ namespace Songify_Slim.Util.Songify
                 }
             }
 
-            //if (new FileInfo(_songPath).Length == 0) File.WriteAllText(_songPath, currentSongOutput);
-            string temp = File.ReadAllText(SongPath);
+            //if (new FileInfo(_Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Length == 0) File.WriteAllText(_Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), currentSongOutput);
+            string temp = File.ReadAllText(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"));
 
             // if the text file is different to _currentSongOutput (fetched song) or update is forced
             if (temp.Trim() != currentSongOutput.Trim())
@@ -932,11 +932,11 @@ namespace Songify_Slim.Util.Songify
             // write song to the text file
             try
             {
-                IoManager.WriteOutput(SongPath, currentSongOutput);
+                IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), currentSongOutput);
             }
             catch (Exception)
             {
-                Logger.LogStr($"File {SongPath} couldn't be accessed.");
+                Logger.LogStr($"File {Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")} couldn't be accessed.");
             }
 
             IoManager.WriteSplitOutput(
@@ -1043,12 +1043,12 @@ namespace Songify_Slim.Util.Songify
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
             if (Settings.Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
-                IoManager.DownloadCanvas(_canvasResponse.Item2, CanvasPath);
-                await IoManager.DownloadCover(albumUrl, CoverPath);
+                IoManager.DownloadCanvas(_canvasResponse.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
+                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
             else if (Settings.Settings.DownloadCover)
             {
-                await IoManager.DownloadCover(albumUrl, CoverPath);
+                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
 
             Application.Current.Dispatcher.Invoke(() =>

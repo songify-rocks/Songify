@@ -68,7 +68,8 @@ namespace Songify_Slim.UserControls
                 { Enums.CommandType.Volume, Application.Current.TryFindResource("brw_cmd_vol") as string ?? "Fallback Volume" },
                 { Enums.CommandType.Queue, Application.Current.TryFindResource("brw_cmd_queue") as string ?? "Fallback Queue" },
                 { Enums.CommandType.Commands, Application.Current.TryFindResource("brw_cmd_commands") as string ?? "Fallback Commands" },
-                { Enums.CommandType.Pause, Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause" }
+                { Enums.CommandType.Pause, Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause" },
+                { Enums.CommandType.BanSong, Application.Current.TryFindResource("brw_cmd_bansong") as string ?? "Fallback BanSong" }
             };
 
             Command = cmd;
@@ -95,20 +96,17 @@ namespace Songify_Slim.UserControls
             switch (Command.CommandType)
             {
                 case Enums.CommandType.SongRequest:
-                    break;
                 case Enums.CommandType.Next:
-                    break;
                 case Enums.CommandType.Play:
-                    break;
                 case Enums.CommandType.Pause:
-                    break;
                 case Enums.CommandType.Position:
-                    break;
                 case Enums.CommandType.Queue:
-                    break;
                 case Enums.CommandType.Remove:
-                    break;
                 case Enums.CommandType.Skip:
+                case Enums.CommandType.Song:
+                case Enums.CommandType.Songlike:
+                case Enums.CommandType.Commands:
+                case Enums.CommandType.BanSong:
                     break;
                 case Enums.CommandType.Voteskip:
                     if (Command.CustomProperties.TryGetValue("SkipCount", out object skipCountObj) &&
@@ -123,10 +121,7 @@ namespace Songify_Slim.UserControls
                     }
                     PnlVoteSkipExtras.Visibility = Visibility.Visible;
                     break;
-                case Enums.CommandType.Song:
-                    break;
-                case Enums.CommandType.Songlike:
-                    break;
+
                 case Enums.CommandType.Volume:
                     // Create a second response textbox if CustomProperties contains a "VolumeSet" key.
                     if (Command.CustomProperties.TryGetValue("VolumeSetResponse", out object volSetResponse) &&
@@ -143,8 +138,7 @@ namespace Songify_Slim.UserControls
                     PnlVolSet.Visibility = Visibility.Visible;
 
                     break;
-                case Enums.CommandType.Commands:
-                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

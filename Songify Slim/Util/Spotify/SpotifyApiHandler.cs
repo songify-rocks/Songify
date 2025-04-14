@@ -300,17 +300,18 @@ namespace Songify_Slim.Util.Spotify
                 {
                     if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != context.Item.Id)
                     {
-                        FullPlaylist playlist = Spotify.GetPlaylist(context.Context.Uri.Split(':')[2]);
+                        FullPlaylist playlist = await Spotify.GetPlaylistAsync(context.Context.Uri.Split(':')[2]);
                         if (playlist != null || !GlobalObjects.IsObjectDefault(playlist))
                         {
-                            _playlistInfo = new PlaylistInfo
-                            {
-                                Name = playlist.Name,
-                                Id = playlist.Id,
-                                Owner = playlist.Owner.DisplayName,
-                                Url = playlist.Uri,
-                                Image = playlist.Images[0].Url
-                            };
+                            if (playlist is { Id: not null })
+                                _playlistInfo = new PlaylistInfo
+                                {
+                                    Name = playlist.Name,
+                                    Id = playlist.Id,
+                                    Owner = playlist.Owner.DisplayName,
+                                    Url = playlist.Uri,
+                                    Image = playlist.Images[0].Url
+                                };
                         }
                     }
                 }

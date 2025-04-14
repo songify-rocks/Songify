@@ -163,79 +163,179 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             string responseString =
                 // Create manual html and js code in here to get the URL, scrape the jsondata, then send it back to us via "IncommingLocalRequest".
                 // TODO: Separate this data into it's own file.
-                @"
-				<html>
-                    <style>
-                        body {
-                          text-align: center;
-                          padding: 40px 0;
-                          background: #EBF0F5;
-                        }
-                        h1 {
-                            color: #1ed760;
-                            font-family: ""Nunito Sans"", ""Helvetica Neue"", sans-serif;
-                            font-weight: 900;
-                            font-size: 40px;
-                            margin-bottom: 10px;
-                        }
-                        p {
-                            color: #404F5E;
-                            font-family: ""Nunito Sans"", ""Helvetica Neue"", sans-serif;
-                            font-size:20px;
-                            margin: 0;
-                        }
-                        .content {
-                            font-style: normal !important;
-                            color: #9ABC66;
-                            font-size: 50px;
-                            line-height: 200px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-evenly;
-                        }
-                        .card {
-                          background: white;
-                          padding: 60px;
-                          border-radius: 4px;
-                          box-shadow: 0 2px 3px #C8D0D8;
-                          display: inline-block;
-                          margin: 0 auto;
-                        }
-                      </style>
-                      <body>
-                        <div class=""card"">
-                        <div style=""border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;"">
-                          <div class=""content"">
-                              <img src=""https://songify.overcode.tv/img/ms-icon-310x310.png"" style="" height: 50px;""/> + <img src=""https://songify.overcode.tv/img/TwitchGlitchPurple.png"" style="" height: 50px;""/>
-                          </div>
-                        </div>
-                          <h1>Success</h1>
-                          <p>Twitch and Songify are now connected!<br/>This page closes itself in 5 seconds.</p>
-                        </div>
+                """
+                <html>
+                <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+                  @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+                  
+                  body {
+                    text-align: center;
+                    min-height: 100vh;
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #1a1a1a;
+                    background-image: radial-gradient(#1f1f1f 1px, transparent 1px);
+                    background-size: 20px 20px;
+                    font-family: 'Inter', sans-serif;
+                  }
+                
+                  h1 {
+                    color: #1ed760;
+                    font-weight: 700;
+                    font-size: 2.5rem;
+                    margin: 1.5rem 0 1rem;
+                    opacity: 0;
+                    transform: translateY(20px);
+                  }
+                
+                  h1.animate {
+                    animation: fadeUp 0.6s ease-out forwards 0.5s;
+                  }
+                
+                  p {
+                    color: #e2e8f0;
+                    font-size: 1.125rem;
+                    line-height: 1.6;
+                    margin: 0;
+                    opacity: 0;
+                    transform: translateY(20px);
+                  }
+                
+                  p.animate {
+                    animation: fadeUp 0.6s ease-out forwards 0.7s;
+                  }
+                
+                  .songify-text {
+                    font-family: 'Pacifico', cursive;
+                    color: #1ed760;
+                  }
+                
+                  .content {
+                    height: 200px;
+                    width: 200px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto;
+                    position: relative;
+                    opacity: 0;
+                    transform: scale(0.9);
+                  }
+                
+                  .content.animate {
+                    animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                  }
+                
+                  .content img {
+                    height: 70;
+                    transition: transform 0.3s ease;
+                  }
+                
+                  .content img:hover {
+                    transform: scale(1.1);
+                  }
+                
+                  .plus-sign {
+                    margin: 0 1.5rem;
+                    color: #e2e8f0;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                  }
+                
+                  .card {
+                    background: #2b2b2b;
+                    padding: 3rem;
+                    border-radius: 16px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                    max-width: 90%;
+                    width: 440px;
+                    margin: 2rem;
+                    position: relative;
+                    overflow: hidden;
+                    border: 1px solid #363636;
+                  }
+                
+                  .card::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    height: 4px;
+                    background: linear-gradient(90deg, #1ed760, #9147ff);
+                  }
+                
+                  @keyframes fadeUp {
+                    to {
+                      opacity: 1;
+                      transform: translateY(0);
+                    }
+                  }
+                
+                  @keyframes popIn {
+                    to {
+                      opacity: 1;
+                      transform: scale(1);
+                    }
+                  }
+                </style>
 
-						<script>
-							let values =
-							{
-								access_token:""TOKEN"",
-								state: ""STATE""
-							};
-
-							const url = new URLSearchParams(""?"" + window.location.hash.substring(1))
-							window.history.replaceState(null, '', '/');
-							values.access_token = url.get('access_token');
-							values.state = url.get('state');
-
-							jsonData = JSON.stringify(values);
-
-							fetch('VARIABLE_FETCHURI', { method: ""POST"", body: JSON.stringify(jsonData)})
-                            setTimeout(function () {
-                                window.close();
-                                }, 5000);
-
-						</script>
-					</body>
-				</html>
-			";
+                <body>
+                  <div class="card">
+                    <div class="content">
+                      <img src="https://songify.rocks/img/logo.png" alt="Songify Logo" />
+                      <span class="plus-sign">+</span>
+                      <img src="https://songify.overcode.tv/img/TwitchGlitchPurple.png" alt="Twitch Logo" />
+                    </div>
+                    <h1>Success!</h1>
+                    <p><span class="songify-text">Songify</span> and Twitch are now connected!<br />You can close this page.</p>
+                  </div>
+                
+                  <script>
+                    // Wait for logo to load before starting animations
+                    window.addEventListener('load', function() {
+                      const songifyLogo = document.querySelector('img[src*="songify.rocks"]');
+                      
+                      function startAnimations() {
+                        document.querySelector('.content').classList.add('animate');
+                        document.querySelector('h1').classList.add('animate');
+                        document.querySelector('p').classList.add('animate');
+                      }
+                
+                      if (songifyLogo.complete) {
+                        startAnimations();
+                      } else {
+                        songifyLogo.addEventListener('load', startAnimations);
+                      }
+                    });
+                
+                    let values = {
+                      access_token: "TOKEN",
+                      state: "STATE"
+                    };
+                
+                    const url = new URLSearchParams("?" + window.location.hash.substring(1))
+                    window.history.replaceState(null, '', '/');
+                    values.access_token = url.get('access_token');
+                    values.state = url.get('state');
+                
+                    jsonData = JSON.stringify(values);
+                
+                    fetch('VARIABLE_FETCHURI', {
+                      method: "POST",
+                      body: JSON.stringify(jsonData)
+                    })
+                
+                    setTimeout(function() {
+                      window.close();
+                    }, 5000);
+                  </script>
+                </body>
+                </html>
+                """;
             responseString = responseString.Replace("VARIABLE_FETCHURI", ApplicationDetails.FetchUri);
 
             // Save html to buffer and send to browser

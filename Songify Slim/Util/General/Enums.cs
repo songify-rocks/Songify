@@ -69,7 +69,9 @@ public static class Enums
         [Description("Pause")]
         Pause,
         [Description("Commands")]
-        Commands
+        Commands,
+        [Description("Ban Song")]
+        BanSong,
     }
 
     public enum ConfigTypes

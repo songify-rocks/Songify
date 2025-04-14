@@ -1089,4 +1089,7 @@
   <data name="Param_TimeToPlay_Desc" xml:space="preserve">
     <value>Час у фармаце хх:сс, калі запытаная песня пачне прайгравацца.</value>
   </data>
+  <data name="brw_cmd_bansong" xml:space="preserve">
+    <value>Дадае бягучую песню ў спіс блакіроўкі і прапускае яе.</value>
+  </data>
 </root>

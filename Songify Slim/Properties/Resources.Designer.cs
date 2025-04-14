@@ -70,6 +70,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adds the current song to the blocklist and skips it..
+        /// </summary>
+        public static string brw_cmd_bansong {
+            get {
+                return ResourceManager.GetString("brw_cmd_bansong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Returns all active Songify commands..
         /// </summary>
         public static string brw_cmd_commands {
@@ -412,7 +421,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Song added successfully.
+        ///   Looks up a localized string similar to Song added successfully (command &amp; reward).
         /// </summary>
         public static string brw_Success {
             get {
