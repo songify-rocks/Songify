@@ -1009,8 +1009,9 @@ namespace Songify_Slim.Util.Songify
                     .ToList();
 
                 // Join the list into a single string
-                string allowedUserLevelsString = string.Join(", ", allowedUserLevels);
-
+                string allowedUserLevelsString = allowedUserLevels.Any()
+                    ? string.Join(", ", allowedUserLevels)
+                    : "None";
 
                 response = response.Replace("{userlevel}", allowedUserLevelsString);
 
@@ -2251,10 +2252,12 @@ namespace Songify_Slim.Util.Songify
                         string response = Settings.Settings.BotRespUserlevelTooLowCommand;
                         response = response.Replace("{user}", e.ChatMessage.DisplayName);
 
-                        string userLevelNames = string.Join(",", Settings.Settings.UserLevelsReward.Select(level => Enum.GetName(typeof(TwitchUserLevels), level)).ToList());
+                        string userLevelNames = Settings.Settings.UserLevelsReward.Any()
+                            ? string.Join(", ", Settings.Settings.UserLevelsReward
+                                .Select(level => Enum.GetName(typeof(TwitchUserLevels), level)))
+                            : "None";
 
-                        response = response.Replace("{userlevel}",
-                            $"{Enum.GetName(typeof(TwitchUserLevels), userLevelNames)}");
+                        response = response.Replace("{userlevel}", userLevelNames);
 
                         // Send a message to the user that their user level is too low to request songs
                         SendChatMessage(e.ChatMessage.Channel, response);

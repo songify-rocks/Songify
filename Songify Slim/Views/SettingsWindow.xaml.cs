@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -543,6 +544,33 @@ namespace Songify_Slim.Views
                     Process.Start("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
 
                 return;
+            }
+
+            // Shows a message box if the client id or secret is missing
+            MessageDialogResult res = await this.ShowMessageAsync(
+                "Important",
+                $"Just to make sure: Even though you have \"{((ComboBoxItem)CbxSpotifyRedirectUri.SelectedItem).Content}\" selected.\nWhich redirect URI are you using on the Spotify Developer App?",
+                MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings
+                {
+                    ColorScheme = MetroDialogColorScheme.Theme,
+                    OwnerCanCloseWithDialog = true,
+                    AffirmativeButtonText = "http://127.0.0.1:4002/auth",
+                    NegativeButtonText = "http://localhost:4002/auth",
+                    FirstAuxiliaryButtonText = "Cancel",
+                });
+            switch (res)
+            {
+                case MessageDialogResult.Negative:
+                    Settings.SpotifyRedirectUri = "localhost";
+                    break;
+                case MessageDialogResult.Affirmative:
+                    Settings.SpotifyRedirectUri = "127.0.0.1";
+                    break;
+                case MessageDialogResult.Canceled:
+                case MessageDialogResult.FirstAuxiliary:
+                case MessageDialogResult.SecondAuxiliary:
+                default:
+                    return;
             }
 
             // Links Spotify
