@@ -9,6 +9,8 @@ using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -739,51 +741,109 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+                return;
+
             try
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus)
+                        SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                Logger.LogStr($"Error checking live status: {ex.Message}");
             }
 
             List<QueueItem> queueItems = GetQueueItems(message.DisplayName);
-            if (queueItems.Count != 0)
+            if (queueItems == null || queueItems.Count == 0)
             {
-                if (cmd.Response == null) return;
-                string response = cmd.Response;
-                if (!response.Contains("{songs}") || !response.Contains("{/songs}")) return;
-                //Split string into 3 parts, before, between and after the {songs} and {/songs} tags
-                string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
-                string before = split[0].Replace("{user}", message.DisplayName);
-                string between = split[1].Replace("{user}", message.DisplayName);
-                string after = split[2].Replace("{user}", message.DisplayName);
+                SendChatMessage(message.Channel, $"@{message.DisplayName} you have no songs in the current queue.");
+                return;
+            }
 
-                string tmp = "";
-                for (int i = 0; i < queueItems.Count; i++)
+            if (cmd.Response == null || !cmd.Response.Contains("{songs}") || !cmd.Response.Contains("{/songs}"))
+                return;
+
+            string response = cmd.Response;
+            bool showTimeToPlay = response.Contains("{ttp}");
+            string[] split = response.Split(["{songs}", "{/songs}"], StringSplitOptions.None);
+
+            string before = split[0].Replace("{user}", message.DisplayName);
+            string betweenTemplate = split[1].Replace("{user}", message.DisplayName);
+            string after = split[2].Replace("{user}", message.DisplayName);
+
+            List<string> songDetails = [];
+
+            foreach (QueueItem item in queueItems)
+            {
+                string timeToPlay = showTimeToPlay ? await GetEstimatedTimeToPlay(item.Id) : "";
+                string entry = betweenTemplate
+                    .Replace("{pos}", $"#{item.Position}")
+                    .Replace("{song}", item.Title)
+                    .Replace("{ttp}", timeToPlay);
+
+                songDetails.Add(entry);
+            }
+
+            string between = string.Join(" | ", songDetails);
+            string finalResponse = before + between + after;
+
+            SendOrAnnounceMessage(message.Channel, finalResponse, cmd);
+        }
+
+        private static async Task<string> GetEstimatedTimeToPlay(string trackId)
+        {
+            try
+            {
+                ObservableCollection<RequestObject> queue = GlobalObjects.QueueTracks;
+                int index = -1;
+
+                // Find the index of the track
+                for (int i = 0; i < queue.Count; i++)
                 {
-                    QueueItem item = queueItems[i];
-                    tmp += between.Replace("{pos}", "#" + item.Position).Replace("{song}", item.Title);
-                    //If the song is the last one, don't add a newline
-                    if (i != queueItems.Count - 1) tmp += " | ";
+                    if (queue[i].Trackid != trackId) continue;
+                    index = i;
+                    break;
                 }
 
-                between = tmp;
-                // Combine the 3 parts into one string
-                response = before + between + after;
-                SendOrAnnounceMessage(message.Channel, response, cmd);
+                if (index == -1)
+                    return "";
+
+                TimeSpan total = TimeSpan.Zero;
+
+                for (int i = 0; i <= index; i++)
+                {
+                    RequestObject track = queue[i];
+
+                    if (i == 0)
+                    {
+                        // Always treat index 0 as the currently playing track
+                        TrackInfo currentInfo = await SpotifyApiHandler.GetSongInfo();
+                        if (currentInfo == null) continue;
+                        if (currentInfo.SongId != GlobalObjects.CurrentSong.SongId)
+                            continue;
+
+                        int timeLeft = Math.Max(0, currentInfo.DurationTotal - currentInfo.Progress);
+                        total += TimeSpan.FromMilliseconds(timeLeft);
+                    }
+                    else
+                    {
+                        total += ParseLength(track.Length);
+                    }
+                }
+
+                return $"{(int)total.TotalMinutes}m {total.Seconds}s";
             }
-            else
+            catch (Exception ex)
             {
-                SendChatMessage(message.Channel, $"@{message.DisplayName} you have no Songs in the current Queue");
+                Logger.LogStr($"Error calculating TTP: {ex.Message}");
+                return "";
             }
         }
 
@@ -1621,46 +1681,46 @@ namespace Songify_Slim.Util.Songify
                     if (GlobalObjects.QueueTracks.Count > 0)
                     {
 
+                        string timeToPlay = await GetEstimatedTimeToPlay(track.Id);
 
-                        //await Task.Delay(2000);
+                        //int trackIndex = GlobalObjects.QueueTracks.IndexOf(
+                        //    GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
 
-                        int trackIndex = GlobalObjects.QueueTracks.IndexOf(
-                            GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
+                        //TimeSpan timeToplay = TimeSpan.Zero;
+                        //TrackInfo tI;
+                        //if (trackIndex == 0)
+                        //{
+                        //    tI = await SpotifyApiHandler.GetSongInfo();
+                        //    if (tI != null)
+                        //    {
+                        //        if (tI.SongId != trackId)
+                        //        {
+                        //            timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    for (int i = 0; i < trackIndex; i++)
+                        //    {
+                        //        RequestObject item = GlobalObjects.QueueTracks[i];
 
-                        TimeSpan timeToplay = TimeSpan.Zero;
-                        TrackInfo tI;
-                        if (trackIndex == 0)
-                        {
-                            tI = await SpotifyApiHandler.GetSongInfo();
-                            if (tI != null)
-                            {
-                                if (tI.SongId != trackId)
-                                {
-                                    timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for (int i = 0; i < trackIndex; i++)
-                            {
-                                RequestObject item = GlobalObjects.QueueTracks[i];
+                        //        if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
+                        //        {
+                        //            tI = await SpotifyApiHandler.GetSongInfo();
+                        //            if (tI == null) continue;
+                        //            int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
+                        //            timeToplay += TimeSpan.FromMilliseconds(timeLeft);
+                        //        }
+                        //        else
+                        //        {
+                        //            timeToplay += ParseLength(item.Length);
+                        //        }
+                        //    }
+                        //}
+                        //string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
 
-                                if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
-                                {
-                                    tI = await SpotifyApiHandler.GetSongInfo();
-                                    if (tI == null) continue;
-                                    int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
-                                    timeToplay += TimeSpan.FromMilliseconds(timeLeft);
-                                }
-                                else
-                                {
-                                    timeToplay += ParseLength(item.Length);
-                                }
-                            }
-                        }
-                        string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
-                        response = response.Replace("{ttp}", ttpString);
+                        response = response.Replace("{ttp}", timeToPlay);
                     }
                 }
                 catch (Exception exception)
@@ -3053,11 +3113,11 @@ namespace Songify_Slim.Util.Songify
                 return null;
 
             // Split on whitespace
-            var tokens = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = input.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var token in tokens)
+            foreach (string token in tokens)
             {
-                var videoId = ExtractYouTubeVideoId(token);
+                string videoId = ExtractYouTubeVideoId(token);
                 if (!string.IsNullOrEmpty(videoId))
                 {
                     return videoId;
@@ -3114,10 +3174,10 @@ namespace Songify_Slim.Util.Songify
                 //    - watch?v=VIDEOID
                 //    - embed/VIDEOID
                 //    - shorts/VIDEOID
-                var pathSegments = uri.AbsolutePath.Trim('/').Split('/');
+                string[] pathSegments = uri.AbsolutePath.Trim('/').Split('/');
 
                 // Check for query param ?v=VIDEOID
-                var query = HttpUtility.ParseQueryString(uri.Query);
+                NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
                 if (query.AllKeys != null && query["v"] != null)
                 {
                     return query["v"];
@@ -3431,52 +3491,86 @@ namespace Songify_Slim.Util.Songify
 
         private static List<QueueItem> GetQueueItems(string requester = null)
         {
-            // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-            List<QueueItem> temp3 = [];
-            string currsong = "";
-            List<RequestObject> temp = [.. GlobalObjects.ReqList];
+            // Copy the current queue
+            List<RequestObject> requestList = new List<RequestObject>(GlobalObjects.ReqList);
 
+            // Get currently playing song title
+            string currentSong = GetCurrentSongTitle();
+
+            // Filter by requester if specified
+            if (!string.IsNullOrEmpty(requester))
+            {
+                return requestList
+                    .Where(r => r.Requester == requester && r.Trackid != GlobalObjects.CurrentSong.SongId)
+                    .Select((r, i) => new QueueItem
+                    {
+                        Id = r.Trackid,
+                        Position = requestList.IndexOf(r),
+                        Title = $"{r.Artist} - {r.Title}",
+                        Requester = r.Requester
+                    })
+                    .ToList();
+            }
+
+            switch (requestList.Count)
+            {
+                // Return null if the queue is empty
+                case 0:
+                    return null;
+                // Special case: only one item in the list, but it's not the currently playing one
+                case 1:
+                    {
+                        RequestObject onlyRequest = requestList[0];
+                        string onlySong = $"{onlyRequest.Artist} - {onlyRequest.Title}";
+
+                        if (onlySong != currentSong)
+                        {
+                            return
+                            [
+                                new QueueItem
+                            {
+                                Id = onlyRequest.Trackid,
+                                Title = onlySong,
+                                Requester = onlyRequest.Requester
+                            }
+                            ];
+                        }
+
+                        return null;
+                    }
+                default:
+                    {
+                        // Default: return second item in queue (if any)
+                        RequestObject nextRequest = requestList[1];
+
+                        return
+                        [
+                            new QueueItem
+                        {
+                            Id = nextRequest.Trackid,
+                            Title = $"{nextRequest.Artist} - {nextRequest.Title}",
+                            Requester = nextRequest.Requester
+                        }
+                        ];
+                    }
+            }
+        }
+
+        private static string GetCurrentSongTitle()
+        {
+            string song = "";
             Application.Current.Dispatcher.Invoke(() =>
             {
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(MainWindow))
-                    {
-                        currsong = $"{(window as MainWindow)?.SongArtist} - {(window as MainWindow)?.SongTitle}";
-                    }
-            });
+                MainWindow mainWindow = Application.Current.Windows
+                    .OfType<MainWindow>()
+                    .FirstOrDefault();
 
-            if (requester != null)
-            {
-                List<RequestObject> temp2 = temp.FindAll(x => x.Requester == requester);
-                temp3.AddRange(from requestObject in temp2
-                               let pos = temp.IndexOf(requestObject) + 1
-                               select new QueueItem
-                               {
-                                   Position = pos,
-                                   Title = requestObject.Artist + " - " + requestObject.Title,
-                                   Requester = requestObject.Requester
-                               });
-                return temp3;
-            }
-
-            if (temp.Count <= 0) return null;
-            if (temp.Count == 1 && $"{temp[0].Artist} - {temp[0].Title}" != currsong)
-            {
-                temp3.Add(new QueueItem
+                if (mainWindow != null)
                 {
-                    Title = $"{temp[0].Artist} - {temp[0].Title}",
-                    Requester = $"{temp[0].Requester}"
-                });
-                return temp3;
-            }
-
-            if (temp.Count <= 1) return null;
-            temp3.Add(new QueueItem
-            {
-                Title = $"{temp[1].Artist} - {temp[1].Title}",
-                Requester = $"{temp[1].Requester}"
+                    song = $"{mainWindow.SongArtist} - {mainWindow.SongTitle}";
+                }
             });
-            return temp3;
+            return song;
         }
 
         private static Tuple<string, AnnouncementColors> GetStringAndColor(string response)
@@ -4532,6 +4626,7 @@ namespace Songify_Slim.Util.Songify
 
     internal class QueueItem
     {
+        public string Id { get; set; }
         public int Position { get; set; }
         public string Requester { get; set; }
         public string Title { get; set; }

@@ -384,7 +384,7 @@ namespace Songify_Slim.Util.General
                             try
                             {
                                 QueueTracks.Clear();
-                                foreach (var item in tempQueueList)
+                                foreach (RequestObject item in tempQueueList)
                                 {
                                     QueueTracks.Add(item);
                                 }
@@ -506,6 +506,7 @@ namespace Songify_Slim.Util.General
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.Youtube:
+                case Enums.PlayerType.YTMTHCH:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

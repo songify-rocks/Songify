@@ -196,7 +196,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             GlobalObjects.CurrentSong = trackinfo;
-            UpdateWebServerResponse(trackinfo);
+            await UpdateWebServerResponse(trackinfo);
 
             string output = Settings.Settings.OutputString;
 
@@ -665,7 +665,7 @@ namespace Songify_Slim.Util.Songify
                     if (songInfo.SongId != null)
                         Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
 
-                    RequestObject previous = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
+                    RequestObject previous = GlobalObjects.CurrentSong != null ? GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId) : null;
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
                     GlobalObjects.CurrentSong = songInfo;
@@ -746,7 +746,7 @@ namespace Songify_Slim.Util.Songify
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
-                UpdateWebServerResponse(songInfo);
+                await UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)
             {
@@ -1147,6 +1147,62 @@ namespace Songify_Slim.Util.Songify
             {
                 // ignored
             }
+        }
+
+        public async Task FetchYTMTHCH()
+        {
+            YTMYHCHResponse data = await WebHelper.GetYtmthchData();
+            //Debug.WriteLine($"{data.Artist} - {data.Title}");
+            if (data == null)
+                return;
+            TrackInfo t = new TrackInfo
+            {
+                Artists = data.Artist,
+                Title = data.Title,
+                Albums =
+                [
+                    new Image
+                    {
+                        Url = data.ImageSrc,
+                        Width = 0,
+                        Height = 0
+                    }
+                ],
+                SongId = data.VideoId,
+                DurationMs = data.SongDuration * 1000,
+                IsPlaying = !data.IsPaused,
+                Url = data.Url,
+                DurationPercentage = (int)(data.SongDuration == 0 ? 0 : (double)data.ElapsedSeconds / data.SongDuration * 100),
+                DurationTotal = data.SongDuration * 1000,
+                Progress = data.ElapsedSeconds * 1000,
+                Playlist = new PlaylistInfo
+                {
+                    Name = null,
+                    Id = null,
+                    Owner = null,
+                    Url = data.PlaylistId,
+                    Image = null
+                },
+                FullArtists = new List<SimpleArtist>([
+                    new SimpleArtist
+                    {
+                        Error = null,
+                        ExternalUrls = null,
+                        Href = null,
+                        Id = null,
+                        Name = data.Artist,
+                        Type = null,
+                        Uri = null
+                    }
+                ])
+            };
+
+            await UpdateWebServerResponse(t);
+
+            if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == data.VideoId)
+                return;
+            GlobalObjects.CurrentSong = t;
+            await WriteSongInfo(t);
         }
     }
 }

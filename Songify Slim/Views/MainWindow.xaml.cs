@@ -269,11 +269,11 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube when Settings.DownloadCover:
+                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
-                        if(Settings.Player == PlayerType.YtmDesktop)
+                        if (Settings.Player == PlayerType.YtmDesktop)
                             if (IoClient != null)
                                 IoClient.PrevResponse = new YtmdResponse();
                         break;
@@ -335,6 +335,11 @@ namespace Songify_Slim.Views
                 case PlayerType.YtmDesktop:
                     //await Sf.FetchYTM();
                     break;
+
+                case PlayerType.YTMTHCH:
+                    await Sf.FetchYTMTHCH();
+                    break;
+
             }
         }
 
@@ -755,7 +760,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1072,11 +1077,11 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube && Settings.DownloadCover
+                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH && Settings.DownloadCover
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube && Settings.DownloadCover
+                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH && Settings.DownloadCover
                     ? 500
                     : (int)Width - 6;
 
@@ -1156,6 +1161,8 @@ namespace Songify_Slim.Views
                 case PlayerType.SpotifyLegacy:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
+                case PlayerType.YTMTHCH:
+
                     FetchTimer(1000);
                     break;
 
@@ -1169,6 +1176,8 @@ namespace Songify_Slim.Views
                     // Prevent Rate Limiting
                     FetchTimer(Settings.UseOwnApp ? 1000 : 20000);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -1245,7 +1254,11 @@ namespace Songify_Slim.Views
                     }
 
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
-                    if ((Settings.Player == PlayerType.SpotifyWeb || Settings.Player == PlayerType.YtmDesktop || Settings.Player == PlayerType.Youtube) && Settings.DownloadCover)
+                    if ((Settings.Player == PlayerType.SpotifyWeb
+                         || Settings.Player == PlayerType.YtmDesktop
+                         || Settings.Player == PlayerType.Youtube
+                         || Settings.Player == PlayerType.YTMTHCH)
+                        && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;

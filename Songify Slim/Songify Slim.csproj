@@ -156,6 +156,7 @@
     <Compile Include="Models\WebSocket\WebSocketCommand.cs" />
     <Compile Include="Models\WebSocket\YoutubeData.cs" />
     <Compile Include="Models\YTMD\YTMDResponse.cs" />
+    <Compile Include="Models\YTMD\YTMYHCHResponse.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

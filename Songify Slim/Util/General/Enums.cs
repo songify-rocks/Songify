@@ -31,7 +31,10 @@ public static class Enums
         Youtube,
 
         [Description("YTM Desktop")]
-        YtmDesktop
+        YtmDesktop,
+
+        [Description("YouTube Music (th-ch)")]
+        YTMTHCH
     }
 
 

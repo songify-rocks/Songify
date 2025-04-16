@@ -24,6 +24,7 @@ namespace Songify_Slim.Util.Songify
 
         private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
         private static readonly YtmdApiClient ApiClientYtm = new("http://localhost:9863/api/v1");
+        private static readonly HttpClient _httpClient = new HttpClient();
 
         internal enum RequestMethod
         {
@@ -103,10 +104,7 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 RequestObject response = Json.Deserialize<RequestObject>(result);
-                if (response.FullRequester == null)
-                {
-                    response.FullRequester = ExtractFullRequester(payload);
-                }
+                response.FullRequester ??= ExtractFullRequester(payload);
 
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -339,6 +337,32 @@ namespace Songify_Slim.Util.Songify
             };
 
             await ApiClientYtm.Post(Json.Serialize(payload));
+        }
+
+        public static async Task<YTMYHCHResponse> GetYtmthchData()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:26538/api/v1/song-info");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+                    return null;
+                }
+
+                string result = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return JsonConvert.DeserializeObject<YTMYHCHResponse>(result);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+
+            return null;
         }
     }
 }

@@ -129,23 +129,62 @@ namespace Songify_Slim.Util.General
                 // Add client to the appropriate channel
                 ConcurrentDictionary<Guid, WebSocket> clients = ChannelClients.GetOrAdd(path, _ => new ConcurrentDictionary<Guid, WebSocket>());
                 clients.TryAdd(clientId, socket);
-
-                while (socket.State == WebSocketState.Open)
+                try
                 {
-                    ArraySegment<byte> buffer = new(new byte[4096]);
-                    WebSocketReceiveResult result = await socket.ReceiveAsync(buffer, CancellationToken.None);
-
-                    if (buffer.Array == null) continue;
-
-                    string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
-                    string response = await ProcessMessage(message);
-
-                    if (!string.IsNullOrEmpty(response))
+                    while (socket.State == WebSocketState.Open)
                     {
-                        byte[] responseBytes = Encoding.UTF8.GetBytes("Command executed: " + response);
-                        await socket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                        var buffer = new ArraySegment<byte>(new byte[4096]);
+                        WebSocketReceiveResult result;
+
+                        try
+                        {
+                            result = await socket.ReceiveAsync(buffer, CancellationToken.None);
+                        }
+                        catch (WebSocketException ex)
+                        {
+                            Logger.LogExc(ex); // Log and break the loop
+                            break;
+                        }
+
+                        if (result.MessageType == WebSocketMessageType.Close)
+                        {
+                            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
+                            break;
+                        }
+
+                        if (buffer.Array == null) continue;
+
+                        string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
+                        string response = await ProcessMessage(message);
+
+                        if (!string.IsNullOrEmpty(response))
+                        {
+                            byte[] responseBytes = Encoding.UTF8.GetBytes("Command executed: " + response);
+                            await socket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex); // Fallback logging
+                }
+                finally
+                {
+                    if (socket.State != WebSocketState.Closed)
+                    {
+                        try
+                        {
+                            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Shutting down", CancellationToken.None);
+                        }
+                        catch
+                        {
+                            // Ignore, it might already be closed
+                        }
+                    }
+
+                    socket.Dispose();
+                }
+
             }
             catch (Exception e)
             {
