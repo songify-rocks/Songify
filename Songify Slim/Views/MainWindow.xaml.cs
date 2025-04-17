@@ -235,18 +235,10 @@ namespace Songify_Slim.Views
             }
         }
 
-        private async void BtnWidget_Click(object sender, RoutedEventArgs e)
+        private void BtnWidget_Click(object sender, RoutedEventArgs e)
         {
-            if (Settings.Upload)
+            if (!Settings.Upload)
             {
-            }
-            else
-            {
-                // After user confirmation sends a command to the webserver which clears the queue
-                MessageDialogResult msgResult = await this.ShowMessageAsync("",
-                    Properties.Resources.mw_menu_Widget_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                    new MetroDialogSettings { AffirmativeButtonText = "Yes", NegativeButtonText = "No" });
-                if (msgResult != MessageDialogResult.Affirmative) return;
                 Settings.Upload = true;
             }
 
