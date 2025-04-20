@@ -1,4 +1,4 @@
-![Songify](https://songify.rocks/img/Songify.png)  
+![Songify](https://github.com/user-attachments/assets/06d27662-18c8-465a-a2e9-a30be43830cb)
 
 Your number one companion for all your musical needs while streaming.  
 
