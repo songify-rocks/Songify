@@ -189,30 +189,16 @@ namespace Songify_Slim.UserControls
             TbMaxLength.Text = Settings.BotRespLength;
             TbError.Text = Settings.BotRespError;
             TbSrReward.Text = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
-            //TbSuccess.Text = Settings.BotRespSuccess;
             TbNoSong.Text = Settings.BotRespNoSong;
-            //TbModSkip.Text = Settings.BotRespModSkip;
-            //TbVoteSkip.Text = Settings.BotRespVoteSkip;
-            //TbPos.Text = Settings.BotRespPos;
-            //TbNext.Text = Settings.BotRespNext;
-            //TbSong.Text = Settings.BotRespSong;
             TbRefund.Text = Settings.BotRespRefund;
-            //TbSongLike.Text = Settings.BotRespSongLike;
             TbNotFoundInPlaylist.Text = Settings.BotRespPlaylist;
-            //TbRemove.Text = Settings.BotRespRemove;
             TbExplicit.Text = Settings.BotRespTrackExplicit;
             TbSrCooldown.Text = Settings.BotRespCooldown;
             TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
             TbSrUserCooldown.Text = Settings.BotRespUserCooldown;
             TbSrCommandUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowCommand;
             TbSrRewardUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowReward;
-
-            //TbTriggerSong.Text = $"!{Settings.BotCmdSongTrigger}";
-            //TbTriggerRemove.Text = $"!{Settings.BotCmdRemoveTrigger}";
-            //TbTriggerPos.Text = $"!{Settings.BotCmdPosTrigger}";
-            //TbTriggerNext.Text = $"!{Settings.BotCmdNextTrigger}";
-            //TbTriggerLike.Text = $"!{Settings.BotCmdSonglikeTrigger}";
-
+            
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
                 box.SelectedIndex = 0;
@@ -240,7 +226,15 @@ namespace Songify_Slim.UserControls
                 resetItem.Click += (_, _) =>
                 {
                     // Reset the TextBox text to the default stored in Tag
-                    textBox.Text = _textBoxDefaults[textBox.Name];
+                    if (_textBoxDefaults.TryGetValue(textBox.Name, out string defaultValue))
+                    {
+                        textBox.Text = defaultValue;
+                    }
+                    else
+                    {
+                        // Fallback: reset to what was originally there (stored in Tag)
+                        textBox.Text = textBox.Tag?.ToString() ?? string.Empty;
+                    }
                 };
 
                 // Add the items to the context menu
@@ -265,8 +259,6 @@ namespace Songify_Slim.UserControls
                 // Assign the context menu to the TextBox
                 textBox.ContextMenu = contextMenu;
             }
-
-            //TbSong.Focus();
         }
 
         private void TbNotFoundInPlaylist_TextChanged(object sender, TextChangedEventArgs e)

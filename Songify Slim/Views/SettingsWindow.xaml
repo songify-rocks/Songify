@@ -1653,7 +1653,6 @@
                                         HorizontalAlignment="Right"
                                         d:Content="{x:Static local:Resources.Sw_SpotifySR_UnlimitedSRs}"
                                         Content="{DynamicResource Sw_SpotifySR_UnlimitedSRs}"
-                                        IsOn="True"
                                         Toggled="ToggleSwitchUnlimitedSR_Toggled" />
                                     <ComboBox
                                         x:Name="CbxUnlimitedUserLevelsCommand"

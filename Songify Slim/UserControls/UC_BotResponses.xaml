@@ -23,34 +23,6 @@
                 FontSize="18"
                 FontWeight="Bold"
                 Text="{DynamicResource UC_BotResponses_SongRequestResponses}" />
-
-            <!--<Border
-                MinWidth="60"
-                Margin="0,6"
-                Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
-                CornerRadius="8">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock
-                        Margin="0,0,6,6"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Text="{DynamicResource brw_Success}" d:Text="{x:Static properties:Resources.brw_Success}"
-                        TextWrapping="Wrap" />
-                    <TextBox
-                        x:Name="TbSuccess"
-                        MinHeight="23"
-                        VerticalAlignment="Center"
-                        AcceptsReturn="True"
-                        GotFocus="Tb__GotFocus"
-                        LostFocus="Tb_LostFocus"
-                        TextChanged="Tb_Success_TextChanged"
-                        TextWrapping="Wrap"
-                        ToolTip="{DynamicResource ParamTooltip}" />
-                </StackPanel>
-            </Border>-->
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
