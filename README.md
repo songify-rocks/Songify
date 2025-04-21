@@ -1,4 +1,4 @@
-![Songify](https://songify.rocks/img/Songify.png)  
+![Songify](https://github.com/user-attachments/assets/06d27662-18c8-465a-a2e9-a30be43830cb)
 
 Your number one companion for all your musical needs while streaming.  
 
@@ -39,10 +39,11 @@ Songify bridges Spotify and Twitch using their respective APIs to offer seamless
   
 Songify not only works with Spotify but with these players as well:
   - YouTube
-  - Deezer
+  - ~Deezer~
   - foobar2000
   - VLC
   - [YTMDesktop](https://github.com/ytmdesktop/ytmdesktop)
+  - [th-ch/youtube-music](https://github.com/th-ch/youtube-music)
 
 ---
 
