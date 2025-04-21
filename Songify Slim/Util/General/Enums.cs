@@ -18,9 +18,6 @@ public static class Enums
         [Description("Spotify (Legacy)")]
         SpotifyLegacy,
 
-        [Description("Deezer")]
-        Deezer,
-
         [Description("foobar2000")]
         FooBar2000,
 
@@ -28,7 +25,7 @@ public static class Enums
         Vlc,
 
         [Description("Browser Companion")]
-        Youtube,
+        BrowserCompanion,
 
         [Description("YTM Desktop")]
         YtmDesktop,

@@ -827,7 +827,7 @@ namespace Songify_Slim.Views
 
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            // Sets the source (Spotify, Youtube, Nightbot)
+            // Sets the source (Spotify, BrowserCompanion, Nightbot)
             if (!IsLoaded)
                 // This prevents that the selected is always 0 (initialize components)
                 return;

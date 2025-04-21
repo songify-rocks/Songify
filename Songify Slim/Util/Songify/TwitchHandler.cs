@@ -1619,8 +1619,10 @@ namespace Songify_Slim.Util.Songify
                             unlimitedSr = Settings.Settings.UnlimitedSrUserlevelsCommand.Intersect(user.UserLevels).Any();
                         }
                         break;
+                    case SongRequestSource.Websocket:
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(source), source, null);
+                        //ignored
+                        break;
                 }
             }
 
@@ -1655,8 +1657,7 @@ namespace Songify_Slim.Util.Songify
             {
                 requestUser = x.Users[0].ToSimpleUser();
             }
-
-
+            
             RequestObject o = new()
             {
                 Trackid = track.Id,
@@ -1672,53 +1673,14 @@ namespace Songify_Slim.Util.Songify
 
             await UploadToQueue(o);
             //GlobalObjects.QueueUpdateQueueWindow();
-
-
+            
             if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
             {
                 try
                 {
                     if (GlobalObjects.QueueTracks.Count > 0)
                     {
-
                         string timeToPlay = await GetEstimatedTimeToPlay(track.Id);
-
-                        //int trackIndex = GlobalObjects.QueueTracks.IndexOf(
-                        //    GlobalObjects.QueueTracks.First(qT => qT.Trackid == track.Id));
-
-                        //TimeSpan timeToplay = TimeSpan.Zero;
-                        //TrackInfo tI;
-                        //if (trackIndex == 0)
-                        //{
-                        //    tI = await SpotifyApiHandler.GetSongInfo();
-                        //    if (tI != null)
-                        //    {
-                        //        if (tI.SongId != trackId)
-                        //        {
-                        //            timeToplay += TimeSpan.FromMilliseconds(tI.DurationTotal - tI.Progress);
-                        //        }
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    for (int i = 0; i < trackIndex; i++)
-                        //    {
-                        //        RequestObject item = GlobalObjects.QueueTracks[i];
-
-                        //        if (i == 0 && item.Trackid == GlobalObjects.CurrentSong.SongId)
-                        //        {
-                        //            tI = await SpotifyApiHandler.GetSongInfo();
-                        //            if (tI == null) continue;
-                        //            int timeLeft = Math.Max(0, tI.DurationTotal - tI.Progress);
-                        //            timeToplay += TimeSpan.FromMilliseconds(timeLeft);
-                        //        }
-                        //        else
-                        //        {
-                        //            timeToplay += ParseLength(item.Length);
-                        //        }
-                        //    }
-                        //}
-                        //string ttpString = $"{(int)timeToplay.TotalMinutes}m {timeToplay.Seconds}s";
 
                         response = response.Replace("{ttp}", timeToPlay);
                     }
@@ -2434,7 +2396,7 @@ namespace Songify_Slim.Util.Songify
             //    {
             //        Uuid = Settings.Settings.Uuid,
             //        Trackid = videoId,
-            //        PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.Youtube),
+            //        PlayerType = Enum.GetName(typeof(Enums.RequestPlayerType), Enums.RequestPlayerType.BrowserCompanion),
             //        Artist = "",
             //        Title = title,
             //        Length = "",
@@ -4524,7 +4486,8 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public string ReadableUserLevel => ((TwitchUserLevels)UserLevels.Max()).ToString();
+        //public string ReadableUserLevel => ((TwitchUserLevels)UserLevels.Max()).ToString();
+        public string ReadableUserLevel => string.Join(", ", UserLevels.Select(level => ((TwitchUserLevels)level).ToString()));
 
         public int SubTier
         {

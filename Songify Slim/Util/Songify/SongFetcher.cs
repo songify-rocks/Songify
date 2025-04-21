@@ -33,10 +33,7 @@ namespace Songify_Slim.Util.Songify
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
-        private static int _id;
-        private readonly List<string> _browsers = ["chrome", "opera", "msedge"];
         private YoutubeData currentYoutubeData = new();
-
         private static readonly List<string> AudioFileTypes =
         [
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf",
@@ -44,8 +41,6 @@ namespace Songify_Slim.Util.Songify
             ".oga", ".mogg", ".opus", ".ra", ".rm", ".raw", ".rf64", ".sln", ".tta", ".voc", ".vox", ".wav", ".wma",
             ".wv", ".webm", ".8svx", ".cda"
         ];
-
-        private AutomationElement _parent;
         private static bool _trackChanged;
         private string _localTrackTitle;
         private static bool _isLocalTrack;
@@ -344,265 +339,6 @@ namespace Songify_Slim.Util.Songify
             };
 
             await WriteSongInfo(songInfo);
-        }
-
-        /// <summary>
-        ///     A method to fetch the song that's currently playing on Youtube.
-        ///     returns empty string if unsuccessful and custom pause text is not set.
-        ///     Currently supported browsers: Google Chrome
-        /// </summary>
-        /// <param name="website"></param>
-        /// <returns>Returns String with Youtube Video Title</returns>
-        public Task FetchBrowser(string website)
-        {
-            string browser = "";
-            TrackInfo songInfo = null;
-            // chrome, opera, msedge
-            foreach (string s in _browsers.Where(s => Process.GetProcessesByName(s).Length > 0))
-            {
-                browser = s;
-                break;
-            }
-
-            Process[] procsBrowser = Process.GetProcessesByName(browser);
-
-            foreach (Process procBrowser in procsBrowser)
-            {
-                // the chrome process must have a window
-                if (procBrowser.MainWindowHandle == IntPtr.Zero) continue;
-
-                AutomationElement elm =
-                    _parent ?? AutomationElement.FromHandle(procBrowser.MainWindowHandle);
-
-                string formattedString;
-                if (_id == 0)
-                    // find the automation element
-                    try
-                    {
-                        AutomationElementCollection elementCollection = elm.FindAll(TreeScope.Descendants,
-                            new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.TabItem));
-                        foreach (AutomationElement elem in elementCollection)
-                            // if the tab item Name contains Youtube
-                            switch (website)
-                            {
-                                case "YouTube":
-                                    if (elem.Current.Name.Contains("YouTube"))
-                                    {
-                                        _id = elem.Current.ControlType.Id;
-                                        _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                        //UpdateWebServerResponse();
-                                        // Regex pattern to replace the notification in front of the tab (1) - (99+)
-                                        //return FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
-                                        formattedString = FormattedString("YouTube", Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
-                                        songInfo = new TrackInfo
-                                        {
-                                            Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
-                                            Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
-                                            Albums = null,
-                                            SongId = null,
-                                            DurationMs = 0,
-                                            IsPlaying = false,
-                                            Url = null,
-                                            DurationPercentage = 0,
-                                            DurationTotal = 0,
-                                            Progress = 0,
-                                            Playlist = null
-                                        };
-                                    }
-
-                                    break;
-
-                                case "Deezer":
-                                    if (elem.Current.Name.Contains("Deezer"))
-                                    {
-                                        _id = elem.Current.ControlType.Id;
-                                        _parent = TreeWalker.RawViewWalker.GetParent(elem);
-                                        //UpdateWebServerResponse();
-                                        //return FormattedString("Deezer", elem.Current.Name);
-                                        formattedString = FormattedString("Deezer", elem.Current.Name);
-                                        songInfo = new TrackInfo
-                                        {
-                                            Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
-                                            Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
-                                            Albums = null,
-                                            SongId = null,
-                                            DurationMs = 0,
-                                            IsPlaying = false,
-                                            Url = null,
-                                            DurationPercentage = 0,
-                                            DurationTotal = 0,
-                                            Progress = 0,
-                                            Playlist = null
-                                        };
-                                    }
-                                    break;
-                            }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                        // Chrome has probably changed something, and above walking needs to be modified. :(
-                        // put an assertion here or something to make sure you don't miss it
-                    }
-                else
-                    try
-                    {
-                        AutomationElement element =
-                            elm.FindFirst(TreeScope.Descendants,
-                                new PropertyCondition(AutomationElement.ControlTypeProperty,
-                                    ControlType.LookupById(_id)));
-
-                        // if the tab item Name contains Youtube
-                        switch (website)
-                        {
-                            case "YouTube":
-                                if (element == null)
-                                    break;
-                                if (element.Current.Name.Contains("YouTube"))
-                                {
-                                    //_id = element.Current.ControlType.Id;
-                                    //_parent = TreeWalker.RawViewWalker.GetParent(element);
-                                    // Regex pattern to replace the notification in front of the tab (1) - (99+)
-                                    formattedString = FormattedString("YouTube", Regex.Replace(element.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", ""));
-                                    //try splitting the formatted string to Artist and Title
-                                    songInfo = new TrackInfo
-                                    {
-                                        Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
-                                        Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
-                                        Albums = null,
-                                        SongId = null,
-                                        DurationMs = 0,
-                                        IsPlaying = false,
-                                        Url = null,
-                                        DurationPercentage = 0,
-                                        DurationTotal = 0,
-                                        Progress = 0,
-                                        Playlist = null
-                                    };
-                                }
-
-                                break;
-
-                            case "Deezer":
-                                if (element.Current.Name.Contains("Deezer"))
-                                {
-                                    _id = element.Current.ControlType.Id;
-                                    _parent = TreeWalker.RawViewWalker.GetParent(element);
-                                    formattedString = FormattedString("Deezer", element.Current.Name);
-                                    //try splitting the formatted string to Artist and Title
-                                    songInfo = GlobalObjects.CurrentSong = new TrackInfo
-                                    {
-                                        Artists = formattedString.Contains("-") ? formattedString.Split('-')[0].Trim() : formattedString,
-                                        Title = formattedString.Contains("-") ? formattedString.Split('-')[1].Trim() : formattedString,
-                                        Albums = null,
-                                        SongId = null,
-                                        DurationMs = 0,
-                                        IsPlaying = false,
-                                        Url = null,
-                                        DurationPercentage = 0,
-                                        DurationTotal = 0,
-                                        Progress = 0,
-                                        Playlist = null
-                                    };
-                                }
-                                break;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
-            }
-
-            if (songInfo == null || songInfo == GlobalObjects.CurrentSong)
-            {
-                return Task.CompletedTask;
-            }
-            GlobalObjects.CurrentSong = songInfo;
-            UpdateWebServerResponse(songInfo);
-
-            string output = Settings.Settings.OutputString;
-
-            int start = output.IndexOf("{{", StringComparison.Ordinal);
-            int end = output.LastIndexOf("}}", StringComparison.Ordinal) + 2;
-            if (start >= 0) output = output.Remove(start, end - start);
-
-            output = output.Format(
-                artist => songInfo.Artists ?? "",
-                title => songInfo.Title ?? "",
-                extra => "",
-                uri => songInfo.SongId ?? "",
-                url => songInfo.Url ?? ""
-            ).Format();
-
-            output = output.Trim();
-
-            if (output.EndsWith("-"))
-            {
-                // Remove the trailing "-" if it exists
-                output = output.Substring(0, output.Length - 1);
-            }
-
-            IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
-
-            if (Settings.Settings.SplitOutput)
-            {
-                IoManager.WriteSplitOutput(songInfo?.Artists, songInfo?.Title, "");
-            }
-
-            try
-            {
-                WebHelper.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                // if error occurs write text to the status asynchronous
-                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
-                }));
-            }
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    main.SetTextPreview(output);
-                }));
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private static string FormattedString(string player, string temp)
-        {
-            string s = temp;
-            int index;
-            switch (player)
-            {
-                case "YouTube":
-                    index = s.LastIndexOf("- YouTube", StringComparison.Ordinal);
-                    // Remove everything after the last "-" int the string
-                    // which is "- Youtube" and info that music is playing on this tab
-                    if (index > 0)
-                        s = s.Substring(0, index);
-                    s = s.Trim();
-                    break;
-
-                case "Deezer":
-                    //string temp = Regex.Replace(elem.Current.Name, @"^\([\d]*(\d+)[\d]*\+*\)", "");
-                    index = s.LastIndexOf("- Deezer", StringComparison.Ordinal);
-                    // Remove everything after the last "-" int the string
-                    // which is "- Youtube" and info that music is playing on this tab
-                    if (index > 0)
-                        s = s.Substring(0, index);
-                    s = s.Trim();
-                    break;
-            }
-
-            return s;
         }
 
         /// <summary>
@@ -1138,6 +874,8 @@ namespace Songify_Slim.Util.Songify
                 await UpdateWebServerResponse(trackInfo);
                 //if (GlobalObjects.CurrentSong.SongId == response.Video.Id && ((MainWindow)Application.Current.MainWindow)?.TxtblockLiveoutput.Text != "Artist - Title")
                 //    return;
+                if (GlobalObjects.CurrentSong.SongId == trackInfo.SongId)
+                    return;
 
                 await WriteSongInfo(trackInfo, Enums.RequestPlayerType.Youtube);
                 GlobalObjects.CurrentSong = trackInfo;

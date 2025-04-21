@@ -20,6 +20,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
     public class SocketIoClient(string url, string token)
     {
         private bool _trackChanged;
+        public YtmdResponse YoutubeMusicresponse;
 
         private readonly SocketIOClient.SocketIO _client = new(url, new SocketIOOptions
         {
@@ -101,7 +102,8 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 
                     // Update the UI using the dispatcher
                     PrevResponse = yTmdResponse;
-                    await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYtm(yTmdResponse)!);
+                    YoutubeMusicresponse = yTmdResponse;
+                    //await Application.Current.Dispatcher.Invoke(async () => await ((MainWindow)Application.Current.MainWindow)?.Sf.FetchYtm(yTmdResponse)!);
                 }
                 catch (Exception ex)
                 {

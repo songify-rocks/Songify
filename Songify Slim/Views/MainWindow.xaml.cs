@@ -261,7 +261,7 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH when Settings.DownloadCover:
+                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
@@ -276,7 +276,6 @@ namespace Songify_Slim.Views
                 }
             }));
         }
-
 
         private void FetchTimer(int ms)
         {
@@ -304,7 +303,7 @@ namespace Songify_Slim.Views
                     await Sf.FetchDesktopPlayer("Spotify");
                     break;
 
-                case PlayerType.Youtube:
+                case PlayerType.BrowserCompanion:
                     await Sf.FetchYoutubeData();
                     break;
 
@@ -316,22 +315,19 @@ namespace Songify_Slim.Views
                     await Sf.FetchDesktopPlayer("foobar2000");
                     break;
 
-                case PlayerType.Deezer:
-                    await Sf.FetchBrowser("Deezer");
-                    break;
-
                 case PlayerType.SpotifyWeb:
                     await Sf.FetchSpotifyWeb();
                     break;
 
                 case PlayerType.YtmDesktop:
-                    //await Sf.FetchYTM();
+                    await Sf.FetchYtm(IoClient.YoutubeMusicresponse);
                     break;
 
                 case PlayerType.YTMTHCH:
                     await Sf.FetchYTMTHCH();
                     break;
-
+                default:
+                    break;
             }
         }
 
@@ -752,7 +748,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1069,11 +1065,11 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH && Settings.DownloadCover
+                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH && Settings.DownloadCover
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.Youtube or PlayerType.YTMTHCH && Settings.DownloadCover
+                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH && Settings.DownloadCover
                     ? 500
                     : (int)Width - 6;
 
@@ -1154,22 +1150,16 @@ namespace Songify_Slim.Views
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
                 case PlayerType.YTMTHCH:
-
                     FetchTimer(1000);
                     break;
-
-                case PlayerType.Youtube:
-                case PlayerType.Deezer:
-                    // Browser User-Set Poll Rate (seconds) * 1000 for milliseconds
-                    FetchTimer(Settings.ChromeFetchRate * 1000);
-                    break;
-
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
-                    FetchTimer(Settings.UseOwnApp ? 1000 : 20000);
+                    FetchTimer(1000);
                     break;
+                case PlayerType.BrowserCompanion:
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    break;
+
             }
         }
 
@@ -1248,7 +1238,7 @@ namespace Songify_Slim.Views
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
                     if ((Settings.Player == PlayerType.SpotifyWeb
                          || Settings.Player == PlayerType.YtmDesktop
-                         || Settings.Player == PlayerType.Youtube
+                         || Settings.Player == PlayerType.BrowserCompanion
                          || Settings.Player == PlayerType.YTMTHCH)
                         && Settings.DownloadCover)
                     {

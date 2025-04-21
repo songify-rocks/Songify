@@ -502,10 +502,9 @@ namespace Songify_Slim.Util.General
 
                     break;
                 case Enums.PlayerType.SpotifyLegacy:
-                case Enums.PlayerType.Deezer:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
-                case Enums.PlayerType.Youtube:
+                case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.YTMTHCH:
                     break;
                 default:
@@ -577,10 +576,9 @@ namespace Songify_Slim.Util.General
             {
                 Enums.PlayerType.SpotifyWeb => "Spotify API",
                 Enums.PlayerType.SpotifyLegacy => "Spotify Legacy",
-                Enums.PlayerType.Deezer => "Deezer",
                 Enums.PlayerType.FooBar2000 => "Foobar2000",
                 Enums.PlayerType.Vlc => "VLC",
-                Enums.PlayerType.Youtube => "YouTube",
+                Enums.PlayerType.BrowserCompanion => "Browser Extension",
                 Enums.PlayerType.YtmDesktop => "YTM Desktop",
                 _ => ""
             };
