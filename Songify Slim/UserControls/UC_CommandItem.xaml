@@ -36,7 +36,7 @@
         </Style>
     </UserControl.Resources>
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ContextMenu">
+        <ContextMenu>
             <MenuItem x:Name="MenuUserlevels" Header="Allowed Users">
                 <MenuItem
                     x:Name="MenuItemAllNone"

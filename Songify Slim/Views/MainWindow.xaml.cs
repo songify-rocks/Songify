@@ -216,22 +216,29 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void BtnTwitch_Click(object sender, RoutedEventArgs e)
+        private async void BtnTwitch_Click(object sender, RoutedEventArgs e)
         {
-            // Tries to connect to the twitch service given the credentials in the settings or disconnects
-            MenuItem item = (MenuItem)sender;
-            switch (item.Tag.ToString())
+            try
             {
-                // Connects
-                case "Connect":
-                    TwitchHandler.BotConnect();
-                    TwitchHandler.MainConnect();
-                    break;
-                // Disconnects
-                case "Disconnect":
-                    TwitchHandler.ForceDisconnect = true;
-                    TwitchHandler.Client.Disconnect();
-                    break;
+                // Tries to connect to the twitch service given the credentials in the settings or disconnects
+                MenuItem item = (MenuItem)sender;
+                switch (item.Tag.ToString())
+                {
+                    // Connects
+                    case "Connect":
+                        await TwitchHandler.BotConnect();
+                        await TwitchHandler.MainConnect();
+                        break;
+                    // Disconnects
+                    case "Disconnect":
+                        TwitchHandler.ForceDisconnect = true;
+                        TwitchHandler.Client.Disconnect();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
 
@@ -909,10 +916,17 @@ namespace Songify_Slim.Views
         {
             _contextMenu.MenuItems.AddRange([
                 new System.Windows.Forms.MenuItem("Twitch", [
-                    new System.Windows.Forms.MenuItem("Connect", (_, _) =>
+                    new System.Windows.Forms.MenuItem("Connect", async void (_, _) =>
                     {
-                        TwitchHandler.BotConnect();
-                        TwitchHandler.MainConnect();
+                        try
+                        {
+                            await TwitchHandler.BotConnect();
+                            await TwitchHandler.MainConnect();
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                        }
                     }),
                     new System.Windows.Forms.MenuItem("Disconnect", (_, _) => { TwitchHandler.Client.Disconnect(); })
                 ]),

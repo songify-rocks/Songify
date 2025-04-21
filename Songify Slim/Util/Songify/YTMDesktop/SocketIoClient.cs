@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ControlzEx.Standard;
+using ControlzEx;
 using Newtonsoft.Json;
 using SocketIOClient;
 using Songify_Slim.Models;

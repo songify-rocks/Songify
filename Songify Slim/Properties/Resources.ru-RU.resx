@@ -848,7 +848,7 @@
     <value>Запросчик текущей песни</value>
   </data>
   <data name="Param_ConditionalText_Desc" xml:space="preserve">
-    <value>Текст внутри '{{' и '}}' будет опубликован только в том случае, если текущая песня является запрошенной песней.</value>
+    <value>Текст внутри '{{' и '}}' будет опубликован только в том случае, если текущая песня является запрошенной песней</value>
   </data>
   <data name="Param_Artist_Desc" xml:space="preserve">
     <value>Исполнители текущей песни или запроса песни</value>
@@ -875,7 +875,7 @@
     <value>URL-адрес плейлиста</value>
   </data>
   <data name="Param_SongList_Desc" xml:space="preserve">
-    <value>Только для команды !pos создает список песен, которые пользователь имеет в очереди, с указанием его позиции.</value>
+    <value>Только для команды !pos создает список песен, которые пользователь имеет в очереди, с указанием его позиции</value>
   </data>
   <data name="Param_Votes_Desc" xml:space="preserve">
     <value>Количество голосов за пропуск голосования/всего голосов</value>

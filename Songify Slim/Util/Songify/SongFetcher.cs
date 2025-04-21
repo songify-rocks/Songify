@@ -475,7 +475,7 @@ namespace Songify_Slim.Util.Songify
                         await WebHelper.QueueRequest(WebHelper.RequestMethod.Get);
                     }
 
-                    GlobalObjects.QueueUpdateQueueWindow();
+                    await GlobalObjects.QueueUpdateQueueWindow();
 
                     // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);

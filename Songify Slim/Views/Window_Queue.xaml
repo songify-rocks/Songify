@@ -116,8 +116,8 @@
                 Click="BtnClearQueue_Click"
                 Content="{x:Static properties:Resources.mw_menu_Queue_Clear}" />
             <Expander
-                Width="150"
                 x:Name="DropDownCols"
+                Width="150"
                 Margin="0,10,10,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
@@ -194,29 +194,38 @@
                 </Style>
                 <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->
                 <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
-                    <Setter Property="Foreground" Value="White" />
+                    <!--<Setter Property="Foreground" Value="Black" />-->
                     <Style.Triggers>
                         <!--  When the row is selected, change the background and foreground  -->
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
                         </Trigger>
                         <!--  When the mouse hovers over a row, change the background and foreground  -->
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
                             <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </Trigger>
+                        </MultiTrigger>
                     </Style.Triggers>
                 </Style>
                 <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
-                    <Setter Property="Foreground" Value="White" />
+                    <!--<Setter Property="Foreground" Value="White" />-->
                     <Style.Triggers>
                         <!--  When the row is selected, change the background and foreground  -->
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent4}" />
                         </Trigger>
                         <!--  When the mouse hovers over a row, change the background and foreground  -->
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
                             <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </Trigger>
+                        </MultiTrigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.Resources>

@@ -116,7 +116,7 @@ namespace Songify_Slim.Views
                 GlobalObjects.ReqList.Remove(req);
                 GlobalObjects.SkipList.Add(req);
             }));
-            GlobalObjects.QueueUpdateQueueWindow();
+            await GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private void ColVisChecked(object sender, RoutedEventArgs e)
@@ -148,7 +148,7 @@ namespace Songify_Slim.Views
                 };
                 await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
             }
-            GlobalObjects.QueueUpdateQueueWindow();
+            await GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private void Dgv_Queue_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
@@ -198,16 +198,23 @@ namespace Songify_Slim.Views
                 GlobalObjects.ReqList.Remove(req);
                 GlobalObjects.SkipList.Add(req);
             }));
-            GlobalObjects.QueueUpdateQueueWindow();
+            await GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private async void DgvButtonAddToFav_Click(object sender, RoutedEventArgs e)
         {
-            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
-            if (req == null)
-                return;
-            await SpotifyApiHandler.AddToPlaylist(req.Trackid);
-            GlobalObjects.QueueUpdateQueueWindow();
+            try
+            {
+                RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+                if (req == null)
+                    return;
+                await SpotifyApiHandler.AddToPlaylist(req.Trackid);
+                await GlobalObjects.QueueUpdateQueueWindow();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private void BtnUpdateQueue_OnClick(object sender, RoutedEventArgs e)

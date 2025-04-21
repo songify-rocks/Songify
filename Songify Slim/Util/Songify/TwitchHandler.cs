@@ -979,7 +979,7 @@ namespace Songify_Slim.Util.Songify
             int count = 0;
             string name = "";
 
-            Application.Current.Dispatcher.InvokeAsync(() =>
+            await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 count = GlobalObjects.ReqList.Count;
                 if (count <= 0) return;
@@ -3734,17 +3734,17 @@ namespace Songify_Slim.Util.Songify
                     response = ReplaceParameters(Settings.Settings.BotRespIsInQueue, parameters);
                     return true;
 
-                    response = Settings.Settings.BotRespIsInQueue;
-                    response = response.Replace("{user}", e.DisplayName);
-                    response = response.Replace("{song}",
-                        $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}");
-                    response = response.Replace("{artist}", string.Join(", ", track.Artists.Select(a => a.Name).ToList()));
-                    response = response.Replace("{single_artist}", track.Artists.First().Name);
-                    response = response.Replace("{title}", track.Name);
-                    response = response.Replace("{maxreq}", Settings.Settings.TwSrMaxReq.ToString());
-                    response = response.Replace("{errormsg}", "");
-                    response = CleanFormatString(response);
-                    return true;
+                    //response = Settings.Settings.BotRespIsInQueue;
+                    //response = response.Replace("{user}", e.DisplayName);
+                    //response = response.Replace("{song}",
+                    //    $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}");
+                    //response = response.Replace("{artist}", string.Join(", ", track.Artists.Select(a => a.Name).ToList()));
+                    //response = response.Replace("{single_artist}", track.Artists.First().Name);
+                    //response = response.Replace("{title}", track.Name);
+                    //response = response.Replace("{maxreq}", Settings.Settings.TwSrMaxReq.ToString());
+                    //response = response.Replace("{errormsg}", "");
+                    //response = CleanFormatString(response);
+                    //return true;
                 }
             }
             catch (Exception ex)

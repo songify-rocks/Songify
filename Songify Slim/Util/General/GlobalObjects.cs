@@ -69,7 +69,6 @@ namespace Songify_Slim.Util.General
         public static bool IoClientConnected = false;
         private static readonly ConcurrentQueue<TaskCompletionSource<bool>> UpdateQueue = new();
         private static bool _isProcessingQueue;
-        private static string _lastQueueHash = "";
         public static YoutubeData YoutubeData = null;
 
 
@@ -470,7 +469,7 @@ namespace Songify_Slim.Util.General
 
                     QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
 
-                    await Application.Current.Dispatcher.InvokeAsync(async () =>
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
                         // Check if the queue window is open and update it accordingly
                         foreach (Window window in Application.Current.Windows)
@@ -498,6 +497,8 @@ namespace Songify_Slim.Util.General
                             });
                             windowQueue.UpdateQueueIcons();
                         }
+
+                        return Task.CompletedTask;
                     });
 
                     break;

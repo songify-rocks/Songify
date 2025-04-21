@@ -842,19 +842,19 @@
     <value>Devuelve todos los comandos activos de Songify.</value>
   </data>
   <data name="Param_User_Desc" xml:space="preserve">
-    <value>El usuario que activó el comando o la recompensa del canal.</value>
+    <value>El usuario que activó el comando o la recompensa del canal</value>
   </data>
   <data name="Param_Requester_Desc" xml:space="preserve">
     <value>El solicitante de la canción actual</value>
   </data>
   <data name="Param_ConditionalText_Desc" xml:space="preserve">
-    <value>El texto dentro de '{{' y '}}' solo se publicará si la canción actual es una solicitud de canción.</value>
+    <value>El texto dentro de '{{' y '}}' solo se publicará si la canción actual es una solicitud de canción</value>
   </data>
   <data name="Param_Artist_Desc" xml:space="preserve">
     <value>Artistas de la canción actual o solicitud de canción</value>
   </data>
   <data name="Param_SingleArtist_Desc" xml:space="preserve">
-    <value>Artista principal de la canción actual o solicitud de canción.</value>
+    <value>Artista principal de la canción actual o solicitud de canción</value>
   </data>
   <data name="Param_ErrorMessage_Desc" xml:space="preserve">
     <value>Mensaje de error si se produce un error</value>

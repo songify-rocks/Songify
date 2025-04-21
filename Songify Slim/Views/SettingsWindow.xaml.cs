@@ -1265,21 +1265,28 @@ namespace Songify_Slim.Views
             Settings.SpotifyPlaylistId = item.Playlist.Id;
         }
 
-        private void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
-                return;
-            ResetTwitchConnection();
+            try
+            {
+                if (!IsLoaded)
+                    return;
+                await ResetTwitchConnection();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
-        public void ResetTwitchConnection()
+        public async Task ResetTwitchConnection()
         {
             Settings.TwAcc = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
             Settings.TwOAuth = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
             TwitchHandler.Client?.Disconnect();
             TwitchHandler.Client = null;
-            TwitchHandler.BotConnect();
-            TwitchHandler.MainConnect();
+            await TwitchHandler.BotConnect();
+            await TwitchHandler.MainConnect();
             _ = SetControls();
         }
 
