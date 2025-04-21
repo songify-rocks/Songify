@@ -39,10 +39,11 @@ Songify bridges Spotify and Twitch using their respective APIs to offer seamless
   
 Songify not only works with Spotify but with these players as well:
   - YouTube
-  - Deezer
+  - ~Deezer~
   - foobar2000
   - VLC
   - [YTMDesktop](https://github.com/ytmdesktop/ytmdesktop)
+  - [th-ch/youtube-music](https://github.com/th-ch/youtube-music)
 
 ---
 
