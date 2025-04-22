@@ -702,6 +702,24 @@ namespace Songify_Slim.Util.Songify
                 ? $"The request {tmp} requested by @{reqObj.Requester} has been removed."
                 : cmd.Response;
 
+            response = CreateResponse(new PlaceholderContext(null)
+            {
+                User = message.DisplayName,
+                Artist = reqObj.Artist,
+                SingleArtist = reqObj.Artist.Split(',').First(),
+                Title = reqObj.Title,
+                MaxReq = null,
+                ErrorMsg = null,
+                MaxLength = null,
+                Votes = null,
+                Song = $"{reqObj.Artist} - {reqObj.Title}",
+                Req = reqObj.Requester,
+                Url = null,
+                PlaylistName = null,
+                PlaylistUrl = null,
+                Cd = null
+            }, response);
+
             response = response.Replace("{song}", tmp)
                 .Replace("{user}", message.DisplayName);
 
@@ -1033,12 +1051,20 @@ namespace Songify_Slim.Util.Songify
             string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
                 User = message.DisplayName,
+                Artist = null,
+                SingleArtist = null,
+                Title = null,
                 MaxReq = $"{Settings.Settings.TwSrMaxReq}",
                 ErrorMsg = null,
                 MaxLength = $"{Settings.Settings.MaxSongLength}",
                 Votes = $"{SkipVotes.Count}/{Settings.Settings.BotCmdSkipVoteCount}",
+                Song = null,
                 Req = GlobalObjects.Requester,
-                Cd = Settings.Settings.TwSrCooldown.ToString()
+                Url = null,
+                PlaylistName = null,
+                PlaylistUrl = null,
+                Cd = Settings.Settings.TwSrCooldown.ToString(),
+
             }, cmd.Response);
 
             await SpotifyApiHandler.SkipSong();
@@ -1657,7 +1683,7 @@ namespace Songify_Slim.Util.Songify
             {
                 requestUser = x.Users[0].ToSimpleUser();
             }
-            
+
             RequestObject o = new()
             {
                 Trackid = track.Id,
@@ -1673,7 +1699,7 @@ namespace Songify_Slim.Util.Songify
 
             await UploadToQueue(o);
             //GlobalObjects.QueueUpdateQueueWindow();
-            
+
             if (Settings.Settings.Commands.First(cmd => cmd.Name == "Song Request").Response.Contains("{ttp}"))
             {
                 try
@@ -3277,6 +3303,10 @@ namespace Songify_Slim.Util.Songify
             foreach (PropertyInfo property in properties)
             {
                 string placeholder = $"{{{property.Name.ToLower()}}}"; // Placeholder format, e.g., "{user}"
+
+                if (placeholder == "{singleartist}")
+                    placeholder = "{single_artist}";
+
                 string value = property.GetValue(context)?.ToString() ?? string.Empty; // Get property value or empty string if null
                 template = template.Replace(placeholder, value); // Replace placeholder in the template with value
             }

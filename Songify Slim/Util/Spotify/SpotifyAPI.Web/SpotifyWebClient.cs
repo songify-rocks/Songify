@@ -108,6 +108,8 @@ namespace Songify_Slim.Util.Spotify.SpotifyAPI.Web
                     .Replace("{", "{{")
                     .Replace("}", "}}");
 
+                Logger.LogStr($"SPOTIFY API: {safeErrorMessage}");
+
                 return new Tuple<ResponseInfo, T>(
                     response.Item1,
                     JsonConvert.DeserializeObject<T>(string.Format(UnknownErrorJson, safeErrorMessage), JsonSettings)
