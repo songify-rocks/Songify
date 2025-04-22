@@ -268,7 +268,7 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH when Settings.DownloadCover:
+                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
@@ -306,9 +306,9 @@ namespace Songify_Slim.Views
         {
             switch (_selectedSource)
             {
-                case PlayerType.SpotifyLegacy:
-                    await Sf.FetchDesktopPlayer("Spotify");
-                    break;
+                //case PlayerType.SpotifyLegacy:
+                //    await Sf.FetchDesktopPlayer("Spotify");
+                //    break;
 
                 case PlayerType.BrowserCompanion:
                     await Sf.FetchYoutubeData();
@@ -330,7 +330,7 @@ namespace Songify_Slim.Views
                     await Sf.FetchYtm(IoClient.YoutubeMusicresponse);
                     break;
 
-                case PlayerType.YTMTHCH:
+                case PlayerType.Ytmthch:
                     await Sf.FetchYTMTHCH();
                     break;
                 default:
@@ -640,11 +640,11 @@ namespace Songify_Slim.Views
             // Initialize toast notification system (if needed)
             ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
             GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
-
-            if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
-            {
-                Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-            }
+            if (!string.IsNullOrEmpty(Settings.Directory))
+                if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+                {
+                    Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+                }
 
             Settings.MsgLoggingEnabled = false;
             AddSourcesToSourceBox();
@@ -732,7 +732,7 @@ namespace Songify_Slim.Views
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-            LblCopyright.Content = App.IsBeta ? $"Songify v1.6.8 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? "Songify v1.6.8 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
@@ -755,7 +755,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -863,10 +863,19 @@ namespace Songify_Slim.Views
 
                 if (Settings.UpdateRequired)
                 {
-                    Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
+                    MessageDialogResult result = await this.ShowMessageAsync("Songify just updated", "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog by clicking on File -> Patch Notes", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
                     {
-                        UseShellExecute = true
+                        AffirmativeButtonText = "Yes",
+                        NegativeButtonText = "No"
                     });
+
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
 
                     Settings.UpdateRequired = false;
                 }
@@ -1079,11 +1088,11 @@ namespace Songify_Slim.Views
 
             await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
-                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH && Settings.DownloadCover
+                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.YTMTHCH && Settings.DownloadCover
+                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
                     ? 500
                     : (int)Width - 6;
 
@@ -1160,10 +1169,10 @@ namespace Songify_Slim.Views
                     _timerFetcher.Enabled = false;
                     break;
 
-                case PlayerType.SpotifyLegacy:
+                //case PlayerType.SpotifyLegacy:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
-                case PlayerType.YTMTHCH:
+                case PlayerType.Ytmthch:
                     FetchTimer(1000);
                     break;
                 case PlayerType.SpotifyWeb:
@@ -1253,7 +1262,7 @@ namespace Songify_Slim.Views
                     if ((Settings.Player == PlayerType.SpotifyWeb
                          || Settings.Player == PlayerType.YtmDesktop
                          || Settings.Player == PlayerType.BrowserCompanion
-                         || Settings.Player == PlayerType.YTMTHCH)
+                         || Settings.Player == PlayerType.Ytmthch)
                         && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;

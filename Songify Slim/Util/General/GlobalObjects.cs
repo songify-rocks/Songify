@@ -502,11 +502,11 @@ namespace Songify_Slim.Util.General
                     });
 
                     break;
-                case Enums.PlayerType.SpotifyLegacy:
+                //case Enums.PlayerType.SpotifyLegacy:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.BrowserCompanion:
-                case Enums.PlayerType.YTMTHCH:
+                case Enums.PlayerType.Ytmthch:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -576,7 +576,7 @@ namespace Songify_Slim.Util.General
             return Settings.Settings.Player switch
             {
                 Enums.PlayerType.SpotifyWeb => "Spotify API",
-                Enums.PlayerType.SpotifyLegacy => "Spotify Legacy",
+                //Enums.PlayerType.SpotifyLegacy => "Spotify Legacy",
                 Enums.PlayerType.FooBar2000 => "Foobar2000",
                 Enums.PlayerType.Vlc => "VLC",
                 Enums.PlayerType.BrowserCompanion => "Browser Extension",

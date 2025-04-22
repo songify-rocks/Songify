@@ -15,8 +15,8 @@ public static class Enums
         [Description("Spotify API")]
         SpotifyWeb,
 
-        [Description("Spotify (Legacy)")]
-        SpotifyLegacy,
+        //[Description("Spotify (Legacy)")]
+        //SpotifyLegacy,
 
         [Description("foobar2000")]
         FooBar2000,
@@ -31,7 +31,7 @@ public static class Enums
         YtmDesktop,
 
         [Description("YouTube Music (th-ch)")]
-        YTMTHCH
+        Ytmthch
     }
 
 

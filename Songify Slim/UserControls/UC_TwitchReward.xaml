@@ -68,7 +68,8 @@
             <ComboBox
                 x:Name="CbxAction"
                 Width="110"
-                SelectionChanged="CbxAction_OnSelectionChanged" Style="{DynamicResource MahApps.Styles.ComboBox.Virtualized}">
+                SelectionChanged="CbxAction_OnSelectionChanged"
+                Style="{DynamicResource MahApps.Styles.ComboBox.Virtualized}">
                 <ComboBoxItem Content="-" />
                 <ComboBoxItem Content="Song Request" />
                 <ComboBoxItem Content="Skip Song" />

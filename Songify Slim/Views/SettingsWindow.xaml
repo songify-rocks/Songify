@@ -1205,17 +1205,7 @@
                         <Grid x:Name="GrdTwitchReward">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -1274,7 +1264,6 @@
                                 Margin="6"
                                 IsEnabled="True"
                                 ScrollViewer.CanContentScroll="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Auto"
                                 SelectionMode="Single"
                                 Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
                                 VirtualizingStackPanel.ScrollUnit="Item">
