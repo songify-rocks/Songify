@@ -2241,16 +2241,13 @@ namespace Songify_Slim.Util.Songify
         {
             if (!e.ChatMessage.Message.StartsWith("!") && string.IsNullOrEmpty(e.ChatMessage.CustomRewardId))
                 return;
-
+            List<int> userLevels = await GetUserLevels(e.ChatMessage);
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
 
             int subtier = int.Parse(GlobalObjects.subscribers.FirstOrDefault(sub => sub.UserId == e.ChatMessage.UserId)?.Tier ?? "0") / 1000;
-            List<int> userLevels;
             if (existingUser == null)
             {
-                userLevels = await GetUserLevels(e.ChatMessage);
-
                 // If the user doesn't exist, add them.
                 TwitchUser newUser = new()
                 {
@@ -2269,7 +2266,7 @@ namespace Songify_Slim.Util.Songify
             }
             else
             {
-                userLevels = existingUser.UserLevels;
+                existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, userLevels, existingUser.IsFollowing != null && (bool)existingUser.IsFollowing, subtier);
             }
 
             if (Settings.Settings.TwRewardSkipId.Count > 0 &&
@@ -3442,18 +3439,25 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static int GetMaxRequestsForUserLevel(int userLevel)
+        private static int GetMaxRequestsForUserLevels(List<int> userLevels)
         {
-            return (TwitchUserLevels)userLevel switch
-            {
-                TwitchUserLevels.Viewer => Settings.Settings.TwSrMaxReqEveryone,
-                TwitchUserLevels.Vip => Settings.Settings.TwSrMaxReqVip,
-                TwitchUserLevels.Subscriber => Settings.Settings.TwSrMaxReqSubscriber,
-                TwitchUserLevels.Moderator => Settings.Settings.TwSrMaxReqModerator,
-                TwitchUserLevels.Broadcaster => 999,
-                _ => 0
-            };
+            return userLevels
+                .Select(level => (TwitchUserLevels)level)
+                .Select(userLevel => userLevel switch
+                {
+                    TwitchUserLevels.Viewer => Settings.Settings.TwSrMaxReqEveryone,
+                    TwitchUserLevels.Follower => Settings.Settings.TwSrMaxReqFollower,
+                    TwitchUserLevels.Subscriber => Settings.Settings.TwSrMaxReqSubscriber,
+                    TwitchUserLevels.SubscriberT2 => Settings.Settings.TwSrMaxReqSubscriberT2,
+                    TwitchUserLevels.SubscriberT3 => Settings.Settings.TwSrMaxReqSubscriberT3,
+                    TwitchUserLevels.Vip => Settings.Settings.TwSrMaxReqVip,
+                    TwitchUserLevels.Moderator => Settings.Settings.TwSrMaxReqModerator,
+                    TwitchUserLevels.Broadcaster => 999,
+                    _ => 0
+                })
+                .Max();
         }
+
 
         private static string GetNextSong()
         {
@@ -3876,17 +3880,16 @@ namespace Songify_Slim.Util.Songify
         private static bool IsUserAtMaxRequests(ChatMessage e, TwitchUser user, out string response)
         {
             response = string.Empty;
-
             try
             {
                 // Check if the maximum queue items have been reached for the user level
-                if (MaxQueueItems(e.DisplayName, user.UserLevels.Max()))
+                if (MaxQueueItems(e.DisplayName, user.UserLevels))
                 {
                     response = Settings.Settings.BotRespMaxReq;
                     response = response.Replace("{user}", e.DisplayName);
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", $"{GetMaxRequestsForUserLevel(user.UserLevels.Max())}");
+                    response = response.Replace("{maxreq}", $"{GetMaxRequestsForUserLevels(user.UserLevels)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     return true;
@@ -3918,26 +3921,19 @@ namespace Songify_Slim.Util.Songify
             return parameters.Aggregate(source, (current, parameter) => current.Replace($"{{{parameter.Key}}}", parameter.Value));
         }
 
-        private static bool MaxQueueItems(string requester, int userLevel)
+        private static bool MaxQueueItems(string requester, List<int> userLevels)
         {
-            // Checks if the requester already reached max songrequests
-            List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Requester == requester).ToList();
+            // Get all current requests from this user (case-insensitive)
+            List<RequestObject> userRequests = GlobalObjects.ReqList
+                .Where(x => x.Requester.Equals(requester, StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
-            int maxreq = (TwitchUserLevels)userLevel switch
-            {
-                TwitchUserLevels.Broadcaster => 999,
-                TwitchUserLevels.Viewer => Settings.Settings.TwSrMaxReqEveryone,
-                TwitchUserLevels.Follower => Settings.Settings.TwSrMaxReqFollower,
-                TwitchUserLevels.Moderator => Settings.Settings.TwSrMaxReqModerator,
-                TwitchUserLevels.Subscriber => Settings.Settings.TwSrMaxReqSubscriber,
-                TwitchUserLevels.SubscriberT2 => Settings.Settings.TwSrMaxReqSubscriberT2,
-                TwitchUserLevels.SubscriberT3 => Settings.Settings.TwSrMaxReqSubscriberT3,
-                TwitchUserLevels.Vip => Settings.Settings.TwSrMaxReqVip,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+            // Get the highest max request limit based on all user levels
+            int maxAllowed = GetMaxRequestsForUserLevels(userLevels);
 
-            return temp.Count >= maxreq;
+            return userRequests.Count >= maxAllowed;
         }
+
 
         private static void OnListenResponse(object sender, OnListenResponseArgs e)
         {
@@ -4029,11 +4025,11 @@ namespace Songify_Slim.Util.Songify
             if (Settings.Settings.TwRewardId.Any(o => o == reward.Id))
             {
                 Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
-                List<int> userlevel = GlobalObjects.TwitchUsers.First(o => o.UserId == redeemedUser.Id).UserLevels;
+                List<int> userLevels = GlobalObjects.TwitchUsers.First(o => o.UserId == redeemedUser.Id).UserLevels;
                 Logger.LogStr(
-                    $"{redeemedUser.DisplayName}s userlevel = {userlevel} ({Enum.GetName(typeof(TwitchUserLevels), userlevel)})");
+                    $"{redeemedUser.DisplayName}s userlevel = {userLevels} ({Enum.GetName(typeof(TwitchUserLevels), userLevels)})");
                 string msg;
-                if (!userlevel.Contains(Settings.Settings.TwSrUserLevel))
+                if (!userLevels.Contains(Settings.Settings.TwSrUserLevel))
                 {
                     msg =
                         $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
@@ -4081,7 +4077,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 // checks if the user has already the max amount of songs in the queue
-                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(redeemedUser.DisplayName, userlevel.Max()))
+                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(redeemedUser.DisplayName, userLevels))
                 {
                     // if the user reached max requests in the queue skip and inform requester
                     string response = Settings.Settings.BotRespMaxReq;
@@ -4089,7 +4085,7 @@ namespace Songify_Slim.Util.Songify
                     response = response.Replace("{artist}", "");
                     response = response.Replace("{title}", "");
                     response = response.Replace("{maxreq}",
-                        $"{(TwitchUserLevels)userlevel.Max()} {GetMaxRequestsForUserLevel(userlevel.Max())}");
+                        $"{(TwitchUserLevels)userLevels.Max()} {GetMaxRequestsForUserLevels(userLevels)}");
                     response = response.Replace("{errormsg}", "");
                     response = CleanFormatString(response);
                     if (!string.IsNullOrEmpty(response))

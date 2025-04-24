@@ -257,10 +257,11 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
 
-            _selectedSource = (PlayerType)cbx_Source.SelectedValue;
-
-            // Store the actual enum value
-            Settings.Player = (PlayerType)cbx_Source.SelectedValue;
+            if (cbx_Source.SelectedValue is PlayerType selected)
+            {
+                _selectedSource = selected;
+                Settings.Player = selected;
+            }
 
             SetFetchTimer();
 
@@ -726,8 +727,11 @@ namespace Songify_Slim.Views
             GlobalObjects.AppVersion = fvi.FileVersion;
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedItem = Settings.Player;
-            _selectedSource = (PlayerType)cbx_Source.SelectedValue;
+            cbx_Source.SelectedValue = Settings.Player;
+            if (cbx_Source.SelectedValue is PlayerType selected)
+            {
+                _selectedSource = selected;
+            }
             cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
