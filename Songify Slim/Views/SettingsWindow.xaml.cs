@@ -99,15 +99,7 @@ namespace Songify_Slim.Views
                 }
             }
 
-            //LbCommands.ItemsSource = Settings.Commands;
-
-            StackCommands.Children.Clear();
-            foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))
-            {
-                bool showBottomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
-                StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder });
-            }
-
+            await LoadCommands();
 
             NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
             CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
@@ -184,7 +176,7 @@ namespace Songify_Slim.Views
             ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
             Cctrl.Content = new UcBotResponses();
             TglDonationReminder.IsOn = Settings.DonationReminder;
-
+            TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
             Settings.UserLevelsCommand ??= [];
             Settings.UserLevelsReward ??= [];
 
@@ -360,6 +352,17 @@ namespace Songify_Slim.Views
             GridLoading.Visibility = Visibility.Collapsed;
             TabCtrl.IsEnabled = true;
 
+        }
+
+        private async Task LoadCommands()
+        {
+            StackCommands.Children.Clear();
+            foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))
+            {
+                bool showBottomBorder = command != Settings.Commands.OrderBy(cmd => cmd.CommandType).Last();
+                StackCommands.Children.Add(new UC_CommandItem(command) { ShowBottomBorder = showBottomBorder });
+                await Task.Delay(10);
+            }
         }
 
         private void UpdateTwitchUserUi(User user, ImageBrush img, ContentControl lbl, UIElement btn,
@@ -1757,6 +1760,12 @@ namespace Songify_Slim.Views
                 1 => "127.0.0.1",
                 _ => Settings.SpotifyRedirectUri
             };
+        }
+
+        private async void TglsLongBadgeNames_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.LongBadgeNames = ((ToggleSwitch)sender).IsOn;
+            await LoadCommands();
         }
     }
 }

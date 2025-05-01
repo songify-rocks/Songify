@@ -1,6 +1,7 @@
 ﻿using Songify_Slim.Util.Settings;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using Markdig.Parsers;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Markdig.Wpf;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.UserControls
 {
@@ -265,21 +269,60 @@ namespace Songify_Slim.UserControls
             Settings.UpdateCommand(Command);
         }
 
-        private void UpdateUserLevelbadges()
+        public void UpdateUserLevelbadges()
         {
+            // Step 1: Prepare MenuItems
+            List<MenuItem> menuItems = MenuUserlevels.Items.OfType<MenuItem>().ToList();
+
+            // Step 2: Temporarily remove event handlers
+            foreach (MenuItem item in menuItems)
+            {
+                item.Checked -= MenuItemChecked;
+                item.Unchecked -= MenuItemUnchecked;
+                item.IsChecked = false;
+            }
+
+            // Step 3: Clear existing UserLevelItems
             List<UcUserLevelItem> itemsToRemove = PnlSongrequestUserlevels.Children.OfType<UcUserLevelItem>().ToList();
             foreach (UcUserLevelItem item in itemsToRemove)
             {
                 PnlSongrequestUserlevels.Children.Remove(item);
             }
 
-            foreach (int i in Command.AllowedUserLevels.OrderByDescending(n => n).ToList())
+            // Step 4: Add allowed user levels
+            foreach (int level in Command.AllowedUserLevels.OrderByDescending(n => n))
             {
                 PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
                 {
-                    UserLevel = i,
-                    LongName = false
+                    UserLevel = level,
+                    LongName = Settings.LongBadgeNames
                 });
+
+                // Set corresponding MenuItem checked
+                MenuItem matchingMenuItem = menuItems.FirstOrDefault(m => m.Tag?.ToString() == level.ToString());
+                if (matchingMenuItem != null)
+                {
+                    matchingMenuItem.IsChecked = true;
+                }
+            }
+
+            // Step 5: Add specific allowed users
+            foreach (User user in Command.AllowedUsers)
+            {
+                PnlSongrequestUserlevels.Children.Add(new UcUserLevelItem()
+                {
+                    UserName = user.DisplayName,
+                    UserLevel = -2,
+                    LongName = true,
+                    UserId = user.Id
+                });
+            }
+
+            // Step 6: Reattach event handlers
+            foreach (MenuItem item in menuItems)
+            {
+                item.Checked += MenuItemChecked;
+                item.Unchecked += MenuItemUnchecked;
             }
         }
 
@@ -398,7 +441,6 @@ namespace Songify_Slim.UserControls
                 _isUpdatingMenuColors = false;
             }
         }
-
         private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (_isUpdating)
@@ -432,6 +474,57 @@ namespace Songify_Slim.UserControls
             if (startLength != tb.Text.Length) return;
             Command.CustomProperties["VolumeSetResponse"] = ((TextBox)sender).Text;
             Settings.UpdateCommand(Command);
+        }
+
+        private async void MenuExplicitUser_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdating)
+                return;
+            if (_isUpdating)
+                return;
+            MetroWindow window = (MetroWindow)Window.GetWindow(this);
+            if (window != null)
+            {
+                string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}", "Enter the usernames (comma separated)");
+
+                if (result == null) return;
+
+                List<string> usersToAdd = result.Split(',')
+                    .Select(user => user.Trim())
+                    .Where(user => !string.IsNullOrEmpty(user))
+                    .ToList();
+
+                User[] users = await TwitchApiHelper.GetTwitchUsersAsync(usersToAdd);
+
+                if (users is { Length: > 0 })
+                {
+                    HashSet<string> existingUserIds = Command.AllowedUsers.Select(u => u.Id).ToHashSet();
+
+                    List<User> newUsers = users
+                        .Where(u => !existingUserIds.Contains(u.Id))
+                        .ToList();
+
+                    if (newUsers.Count > 0)
+                    {
+                        Command.AllowedUsers.AddRange(newUsers);
+                        Settings.UpdateCommand(Command);
+                        UpdateUserLevelbadges();
+                    }
+                    else
+                    {
+                        await window.ShowMessageAsync("Info", "All selected users are already added.");
+                    }
+                }
+                else
+                {
+                    await window.ShowMessageAsync("Error", "No users found. Please check the usernames and try again.");
+                }
+
+            }
+            else
+            {
+                // Handle error - window not found
+            }
         }
     }
 }

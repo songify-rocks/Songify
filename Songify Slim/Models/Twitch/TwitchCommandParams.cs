@@ -13,7 +13,8 @@ namespace Songify_Slim.Models
     {
         public int Subtier { get; set; }
         public bool IsAllowed { get; set; }
-        public List<int> UserLevel { get; set; }
+        public List<int> UserLevels { get; set; }
         public TwitchUser ExistingUser { get; set; }
+
     }
 }

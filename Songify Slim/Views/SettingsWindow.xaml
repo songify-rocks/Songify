@@ -1988,9 +1988,9 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -2000,12 +2000,19 @@
                             HorizontalAlignment="Left"
                             Text="Edit commands by clicking on the trigger" />
                         <TextBlock
+                            Grid.Row="1"
+                            Padding="6"
+                            HorizontalAlignment="Left"
+                            Text="Rightclick on a command to adjust who can use it." />
+                        <controls:ToggleSwitch
+                            x:Name="TglsLongBadgeNames"
+                            Toggled="TglsLongBadgeNames_OnToggled"
                             Grid.Row="0"
+                            Grid.RowSpan="2"
                             Padding="6"
                             HorizontalAlignment="Right"
-                            Text="Rightclick on a command to adjust who can use it." />
-
-                        <ScrollViewer Grid.Row="1" Margin="6">
+                            Content="Long badge names" />
+                        <ScrollViewer Grid.Row="2" Margin="6">
                             <StackPanel
                                 x:Name="StackCommands"
                                 Margin="0,0,6,0"

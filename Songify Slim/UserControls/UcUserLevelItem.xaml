@@ -6,12 +6,17 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="RootUserControl"
     mc:Ignorable="d">
     <UserControl.Resources>
         <!--  Border style  -->
         <Style x:Key="UserLevelBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="Transparent" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
+                    <Setter Property="Background" Value="SteelBlue" />
+                    <Setter Property="ToolTip" Value="User" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
                     <Setter Property="Background" Value="SteelBlue" />
                     <Setter Property="ToolTip" Value="Requester" />
@@ -54,6 +59,9 @@
         <Style x:Key="UserLevelIconStyle" TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="Video" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
+                    <Setter Property="Kind" Value="Account" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
                     <Setter Property="Kind" Value="AccountPlus" />
                 </DataTrigger>
@@ -87,6 +95,9 @@
         <Style x:Key="UserLevelTextStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="Moderator" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
+                    <Setter Property="Text" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
                     <Setter Property="Text" Value="R" />
                 </DataTrigger>
@@ -187,6 +198,43 @@
                 </MultiDataTrigger>
             </Style.Triggers>
         </Style>
+        <!--  Width Hover Style  -->
+        <Style x:Key="AnimatedWidthOnHover" TargetType="Border">
+            <Setter Property="Width" Value="0" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Width"
+                                    To="12"
+                                    Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Width"
+                                    To="0"
+                                    Duration="0:0:0.3">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseIn" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="3">
@@ -215,6 +263,68 @@
                     FontWeight="Bold"
                     Foreground="White"
                     Style="{StaticResource UserLevelTextStyle}" />
+                <Border
+                    Width="0"
+                    Height="12"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="6,0,0,0"
+                    BorderBrush="Black"
+                    BorderThickness="1"
+                    CornerRadius="5">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Width" Value="0" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Width"
+                                                    To="12"
+                                                    Duration="0:0:0.1">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation
+                                                    Storyboard.TargetProperty="Width"
+                                                    To="0"
+                                                    Duration="0:0:0.1">
+                                                    <DoubleAnimation.EasingFunction>
+                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                    </DoubleAnimation.EasingFunction>
+                                                </DoubleAnimation>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <Button
+                        x:Name="BtnRemoveBadge"
+                        Width="10"
+                        Height="10"
+                        MinWidth="0"
+                        MinHeight="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Click="BtnRemoveBadge_OnClick"
+                        Content="X"
+                        FontSize="6"
+                        FontWeight="Black"
+                        Foreground="Black"
+                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}" />
+                </Border>
             </StackPanel>
         </Border>
     </Grid>

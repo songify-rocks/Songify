@@ -674,6 +674,18 @@ namespace Songify_Slim.Util.Settings
         public static List<int> UnlimitedSrUserlevelsReward { get => GetUnlimitedSrUserlevelsReward(); set => SetUnlimitedSrUserlevelsReward(value); }
         public static DateTime TwitchAccessTokenExpiryDate { get => GetTwitchAccessTokenExpiryDate(); set => SetTwitchAccessTokenExpiryDate(value); }
         public static bool HideSpotifyPremiumWarning { get => GetHideSpotifyPremiumWarning(); set => SetHideSpotifyPremiumWarning(value); }
+        public static bool LongBadgeNames { get => GetLongBadgeNames(); set => SetLongBadgeNames(value); }
+
+        private static void SetLongBadgeNames(bool value)
+        {
+            CurrentConfig.AppConfig.LongBadgeNames = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetLongBadgeNames()
+        {
+            return CurrentConfig.AppConfig.LongBadgeNames;
+        }
 
         private static void SetHideSpotifyPremiumWarning(bool value)
         {
@@ -890,6 +902,7 @@ namespace Songify_Slim.Util.Settings
 
             AppConfig appConfig = new()
             {
+                LongBadgeNames = GetLongBadgeNames(),
                 AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AnnounceInChat = GetAnnounceInChat(),

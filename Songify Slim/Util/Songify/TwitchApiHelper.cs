@@ -9,6 +9,7 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Interfaces;
 using TwitchLib.Api.Helix.Models.Subscriptions;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -122,5 +123,11 @@ namespace Songify_Slim.Util.Songify
 
             return allVips;
         }
+
+        public static async Task<User[]> GetTwitchUsersAsync(List<string> users)
+        {
+            GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.Settings.TwitchAccessToken);
+            return x.Users.Length > 0 ? x.Users : [];
+        } 
     }
 }

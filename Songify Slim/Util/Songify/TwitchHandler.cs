@@ -445,7 +445,7 @@ namespace Songify_Slim.Util.Songify
         private static async void HandleCommandsCommand(ChatMessage message, TwitchCommand cmd,
             TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -498,7 +498,7 @@ namespace Songify_Slim.Util.Songify
                 // Volume Set
                 cmd.CustomProperties.TryGetValue("VolumeSetResponse", out object volSetResponse);
                 string response = (string)volSetResponse;
-                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
                 int? vol = await SetSpotifyVolume(message);
                 if (vol == null)
                 {
@@ -515,7 +515,7 @@ namespace Songify_Slim.Util.Songify
             else
             {
                 // Volume Get
-                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
                 PlaybackContext spotifyPlaybackAsync = await SpotifyApiHandler.Spotify.GetPlaybackAsync();
                 if (spotifyPlaybackAsync?.Device == null) return;
                 string response = cmd.Response;
@@ -528,7 +528,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleSongLikeCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
             try
             {
                 if (!CheckLiveStatus())
@@ -570,7 +570,7 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+                if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
                 try
                 {
                     if (!CheckLiveStatus())
@@ -614,7 +614,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleRemoveCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -728,7 +728,7 @@ namespace Songify_Slim.Util.Songify
 
         private static void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster)) return;
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
             try
             {
                 if (!CheckLiveStatus())
@@ -761,7 +761,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
 
             try
@@ -867,7 +867,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandlePauseCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -893,7 +893,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandlePlayCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -920,7 +920,7 @@ namespace Songify_Slim.Util.Songify
 
         private static void HandleNextCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -947,7 +947,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleVoteSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -1010,13 +1010,13 @@ namespace Songify_Slim.Util.Songify
 
             if (count > 0 && name.Equals(message.DisplayName, StringComparison.CurrentCultureIgnoreCase))
             {
-                if (cmdParams.UserLevel.All(ul => ul != -1))
+                if (cmdParams.UserLevels.All(ul => ul != -1))
                 {
-                    cmdParams.UserLevel.Add(-1);
+                    cmdParams.UserLevels.Add(-1);
                 }
             }
 
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -1082,7 +1082,7 @@ namespace Songify_Slim.Util.Songify
         {
             //PrintObjectProperties(cmdParams.ExistingUser);
 
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
             {
                 string response = Settings.Settings.BotRespUserlevelTooLowCommand;
                 response = response.Replace("{user}", message.DisplayName);
@@ -1184,18 +1184,31 @@ namespace Songify_Slim.Util.Songify
 
         private static async void SendOrAnnounceMessage(string channel, string message, TwitchCommand cmd)
         {
-            if (cmd.IsAnnouncement)
-                await AnnounceChatMessage(message, cmd.AnnouncementColor);
-            else
-                SendChatMessage(channel, message);
+            try
+            {
+                if (cmd.IsAnnouncement)
+                    await AnnounceChatMessage(message, cmd.AnnouncementColor);
+                else
+                    SendChatMessage(channel, message);
+            }
+            catch (Exception e)
+            {
+                Logger.LogStr("TWITCH: Failed to send chat or announcement");
+                Logger.LogExc(e);
+            }
         }
 
-        private static bool IsUserAllowed(List<int> allowedUserLevels, TwitchCommandParams cmdParams, bool messageIsBroadcaster)
+        private static bool IsUserAllowed(List<int> allowedUserLevels, TwitchCommandParams cmdParams, bool messageIsBroadcaster, TwitchCommand cmd, string chatterId)
         {
-            if (allowedUserLevels.Count == 0)
-                return messageIsBroadcaster;
-            return messageIsBroadcaster || allowedUserLevels.Intersect(cmdParams.UserLevel).Any();
+            if (messageIsBroadcaster)
+                return true;
+
+            if (cmd.AllowedUsers.Any(u => u.Id == chatterId))
+                return true;
+
+            return allowedUserLevels.Count != 0 && allowedUserLevels.Intersect(cmdParams.UserLevels).Any();
         }
+
 
         public static async Task<bool> CheckStreamIsUp()
         {
@@ -2136,50 +2149,50 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static (TwitchUserLevels, bool) CheckUserLevel(ChatMessage o, int type = 0, int subtier = 0)
-        {
-            // Type 0 = Command, 1 = Reward
-            List<TwitchUserLevels> userLevels = [];
+        //private static (TwitchUserLevels, bool) CheckUserLevel(ChatMessage o, int type = 0, int subtier = 0)
+        //{
+        //    // Type 0 = Command, 1 = Reward
+        //    List<TwitchUserLevels> userLevels = [];
 
-            if (o.IsBroadcaster) userLevels.Add(TwitchUserLevels.Broadcaster);
-            if (o.IsModerator) userLevels.Add(TwitchUserLevels.Moderator);
-            if (o.IsVip) userLevels.Add(TwitchUserLevels.Vip);
-            if (o.IsSubscriber && subtier is 0 or 1) userLevels.Add(TwitchUserLevels.Subscriber);
-            if (o.IsSubscriber && subtier is 2) userLevels.Add(TwitchUserLevels.SubscriberT2);
-            if (o.IsSubscriber && subtier is 3) userLevels.Add(TwitchUserLevels.SubscriberT3);
+        //    if (o.IsBroadcaster) userLevels.Add(TwitchUserLevels.Broadcaster);
+        //    if (o.IsModerator) userLevels.Add(TwitchUserLevels.Moderator);
+        //    if (o.IsVip) userLevels.Add(TwitchUserLevels.Vip);
+        //    if (o.IsSubscriber && subtier is 0 or 1) userLevels.Add(TwitchUserLevels.Subscriber);
+        //    if (o.IsSubscriber && subtier is 2) userLevels.Add(TwitchUserLevels.SubscriberT2);
+        //    if (o.IsSubscriber && subtier is 3) userLevels.Add(TwitchUserLevels.SubscriberT3);
 
-            TwitchUser user = GlobalObjects.TwitchUsers.FirstOrDefault(user => user.UserId == o.UserId);
-            if (user != null)
-            {
-                if (user?.IsFollowing == true)
-                {
-                    userLevels.Add(TwitchUserLevels.Follower);
-                }
-                switch (user.SubTier)
-                {
-                    case 1:
-                        userLevels.Add(TwitchUserLevels.Subscriber);
-                        break;
+        //    TwitchUser user = GlobalObjects.TwitchUsers.FirstOrDefault(user => user.UserId == o.UserId);
+        //    if (user != null)
+        //    {
+        //        if (user?.IsFollowing == true)
+        //        {
+        //            userLevels.Add(TwitchUserLevels.Follower);
+        //        }
+        //        switch (user.SubTier)
+        //        {
+        //            case 1:
+        //                userLevels.Add(TwitchUserLevels.Subscriber);
+        //                break;
 
-                    case 2:
-                        userLevels.Add(TwitchUserLevels.SubscriberT2);
-                        break;
+        //            case 2:
+        //                userLevels.Add(TwitchUserLevels.SubscriberT2);
+        //                break;
 
-                    case 3:
-                        userLevels.Add(TwitchUserLevels.SubscriberT3);
-                        break;
-                }
-            }
+        //            case 3:
+        //                userLevels.Add(TwitchUserLevels.SubscriberT3);
+        //                break;
+        //        }
+        //    }
 
-            userLevels.Add(TwitchUserLevels.Viewer);
+        //    userLevels.Add(TwitchUserLevels.Viewer);
 
-            // Determine if the user is allowed based on the type (Command or Reward)
-            bool isAllowed = type == 0
-                ? Settings.Settings.UserLevelsCommand.Any(level => userLevels.Contains((TwitchUserLevels)level))
-                : Settings.Settings.UserLevelsReward.Any(level => userLevels.Contains((TwitchUserLevels)level));
+        //    // Determine if the user is allowed based on the type (Command or Reward)
+        //    bool isAllowed = type == 0
+        //        ? Settings.Settings.UserLevelsCommand.Any(level => userLevels.Contains((TwitchUserLevels)level))
+        //        : Settings.Settings.UserLevelsReward.Any(level => userLevels.Contains((TwitchUserLevels)level));
 
-            return (userLevels.Max(), isAllowed);
-        }
+        //    return (userLevels.Max(), isAllowed);
+        //}
 
         private static string CleanFormatString(string currSong)
         {
@@ -2334,7 +2347,7 @@ namespace Songify_Slim.Util.Songify
             {
                 Subtier = subtier,
                 ExistingUser = existingUser,
-                UserLevel = userLevels
+                UserLevels = userLevels
             });
 
             if (!executed)
@@ -3458,7 +3471,6 @@ namespace Songify_Slim.Util.Songify
                 .Max();
         }
 
-
         private static string GetNextSong()
         {
             int index = 0;
@@ -4553,7 +4565,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     _userLevel = value;
                     OnPropertyChanged(nameof(UserLevels));
-                    // Also raise on "ReadableUserLevel" since it depends on UserLevel
+                    // Also raise on "ReadableUserLevel" since it depends on UserLevels
                     OnPropertyChanged(nameof(ReadableUserLevel));
                 }
             }

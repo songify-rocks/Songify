@@ -103,6 +103,11 @@
                     Unchecked="MenuItemUnchecked" />
             </MenuItem>
             <MenuItem
+                x:Name="MenuExplicitUser"
+                Header="Add Users"
+                Tag="users"
+                Click="MenuExplicitUser_OnClick"/>
+            <MenuItem
                 Header="Announcement"
                 IsCheckable="False"
                 Tag="colors">

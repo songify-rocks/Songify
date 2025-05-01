@@ -580,6 +580,7 @@ namespace Songify_Slim.Util.Settings
         public List<int> UnlimitedSrUserlevelsReward { get; set; } = [];
         public List<int> UnlimitedSrUserlevelsCommand { get; set; } = [];
         public bool HideSpotifyPremiumWarning { get; set; }
+        public bool LongBadgeNames { get; set; } 
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
