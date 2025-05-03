@@ -228,9 +228,12 @@ namespace Songify_Slim.Util.General
                 Logger.LogExc(e);
             }
         }
+
         public static async Task UpdateQueueWindow()
         {
             Debug.Write(Settings.Settings.Player);
+            int index;
+            List<RequestObject> tempQueueList2;
             switch (Settings.Settings.Player)
             {
                 case Enums.PlayerType.SpotifyWeb:
@@ -367,7 +370,8 @@ namespace Songify_Slim.Util.General
                                         Requester = "Spotify",
                                         Played = 0,
                                         Albumcover = null,
-                                        IsLiked = isInLikedPlaylist
+                                        IsLiked = isInLikedPlaylist,
+                                        PlayerType = "Spotify"
                                     });
                                 }
                             }
@@ -440,11 +444,11 @@ namespace Songify_Slim.Util.General
                         return;
                     }
 
-                    List<RequestObject> tempQueueList2 = [];
+                    tempQueueList2 = [];
                     List<QueueItem> queueItems = [];
 
                     // Find the index of the current VideoId
-                    int index = response.Player.Queue.Items.IndexOf(
+                    index = response.Player.Queue.Items.IndexOf(
                         response.Player.Queue.Items.Find(i => i.VideoId == response.Video.Id));
 
                     if (index != -1 && index + 1 < response.Player.Queue.Items.Count)
@@ -464,7 +468,9 @@ namespace Songify_Slim.Util.General
                         Requester = "YouTube",
                         Played = 0,
                         Albumcover = queueItem.Thumbnails.Last().Url,
-                        IsLiked = false
+                        IsLiked = false,
+                        PlayerType = "Youtube"
+
                     }));
 
                     QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
@@ -507,6 +513,68 @@ namespace Songify_Slim.Util.General
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.Ytmthch:
+                    YTMYHCHQueue ytmthchQueue = await WebHelper.GetYtmthchQueue();
+                    YTMYHCHResponse ytmthchResponse = await WebHelper.GetYtmthchData();
+
+                    if (ytmthchQueue == null || ytmthchResponse == null)
+                    {
+                        return;
+                    }
+
+                    index = ytmthchQueue.Items.FindIndex(item =>
+                        item.PlaylistPanelVideoWrapperRenderer?.PrimaryRenderer?.PlaylistPanelVideoRenderer?.VideoId == ytmthchResponse.VideoId
+                    );
+
+                    if(index > 0)
+                        ytmthchQueue.Items.RemoveRange(0, index);
+
+                    tempQueueList2 = [];
+                    tempQueueList2 = [];
+
+                    tempQueueList2.AddRange(
+                        ytmthchQueue.Items.Select(item =>
+                        {
+                            PlaylistPanelVideoRenderer renderer = item.PlaylistPanelVideoWrapperRenderer?.PrimaryRenderer?.PlaylistPanelVideoRenderer;
+                            if (renderer == null) return null;
+
+                            return new RequestObject
+                            {
+                                Queueid = 0,
+                                Uuid = Settings.Settings.Uuid,
+                                Trackid = renderer.VideoId,
+                                Artist = renderer.ShortBylineText?.Runs?.FirstOrDefault()?.Text ?? "",
+                                Title = renderer.Title?.Runs?.FirstOrDefault()?.Text ?? "",
+                                Length = renderer.LengthText?.Runs?.FirstOrDefault()?.Text ?? "",
+                                Requester = "YouTube",
+                                Played = renderer.VideoId == ytmthchResponse.VideoId ? -1 : 0,
+                                Albumcover = renderer.Thumbnail?.Thumbnails?.LastOrDefault()?.Url ?? "",
+                                PlayerType = "YouTube",
+                                IsLiked = false
+                            };
+                        }).Where(x => x != null)
+                    );
+
+                    QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
+
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        // Check if the queue window is open and update it accordingly
+                        foreach (Window window in Application.Current.Windows)
+                        {
+                            if (window.GetType() != typeof(WindowQueue))
+                                continue;
+
+                            if (window is not WindowQueue windowQueue) continue;
+                            // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
+                            windowQueue.dgv_Queue.ItemsSource = QueueTracks;
+                            windowQueue.UpdateQueueIcons();
+                        }
+
+                        return Task.CompletedTask;
+                    });
+
+
+
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -517,7 +585,6 @@ namespace Songify_Slim.Util.General
         {
             return string.Join(",", queue.Select(t => t.Id)).GetHashCode().ToString();
         }
-
 
         public static string SecondsToMmss(int totalSeconds)
         {

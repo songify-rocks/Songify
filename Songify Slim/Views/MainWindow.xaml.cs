@@ -51,6 +51,7 @@ using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
 using static Songify_Slim.Util.General.Enums;
+using Icon = System.Drawing.Icon;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 

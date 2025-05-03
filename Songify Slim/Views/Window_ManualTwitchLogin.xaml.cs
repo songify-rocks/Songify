@@ -39,7 +39,7 @@ namespace Songify_Slim.Views
 
         private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://songify.overcode.tv/auth/alt2/");
+            System.Diagnostics.Process.Start("https://songify.rocks/auth/alt2/");
         }
 
         private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)
@@ -79,7 +79,7 @@ namespace Songify_Slim.Views
             }
             finally
             {
-                IsEnabled = true;
+                Close();
             }
         }
     }

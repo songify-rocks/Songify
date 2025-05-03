@@ -212,43 +212,57 @@ namespace Songify_Slim.Util.Settings
             ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
-            string yaml;
+
             string fileEnding = isBackup ? ".bak" : ".yaml";
 
-            switch (configType)
+            string fileName = configType switch
             {
-                case ConfigTypes.SpotifyCredentials:
-                    path += "/SpotifyCredentials" + fileEnding;
-                    yaml = serializer.Serialize(o as SpotifyCredentials ?? throw new InvalidOperationException());
-                    break;
+                ConfigTypes.SpotifyCredentials => "SpotifyCredentials",
+                ConfigTypes.TwitchCredentials => "TwitchCredentials",
+                ConfigTypes.BotConfig => "BotConfig",
+                ConfigTypes.AppConfig => "AppConfig",
+                ConfigTypes.TwitchCommands => "TwitchCommands",
+                _ => throw new ArgumentOutOfRangeException(nameof(configType), configType, null)
+            };
 
-                case ConfigTypes.TwitchCredentials:
-                    path += "/TwitchCredentials" + fileEnding;
-                    yaml = serializer.Serialize(o as TwitchCredentials ?? throw new InvalidOperationException());
-                    break;
+            object configObject = configType switch
+            {
+                ConfigTypes.SpotifyCredentials => o as SpotifyCredentials ?? throw new InvalidOperationException(),
+                ConfigTypes.TwitchCredentials => o as TwitchCredentials ?? throw new InvalidOperationException(),
+                ConfigTypes.BotConfig => o as BotConfig ?? throw new InvalidOperationException(),
+                ConfigTypes.AppConfig => o as AppConfig ?? throw new InvalidOperationException(),
+                ConfigTypes.TwitchCommands => o as TwitchCommands ?? throw new InvalidOperationException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(configType), configType, null)
+            };
 
-                case ConfigTypes.BotConfig:
-                    path += "/BotConfig" + fileEnding;
-                    yaml = serializer.Serialize(o as BotConfig ?? throw new InvalidOperationException());
-                    break;
+            string yaml = serializer.Serialize(configObject);
 
-                case ConfigTypes.AppConfig:
+            string fullPath = Path.Combine(path, fileName + fileEnding);
+            string tempPath = fullPath + ".tmp";
 
-                    path += "/AppConfig" + fileEnding;
-                    yaml = serializer.Serialize(o as AppConfig ?? throw new InvalidOperationException());
+            // Write atomically
+            try
+            {
+                File.WriteAllText(tempPath, yaml);
 
-                    break;
-
-                case ConfigTypes.TwitchCommands:
-                    path += "/TwitchCommands" + fileEnding;
-                    Debug.WriteLine(o);
-                    yaml = serializer.Serialize(o as TwitchCommands ?? throw new InvalidOperationException());
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(configType), configType, null);
+                if (File.Exists(fullPath))
+                {
+                    // Safe atomic replace
+                    File.Replace(tempPath, fullPath, null);
+                }
+                else
+                {
+                    // First-time creation — no destination file exists yet
+                    File.Move(tempPath, fullPath);
+                }
             }
-            File.WriteAllText(path, yaml);
+            catch (Exception ex)
+            {
+                if (File.Exists(tempPath))
+                    File.Delete(tempPath);
+                Logger.LogExc(ex);
+                throw;
+            }
         }
 
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
@@ -326,6 +340,23 @@ namespace Songify_Slim.Util.Settings
             Settings.Import(config);
         }
 
+        public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
+        {
+            (ConfigTypes type, object obj)[] configsToWrite =
+            [
+                (ConfigTypes.AppConfig, config.AppConfig),
+                (ConfigTypes.BotConfig, config.BotConfig),
+                (ConfigTypes.SpotifyCredentials, config.SpotifyCredentials),
+                (ConfigTypes.TwitchCredentials, config.TwitchCredentials),
+                (ConfigTypes.TwitchCommands, config.TwitchCommands)
+            ];
+
+            foreach ((ConfigTypes type, object obj) in configsToWrite)
+            {
+                WriteConfig(type, obj, path, isBackup);
+            }
+        }
+
         public static string GenerateAccessKey()
         {
             const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
@@ -335,15 +366,6 @@ namespace Songify_Slim.Util.Settings
                 .OrderBy(_ => Guid.NewGuid())]);
 
             return key;
-        }
-
-        public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
-        {
-            WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, isBackup);
-            WriteConfig(ConfigTypes.BotConfig, config.BotConfig, path, isBackup);
-            WriteConfig(ConfigTypes.SpotifyCredentials, config.SpotifyCredentials, path, isBackup);
-            WriteConfig(ConfigTypes.TwitchCredentials, config.TwitchCredentials, path, isBackup);
-            WriteConfig(ConfigTypes.TwitchCommands, config.TwitchCommands, path, isBackup);
         }
     }
 

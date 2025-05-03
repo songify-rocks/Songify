@@ -1571,7 +1571,7 @@ namespace Songify_Slim.Views
             {
                 Owner = this
             };
-            manualTwitchLogin.ShowDialog();
+            manualTwitchLogin.Show();
         }
 
         private void CbPauseOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)

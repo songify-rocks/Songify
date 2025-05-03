@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Resources;
 using System.Threading;
@@ -91,7 +92,7 @@ namespace Songify_Slim
             base.OnStartup(e);
 
             // Override the Markdig CodeStyleKey at runtime
-            if (Application.Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
+            if (Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
             {
                 Style newStyle = new Style(typeof(Run));
 
@@ -101,7 +102,7 @@ namespace Songify_Slim
                 newStyle.Setters.Add(new Setter(TextElement.FontSizeProperty, 14.0));
 
                 // Override the existing Markdig Code Style
-                Application.Current.Resources[Markdig.Wpf.Styles.CodeStyleKey] = newStyle;
+                Current.Resources[Markdig.Wpf.Styles.CodeStyleKey] = newStyle;
             }
 
             // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
@@ -113,7 +114,7 @@ namespace Songify_Slim
             ResourceDictionary defaultLocalizationDict = ResxToDictionaryHelper.CreateResourceDictionary(defaultCulture);
 
             // Add it to the merged dictionaries so that your UI has access to the keys from the start.
-            Application.Current.Resources.MergedDictionaries.Add(defaultLocalizationDict);
+            Current.Resources.MergedDictionaries.Add(defaultLocalizationDict);
 
             StartPipeServer();
         }

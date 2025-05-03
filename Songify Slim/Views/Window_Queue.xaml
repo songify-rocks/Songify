@@ -281,13 +281,16 @@
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
                                             <Style.Triggers>
+                                                <!--  Only show if Playertype is Spotify  -->
+                                                <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
+                                                    <Setter Property="IsEnabled" Value="True" />
+                                                </DataTrigger>
+                                                <!--  Hide if Requester is 'Skipping...'  -->
                                                 <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
-                                                <!--<DataTrigger Binding="{Binding Played}" Value="-1">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>-->
                                             </Style.Triggers>
+                                            <Setter Property="IsEnabled" Value="False" />
                                         </Style>
                                     </Button.Style>
                                     <Button.Content>
@@ -300,13 +303,18 @@
                                     ToolTip="Add to favorite playlist">
                                     <Button.Style>
                                         <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                            <Setter Property="IsEnabled" Value="False" />
+
                                             <Style.Triggers>
+                                                <!--  Show only if Playertype is Spotify  -->
+                                                <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
+                                                    <Setter Property="IsEnabled" Value="True" />
+
+                                                </DataTrigger>
+                                                <!--  Hide if Requester is 'Skipping...'  -->
                                                 <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
                                                     <Setter Property="Visibility" Value="Collapsed" />
                                                 </DataTrigger>
-                                                <!--<DataTrigger Binding="{Binding Played}" Value="-1">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>-->
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
@@ -315,6 +323,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">

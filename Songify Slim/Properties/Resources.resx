@@ -863,7 +863,7 @@
     <comment>Use Default Web Browser</comment>
   </data>
   <data name="brw_CommandOnCooldown" xml:space="preserve">
-    <value>Response wehen the sr command is on cooldown</value>
+    <value>Response when the sr command is on cooldown</value>
     <comment>Command on Cooldown Response</comment>
   </data>
   <data name="brw_NoTrackFound" xml:space="preserve">

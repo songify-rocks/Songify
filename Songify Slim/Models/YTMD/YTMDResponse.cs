@@ -62,7 +62,7 @@ namespace Songify_Slim.Models.YTMD
         public List<QueueItem> Counterparts { get; set; } // Nullable array of QueueItem
     }
 
-    public class Thumbnail
+    public partial class Thumbnail
     {
         public string Url { get; set; }
         public int Width { get; set; }

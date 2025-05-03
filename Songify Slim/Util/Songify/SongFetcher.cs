@@ -893,7 +893,7 @@ namespace Songify_Slim.Util.Songify
             //Debug.WriteLine($"{data.Artist} - {data.Title}");
             if (data == null)
                 return;
-            TrackInfo t = new TrackInfo
+            TrackInfo t = new()
             {
                 Artists = data.Artist,
                 Title = data.Title,
@@ -941,6 +941,7 @@ namespace Songify_Slim.Util.Songify
                 return;
             GlobalObjects.CurrentSong = t;
             await WriteSongInfo(t);
+            await GlobalObjects.QueueUpdateQueueWindow();
         }
     }
 }

@@ -13,6 +13,8 @@ using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using Songify_Slim.Util.Youtube.YTMYHCH;
+using System.Text;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -363,6 +365,66 @@ namespace Songify_Slim.Util.Songify
             }
 
             return null;
+        }
+
+        public static async Task<YTMYHCHQueue> GetYtmthchQueue()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:26538/api/v1/queue");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+                    return null;
+                }
+                string result = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return JsonConvert.DeserializeObject<YTMYHCHQueue>(result);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return null;
+        }
+
+        public static async Task<YTMYHCHSearchResponse> SearchYouTubeMusic(string messageWithoutTrigger)
+        {
+            var payload = new
+            {
+                query = messageWithoutTrigger
+            };
+
+            string json = JsonConvert.SerializeObject(payload);
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:26538/api/v1/search", content);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            string responseJson = await response.Content.ReadAsStringAsync();
+            YTMYHCHSearchResponse song = YTHCHSearchParser.ParseTopSongResult(responseJson);
+
+            return song;
+        }
+
+        public static async Task<bool> YtmAddToQueue(string searchResponseVideoId)
+        {
+            var paylod = new
+            {
+                videoId = searchResponseVideoId,
+                insertPosition = "INSERT_AT_END"
+            };
+            string json = JsonConvert.SerializeObject(paylod);
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:26538/api/v1/queue", content);
+            if (response.IsSuccessStatusCode) return true;
+            Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+            return false;
         }
     }
 }

@@ -259,7 +259,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Response wehen the sr command is on cooldown.
+        ///   Looks up a localized string similar to Response when the sr command is on cooldown.
         /// </summary>
         public static string brw_CommandOnCooldown {
             get {

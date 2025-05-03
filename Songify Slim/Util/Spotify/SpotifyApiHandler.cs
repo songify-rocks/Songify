@@ -265,8 +265,9 @@ namespace Songify_Slim.Util.Spotify
             {
                 context = await Spotify.GetPlaybackAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+
                 Logger.LogStr("SPOTIFY API: Couldn't fetch Song info");
                 return null;
             }
