@@ -1560,7 +1560,24 @@ namespace Songify_Slim.Util.Songify
                             AccessToken = Settings.Settings.TwitchBotToken
                         }
                     };
-                    BotTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+
+                    try
+                    {
+                        BotTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.Settings.TwitchBotToken);
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        Logger.LogStr("HttpRequestException during Twitch token validation.");
+                        Logger.LogStr($"Message: {ex.Message}");
+                        if (ex.InnerException != null)
+                            Logger.LogStr($"Inner Exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogStr("General exception during Twitch token validation.");
+                        Logger.LogExc(ex);
+                    }
+
                     if (BotTokenCheck == null)
                     {
                         GlobalObjects.TwitchBotTokenExpired = true;
@@ -1759,6 +1776,8 @@ namespace Songify_Slim.Util.Songify
                     return;
             }
 
+            FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
+
             if (Settings.Settings.LimitSrToPlaylist &&
                 !string.IsNullOrEmpty(Settings.Settings.SpotifySongLimitPlaylist))
             {
@@ -1770,21 +1789,40 @@ namespace Songify_Slim.Util.Songify
                 }
             }
 
-            if (IsSongBlacklisted(trackId))
+            (bool isBlacklisted, string response) = await IsSongBlacklisted(trackId);
+            if (isBlacklisted)
             {
-                SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");
+                response = ReplaceParameters(response, new Dictionary<string, string>
+                {
+                    { "user", e.DisplayName },
+                    { "req", "" },
+                    { "artist}", string.Join(", ", track.Artists.Select(a => a.Name).ToList()) },
+                    { "single_artist", track.Artists.First().Name },
+                    { "errormsg", "" },
+                    { "maxlength", Settings.Settings.MaxSongLength.ToString() },
+                    { "maxreq", "" },
+                    { "song", $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}" },
+                    { "playlist_name", "" },
+                    { "playlist_url", "" },
+                    { "votes", "" },
+                    { "cd", "" },
+                    { "url", "" },
+                    { "queue", "" },
+                    { "commands", "" },
+                    { "userlevel", "" },
+                    { "ttp", "" },
+                });
+                SendChatMessage(e.Channel, response);
                 return;
             }
-
-            FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
-
+            
             if (track == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
                 return;
             }
 
-            if (IsTrackExplicit(track, e, out string response))
+            if (IsTrackExplicit(track, e, out response))
             {
                 SendChatMessage(e.Channel, response);
                 return;
@@ -1929,10 +1967,34 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task<(bool valid, FullTrack track, string message)> TryGetValidTrack(string trackId)
         {
-            if (IsSongBlacklisted(trackId))
-                return (false, null, "This song is blocked.");
-
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
+
+            (bool isBlacklisted, string response) = await IsSongBlacklisted(trackId);
+            if (isBlacklisted)
+            {
+                response = ReplaceParameters(response, new Dictionary<string, string>
+                {
+                    { "user", "" },
+                    { "req", "" },
+                    { "artist}", string.Join(", ", track.Artists.Select(a => a.Name).ToList()) },
+                    { "single_artist", track.Artists.First().Name },
+                    { "errormsg", "" },
+                    { "maxlength", Settings.Settings.MaxSongLength.ToString() },
+                    { "maxreq", "" },
+                    { "song", $"{string.Join(", ", track.Artists.Select(a => a.Name).ToList())} - {track.Name}" },
+                    { "playlist_name", "" },
+                    { "playlist_url", "" },
+                    { "votes", "" },
+                    { "cd", "" },
+                    { "url", "" },
+                    { "queue", "" },
+                    { "commands", "" },
+                    { "userlevel", "" },
+                    { "ttp", "" },
+                });
+                return (false, null, response);
+            }
+
             if (track == null)
                 return (false, null, "No song found.");
 
@@ -3508,6 +3570,15 @@ namespace Songify_Slim.Util.Songify
             return template;
         }
 
+        public static string ReplacePlaceholders(string template, Dictionary<string, string> values)
+        {
+            if (string.IsNullOrEmpty(template) || values == null)
+                return template;
+
+            return values.Aggregate(template, (current, kvp) => current.Replace("{" + kvp.Key + "}", kvp.Value ?? string.Empty));
+        }
+
+
         private static string CreateSuccessResponse(FullTrack track, string displayName, string response)
         {
             string artists = "";
@@ -3904,14 +3975,16 @@ namespace Songify_Slim.Util.Songify
             return temp.Count > 0;
         }
 
-        private static bool IsSongBlacklisted(string trackId)
+        private static async Task<(bool IsBlacklisted, string Response)> IsSongBlacklisted(string trackId)
         {
             try
             {
                 if (Settings.Settings.SongBlacklist != null &&
                     Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
                 {
-                    return true;
+                    FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
+                    string response = Settings.Settings.BotRespBlacklistSong;
+                    return (true, response);
                 }
             }
             catch (Exception ex)
@@ -3920,8 +3993,9 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(ex);
             }
 
-            return false;
+            return (false, string.Empty);
         }
+
 
         private static bool IsTrackAlreadyInQueue(FullTrack track, ChatMessage e, out string response)
         {

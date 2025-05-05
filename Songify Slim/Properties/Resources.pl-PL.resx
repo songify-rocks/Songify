@@ -915,4 +915,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Dodaje bieżący utwór do czarnej listy i pomija go.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Piosenka jest zablokowana</value>
+  </data>
 </root>

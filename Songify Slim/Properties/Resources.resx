@@ -1098,4 +1098,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Adds the current song to the blocklist and skips it.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Song is blocked</value>
+  </data>
 </root>

@@ -385,6 +385,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Song is blocked.
+        /// </summary>
+        public static string brw_SongBlocked {
+            get {
+                return ResourceManager.GetString("brw_SongBlocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Song already in queue.
         /// </summary>
         public static string brw_SongInQueue {

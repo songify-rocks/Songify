@@ -69,9 +69,7 @@ namespace Songify_Slim.UserControls
                     { "}}", "" },
                     { "{url}", "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT?si=0633b850641d4bce" },
                     { "{playlist_name}", "My Super Cool Playlist" },
-                    {
-                        "{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c"
-                    },
+                    { "{playlist_url}", "https://open.spotify.com/playlist/2wKHJy4vO0pA1gXfACW8Qh?si=30184b3f0854459c" },
                     { "{cd}", "5" },
                     { "{userlevel}", "subscribers" },
                     { "{ttp}", "1m 37s" },
@@ -198,7 +196,8 @@ namespace Songify_Slim.UserControls
             TbSrUserCooldown.Text = Settings.BotRespUserCooldown;
             TbSrCommandUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowCommand;
             TbSrRewardUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowReward;
-            
+            TbSongBlocked.Text = Settings.BotRespBlacklistSong;
+
             foreach (ComboBox box in GlobalObjects.FindVisualChildren<ComboBox>(this))
             {
                 box.SelectedIndex = 0;
@@ -317,6 +316,12 @@ namespace Songify_Slim.UserControls
         private void Tb_SrReward_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.Commands.First(cmd => cmd.Name == "Song Request").Response = TbSrReward.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void Tb_SongBlocked_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespBlacklistSong = TbSongBlocked.Text;
             SetPreview(sender as TextBox);
         }
     }

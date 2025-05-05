@@ -37,44 +37,25 @@ namespace Songify_Slim.Views
         {
             _responseParameters = new Dictionary<string, string>
             {
-                { "{user}", Application.Current.TryFindResource("Param_User_Desc") as string
-                    ?? "The user who triggered the command or channel reward" },
-                { "{req}", Application.Current.TryFindResource("Param_Requester_Desc") as string
-                    ?? "The requester of the current song" },
-                { "{{ }}", Application.Current.TryFindResource("Param_ConditionalText_Desc") as string
-                    ?? "The text inside of '{{' and '}}' will only be posted if the current song is a song request" },
-                { "{artist} ", Application.Current.TryFindResource("Param_Artist_Desc") as string
-                    ?? "Artists for the current song or song request" },
-                { "{single_artist}", Application.Current.TryFindResource("Param_SingleArtist_Desc") as string
-                    ?? "Main artist for the current song or song request" },
-                { "{errormsg}", Application.Current.TryFindResource("Param_ErrorMessage_Desc") as string
-                    ?? "Error message if an error occurs" },
-                { "{maxlength}", Application.Current.TryFindResource("Param_MaxLength_Desc") as string
-                    ?? "Max song length in minutes" },
-                { "{maxreq}", Application.Current.TryFindResource("Param_MaxRequests_Desc") as string
-                    ?? "Max requests per user" },
-                { "{song}", Application.Current.TryFindResource("Param_SongFormat_Desc") as string
-                    ?? "{Artist} - {Title}" },
-                { "{playlist_name} ", Application.Current.TryFindResource("Param_PlaylistName_Desc") as string
-                    ?? "Name of the playlist" },
-                { "{playlist_url}", Application.Current.TryFindResource("Param_PlaylistUrl_Desc") as string
-                    ?? "URL of the playlist" },
-                { "{songs}{pos} {song}{/songs}", Application.Current.TryFindResource("Param_SongList_Desc") as string
-                    ?? "For !pos command only, creates a list of songs that user has in the queue with their position" },
-                { "{votes}", Application.Current.TryFindResource("Param_Votes_Desc") as string
-                    ?? "Number of votes for voteskip votes/total" },
-                { "{cd}", Application.Current.TryFindResource("Param_Cooldown_Desc") as string
-                    ?? "The cooldown of in seconds (for global cd and user cd)" },
-                { "{url}", Application.Current.TryFindResource("Param_Url_Desc") as string
-                    ?? "Spotify song URL" },
-                { "{queue}", Application.Current.TryFindResource("Param_Queue_Desc") as string
-                    ?? "Next 5 songs in the queue" },
-                { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string
-                    ?? "List of all active commands" },
-                { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string
-                    ?? "The users userlevel (Folower, Subscriber etc)"},
-                { "{ttp}", Application.Current.TryFindResource("Param_TimeToPlay_Desc") as string
-                                 ?? "The time in mm:ss when the song request will play."}
+                { "{user}", Application.Current.TryFindResource("Param_User_Desc") as string ?? "The user who triggered the command or channel reward" },
+                { "{req}", Application.Current.TryFindResource("Param_Requester_Desc") as string ?? "The requester of the current song" },
+                { "{{ }}", Application.Current.TryFindResource("Param_ConditionalText_Desc") as string ?? "The text inside of '{{' and '}}' will only be posted if the current song is a song request" },
+                { "{artist} ", Application.Current.TryFindResource("Param_Artist_Desc") as string ?? "Artists for the current song or song request" },
+                { "{single_artist}", Application.Current.TryFindResource("Param_SingleArtist_Desc") as string ?? "Main artist for the current song or song request" },
+                { "{errormsg}", Application.Current.TryFindResource("Param_ErrorMessage_Desc") as string ?? "Error message if an error occurs" },
+                { "{maxlength}", Application.Current.TryFindResource("Param_MaxLength_Desc") as string ?? "Max song length in minutes" },
+                { "{maxreq}", Application.Current.TryFindResource("Param_MaxRequests_Desc") as string ?? "Max requests per user" },
+                { "{song}", Application.Current.TryFindResource("Param_SongFormat_Desc") as string ?? "{Artist} - {Title}" },
+                { "{playlist_name} ", Application.Current.TryFindResource("Param_PlaylistName_Desc") as string ?? "Name of the playlist" },
+                { "{playlist_url}", Application.Current.TryFindResource("Param_PlaylistUrl_Desc") as string ?? "URL of the playlist" },
+                { "{songs}{pos} {song}{/songs}", Application.Current.TryFindResource("Param_SongList_Desc") as string ?? "For !pos command only, creates a list of songs that user has in the queue with their position" },
+                { "{votes}", Application.Current.TryFindResource("Param_Votes_Desc") as string ?? "Number of votes for voteskip votes/total" },
+                { "{cd}", Application.Current.TryFindResource("Param_Cooldown_Desc") as string ?? "The cooldown of in seconds (for global cd and user cd)" },
+                { "{url}", Application.Current.TryFindResource("Param_Url_Desc") as string ?? "Spotify song URL" },
+                { "{queue}", Application.Current.TryFindResource("Param_Queue_Desc") as string ?? "Next 5 songs in the queue" },
+                { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string ?? "List of all active commands" },
+                { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string ?? "The users userlevel (Folower, Subscriber etc)"},
+                { "{ttp}", Application.Current.TryFindResource("Param_TimeToPlay_Desc") as string ?? "The time in mm:ss when the song request will play."}
             };
 
             PnlParams.Children.Clear();

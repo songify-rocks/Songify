@@ -436,7 +436,8 @@ namespace Songify_Slim.Util.Settings
         public string BotCmdSongTrigger { get; set; } = "song";
         public string BotCmdSsrTrigger { get; set; } = "ssr";
         public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
-        public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blacklisted by the broadcaster.";
+        public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blocked by the broadcaster.";
+        public string BotRespBlacklistSong { get; set; } = "@{user} the song: {song} has been blocked by the broadcaster.";
         public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
         public string BotRespError { get; set; } = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
         public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";

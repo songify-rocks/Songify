@@ -1092,4 +1092,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Дадае бягучую песню ў спіс заблакаваных і прапускае яе.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Песня заблакаваная</value>
+  </data>
 </root>

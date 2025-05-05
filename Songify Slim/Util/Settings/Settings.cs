@@ -781,7 +781,19 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static string BotRespUserlevelTooLowReward { get => GetBotRespUserlevelTooLowReward(); set => SetBotRespUserlevelTooLowReward(value); }
-        public static string SpotifyRedirectUri { get => GetSpotifyRedirectUri();  set => SetSpotifyRedirectUri(value); }
+        public static string SpotifyRedirectUri { get => GetSpotifyRedirectUri(); set => SetSpotifyRedirectUri(value); }
+        public static string BotRespBlacklistSong { get => GetBotRespBlacklistSong(); set => SetBotRespBlacklistSong(value); }
+
+        private static void SetBotRespBlacklistSong(string value)
+        {
+            CurrentConfig.BotConfig.BotRespBlacklistSong = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetBotRespBlacklistSong()
+        {
+            return CurrentConfig.BotConfig.BotRespBlacklistSong;
+        }
 
         private static string GetSpotifyRedirectUri()
         {
@@ -824,25 +836,25 @@ namespace Songify_Slim.Util.Settings
                 ClientId = GetClientId(),
                 ClientSecret = GetClientSecret(),
                 DeviceId = GetSpotifyDeviceId(),
-                RefreshToken = GetSpotifyRefreshToken(),
-                Profile = GetSpotifyProfile(),
                 PlaylistCache = GetSpotifyPlaylistCache(),
-                RedirectUri = GetSpotifyRedirectUri()                        
+                Profile = GetSpotifyProfile(),
+                RedirectUri = GetSpotifyRedirectUri(),
+                RefreshToken = GetSpotifyRefreshToken(),
             };
 
             TwitchCredentials twitchCredentials = new()
             {
                 AccessToken = GetTwitchAccessToken(),
+                AccessTokenExpiryDate = GetBotAccessTokenExpiryDate(),
                 BotAccountName = GetTwAcc(),
                 BotOAuthToken = GetTwOAuth(),
+                BotTokenExpiryDate = GetBotAccessTokenExpiryDate(),
                 BotUser = GetTwitchBotUser(),
                 ChannelId = GetTwitchChannelId(),
                 ChannelName = GetTwChannel(),
                 TwitchBotToken = GetTwitchBotToken(),
                 TwitchUser = GetTwitchUser(),
                 TwitchUserColor = GetTwitchUserColor(),
-                BotTokenExpiryDate = GetBotAccessTokenExpiryDate(),
-                AccessTokenExpiryDate = GetBotAccessTokenExpiryDate()
             };
 
             BotConfig botConfig = new()
@@ -874,6 +886,7 @@ namespace Songify_Slim.Util.Settings
                 BotCmdVolTrigger = "!vol",
                 BotCmdVoteskipTrigger = GetCmdVoteskipTrigger(),
                 BotRespBlacklist = GetBot_Resp_Blacklist(),
+                BotRespBlacklistSong = GetBotRespBlacklistSong(),
                 BotRespCooldown = GetBot_Resp_Cooldown(),
                 BotRespError = GetBot_Resp_Error(),
                 BotRespExplicitSong = GetBot_Resp_ExplicitSong(),
@@ -902,7 +915,6 @@ namespace Songify_Slim.Util.Settings
 
             AppConfig appConfig = new()
             {
-                LongBadgeNames = GetLongBadgeNames(),
                 AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AnnounceInChat = GetAnnounceInChat(),
@@ -926,10 +938,12 @@ namespace Songify_Slim.Util.Settings
                 DownloadCover = GetDownloadCover(),
                 FontSize = GetFontSize(),
                 FontsizeQueue = GetFontSizeQueue(),
+                HideSpotifyPremiumWarning = GetHideSpotifyPremiumWarning(),
                 KeepAlbumCover = GetKeepAlubmCover(),
                 Language = GetLanguage(),
                 LastShownMotdId = GetLastShownMotdId(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
+                LongBadgeNames = GetLongBadgeNames(),
                 MaxSongLength = GetMaxSongLength(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
@@ -948,8 +962,6 @@ namespace Songify_Slim.Util.Settings
                 RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
                 ShowUserLevelBadges = GetShowUserLevelBadges(),
-                UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
-                UnlimitedSrUserlevelsCommand = GetUnlimitedSrUserlevelsCommand(),
                 SongBlacklist = GetSongBlacklist(),
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
@@ -980,6 +992,8 @@ namespace Songify_Slim.Util.Settings
                 TwSrReward = GetTwSrReward(),
                 TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
                 TwSrUserLevel = GetTwSrUserLevel(),
+                UnlimitedSrUserlevelsCommand = GetUnlimitedSrUserlevelsCommand(),
+                UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
                 UpdateRequired = GetUpdateRequired(),
                 Upload = GetUpload(),
                 UploadHistory = GetUploadHistory(),
@@ -992,7 +1006,6 @@ namespace Songify_Slim.Util.Settings
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 YtmdToken = GetYtmdToken(),
-                HideSpotifyPremiumWarning = GetHideSpotifyPremiumWarning(),
             };
 
             TwitchCommands twitchCommands = new()

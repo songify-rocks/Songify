@@ -915,4 +915,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Aggiunge il brano corrente alla blocklist e lo salta.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>La canzone è bloccata</value>
+  </data>
 </root>

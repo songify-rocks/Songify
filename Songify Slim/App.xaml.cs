@@ -86,10 +86,15 @@ namespace Songify_Slim
                 }
             }
 
+
             // Register global unhandled exception handler
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += MyHandler;
             base.OnStartup(e);
+
+            string exePath = Assembly.GetEntryAssembly()?.Location;
+
+            //AddFirewallException(appName, exePath);
 
             // Override the Markdig CodeStyleKey at runtime
             if (Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
@@ -233,6 +238,30 @@ namespace Songify_Slim
             };
 
             pipeThread.Start();
+        }
+
+        public static void AddFirewallException(string appName, string exePath)
+        {
+            string args =
+                $"advfirewall firewall add rule name=\"{appName}\" dir=in action=allow program=\"{exePath}\" enable=yes";
+
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "netsh",
+                Arguments = args,
+                Verb = "runas", // <--- This prompts for admin
+                UseShellExecute = true,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex); // or show MessageBox
+            }
         }
 
         private static void RestoreWindow()

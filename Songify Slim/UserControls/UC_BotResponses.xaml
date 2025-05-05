@@ -281,6 +281,40 @@
                         Margin="0,0,0,6"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
+                        d:Text="{x:Static properties:Resources.brw_SongBlocked}"
+                        FontSize="14"
+                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Text="{DynamicResource brw_SongBlocked}"
+                        TextWrapping="Wrap" />
+                    <TextBox
+                        x:Name="TbSongBlocked"
+                        MinHeight="23"
+                        VerticalAlignment="Center"
+                        AcceptsReturn="True"
+                        GotFocus="Tb__GotFocus"
+                        LostFocus="Tb_LostFocus"
+                        TextChanged="Tb_SongBlocked_TextChanged"
+                        TextWrapping="Wrap"
+                        ToolTip="{DynamicResource ParamTooltip}" />
+                </StackPanel>
+            </Border>
+            <Border
+                Margin="0,12,0,6"
+                VerticalAlignment="Bottom"
+                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderThickness="1" />
+
+            <Border
+                MinWidth="60"
+                Margin="0,6"
+                Padding="6,6,6,8"
+                Background="{DynamicResource MahApps.Brushes.Accent}"
+                CornerRadius="8">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock
+                        Margin="0,0,0,6"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
                         d:Text="{x:Static properties:Resources.brw_ExplicitSongs}"
                         FontSize="14"
                         Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"

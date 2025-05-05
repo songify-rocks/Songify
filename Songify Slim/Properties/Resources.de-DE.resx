@@ -916,4 +916,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Fügt das aktuelle Lied zur Blockliste hinzu und überspringt es.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Song ist blockiert</value>
+  </data>
 </root>

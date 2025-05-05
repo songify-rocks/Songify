@@ -916,4 +916,7 @@
   <data name="brw_cmd_bansong" xml:space="preserve">
     <value>Добавляет текущую песню в черный список и пропускает ее.</value>
   </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Песня заблокирована</value>
+  </data>
 </root>
