@@ -265,13 +265,7 @@ namespace Songify_Slim.UserControls
             Settings.BotRespPlaylist = TbNotFoundInPlaylist.Text;
             SetPreview(sender as TextBox);
         }
-
-        //private void TbRemove_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    Settings.BotRespRemove = TbRemove.Text;
-        //    SetPreview(sender as TextBox);
-        //}
-
+        
         private void TbExplicit_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespTrackExplicit = TbExplicit.Text;
