@@ -3,7 +3,6 @@ using System.Collections;
 using Songify_Slim.Views;
 using System.Collections.Generic;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Songify_Slim.UserControls;
+using SpotifyAPI.Web;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -429,11 +429,11 @@ namespace Songify_Slim.Util.Settings
             set => SetSpotifyDeviceId(value);
         }
 
-        public static List<SimplePlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
+        public static List<FullPlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
 
         public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
 
-        public static PrivateProfile SpotifyProfile { get => GetSpotifyProfile(); set => SetSpotifyProfile(value); }
+        public static PrivateUser SpotifyProfile { get => GetSpotifyProfile(); set => SetSpotifyProfile(value); }
 
         public static string SpotifyRefreshToken
         {
@@ -1515,7 +1515,7 @@ namespace Songify_Slim.Util.Settings
             return CurrentConfig.SpotifyCredentials.DeviceId;
         }
 
-        private static List<SimplePlaylist> GetSpotifyPlaylistCache()
+        private static List<FullPlaylist> GetSpotifyPlaylistCache()
         {
             return CurrentConfig.SpotifyCredentials.PlaylistCache;
         }
@@ -1525,7 +1525,7 @@ namespace Songify_Slim.Util.Settings
             return CurrentConfig.AppConfig.SpotifyPlaylistId;
         }
 
-        private static PrivateProfile GetSpotifyProfile()
+        private static PrivateUser GetSpotifyProfile()
         {
             return CurrentConfig.SpotifyCredentials.Profile;
         }
@@ -2336,7 +2336,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(Enums.ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
         }
 
-        private static void SetSpotifyPlaylistCache(List<SimplePlaylist> value)
+        private static void SetSpotifyPlaylistCache(List<FullPlaylist> value)
         {
             CurrentConfig.SpotifyCredentials.PlaylistCache = value;
             ConfigHandler.WriteConfig(Enums.ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
@@ -2348,7 +2348,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetSpotifyProfile(PrivateProfile value)
+        private static void SetSpotifyProfile(PrivateUser value)
         {
             CurrentConfig.SpotifyCredentials.Profile = value;
             ConfigHandler.WriteConfig(Enums.ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);

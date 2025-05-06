@@ -224,71 +224,6 @@
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthorizationCodeAuth.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\AuthUtil.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\CredentialsAuth.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\ImplicitGrantAuth.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\SpotifyAuthServer.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\TokenSwapAuth.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web.Auth\TokenSwapWebAPIFactory.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\AlbumType.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\FollowType.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\RepeatState.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\Scope.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\SearchType.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\TimeRangeType.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Enums\TrackType.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\IClient.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AnalysisMeta.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AnalysisSection.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AnalysisSegment.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AnalysisTimeSlice.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AnalysisTrack.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\ArrayResponse.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AudioAnalysis.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AudioFeatures.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\AvailabeDevices.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\BasicModel.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Category.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\CategoryList.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\CategoryPlaylist.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\CursorPaging.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Device.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FeaturedPlaylists.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FollowedArtists.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FullAlbum.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FullArtist.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FullPlaylist.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\FullTrack.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\GeneralModels.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\NewAlbumReleases.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Paging.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\PlaybackContext.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\PlayHistory.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\PrivateProfile.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\PublicProfile.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Recommendations.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\RecommendationSeed .cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\RecommendationSeedGenres.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\ResponseInfo.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SearchItem.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SeveralAlbums.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SeveralArtists.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SeveralAudioFeatures.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SeveralTracks.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleAlbum.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleArtist.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimplePlaylist.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleQueue.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\SimpleTrack.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Snapshot.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\Token.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Models\TuneableTrack.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\ProxyConfig.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\SpotifyWebAPI.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\SpotifyWebBuilder.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\SpotifyWebClient.cs" />
-    <Compile Include="Util\Spotify\SpotifyAPI.Web\Util.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\YTHCHSearchParser.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
@@ -578,7 +513,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="EmbedIO">
-      <Version>2.9.2</Version>
+      <Version>3.5.2</Version>
     </PackageReference>
     <PackageReference Include="Fody">
       <Version>6.9.2</Version>
@@ -635,6 +570,12 @@
     </PackageReference>
     <PackageReference Include="SocketIOClient">
       <Version>3.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="SpotifyAPI.Web">
+      <Version>7.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="SpotifyAPI.Web.Auth">
+      <Version>7.2.1</Version>
     </PackageReference>
     <PackageReference Include="SQLite">
       <Version>3.13.0</Version>
@@ -797,13 +738,12 @@
     <Resource Include="Resources\songifyBeta.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\css\bulma.min.css" />
-    <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\ImplicitGrantAuth\index.html" />
-    <Resource Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\1.png" />
-    <Resource Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\images\2.png" />
-    <Content Include="Util\Spotify\SpotifyAPI.Web.Auth\Resources\AuthorizationCodeAuth\start.html" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="default_site\favicon.ico" />
+    <EmbeddedResource Include="default_site\index.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

@@ -8,7 +8,6 @@
  Should you notice the list being outdated, please, do contact VonRiddarn.
  */
 
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using System.Collections.Generic;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth

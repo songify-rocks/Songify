@@ -2,24 +2,17 @@
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Forms;
-using System.Xml;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using static System.Convert;
-using Application = System.Windows.Application;
 using static Songify_Slim.Util.Settings.YamlTypeConverters;
-using Markdig.Wpf;
 using Songify_Slim.Models;
-using Songify_Slim.Util.Songify;
 using static Songify_Slim.Util.General.Enums;
+using SpotifyAPI;
+using SpotifyAPI.Web;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -261,7 +254,6 @@ namespace Songify_Slim.Util.Settings
                 if (File.Exists(tempPath))
                     File.Delete(tempPath);
                 Logger.LogExc(ex);
-                throw;
             }
         }
 
@@ -385,8 +377,8 @@ namespace Songify_Slim.Util.Settings
         public string DeviceId { get; set; } = "";
         public string ClientId { get; set; } = "";
         public string ClientSecret { get; set; } = "";
-        public PrivateProfile Profile { get; set; } = new();
-        public List<SimplePlaylist> PlaylistCache { get; set; } = [];
+        public PrivateUser Profile { get; set; } = new();
+        public List<FullPlaylist> PlaylistCache { get; set; } = [];
         public string RedirectUri { get; set; } = "localhost";
     }
 

@@ -124,4 +124,12 @@ public static class Enums
         PauseText = 1,
         ClearAll = 2
     }
+
+    public enum PlaybackAction
+    {
+        Toggle,
+        Play,
+        Pause
+    }
+
 }

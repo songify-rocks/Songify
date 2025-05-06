@@ -5,11 +5,12 @@ using Songify_Slim.Util.Songify;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Songify_Slim.Util.Spotify;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using SpotifyAPI.Web;
 
 namespace Songify_Slim.Views
 {
@@ -87,7 +88,7 @@ namespace Songify_Slim.Views
                 case 0:
                     // Spotify Artist Blacklist
                     // If the API is not connected just don't do anything?
-                    if (SpotifyApiHandler.Spotify == null)
+                    if (SpotifyApiHandler.Client == null)
                     {
                         await this.ShowMessageAsync("Notification",
                             "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
@@ -95,8 +96,8 @@ namespace Songify_Slim.Views
                     }
 
                     // Perform a search via the spotify API
-                    SearchItem searchItem = SpotifyApiHandler.GetArtist(search);
-                    switch (searchItem.Artists.Items.Count)
+                    List<FullArtist> searchItem = await SpotifyApiHandler.GetArtist(search);
+                    switch (searchItem.Count)
                     {
                         case <= 0:
                             return;
@@ -105,7 +106,7 @@ namespace Songify_Slim.Views
                             {
                                 dgv_Artists.Items.Clear();
                                 int count = 1;
-                                foreach (FullArtist artist in searchItem.Artists.Items)
+                                foreach (FullArtist artist in searchItem)
                                 {
                                     dgv_Artists.Items.Add(new BlockListArtists { Num = count, Artist = artist.Name, IsSelected = false });
                                     count++;
@@ -115,7 +116,7 @@ namespace Songify_Slim.Views
                             }
                         default:
                             {
-                                FullArtist fullartist = searchItem.Artists.Items[0];
+                                FullArtist fullartist = searchItem[0];
 
                                 if (ListView_Blacklist.Items.Cast<object>().Any(item => item.ToString() == fullartist.Name))
                                 {
@@ -135,7 +136,7 @@ namespace Songify_Slim.Views
                 case 2: // Song Blacklist
                     List<FullTrack> tracks = [];
                     string trackId;
-                    if (SpotifyApiHandler.Spotify == null)
+                    if (SpotifyApiHandler.Client == null)
                     {
                         await this.ShowMessageAsync("Notification",
                             "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
@@ -156,9 +157,8 @@ namespace Songify_Slim.Views
                     }
                     else
                     {
-                        SearchItem result = SpotifyApiHandler.FindTrack(search);
-                        if (result.Tracks != null)
-                            tracks.AddRange(result.Tracks.Items);
+                        FullTrack result = await SpotifyApiHandler.FindTrack(search);
+                        tracks.AddRange([result]);
                     }
 
                     foreach (FullTrack resultTrack in tracks)

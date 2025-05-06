@@ -13,16 +13,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
-using Unosquare.Swan.Formatters;
+using Swan.Formatters;
 using System.Windows.Threading;
 using System.Reflection;
 using System.Xml.Linq;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
-using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
 using System.Web.UI.WebControls;
 using Songify_Slim.Models.WebSocket;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Soundtrack;
 
 namespace Songify_Slim.Util.Songify
@@ -318,7 +317,7 @@ namespace Songify_Slim.Util.Songify
                 Albums = !string.IsNullOrEmpty(ytData.Cover)
                     ?
                     [
-                        new Image
+                        new SpotifyAPI.Web.Image
                         {
                             Url = ytData.Cover,
                             Width = 0,
@@ -353,12 +352,12 @@ namespace Songify_Slim.Util.Songify
             //if (_updating)
             //    return;
             //_updating = true;
-            if (SpotifyApiHandler.Spotify == null)
+            if (SpotifyApiHandler.Client == null)
             {
                 if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
                     !string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
                 {
-                    await SpotifyApiHandler.DoAuthAsync();
+                    await SpotifyApiHandler.Auth();
                 }
                 return;
             }
@@ -853,7 +852,7 @@ namespace Songify_Slim.Util.Songify
                     Title = response.Video.Title,
                     Albums =
                     [
-                        new Image()
+                        new SpotifyAPI.Web.Image
                         {
                             Url = response.Video.Thumbnails.Last().Url,
                             Width = response.Video.Thumbnails.Last().Width,
@@ -899,7 +898,7 @@ namespace Songify_Slim.Util.Songify
                 Title = data.Title,
                 Albums =
                 [
-                    new Image
+                    new SpotifyAPI.Web.Image
                     {
                         Url = data.ImageSrc,
                         Width = 0,
@@ -924,13 +923,12 @@ namespace Songify_Slim.Util.Songify
                 FullArtists = new List<SimpleArtist>([
                     new SimpleArtist
                     {
-                        Error = null,
-                        ExternalUrls = null,
-                        Href = null,
-                        Id = null,
+                        ExternalUrls = new Dictionary<string, string>(),
+                        Href = string.Empty,
+                        Id = string.Empty,
                         Name = data.Artist,
-                        Type = null,
-                        Uri = null
+                        Type = string.Empty,
+                        Uri = string.Empty
                     }
                 ])
             };

@@ -17,7 +17,6 @@ using System.Windows.Media;
 using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
@@ -26,6 +25,7 @@ using Songify_Slim.Models.WebSocket;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using SpotifyAPI.Web;
 
 
 namespace Songify_Slim.Util.General
@@ -285,7 +285,7 @@ namespace Songify_Slim.Util.General
                     VolumeData volData = command.Data.ToObject<VolumeData>();
 
                     int volume = MathUtils.Clamp(volData.Value, 0, 100);
-                    await SpotifyApiHandler.Spotify.SetVolumeAsync(volume);
+                    await SpotifyApiHandler.SetVolume(volume);
                     return $"Volume set to {volume}%";
 
                 case "send_to_chat":
@@ -316,13 +316,13 @@ namespace Songify_Slim.Util.General
                 case "play_pause":
                 case "pause":
                 case "play":
-                    var playbackContext = await SpotifyApiHandler.Spotify.GetPlaybackAsync();
+                    var playbackContext = await SpotifyApiHandler.GetPlayback();
                     if (playbackContext.IsPlaying)
                     {
-                        await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                        await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Pause);
                         return "Playback paused.";
                     }
-                    await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                    await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Play);
                     return "Playback resumed.";
 
                 case "stop_sr_reward":
@@ -338,15 +338,15 @@ namespace Songify_Slim.Util.General
 
                 case "vol_up":
                 case "vol_down":
-                    var device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices
-                        .FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
+                    //var device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices
+                    //    .FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
 
-                    if (device == null)
-                        return "No device found.";
-
+                    //if (device == null)
+                    //    return "No device found.";
+                    CurrentlyPlayingContext playback = await SpotifyApiHandler.GetPlayback();
                     int change = command.Action == "vol_up" ? 5 : -5;
-                    int newVolume = MathUtils.Clamp(device.VolumePercent + change, 0, 100);
-                    await SpotifyApiHandler.Spotify.SetVolumeAsync(newVolume, device.Id);
+                    int newVolume = MathUtils.Clamp((int)(playback.Device.VolumePercent == null ? 0 : playback.Device.VolumePercent + change), 0, 100);
+                    await SpotifyApiHandler.SetVolume(newVolume);
                     return $"Volume set to {newVolume}%";
 
                 default:

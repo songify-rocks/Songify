@@ -28,8 +28,8 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.UserControls;
-using Unosquare.Swan;
-using Unosquare.Swan.Formatters;
+using Swan;
+using Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using ContextMenu = System.Windows.Forms.ContextMenu;
@@ -145,7 +145,7 @@ namespace Songify_Slim.Views
                 .Select(p => new
                 {
                     Value = p,
-                    Name = EnumHelper.GetDescription(p)
+                    Name = Util.General.EnumHelper.GetDescription(p)
                 });
 
             cbx_Source.ItemsSource = sourceBoxItems;
@@ -751,7 +751,7 @@ namespace Songify_Slim.Views
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
                 else
-                    await SpotifyApiHandler.DoAuthAsync();
+                    await SpotifyApiHandler.Auth();
 
                 img_cover.Visibility = Visibility.Visible;
             }
