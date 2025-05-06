@@ -366,7 +366,7 @@
     <comment>Button content for "check for updates" (unused)</comment>
   </data>
   <data name="sw_SpotifySR_SRReward" xml:space="preserve">
-    <value>Уключыць SR (Балы каналу)</value>
+    <value>Уключыць Запыты песень (Балы каналу)</value>
     <comment>Toggleswitch content for "Enable SR (Channel Reward)"</comment>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
@@ -486,7 +486,7 @@
     <comment>Button content for "Manage Rewards"</comment>
   </data>
   <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
-    <value>Макс. SR/карыстальнік (у залежнасці ад узроўню карыстальніка)</value>
+    <value>Макс. запытаў/карыстальнік (залежыць ад узроўню карыстальніка)</value>
   </data>
   <data name="Sw_Integration_RefundOn" xml:space="preserve">
     <value>Вяртанне сродкаў, калі</value>
@@ -497,7 +497,7 @@
     <comment>Checkbox content for "User level is too low"</comment>
   </data>
   <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
-    <value>Карыстальнік заблакаваны ў SR</value>
+    <value>Карыстальнік заблакаваны</value>
     <comment>Checkbox content for "User is blocked from SR"</comment>
   </data>
   <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
@@ -513,7 +513,7 @@
     <value>Песня не знойдзена</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>заўсёды (зрабіць SR дармовым)</value>
+    <value>заўсёды (зрабіць запыты дармовымі)</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Уліковыя запісы</value>
@@ -524,7 +524,7 @@
     <comment>TabControl header content for  "Rewards"</comment>
   </data>
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
-    <value>Запыты песень (SR)</value>
+    <value>Запыты песень</value>
     <comment>TabControl header content for "Song Requests"</comment>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
@@ -634,7 +634,7 @@
     <comment>Label that states "!ssr command moved to bot config"@MutedRule(PunctuationLead)</comment>
   </data>
   <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
-    <value>Мінімальны ўзровень карыстальніка, неабходны для SR</value>
+    <value>Мін. узровень карыстальніка, неабходны для запыту</value>
     <comment>Label for "Minum user level required for SR"</comment>
   </data>
   <data name="sw_Integration_Twitch" xml:space="preserve">
@@ -650,7 +650,7 @@
     <comment>Messagebox Header that says "Bot Account"</comment>
   </data>
   <data name="mw_menu_SongRequests" xml:space="preserve">
-    <value>Запыты песень (SR)</value>
+    <value>Запыты песень</value>
     <comment>Menu Header for "Song Requests"</comment>
   </data>
   <data name="msgbx_Yes" xml:space="preserve">
@@ -685,7 +685,7 @@
     <comment>Comman description</comment>
   </data>
   <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
-    <value>Дазволеныя ўзроўні карыстальнікаў для ўзнагароды SR</value>
+    <value>Дазволеныя ўзроўні карыстальнікаў для ўзнагароды запыту</value>
   </data>
   <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
     <value>Плэй-ліст песень, што спадабаліся</value>
@@ -727,7 +727,7 @@
     <comment>Use Default Web Browser</comment>
   </data>
   <data name="brw_CommandOnCooldown" xml:space="preserve">
-    <value>Адказ, калі каманда SR знаходзіцца на перазарадцы</value>
+    <value>Адказ, калі каманда запыта песні знаходзіцца на перазарадцы</value>
     <comment>Command on Cooldown Response</comment>
   </data>
   <data name="brw_NoTrackFound" xml:space="preserve">
@@ -760,7 +760,7 @@
     <value>Вяртае 5 першых песень з бягучай чаргі прайгравання</value>
   </data>
   <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
-    <value>Перазарадка каманды SR (на карыстальніка)</value>
+    <value>Перазарадка каманды запыта песні (на карыстальніка)</value>
   </data>
   <data name="brw_CommandOnUserCooldown" xml:space="preserve">
     <value>Адказ, калі карыстальнік знаходзіцца ў стане перазарадкі (асабістая перазарадка для каманды запыта)</value>
@@ -820,7 +820,7 @@
     <comment>Lable for the !songlike command</comment>
   </data>
   <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
-    <value>Дазволіць толькі песні з гэтага плэй-ліста (SR)</value>
+    <value>Дазволіць толькі песні з гэтага плэй-ліста</value>
   </data>
   <data name="bw_lblBlockedArtists" xml:space="preserve">
     <value>Заблакаваныя выканаўцы</value>
@@ -862,7 +862,7 @@
     <comment>Textblock content for "Please link your Spotify account Settings -&gt; Spotify"</comment>
   </data>
   <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
-    <value>Дазволеныя ўзроўні карыстальнікаў для каманды SR</value>
+    <value>Дазволеныя ўзроўні карыстальнікаў для каманды запыту</value>
   </data>
   <data name="sw_Appearance_ThemeLight" xml:space="preserve">
     <value>Светлая тэма</value>
