@@ -408,8 +408,11 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdparams)
+        private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
+                return;
+
             try
             {
                 TrackInfo currentSong = GlobalObjects.CurrentSong;
