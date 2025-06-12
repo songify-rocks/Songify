@@ -1838,7 +1838,7 @@ namespace Songify_Slim.Util.Songify
 
             bool unlimitedSr = false;
 
-            if (user.UserLevels is { Count: > 0 })
+            if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
             {
                 switch (source)
                 {
@@ -3568,7 +3568,7 @@ namespace Songify_Slim.Util.Songify
             string singleArtist = "";
 
             //Fix for russia where Spotify is not available
-            if (track.Restrictions.Any())
+            if (track.Restrictions is { Count: > 0 })
                 return Resources.s_TrackAdded;
 
             try
@@ -3886,9 +3886,11 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(Settings.Settings.TwChannel, "An error occurred while searching for the track.");
                 return "";
             }
-            if (!searchItem.Restrictions.Any()) return searchItem.Id;
+
+            if (searchItem.Restrictions is not { Count: > 0 }) return searchItem.Id;
             SendChatMessage(Settings.Settings.TwChannel, string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
             return "";
+
 
             // if a track was found convert the object to FullTrack (easier use than searchItem)
         }
@@ -4081,6 +4083,10 @@ namespace Songify_Slim.Util.Songify
         private static bool IsTrackUnavailable(FullTrack track, ChatMessage e, out string response)
         {
             response = string.Empty;
+
+            if (track.AvailableMarkets.Any(s => s == Settings.Settings.SpotifyProfile.Country))
+                return false;
+
             try
             {
                 if (track.IsPlayable == null || (bool)track.IsPlayable)
