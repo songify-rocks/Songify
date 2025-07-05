@@ -1818,7 +1818,7 @@ namespace Songify_Slim.Util.Songify
                 SendChatMessage(e.Channel, response);
                 return;
             }
-            
+
             if (track == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
@@ -2497,7 +2497,10 @@ namespace Songify_Slim.Util.Songify
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
 
-            int subtier = int.Parse(GlobalObjects.subscribers.FirstOrDefault(sub => sub.UserId == e.ChatMessage.UserId)?.Tier ?? "0") / 1000;
+            int subtier = int.Parse(GlobalObjects.subscribers.Where(s => s.UserId == e.ChatMessage.UserId)
+                // Helix tier is a string like "1000"/"2000"/"3000"
+                .OrderByDescending(s => int.Parse(s.Tier))
+                .FirstOrDefault()?.Tier ?? "0") / 1000;
             if (existingUser == null)
             {
                 // If the user doesn't exist, add them.
@@ -3308,17 +3311,19 @@ namespace Songify_Slim.Util.Songify
             {
                 userLevels.Add((int)TwitchUserLevels.Vip);
             }
-            Subscription subscription = GlobalObjects.subscribers.FirstOrDefault(sub => sub.UserId == userId);
+            Subscription subscription = GlobalObjects.subscribers.Where(s => s.UserId == userId)
+                .OrderByDescending(s => int.Parse(s.Tier))
+                .FirstOrDefault(); ;
             if (subscription != null)
             {
                 userLevels.Add((int)TwitchUserLevels.Subscriber);
                 switch (subscription.Tier)
                 {
-                    case "200":
+                    case "2000":
                         userLevels.Add((int)TwitchUserLevels.SubscriberT2);
                         break;
 
-                    case "300":
+                    case "3000":
                         userLevels.Add((int)TwitchUserLevels.SubscriberT3);
                         break;
                 }
@@ -4513,7 +4518,10 @@ namespace Songify_Slim.Util.Songify
                     {
                         userLevels.Add((int)TwitchUserLevels.Vip);
                     }
-                    Subscription subsc = GlobalObjects.subscribers.FirstOrDefault(subs => subs.UserId == chatter.UserId);
+                    Subscription subsc = GlobalObjects.subscribers.Where(s => s.UserId == chatter.UserId)
+                        // Helix tier is a string like "1000"/"2000"/"3000"
+                        .OrderByDescending(s => int.Parse(s.Tier))
+                        .FirstOrDefault(); ;
                     int subtier = 0;
                     if (subsc != null)
                     {
