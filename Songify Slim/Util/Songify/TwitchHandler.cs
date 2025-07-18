@@ -397,6 +397,8 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdparams)
         {
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdparams, message.IsBroadcaster, cmd, message.UserId))
+                return;
             try
             {
                 TrackInfo currentSong = GlobalObjects.CurrentSong;
@@ -2477,7 +2479,10 @@ namespace Songify_Slim.Util.Songify
             // Attempt to find the user in the existing list.
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
 
-            int subtier = int.Parse(GlobalObjects.subscribers.FirstOrDefault(sub => sub.UserId == e.ChatMessage.UserId)?.Tier ?? "0") / 1000;
+            int subtier = int.Parse(GlobalObjects.subscribers.Where(s => s.UserId == e.ChatMessage.UserId)
+                // Helix tier is a string like "1000"/"2000"/"3000"
+                .OrderByDescending(s => int.Parse(s.Tier))
+                .FirstOrDefault()?.Tier ?? "0") / 1000;
             if (existingUser == null)
             {
                 // If the user doesn't exist, add them.
@@ -3288,7 +3293,10 @@ namespace Songify_Slim.Util.Songify
             {
                 userLevels.Add((int)TwitchUserLevels.Vip);
             }
-            Subscription subscription = GlobalObjects.subscribers.FirstOrDefault(sub => sub.UserId == userId);
+            Subscription subscription = GlobalObjects.subscribers.Where(s => s.UserId == userId)
+                // Helix tier is a string like "1000"/"2000"/"3000"
+                .OrderByDescending(s => int.Parse(s.Tier))
+                .FirstOrDefault();
             if (subscription != null)
             {
                 userLevels.Add((int)TwitchUserLevels.Subscriber);
@@ -4494,7 +4502,10 @@ namespace Songify_Slim.Util.Songify
                     {
                         userLevels.Add((int)TwitchUserLevels.Vip);
                     }
-                    Subscription subsc = GlobalObjects.subscribers.FirstOrDefault(subs => subs.UserId == chatter.UserId);
+                    Subscription subsc = GlobalObjects.subscribers.Where(s => s.UserId == chatter.UserId)
+                        // Helix tier is a string like "1000"/"2000"/"3000"
+                        .OrderByDescending(s => int.Parse(s.Tier))
+                        .FirstOrDefault();
                     int subtier = 0;
                     if (subsc != null)
                     {
