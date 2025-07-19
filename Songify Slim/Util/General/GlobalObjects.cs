@@ -1,6 +1,5 @@
 ﻿using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
@@ -12,17 +11,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Unosquare.Swan.Formatters;
-using MahApps.Metro.IconPacks;
-using TwitchLib.Api.Helix;
-using System.Collections;
-using System.Windows.Threading;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
-using Queue = Songify_Slim.Models.YTMD.Queue;
 using QueueItem = Songify_Slim.Models.YTMD.QueueItem;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
@@ -30,6 +22,8 @@ using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using System.Collections.Concurrent;
 using Songify_Slim.Models.WebSocket;
+using SpotifyAPI.Web;
+using Swan.Formatters;
 
 namespace Songify_Slim.Util.General
 {
@@ -60,10 +54,10 @@ namespace Songify_Slim.Util.General
         public static bool TwitchBotTokenExpired = false;
         public static string AllowedPlaylistName;
         internal static string AllowedPlaylistUrl;
-        public static PrivateProfile SpotifyProfile;
+        public static PrivateUser SpotifyProfile;
         public static bool ForceUpdate;
         private static readonly TaskQueue UpdateQueueWindowTasks = new();
-        public static List<PlaylistTrack> LikedPlaylistTracks = [];
+        public static List<PlaylistTrack<IPlayableItem>> LikedPlaylistTracks = [];
         public static Tuple<bool, string> Canvas;
         public static ObservableCollection<TwitchUser> TwitchUsers = [];
         public static bool IoClientConnected = false;
@@ -239,7 +233,7 @@ namespace Songify_Slim.Util.General
                 case Enums.PlayerType.SpotifyWeb:
                     try
                     {
-                        SimpleQueue queue = await SpotifyApiHandler.GetQueueInfo();
+                        QueueResponse queue = await SpotifyApiHandler.GetQueueInfo();
                         if (queue?.Queue == null || queue.Queue.Count == 0)
                         {
                             return;
@@ -252,7 +246,7 @@ namespace Songify_Slim.Util.General
 
                             foreach (RequestObject requestObject in ReqList)
                             {
-                                if (queue.Queue.Any(o => o.Id == requestObject.Trackid)) continue;
+                                if (queue.Queue.Any(o => ((FullTrack)o).Id == requestObject.Trackid)) continue;
 
                                 dynamic payload = new
                                 {
@@ -298,8 +292,7 @@ namespace Songify_Slim.Util.General
 
                         bool isLikedSongsPlaylist = false;
                         Dictionary<string, bool> isInLikedSongs = [];
-
-                        List<string> ids = queue.Queue.Select(track => track.Id).ToList();
+                        List<string> ids = queue.Queue.Select(track => ((FullTrack)track).Id).ToList();
                         if (CurrentSong != null && !ids.Contains(CurrentSong.SongId))
                             ids.Insert(0, CurrentSong.SongId); // Ensure current song is included
 
@@ -309,12 +302,12 @@ namespace Songify_Slim.Util.General
                                 Settings.Settings.SpotifyPlaylistId == "-1")
                             {
                                 isLikedSongsPlaylist = true;
-                                ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync(ids);
-
-                                for (int i = 0; i < ids.Count; i++)
-                                {
-                                    isInLikedSongs[ids[i]] = x.List[i];
-                                }
+                                List<bool> x = await SpotifyApiHandler.CheckLibrary(ids);
+                                if (x != null)
+                                    for (int i = 0; i < ids.Count; i++)
+                                    {
+                                        isInLikedSongs[ids[i]] = x[i];
+                                    }
                             }
                             else
                             {
@@ -336,7 +329,7 @@ namespace Songify_Slim.Util.General
                             {
                                 bool isInLikedPlaylist = isLikedSongsPlaylist
                                     ? isInLikedSongs.TryGetValue(fullTrack.Id, out bool boolValue) && boolValue
-                                    : LikedPlaylistTracks.Any(o => o.Track.Id == fullTrack.Id);
+                                    : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == fullTrack.Id);
 
                                 RequestObject reqObj = ReqList.FirstOrDefault(o =>
                                     o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) &&
@@ -403,8 +396,8 @@ namespace Songify_Slim.Util.General
                                     }
 
                                     bool isInLikedPlaylist = isLikedSongsPlaylist
-                                        ? isInLikedSongs.TryGetValue(CurrentSong.SongId, out var liked) && liked
-                                        : LikedPlaylistTracks.Any(o => o.Track.Id == CurrentSong.SongId);
+                                        ? isInLikedSongs.TryGetValue(CurrentSong.SongId, out bool liked) && liked
+                                        : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == CurrentSong.SongId);
 
                                     QueueTracks.Insert(0, new RequestObject
                                     {
@@ -525,7 +518,7 @@ namespace Songify_Slim.Util.General
                         item.PlaylistPanelVideoWrapperRenderer?.PrimaryRenderer?.PlaylistPanelVideoRenderer?.VideoId == ytmthchResponse.VideoId
                     );
 
-                    if(index > 0)
+                    if (index > 0)
                         ytmthchQueue.Items.RemoveRange(0, index);
 
                     tempQueueList2 = [];
@@ -610,7 +603,7 @@ namespace Songify_Slim.Util.General
             if (LikedPlaylistTracks == null)
                 await LoadLikedPlaylistTracks();
 
-            if (LikedPlaylistTracks != null && LikedPlaylistTracks.Any(o => o.Track.Id == trackInfo.SongId))
+            if (LikedPlaylistTracks != null && LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == trackInfo.SongId))
                 return true;
 
             IsInPlaylist = false;
@@ -626,16 +619,12 @@ namespace Songify_Slim.Util.General
 
             bool firstFetch = true;
             LikedPlaylistTracks = [];
-            Paging<PlaylistTrack> tracks = null;
+            Paging<PlaylistTrack<IPlayableItem>> tracks;
             do
             {
-                tracks = firstFetch
-                    ? await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId)
-                    : await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100,
-                        tracks.Offset + tracks.Limit);
-                LikedPlaylistTracks.AddRange(tracks.Items);
-                firstFetch = false;
-            } while (tracks.HasNextPage());
+                tracks = await SpotifyApiHandler.GetPlaylistTracks(Settings.Settings.SpotifyPlaylistId);
+                if (tracks.Items != null) LikedPlaylistTracks.AddRange(tracks.Items);
+            } while (tracks.Next != null);
         }
 
         public static string GetReadablePlayer()

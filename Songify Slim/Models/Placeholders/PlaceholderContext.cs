@@ -1,9 +1,4 @@
-﻿using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace Songify_Slim.Models
 {

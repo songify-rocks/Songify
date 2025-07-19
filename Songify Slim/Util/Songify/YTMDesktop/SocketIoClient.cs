@@ -12,7 +12,7 @@ using SocketIOClient;
 using Songify_Slim.Models;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Views;
-using Unosquare.Swan.Formatters;
+using Swan.Formatters;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify.YTMDesktop

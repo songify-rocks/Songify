@@ -16,7 +16,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Util.Spotify;
-using Unosquare.Swan.Formatters;
+using Swan.Formatters;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using DataGridColumn = System.Windows.Controls.DataGridColumn;

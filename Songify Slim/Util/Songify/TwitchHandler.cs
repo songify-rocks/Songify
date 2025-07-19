@@ -1,5 +1,4 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Properties;
@@ -21,7 +20,6 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -41,35 +39,24 @@ using TwitchLib.Communication.Models;
 using TwitchLib.PubSub;
 using TwitchLib.PubSub.Events;
 using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
-using Unosquare.Swan;
-using Unosquare.Swan.Formatters;
+using Swan;
+using Swan.Formatters;
 using Application = System.Windows.Application;
 using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
-using TwitchLib.Api.Helix.Models.Subscriptions;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
-using System.Configuration;
 using System.Globalization;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
-using System.Windows.Interop;
-using Windows.Media.Playback;
-using Markdig.Syntax;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Util.Spotify;
-using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
-using Image = Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models.Image;
-using TwitchLib.Api.Helix.Models.Soundtrack;
-using TwitchLib.PubSub.Models.Responses;
-using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
-using TwitchLib.Api.Core.Models.Undocumented.Chatters;
-using TwitchLib.Api.V5.Models.Clips;
-using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
+using SpotifyAPI.Web;
+using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Subscription = TwitchLib.Api.Helix.Models.Subscriptions.Subscription;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
 
@@ -410,9 +397,8 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdparams, message.IsBroadcaster, cmd, message.UserId))
                 return;
-
             try
             {
                 TrackInfo currentSong = GlobalObjects.CurrentSong;
@@ -519,8 +505,7 @@ namespace Songify_Slim.Util.Songify
             {
                 // Volume Get
                 if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
-                PlaybackContext spotifyPlaybackAsync = await SpotifyApiHandler.Spotify.GetPlaybackAsync();
-                if (spotifyPlaybackAsync?.Device == null) return;
+                CurrentlyPlayingContext spotifyPlaybackAsync = await SpotifyApiHandler.GetPlayback();
                 string response = cmd.Response;
                 response = response.Replace("{user}", message.DisplayName);
                 response = response.Replace("{vol}", spotifyPlaybackAsync?.Device.VolumePercent.ToString());
@@ -886,7 +871,7 @@ namespace Songify_Slim.Util.Songify
             }
             try
             {
-                await SpotifyApiHandler.Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
+                await SpotifyApiHandler.PlayPause(PlaybackAction.Pause);
             }
             catch
             {
@@ -913,7 +898,7 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                await SpotifyApiHandler.Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, "");
+                await SpotifyApiHandler.PlayPause(PlaybackAction.Play);
             }
             catch
             {
@@ -1244,14 +1229,12 @@ namespace Songify_Slim.Util.Songify
                                     List<SimpleArtist> artists = [];
                                     artists.AddRange(searchResponse.Artists.Select(artist => new SimpleArtist
                                     {
-                                        Error = null,
-                                        ExternalUrls = null,
-                                        Href = null,
-                                        Id = null,
+                                        ExternalUrls = new Dictionary<string, string>(),
+                                        Href = "",
+                                        Id = "",
                                         Name = artist,
-                                        Type = null,
-                                        Uri = null,
-
+                                        Type = "",
+                                        Uri = "",
                                     }));
                                     artists.Remove(artists.Find(o => o.Name == searchResponse.Title));
 
@@ -1272,26 +1255,26 @@ namespace Songify_Slim.Util.Songify
 
                                     string response = CreateSuccessResponse(new FullTrack
                                     {
-                                        Error = null,
-                                        Album = null,
+                                        Album = new SimpleAlbum(),
                                         Artists = artists,
-                                        AvailableMarkets = null,
+                                        AvailableMarkets = [],
                                         DiscNumber = 0,
-                                        DurationMs = TimeSpan.Parse(searchResponse.Duration).TotalMilliseconds,
+                                        DurationMs = (int)TimeSpan.Parse(searchResponse.Duration).TotalMilliseconds,
                                         Explicit = false,
-                                        ExternalIds = null,
-                                        ExternUrls = null,
-                                        Href = null,
+                                        ExternalIds = new Dictionary<string, string>(),
+                                        Href = "",
                                         Id = searchResponse.VideoId,
                                         Name = searchResponse.Title,
                                         Popularity = 0,
-                                        PreviewUrl = null,
+                                        PreviewUrl = "",
                                         TrackNumber = 0,
-                                        Restrictions = null,
-                                        Type = null,
+                                        Restrictions = new Dictionary<string, string>(),
+                                        Type = ItemType.Track,
                                         Uri = $"https://youtu.be/{searchResponse.VideoId}",
-                                        IsPlayable = null,
-                                        LinkedFrom = null
+                                        IsPlayable = true,
+                                        LinkedFrom = new LinkedTrack(),
+                                        ExternalUrls = new Dictionary<string, string>(),
+                                        IsLocal = false
                                     }, message.DisplayName, successResponse);
                                     SendOrAnnounceMessage(message.Channel, response, cmd);
                                 }
@@ -1329,7 +1312,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task HandleSpotifyRequest(ChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
         {
-            if (SpotifyApiHandler.Spotify == null)
+            if (SpotifyApiHandler.Client == null)
             {
                 SendChatMessage(message.Channel, "It seems that Spotify is not connected right now.");
                 return;
@@ -1857,7 +1840,7 @@ namespace Songify_Slim.Util.Songify
 
             bool unlimitedSr = false;
 
-            if (user.UserLevels is { Count: > 0 })
+            if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
             {
                 switch (source)
                 {
@@ -1889,7 +1872,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-            SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
+            await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
@@ -2039,7 +2022,7 @@ namespace Songify_Slim.Util.Songify
             if (!valid)
                 return message;
 
-            SpotifyApiHandler.AddToQ("spotify:track:" + trackId);
+            await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);
@@ -2155,7 +2138,7 @@ namespace Songify_Slim.Util.Songify
             string spotifyUri = "spotify:track:" + trackId;
 
             // try adding the song to the queue using the URI
-            SpotifyApiHandler.AddToQ(spotifyUri);
+            await SpotifyApiHandler.AddToQueue(spotifyUri);
 
             // if everything worked so far, inform the user that the song has been added to the queue
             response = Settings.Settings.BotRespSuccess;
@@ -2225,10 +2208,10 @@ namespace Songify_Slim.Util.Songify
                 if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
                     Settings.Settings.SpotifyPlaylistId == "-1")
                 {
-                    ListResponse<bool> x = await SpotifyApiHandler.Spotify.CheckSavedTracksAsync([trackId]);
-                    if (x.List.Count > 0)
+                    List<bool> x = await SpotifyApiHandler.CheckLibrary([trackId]);
+                    if (x.Count > 0)
                     {
-                        switch (x.List[0])
+                        switch (x[0])
                         {
                             case true:
                                 if (sendResponse)
@@ -2246,12 +2229,11 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    Paging<PlaylistTrack> tracks =
-                        await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
+                    Paging<PlaylistTrack<IPlayableItem>> tracks = await SpotifyApiHandler.GetPlaylistTracks(Settings.Settings.SpotifyPlaylistId);
 
                     while (tracks is { Items: not null })
                     {
-                        if (tracks.Items.Any(t => t.Track.Id == trackId))
+                        if (tracks.Items.Any(t => t.Track.Type == ItemType.Track && ((FullTrack)t.Track).Id == trackId))
                         {
                             if (sendResponse)
                             {
@@ -2261,12 +2243,12 @@ namespace Songify_Slim.Util.Songify
                             return true;
                         }
 
-                        if (!tracks.HasNextPage())
+                        if (tracks.Next == null)
                         {
                             break;  // Exit if no more pages
                         }
 
-                        tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                        //tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
                     }
 
                     await SpotifyApiHandler.AddToPlaylist(trackId);
@@ -2351,24 +2333,24 @@ namespace Songify_Slim.Util.Songify
         private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
             string spotifySongLimitPlaylist)
         {
-            FullPlaylist playlist = await SpotifyApiHandler.Spotify.GetPlaylistAsync(spotifySongLimitPlaylist);
-            Paging<PlaylistTrack> tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(spotifySongLimitPlaylist);
+            FullPlaylist playlist = await SpotifyApiHandler.GetPlaylist(spotifySongLimitPlaylist);
+            Paging<PlaylistTrack<IPlayableItem>> tracks = await SpotifyApiHandler.GetPlaylistTracks(spotifySongLimitPlaylist);
             while (tracks is { Items: not null })
             {
                 // Check if any track matches the given ID
-                if (tracks.Items.Any(t => t.Track.Id == trackId))
+                if (tracks.Items.Any(t => t.Track.Type == ItemType.Track && ((FullTrack)t.Track).Id == trackId))
                 {
                     return new Tuple<bool, FullPlaylist>(true, playlist);
                 }
 
                 // Check if there are more pages, if not, exit the loop
-                if (!tracks.HasNextPage())
+                if (tracks.Next == null)
                 {
                     break;
                 }
 
                 // Fetch the next page of tracks
-                tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+                //tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
             }
 
             return new Tuple<bool, FullPlaylist>(false, playlist);
@@ -2571,7 +2553,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                if (SpotifyApiHandler.Spotify == null)
+                if (SpotifyApiHandler.Client == null)
                 {
                     SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
                     return;
@@ -3312,8 +3294,9 @@ namespace Songify_Slim.Util.Songify
                 userLevels.Add((int)TwitchUserLevels.Vip);
             }
             Subscription subscription = GlobalObjects.subscribers.Where(s => s.UserId == userId)
+                // Helix tier is a string like "1000"/"2000"/"3000"
                 .OrderByDescending(s => int.Parse(s.Tier))
-                .FirstOrDefault(); ;
+                .FirstOrDefault();
             if (subscription != null)
             {
                 userLevels.Add((int)TwitchUserLevels.Subscriber);
@@ -3593,7 +3576,7 @@ namespace Songify_Slim.Util.Songify
             string singleArtist = "";
 
             //Fix for russia where Spotify is not available
-            if (track.HasError() && track.Error.Status == 403)
+            if (track.Restrictions is { Count: > 0 })
                 return Resources.s_TrackAdded;
 
             try
@@ -3905,22 +3888,19 @@ namespace Songify_Slim.Util.Songify
 
             // search for a track with a search string from chat
             //SearchItem searchItem = SpotifyApiHandler.FindTrack(HttpUtility.UrlEncode(input));
-            SearchItem searchItem = SpotifyApiHandler.FindTrack(input);
+            FullTrack searchItem = await SpotifyApiHandler.FindTrack(input);
             if (searchItem == null)
             {
                 SendChatMessage(Settings.Settings.TwChannel, "An error occurred while searching for the track.");
                 return "";
             }
-            if (searchItem.HasError())
-            {
-                SendChatMessage(Settings.Settings.TwChannel, searchItem.Error.Message);
-                return "";
-            }
 
-            if (searchItem.Tracks.Items.Count <= 0) return "";
+            if (searchItem.Restrictions is not { Count: > 0 }) return searchItem.Id;
+            SendChatMessage(Settings.Settings.TwChannel, string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
+            return "";
+
+
             // if a track was found convert the object to FullTrack (easier use than searchItem)
-            FullTrack fullTrack = searchItem.Tracks.Items[0];
-            return fullTrack.Id;
         }
 
         private static bool IsArtistBlacklisted(FullTrack track, ChatMessage e, out string response)
@@ -4111,6 +4091,10 @@ namespace Songify_Slim.Util.Songify
         private static bool IsTrackUnavailable(FullTrack track, ChatMessage e, out string response)
         {
             response = string.Empty;
+
+            if (track.AvailableMarkets.Any(s => s == Settings.Settings.SpotifyProfile.Country))
+                return false;
+
             try
             {
                 if (track.IsPlayable == null || (bool)track.IsPlayable)
@@ -4351,7 +4335,7 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-                if (SpotifyApiHandler.Spotify == null)
+                if (SpotifyApiHandler.Client == null)
                 {
                     msg = "It seems that Spotify is not connected right now.";
                     //Send a Message to the user, that his Userlevel is too low
@@ -4521,7 +4505,7 @@ namespace Songify_Slim.Util.Songify
                     Subscription subsc = GlobalObjects.subscribers.Where(s => s.UserId == chatter.UserId)
                         // Helix tier is a string like "1000"/"2000"/"3000"
                         .OrderByDescending(s => int.Parse(s.Tier))
-                        .FirstOrDefault(); ;
+                        .FirstOrDefault();
                     int subtier = 0;
                     if (subsc != null)
                     {
@@ -4604,11 +4588,10 @@ namespace Songify_Slim.Util.Songify
             if (split.Length <= 1) return null;
             if (!int.TryParse(split[1], out int volume)) return null;
             int vol = MathUtils.Clamp(volume, 0, 100);
-            ErrorResponse response = await SpotifyApiHandler.Spotify.SetVolumeAsync(vol);
-            if (response.HasError())
+            bool response = await SpotifyApiHandler.SetVolume(vol);
+            if (!response)
                 return null;
             return vol;
-
         }
 
         private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)

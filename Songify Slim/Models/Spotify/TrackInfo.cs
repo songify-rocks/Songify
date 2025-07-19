@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
+using SpotifyAPI.Web;
 
 namespace Songify_Slim.Models
 {

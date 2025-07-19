@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SpotifyAPI.Web;
+using System;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Songify_Slim.Util.Spotify.SpotifyAPI.Web.Models;
 
 namespace Songify_Slim.UserControls
 {
@@ -11,8 +11,8 @@ namespace Songify_Slim.UserControls
     /// </summary>
     public partial class UcPlaylistItem
     {
-        public SimplePlaylist Playlist;
-        public UcPlaylistItem(SimplePlaylist playlist)
+        public FullPlaylist Playlist;
+        public UcPlaylistItem(FullPlaylist playlist)
         {
             InitializeComponent();
             Playlist = playlist;

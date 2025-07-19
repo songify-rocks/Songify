@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Unosquare.Swan.Formatters;
+using Swan.Formatters;
 using Application = System.Windows.Application;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
