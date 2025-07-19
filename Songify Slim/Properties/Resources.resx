@@ -1101,4 +1101,7 @@
   <data name="brw_SongBlocked" xml:space="preserve">
     <value>Song is blocked</value>
   </data>
+  <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
+    <value>Add requests only to the selected playlist</value>
+  </data>
 </root>

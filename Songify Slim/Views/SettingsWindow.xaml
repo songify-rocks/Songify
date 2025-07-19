@@ -1973,6 +1973,14 @@
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Chbx_BlockAllExplicit_Checked" />
+                                <controls:ToggleSwitch 
+                                    Toggled="Tglsw_OnlyAddToPlaylist_OnToggled"
+                                    x:Name="Tglsw_OnlyAddToPlaylist" 
+                                    d:Content="Only add requests to the selected playlist" 
+                                    Content="{x:Static local:Resources.sw_SpotifySR_AddOnlyToPlaylist}"
+                                    FontFamily="Segoe UI" 
+                                    FontSize="12" 
+                                    ContentPadding="0"/>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

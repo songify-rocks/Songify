@@ -918,4 +918,7 @@
   <data name="brw_SongBlocked" xml:space="preserve">
     <value>La canzone è bloccata</value>
   </data>
+  <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
+    <value>Aggiungi richieste solo alla playlist selezionata</value>
+  </data>
 </root>

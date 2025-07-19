@@ -1763,6 +1763,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add requests only to the selected playlist.
+        /// </summary>
+        public static string sw_SpotifySR_AddOnlyToPlaylist {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_AddOnlyToPlaylist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Block all explicit songs.
         /// </summary>
         public static string sw_SpotifySR_BlockAllExplicit {

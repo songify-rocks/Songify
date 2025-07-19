@@ -397,7 +397,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdparams, message.IsBroadcaster, cmd, message.UserId))
+            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
             try
             {
@@ -1872,7 +1872,8 @@ namespace Songify_Slim.Util.Songify
                     return;
                 }
 
-            await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+            if(!Settings.Settings.AddSrtoPlaylistOnly)
+                await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
             if (Settings.Settings.AddSrToPlaylist)
                 await AddToPlaylist(track.Id);

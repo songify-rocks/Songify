@@ -675,6 +675,18 @@ namespace Songify_Slim.Util.Settings
         public static DateTime TwitchAccessTokenExpiryDate { get => GetTwitchAccessTokenExpiryDate(); set => SetTwitchAccessTokenExpiryDate(value); }
         public static bool HideSpotifyPremiumWarning { get => GetHideSpotifyPremiumWarning(); set => SetHideSpotifyPremiumWarning(value); }
         public static bool LongBadgeNames { get => GetLongBadgeNames(); set => SetLongBadgeNames(value); }
+        public static bool AddSrtoPlaylistOnly { get => GetAddSrtoPlaylistOnly(); set => SGetAddSrtoPlaylistOnly(value); }
+
+        private static void SGetAddSrtoPlaylistOnly(bool value)
+        {
+            CurrentConfig.AppConfig.AddSrtoPlaylistOnly = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetAddSrtoPlaylistOnly()
+        {
+            return CurrentConfig.AppConfig.AddSrtoPlaylistOnly;
+        }
 
         private static void SetLongBadgeNames(bool value)
         {
@@ -944,6 +956,7 @@ namespace Songify_Slim.Util.Settings
                 LastShownMotdId = GetLastShownMotdId(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 LongBadgeNames = GetLongBadgeNames(),
+                AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 MaxSongLength = GetMaxSongLength(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),

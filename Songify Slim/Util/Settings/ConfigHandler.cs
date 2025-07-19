@@ -325,19 +325,19 @@ namespace Songify_Slim.Util.Settings
                                 // Command exists but ensure CustomProperties contains expected keys for the command type
                                 TwitchCommand existingCommand = config.TwitchCommands.Commands.First(c => c.CommandType == cmdType);
                                 TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
-                                
+
                                 // Ensure command has CustomProperties dictionary
                                 existingCommand.CustomProperties ??= new Dictionary<string, object>();
-                                
+
                                 // For specific command types with expected custom properties, ensure they exist
                                 if (cmdType == CommandType.Voteskip)
                                 {
                                     // Only add SkipCount if it doesn't exist in the existing command
                                     if (!existingCommand.CustomProperties.ContainsKey("SkipCount"))
                                     {
-                                        existingCommand.CustomProperties["SkipCount"] = 
-                                            defaultCommand.CustomProperties.ContainsKey("SkipCount") 
-                                                ? defaultCommand.CustomProperties["SkipCount"] 
+                                        existingCommand.CustomProperties["SkipCount"] =
+                                            defaultCommand.CustomProperties.ContainsKey("SkipCount")
+                                                ? defaultCommand.CustomProperties["SkipCount"]
                                                 : 5;
                                     }
                                 }
@@ -346,9 +346,9 @@ namespace Songify_Slim.Util.Settings
                                     // Only add VolumeSetResponse if it doesn't exist in the existing command
                                     if (!existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
                                     {
-                                        existingCommand.CustomProperties["VolumeSetResponse"] = 
-                                            defaultCommand.CustomProperties.ContainsKey("VolumeSetResponse") 
-                                                ? defaultCommand.CustomProperties["VolumeSetResponse"] 
+                                        existingCommand.CustomProperties["VolumeSetResponse"] =
+                                            defaultCommand.CustomProperties.ContainsKey("VolumeSetResponse")
+                                                ? defaultCommand.CustomProperties["VolumeSetResponse"]
                                                 : "Volume set to {vol}%.";
                                     }
                                 }
@@ -627,7 +627,8 @@ namespace Songify_Slim.Util.Settings
         public List<int> UnlimitedSrUserlevelsReward { get; set; } = [];
         public List<int> UnlimitedSrUserlevelsCommand { get; set; } = [];
         public bool HideSpotifyPremiumWarning { get; set; }
-        public bool LongBadgeNames { get; set; } 
+        public bool LongBadgeNames { get; set; }
+        public bool AddSrtoPlaylistOnly { get; set; } = false; 
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

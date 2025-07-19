@@ -133,6 +133,7 @@ namespace Songify_Slim.Views
             TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
             TglswSpotify.IsOn = true;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
+            Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
             //TxtbxRewardId.Text = Settings.TwRewardId;
 
             CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
@@ -1758,6 +1759,11 @@ namespace Songify_Slim.Views
         {
             Settings.LongBadgeNames = ((ToggleSwitch)sender).IsOn;
             await LoadCommands();
+        }
+
+        private void Tglsw_OnlyAddToPlaylist_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.AddSrtoPlaylistOnly = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

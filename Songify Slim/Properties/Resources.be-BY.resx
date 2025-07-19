@@ -1095,4 +1095,7 @@
   <data name="brw_SongBlocked" xml:space="preserve">
     <value>Песня заблакаваная</value>
   </data>
+  <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
+    <value>Дадаць запыты толькі ў выбраны спіс прайгравання</value>
+  </data>
 </root>
