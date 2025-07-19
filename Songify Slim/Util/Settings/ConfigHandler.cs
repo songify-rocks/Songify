@@ -311,17 +311,49 @@ namespace Songify_Slim.Util.Settings
                             config.TwitchCommands.Commands = DefaultCommands;
                         }
 
+                        // Check for any missing command types and add them from defaults
                         foreach (CommandType cmdType in Enum.GetValues(typeof(CommandType)))
                         {
                             if (config.TwitchCommands.Commands.All(c => c.CommandType != cmdType))
                             {
-                                config.TwitchCommands.Commands.Add(
-                                    DefaultCommands.First(c => c.CommandType == cmdType)
-                                    );
+                                // Add the default command for this type
+                                TwitchCommand defaultCmd = DefaultCommands.First(c => c.CommandType == cmdType);
+                                config.TwitchCommands.Commands.Add(defaultCmd);
+                            }
+                            else
+                            {
+                                // Command exists but ensure CustomProperties contains expected keys for the command type
+                                TwitchCommand existingCommand = config.TwitchCommands.Commands.First(c => c.CommandType == cmdType);
+                                TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
+                                
+                                // Ensure command has CustomProperties dictionary
+                                existingCommand.CustomProperties ??= new Dictionary<string, object>();
+                                
+                                // For specific command types with expected custom properties, ensure they exist
+                                if (cmdType == CommandType.Voteskip)
+                                {
+                                    // Only add SkipCount if it doesn't exist in the existing command
+                                    if (!existingCommand.CustomProperties.ContainsKey("SkipCount"))
+                                    {
+                                        existingCommand.CustomProperties["SkipCount"] = 
+                                            defaultCommand.CustomProperties.ContainsKey("SkipCount") 
+                                                ? defaultCommand.CustomProperties["SkipCount"] 
+                                                : 5;
+                                    }
+                                }
+                                else if (cmdType == CommandType.Volume)
+                                {
+                                    // Only add VolumeSetResponse if it doesn't exist in the existing command
+                                    if (!existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
+                                    {
+                                        existingCommand.CustomProperties["VolumeSetResponse"] = 
+                                            defaultCommand.CustomProperties.ContainsKey("VolumeSetResponse") 
+                                                ? defaultCommand.CustomProperties["VolumeSetResponse"] 
+                                                : "Volume set to {vol}%.";
+                                    }
+                                }
                             }
                         }
-
-
                         break;
 
                     default:

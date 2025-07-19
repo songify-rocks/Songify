@@ -114,17 +114,19 @@ namespace Songify_Slim.UserControls
                     break;
                 case Enums.CommandType.Voteskip:
                     if (Command.CustomProperties.TryGetValue("SkipCount", out object skipCountObj) &&
-                        skipCountObj is int skipCount)
+                        int.TryParse(skipCountObj?.ToString(), out int skipCount))
                     {
                         NudSkipVoteCount.Value = skipCount;
                     }
                     else
                     {
-                        Command.CustomProperties["SkipCount"] = 5;
-                        NudSkipVoteCount.Value = 5;
+                        skipCount = 5;
+                        Command.CustomProperties["SkipCount"] = skipCount; // store as int
+                        NudSkipVoteCount.Value = skipCount;
                     }
                     PnlVoteSkipExtras.Visibility = Visibility.Visible;
                     break;
+
 
                 case Enums.CommandType.Volume:
                     // Create a second response textbox if CustomProperties contains a "VolumeSet" key.

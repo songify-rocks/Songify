@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text.Encodings.Web;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
@@ -16,23 +13,21 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using Timer = System.Timers.Timer;
 using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.Controls;
-using Songify_Slim.Util.Settings;
 using SpotifyAPI.Web.Auth;
 using SpotifyAPI.Web;
 using static Songify_Slim.Util.General.Enums;
+using static Songify_Slim.Util.General.Enums.PlaybackAction;
 
 namespace Songify_Slim.Util.Spotify
 {
     // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler
     {
-
         private const string BaseUrl = "https://auth.overcode.tv";
-        private static EmbedIOAuthServer? _server;
-        public static SpotifyClient? Client;
+        private static EmbedIOAuthServer _server;
+        public static SpotifyClient Client;
 
         private static readonly Timer AuthTimer = new()
         {
@@ -42,8 +37,7 @@ namespace Songify_Slim.Util.Spotify
         public static async Task Auth()
         {
             AuthTimer.Elapsed += AuthTimer_Elapsed;
-            if (!(string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) ||
-                  string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken)))
+            if (!string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
             {
                 Debug.WriteLine("Refreshing Tokens");
                 await RefreshTokens();
@@ -78,11 +72,11 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception)
             {
-                Console.WriteLine("Unable to open URL, manually open: {0}", uri);
+                Console.WriteLine(@"Unable to open URL, manually open: {0}", uri);
             }
         }
 
-        private static async void AuthTimer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        private static async void AuthTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             try
             {
@@ -114,7 +108,8 @@ namespace Songify_Slim.Util.Spotify
                     }));
 
             Settings.Settings.SpotifyAccessToken = refreshResponse.AccessToken;
-            Settings.Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
+            if(!string.IsNullOrEmpty(refreshResponse.RefreshToken))
+                Settings.Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
 
             Client = new SpotifyClient(config);
             if (!AuthTimer.Enabled)
@@ -130,7 +125,7 @@ namespace Songify_Slim.Util.Spotify
                 PackIconBootstrapIconsKind.CheckCircleFill;
         }
 
-        private static async Task OnAuthorizationCodeReceived(object? sender, AuthorizationCodeResponse response)
+        private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
             Debug.WriteLine("Got here");
             OAuthClient oauth = new OAuthClient();
@@ -233,7 +228,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 CurrentlyPlaying playback =
-                    await Client.Player.GetCurrentlyPlaying(new PlayerCurrentlyPlayingRequest());
+                    await Client.Player.GetCurrentlyPlaying(new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track));
                 if (playback == null)
                     return null;
                 if (playback.Item is not FullTrack track)
@@ -249,54 +244,35 @@ namespace Songify_Slim.Util.Spotify
 
                 List<Image> albums = track.Album.Images;
                 double totalSeconds = track.DurationMs / 1000.0;
+                if (playback.ProgressMs == null)
+                    return null;
+
                 double currentSeconds = (double)(playback.ProgressMs / 1000.0);
                 double percentage = totalSeconds == 0 ? 0 : (100 * currentSeconds / totalSeconds);
 
+                // Initialize playlist info as null by default
                 PlaylistInfo playlistInfo = null;
-                if (playback.Context is not { Type: "playlist" })
-                    return new TrackInfo
-                    {
-                        Artists = artists,
-                        Title = track.Name,
-                        Albums = albums.ToList(),
-                        SongId = track.Id,
-                        DurationMs = (int)(track.DurationMs - playback.ProgressMs),
-                        IsPlaying = playback.IsPlaying,
-                        Url = "https://open.spotify.com/track/" + track.Id,
-                        DurationPercentage = (int)percentage,
-                        DurationTotal = track.DurationMs,
-                        Progress = (int)playback.ProgressMs,
-                        Playlist = playlistInfo,
-                        FullArtists = track.Artists.ToList()
-                    };
-                string[] uriParts = playback.Context.Uri.Split(':');
-                if (uriParts is not { Length: 3 })
-                    return new TrackInfo
-                    {
-                        Artists = artists,
-                        Title = track.Name,
-                        Albums = albums.ToList(),
-                        SongId = track.Id,
-                        DurationMs = (int)(track.DurationMs - playback.ProgressMs),
-                        IsPlaying = playback.IsPlaying,
-                        Url = "https://open.spotify.com/track/" + track.Id,
-                        DurationPercentage = (int)percentage,
-                        DurationTotal = track.DurationMs,
-                        Progress = (int)playback.ProgressMs,
-                        Playlist = playlistInfo,
-                        FullArtists = track.Artists.ToList()
-                    };
-                string playlistId = uriParts[2];
-                FullPlaylist playlist = await Client.Playlists.Get(playlistId);
-                playlistInfo = new PlaylistInfo
-                {
-                    Name = playlist.Name,
-                    Id = playlist.Id,
-                    Owner = playlist.Owner.DisplayName,
-                    Url = playlist.Uri,
-                    Image = playlist.Images.FirstOrDefault()?.Url
-                };
 
+                // Only try to get playlist info if the context is a playlist
+                if (playback.Context is { Type: "playlist" })
+                {
+                    string[] uriParts = playback.Context.Uri.Split(':');
+                    if (uriParts is { Length: 3 })
+                    {
+                        string playlistId = uriParts[2];
+                        FullPlaylist playlist = await Client.Playlists.Get(playlistId);
+                        playlistInfo = new PlaylistInfo
+                        {
+                            Name = playlist.Name,
+                            Id = playlist.Id,
+                            Owner = playlist.Owner?.DisplayName,
+                            Url = playlist.Uri,
+                            Image = playlist.Images?.FirstOrDefault()?.Url
+                        };
+                    }
+                }
+
+                // Create and return the TrackInfo object with all the information
                 return new TrackInfo
                 {
                     Artists = artists,
@@ -336,7 +312,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException ex)
             {
-                if ((int)ex.Response.StatusCode == 503)
+                if (ex.Response != null && (int)ex.Response.StatusCode == 503)
                 {
                     for (int i = 0; i < 5; i++)
                     {
@@ -351,7 +327,7 @@ namespace Songify_Slim.Util.Spotify
                         }
                         catch (APIException retryEx)
                         {
-                            if ((int)retryEx.Response.StatusCode != 503)
+                            if (retryEx.Response != null && (int)retryEx.Response.StatusCode != 503)
                                 break;
                         }
                     }
@@ -432,8 +408,6 @@ namespace Songify_Slim.Util.Spotify
                     tracks = await Client.NextPage(tracks);
                 }
 
-
-
                 PlaylistAddItemsRequest request =
                     new PlaylistAddItemsRequest(new List<string> { "spotify:track:" + trackId });
                 await Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request);
@@ -506,7 +480,7 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        public static async Task<bool> PlayPause(PlaybackAction action = PlaybackAction.Toggle)
+        public static async Task<bool> PlayPause(PlaybackAction action = Toggle)
         {
             if (Client == null)
                 return false;
@@ -516,26 +490,27 @@ namespace Songify_Slim.Util.Spotify
 
                 bool isPlaying = playback is { IsPlaying: true };
 
-                if (action == PlaybackAction.Toggle)
+                if (action == Toggle)
                 {
-                    action = isPlaying ? PlaybackAction.Pause : PlaybackAction.Play;
+                    action = isPlaying ? Pause : Play;
                 }
 
                 switch (action)
                 {
-                    case PlaybackAction.Pause when isPlaying:
+                    case Pause when isPlaying:
                         await Client.Player.PausePlayback(new PlayerPausePlaybackRequest
                         {
                             DeviceId = Settings.Settings.SpotifyDeviceId
                         });
                         return false;
-                    case PlaybackAction.Play when !isPlaying:
+                    case Play when !isPlaying:
                         await Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
                         {
                             DeviceId = Settings.Settings.SpotifyDeviceId
                         });
                         return true;
-                    case PlaybackAction.Toggle:
+                    // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
+                    case Toggle:
                         // Heuristically unreachable but included for completeness
                         break;
                     default:
