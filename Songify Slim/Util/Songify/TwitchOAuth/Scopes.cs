@@ -9,6 +9,7 @@
  */
 
 using System.Collections.Generic;
+using TwitchLib.Api.Helix;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
@@ -36,7 +37,9 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 "moderator:read:chatters",
                 "moderator:read:followers",
                 "moderation:read",
-                "channel:read:vips"
+                "channel:read:vips",
+                "channel:bot",
+                "bits:read",
                 //s.Add("user:read:follows");
                 //s.Add("user:read:subscriptions");
                 //s.Add("analytics:read:extensions");

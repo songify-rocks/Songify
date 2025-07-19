@@ -220,6 +220,7 @@
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Songify\TwitchApiHelper.cs" />
     <Compile Include="Util\Songify\TwitchCommandHandler.cs" />
+    <Compile Include="Util\Songify\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
@@ -538,6 +539,12 @@
     <PackageReference Include="Microsoft.CSharp">
       <Version>4.7.0</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting">
+      <Version>9.0.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions">
+      <Version>9.0.7</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging">
       <Version>9.0.4</Version>
     </PackageReference>
@@ -703,29 +710,14 @@
     <PackageReference Include="System.Xml.XDocument">
       <Version>4.3.0</Version>
     </PackageReference>
-    <PackageReference Include="TwitchLib">
-      <Version>3.5.3</Version>
-    </PackageReference>
     <PackageReference Include="TwitchLib.Api">
-      <Version>3.9.0</Version>
+      <Version>3.10.0-preview-4e0146c</Version>
     </PackageReference>
-    <PackageReference Include="TwitchLib.Api.V5">
-      <Version>3.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="TwitchLib.Api.V5.Models">
-      <Version>3.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="TwitchLib.Communication">
-      <Version>1.0.6</Version>
-    </PackageReference>
-    <PackageReference Include="TwitchLib.EventSub.Core">
-      <Version>2.5.2</Version>
+    <PackageReference Include="TwitchLib.Client">
+      <Version>4.0.0-preview-5ef35d539836f8bcd29bd836a23b9e853020acfa</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.EventSub.Websockets">
-      <Version>0.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="TwitchLib.PubSub">
-      <Version>3.2.6</Version>
+      <Version>0.7.0-preview.73.af00daa</Version>
     </PackageReference>
     <PackageReference Include="YamlDotNet">
       <Version>16.3.0</Version>

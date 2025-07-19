@@ -227,13 +227,12 @@ namespace Songify_Slim.Views
                 {
                     // Connects
                     case "Connect":
-                        await TwitchHandler.BotConnect();
-                        await TwitchHandler.MainConnect();
+                        await TwitchHandler.ConnectTwitchChatClient();
                         break;
                     // Disconnects
                     case "Disconnect":
                         TwitchHandler.ForceDisconnect = true;
-                        TwitchHandler.Client.Disconnect();
+                        await TwitchHandler.Client.DisconnectAsync();
                         break;
                 }
             }
@@ -313,26 +312,38 @@ namespace Songify_Slim.Views
                 //    break;
 
                 case PlayerType.BrowserCompanion:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
                     await Sf.FetchYoutubeData();
                     break;
 
                 case PlayerType.Vlc:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
                     await Sf.FetchDesktopPlayer("vlc");
                     break;
 
                 case PlayerType.FooBar2000:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
                     await Sf.FetchDesktopPlayer("foobar2000");
                     break;
 
                 case PlayerType.SpotifyWeb:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
                     await Sf.FetchSpotifyWeb();
                     break;
 
                 case PlayerType.YtmDesktop:
+                    if (IoClient is { IsConnected: true })
+                        await StartYtmdSocketIoClient();
                     await Sf.FetchYtm(IoClient.YoutubeMusicresponse);
                     break;
 
                 case PlayerType.Ytmthch:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
                     await Sf.FetchYTMTHCH();
                     break;
                 default:
@@ -445,10 +456,17 @@ namespace Songify_Slim.Views
                 }
             }
 
+            Logger.LogStr("Starting Spotify init");
             await HandleSpotifyInitializationAsync();
+            Logger.LogStr("Spotify init done");
+
+            Logger.LogStr("Starting Twitch init");
             await HandleTwitchInitializationAsync();
+            Logger.LogStr("Twitch init done");
+
+            Logger.LogStr("Starting Final Setup");
             await FinalSetupAndUpdatesAsync();
-            await StartYtmdSocketIoClient();
+            Logger.LogStr("Final Setup done");
         }
 
         public async Task StartYtmdSocketIoClient()
@@ -469,6 +487,22 @@ namespace Songify_Slim.Views
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        public async Task StopYtmdSocketIoClient()
+        {
+            if (IoClient != null)
+            {
+                try
+                {
+                    await IoClient.DisconnectAsync();
+                    GlobalObjects.IoClientConnected = false;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
             }
         }
 
@@ -781,8 +815,7 @@ namespace Songify_Slim.Views
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect)
             {
-                await TwitchHandler.MainConnect();
-                await TwitchHandler.BotConnect();
+                await TwitchHandler.ConnectTwitchChatClient();
             }
             if (Settings.AutoClearQueue)
             {
@@ -934,15 +967,24 @@ namespace Songify_Slim.Views
                     {
                         try
                         {
-                            await TwitchHandler.BotConnect();
-                            await TwitchHandler.MainConnect();
+                            await TwitchHandler.ConnectTwitchChatClient();
                         }
                         catch (Exception e)
                         {
                             Logger.LogExc(e);
                         }
                     }),
-                    new System.Windows.Forms.MenuItem("Disconnect", (_, _) => { TwitchHandler.Client.Disconnect(); })
+                    new System.Windows.Forms.MenuItem("Disconnect", async void(_, _) =>
+                    {
+                        try
+                        {
+                            await TwitchHandler.Client.DisconnectAsync();
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.LogExc(e);
+                        }
+                    })
                 ]),
                 new System.Windows.Forms.MenuItem("Show", (_, _) =>
                 {

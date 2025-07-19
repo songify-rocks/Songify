@@ -22,7 +22,6 @@ using Songify_Slim.Util.Spotify;
 using System.Web.UI.WebControls;
 using Songify_Slim.Models.WebSocket;
 using SpotifyAPI.Web;
-using TwitchLib.Api.Helix.Models.Soundtrack;
 
 namespace Songify_Slim.Util.Songify
 {

@@ -14,7 +14,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Songify_Slim.Util.Settings;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 
 namespace Songify_Slim.UserControls
 {

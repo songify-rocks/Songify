@@ -8,7 +8,7 @@ using TwitchLib.Client.Models;
 
 namespace Songify_Slim.Util.Songify
 {
-    public delegate void CommandHandlerDelegate(ChatMessage message, TwitchCommand command, TwitchCommandParams cmdParams);
+    public delegate Task CommandHandlerDelegate(ChatMessage message, TwitchCommand command, TwitchCommandParams cmdParams);
 
     public static class TwitchCommandHandler
     {

@@ -11,8 +11,6 @@ using Application = System.Windows.Application;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
-using TwitchLib.Api.Helix.Models.Soundtrack;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Songify_Slim.Util.Youtube.YTMYHCH;
 using System.Text;
 

@@ -19,6 +19,7 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
 {
     public class SocketIoClient(string url, string token)
     {
+        public bool IsConnected => _client.Connected;
         private bool _trackChanged;
         public YtmdResponse YoutubeMusicresponse;
 
@@ -132,6 +133,20 @@ namespace Songify_Slim.Util.Songify.YTMDesktop
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to connect: {ex.Message}");
+            }
+        }
+
+        public async Task DisconnectAsync()
+        {
+            if (_client.Connected)
+            {
+                await _client.DisconnectAsync();
+                Debug.WriteLine("Disconnected from the server.");
+                Logger.LogStr("YTMD: Disconnected from websocket server");
+            }
+            else
+            {
+                Debug.WriteLine("Client is not connected.");
             }
         }
     }

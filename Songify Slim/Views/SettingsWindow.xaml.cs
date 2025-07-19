@@ -1287,10 +1287,9 @@ namespace Songify_Slim.Views
         {
             Settings.TwAcc = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
             Settings.TwOAuth = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
-            TwitchHandler.Client?.Disconnect();
+            await TwitchHandler.Client?.DisconnectAsync()!;
             TwitchHandler.Client = null;
-            await TwitchHandler.BotConnect();
-            await TwitchHandler.MainConnect();
+            await TwitchHandler.ConnectTwitchChatClient();
             _ = SetControls();
         }
 

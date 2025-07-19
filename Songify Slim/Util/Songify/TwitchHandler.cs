@@ -22,40 +22,39 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
-using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
-using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
-using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
 using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
-using TwitchLib.Communication.Clients;
-using TwitchLib.Communication.Events;
-using TwitchLib.Communication.Models;
-using TwitchLib.PubSub;
-using TwitchLib.PubSub.Events;
-using TwitchLib.PubSub.Models.Responses.Messages.Redemption;
 using Swan;
 using Swan.Formatters;
 using Application = System.Windows.Application;
-using Reward = TwitchLib.PubSub.Models.Responses.Messages.Redemption.Reward;
 using Timer = System.Timers.Timer;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using static Songify_Slim.Util.General.Enums;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using System.Web;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Util.Spotify;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using Songify_Slim.Models.YTMD;
 using SpotifyAPI.Web;
+using TwitchLib.EventSub.Websockets;
+using TwitchLib.EventSub.Websockets.Extensions;
+using TwitchLib.EventSub.Websockets.Test;
+using OnConnectedEventArgs = TwitchLib.Client.Events.OnConnectedEventArgs;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Subscription = TwitchLib.Api.Helix.Models.Subscriptions.Subscription;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
@@ -66,13 +65,13 @@ namespace Songify_Slim.Util.Songify
     // This class handles everything regarding twitch.tv
     public static class TwitchHandler
     {
-        public const bool PubSubEnabled = false;
+        public const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
+
         public static ValidateAccessTokenResponse BotTokenCheck;
         public static TwitchClient Client;
         public static bool ForceDisconnect;
         public static ValidateAccessTokenResponse TokenCheck;
         public static TwitchAPI TwitchApi;
-        private const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
         private const int MaxConsecutiveFailures = 5;
         private static readonly Stopwatch CooldownStopwatch = new();
         private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.Settings.TwSrCooldown < 1 ? 0 : Settings.Settings.TwSrCooldown).TotalMilliseconds };
@@ -85,8 +84,6 @@ namespace Songify_Slim.Util.Songify
             Interval = TimeSpan.FromSeconds(5)
         };
 
-        private static readonly TwitchPubSub TwitchPubSub = new();
-
         // Threshold for setting IsLive to false
         private static readonly DispatcherTimer TwitchUserSyncTimer = new()
         {
@@ -96,7 +93,6 @@ namespace Songify_Slim.Util.Songify
         private static int _consecutiveFailures;
         private static string _currentState;
         private static string _joinedChannelId = "";
-        private static TwitchClient _mainClient;
         private static bool _onCooldown;
         private static bool _skipCooldown;
         private static TwitchAPI _twitchApiBot;
@@ -205,7 +201,7 @@ namespace Songify_Slim.Util.Songify
                         {
                             foreach (JoinedChannel clientJoinedChannel in Client.JoinedChannels)
                             {
-                                Client.LeaveChannel(clientJoinedChannel);
+                                await Client.LeaveChannelAsync(clientJoinedChannel);
                                 Debug.WriteLine($"Leaving Channel: {clientJoinedChannel.Channel}");
                             }
 
@@ -217,27 +213,7 @@ namespace Songify_Slim.Util.Songify
                         }
                     }
 
-
-                    if (_mainClient != null)
-                    {
-                        try
-                        {
-                            foreach (JoinedChannel mainClientJoinedChannel in _mainClient.JoinedChannels)
-                            {
-                                _mainClient.LeaveChannel(mainClientJoinedChannel);
-
-                            }
-
-                            _mainClient = null;
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogExc(e);
-                        }
-                    }
-
-
-                    await BotConnect();
+                    await ConnectTwitchChatClient();
 
 
                     dynamic telemetryPayload = new
@@ -265,19 +241,18 @@ namespace Songify_Slim.Util.Songify
             _currentState = ioa.RequestClientAuthorization();
         }
 
-        public static async Task BotConnect()
+        public static async Task ConnectTwitchChatClient()
         {
             try
             {
-                await MainConnect();
                 switch (Client)
                 {
                     case { IsConnected: true }:
                         return;
 
                     case { IsConnected: false }:
-                        Client.Connect();
-                        Client.JoinChannel(Settings.Settings.TwChannel);
+                        await Client.ConnectAsync();
+                        await Client.JoinChannelAsync(Settings.Settings.TwChannel);
                         return;
                 }
 
@@ -296,26 +271,25 @@ namespace Songify_Slim.Util.Songify
 
                 }
 
+                ILoggerFactory loggerFactory = LoggerFactory.Create(c => c
+                        .SetMinimumLevel(LogLevel.Trace) // uncomment to view raw messages received from twitch
+                );
+                ILogger logger = loggerFactory.CreateLogger("MyChatBot");
+
                 // creates new connection based on the credentials in settings
                 ConnectionCredentials credentials = new(Settings.Settings.TwAcc, Settings.Settings.TwOAuth);
-                ClientOptions clientOptions = new()
-                {
-                    MessagesAllowedInPeriod = 750,
-                    ThrottlingPeriod = TimeSpan.FromSeconds(30),
-                };
-                WebSocketClient customClient = new(clientOptions);
 
                 // Register all TwitchChatCommands
                 InitializeCommands(Settings.Settings.Commands);
 
-                Client = new TwitchClient(customClient);
+                Client = new(loggerFactory: loggerFactory);
                 Client.Initialize(credentials);
                 Client.OnMessageReceived += Client_OnMessageReceived;
                 Client.OnConnected += Client_OnConnected;
                 Client.OnDisconnected += Client_OnDisconnected;
                 Client.OnJoinedChannel += ClientOnOnJoinedChannel;
                 Client.OnLeftChannel += ClientOnOnLeftChannel;
-                Client.Connect();
+                await Client.ConnectAsync();
 
                 // subscribes to the cooldown timer elapsed event for the command cooldown
                 CooldownTimer.Elapsed += CooldownTimer_Elapsed;
@@ -395,7 +369,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleBanSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -431,7 +405,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleCommandsCommand(ChatMessage message, TwitchCommand cmd,
+        private static async Task HandleCommandsCommand(ChatMessage message, TwitchCommand cmd,
             TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
@@ -440,7 +414,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -463,16 +437,16 @@ namespace Songify_Slim.Util.Songify
             if (cmd.IsAnnouncement)
                 await AnnounceChatMessage(response, cmd.AnnouncementColor);
             else
-                SendChatMessage(message.Channel, response);
+                await SendChatMessage(message.Channel, response);
         }
 
-        private static async void HandleVolumeCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleVolumeCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             try
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -491,7 +465,7 @@ namespace Songify_Slim.Util.Songify
                 int? vol = await SetSpotifyVolume(message);
                 if (vol == null)
                 {
-                    SendChatMessage(message.Channel, "Error setting volume.");
+                    await SendChatMessage(message.Channel, "Error setting volume.");
                     return;
                 }
 
@@ -514,14 +488,14 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleSongLikeCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleSongLikeCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
             try
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -532,7 +506,7 @@ namespace Songify_Slim.Util.Songify
 
             if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
             {
-                SendChatMessage(Settings.Settings.TwChannel, "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
+                await SendChatMessage(Settings.Settings.TwChannel, "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
                 return;
             }
 
@@ -554,7 +528,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleSongCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             try
             {
@@ -563,7 +537,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     if (!CheckLiveStatus())
                     {
-                        if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                         return;
                     }
                 }
@@ -600,7 +574,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandleRemoveCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleRemoveCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -608,7 +582,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -621,7 +595,7 @@ namespace Songify_Slim.Util.Songify
             RequestObject reqObj;
 
             string[] words = message.Message.Split(' ');
-            if (message.IsModerator || message.IsBroadcaster)
+            if (GlobalObjects.moderators.Any(o => o.UserId == message.UserId) || message.IsBroadcaster)
             {
                 if (words.Length > 1)
                 {
@@ -714,14 +688,14 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static void HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleQueueCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId)) return;
             try
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -747,7 +721,7 @@ namespace Songify_Slim.Util.Songify
             SendOrAnnounceMessage(message.Channel, response, cmd);
         }
 
-        private static async void HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandlePositionCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -757,7 +731,7 @@ namespace Songify_Slim.Util.Songify
                 if (!CheckLiveStatus())
                 {
                     if (Settings.Settings.ChatLiveStatus)
-                        SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -769,7 +743,7 @@ namespace Songify_Slim.Util.Songify
             List<QueueItem> queueItems = GetQueueItems(message.DisplayName);
             if (queueItems == null || queueItems.Count == 0)
             {
-                SendChatMessage(message.Channel, $"@{message.DisplayName} you have no songs in the current queue.");
+                await SendChatMessage(message.Channel, $"@{message.DisplayName} you have no songs in the current queue.");
                 return;
             }
 
@@ -853,7 +827,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandlePauseCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandlePauseCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -861,7 +835,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -879,7 +853,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static async void HandlePlayCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandlePlayCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -887,7 +861,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -906,7 +880,7 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void HandleNextCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleNextCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -914,7 +888,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -933,7 +907,7 @@ namespace Songify_Slim.Util.Songify
 
         }
 
-        private static async void HandleVoteSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleVoteSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.UserId))
                 return;
@@ -941,7 +915,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -972,14 +946,14 @@ namespace Songify_Slim.Util.Songify
             if (SkipVotes.Count < Settings.Settings.BotCmdSkipVoteCount) return;
             await SpotifyApiHandler.SkipSong();
 
-            SendChatMessage(message.Channel, "Skipping song by vote...");
+            await SendChatMessage(message.Channel, "Skipping song by vote...");
 
             SkipVotes.Clear();
             _skipCooldown = true;
             SkipCooldownTimer.Start();
         }
 
-        private static async void HandleSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
 
             int count = 0;
@@ -1010,7 +984,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -1066,7 +1040,7 @@ namespace Songify_Slim.Util.Songify
 
         }
 
-        private static async void HandleSongRequestCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+        private static async Task HandleSongRequestCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             //PrintObjectProperties(cmdParams.ExistingUser);
 
@@ -1089,7 +1063,7 @@ namespace Songify_Slim.Util.Songify
 
                 response = response.Replace("{userlevel}", allowedUserLevelsString);
 
-                SendChatMessage(message.Channel, response);
+                await SendChatMessage(message.Channel, response);
                 return;
             }
 
@@ -1097,7 +1071,7 @@ namespace Songify_Slim.Util.Songify
             {
                 if (!CheckLiveStatus())
                 {
-                    if (Settings.Settings.ChatLiveStatus) SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                    if (Settings.Settings.ChatLiveStatus) await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -1108,7 +1082,7 @@ namespace Songify_Slim.Util.Songify
 
             if (message.Message.Split(' ').Length <= 1)
             {
-                SendChatMessage(message.Channel, "No query provided.");
+                await SendChatMessage(message.Channel, "No query provided.");
                 return;
             }
 
@@ -1140,14 +1114,14 @@ namespace Songify_Slim.Util.Songify
                     Req = GlobalObjects.Requester,
                     Cd = time
                 }, Settings.Settings.BotRespUserCooldown);
-                SendChatMessage(message.Channel, response);
+                await SendChatMessage(message.Channel, response);
                 return;
             }
 
             // if onCooldown skips
             if (_onCooldown)
             {
-                Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(message));
+                await Client.SendMessageAsync(Settings.Settings.TwChannel, CreateCooldownResponse(message));
                 return;
             }
 
@@ -1161,7 +1135,7 @@ namespace Songify_Slim.Util.Songify
                     await HandleYtmRequest(message, cmdParams, cmd);
                     break;
                 default:
-                    SendChatMessage(message.Channel, "No player selected. Go to Settings -> Player and select a player.");
+                    await SendChatMessage(message.Channel, "No player selected. Go to Settings -> Player and select a player.");
                     return;
             }
 
@@ -1181,7 +1155,7 @@ namespace Songify_Slim.Util.Songify
                         string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
                         string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                        SendChatMessage(message.Channel, title);
+                        await SendChatMessage(message.Channel, title);
 
                         RequestObject o = new()
                         {
@@ -1286,7 +1260,7 @@ namespace Songify_Slim.Util.Songify
                             string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
                             string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                            SendChatMessage(message.Channel, title);
+                            await SendChatMessage(message.Channel, title);
 
                             RequestObject o = new()
                             {
@@ -1314,7 +1288,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (SpotifyApiHandler.Client == null)
             {
-                SendChatMessage(message.Channel, "It seems that Spotify is not connected right now.");
+                await SendChatMessage(message.Channel, "It seems that Spotify is not connected right now.");
                 return;
             }
 
@@ -1322,8 +1296,7 @@ namespace Songify_Slim.Util.Songify
                 await GetTrackIdFromInput(Regex.Replace(message.Message, $"!{cmd.Trigger}", "", RegexOptions.IgnoreCase)
                     .Trim());
 
-            AddSong(trackId, message, SongRequestSource.Command, cmdParams.ExistingUser);
-
+            AddSong(trackId, TwitchRequestUser.FromChatMessage(message), SongRequestSource.Command, cmdParams.ExistingUser);
         }
 
         private static async void SendOrAnnounceMessage(string channel, string message, TwitchCommand cmd)
@@ -1333,7 +1306,7 @@ namespace Songify_Slim.Util.Songify
                 if (cmd.IsAnnouncement)
                     await AnnounceChatMessage(message, cmd.AnnouncementColor);
                 else
-                    SendChatMessage(channel, message);
+                    await SendChatMessage(channel, message);
             }
             catch (Exception e)
             {
@@ -1527,9 +1500,6 @@ namespace Songify_Slim.Util.Songify
                     TwitchUserSyncTimer.Tick += TwitchUserSyncTimer_Tick;
                     TwitchUserSyncTimer.Start();
                     await RunTwitchUserSync();
-                    //TODO: Enable PubSub when it's fixed in TwitchLib
-                    if (PubSubEnabled)
-                        CreatePubSubsConnection();
 
                     break;
 
@@ -1608,66 +1578,36 @@ namespace Songify_Slim.Util.Songify
                 default:
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
-        }
 
-        public static Task MainConnect()
-        {
-            switch (_mainClient)
+            if (TwitchApi != null)
             {
-                case { IsConnected: true }:
-                    return Task.CompletedTask;
-
-                case { IsConnected: false }:
-                    _mainClient.Connect();
-                    _mainClient.JoinChannel(Settings.Settings.TwChannel);
-                    return Task.CompletedTask;
-
-                default:
+                _ = Task.Run(async () =>
+                {
                     try
-
                     {
-                        // Checks if twitch credentials are present
-                        if (Settings.Settings.TwitchUser != null &&
-                            (string.IsNullOrEmpty(Settings.Settings.TwitchUser.DisplayName) ||
-                             string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken) ||
-                             string.IsNullOrEmpty(Settings.Settings.TwChannel)))
-                        {
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                foreach (Window window in Application.Current.Windows)
-                                    if (window.GetType() == typeof(MainWindow))
-                                        //(window as MainWindow).icon_Twitch.Foreground = new SolidColorBrush(Colors.Red);
-                                        ((MainWindow)window).LblStatus.Content = "Please fill in Twitch credentials.";
-                            });
-                            return Task.CompletedTask;
-
-                        }
-
-                        if (Settings.Settings.TwitchUser == null) return Task.CompletedTask;
-
-                        // creates new connection based on the credentials in settings
-                        ConnectionCredentials credentials =
-                            new(Settings.Settings.TwitchUser.DisplayName,
-                                $"oauth:{Settings.Settings.TwitchAccessToken}");
-                        ClientOptions clientOptions = new()
-                        {
-                            MessagesAllowedInPeriod = 750,
-                            ThrottlingPeriod = TimeSpan.FromSeconds(30)
-                        };
-                        WebSocketClient customClient = new(clientOptions);
-                        _mainClient = new TwitchClient(customClient);
-                        _mainClient.Initialize(credentials, Settings.Settings.TwChannel);
-                        _mainClient.Connect();
+                        await CreateHostBuilder([]).Build().RunAsync();
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        Logger.LogExc(e);
+                        Logger.LogExc(ex);
                     }
-
-                    break;
+                });
             }
-            return Task.CompletedTask;
+
         }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(configure =>
+                {
+                    //configure.AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
+                })
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddLogging();
+                    services.AddTwitchLibEventSubWebsockets();
+                    services.AddHostedService<WebsocketHostedService>();
+                });
 
         public static void ResetVotes()
         {
@@ -1682,7 +1622,7 @@ namespace Songify_Slim.Util.Songify
                 if (!CheckLiveStatus())
                 {
                     if (Settings.Settings.ChatLiveStatus)
-                        SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                        await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                     return;
                 }
             }
@@ -1704,7 +1644,7 @@ namespace Songify_Slim.Util.Songify
             if (cmd.IsAnnouncement)
                 await AnnounceChatMessage(msg, cmd.AnnouncementColor);
             else
-                SendChatMessage(Settings.Settings.TwChannel, msg);
+                await SendChatMessage(Settings.Settings.TwChannel, msg);
         }
 
         // Counter for consecutive failures
@@ -1730,11 +1670,11 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        public static async void AddSong(string trackId, ChatMessage e, SongRequestSource source, TwitchUser user)
+        public static async void AddSong(string trackId, TwitchRequestUser e, SongRequestSource source, TwitchUser user)
         {
             if (string.IsNullOrWhiteSpace(trackId))
             {
-                SendChatMessage(e.Channel, "No song found.");
+                await SendChatMessage(e.Channel, "No song found.");
                 return;
             }
 
@@ -1742,23 +1682,23 @@ namespace Songify_Slim.Util.Songify
             switch (trackId)
             {
                 case "shortened":
-                    SendChatMessage(Settings.Settings.TwChannel,
+                    await SendChatMessage(Settings.Settings.TwChannel,
                         "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
                     return;
                 case "episode":
-                    SendChatMessage(Settings.Settings.TwChannel, "Episodes are not supported. Please specify a track!");
+                    await SendChatMessage(Settings.Settings.TwChannel, "Episodes are not supported. Please specify a track!");
                     return;
                 case "artist":
-                    SendChatMessage(Settings.Settings.TwChannel, "Artist links are not supported. Please specify a track!");
+                    await SendChatMessage(Settings.Settings.TwChannel, "Artist links are not supported. Please specify a track!");
                     return;
                 case "album":
-                    SendChatMessage(Settings.Settings.TwChannel, "Album links are not supported. Please specify a track!");
+                    await SendChatMessage(Settings.Settings.TwChannel, "Album links are not supported. Please specify a track!");
                     return;
                 case "playlist":
-                    SendChatMessage(Settings.Settings.TwChannel, "Playlist links are not supported. Please specify a track!");
+                    await SendChatMessage(Settings.Settings.TwChannel, "Playlist links are not supported. Please specify a track!");
                     return;
                 case "audiobook":
-                    SendChatMessage(Settings.Settings.TwChannel, "Audiobook links are not supported. Please specify a track!");
+                    await SendChatMessage(Settings.Settings.TwChannel, "Audiobook links are not supported. Please specify a track!");
                     return;
             }
 
@@ -1770,7 +1710,7 @@ namespace Songify_Slim.Util.Songify
                 Tuple<bool, string> result = await IsInAllowedPlaylist(trackId);
                 if (!result.Item1)
                 {
-                    SendChatMessage(e.Channel, result.Item2);
+                    await SendChatMessage(e.Channel, result.Item2);
                     return;
                 }
             }
@@ -1798,43 +1738,43 @@ namespace Songify_Slim.Util.Songify
                     { "userlevel", "" },
                     { "ttp", "" },
                 });
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
             if (track == null)
             {
-                SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
+                await SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
                 return;
             }
 
             if (IsTrackExplicit(track, e, out response))
             {
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
             if (IsTrackUnavailable(track, e, out response))
             {
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
             if (IsArtistBlacklisted(track, e, out response))
             {
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
             if (IsTrackTooLong(track, e, out response))
             {
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
             if (IsTrackAlreadyInQueue(track, e, out response))
             {
-                SendChatMessage(e.Channel, response);
+                await SendChatMessage(e.Channel, response);
                 return;
             }
 
@@ -1868,11 +1808,11 @@ namespace Songify_Slim.Util.Songify
             if (!unlimitedSr && !e.IsBroadcaster)
                 if (IsUserAtMaxRequests(e, user, out response))
                 {
-                    SendChatMessage(e.Channel, response);
+                    await SendChatMessage(e.Channel, response);
                     return;
                 }
 
-            if(!Settings.Settings.AddSrtoPlaylistOnly)
+            if (!Settings.Settings.AddSrtoPlaylistOnly)
                 await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
             if (Settings.Settings.AddSrToPlaylist)
@@ -2217,7 +2157,7 @@ namespace Songify_Slim.Util.Songify
                             case true:
                                 if (sendResponse)
                                 {
-                                    SendChatMessage(Settings.Settings.TwChannel,
+                                    await SendChatMessage(Settings.Settings.TwChannel,
                                         $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
                                 }
                                 return true;
@@ -2238,7 +2178,7 @@ namespace Songify_Slim.Util.Songify
                         {
                             if (sendResponse)
                             {
-                                SendChatMessage(Settings.Settings.TwChannel,
+                                await SendChatMessage(Settings.Settings.TwChannel,
                                     $"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
                             }
                             return true;
@@ -2299,7 +2239,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH API: Could not send announcement. Has the bot been created through the app?");
             }
 
-            SendChatMessage(Settings.Settings.TwChannel, $"{msg}");
+            await SendChatMessage(Settings.Settings.TwChannel, $"{msg}");
         }
 
         private static async Task AnnounceInChat(string msg)
@@ -2328,7 +2268,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogStr("TWITCH API: Could not send announcement. Has the bot been created through the app?");
             }
 
-            SendChatMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
+            await SendChatMessage(Settings.Settings.TwChannel, $"{tup.Item1}");
         }
 
         private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
@@ -2426,7 +2366,7 @@ namespace Songify_Slim.Util.Songify
             return currSong;
         }
 
-        private static void Client_OnConnected(object sender, OnConnectedArgs e)
+        private static async Task Client_OnConnected(object sender, OnConnectedEventArgs onConnectedEventArgs)
         {
             // Connected
             Application.Current.Dispatcher.Invoke(() =>
@@ -2447,10 +2387,10 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr($"TWITCH: Connected to Twitch. User: {Client.TwitchUsername}");
-            Client.JoinChannel(Settings.Settings.TwChannel, true);
+            await Client.JoinChannelAsync(Settings.Settings.TwChannel, true);
         }
 
-        private static void Client_OnDisconnected(object sender, OnDisconnectedEventArgs e)
+        private static Task Client_OnDisconnected(object sender, OnDisconnectedArgs onDisconnectedArgs)
         {
             // Disconnected
             Application.Current.Dispatcher.Invoke(() =>
@@ -2470,9 +2410,10 @@ namespace Songify_Slim.Util.Songify
                 }
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch Chat");
+            return Task.CompletedTask;
         }
 
-        private static async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
+        private static async Task Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
             if (!e.ChatMessage.Message.StartsWith("!") && string.IsNullOrEmpty(e.ChatMessage.CustomRewardId))
                 return;
@@ -2507,63 +2448,6 @@ namespace Songify_Slim.Util.Songify
                 existingUser.Update(e.ChatMessage.Username, e.ChatMessage.DisplayName, userLevels, existingUser.IsFollowing != null && (bool)existingUser.IsFollowing, subtier);
             }
 
-            if (Settings.Settings.TwRewardSkipId.Count > 0 &&
-                Settings.Settings.TwRewardSkipId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled)
-            {
-                // Skip song
-                if (_skipCooldown)
-                    return;
-                await SpotifyApiHandler.SkipSong();
-
-                SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
-                _skipCooldown = true;
-                SkipCooldownTimer.Start();
-            }
-
-            if (Settings.Settings.TwRewardId.Count > 0 &&
-                Settings.Settings.TwRewardId.Any(o => o == e.ChatMessage.CustomRewardId) && !PubSubEnabled &&
-                Settings.Settings.TwSrReward)
-            {
-                Settings.Settings.IsLive = await CheckStreamIsUp();
-
-                // Check if the user level is lower than broadcaster or not allowed to request songs
-                if (!e.ChatMessage.IsBroadcaster)
-                {
-                    if (!Settings.Settings.UserLevelsReward.Intersect(existingUser.UserLevels).Any())
-                    {
-                        // Send a message to the user that their user level is too low to request songs
-                        string response = Settings.Settings.BotRespUserlevelTooLowCommand;
-                        response = response.Replace("{user}", e.ChatMessage.DisplayName);
-
-                        string userLevelNames = Settings.Settings.UserLevelsReward.Any()
-                            ? string.Join(", ", Settings.Settings.UserLevelsReward
-                                .Select(level => Enum.GetName(typeof(TwitchUserLevels), level)))
-                            : "None";
-
-                        response = response.Replace("{userlevel}", userLevelNames);
-
-                        // Send a message to the user that their user level is too low to request songs
-                        SendChatMessage(e.ChatMessage.Channel, response);
-                        return;
-                    }
-                }
-
-                // Do nothing if the user is blocked, don't even reply
-                if (IsUserBlocked(e.ChatMessage.DisplayName))
-                {
-                    return;
-                }
-
-                if (SpotifyApiHandler.Client == null)
-                {
-                    SendChatMessage(e.ChatMessage.Channel, "It seems that Spotify is not connected right now.");
-                    return;
-                }
-
-                AddSong(await GetTrackIdFromInput(e.ChatMessage.Message), e.ChatMessage, SongRequestSource.Reward, existingUser);
-                return;
-            }
-
             if (!e.ChatMessage.Message.StartsWith("!")) return;
 
             Settings.Settings.IsLive = await CheckStreamIsUp();
@@ -2593,7 +2477,7 @@ namespace Songify_Slim.Util.Songify
                         if (!CheckLiveStatus())
                         {
                             if (Settings.Settings.ChatLiveStatus)
-                                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+                                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
                             return;
                         }
                     }
@@ -2631,14 +2515,14 @@ namespace Songify_Slim.Util.Songify
                         Req = GlobalObjects.Requester,
                         Cd = time
                     }, Settings.Settings.BotRespUserCooldown);
-                    SendChatMessage(e.ChatMessage.Channel, msg);
+                    await SendChatMessage(e.ChatMessage.Channel, msg);
                     return;
                 }
 
                 // if onCooldown skips
                 if (_onCooldown)
                 {
-                    Client.SendMessage(Settings.Settings.TwChannel, CreateCooldownResponse(e.ChatMessage));
+                    await Client.SendMessageAsync(Settings.Settings.TwChannel, CreateCooldownResponse(e.ChatMessage));
                     return;
                 }
 
@@ -2649,7 +2533,7 @@ namespace Songify_Slim.Util.Songify
                 string videoThumbailUrl = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
                 Debug.WriteLine($"{title} | thumb: {videoThumbailUrl}");
-                SendChatMessage(e.ChatMessage.Channel, title);
+                await SendChatMessage(e.ChatMessage.Channel, title);
 
                 //TODO: Add song to the queue and start playing
 
@@ -2679,7 +2563,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
             //    }
@@ -2732,7 +2616,7 @@ namespace Songify_Slim.Util.Songify
             //            }
             //            else
             //            {
-            //                SendChatMessage(e.ChatMessage.Channel, msg);
+            //                await SendChatMessage(e.ChatMessage.Channel, msg);
             //            }
 
             //            _skipCooldown = true;
@@ -2751,7 +2635,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
             //    }
@@ -2783,14 +2667,14 @@ namespace Songify_Slim.Util.Songify
             //    }
             //    else
             //    {
-            //        SendChatMessage(e.ChatMessage.Channel, msg);
+            //        await SendChatMessage(e.ChatMessage.Channel, msg);
             //    }
 
             //    if (SkipVotes.Count >= Settings.Settings.BotCmdSkipVoteCount)
             //    {
             //        await SpotifyApiHandler.SkipSong();
 
-            //        SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
+            //        await SendChatMessage(e.ChatMessage.Channel, "Skipping song by vote...");
 
             //        SkipVotes.Clear();
             //        _skipCooldown = true;
@@ -2807,7 +2691,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
 
@@ -2845,7 +2729,7 @@ namespace Songify_Slim.Util.Songify
             //        }
             //        else
             //        {
-            //            SendChatMessage(e.ChatMessage.Channel, msg);
+            //            await SendChatMessage(e.ChatMessage.Channel, msg);
             //        }
             //    }
             //    catch
@@ -2864,7 +2748,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
             //    }
@@ -2905,12 +2789,12 @@ namespace Songify_Slim.Util.Songify
             //        }
             //        else
             //        {
-            //            SendChatMessage(e.ChatMessage.Channel, output);
+            //            await SendChatMessage(e.ChatMessage.Channel, output);
             //        }
             //    }
             //    else
             //    {
-            //        SendChatMessage(e.ChatMessage.Channel,
+            //        await SendChatMessage(e.ChatMessage.Channel,
             //            $"@{e.ChatMessage.DisplayName} you have no Songs in the current Queue");
             //    }
             //}
@@ -2925,7 +2809,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
             //    }
@@ -2946,7 +2830,7 @@ namespace Songify_Slim.Util.Songify
             //    }
             //    else
             //    {
-            //        SendChatMessage(e.ChatMessage.Channel, response);
+            //        await SendChatMessage(e.ChatMessage.Channel, response);
             //    }
             //}
 
@@ -2961,7 +2845,7 @@ namespace Songify_Slim.Util.Songify
             //        if (!CheckLiveStatus())
             //        {
             //            if (Settings.Settings.ChatLiveStatus)
-            //                SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
+            //                await SendChatMessage(Settings.Settings.TwChannel, "The stream is not live right now.");
             //            return;
             //        }
             //    }
@@ -3067,7 +2951,7 @@ namespace Songify_Slim.Util.Songify
             //    }
             //    else
             //    {
-            //        SendChatMessage(e.ChatMessage.Channel, response);
+            //        await SendChatMessage(e.ChatMessage.Channel, response);
             //    }
             //}
 
@@ -3078,7 +2962,7 @@ namespace Songify_Slim.Util.Songify
             //{
             //    if (string.IsNullOrWhiteSpace(Settings.Settings.SpotifyPlaylistId))
             //    {
-            //        SendChatMessage(Settings.Settings.TwChannel,
+            //        await SendChatMessage(Settings.Settings.TwChannel,
             //            "No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
             //        return;
             //    }
@@ -3096,7 +2980,7 @@ namespace Songify_Slim.Util.Songify
             //        }
             //        else
             //        {
-            //            SendChatMessage(e.ChatMessage.Channel, response);
+            //            await SendChatMessage(e.ChatMessage.Channel, response);
             //        }
             //    }
             //    catch (Exception exception)
@@ -3137,7 +3021,7 @@ namespace Songify_Slim.Util.Songify
 
             //    output = output.TrimEnd(' ', '|');
             //    // if output exceeds 500 characters, split at the last "|" before 500 characters
-            //    SendChatMessage(e.ChatMessage.Channel, output);
+            //    await SendChatMessage(e.ChatMessage.Channel, output);
             //}
 
             //// Commands command (!cmd)
@@ -3153,7 +3037,7 @@ namespace Songify_Slim.Util.Songify
             //    if (Settings.Settings.TwSrCommand)
             //        commands.Insert(0, $"!{Settings.Settings.BotCmdSsrTrigger}");
 
-            //    SendChatMessage(e.ChatMessage.Channel,
+            //    await SendChatMessage(e.ChatMessage.Channel,
             //        $"Active Songify commands: {string.Join(", ", commands)}");
             //}
 
@@ -3240,10 +3124,23 @@ namespace Songify_Slim.Util.Songify
             //        Cd = Settings.Settings.TwSrCooldown.ToString()
             //    }, "The song {song} has been added to the blocklist.");
 
-            //    SendChatMessage(e.ChatMessage.Channel, msg);
+            //    await SendChatMessage(e.ChatMessage.Channel, msg);
 
             //    await SpotifyApiHandler.SkipSong();
             //}
+        }
+
+        public static async Task<bool> HandleSkipReward()
+        {
+            // Skip song
+            if (_skipCooldown)
+                return true;
+            await SpotifyApiHandler.SkipSong();
+
+            await SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
+            _skipCooldown = true;
+            SkipCooldownTimer.Start();
+            return false;
         }
 
         private static async Task<List<int>> GetUserLevels(ChatMessage o)
@@ -3421,7 +3318,7 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        private static async void ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
+        private static async Task ClientOnOnJoinedChannel(object sender, OnJoinedChannelArgs e)
         {
             Logger.LogStr($"TWITCH: Joined channel {e.Channel}");
 
@@ -3461,9 +3358,10 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void ClientOnOnLeftChannel(object sender, OnLeftChannelArgs e)
+        private static Task ClientOnOnLeftChannel(object sender, OnLeftChannelArgs e)
         {
             Logger.LogStr($"TWITCH: Left channel {e.Channel}");
+            return Task.CompletedTask;
         }
 
         private static void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -3488,7 +3386,7 @@ namespace Songify_Slim.Util.Songify
             return response;
         }
 
-        private static string CreateNoTrackFoundResponse(ChatMessage e)
+        private static string CreateNoTrackFoundResponse(TwitchRequestUser e)
         {
             string response = Settings.Settings.BotRespNoTrackFound;
             response = response.Replace("{user}", e.DisplayName);
@@ -3500,29 +3398,6 @@ namespace Songify_Slim.Util.Songify
             return response;
         }
 
-        private static void CreatePubSubEventHandlers()
-        {
-            TwitchPubSub.OnListenResponse += OnListenResponse;
-            TwitchPubSub.OnPubSubServiceConnected += OnPubSubServiceConnected;
-            TwitchPubSub.OnPubSubServiceClosed += OnPubSubServiceClosed;
-            TwitchPubSub.OnPubSubServiceError += OnPubSubServiceError;
-            TwitchPubSub.OnChannelPointsRewardRedeemed += PubSub_OnChannelPointsRewardRedeemed;
-            TwitchPubSub.OnStreamUp += OnStreamUp;
-            TwitchPubSub.OnStreamDown += OnStreamDown;
-        }
-
-        private static void CreatePubSubListenEvents()
-        {
-            TwitchPubSub.ListenToVideoPlayback(Settings.Settings.TwitchChannelId);
-            TwitchPubSub.ListenToChannelPoints(Settings.Settings.TwitchChannelId);
-        }
-
-        private static void CreatePubSubsConnection()
-        {
-            CreatePubSubEventHandlers();
-            CreatePubSubListenEvents();
-            TwitchPubSub.Connect();
-        }
 
         private static string CreateResponse(PlaceholderContext context, string template)
         {
@@ -3892,19 +3767,19 @@ namespace Songify_Slim.Util.Songify
             FullTrack searchItem = await SpotifyApiHandler.FindTrack(input);
             if (searchItem == null)
             {
-                SendChatMessage(Settings.Settings.TwChannel, "An error occurred while searching for the track.");
+                await SendChatMessage(Settings.Settings.TwChannel, "An error occurred while searching for the track.");
                 return "";
             }
 
             if (searchItem.Restrictions is not { Count: > 0 }) return searchItem.Id;
-            SendChatMessage(Settings.Settings.TwChannel, string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
+            await SendChatMessage(Settings.Settings.TwChannel, string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
             return "";
 
 
             // if a track was found convert the object to FullTrack (easier use than searchItem)
         }
 
-        private static bool IsArtistBlacklisted(FullTrack track, ChatMessage e, out string response)
+        private static bool IsArtistBlacklisted(FullTrack track, TwitchRequestUser e, out string response)
         {
             response = string.Empty;
             if (track?.Artists == null || track.Artists.Count == 0)
@@ -3986,7 +3861,7 @@ namespace Songify_Slim.Util.Songify
         }
 
 
-        private static bool IsTrackAlreadyInQueue(FullTrack track, ChatMessage e, out string response)
+        private static bool IsTrackAlreadyInQueue(FullTrack track, TwitchRequestUser e, out string response)
         {
             response = string.Empty;
             try
@@ -4030,7 +3905,7 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static bool IsTrackExplicit(FullTrack track, ChatMessage e, out string response)
+        private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, out string response)
         {
             response = string.Empty;
             if (!Settings.Settings.BlockAllExplicitSongs)
@@ -4060,7 +3935,7 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static bool IsTrackTooLong(FullTrack track, ChatMessage e, out string response)
+        private static bool IsTrackTooLong(FullTrack track, TwitchRequestUser e, out string response)
         {
             response = string.Empty;
 
@@ -4089,7 +3964,7 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static bool IsTrackUnavailable(FullTrack track, ChatMessage e, out string response)
+        private static bool IsTrackUnavailable(FullTrack track, TwitchRequestUser e, out string response)
         {
             response = string.Empty;
 
@@ -4121,7 +3996,7 @@ namespace Songify_Slim.Util.Songify
             return false;
         }
 
-        private static bool IsUserAtMaxRequests(ChatMessage e, TwitchUser user, out string response)
+        private static bool IsUserAtMaxRequests(TwitchRequestUser e, TwitchUser user, out string response)
         {
             response = string.Empty;
             try
@@ -4176,300 +4051,6 @@ namespace Songify_Slim.Util.Songify
             int maxAllowed = GetMaxRequestsForUserLevels(userLevels);
 
             return userRequests.Count >= maxAllowed;
-        }
-
-        private static void OnListenResponse(object sender, OnListenResponseArgs e)
-        {
-            //Debug.WriteLine($"{DateTime.Now.ToShortTimeString()} PubSub: Response received: {e.Response}");
-        }
-
-        private static void OnPubSubServiceClosed(object sender, EventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(MainWindow))
-                        continue;
-                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.IndianRed;
-                    ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.TriangleFill;
-                }
-            });
-            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Closed");
-            Logger.LogStr("PUBSUB: Disconnected");
-        }
-
-        private static void OnPubSubServiceConnected(object sender, EventArgs e)
-        {
-            TwitchPubSub.SendTopics(Settings.Settings.TwitchAccessToken);
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(MainWindow))
-                        continue;
-                    ((MainWindow)window).IconTwitchPubSub.Foreground = Brushes.GreenYellow;
-                    ((MainWindow)window).IconTwitchPubSub.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                }
-            });
-            Logger.LogStr("TWITCH PUBSUB: Connected");
-            SendChatMessage(Settings.Settings.TwChannel, "Connected to PubSub");
-            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Connected");
-        }
-
-        private static async void OnPubSubServiceError(object sender, OnPubSubServiceErrorArgs e)
-        {
-            //Debug.WriteLine($"{DateTime.Now.ToLongTimeString()} PubSub: Error {e.Exception}");
-            Logger.LogStr("PUBSUB: Error");
-            Logger.LogExc(e.Exception);
-            TwitchPubSub.Disconnect();
-            //TODO: Enable this again once the PubSub issues are fixed
-            if (PubSubEnabled)
-                TwitchPubSub.Connect();
-            await Task.Delay(30000);
-            try
-            {
-                CreatePubSubListenEvents();
-                TwitchPubSub.Connect();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-        }
-
-        private static void OnStreamDown(object sender, OnStreamDownArgs args)
-        {
-            Logger.LogStr("TWITCH API: Stream is down");
-            Settings.Settings.IsLive = false;
-        }
-
-        private static void OnStreamUp(object sender, OnStreamUpArgs args)
-        {
-            Logger.LogStr("TWITCH API: Stream is up");
-            Settings.Settings.IsLive = true;
-        }
-
-        private static async void PubSub_OnChannelPointsRewardRedeemed(object sender,
-            OnChannelPointsRewardRedeemedArgs e)
-        {
-            if (Client is not { IsConnected: true })
-                return;
-
-            Redemption redemption = e.RewardRedeemed.Redemption;
-            Reward reward = e.RewardRedeemed.Redemption.Reward;
-            TwitchLib.PubSub.Models.Responses.Messages.User redeemedUser = e.RewardRedeemed.Redemption.User;
-            string trackId;
-
-            List<CustomReward> managableRewards = await GetChannelRewards(true);
-            bool isManagable = managableRewards.Find(r => r.Id == reward.Id) != null;
-
-            if (Settings.Settings.TwRewardId.Any(o => o == reward.Id))
-            {
-                Logger.LogStr($"PUBSUB: Channel reward {reward.Title} redeemed by {redeemedUser.DisplayName}");
-                List<int> userLevels = GlobalObjects.TwitchUsers.First(o => o.UserId == redeemedUser.Id).UserLevels;
-                Logger.LogStr(
-                    $"{redeemedUser.DisplayName}s userlevel = {userLevels} ({Enum.GetName(typeof(TwitchUserLevels), userLevels)})");
-                string msg;
-                if (!userLevels.Contains(Settings.Settings.TwSrUserLevel))
-                {
-                    msg =
-                        $"Sorry, only {Enum.GetName(typeof(TwitchUserLevels), Settings.Settings.TwSrUserLevel)} or higher can request songs.";
-                    //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 0) && isManagable)
-                    {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus =
-                            await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                                Settings.Settings.TwitchUser.Id, reward.Id,
-                                [e.RewardRedeemed.Redemption.Id],
-                                new UpdateCustomRewardRedemptionStatusRequest
-                                { Status = CustomRewardRedemptionStatus.CANCELED });
-                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                        {
-                            msg += $" {Settings.Settings.BotRespRefund}";
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(msg))
-                        SendChatMessage(Settings.Settings.TwChannel, msg);
-                    return;
-                }
-
-                if (IsUserBlocked(redeemedUser.DisplayName))
-                {
-                    msg = "You are blocked from making Songrequests";
-                    //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 1) && isManagable)
-                    {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus =
-                            await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                                Settings.Settings.TwitchUser.Id, reward.Id,
-                                [e.RewardRedeemed.Redemption.Id],
-                                new UpdateCustomRewardRedemptionStatusRequest
-                                { Status = CustomRewardRedemptionStatus.CANCELED });
-                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                        {
-                            msg += $" {Settings.Settings.BotRespRefund}";
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(msg))
-                        SendChatMessage(Settings.Settings.TwChannel, msg);
-                    return;
-                }
-
-                // checks if the user has already the max amount of songs in the queue
-                if (!Settings.Settings.TwSrUnlimitedSr && MaxQueueItems(redeemedUser.DisplayName, userLevels))
-                {
-                    // if the user reached max requests in the queue skip and inform requester
-                    string response = Settings.Settings.BotRespMaxReq;
-                    response = response.Replace("{user}", redeemedUser.DisplayName);
-                    response = response.Replace("{artist}", "");
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}",
-                        $"{(TwitchUserLevels)userLevels.Max()} {GetMaxRequestsForUserLevels(userLevels)}");
-                    response = response.Replace("{errormsg}", "");
-                    response = CleanFormatString(response);
-                    if (!string.IsNullOrEmpty(response))
-                        SendChatMessage(Settings.Settings.TwChannel, response);
-                    return;
-                }
-
-                if (SpotifyApiHandler.Client == null)
-                {
-                    msg = "It seems that Spotify is not connected right now.";
-                    //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 2) && isManagable)
-                    {
-                        UpdateRedemptionStatusResponse updateRedemptionStatus =
-                            await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                                Settings.Settings.TwitchUser.Id, reward.Id,
-                                [e.RewardRedeemed.Redemption.Id],
-                                new UpdateCustomRewardRedemptionStatusRequest
-                                { Status = CustomRewardRedemptionStatus.CANCELED });
-                        if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                        {
-                            msg += $" {Settings.Settings.BotRespRefund}";
-                        }
-                    }
-
-                    SendChatMessage(Settings.Settings.TwChannel, msg);
-                    return;
-                }
-
-                // if Spotify is connected and working manipulate the string and call methods to get the song info accordingly
-                trackId = await GetTrackIdFromInput(redemption.UserInput);
-                if (trackId == "shortened")
-                {
-                    SendChatMessage(Settings.Settings.TwChannel,
-                        "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
-                    return;
-                }
-
-                if (!string.IsNullOrWhiteSpace(trackId))
-                {
-                    if (Settings.Settings.SongBlacklist.Any(s => s.TrackId == trackId))
-                    {
-                        Debug.WriteLine("This song is blocked");
-                        SendChatMessage(Settings.Settings.TwChannel, "This song is blocked");
-                        return;
-                    }
-
-                    ReturnObject returnObject = await AddSong2(trackId, redeemedUser.DisplayName);
-                    msg = returnObject.Msg;
-                    if (Settings.Settings.RefundConditons.Any(i => i == returnObject.Refundcondition) && isManagable)
-                    {
-                        try
-                        {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus =
-                                await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                                    Settings.Settings.TwitchUser.Id, reward.Id,
-                                    [e.RewardRedeemed.Redemption.Id],
-                                    new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED },
-                                    Settings.Settings.TwitchAccessToken);
-                            if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                            {
-                                msg += $" {Settings.Settings.BotRespRefund}";
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            Logger.LogStr(
-                                "PUBSUB: Could not refund points. Has the reward been created through the app?");
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(msg))
-                    {
-                        if (msg.StartsWith("[announce "))
-                        {
-                            await AnnounceInChat(msg);
-                        }
-                        else
-                        {
-                            SendChatMessage(Settings.Settings.TwChannel, msg);
-                        }
-                    }
-                }
-                else
-                {
-                    // if no track has been found inform the requester
-                    string response = Settings.Settings.BotRespError;
-                    response = response.Replace("{user}", redeemedUser.DisplayName);
-                    response = response.Replace("{artist}", "");
-                    response = response.Replace("{title}", "");
-                    response = response.Replace("{maxreq}", "");
-                    response = response.Replace("{errormsg}", "Couldn't find a song matching your request.");
-
-                    //Send a Message to the user, that his Userlevel is too low
-                    if (Settings.Settings.RefundConditons.Any(i => i == 7) && isManagable)
-                    {
-                        try
-                        {
-                            UpdateRedemptionStatusResponse updateRedemptionStatus =
-                                await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                                    Settings.Settings.TwitchUser.Id, reward.Id,
-                                    [e.RewardRedeemed.Redemption.Id],
-                                    new UpdateCustomRewardRedemptionStatusRequest
-                                    { Status = CustomRewardRedemptionStatus.CANCELED });
-                            if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                            {
-                                response += $" {Settings.Settings.BotRespRefund}";
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            Logger.LogStr(
-                                "PUBSUB: Could not refund points. Has the reward been created through the app?");
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(response))
-                    {
-                        if (response.StartsWith("[announce "))
-                        {
-                            await AnnounceInChat(response);
-                        }
-                        else
-                        {
-                            SendChatMessage(Settings.Settings.TwChannel, response);
-                        }
-                    }
-                }
-            }
-
-            if (Settings.Settings.TwRewardSkipId.Any(id => id == reward.Id))
-            {
-                if (_skipCooldown)
-                    return;
-                await SpotifyApiHandler.SkipSong();
-
-                SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
-                _skipCooldown = true;
-                SkipCooldownTimer.Start();
-            }
         }
 
         public static async Task RunTwitchUserSync()
@@ -4575,10 +4156,10 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static void SendChatMessage(string channel, string message)
+        private static async Task SendChatMessage(string channel, string message)
         {
             if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
-                Client.SendMessage(channel, message);
+                await Client.SendMessageAsync(channel, message);
             else
                 Logger.LogStr("DEBUG: Client.IsConnected returned FALSE or Client.JoinedChannels is NULL");
         }
@@ -4668,6 +4249,61 @@ namespace Songify_Slim.Util.Songify
                 object value = prop.GetValue(obj, null);
                 Logger.LogStr($"DEBUG: {prop.Name}: {value}");
             }
+        }
+
+        public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
+            string userInput, string channel, string redemptionId)
+        {
+
+            Settings.Settings.IsLive = await CheckStreamIsUp();
+            TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
+
+            // Check if the user level is lower than broadcaster or not allowed to request songs
+            if (!isBroadcaster)
+            {
+                if (existingUser != null && !Settings.Settings.UserLevelsReward.Intersect(existingUser.UserLevels).Any())
+                {
+                    // Send a message to the user that their user level is too low to request songs
+                    string response = Settings.Settings.BotRespUserlevelTooLowCommand;
+                    response = response.Replace("{user}", userName);
+
+                    string userLevelNames = Settings.Settings.UserLevelsReward.Any()
+                        ? string.Join(", ", Settings.Settings.UserLevelsReward
+                            .Select(level => Enum.GetName(typeof(TwitchUserLevels), level)))
+                        : "None";
+
+                    response = response.Replace("{userlevel}", userLevelNames);
+
+                    // Send a message to the user that their user level is too low to request songs
+                    await SendChatMessage(channel, response);
+                    return;
+                }
+            }
+
+            // Do nothing if the user is blocked, don't even reply
+            if (IsUserBlocked(userName))
+            {
+                return;
+            }
+
+            if (SpotifyApiHandler.Client == null)
+            {
+                await SendChatMessage(channel, "It seems that Spotify is not connected right now.");
+                return;
+            }
+
+            TwitchRequestUser user = new TwitchRequestUser
+            {
+                Channel = channel,
+                DisplayName = userName,
+                UserId = userId,
+                Message = userInput,
+                IsBroadcaster = isBroadcaster
+            };
+
+            AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser);
+            return;
+
         }
     }
 
@@ -4871,5 +4507,37 @@ namespace Songify_Slim.Util.Songify
         public string Msg { get; set; }
         public int Refundcondition { get; set; }
         public bool Success { get; set; }
+    }
+
+    public class TwitchRequestUser
+    {
+        public string Channel { get; set; }
+        public string DisplayName { get; set; }
+        public string UserId { get; set; }
+        public string Message { get; set; }
+        public bool IsBroadcaster { get; set; }
+
+        public TwitchRequestUser() { }
+
+        public TwitchRequestUser(string channel, string displayName, string userId, string message, bool isBroadcaster)
+        {
+            Channel = channel;
+            DisplayName = displayName;
+            UserId = userId;
+            Message = message;
+            IsBroadcaster = isBroadcaster;
+        }
+
+        public static TwitchRequestUser FromChatMessage(ChatMessage msg)
+        {
+            return new TwitchRequestUser
+            {
+                Channel = msg.Channel,
+                DisplayName = msg.DisplayName,
+                UserId = msg.UserId,
+                Message = msg.Message,
+                IsBroadcaster = msg.IsBroadcaster
+            };
+        }
     }
 }
