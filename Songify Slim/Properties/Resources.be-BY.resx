@@ -1051,10 +1051,10 @@
     <value>{Artist} - {Title}</value>
   </data>
   <data name="Param_PlaylistName_Desc" xml:space="preserve">
-    <value>Назва плэйліста</value>
+    <value>Назва плэй-ліста</value>
   </data>
   <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
-    <value>URL плэйліста</value>
+    <value>URL плэй-ліста</value>
   </data>
   <data name="Param_SongList_Desc" xml:space="preserve">
     <value>Толькі для каманды !pos, стварае спіс песень, якія карыстальнік мае ў чарзе, з іх пазіцыяй</value>
@@ -1096,7 +1096,7 @@
     <value>Песня заблакаваная</value>
   </data>
   <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
-    <value>Дадаць запыты толькі ў выбраны спіс прайгравання</value>
+    <value>Дадаць запыты толькі ў выбраны плэй-ліст</value>
   </data>
   <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
     <value>Уключыць запыты песень для Bits</value>
