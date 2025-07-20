@@ -1,37 +1,83 @@
-﻿<controls:MetroWindow x:Class="Songify_Slim.Views.WindowCreateCustomReward"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Songify_Slim"
-        WindowStartupLocation="CenterOwner"
-        xmlns:properties="clr-namespace:Songify_Slim.Properties"
-        mc:Ignorable="d"
-        Title="Create Custom Reward" Height="215" Width="484" ResizeMode="NoResize">
+﻿<controls:MetroWindow
+    x:Class="Songify_Slim.Views.WindowCreateCustomReward"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:local="clr-namespace:Songify_Slim"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    Title="Create Custom Reward"
+    Width="484"
+    Height="215"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
     <Grid>
-        <StackPanel x:Name="PanelRewardActions"  Orientation="Vertical" Margin="6,6,6,6">
+        <StackPanel
+            x:Name="PanelRewardActions"
+            Margin="6,6,6,6"
+            Orientation="Vertical">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="32"/>
-                    <RowDefinition Height="45"/>
-                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="32" />
+                    <RowDefinition Height="45" />
+                    <RowDefinition Height="32" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <Label Content="{x:Static properties:Resources.crw_RewardTitle}" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"/>
-                <TextBox x:Name="TbRewardName"  Grid.Column="1" Grid.Row="0"  VerticalAlignment="Center"></TextBox>
-                <Label Content="{x:Static properties:Resources.crw_RewardPrompt}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
-                <TextBox x:Name="TbRewardPrompt"  Grid.Column="1" Grid.Row="1" VerticalAlignment="Center"></TextBox>
-                <Label Content="{x:Static properties:Resources.crw_RewardCost}" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center"/>
-                <controls:NumericUpDown x:Name="NudRewardCost" HideUpDownButtons="True" Minimum="1" Grid.Column="1" Grid.Row="2" VerticalAlignment="Center" Value="1"></controls:NumericUpDown>
-                <Button Grid.Row="4" Grid.Column="1" x:Name="BtnCreateReward" Content="{x:Static properties:Resources.crw_CreateReward}" HorizontalAlignment="Stretch" Click="BtnCreateReward_Click" VerticalAlignment="Center"/>
-                <TextBlock x:Name="LblStatus" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" TextWrapping="Wrap"/>
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Content="{x:Static properties:Resources.crw_RewardTitle}" />
+                <TextBox
+                    x:Name="TbRewardName"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    VerticalAlignment="Center" />
+                <Label
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Content="{x:Static properties:Resources.crw_RewardPrompt}" />
+                <TextBox
+                    x:Name="TbRewardPrompt"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    VerticalAlignment="Center" />
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Content="{x:Static properties:Resources.crw_RewardCost}" />
+                <controls:NumericUpDown
+                    x:Name="NudRewardCost"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    HideUpDownButtons="True"
+                    Minimum="1"
+                    Value="1" />
+                <Button
+                    x:Name="BtnCreateReward"
+                    Grid.Row="4"
+                    Grid.Column="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Click="BtnCreateReward_Click"
+                    Content="{x:Static properties:Resources.crw_CreateReward}" />
+                <TextBlock
+                    x:Name="LblStatus"
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    TextWrapping="Wrap" />
             </Grid>
 
         </StackPanel>

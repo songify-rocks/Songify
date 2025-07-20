@@ -22,6 +22,7 @@ using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using System.Collections.Concurrent;
 using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
 using Swan.Formatters;
 
@@ -438,7 +439,7 @@ namespace Songify_Slim.Util.General
                     }
 
                     tempQueueList2 = [];
-                    List<QueueItem> queueItems = [];
+                    List<Models.YTMD.QueueItem> queueItems = [];
 
                     // Find the index of the current VideoId
                     index = response.Player.Queue.Items.IndexOf(

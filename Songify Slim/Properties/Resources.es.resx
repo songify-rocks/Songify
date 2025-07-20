@@ -922,4 +922,7 @@
   <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
     <value>Agregar solicitudes solo a la lista de reproducción seleccionada</value>
   </data>
+  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+    <value>Habilitar solicitudes de canciones para Bits</value>
+  </data>
 </root>

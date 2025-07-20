@@ -24,12 +24,13 @@ namespace Songify_Slim.UserControls
     {
         private readonly CustomReward _reward;
 
-        public UcTwitchReward(CustomReward reward)
+        public UcTwitchReward(CustomReward reward, bool manageable)
         {
             InitializeComponent();
             _reward = reward;
             TxtRewardname.Text = _reward.Title;
             TxtRewardcost.Text = _reward.Cost.ToString();
+            ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
 
             if (_reward.BackgroundColor != null)
             {

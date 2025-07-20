@@ -1,17 +1,23 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Models;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Songify.TwitchOAuth;
+using Songify_Slim.Util.Songify.YTMDesktop;
+using Songify_Slim.Util.Spotify;
+using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -23,28 +29,24 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Songify_Slim.Util.Songify.YTMDesktop;
+using System.Windows.Navigation;
+using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using YamlDotNet.Core.Tokens;
+using static Songify_Slim.App;
 using Application = System.Windows.Application;
+using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
+using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
+using File = System.IO.File;
+using Image = SpotifyAPI.Web.Image;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
 using TextBox = System.Windows.Controls.TextBox;
-using File = System.IO.File;
-using System.Windows.Navigation;
-using Songify_Slim.Models;
-using Songify_Slim.Util.Spotify;
-using Brushes = System.Windows.Media.Brushes;
-using Color = System.Windows.Media.Color;
-using static Songify_Slim.App;
-using TwitchLib.Api;
-using System.Drawing;
-using SpotifyAPI.Web;
-using Image = SpotifyAPI.Web.Image;
 
 namespace Songify_Slim.Views
 {
@@ -135,14 +137,13 @@ namespace Songify_Slim.Views
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
             //TxtbxRewardId.Text = Settings.TwRewardId;
-
+            NudBits.Value = Settings.MinimumBitsForSR;
             CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
             {
                 "localhost" => 0,
                 "127.0.0.1" => 1,
                 _ => CbxSpotifyRedirectUri.SelectedIndex
             };
-
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -1090,7 +1091,6 @@ namespace Songify_Slim.Views
                 {
                     List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
                     List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
-
                     //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
                     List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
                     foreach (string s in idsToRemove)
@@ -1105,8 +1105,8 @@ namespace Songify_Slim.Views
                         foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
                         {
 
-                            bool managable = managableRewards.Find(r => r.Id == reward.Id) != null;
-                            ListboxRewards.Items.Add(new UcTwitchReward(reward));
+                            bool manageable = managableRewards.Find(r => r.Id == reward.Id) != null;
+                            ListboxRewards.Items.Add(new UcTwitchReward(reward, manageable));
                         }
                     }
                     BtnCreateNewReward.IsEnabled = true;
@@ -1763,6 +1763,28 @@ namespace Songify_Slim.Views
         private void Tglsw_OnlyAddToPlaylist_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.AddSrtoPlaylistOnly = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void NudBits_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded) return;
+            if (!NudBits.Value.HasValue) return;
+            Settings.TwSrPerUserCooldown = (int)NudBits.Value;
+            string imageName = GetImageNameForValue((int)NudBits.Value);
+            string uri = $"pack://application:,,,/Resources/img/{imageName}.png";
+            ImgBits.Source = new BitmapImage(new Uri(uri));
+        }
+
+        private static string GetImageNameForValue(int value)
+        {
+            return value switch
+            {
+                >= 10000 => "10000",
+                >= 5000 => "5000",
+                >= 1000 => "1000",
+                >= 100 => "100",
+                _ => "1"
+            };
         }
     }
 }

@@ -1973,14 +1973,46 @@
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Chbx_BlockAllExplicit_Checked" />
-                                <controls:ToggleSwitch 
-                                    Toggled="Tglsw_OnlyAddToPlaylist_OnToggled"
-                                    x:Name="Tglsw_OnlyAddToPlaylist" 
-                                    d:Content="Only add requests to the selected playlist" 
+                                <controls:ToggleSwitch
+                                    x:Name="Tglsw_OnlyAddToPlaylist"
+                                    d:Content="Only add requests to the selected playlist"
                                     Content="{x:Static local:Resources.sw_SpotifySR_AddOnlyToPlaylist}"
-                                    FontFamily="Segoe UI" 
-                                    FontSize="12" 
-                                    ContentPadding="0"/>
+                                    ContentPadding="0"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
+                                <Border
+                                    Padding="5,5"
+                                    BorderBrush="{StaticResource MahApps.Brushes.Accent}"
+                                    BorderThickness="5"
+                                    CornerRadius="3">
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="🔒 Requires active Ko-Fi Membership"></TextBlock>                                    
+                                        <DockPanel>
+                                            <controls:ToggleSwitch
+                                                x:Name="Tglsw_BitsForSr"
+                                                d:Content="Enable Song Requests for Bits"
+                                                Content="{x:Static local:Resources.sw_SpotifySR_EnableSrForBits}"
+                                                ContentPadding="0"
+                                                FontFamily="Segoe UI"
+                                                FontSize="12"
+                                                Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
+                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                                <Image
+                                                    x:Name="ImgBits"
+                                                    Width="28"
+                                                    Height="28"
+                                                    Margin="0,0,6,0" />
+                                                <controls:NumericUpDown
+                                                    x:Name="NudBits"
+                                                    Width="150"
+                                                    Height="28"
+                                                    HorizontalAlignment="Right"
+                                                    ValueChanged="NudBits_OnValueChanged" />
+                                            </StackPanel>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Border>
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -2014,12 +2046,12 @@
                             Text="Rightclick on a command to adjust who can use it." />
                         <controls:ToggleSwitch
                             x:Name="TglsLongBadgeNames"
-                            Toggled="TglsLongBadgeNames_OnToggled"
                             Grid.Row="0"
                             Grid.RowSpan="2"
                             Padding="6"
                             HorizontalAlignment="Right"
-                            Content="Long badge names" />
+                            Content="Long badge names"
+                            Toggled="TglsLongBadgeNames_OnToggled" />
                         <ScrollViewer Grid.Row="2" Margin="6">
                             <StackPanel
                                 x:Name="StackCommands"

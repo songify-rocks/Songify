@@ -218,9 +218,10 @@
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
-    <Compile Include="Util\Songify\TwitchApiHelper.cs" />
-    <Compile Include="Util\Songify\TwitchCommandHandler.cs" />
-    <Compile Include="Util\Songify\WebSocketHostedService.cs" />
+    <Compile Include="Util\Songify\Twitch\SharedChatExtensions.cs" />
+    <Compile Include="Util\Songify\Twitch\TwitchApiHelper.cs" />
+    <Compile Include="Util\Songify\Twitch\TwitchCommandHandler.cs" />
+    <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
@@ -278,7 +279,7 @@
     </Compile>
     <Compile Include="Util\Songify\SongFetcher.cs" />
     <Compile Include="Util\General\ThemeHandler.cs" />
-    <Compile Include="Util\Songify\TwitchHandler.cs" />
+    <Compile Include="Util\Songify\Twitch\TwitchHandler.cs" />
     <Compile Include="Util\Songify\TwitchOAuth\ApplicationDetails.cs" />
     <Compile Include="Util\Songify\TwitchOAuth\ImplicitOAuth.cs" />
     <Compile Include="Util\Songify\TwitchOAuth\Scopes.cs" />
@@ -731,7 +732,23 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\img\1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\img\100.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\img\1000.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\img\10000.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\img\5000.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="default_site\favicon.ico" />
     <EmbeddedResource Include="default_site\index.html" />

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
 namespace Songify_Slim.Views
@@ -33,7 +34,7 @@ namespace Songify_Slim.Views
                        Prompt = prompt,
                        Cost = cost,
                        IsEnabled = true,
-                       BackgroundColor = null,
+                       BackgroundColor = "#1ed760",
                        IsUserInputRequired = true,
                        IsMaxPerStreamEnabled = false,
                        MaxPerStream = null,

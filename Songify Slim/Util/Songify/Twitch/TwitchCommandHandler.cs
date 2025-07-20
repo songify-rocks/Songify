@@ -1,12 +1,10 @@
-﻿using Songify_Slim.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Models;
 using TwitchLib.Client.Models;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Slim.Util.Songify.Twitch
 {
     public delegate Task CommandHandlerDelegate(ChatMessage message, TwitchCommand command, TwitchCommandParams cmdParams);
 

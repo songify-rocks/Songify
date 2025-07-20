@@ -922,4 +922,7 @@
   <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
     <value>Добавлять запросы только в выбранный плейлист</value>
   </data>
+  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+    <value>Включить запросы песен для битов</value>
+  </data>
 </root>

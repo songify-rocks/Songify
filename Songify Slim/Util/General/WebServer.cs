@@ -25,6 +25,7 @@ using Songify_Slim.Models.WebSocket;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
 
 

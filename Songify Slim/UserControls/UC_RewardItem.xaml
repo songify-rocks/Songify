@@ -57,7 +57,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             ToolTip="Can be managed from Songify."
-            Visibility="Hidden">
+            Visibility="Visible">
             <iconPacks:ForkAwesome
                 Width="12"
                 Height="12"
@@ -73,7 +73,10 @@
             Style="{DynamicResource MahApps.Styles.Button.Reveal}"
             Visibility="Collapsed">
             <Button.Content>
-                <iconPacks:Coolicons Kind="TrashEmpty" Width="14" Height="14" />
+                <iconPacks:Coolicons
+                    Width="14"
+                    Height="14"
+                    Kind="TrashEmpty" />
             </Button.Content>
         </Button>
     </Grid>

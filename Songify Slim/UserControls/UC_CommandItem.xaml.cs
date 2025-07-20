@@ -22,6 +22,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Markdig.Wpf;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 

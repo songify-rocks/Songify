@@ -15,6 +15,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 
 namespace Songify_Slim.Views
 {

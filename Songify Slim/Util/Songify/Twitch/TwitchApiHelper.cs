@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TwitchLib.Api.Helix.Models.Chat.GetChatters;
-using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
-using TwitchLib.Api.Interfaces;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Slim.Util.Songify.Twitch
 {
     internal class TwitchApiHelper
     {

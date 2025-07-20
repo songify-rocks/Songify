@@ -925,4 +925,7 @@
   <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
     <value>Ajouter des demandes uniquement à la playlist sélectionnée</value>
   </data>
+  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+    <value>Activer les demandes de chansons pour les bits</value>
+  </data>
 </root>

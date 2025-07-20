@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
 
 namespace Songify_Slim.Util.Settings
@@ -676,6 +677,18 @@ namespace Songify_Slim.Util.Settings
         public static bool HideSpotifyPremiumWarning { get => GetHideSpotifyPremiumWarning(); set => SetHideSpotifyPremiumWarning(value); }
         public static bool LongBadgeNames { get => GetLongBadgeNames(); set => SetLongBadgeNames(value); }
         public static bool AddSrtoPlaylistOnly { get => GetAddSrtoPlaylistOnly(); set => SGetAddSrtoPlaylistOnly(value); }
+        public static int MinimumBitsForSR { get => GetMinimumBitsForSR(); set => SetMinimumBitsForSR(value); }
+
+        private static void SetMinimumBitsForSR(int value)
+        {
+            CurrentConfig.AppConfig.MinimumBitsForSR = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static int GetMinimumBitsForSR()
+        {
+            return CurrentConfig.AppConfig.MinimumBitsForSR;
+        }
 
         private static void SGetAddSrtoPlaylistOnly(bool value)
         {
@@ -929,6 +942,7 @@ namespace Songify_Slim.Util.Settings
             {
                 AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
+                AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
                 AppendSpacesSplitFiles = GetAppendSpacesSplitFiles(),
@@ -956,8 +970,8 @@ namespace Songify_Slim.Util.Settings
                 LastShownMotdId = GetLastShownMotdId(),
                 LimitSrToPlaylist = GetLimitSrToPlaylist(),
                 LongBadgeNames = GetLongBadgeNames(),
-                AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 MaxSongLength = GetMaxSongLength(),
+                MinimumBitsForSR = GetMinimumBitsForSR(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
                 OutputString = GetOutputString(),

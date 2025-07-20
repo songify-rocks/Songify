@@ -632,5 +632,6 @@ namespace Songify_Slim.Util.Settings
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
+        public int MinimumBitsForSR = 1;
     }
 }

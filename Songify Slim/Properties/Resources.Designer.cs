@@ -1817,6 +1817,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Song Requests for Bits.
+        /// </summary>
+        public static string sw_SpotifySR_EnableSrForBits {
+            get {
+                return ResourceManager.GetString("sw_SpotifySR_EnableSrForBits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Max song length (in minutes).
         /// </summary>
         public static string sw_SpotifySR_MaxLength {

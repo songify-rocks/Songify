@@ -21,6 +21,7 @@ using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Spotify;
 using System.Web.UI.WebControls;
 using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
 
 namespace Songify_Slim.Util.Songify

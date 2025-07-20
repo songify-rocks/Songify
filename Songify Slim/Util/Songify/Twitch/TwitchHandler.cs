@@ -1,66 +1,67 @@
 ﻿using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Models;
+using Songify_Slim.Models.YTMD;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify.TwitchOAuth;
+using Songify_Slim.Util.Spotify;
 using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using Swan;
+using Swan.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Web;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
+using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
+using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
+using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
+using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateRedemptionStatus;
+using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Chat;
+using TwitchLib.Api.Helix.Models.Chat.GetChatters;
+using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
-using Swan;
-using Swan.Formatters;
-using Application = System.Windows.Application;
-using Timer = System.Timers.Timer;
-using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
-using static Songify_Slim.Util.General.Enums;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
-using TwitchLib.Api.Helix.Models.Chat.GetChatters;
-using System.Web;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Songify_Slim.Util.Spotify;
-using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
-using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
-using Songify_Slim.Models.YTMD;
-using SpotifyAPI.Web;
-using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Extensions;
-using TwitchLib.EventSub.Websockets.Test;
+using static Songify_Slim.Util.General.Enums;
+using Application = System.Windows.Application;
 using OnConnectedEventArgs = TwitchLib.Client.Events.OnConnectedEventArgs;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Subscription = TwitchLib.Api.Helix.Models.Subscriptions.Subscription;
+using Timer = System.Timers.Timer;
+using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
 
 
-namespace Songify_Slim.Util.Songify
+namespace Songify_Slim.Util.Songify.Twitch
 {
     // This class handles everything regarding twitch.tv
     public static class TwitchHandler
@@ -1604,7 +1605,7 @@ namespace Songify_Slim.Util.Songify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddLogging();
+                    //services.AddLogging();
                     services.AddTwitchLibEventSubWebsockets();
                     services.AddHostedService<WebsocketHostedService>();
                 });
@@ -2415,6 +2416,11 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            // Only process messages that are from the broadcasters chat, even in shared chat feaure
+
+            if (e.ChatMessage.IsRelayedSharedChat())
+                return;
+
             if (!e.ChatMessage.Message.StartsWith("!") && string.IsNullOrEmpty(e.ChatMessage.CustomRewardId))
                 return;
             List<int> userLevels = await GetUserLevels(e.ChatMessage);
@@ -3398,7 +3404,6 @@ namespace Songify_Slim.Util.Songify
             return response;
         }
 
-
         private static string CreateResponse(PlaceholderContext context, string template)
         {
             // Use reflection to get all properties of PlaceholderContext
@@ -3444,7 +3449,6 @@ namespace Songify_Slim.Util.Songify
 
             return values.Aggregate(template, (current, kvp) => current.Replace("{" + kvp.Key + "}", kvp.Value ?? string.Empty));
         }
-
 
         private static string CreateSuccessResponse(FullTrack track, string displayName, string response)
         {
@@ -4252,8 +4256,23 @@ namespace Songify_Slim.Util.Songify
         }
 
         public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
-            string userInput, string channel, string redemptionId)
+            string userInput, string channel, string rewardId, string redemptionId)
         {
+
+            if (TwitchApi != null)
+            {
+                //refund redemption
+                UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
+                    Settings.Settings.TwitchUser.Id, rewardId,
+                    [redemptionId],
+                    new UpdateCustomRewardRedemptionStatusRequest
+                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                {
+                    await SendChatMessage(channel, "Refunded channel points :)");
+                }
+
+            }
 
             Settings.Settings.IsLive = await CheckStreamIsUp();
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
@@ -4305,239 +4324,271 @@ namespace Songify_Slim.Util.Songify
             return;
 
         }
-    }
 
-    public class TwitchUser : INotifyPropertyChanged
-    {
-        private string _displayName;
-        private ChannelFollower _followInformation;
-        private bool? _isFollowing = null;
-        private bool _isSrBlocked;
-        private DateTime? _lastCommandTime = null;
-        private int _subTier;
-        private string _userId;
-        private List<int> _userLevel;
-        private string _userName;
-
-        // Public event required by INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public string DisplayName
+        public static async Task HandleBitsSongRequest(string userId, string userName,
+            string userInput, string channel)
         {
-            get => _displayName;
-            set
+            Settings.Settings.IsLive = await CheckStreamIsUp();
+            TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
+
+    // Do nothing if the user is blocked, don't even reply
+            if (IsUserBlocked(userName))
             {
-                if (_displayName != value)
-                {
-                    _displayName = value;
-                    OnPropertyChanged(nameof(DisplayName));
-                }
+                return;
             }
-        }
 
-        public ChannelFollower FollowInformation
-        {
-            get => _followInformation;
-            set
+            if (SpotifyApiHandler.Client == null)
             {
-                if (_followInformation != value)
-                {
-                    _followInformation = value;
-                    OnPropertyChanged(nameof(FollowInformation));
-                }
+                await SendChatMessage(channel, "It seems that Spotify is not connected right now.");
+                return;
             }
-        }
 
-        public bool? IsFollowing
-        {
-            get => _isFollowing;
-            set
+            TwitchRequestUser user = new TwitchRequestUser
             {
-                if (_isFollowing != value)
-                {
-                    _isFollowing = value;
-                    OnPropertyChanged(nameof(IsFollowing));
-                }
-            }
-        }
-
-        public bool IsSrAllowed
-        {
-            get => !IsSrBlocked;  // Invert the existing property
-            set => IsSrBlocked = !value;
-        }
-
-        public bool IsSrBlocked
-        {
-            get => _isSrBlocked;
-            set
-            {
-                if (_isSrBlocked != value)
-                {
-                    _isSrBlocked = value;
-                    OnPropertyChanged(nameof(IsSrBlocked));
-                }
-            }
-        }
-
-        public DateTime? LastCommandTime
-        {
-            get => _lastCommandTime;
-            set
-            {
-                if (_lastCommandTime != value)
-                {
-                    _lastCommandTime = value;
-                    OnPropertyChanged(nameof(LastCommandTime));
-                }
-            }
-        }
-
-        //public string ReadableUserLevel => ((TwitchUserLevels)UserLevels.Max()).ToString();
-        public string ReadableUserLevel => string.Join(", ", UserLevels.Select(level => ((TwitchUserLevels)level).ToString()));
-
-        public int SubTier
-        {
-            get => _subTier;
-            set
-            {
-                if (_subTier != value)
-                {
-                    _subTier = value;
-                    OnPropertyChanged(nameof(SubTier));
-                }
-            }
-        }
-
-        // For convenience in C# 5+:
-        //   protected void OnPropertyChanged([CallerMemberName] string propName = null) =>
-        //       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        public string UserId
-        {
-            get => _userId;
-            set
-            {
-                if (_userId != value)
-                {
-                    _userId = value;
-                    OnPropertyChanged(nameof(UserId));
-                }
-            }
-        }
-
-        public List<int> UserLevels
-        {
-            get => _userLevel;
-            set
-            {
-                if (_userLevel != value)
-                {
-                    _userLevel = value;
-                    OnPropertyChanged(nameof(UserLevels));
-                    // Also raise on "ReadableUserLevel" since it depends on UserLevels
-                    OnPropertyChanged(nameof(ReadableUserLevel));
-                }
-            }
-        }
-
-        public string UserName
-        {
-            get => _userName;
-            set
-            {
-                if (_userName != value)
-                {
-                    _userName = value;
-                    OnPropertyChanged(nameof(UserName));
-                }
-            }
-        }
-
-        public bool IsCooldownExpired(TimeSpan cooldown)
-        {
-            if (LastCommandTime == null)
-                return true;
-
-            return DateTime.Now - LastCommandTime.Value > cooldown;
-        }
-
-        public int HighestUserLevel => (UserLevels != null && UserLevels.Any()) ? UserLevels.Max() : 0;
-
-        public string AllUserLevels => string.Join(", ", UserLevels.OrderBy(i => i));
-
-        public void Update(
-                    string username,
-                    string displayname,
-                    List<int> userlevel,
-                    bool isFollowing,
-                    int subTier = 0,
-                    bool isSrBlocked = false,
-                    ChannelFollower channelFollower = null)
-        {
-            // As you set each property, OnPropertyChanged will be raised:
-            UserName = username;
-            DisplayName = displayname;
-            UserLevels = userlevel;
-            IsFollowing = isFollowing;
-            SubTier = subTier;
-            IsSrBlocked = isSrBlocked;
-            FollowInformation = channelFollower;
-        }
-
-        public void UpdateCommandTime(bool reset = false)
-        {
-            LastCommandTime = reset ? null : DateTime.Now;
-        }
-
-        // Helper method to raise the event
-        protected void OnPropertyChanged(string propertyName)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    internal class QueueItem
-    {
-        public string Id { get; set; }
-        public int Position { get; set; }
-        public string Requester { get; set; }
-        public string Title { get; set; }
-    }
-
-    internal class ReturnObject
-    {
-        public string Msg { get; set; }
-        public int Refundcondition { get; set; }
-        public bool Success { get; set; }
-    }
-
-    public class TwitchRequestUser
-    {
-        public string Channel { get; set; }
-        public string DisplayName { get; set; }
-        public string UserId { get; set; }
-        public string Message { get; set; }
-        public bool IsBroadcaster { get; set; }
-
-        public TwitchRequestUser() { }
-
-        public TwitchRequestUser(string channel, string displayName, string userId, string message, bool isBroadcaster)
-        {
-            Channel = channel;
-            DisplayName = displayName;
-            UserId = userId;
-            Message = message;
-            IsBroadcaster = isBroadcaster;
-        }
-
-        public static TwitchRequestUser FromChatMessage(ChatMessage msg)
-        {
-            return new TwitchRequestUser
-            {
-                Channel = msg.Channel,
-                DisplayName = msg.DisplayName,
-                UserId = msg.UserId,
-                Message = msg.Message,
-                IsBroadcaster = msg.IsBroadcaster
+                Channel = channel,
+                DisplayName = userName,
+                UserId = userId,
+                Message = userInput,
+                IsBroadcaster = false
             };
+
+            AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser);
         }
+    }
+}
+
+
+
+public class TwitchUser : INotifyPropertyChanged
+{
+    private string _displayName;
+    private ChannelFollower _followInformation;
+    private bool? _isFollowing = null;
+    private bool _isSrBlocked;
+    private DateTime? _lastCommandTime = null;
+    private int _subTier;
+    private string _userId;
+    private List<int> _userLevel;
+    private string _userName;
+
+    // Public event required by INotifyPropertyChanged
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public string DisplayName
+    {
+        get => _displayName;
+        set
+        {
+            if (_displayName != value)
+            {
+                _displayName = value;
+                OnPropertyChanged(nameof(DisplayName));
+            }
+        }
+    }
+
+    public ChannelFollower FollowInformation
+    {
+        get => _followInformation;
+        set
+        {
+            if (_followInformation != value)
+            {
+                _followInformation = value;
+                OnPropertyChanged(nameof(FollowInformation));
+            }
+        }
+    }
+
+    public bool? IsFollowing
+    {
+        get => _isFollowing;
+        set
+        {
+            if (_isFollowing != value)
+            {
+                _isFollowing = value;
+                OnPropertyChanged(nameof(IsFollowing));
+            }
+        }
+    }
+
+    public bool IsSrAllowed
+    {
+        get => !IsSrBlocked;  // Invert the existing property
+        set => IsSrBlocked = !value;
+    }
+
+    public bool IsSrBlocked
+    {
+        get => _isSrBlocked;
+        set
+        {
+            if (_isSrBlocked != value)
+            {
+                _isSrBlocked = value;
+                OnPropertyChanged(nameof(IsSrBlocked));
+            }
+        }
+    }
+
+    public DateTime? LastCommandTime
+    {
+        get => _lastCommandTime;
+        set
+        {
+            if (_lastCommandTime != value)
+            {
+                _lastCommandTime = value;
+                OnPropertyChanged(nameof(LastCommandTime));
+            }
+        }
+    }
+
+    //public string ReadableUserLevel => ((TwitchUserLevels)UserLevels.Max()).ToString();
+    public string ReadableUserLevel => string.Join(", ", UserLevels.Select(level => ((TwitchUserLevels)level).ToString()));
+
+    public int SubTier
+    {
+        get => _subTier;
+        set
+        {
+            if (_subTier != value)
+            {
+                _subTier = value;
+                OnPropertyChanged(nameof(SubTier));
+            }
+        }
+    }
+
+    // For convenience in C# 5+:
+    //   protected void OnPropertyChanged([CallerMemberName] string propName = null) =>
+    //       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+    public string UserId
+    {
+        get => _userId;
+        set
+        {
+            if (_userId != value)
+            {
+                _userId = value;
+                OnPropertyChanged(nameof(UserId));
+            }
+        }
+    }
+
+    public List<int> UserLevels
+    {
+        get => _userLevel;
+        set
+        {
+            if (_userLevel != value)
+            {
+                _userLevel = value;
+                OnPropertyChanged(nameof(UserLevels));
+                // Also raise on "ReadableUserLevel" since it depends on UserLevels
+                OnPropertyChanged(nameof(ReadableUserLevel));
+            }
+        }
+    }
+
+    public string UserName
+    {
+        get => _userName;
+        set
+        {
+            if (_userName != value)
+            {
+                _userName = value;
+                OnPropertyChanged(nameof(UserName));
+            }
+        }
+    }
+
+    public bool IsCooldownExpired(TimeSpan cooldown)
+    {
+        if (LastCommandTime == null)
+            return true;
+
+        return DateTime.Now - LastCommandTime.Value > cooldown;
+    }
+
+    public int HighestUserLevel => (UserLevels != null && UserLevels.Any()) ? UserLevels.Max() : 0;
+
+    public string AllUserLevels => string.Join(", ", UserLevels.OrderBy(i => i));
+
+    public void Update(
+                string username,
+                string displayname,
+                List<int> userlevel,
+                bool isFollowing,
+                int subTier = 0,
+                bool isSrBlocked = false,
+                ChannelFollower channelFollower = null)
+    {
+        // As you set each property, OnPropertyChanged will be raised:
+        UserName = username;
+        DisplayName = displayname;
+        UserLevels = userlevel;
+        IsFollowing = isFollowing;
+        SubTier = subTier;
+        IsSrBlocked = isSrBlocked;
+        FollowInformation = channelFollower;
+    }
+
+    public void UpdateCommandTime(bool reset = false)
+    {
+        LastCommandTime = reset ? null : DateTime.Now;
+    }
+
+    // Helper method to raise the event
+    protected void OnPropertyChanged(string propertyName)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+}
+
+internal class QueueItem
+{
+    public string Id { get; set; }
+    public int Position { get; set; }
+    public string Requester { get; set; }
+    public string Title { get; set; }
+}
+
+internal class ReturnObject
+{
+    public string Msg { get; set; }
+    public int Refundcondition { get; set; }
+    public bool Success { get; set; }
+}
+
+public class TwitchRequestUser
+{
+    public string Channel { get; set; }
+    public string DisplayName { get; set; }
+    public string UserId { get; set; }
+    public string Message { get; set; }
+    public bool IsBroadcaster { get; set; }
+
+    public TwitchRequestUser() { }
+
+    public TwitchRequestUser(string channel, string displayName, string userId, string message, bool isBroadcaster)
+    {
+        Channel = channel;
+        DisplayName = displayName;
+        UserId = userId;
+        Message = message;
+        IsBroadcaster = isBroadcaster;
+    }
+
+    public static TwitchRequestUser FromChatMessage(ChatMessage msg)
+    {
+        return new TwitchRequestUser
+        {
+            Channel = msg.Channel,
+            DisplayName = msg.DisplayName,
+            UserId = msg.UserId,
+            Message = msg.Message,
+            IsBroadcaster = msg.IsBroadcaster
+        };
     }
 }

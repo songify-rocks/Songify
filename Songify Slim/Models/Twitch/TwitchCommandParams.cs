@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Client.Models;
 using static Songify_Slim.Util.General.Enums;
 

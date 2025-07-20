@@ -50,6 +50,7 @@ using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
+using Songify_Slim.Util.Songify.Twitch;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
 
@@ -1133,23 +1134,31 @@ namespace Songify_Slim.Views
             _timerFetcher.Elapsed -= OnTimedEvent;
             _sCts = new CancellationTokenSource();
 
-            await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            try
             {
-                Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
+                await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
 
-                double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
-                    ? 500
-                    : (int)Width - 6;
+                    double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                        ? 500
+                        : (int)Width - 6;
 
-                if (img_cover.Visibility != vis)
-                    img_cover.Visibility = vis;
-                if (GrdCover.Visibility != vis)
-                    GrdCover.Visibility = vis;
-                if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
-                    TxtblockLiveoutput.MaxWidth = maxWidth;
-            }));
+                    if (img_cover.Visibility != vis)
+                        img_cover.Visibility = vis;
+                    if (GrdCover.Visibility != vis)
+                        GrdCover.Visibility = vis;
+                    if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
+                        TxtblockLiveoutput.MaxWidth = maxWidth;
+                }));
+
+            }
+            catch
+            {
+                // Ignored
+            }
 
             try
             {

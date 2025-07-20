@@ -108,7 +108,7 @@ namespace Songify_Slim.Util.Spotify
                     }));
 
             Settings.Settings.SpotifyAccessToken = refreshResponse.AccessToken;
-            if(!string.IsNullOrEmpty(refreshResponse.RefreshToken))
+            if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
                 Settings.Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
 
             Client = new SpotifyClient(config);
@@ -118,11 +118,14 @@ namespace Songify_Slim.Util.Spotify
             }
 
             // We are authenticated!
-            if (Application.Current.MainWindow == null) return;
-            ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-                Brushes.GreenYellow;
-            ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-                PackIconBootstrapIconsKind.CheckCircleFill;
+            if (Application.Current?.MainWindow is MainWindow mw)
+            {
+                mw.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
+                    mw.IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                }));
+            }
         }
 
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)

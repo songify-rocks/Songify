@@ -1104,4 +1104,7 @@
   <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
     <value>Add requests only to the selected playlist</value>
   </data>
+  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+    <value>Enable Song Requests for Bits</value>
+  </data>
 </root>
