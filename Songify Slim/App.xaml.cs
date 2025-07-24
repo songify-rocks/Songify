@@ -1,4 +1,5 @@
-﻿using Songify_Slim.Util.General;
+﻿using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
@@ -18,6 +19,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Songify.Abstractions;
 
 namespace Songify_Slim
 {
@@ -29,6 +31,7 @@ namespace Songify_Slim
         private static Mutex _mutex;
         public static bool IsBeta = false;
         private const string PipeName = "SongifyPipe";
+        public static IPremiumInjector PremiumInjector { get; private set; }
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
@@ -85,7 +88,6 @@ namespace Songify_Slim
                     return;
                 }
             }
-
 
             // Register global unhandled exception handler
             AppDomain currentDomain = AppDomain.CurrentDomain;
@@ -186,6 +188,34 @@ namespace Songify_Slim
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
+            // Dynamic loading (if you want flexibility, or in open builds)
+            IPremiumInjector injector = new PremiumInjectorStub(); // fallback
+
+            // Only needed if using dynamic DLL loading
+            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Songify.Premium.dll");
+            // Sleep 2 Seconds to ensure the file is ready
+            Thread.Sleep(2000);
+            if (File.Exists(dllPath))
+            {
+                try
+                {
+                    var asm = Assembly.LoadFrom(dllPath);
+                    var type = asm.GetType("Songify.Premium.PremiumInjector");
+                    if (type != null && typeof(IPremiumInjector).IsAssignableFrom(type))
+                    {
+                        injector = (IPremiumInjector)Activator.CreateInstance(type);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    // Optionally log the error or show a message box
+                    // MessageBox.Show("Failed to load premium features: " + ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+            PremiumInjector = injector;
+
             // Check for the --restart flag
             bool isRestart = e.Args.Contains("--restart");
 

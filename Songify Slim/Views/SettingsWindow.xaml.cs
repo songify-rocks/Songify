@@ -30,6 +30,8 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using MahApps.Metro.IconPacks;
+using Songify.Abstractions;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -74,8 +76,10 @@ namespace Songify_Slim.Views
         public Window_Settings()
         {
             InitializeComponent();
+            PremiumInjector.InjectSettingsTab(TabCtrl);
             if (Settings.Language == "en") return;
             Width = MinWidth = 830;
+
         }
 
         public async Task SetControls()
@@ -137,6 +141,7 @@ namespace Songify_Slim.Views
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
             //TxtbxRewardId.Text = Settings.TwRewardId;
+            PasswordBox.Password = Settings.SongifyApiKey;
             NudBits.Value = Settings.MinimumBitsForSR;
             CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
             {
@@ -642,6 +647,7 @@ namespace Songify_Slim.Views
         {
             // enables / disables telemetry
             Settings.TwSrReward = ChbxTwReward.IsOn;
+            TwitchHandler.SetTwitchSrRewardsEnabledState(ChbxTwReward.IsOn);
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
@@ -1785,6 +1791,65 @@ namespace Songify_Slim.Views
                 >= 100 => "100",
                 _ => "1"
             };
+        }
+
+        private void PwbSongifyToken_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.SongifyApiKey = ((PasswordBox)sender).Password;
+        }
+
+        private bool _showPassword = false;
+
+
+        private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            if (TextBox.Text != PasswordBox.Password)
+                Settings.SongifyApiKey = PasswordBox.Password;
+            if (!_showPassword)
+                TextBox.Text = PasswordBox.Password;
+        }
+
+        private void ShowHideButton_OnClickn_Click(object sender, RoutedEventArgs e)
+        {
+            _showPassword = !_showPassword;
+
+            if (_showPassword)
+            {
+                TextBox.Text = PasswordBox.Password;
+                TextBox.Visibility = Visibility.Visible;
+                PasswordBox.Visibility = Visibility.Collapsed;
+                EyeIcon.Kind = PackIconFontAwesomeKind.EyeSlashRegular;
+                EyeIcon.Width = 20;
+                EyeIcon.Height = 20;
+
+            }
+            else
+            {
+                PasswordBox.Password = TextBox.Text;
+                TextBox.Visibility = Visibility.Collapsed;
+                PasswordBox.Visibility = Visibility.Visible;
+                EyeIcon.Kind = PackIconFontAwesomeKind.EyeRegular;
+                EyeIcon.Width = 18;
+                EyeIcon.Height = 18;
+            }
+        }
+
+        private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+ 
+            // Only update if not a pure visibility toggle
+            if (PasswordBox.Password != TextBox.Text)
+                Settings.SongifyApiKey = TextBox.Text;
+
+            if (_showPassword)
+                PasswordBox.Password = TextBox.Text;
+
         }
     }
 }

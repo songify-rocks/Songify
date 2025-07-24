@@ -5,6 +5,10 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songify Slim", "Songify Slim\Songify Slim.csproj", "{79210295-B0CC-46F4-B77A-26C7D27F4754}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songify.Premium", "Songify.Premium\Songify.Premium.csproj", "{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Songify.Abstractions", "Songify.Abstractions\Songify.Abstractions.csproj", "{19791B9D-37DB-4C57-804B-9B793402C6EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,14 +25,30 @@ Global
 		{79210295-B0CC-46F4-B77A-26C7D27F4754}.Release|Any CPU.Build.0 = Release|Any CPU
 		{79210295-B0CC-46F4-B77A-26C7D27F4754}.Release|x64.ActiveCfg = Release|x64
 		{79210295-B0CC-46F4-B77A-26C7D27F4754}.Release|x64.Build.0 = Release|x64
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Debug|x64.Build.0 = Debug|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Release|x64.ActiveCfg = Release|Any CPU
+		{6312BD0C-61E4-431E-AD95-C1E3A8DF6344}.Release|x64.Build.0 = Release|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Debug|x64.Build.0 = Debug|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Release|x64.ActiveCfg = Release|Any CPU
+		{19791B9D-37DB-4C57-804B-9B793402C6EC}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_PrefixTranslations = False
-		RESX_AutoCreateNewLanguageFiles = True
-		RESX_SortFileContentOnSave = False
 		SolutionGuid = {12169756-2254-4CD3-86A9-6FCF593762EC}
+		RESX_SortFileContentOnSave = False
+		RESX_AutoCreateNewLanguageFiles = True
+		RESX_PrefixTranslations = False
 	EndGlobalSection
 EndGlobal

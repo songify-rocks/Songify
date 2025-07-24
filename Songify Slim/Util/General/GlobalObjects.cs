@@ -25,6 +25,7 @@ using Songify_Slim.Models.WebSocket;
 using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
 using Swan.Formatters;
+using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 
 namespace Songify_Slim.Util.General
 {
@@ -49,6 +50,7 @@ namespace Songify_Slim.Util.General
         public static List<Subscription> subscribers = [];
         public static List<Moderator> moderators = [];
         public static List<ChannelVIPsResponseModel> vips = [];
+
         public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
         public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
@@ -507,7 +509,8 @@ namespace Songify_Slim.Util.General
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.Ytmthch:
-                    YTMYHCHQueue ytmthchQueue = await WebHelper.GetYtmthchQueue();
+                    //YTMYHCHQueue ytmthchQueue = await WebHelper.GetYtmthchQueue();
+                    List<Song> ytmthchQueue = await WebHelper.GetYtmthchQueue2();
                     YTMYHCHResponse ytmthchResponse = await WebHelper.GetYtmthchData();
 
                     if (ytmthchQueue == null || ytmthchResponse == null)
@@ -515,36 +518,28 @@ namespace Songify_Slim.Util.General
                         return;
                     }
 
-                    index = ytmthchQueue.Items.FindIndex(item =>
-                        item.PlaylistPanelVideoWrapperRenderer?.PrimaryRenderer?.PlaylistPanelVideoRenderer?.VideoId == ytmthchResponse.VideoId
+                    index = ytmthchQueue.FindIndex(item => item.Id == ytmthchResponse.VideoId
                     );
 
                     if (index > 0)
-                        ytmthchQueue.Items.RemoveRange(0, index);
+                        ytmthchQueue.RemoveRange(0, index);
 
-                    tempQueueList2 = [];
                     tempQueueList2 = [];
 
                     tempQueueList2.AddRange(
-                        ytmthchQueue.Items.Select(item =>
+                        ytmthchQueue.Select(item => new RequestObject
                         {
-                            PlaylistPanelVideoRenderer renderer = item.PlaylistPanelVideoWrapperRenderer?.PrimaryRenderer?.PlaylistPanelVideoRenderer;
-                            if (renderer == null) return null;
-
-                            return new RequestObject
-                            {
-                                Queueid = 0,
-                                Uuid = Settings.Settings.Uuid,
-                                Trackid = renderer.VideoId,
-                                Artist = renderer.ShortBylineText?.Runs?.FirstOrDefault()?.Text ?? "",
-                                Title = renderer.Title?.Runs?.FirstOrDefault()?.Text ?? "",
-                                Length = renderer.LengthText?.Runs?.FirstOrDefault()?.Text ?? "",
-                                Requester = "YouTube",
-                                Played = renderer.VideoId == ytmthchResponse.VideoId ? -1 : 0,
-                                Albumcover = renderer.Thumbnail?.Thumbnails?.LastOrDefault()?.Url ?? "",
-                                PlayerType = "YouTube",
-                                IsLiked = false
-                            };
+                            Queueid = 0,
+                            Uuid = Settings.Settings.Uuid,
+                            Trackid = item.Id,
+                            Artist = item.Artist ?? "",
+                            Title = item.Title ?? "",
+                            Length =item.Length.ToString() ?? "",
+                            Requester = ReqList.Any(r => r.Trackid == item.Id) ? ReqList.FirstOrDefault(r => r.Trackid == item.Id)?.Requester : "YouTube",
+                            Played = item.Id == ytmthchResponse.VideoId ? -1 : 0,
+                            Albumcover = item.CoverUrl ?? "",
+                            PlayerType = "YouTube",
+                            IsLiked = false
                         }).Where(x => x != null)
                     );
 

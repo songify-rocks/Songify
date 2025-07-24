@@ -889,27 +889,25 @@ namespace Songify_Slim.Util.Songify
         public async Task FetchYTMTHCH()
         {
             YTMYHCHResponse data = await WebHelper.GetYtmthchData();
-            //Debug.WriteLine($"{data.Artist} - {data.Title}");
-            if (data == null)
-                return;
-            TrackInfo t = new()
+            if (data == null) return;
+
+            // 1) keep the previous id
+            string prevId = GlobalObjects.CurrentSong?.SongId;
+
+            TrackInfo t = new TrackInfo
             {
                 Artists = data.Artist,
                 Title = data.Title,
                 Albums =
                 [
-                    new SpotifyAPI.Web.Image
-                    {
-                        Url = data.ImageSrc,
-                        Width = 0,
-                        Height = 0
-                    }
+                    new SpotifyAPI.Web.Image { Url = data.ImageSrc, Width = 0, Height = 0 }
                 ],
                 SongId = data.VideoId,
                 DurationMs = data.SongDuration * 1000,
                 IsPlaying = !data.IsPaused,
                 Url = data.Url,
-                DurationPercentage = (int)(data.SongDuration == 0 ? 0 : (double)data.ElapsedSeconds / data.SongDuration * 100),
+                DurationPercentage = (int)(data.SongDuration == 0 ? 0 :
+                    (double)data.ElapsedSeconds / data.SongDuration * 100),
                 DurationTotal = data.SongDuration * 1000,
                 Progress = data.ElapsedSeconds * 1000,
                 Playlist = new PlaylistInfo
@@ -920,7 +918,8 @@ namespace Songify_Slim.Util.Songify
                     Url = data.PlaylistId,
                     Image = null
                 },
-                FullArtists = new List<SimpleArtist>([
+                FullArtists = new List<SimpleArtist>
+                {
                     new SimpleArtist
                     {
                         ExternalUrls = new Dictionary<string, string>(),
@@ -930,16 +929,43 @@ namespace Songify_Slim.Util.Songify
                         Type = string.Empty,
                         Uri = string.Empty
                     }
-                ])
+                }
             };
 
             await UpdateWebServerResponse(t);
 
+            // 2) If same song, nothing to do
             if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == data.VideoId)
                 return;
+
+            // 3) Song changed -> previous finished: mark & remove
+            if (!string.IsNullOrEmpty(prevId) && prevId != data.VideoId)
+                MarkPlayedAndRemove(prevId);
+
+            // 4) Update current & UI
             GlobalObjects.CurrentSong = t;
             await WriteSongInfo(t);
             await GlobalObjects.QueueUpdateQueueWindow();
         }
+
+        private static readonly object _sync = new object();
+
+        private static void MarkPlayedAndRemove(string finishedId)
+        {
+            lock (_sync)
+            {
+                // mark first occurrence as played (optional if you keep history somewhere)
+                var first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == finishedId && r.Played == 0);
+                if (first != null) first.Played = 1;
+
+                // actually remove all entries for that id
+                for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
+                {
+                    if (GlobalObjects.ReqList[i].Trackid == finishedId)
+                        GlobalObjects.ReqList.RemoveAt(i);
+                }
+            }
+        }
+
     }
 }

@@ -120,6 +120,7 @@
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -159,6 +160,7 @@
     <Compile Include="Models\YTMD\YTMYHCHQueue.cs" />
     <Compile Include="Models\YTMD\YTMYHCHResponse.cs" />
     <Compile Include="Models\YTMD\YTMYHCHSearchResponse.cs" />
+    <Compile Include="PremiumInjectorStub.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -203,6 +205,7 @@
       <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
     <Compile Include="Util\General\EnumExtension.cs" />
     <Compile Include="Util\General\EnumHelper.cs" />
@@ -226,6 +229,7 @@
     <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
+    <Compile Include="Util\Youtube\YTMYHCH\QueueParser.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\YTHCHSearchParser.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
@@ -753,6 +757,17 @@
     <EmbeddedResource Include="default_site\favicon.ico" />
     <EmbeddedResource Include="default_site\index.html" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Songify.Abstractions\Songify.Abstractions.csproj">
+      <Project>{19791b9d-37db-4c57-804b-9b793402c6ec}</Project>
+      <Name>Songify.Abstractions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Songify.Premium\Songify.Premium.csproj">
+      <Project>{6312bd0c-61e4-431e-ad95-c1e3a8df6344}</Project>
+      <Name>Songify.Premium</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

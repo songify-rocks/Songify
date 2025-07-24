@@ -1,17 +1,20 @@
-﻿using System;
-using System.Collections;
-using Songify_Slim.Views;
-using System.Collections.Generic;
-using Songify_Slim.Util.General;
-using TwitchLib.Api.Helix.Models.Users.GetUsers;
+﻿using Songify.Abstractions;
 using Songify_Slim.Models;
+using Songify_Slim.UserControls;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Songify_Slim.UserControls;
-using Songify_Slim.Util.Songify.Twitch;
-using SpotifyAPI.Web;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -21,6 +24,22 @@ namespace Songify_Slim.Util.Settings
     internal class Settings
     {
         public static Configuration CurrentConfig = new();
+
+        public static string SongifyApiKey
+        {
+            get => GetSongifyApikey(); set => SetSongifyApikey(value);
+        }
+
+        private static string GetSongifyApikey()
+        {
+            return DecryptString(CurrentConfig.AppConfig.SongifyApiKey);
+        }
+
+        private static void SetSongifyApikey(string value)
+        {
+            CurrentConfig.AppConfig.SongifyApiKey = EncryptString(value);
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
 
         public static string AccessKey
         {
@@ -943,6 +962,7 @@ namespace Songify_Slim.Util.Settings
                 AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
+                SongifyApiKey = CurrentConfig.AppConfig.SongifyApiKey,
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
                 AppendSpacesSplitFiles = GetAppendSpacesSplitFiles(),
@@ -2662,5 +2682,30 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteAllConfig(CurrentConfig);
             TwitchHandler.InitializeCommands(Commands);
         }
+        
+        private static string EncryptString(string plainText)
+        {
+            if (string.IsNullOrEmpty(plainText))
+                return "";
+            byte[] data = Encoding.UTF8.GetBytes(plainText);
+            byte[] encrypted = ProtectedData.Protect(data, null, DataProtectionScope.CurrentUser);
+            return Convert.ToBase64String(encrypted);
+        }
+
+        private static string DecryptString(string encryptedText)
+        {
+            if(string.IsNullOrEmpty(encryptedText))
+                return "";
+            byte[] data = Convert.FromBase64String(encryptedText);
+            byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
+            return Encoding.UTF8.GetString(decrypted);
+        }
+    }
+
+    public class UserSettingsWrapper : IUserSettings
+    {
+        public string TwitchUserId => Settings.TwitchUser?.Id;
+        public string TwitchUsername => Settings.TwitchUser?.Login;
+        public string SongifyApiToken => Settings.SongifyApiKey; // <-- Add to Settings!
     }
 }

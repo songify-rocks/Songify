@@ -1,18 +1,19 @@
-﻿using Songify_Slim.Models;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Songify_Slim.Models;
+using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.YTMDesktop;
+using Songify_Slim.Util.Youtube.YTMYHCH;
+using Swan.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Swan.Formatters;
-using Application = System.Windows.Application;
-using Newtonsoft.Json.Linq;
-using Songify_Slim.Models.YTMD;
-using Songify_Slim.Util.Songify.YTMDesktop;
-using Songify_Slim.Util.Youtube.YTMYHCH;
 using System.Text;
+using System.Threading.Tasks;
+using static Songify_Slim.Util.General.Enums;
+using Application = System.Windows.Application;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -390,6 +391,35 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
+        public static async Task<List<Song>> GetYtmthchQueue2()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:26538/api/v1/queue");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+                    return null;
+                }
+                string result = await response.Content.ReadAsStringAsync();
+                List<Song> songs = QueueParser.ExtractSongs(result);
+                return songs;
+                //foreach (Song s in songs)
+                //{
+                //    Console.WriteLine($"{s.QueueIndex}: {s.Title} - {s.Artist} ({s.Length})");
+                //    Console.WriteLine($"Cover: {s.CoverUrl}");
+                //}
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return null;
+        }
+
         public static async Task<YTMYHCHSearchResponse> SearchYouTubeMusic(string messageWithoutTrigger)
         {
             var payload = new
@@ -410,16 +440,30 @@ namespace Songify_Slim.Util.Songify
             return song;
         }
 
-        public static async Task<bool> YtmAddToQueue(string searchResponseVideoId)
+        public static async Task<bool> YtmAddToQueue(string searchResponseVideoId, InsertPosition pos)
         {
             var paylod = new
             {
                 videoId = searchResponseVideoId,
-                insertPosition = "INSERT_AT_END"
+                insertPosition = pos
             };
             string json = JsonConvert.SerializeObject(paylod);
             StringContent content = new(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:26538/api/v1/queue", content);
+            if (response.IsSuccessStatusCode) return true;
+            Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+            return false;
+        }
+
+        public static async Task<bool> OrderYTMDQueue(int current, int desired)
+        {
+            var paylod = new
+            {
+                toIndex = desired
+            };
+            string json = JsonConvert.SerializeObject(paylod);
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _httpClient.PatchAsync($"http://localhost:26538/api/v1/queue/{current}", content);
             if (response.IsSuccessStatusCode) return true;
             Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
             return false;

@@ -584,6 +584,7 @@
             <Label Content="PubSub has been disabled due to bugs" />
         </StackPanel>
         <Button
+            x:Name="BtnSupport"
             Grid.Row="2"
             Grid.Column="1"
             Margin="0,0,16,0"

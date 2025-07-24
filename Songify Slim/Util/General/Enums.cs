@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Songify_Slim.Util.General;
 
@@ -130,6 +133,16 @@ public static class Enums
         Toggle,
         Play,
         Pause
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))] // Newtonsoft.Json
+    public enum InsertPosition
+    {
+        [EnumMember(Value = "INSERT_AT_END")]
+        InsertAtEnd,
+
+        [EnumMember(Value = "INSERT_AFTER_CURRENT_VIDEO")]
+        InsertAfterCurrentVideo
     }
 
 }

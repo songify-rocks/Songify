@@ -154,7 +154,7 @@ namespace Songify_Slim.Util.General
                         }
 
                         if (buffer.Array == null) continue;
-
+                        if (socket.State != WebSocketState.Open) break;
                         string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
                         string response = await ProcessMessage(message);
 
@@ -202,13 +202,30 @@ namespace Songify_Slim.Util.General
             }
         }
 
+        private readonly ConcurrentDictionary<WebSocket, SemaphoreSlim> _sendLocks = new();
+
+        private async Task SafeSendAsync(WebSocket socket, byte[] data, WebSocketMessageType type)
+        {
+            var sem = _sendLocks.GetOrAdd(socket, _ => new SemaphoreSlim(1, 1));
+            await sem.WaitAsync();
+            try
+            {
+                if (socket.State == WebSocketState.Open)
+                    await socket.SendAsync(new ArraySegment<byte>(data), type, true, CancellationToken.None);
+            }
+            finally
+            {
+                sem.Release();
+            }
+        }
+
+
         public async Task BroadcastToChannelAsync(string path, string message)
         {
             if (!ChannelClients.TryGetValue(path, out var clients))
                 return;
 
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-            var buffer = new ArraySegment<byte>(messageBytes);
 
             foreach (KeyValuePair<Guid, WebSocket> pair in clients.ToArray())
             {
@@ -219,7 +236,7 @@ namespace Songify_Slim.Util.General
                 {
                     if (socket.State == WebSocketState.Open)
                     {
-                        await socket.SendAsync(buffer, WebSocketMessageType.Text, true, CancellationToken.None);
+                        await SafeSendAsync(socket, messageBytes, WebSocketMessageType.Text);
                     }
                     else
                     {

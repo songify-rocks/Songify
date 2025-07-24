@@ -628,7 +628,8 @@ namespace Songify_Slim.Util.Settings
         public List<int> UnlimitedSrUserlevelsCommand { get; set; } = [];
         public bool HideSpotifyPremiumWarning { get; set; }
         public bool LongBadgeNames { get; set; }
-        public bool AddSrtoPlaylistOnly { get; set; } = false; 
+        public bool AddSrtoPlaylistOnly { get; set; } = false;
+        public string SongifyApiKey { get; set; } = "";
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

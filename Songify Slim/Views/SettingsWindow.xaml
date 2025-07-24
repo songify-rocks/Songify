@@ -295,6 +295,51 @@
                                 OnContent="{DynamicResource sw_Appearance_ThemeDark}"
                                 TabIndex="10"
                                 Toggled="ThemeToggleSwitchIsCheckedChanged" />
+                            <DockPanel Grid.Row="9" Margin="0,6">
+                                <TextBlock VerticalAlignment="Center" Text="Songify API Token" />
+                                <Grid Margin="6,0,0,0">
+                                    <!--  Password Box  -->
+                                    <PasswordBox
+                                        x:Name="PasswordBox"
+                                        Height="30"
+                                        Padding="0,0,30,0"
+                                        VerticalContentAlignment="Center"
+                                        PasswordChanged="PasswordBox_OnPasswordChanged" />
+                                    <!--  Text Box (plain text)  -->
+                                    <TextBox
+                                        x:Name="TextBox"
+                                        Height="30"
+                                        Padding="0,0,30,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        TextChanged="TextBox_OnTextChanged"
+                                        Visibility="Collapsed" />
+                                    <!--  Eye Icon Button  -->
+                                    <Button
+                                        x:Name="ShowHideButton"
+                                        Width="24"
+                                        Height="24"
+                                        MinWidth="0"
+                                        Margin="0,0,3,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Click="ShowHideButton_OnClickn_Click"
+                                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
+                                        <iconPacks:PackIconFontAwesome
+                                            x:Name="EyeIcon"
+                                            Width="20"
+                                            Height="20"
+                                            Kind="EyeSlashSolid" />
+                                    </Button>
+                                </Grid>
+                            </DockPanel>
+
+
                         </Grid>
                     </ScrollViewer>
                 </Border>
@@ -1987,7 +2032,7 @@
                                     BorderThickness="5"
                                     CornerRadius="3">
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="🔒 Requires active Ko-Fi Membership"></TextBlock>                                    
+                                        <TextBlock Text="🔒 Requires active Ko-Fi Membership" />
                                         <DockPanel>
                                             <controls:ToggleSwitch
                                                 x:Name="Tglsw_BitsForSr"

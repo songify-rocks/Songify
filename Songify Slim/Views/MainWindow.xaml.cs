@@ -51,6 +51,7 @@ using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
 using Songify_Slim.Util.Songify.Twitch;
+using Songify.Abstractions;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
 
@@ -58,8 +59,19 @@ using Icon = System.Drawing.Icon;
 
 namespace Songify_Slim.Views
 {
-    public partial class MainWindow
+    public partial class MainWindow : IMainWindowApi
     {
+        #region Interfaces
+
+        public Button BtnSupportUs => this.BtnSupport;
+        public string WindowTitle
+        {
+            get => "Songify";
+            set { }
+        }
+
+        #endregion
+
         #region Variables
 
         public SocketIoClient IoClient;
@@ -112,6 +124,9 @@ namespace Songify_Slim.Views
 
         {
             InitializeComponent();
+
+            App.PremiumInjector.InjectMainUi(this);
+
             Timer.Elapsed += TelemetryTask;
             Timer.Start();
         }
@@ -754,6 +769,8 @@ namespace Songify_Slim.Views
 
         private void SetupUiAndThemes()
         {
+            Title = WindowTitle;
+
             SetIconColors();
             ThemeHandler.ApplyTheme();
 
@@ -1501,5 +1518,6 @@ namespace Songify_Slim.Views
             string direcotry = Directory.GetCurrentDirectory();
             Process.Start(direcotry);
         }
+
     }
 }
