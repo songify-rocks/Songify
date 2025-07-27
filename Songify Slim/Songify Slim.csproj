@@ -219,6 +219,7 @@
     <Compile Include="Util\General\SubtractConverter.cs" />
     <Compile Include="Util\General\TaskQueue.cs" />
     <Compile Include="Util\General\Utils.cs" />
+    <Compile Include="Util\Settings\ConfigComparer.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Songify\Twitch\SharedChatExtensions.cs" />
@@ -293,6 +294,9 @@
     </Compile>
     <Compile Include="Views\Window_Botresponse.xaml.cs">
       <DependentUpon>Window_Botresponse.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Window_CloudImportPreview.xaml.cs">
+      <DependentUpon>Window_CloudImportPreview.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Window_Console.xaml.cs">
       <DependentUpon>Window_Console.xaml</DependentUpon>
@@ -383,6 +387,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_Botresponse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_CloudImportPreview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

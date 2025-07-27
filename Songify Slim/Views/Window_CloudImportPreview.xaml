@@ -1,0 +1,49 @@
+﻿<controls:MetroWindow
+    x:Class="Songify_Slim.Views.Window_CloudImportPreview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Songify_Slim.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Window_CloudImportPreview"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,10"
+            FontSize="16"
+            FontWeight="Bold"
+            Text="You're about to import settings from the cloud." />
+        <ListBox
+            x:Name="ChangesList"
+            Grid.Row="1"
+            DockPanel.Dock="Top" />
+
+        <StackPanel
+            Grid.Row="2"
+            Margin="0,10,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                x:Name="BtnCancel"
+                Width="100"
+                Margin="5"
+                Click="BtnCancel_Click"
+                Content="Cancel" />
+            <Button
+                x:Name="BtnImport"
+                Width="100"
+                Margin="5"
+                Click="BtnImport_Click"
+                Content="Import" />
+        </StackPanel>
+    </Grid>
+</controls:MetroWindow>

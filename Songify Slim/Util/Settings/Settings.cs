@@ -539,8 +539,6 @@ namespace Songify_Slim.Util.Settings
             set => SetTwOAuth(value);
         }
 
-        public static string TwRewardGoalRewardId { get => GetTwRewardGoalRewardId(); set => SetTwRewardGoalRewardId(value); }
-
         public static List<string> TwRewardId
         {
             get => GetTwRewardId();
@@ -1075,6 +1073,29 @@ namespace Songify_Slim.Util.Settings
             CurrentConfig = config;
 
             ConfigHandler.WriteAllConfig(config);
+        }
+
+        public static async Task ImportCloudSave(Configuration config)
+        {    // Cache the existing decrypted token
+            string existingApiKey = SongifyApiKey;
+
+            // Overwrite the config
+            CurrentConfig.AppConfig = config.AppConfig;
+            CurrentConfig.BotConfig = config.BotConfig;
+            CurrentConfig.TwitchCommands = config.TwitchCommands;
+
+            // Restore the token
+            SongifyApiKey = existingApiKey;
+
+            // Re-apply UI settings
+            await Application.Current.Dispatcher.Invoke(async () =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is not Window_Settings settingsWindow) continue;
+                    await settingsWindow.SetControls();
+                }
+            });
         }
 
         public static void ResetConfig()
@@ -2512,8 +2533,8 @@ namespace Songify_Slim.Util.Settings
 
         private static void SetTwRewardSkipId(List<string> value)
         {
+            value.RemoveAll(string.IsNullOrEmpty);
             CurrentConfig.AppConfig.TwRewardSkipId = value;
-            CurrentConfig.AppConfig.TwRewardSkipId.RemoveAll(string.IsNullOrEmpty);
             ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -2682,7 +2703,7 @@ namespace Songify_Slim.Util.Settings
             ConfigHandler.WriteAllConfig(CurrentConfig);
             TwitchHandler.InitializeCommands(Commands);
         }
-        
+
         private static string EncryptString(string plainText)
         {
             if (string.IsNullOrEmpty(plainText))
@@ -2694,7 +2715,7 @@ namespace Songify_Slim.Util.Settings
 
         private static string DecryptString(string encryptedText)
         {
-            if(string.IsNullOrEmpty(encryptedText))
+            if (string.IsNullOrEmpty(encryptedText))
                 return "";
             byte[] data = Convert.FromBase64String(encryptedText);
             byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);

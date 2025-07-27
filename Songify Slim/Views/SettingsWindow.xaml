@@ -2694,6 +2694,20 @@
                                     SelectionChanged="ComboboxfetchPort_SelectionChanged" />
                             </StackPanel>
                         </StackPanel>
+
+                        <Button
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Margin="6"
+                            Content="Cloud Save Settings" 
+                            Click="ButtonBase_OnClick"/>
+                        <Button
+                            x:Name="BtnRestoreCloudSettings"
+                            Grid.Row="3"
+                            Click="BtnRestoreCloudSettings_OnClick"
+                            Grid.Column="1"
+                            Margin="6"
+                            Content="Cloud Restore Settings" />
                     </Grid>
                 </Border>
             </TabItem>

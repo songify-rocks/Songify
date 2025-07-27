@@ -37,7 +37,7 @@ namespace Songify_Slim.UserControls
             TxtRewardcost.Text = _reward.Cost.ToString();
             TxtRewardcost.IsEnabled = manageable;
             ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
-            
+
             if (_reward.BackgroundColor != null)
             {
                 try
@@ -129,8 +129,8 @@ namespace Songify_Slim.UserControls
             string rewardId = _reward.Id;
 
             // Retrieve the reward lists; initialize if null to avoid null-reference issues
-            List<string> songRequestRewards = Settings.TwRewardId ?? [];
-            List<string> skipSongRewards = Settings.TwRewardSkipId ?? [];
+            List<string> songRequestRewards = (Settings.TwRewardId ?? []).ToList();
+            List<string> skipSongRewards = (Settings.TwRewardSkipId ?? []).ToList();
 
             // Process the action based on the selected enum value
             switch (action)
@@ -176,7 +176,7 @@ namespace Songify_Slim.UserControls
                 // Validate input, but don't update yet
                 if (!int.TryParse(textBox.Text, out int cost) || cost <= 0)
                 {
-                    textBox.Text = MathUtils.Clamp(cost, 1, int.MaxValue).ToString(); 
+                    textBox.Text = MathUtils.Clamp(cost, 1, int.MaxValue).ToString();
                     return;
                 }
 

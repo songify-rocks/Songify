@@ -1,18 +1,26 @@
-﻿using Songify_Slim.Util.General;
+﻿using Newtonsoft.Json;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using Songify_Slim.Views;
+using SpotifyAPI;
+using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using static Songify_Slim.Util.Settings.YamlTypeConverters;
-using Songify_Slim.Models;
 using static Songify_Slim.Util.General.Enums;
-using SpotifyAPI;
-using SpotifyAPI.Web;
+using static Songify_Slim.Util.Settings.YamlTypeConverters;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
+using FileMode = System.IO.FileMode;
 
 namespace Songify_Slim.Util.Settings
 {
@@ -236,7 +244,13 @@ namespace Songify_Slim.Util.Settings
             // Write atomically
             try
             {
-                File.WriteAllText(tempPath, yaml);
+                using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (StreamWriter writer = new(fs))
+                {
+                    writer.Write(yaml);
+                    writer.Flush();
+                    fs.Flush(flushToDisk: true); // <—— ensures OS writes it physically
+                }
 
                 if (File.Exists(fullPath))
                 {
@@ -390,6 +404,121 @@ namespace Songify_Slim.Util.Settings
                 .OrderBy(_ => Guid.NewGuid())]);
 
             return key;
+        }
+
+        public static async Task<bool> CloudSaveSettings(string apiToken, string userId, Configuration config)
+        {
+            try
+            {
+                // Deep clone entire Configuration object
+                Configuration clonedConfig = DeepCloneYaml(config);
+
+                // Strip sensitive information
+                clonedConfig.SpotifyCredentials = null;
+                clonedConfig.TwitchCredentials = null;
+
+                // Optional: sanitize other values
+                clonedConfig.AppConfig.SongifyApiKey = null;
+
+                // Serialize to YAML and then base64
+                ISerializer serializer = new SerializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .Build();
+
+                string yaml = serializer.Serialize(clonedConfig);
+                string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(yaml));
+
+                // Prepare HTTP body
+                var body = new
+                {
+                    userId = userId,
+                    settings = base64
+                };
+
+                StringContent content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+
+                string url = $"{GlobalObjects.ApiUrl}/user_settings?token={apiToken}";
+
+                using HttpClient http = new HttpClient();
+                HttpResponseMessage response = await http.PostAsync(url, content);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                return false;
+            }
+        }
+
+        private static T DeepCloneYaml<T>(T obj)
+        {
+            ISerializer serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+            IDeserializer deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+            string yaml = serializer.Serialize(obj);
+            return deserializer.Deserialize<T>(yaml);
+        }
+
+        public static async Task<bool> CloudRestoreSettings(string apiToken, string userId)
+        {
+            try
+            {
+                string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}&token={apiToken}";
+
+                using HttpClient http = new HttpClient();
+                HttpResponseMessage response = await http.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                    return false;
+
+                // If the API returns the raw base64 blob directly:
+                string base64 = await response.Content.ReadAsStringAsync();
+                base64 = JsonConvert.DeserializeObject<string>(base64);
+                if (string.IsNullOrWhiteSpace(base64))
+                    return false;
+                //base64 = base64.Replace("\"", "");
+                // Decode base64 and parse YAML
+                string yaml = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+
+                IDeserializer deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .IgnoreUnmatchedProperties()
+                    .Build();
+
+                Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
+
+                // Preview the import
+                Window_CloudImportPreview preview = new(Settings.CurrentConfig, restoredConfig)
+                {
+                    Owner = Application.Current.MainWindow
+                };
+
+                preview.ShowDialog();
+
+                if (!preview.IsConfirmed) return false;
+                await Settings.ImportCloudSave(restoredConfig);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                return false;
+            }
+        }
+
+        private class CloudSettingsResponse
+        {
+            [JsonProperty("settings")]
+            public string Settings { get; set; }
+
+            [JsonProperty("updatedAt")]
+            public DateTime? UpdatedAt { get; set; }
         }
     }
 

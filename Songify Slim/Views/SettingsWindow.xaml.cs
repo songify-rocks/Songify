@@ -158,6 +158,7 @@ namespace Songify_Slim.Views
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
             //TxtbxRewardId.Text = Settings.TwRewardId;
+            TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
             NudBits.Value = Settings.MinimumBitsForSR;
             CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
@@ -1861,7 +1862,7 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded)
                 return;
- 
+
             // Only update if not a pure visibility toggle
             if (PasswordBox.Password != TextBox.Text)
                 Settings.SongifyApiKey = TextBox.Text;
@@ -1920,6 +1921,33 @@ namespace Songify_Slim.Views
             }
 
             Settings.RefundConditons = current.ToArray();
+        }
+
+        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Settings.SongifyApiKey) && Settings.TwitchUser != null && !string.IsNullOrEmpty(Settings.TwitchUser.Id))
+                    await ConfigHandler.CloudSaveSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id, Settings.CurrentConfig);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+
+        private async void BtnRestoreCloudSettings_OnClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Settings.SongifyApiKey) && Settings.TwitchUser != null && !string.IsNullOrEmpty(Settings.TwitchUser.Id))
+                    await ConfigHandler.CloudRestoreSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
     }
 }
