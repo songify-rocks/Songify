@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Songify_Slim.Util.General;
 using SpotifyAPI.Web;
 
 namespace Songify_Slim.Models
@@ -18,6 +20,11 @@ namespace Songify_Slim.Models
         public int Progress { get; set; }
         public PlaylistInfo Playlist { get; set; }
         public List<SimpleArtist> FullArtists { get; set; }
+
+        public bool IsSongrequest()
+        {
+            return GlobalObjects.ReqList.Any(r => r.Trackid == this.SongId);
+        }
 
         public override bool Equals(object obj)
         {

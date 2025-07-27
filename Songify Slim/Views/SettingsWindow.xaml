@@ -8,6 +8,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="{DynamicResource mw_menu_Settings}"
     Width="860"
     Height="490"
@@ -143,7 +144,6 @@
                                     Toggled="ChbxAutostartChecked" />
                                 <controls:ToggleSwitch
                                     x:Name="ChbxMinimizeSystray"
-                                    Grid.Row="3"
                                     Width="467"
                                     Height="32"
                                     VerticalAlignment="Top"
@@ -157,8 +157,6 @@
                                     Toggled="ChbxMinimizeSystrayChecked" />
                                 <controls:ToggleSwitch
                                     x:Name="TglBetaUpdates"
-                                    Grid.Row="0"
-                                    Grid.Column="0"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Top"
                                     d:Content="{x:Static local:Resources.sw_Config_GetBetaUpdates}"
@@ -1250,7 +1248,9 @@
                         <Grid x:Name="GrdTwitchReward">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -1268,7 +1268,6 @@
                                 x:Name="BtnCreateNewReward"
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                Width="26"
                                 Height="26"
                                 Margin="0,0,32,0"
                                 HorizontalAlignment="Right"
@@ -1277,10 +1276,16 @@
                                 IsEnabled="False"
                                 ToolTip="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}">
                                 <Button.Content>
-                                    <iconPacks:PackIconMaterial
-                                        Width="12"
-                                        Height="12"
-                                        Kind="Plus" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconMaterial
+                                            Width="12"
+                                            Height="12"
+                                            Kind="Plus" />
+                                        <TextBlock
+                                            Margin="5,0"
+                                            VerticalAlignment="Center"
+                                            Text="Create new Reward" />
+                                    </StackPanel>
                                 </Button.Content>
                             </Button>
                             <Button
@@ -1301,32 +1306,149 @@
                                         Kind="Refresh" />
                                 </Button.Content>
                             </Button>
-                            <ListBox
-                                x:Name="ListboxRewards"
+                            <controls:ToggleSwitch
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Margin="6"
-                                IsEnabled="True"
-                                ScrollViewer.CanContentScroll="True"
-                                SelectionMode="Single"
-                                Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
-                                VirtualizingStackPanel.ScrollUnit="Item">
-                                <ListBox.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                        <Setter Property="OverridesDefaultStyle" Value="True" />
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="BorderBrush" Value="Transparent" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                    <ContentPresenter />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                            </ListBox>
+                                Content="Disable Skip Rewards for Song Requests" />
+                            <TabControl
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2">
+                                <TabItem Header="Channel Rewards">
+                                    <ListBox
+                                        x:Name="ListboxRewards"
+                                        Grid.Row="2"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        Margin="6"
+                                        IsEnabled="True"
+                                        ScrollViewer.CanContentScroll="True"
+                                        SelectionMode="Single"
+                                        Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
+                                        VirtualizingStackPanel.ScrollUnit="Item">
+                                        <ListBox.ItemContainerStyle>
+                                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                    </ListBox>
+                                </TabItem>
+                                <TabItem Header="Refund Contitions">
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
+                                        <UniformGrid
+                                            x:Name="RefundSwitchesPanel"
+                                            Grid.Row="3"
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            VerticalAlignment="Top"
+                                            Columns="2">
+                                            <!--<controls:ToggleSwitch
+                                    x:Name="ChkRefundUserLevel"
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Tag="0">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundUserLevelLow}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundUserBlocked"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Top"
+                                    Tag="1">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundUSerBlocked}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundSpotifyNotConnected"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="2">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSpotifyNotConnected}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundSongUnavailable"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="3">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongNotAvailable}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundArtistBlocked"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="4">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundArtistBlocked}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundSongLength"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="5">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongTooLong}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundSongInQueue"
+                                    Grid.Row="3"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="6">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAlreadyInQueue}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundNothingFound"
+                                    Grid.Row="3"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="7">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundNoSongFound}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundSongAdded"
+                                    Grid.Row="4"
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Tag="8">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundSongAdded}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>
+                                <controls:ToggleSwitch
+                                    x:Name="ChkRefundEverything"
+                                    Grid.Row="4"
+                                    Grid.Column="1"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    FontWeight="Bold"
+                                    Tag="-1">
+                                    <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap" />
+                                </controls:ToggleSwitch>-->
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </TabItem>
+                            </TabControl>
+
+
                         </Grid>
                     </TabControl>
                 </Border>

@@ -10,7 +10,7 @@
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     Title="Create Custom Reward"
     Width="484"
-    Height="215"
+    Height="250"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
@@ -21,11 +21,11 @@
             Orientation="Vertical">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="32" />
-                    <RowDefinition Height="32" />
-                    <RowDefinition Height="32" />
-                    <RowDefinition Height="45" />
-                    <RowDefinition Height="32" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -34,52 +34,77 @@
                 <Label
                     Grid.Row="0"
                     Grid.Column="0"
+                    Margin="0,5"
                     VerticalAlignment="Center"
                     Content="{x:Static properties:Resources.crw_RewardTitle}" />
                 <TextBox
                     x:Name="TbRewardName"
                     Grid.Row="0"
                     Grid.Column="1"
+                    Margin="0,5"
                     VerticalAlignment="Center" />
                 <Label
                     Grid.Row="1"
                     Grid.Column="0"
+                    Margin="0,5"
                     VerticalAlignment="Center"
                     Content="{x:Static properties:Resources.crw_RewardPrompt}" />
                 <TextBox
                     x:Name="TbRewardPrompt"
                     Grid.Row="1"
                     Grid.Column="1"
+                    Margin="0,5"
                     VerticalAlignment="Center" />
                 <Label
                     Grid.Row="2"
                     Grid.Column="0"
+                    Margin="0,5"
                     VerticalAlignment="Center"
                     Content="{x:Static properties:Resources.crw_RewardCost}" />
                 <controls:NumericUpDown
                     x:Name="NudRewardCost"
                     Grid.Row="2"
                     Grid.Column="1"
+                    Margin="0,5"
                     VerticalAlignment="Center"
                     HideUpDownButtons="True"
                     Minimum="1"
                     Value="1" />
+                <StackPanel
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Margin="0,5"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Label
+                        Margin="5,0"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Content="User Input Required" />
+                    <controls:ToggleSwitch
+                        x:Name="TglUserInputRequired"
+                        MinWidth="0"
+                        Margin="0"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Content="" />
+                </StackPanel>
                 <Button
                     x:Name="BtnCreateReward"
                     Grid.Row="4"
                     Grid.Column="1"
+                    Margin="0,5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     Click="BtnCreateReward_Click"
                     Content="{x:Static properties:Resources.crw_CreateReward}" />
                 <TextBlock
                     x:Name="LblStatus"
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
                     TextWrapping="Wrap" />
             </Grid>
-
         </StackPanel>
     </Grid>
 </controls:MetroWindow>

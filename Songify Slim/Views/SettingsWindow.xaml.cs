@@ -45,6 +45,7 @@ using Clipboard = System.Windows.Clipboard;
 using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
 using File = System.IO.File;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Image = SpotifyAPI.Web.Image;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
@@ -55,6 +56,7 @@ namespace Songify_Slim.Views
     // ReSharper disable once InconsistentNaming
     public partial class Window_Settings
     {
+        private readonly Dictionary<Enums.RefundCondition, ToggleSwitch> _toggleMap = new();
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
@@ -72,6 +74,21 @@ namespace Songify_Slim.Views
             { "pt-BR", "Brazilian Portuguese" },
             { "be-BY", "Belarusian" }
         };
+
+        private static readonly Dictionary<Enums.RefundCondition, string> RefundConditionLabels = new()
+        {
+            { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.Sw_Integration_RefundUserLevelLow },
+            { Enums.RefundCondition.UserBlocked, Properties.Resources.Sw_Integration_RefundUSerBlocked },
+            { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.Sw_Integration_RefundSpotifyNotConnected },
+            { Enums.RefundCondition.SongUnavailable, Properties.Resources.Sw_Integration_RefundSongNotAvailable },
+            { Enums.RefundCondition.ArtistBlocked, Properties.Resources.Sw_Integration_RefundArtistBlocked },
+            { Enums.RefundCondition.SongTooLong, Properties.Resources.Sw_Integration_RefundSongTooLong },
+            { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.Sw_Integration_RefundSongAlreadyInQueue },
+            { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
+            { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
+            { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways }
+        };
+
 
         public Window_Settings()
         {
@@ -225,6 +242,8 @@ namespace Songify_Slim.Views
 
             TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
             CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
+
+            GenerateRefundConditionToggles();
 
             if (SpotifyApiHandler.Client != null)
             {
@@ -1850,6 +1869,57 @@ namespace Songify_Slim.Views
             if (_showPassword)
                 PasswordBox.Password = TextBox.Text;
 
+        }
+
+        private void GenerateRefundConditionToggles()
+        {
+            RefundSwitchesPanel.Children.Clear();
+            _toggleMap.Clear();
+
+            foreach (KeyValuePair<Enums.RefundCondition, string> kvp in RefundConditionLabels)
+            {
+                Enums.RefundCondition condition = kvp.Key;
+                ToggleSwitch toggle = new ToggleSwitch
+                {
+                    Tag = (int)condition,
+                    Margin = new Thickness(5),
+                    VerticalAlignment = VerticalAlignment.Top,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Content = new TextBlock
+                    {
+                        Text = kvp.Value,
+                        TextWrapping = TextWrapping.Wrap
+                    },
+                    FontWeight = condition == Enums.RefundCondition.AlwaysRefund ? FontWeights.Bold : FontWeights.Normal
+                };
+
+                // Initialize state WITHOUT triggering toggle events
+                toggle.Toggled += RefundCondition_Toggled;
+                toggle.IsOn = Settings.RefundConditons.Contains((int)condition);
+
+                _toggleMap[condition] = toggle;
+                RefundSwitchesPanel.Children.Add(toggle);
+            }
+        }
+
+        private void RefundCondition_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            if (sender is not ToggleSwitch { Tag: int conditionValue } toggle) return;
+            List<int> current = Settings.RefundConditons.ToList();
+
+            if (toggle.IsOn)
+            {
+                if (!current.Contains(conditionValue))
+                    current.Add(conditionValue);
+            }
+            else
+            {
+                current.Remove(conditionValue);
+            }
+
+            Settings.RefundConditons = current.ToArray();
         }
     }
 }

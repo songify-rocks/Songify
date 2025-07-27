@@ -120,7 +120,6 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-
         private static void AddRequestLocally(string payload)
         {
             if (string.IsNullOrEmpty(payload)) return;
@@ -163,12 +162,6 @@ namespace Songify_Slim.Util.Songify
             }
 
             return null;
-        }
-
-
-        private static void UpdateQueueWindow()
-        {
-            GlobalObjects.QueueUpdateQueueWindow();
         }
 
         public static async Task TelemetryRequest(RequestMethod method, string payload)
@@ -366,31 +359,6 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        public static async Task<YTMYHCHQueue> GetYtmthchQueue()
-        {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync("http://localhost:26538/api/v1/queue");
-                if (!response.IsSuccessStatusCode)
-                {
-                    Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
-                    return null;
-                }
-                string result = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(result))
-                {
-                    return JsonConvert.DeserializeObject<YTMYHCHQueue>(result);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-
-            return null;
-        }
-
         public static async Task<List<Song>> GetYtmthchQueue2()
         {
             try
@@ -464,6 +432,14 @@ namespace Songify_Slim.Util.Songify
             string json = JsonConvert.SerializeObject(paylod);
             StringContent content = new(json, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _httpClient.PatchAsync($"http://localhost:26538/api/v1/queue/{current}", content);
+            if (response.IsSuccessStatusCode) return true;
+            Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
+            return false;
+        }
+
+        public static async Task<bool> YtmNext()
+        {
+            HttpResponseMessage response = await _httpClient.PostAsync("http://localhost:26538/api/v1/next", null);
             if (response.IsSuccessStatusCode) return true;
             Logger.LogStr($"YTMYHCH: HTTP Request failed with status code: {response.StatusCode}");
             return false;

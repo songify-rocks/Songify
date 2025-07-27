@@ -21,6 +21,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -53,6 +54,7 @@ using TwitchLib.Client.Models;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static Songify_Slim.Util.General.Enums;
 using Application = System.Windows.Application;
+using Brushes = System.Windows.Media.Brushes;
 using OnConnectedEventArgs = TwitchLib.Client.Events.OnConnectedEventArgs;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
@@ -3208,10 +3210,31 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task<bool> HandleSkipReward()
         {
+
+            if (GlobalObjects.CurrentSong.IsSongrequest())
+                return true;
             // Skip song
             if (_skipCooldown)
                 return true;
-            await SpotifyApiHandler.SkipSong();
+
+            switch (Settings.Settings.Player)
+            {
+                case PlayerType.SpotifyWeb:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+
+                case PlayerType.Ytmthch:
+                    await WebHelper.YtmNext();
+                    break;
+                case PlayerType.FooBar2000:
+                case PlayerType.Vlc:
+                case PlayerType.BrowserCompanion:
+                case PlayerType.YtmDesktop:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
 
             await SendChatMessage(Settings.Settings.TwChannel, "Skipping current song...");
             _skipCooldown = true;
@@ -4443,6 +4466,24 @@ namespace Songify_Slim.Util.Songify.Twitch
                 Logger.LogExc(e);
             }
 
+        }
+
+        public static async Task UpdateRewardCost(string rewardId, int result)
+        {
+            if (TwitchApi == null)
+                return;
+            try
+            {
+                await TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.Settings.TwitchUser.Id, rewardId,
+                    new UpdateCustomRewardRequest
+                    {
+                        Cost = result,
+                    }, Settings.Settings.TwitchAccessToken);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
         }
     }
 }

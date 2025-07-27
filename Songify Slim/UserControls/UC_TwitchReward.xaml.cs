@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Songify_Slim.Util.General;
+using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify.Twitch;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,7 +16,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Songify_Slim.Util.Settings;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
 namespace Songify_Slim.UserControls
@@ -23,6 +26,8 @@ namespace Songify_Slim.UserControls
     public partial class UcTwitchReward
     {
         private readonly CustomReward _reward;
+        // Place this as a class-level field:
+        private CancellationTokenSource _debounceTokenSource;
 
         public UcTwitchReward(CustomReward reward, bool manageable)
         {
@@ -30,8 +35,9 @@ namespace Songify_Slim.UserControls
             _reward = reward;
             TxtRewardname.Text = _reward.Title;
             TxtRewardcost.Text = _reward.Cost.ToString();
+            TxtRewardcost.IsEnabled = manageable;
             ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
-
+            
             if (_reward.BackgroundColor != null)
             {
                 try
@@ -150,6 +156,52 @@ namespace Songify_Slim.UserControls
             // Update settings (assuming the setters trigger change notifications or persistence)
             Settings.TwRewardId = songRequestRewards;
             Settings.TwRewardSkipId = skipSongRewards;
+        }
+
+        private async void TxtRewardcost_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                if (!IsLoaded)
+                    return;
+
+                if (sender is not TextBox textBox || _reward == null)
+                    return;
+
+                // Cancel any previous debounce task
+                _debounceTokenSource?.Cancel();
+                _debounceTokenSource = new CancellationTokenSource();
+                var token = _debounceTokenSource.Token;
+
+                // Validate input, but don't update yet
+                if (!int.TryParse(textBox.Text, out int cost) || cost <= 0)
+                {
+                    textBox.Text = MathUtils.Clamp(cost, 1, int.MaxValue).ToString(); 
+                    return;
+                }
+
+                // Wait for 500ms of inactivity
+                try
+                {
+                    await Task.Delay(500, token); // throws if cancelled
+                }
+                catch (TaskCanceledException)
+                {
+                    return; // A new keystroke happened; abort this update
+                }
+
+                // Only update if not cancelled
+                await TwitchHandler.UpdateRewardCost(_reward.Id, cost);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        private void TxtRewardcost_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !int.TryParse(e.Text, out _);
         }
     }
 }

@@ -145,4 +145,18 @@ public static class Enums
         InsertAfterCurrentVideo
     }
 
+    public enum RefundCondition
+    {
+        UserLevelTooLow,
+        UserBlocked,
+        SpotifyNotConnected,
+        SongUnavailable,
+        ArtistBlocked,
+        SongTooLong,
+        SongAlreadyInQueue,
+        NoSongFound,
+        SongAddedButError,
+        AlwaysRefund
+    }
+
 }
