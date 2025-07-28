@@ -2,7 +2,6 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
-using Songify.Abstractions;
 using Songify_Slim.Models;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
@@ -95,10 +94,8 @@ namespace Songify_Slim.Views
         public Window_Settings()
         {
             InitializeComponent();
-            PremiumInjector.InjectSettingsTab(TabCtrl);
             if (Settings.Language == "en") return;
             Width = MinWidth = 830;
-
         }
 
         public async Task SetControls()

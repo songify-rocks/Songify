@@ -51,7 +51,6 @@ using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
 using Songify_Slim.Util.Songify.Twitch;
-using Songify.Abstractions;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
 
@@ -59,7 +58,7 @@ using Icon = System.Drawing.Icon;
 
 namespace Songify_Slim.Views
 {
-    public partial class MainWindow : IMainWindowApi
+    public partial class MainWindow
     {
         #region Interfaces
 
@@ -124,9 +123,6 @@ namespace Songify_Slim.Views
 
         {
             InitializeComponent();
-
-            App.PremiumInjector.InjectMainUi(this);
-
             Timer.Elapsed += TelemetryTask;
             Timer.Start();
         }

@@ -2148,38 +2148,29 @@
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
-                                <Border
-                                    Padding="5,5"
-                                    BorderBrush="{StaticResource MahApps.Brushes.Accent}"
-                                    BorderThickness="5"
-                                    CornerRadius="3">
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="🔒 Requires active Ko-Fi Membership" />
-                                        <DockPanel>
-                                            <controls:ToggleSwitch
-                                                x:Name="Tglsw_BitsForSr"
-                                                d:Content="Enable Song Requests for Bits"
-                                                Content="{x:Static local:Resources.sw_SpotifySR_EnableSrForBits}"
-                                                ContentPadding="0"
-                                                FontFamily="Segoe UI"
-                                                FontSize="12"
-                                                Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
-                                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                                <Image
-                                                    x:Name="ImgBits"
-                                                    Width="28"
-                                                    Height="28"
-                                                    Margin="0,0,6,0" />
-                                                <controls:NumericUpDown
-                                                    x:Name="NudBits"
-                                                    Width="150"
-                                                    Height="28"
-                                                    HorizontalAlignment="Right"
-                                                    ValueChanged="NudBits_OnValueChanged" />
-                                            </StackPanel>
-                                        </DockPanel>
+                                <DockPanel>
+                                    <controls:ToggleSwitch
+                                        x:Name="Tglsw_BitsForSr"
+                                        d:Content="Enable Song Requests for Bits"
+                                        Content="{x:Static local:Resources.sw_SpotifySR_EnableSrForBits}"
+                                        ContentPadding="0"
+                                        FontFamily="Segoe UI"
+                                        FontSize="12"
+                                        Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
+                                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                        <Image
+                                            x:Name="ImgBits"
+                                            Width="28"
+                                            Height="28"
+                                            Margin="0,0,6,0" />
+                                        <controls:NumericUpDown
+                                            x:Name="NudBits"
+                                            Width="150"
+                                            Height="28"
+                                            HorizontalAlignment="Right"
+                                            ValueChanged="NudBits_OnValueChanged" />
                                     </StackPanel>
-                                </Border>
+                                </DockPanel>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

@@ -1,5 +1,4 @@
-﻿using Songify.Abstractions;
-using Songify_Slim.Models;
+﻿using Songify_Slim.Models;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
@@ -2711,12 +2710,5 @@ namespace Songify_Slim.Util.Settings
             byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
             return Encoding.UTF8.GetString(decrypted);
         }
-    }
-
-    public class UserSettingsWrapper : IUserSettings
-    {
-        public string TwitchUserId => Settings.TwitchUser?.Id;
-        public string TwitchUsername => Settings.TwitchUser?.Login;
-        public string SongifyApiToken => Settings.SongifyApiKey; // <-- Add to Settings!
     }
 }
