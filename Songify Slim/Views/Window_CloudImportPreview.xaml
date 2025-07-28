@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Window_CloudImportPreview"
+    Title="Cloud Settings Importer"
     Width="800"
     Height="450"
     mc:Ignorable="d">
@@ -25,7 +25,18 @@
         <ListBox
             x:Name="ChangesList"
             Grid.Row="1"
-            DockPanel.Dock="Top" />
+            DockPanel.Dock="Top"
+            Visibility="Collapsed" />
+        <RichTextBox
+            x:Name="DiffTextBox"
+            Grid.Row="1"
+            Margin="10"
+            BorderThickness="0"
+            FontFamily="Consolas"
+            FontSize="13"
+            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+            IsReadOnly="True"
+            VerticalScrollBarVisibility="Auto" />
 
         <StackPanel
             Grid.Row="2"

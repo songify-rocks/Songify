@@ -1,6 +1,8 @@
 ﻿using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
+using Songify.Abstractions;
 using Songify_Slim.Models;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
@@ -11,6 +13,7 @@ using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Util.Spotify;
 using SpotifyAPI.Web;
+using SpotifyAPI.Web.Http;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +24,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,8 +34,6 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using MahApps.Metro.IconPacks;
-using Songify.Abstractions;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -1923,12 +1925,52 @@ namespace Songify_Slim.Views
             Settings.RefundConditons = current.ToArray();
         }
 
-        private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private async void BtnSaveCloudSettings_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (!string.IsNullOrEmpty(Settings.SongifyApiKey) && Settings.TwitchUser != null && !string.IsNullOrEmpty(Settings.TwitchUser.Id))
-                    await ConfigHandler.CloudSaveSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id, Settings.CurrentConfig);
+                if (string.IsNullOrEmpty(Settings.SongifyApiKey))
+                {
+                    TblError.Text = "Please enter your Songify API key.";
+                    return;
+                }
+
+                if (Settings.TwitchUser == null)
+                {
+                    TblError.Text = "Please log in to your Twitch account.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(Settings.TwitchUser.Id))
+                {
+                    TblError.Text = "Please log in to your Twitch account.";
+                    return;
+                }
+
+                Tuple<bool, HttpStatusCode> result = await ConfigHandler.CloudSaveSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id, Settings.CurrentConfig);
+
+                if (result.Item1)
+                {
+                    TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                    TblError.Text = "Successfully saved settings in the cloud";
+                }
+                else
+                {
+                    TblError.Foreground = new SolidColorBrush(Colors.Red);
+
+                    switch (result.Item2)
+                    {
+                        case HttpStatusCode.Unauthorized:
+                            TblError.Text = "Unauthorized access. Please check your API token.";
+                            return;
+                        case HttpStatusCode.Forbidden:
+                            TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
+                            return;
+                        case HttpStatusCode.InternalServerError:
+                            TblError.Text = "Internal server error. Please try again later.";
+                            return;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -1941,8 +1983,57 @@ namespace Songify_Slim.Views
         {
             try
             {
-                if (!string.IsNullOrEmpty(Settings.SongifyApiKey) && Settings.TwitchUser != null && !string.IsNullOrEmpty(Settings.TwitchUser.Id))
-                    await ConfigHandler.CloudRestoreSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id);
+
+                if (string.IsNullOrEmpty(Settings.SongifyApiKey))
+                {
+                    TblError.Text = "Please enter your Songify API key.";
+                    return;
+                }
+
+                if (Settings.TwitchUser == null)
+                {
+                    TblError.Text = "Please log in to your Twitch account.";
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(Settings.TwitchUser.Id))
+                {
+                    TblError.Text = "Please log in to your Twitch account.";
+                    return;
+                }
+
+                Tuple<bool, HttpStatusCode> result = await ConfigHandler.CloudRestoreSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id);
+
+                if (result.Item1)
+                {
+                    TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                    TblError.Text = "Successfully restored settings from the cloud";
+                }
+                else
+                {
+                    TblError.Foreground = new SolidColorBrush(Colors.Red);
+
+                    switch (result.Item2)
+                    {
+                        case HttpStatusCode.Unauthorized:
+                            TblError.Text = "Unauthorized access. Please check your API token.";
+                            return;
+                        case HttpStatusCode.Forbidden:
+                            TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
+                            return;
+                        case HttpStatusCode.InternalServerError:
+                            TblError.Text = "Internal server error. Please try again later.";
+                            return;
+                        case HttpStatusCode.NotModified:
+                            TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                            TblError.Text = "No changes have been detected, keeping local settings.";
+                            return;
+                        case HttpStatusCode.NotAcceptable:
+                            TblError.Text = "Cancelled by user.";
+                            break;
+                    }
+                }
+
             }
             catch (Exception ex)
             {

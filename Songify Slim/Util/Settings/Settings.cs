@@ -408,10 +408,6 @@ namespace Songify_Slim.Util.Settings
 
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
 
-        public static bool RewardGoalEnabled { get => GetRewardGoalEnabled(); set => SetRewardGoalEnabled(value); }
-
-        public static string RewardGoalSong { get => GetRewardGoalSong(); set => SetRewardGoalSong(value); }
-
         public static bool SaveHistory
         {
             get => GetSaveHistory();
@@ -2516,12 +2512,6 @@ namespace Songify_Slim.Util.Settings
         {
             CurrentConfig.TwitchCredentials.BotOAuthToken = value;
             ConfigHandler.WriteConfig(Enums.ConfigTypes.TwitchCredentials, CurrentConfig.TwitchCredentials);
-        }
-
-        private static void SetTwRewardGoalRewardId(string value)
-        {
-            CurrentConfig.AppConfig.TwRewardGoalRewardId = value;
-            ConfigHandler.WriteConfig(Enums.ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
         private static void SetTwRewardId(List<string> value)

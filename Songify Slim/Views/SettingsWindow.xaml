@@ -2634,6 +2634,8 @@
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -2695,19 +2697,56 @@
                             </StackPanel>
                         </StackPanel>
 
-                        <Button
+                        <TextBlock
                             Grid.Row="3"
                             Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,16,0,0"
+                            Text="We do not store Twitch and Spotify credentials! In case of restoring a cloud backup you have to re-login with Twitch and Spotify"
+                            TextWrapping="Wrap" />
+                        <Button
+                            x:Name="BtnSaveCloudSettings"
+                            Grid.Row="4"
+                            Grid.Column="0"
                             Margin="6"
-                            Content="Cloud Save Settings" 
-                            Click="ButtonBase_OnClick"/>
+                            Click="BtnSaveCloudSettings_OnClick">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconForkAwesome
+                                        Width="12"
+                                        Height="12"
+                                        Kind="Upload" />
+                                    <TextBlock
+                                        Margin="6,0"
+                                        VerticalAlignment="Center"
+                                        Text="Save Cloud Settings" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
                         <Button
                             x:Name="BtnRestoreCloudSettings"
-                            Grid.Row="3"
-                            Click="BtnRestoreCloudSettings_OnClick"
+                            Grid.Row="4"
                             Grid.Column="1"
                             Margin="6"
-                            Content="Cloud Restore Settings" />
+                            Click="BtnRestoreCloudSettings_OnClick">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconForkAwesome
+                                    Width="12"
+                                    Height="12"
+                                    Kind="Download" />
+                                <TextBlock
+                                    Margin="6,0"
+                                    VerticalAlignment="Center"
+                                    Text="Restore Cloud Settings" />
+                            </StackPanel>
+                        </Button>
+                        <TextBlock
+                            x:Name="TblError"
+                            Grid.Row="5"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="6"
+                            Foreground="Red" />
                     </Grid>
                 </Border>
             </TabItem>
