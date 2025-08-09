@@ -15,7 +15,8 @@ We’ve been hard at work adding new ways to request songs, improving reliabilit
   > This feature requires a **Ko-fi membership**.  
   > How to connect Ko-fi with Songify: [Read the guide here](https://v2.songify.rocks/faq/how-to-link-ko-fi-with-songify).  
 - **Full YouTube Music Support**  
-  You can now fully request songs from YouTube when using the [YouTube Music Desktop Client](https://github.com/th-ch/youtube-music).  
+  You can now fully request songs from YouTube when using the [YouTube Music Desktop Client](https://github.com/th-ch/youtube-music).
+  - [How to connect Songify to Youtube Music Desktop](https://github.com/songify-rocks/Songify/blob/master/th-ch%20Youtube-Music.md)  
 
 ---
 
