@@ -1102,7 +1102,7 @@
     <value>Уключыць запыты песень за Bits</value>
   </data>
   <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
-    <value>Трэк мае нецэнзурнае значэнне</value>
+    <value>Песня мае нецэнзурнае значэнне</value>
   </data>
   <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
     <value>Карыстальнік дасягнуў максімальнага ліміту ў чарзе</value>
