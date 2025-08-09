@@ -1107,4 +1107,13 @@
   <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
     <value>Enable Song Requests for Bits</value>
   </data>
+  <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
+    <value>Track is explicit</value>
+  </data>
+  <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
+    <value>User reached max queue limit</value>
+  </data>
+  <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
+    <value>Song is blocked</value>
+  </data>
 </root>

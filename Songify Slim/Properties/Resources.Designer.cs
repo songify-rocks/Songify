@@ -1574,6 +1574,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User reached max queue limit.
+        /// </summary>
+        public static string Sw_Integration_RefundQueueLimitReached {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundQueueLimitReached", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Song has been added to the queue.
         /// </summary>
         public static string Sw_Integration_RefundSongAdded {
@@ -1588,6 +1597,15 @@ namespace Songify_Slim.Properties {
         public static string Sw_Integration_RefundSongAlreadyInQueue {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSongAlreadyInQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is blocked.
+        /// </summary>
+        public static string Sw_Integration_RefundSongBlocked {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundSongBlocked", resourceCulture);
             }
         }
         
@@ -1615,6 +1633,15 @@ namespace Songify_Slim.Properties {
         public static string Sw_Integration_RefundSpotifyNotConnected {
             get {
                 return ResourceManager.GetString("Sw_Integration_RefundSpotifyNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track is explicit.
+        /// </summary>
+        public static string Sw_Integration_RefundTrackIsExplicit {
+            get {
+                return ResourceManager.GetString("Sw_Integration_RefundTrackIsExplicit", resourceCulture);
             }
         }
         

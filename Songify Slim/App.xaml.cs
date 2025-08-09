@@ -28,7 +28,7 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
-        public static bool IsBeta = false;
+        public static bool IsBeta = true;
         private const string PipeName = "SongifyPipe";
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {

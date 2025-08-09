@@ -46,6 +46,7 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
+using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
@@ -53,6 +54,7 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static Songify_Slim.Util.General.Enums;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using OnConnectedEventArgs = TwitchLib.Client.Events.OnConnectedEventArgs;
@@ -62,6 +64,7 @@ using Subscription = TwitchLib.Api.Helix.Models.Subscriptions.Subscription;
 using Timer = System.Timers.Timer;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
+using Window = System.Windows.Window;
 
 
 namespace Songify_Slim.Util.Songify.Twitch
@@ -1742,37 +1745,49 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        public static async void AddSong(string trackId, TwitchRequestUser e, SongRequestSource source, TwitchUser user)
+        private static async Task CheckAndRefund(SongRequestSource source, RewardInfo reward,
+            RefundCondition condition)
+        {
+            if (source != SongRequestSource.Reward || reward == null) return;
+            if (Settings.Settings.RefundConditons.Any(c => c == (int)condition))
+            {
+                await RefundChannelPoints(reward.RewardId, reward.RedemptionId, reward.Channel);
+            }
+        }
+
+        public static async void AddSong(string trackId, TwitchRequestUser e, SongRequestSource source, TwitchUser user, RewardInfo reward = null)
         {
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 await SendChatMessage(e.Channel, "No song found.");
+                await CheckAndRefund(source, reward, RefundCondition.NoSongFound);
                 return;
             }
 
-            // Switch on trackId
             switch (trackId)
             {
                 case "shortened":
-                    await SendChatMessage(Settings.Settings.TwChannel,
-                        "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")");
-                    return;
                 case "episode":
-                    await SendChatMessage(Settings.Settings.TwChannel, "Episodes are not supported. Please specify a track!");
-                    return;
                 case "artist":
-                    await SendChatMessage(Settings.Settings.TwChannel, "Artist links are not supported. Please specify a track!");
-                    return;
                 case "album":
-                    await SendChatMessage(Settings.Settings.TwChannel, "Album links are not supported. Please specify a track!");
-                    return;
                 case "playlist":
-                    await SendChatMessage(Settings.Settings.TwChannel, "Playlist links are not supported. Please specify a track!");
-                    return;
                 case "audiobook":
-                    await SendChatMessage(Settings.Settings.TwChannel, "Audiobook links are not supported. Please specify a track!");
+                    string message = trackId switch
+                    {
+                        "shortened" => "Spotify short links are not supported. Please type in the full title or get the Spotify URI (starts with \"spotify:track:\")",
+                        "episode" => "Episodes are not supported. Please specify a track!",
+                        "artist" => "Artist links are not supported. Please specify a track!",
+                        "album" => "Album links are not supported. Please specify a track!",
+                        "playlist" => "Playlist links are not supported. Please specify a track!",
+                        "audiobook" => "Audiobook links are not supported. Please specify a track!",
+                        _ => "Unsupported track type."
+                    };
+
+                    await SendChatMessage(Settings.Settings.TwChannel, message);
+                    await CheckAndRefund(source, reward, RefundCondition.NoSongFound);
                     return;
             }
+
 
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
@@ -1811,42 +1826,49 @@ namespace Songify_Slim.Util.Songify.Twitch
                     { "ttp", "" },
                 });
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.SongBlocked);
                 return;
             }
 
             if (track == null)
             {
                 await SendChatMessage(Settings.Settings.TwChannel, CreateNoTrackFoundResponse(e));
+                await CheckAndRefund(source, reward, RefundCondition.NoSongFound);
                 return;
             }
 
             if (IsTrackExplicit(track, e, out response))
             {
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.TrackIsEplicit);
                 return;
             }
 
             if (IsTrackUnavailable(track, e, out response))
             {
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.SongUnavailable);
                 return;
             }
 
             if (IsArtistBlacklisted(track, e, out response))
             {
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.ArtistBlocked);
                 return;
             }
 
             if (IsTrackTooLong(track, e, out response))
             {
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.SongTooLong);
                 return;
             }
 
             if (IsTrackAlreadyInQueue(track, e, out response))
             {
                 await SendChatMessage(e.Channel, response);
+                await CheckAndRefund(source, reward, RefundCondition.SongAlreadyInQueue);
                 return;
             }
 
@@ -1881,6 +1903,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 if (IsUserAtMaxRequests(e, user, out response))
                 {
                     await SendChatMessage(e.Channel, response);
+                    await CheckAndRefund(source, reward, RefundCondition.QueueLimitReached);
                     return;
                 }
 
@@ -1945,6 +1968,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             response = response.Replace("{ttp}", "");
             SendOrAnnounceMessage(e.Channel, response, cmd);
+            await CheckAndRefund(source, reward, RefundCondition.AlwaysRefund);
         }
 
         private static string ValidateTrackId(string trackId)
@@ -4350,21 +4374,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
             string userInput, string channel, string rewardId, string redemptionId)
         {
-            if (TwitchApi != null)
-            {
-                //refund redemption
-                UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
-                    Settings.Settings.TwitchUser.Id, rewardId,
-                    [redemptionId],
-                    new UpdateCustomRewardRedemptionStatusRequest
-                    { Status = CustomRewardRedemptionStatus.CANCELED });
-                if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
-                {
-                    await SendChatMessage(channel, "Refunded channel points :)");
-                }
-
-            }
-
             Settings.Settings.IsLive = await CheckStreamIsUp();
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
@@ -4386,6 +4395,11 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                     // Send a message to the user that their user level is too low to request songs
                     await SendChatMessage(channel, response);
+
+                    if (Settings.Settings.RefundConditons.Any(c => c == (int)RefundCondition.UserLevelTooLow))
+                    {
+                        await RefundChannelPoints(rewardId, redemptionId, channel);
+                    }
                     return;
                 }
             }
@@ -4393,16 +4407,24 @@ namespace Songify_Slim.Util.Songify.Twitch
             // Do nothing if the user is blocked, don't even reply
             if (IsUserBlocked(userName))
             {
+                if (Settings.Settings.RefundConditons.Any(c => c == (int)RefundCondition.UserBlocked))
+                {
+                    await RefundChannelPoints(rewardId, redemptionId, channel);
+                }
                 return;
             }
 
             if (SpotifyApiHandler.Client == null)
             {
                 await SendChatMessage(channel, "It seems that Spotify is not connected right now.");
+                if (Settings.Settings.RefundConditons.Any(c => c == (int)RefundCondition.SpotifyNotConnected))
+                {
+                    await RefundChannelPoints(rewardId, redemptionId, channel);
+                }
                 return;
             }
 
-            TwitchRequestUser user = new TwitchRequestUser
+            TwitchRequestUser user = new()
             {
                 Channel = channel,
                 DisplayName = userName,
@@ -4411,9 +4433,33 @@ namespace Songify_Slim.Util.Songify.Twitch
                 IsBroadcaster = isBroadcaster
             };
 
-            AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser);
+            AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser, new RewardInfo
+            {
+                RewardId = rewardId,
+                RedemptionId = redemptionId,
+                Channel = channel
+            });
+            
             return;
 
+        }
+
+        private static async Task RefundChannelPoints(string rewardId, string redemptionId, string channel)
+        {
+            if (TwitchApi != null)
+            {
+                //refund redemption
+                UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
+                    Settings.Settings.TwitchUser.Id, rewardId,
+                    [redemptionId],
+                    new UpdateCustomRewardRedemptionStatusRequest
+                    { Status = CustomRewardRedemptionStatus.CANCELED });
+                if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
+                {
+                    await SendChatMessage(channel, "Refunded channel points :)");
+                }
+
+            }
         }
 
         public static async Task HandleBitsSongRequest(string userId, string userName,
@@ -4485,6 +4531,13 @@ namespace Songify_Slim.Util.Songify.Twitch
                 Logger.LogExc(e);
             }
         }
+    }
+
+    public class RewardInfo
+    {
+        public string RewardId { get; set; }
+        public string RedemptionId { get; set; }
+        public string Channel { get; set; }
     }
 }
 

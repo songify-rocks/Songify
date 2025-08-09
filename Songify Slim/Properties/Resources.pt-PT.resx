@@ -924,4 +924,13 @@
   <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
     <value>Habilitar solicitações de músicas para bits</value>
   </data>
+  <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
+    <value>A trilha é explícita</value>
+  </data>
+  <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
+    <value>O usuário atingiu o limite máximo da fila</value>
+  </data>
+  <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
+    <value>A música está bloqueada</value>
+  </data>
 </root>

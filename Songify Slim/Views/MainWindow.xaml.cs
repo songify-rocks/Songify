@@ -1143,50 +1143,57 @@ namespace Songify_Slim.Views
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            _timerFetcher.Enabled = false;
-            _timerFetcher.Elapsed -= OnTimedEvent;
-            _sCts = new CancellationTokenSource();
-
             try
             {
-                await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                _timerFetcher.Enabled = false;
+                _timerFetcher.Elapsed -= OnTimedEvent;
+                _sCts = new CancellationTokenSource();
+
+                try
                 {
-                    Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
-                        ? Visibility.Visible
-                        : Visibility.Collapsed;
+                    await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    {
+                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
 
-                    double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
-                        ? 500
-                        : (int)Width - 6;
+                        double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                            ? 500
+                            : (int)Width - 6;
 
-                    if (img_cover.Visibility != vis)
-                        img_cover.Visibility = vis;
-                    if (GrdCover.Visibility != vis)
-                        GrdCover.Visibility = vis;
-                    if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
-                        TxtblockLiveoutput.MaxWidth = maxWidth;
-                }));
+                        if (img_cover.Visibility != vis)
+                            img_cover.Visibility = vis;
+                        if (GrdCover.Visibility != vis)
+                            GrdCover.Visibility = vis;
+                        if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
+                            TxtblockLiveoutput.MaxWidth = maxWidth;
+                    }));
 
+                }
+                catch
+                {
+                    // Ignored
+                }
+
+                try
+                {
+                    _sCts.CancelAfter(3500);
+                    await GetCurrentSongAsync();
+                }
+                catch (TaskCanceledException ex)
+                {
+                    Logger.LogExc(ex);
+                }
+                finally
+                {
+                    _sCts.Dispose();
+                    _timerFetcher.Enabled = true;
+                    _timerFetcher.Elapsed += OnTimedEvent;
+                }
             }
-            catch
-            {
-                // Ignored
-            }
-
-            try
-            {
-                _sCts.CancelAfter(3500);
-                await GetCurrentSongAsync();
-            }
-            catch (TaskCanceledException ex)
+            catch (Exception ex)
             {
                 Logger.LogExc(ex);
-            }
-            finally
-            {
-                _sCts.Dispose();
-                _timerFetcher.Enabled = true;
-                _timerFetcher.Elapsed += OnTimedEvent;
             }
         }
 

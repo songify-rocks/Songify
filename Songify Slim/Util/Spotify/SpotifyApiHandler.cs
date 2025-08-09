@@ -240,6 +240,8 @@ namespace Songify_Slim.Util.Spotify
                 string artists = string.Join(", ", track.Artists.Select(a => a.Name));
 
                 CurrentlyPlayingContext currentPlayback = await Client.Player.GetCurrentPlayback();
+                if (currentPlayback == null)
+                    return null;
                 if (Settings.Settings.SpotifyDeviceId != currentPlayback.Device.Id)
                 {
                     Settings.Settings.SpotifyDeviceId = currentPlayback.Device.Id;

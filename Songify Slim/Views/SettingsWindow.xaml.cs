@@ -76,18 +76,21 @@ namespace Songify_Slim.Views
             { "be-BY", "Belarusian" }
         };
 
-        private static readonly Dictionary<Enums.RefundCondition, string> RefundConditionLabels = new()
+        private static Dictionary<Enums.RefundCondition, string> RefundConditionLabels => new()
         {
             { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.Sw_Integration_RefundUserLevelLow },
             { Enums.RefundCondition.UserBlocked, Properties.Resources.Sw_Integration_RefundUSerBlocked },
             { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.Sw_Integration_RefundSpotifyNotConnected },
             { Enums.RefundCondition.SongUnavailable, Properties.Resources.Sw_Integration_RefundSongNotAvailable },
+            { Enums.RefundCondition.SongBlocked, Properties.Resources.Sw_Integration_RefundSongBlocked},
             { Enums.RefundCondition.ArtistBlocked, Properties.Resources.Sw_Integration_RefundArtistBlocked },
             { Enums.RefundCondition.SongTooLong, Properties.Resources.Sw_Integration_RefundSongTooLong },
             { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.Sw_Integration_RefundSongAlreadyInQueue },
+            { Enums.RefundCondition.QueueLimitReached, Properties.Resources.Sw_Integration_RefundQueueLimitReached},
             { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
             { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
-            { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways }
+            { Enums.RefundCondition.TrackIsEplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
+            { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways },
         };
 
 
@@ -773,6 +776,8 @@ namespace Songify_Slim.Views
             Settings.Language = selectedLanguageCode;
 
             _wRp?.LoadItems();
+
+            GenerateRefundConditionToggles();
         }
 
         private void ComboBoxColorSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1110,36 +1115,36 @@ namespace Songify_Slim.Views
                 return;
             if (TwitchHandler.TokenCheck == null)
                 return;
-
-            if (Settings.TwitchUser.BroadcasterType != "")
-                try
+            BtnCreateNewReward.IsEnabled = true;
+            try
+            {
+                List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
+                List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
+                if (rewards == null)
+                    return;
+                //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
+                List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
+                foreach (string s in idsToRemove) 
                 {
-                    List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
-                    List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
-                    //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
-                    List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
-                    foreach (string s in idsToRemove)
-                    {
-                        Settings.TwRewardId.Remove(s);
-                    }
-
-                    ListboxRewards.Items.Clear();
-
-                    if (rewards.Count > 0)
-                    {
-                        foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
-                        {
-
-                            bool manageable = managableRewards.Find(r => r.Id == reward.Id) != null;
-                            ListboxRewards.Items.Add(new UcTwitchReward(reward, manageable));
-                        }
-                    }
-                    BtnCreateNewReward.IsEnabled = true;
+                    Settings.TwRewardId.Remove(s);
                 }
-                catch (Exception e)
+
+                ListboxRewards.Items.Clear();
+
+                if (rewards.Count > 0)
                 {
-                    Logger.LogExc(e);
+                    foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
+                    {
+
+                        bool manageable = managableRewards.Find(r => r.Id == reward.Id) != null;
+                        ListboxRewards.Items.Add(new UcTwitchReward(reward, manageable));
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
         }
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
@@ -1871,36 +1876,96 @@ namespace Songify_Slim.Views
 
         }
 
+        //private void GenerateRefundConditionToggles()
+        //{
+        //    RefundSwitchesPanel.Children.Clear();
+        //    _toggleMap.Clear();
+
+        //    foreach (KeyValuePair<Enums.RefundCondition, string> kvp in RefundConditionLabels)
+        //    {
+        //        Enums.RefundCondition condition = kvp.Key;
+        //        ToggleSwitch toggle = new ToggleSwitch
+        //        {
+        //            Tag = (int)condition,
+        //            Margin = new Thickness(5),
+        //            VerticalAlignment = VerticalAlignment.Top,
+        //            HorizontalAlignment = HorizontalAlignment.Left,
+        //            Content = new TextBlock
+        //            {
+        //                Text = kvp.Value,
+        //                TextWrapping = TextWrapping.Wrap
+        //            },
+        //            FontWeight = condition == Enums.RefundCondition.AlwaysRefund ? FontWeights.Bold : FontWeights.Normal
+        //        };
+
+        //        // Initialize state WITHOUT triggering toggle events
+        //        toggle.Toggled += RefundCondition_Toggled;
+        //        toggle.IsOn = Settings.RefundConditons.Contains((int)condition);
+
+        //        _toggleMap[condition] = toggle;
+        //        RefundSwitchesPanel.Children.Add(toggle);
+        //    }
+        //}
+
         private void GenerateRefundConditionToggles()
         {
             RefundSwitchesPanel.Children.Clear();
+            RefundSwitchesPanel.RowDefinitions.Clear();
+            RefundSwitchesPanel.ColumnDefinitions.Clear();
             _toggleMap.Clear();
 
+            const int columns = 2;
+            int totalItems = RefundConditionLabels.Count;
+            int rows = (int)Math.Ceiling(totalItems / (double)columns);
+
+            // Add columns
+            for (int i = 0; i < columns; i++)
+            {
+                RefundSwitchesPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            }
+
+            // Add rows
+            for (int i = 0; i < rows; i++)
+            {
+                RefundSwitchesPanel.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            }
+
+            int index = 0;
             foreach (KeyValuePair<Enums.RefundCondition, string> kvp in RefundConditionLabels)
             {
                 Enums.RefundCondition condition = kvp.Key;
-                ToggleSwitch toggle = new ToggleSwitch
+
+                ToggleSwitch toggle = new()
                 {
                     Tag = (int)condition,
                     Margin = new Thickness(5),
                     VerticalAlignment = VerticalAlignment.Top,
-                    HorizontalAlignment = HorizontalAlignment.Left,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
                     Content = new TextBlock
                     {
                         Text = kvp.Value,
+                        MaxWidth = 250,
                         TextWrapping = TextWrapping.Wrap
                     },
                     FontWeight = condition == Enums.RefundCondition.AlwaysRefund ? FontWeights.Bold : FontWeights.Normal
                 };
 
-                // Initialize state WITHOUT triggering toggle events
                 toggle.Toggled += RefundCondition_Toggled;
                 toggle.IsOn = Settings.RefundConditons.Contains((int)condition);
 
                 _toggleMap[condition] = toggle;
+
+                int row = index / columns;
+                int col = index % columns;
+
+                Grid.SetRow(toggle, row);
+                Grid.SetColumn(toggle, col);
                 RefundSwitchesPanel.Children.Add(toggle);
+
+                index++;
             }
         }
+
 
         private void RefundCondition_Toggled(object sender, RoutedEventArgs e)
         {
@@ -2035,6 +2100,20 @@ namespace Songify_Slim.Views
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        private void RefundSwitchesPanel_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double totalWidth = RefundSwitchesPanel.ActualWidth;
+            double columnWidth = (totalWidth / 2) - 100; // Subtract some padding
+
+            foreach (ToggleSwitch toggle in _toggleMap.Values)
+            {
+                if (toggle.Content is TextBlock tb)
+                {
+                    tb.MaxWidth = columnWidth;
+                }
             }
         }
     }

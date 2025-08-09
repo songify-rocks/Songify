@@ -11,7 +11,7 @@
     Title="Create Custom Reward"
     Width="484"
     Height="250"
-    ResizeMode="NoResize"
+    ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
     <Grid>
@@ -26,6 +26,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -100,9 +102,10 @@
                     Content="{x:Static properties:Resources.crw_CreateReward}" />
                 <TextBlock
                     x:Name="LblStatus"
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"
+                    Text="123"
                     TextWrapping="Wrap" />
             </Grid>
         </StackPanel>

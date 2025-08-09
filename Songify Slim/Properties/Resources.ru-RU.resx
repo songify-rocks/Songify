@@ -925,4 +925,13 @@
   <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
     <value>Включить запросы песен для битов</value>
   </data>
+  <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
+    <value>Трек является явным</value>
+  </data>
+  <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
+    <value>Пользователь достиг максимального лимита очереди</value>
+  </data>
+  <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
+    <value>Песня заблокирована</value>
+  </data>
 </root>

@@ -1345,13 +1345,9 @@
                                 <TabItem Header="Refund Contitions">
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
-                                        <UniformGrid
+                                        <Grid
                                             x:Name="RefundSwitchesPanel"
-                                            Grid.Row="3"
-                                            Grid.Column="0"
-                                            Grid.ColumnSpan="2"
-                                            VerticalAlignment="Top"
-                                            Columns="2">
+                                            VerticalAlignment="Top" SizeChanged="RefundSwitchesPanel_OnSizeChanged">
                                             <!--<controls:ToggleSwitch
                                     x:Name="ChkRefundUserLevel"
                                     Grid.Row="0"
@@ -1443,7 +1439,7 @@
                                     Tag="-1">
                                     <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap" />
                                 </controls:ToggleSwitch>-->
-                                        </UniformGrid>
+                                        </Grid>
                                     </StackPanel>
                                 </TabItem>
                             </TabControl>

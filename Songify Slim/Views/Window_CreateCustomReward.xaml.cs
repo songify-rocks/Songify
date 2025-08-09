@@ -59,17 +59,31 @@ namespace Songify_Slim.Views
 
         private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TbRewardName.Text) || string.IsNullOrWhiteSpace(TbRewardPrompt.Text) || NudRewardCost.Value == null)
-                return;
-            CreateCustomRewardsResponse response = await CreateReward(TbRewardName.Text, TbRewardPrompt.Text, (int)NudRewardCost.Value);
-            if (response == null) return;
-            foreach (Window window in Application.Current.Windows)
-                if (window.GetType() == typeof(Window_Settings))
+            try
+            {
+                if (string.IsNullOrWhiteSpace(TbRewardName.Text) || string.IsNullOrWhiteSpace(TbRewardPrompt.Text) || NudRewardCost.Value == null)
+                    return;
+
+                CreateCustomRewardsResponse response = await CreateReward(TbRewardName.Text, TbRewardPrompt.Text, (int)NudRewardCost.Value);
+                if (response == null)
                 {
-                    Settings.TwRewardId.Add(response.Data[0].Id);
-                    Settings.TwRewardId = Settings.TwRewardId;
-                    await ((Window_Settings)window).LoadRewards();
+                    LblStatus.Foreground = Brushes.Red;
+                    LblStatus.Text = "Unable to create Reward.";
+                    return;
                 }
+                foreach (Window window in Application.Current.Windows)
+                    if (window.GetType() == typeof(Window_Settings))
+                    {
+                        Settings.TwRewardId.Add(response.Data[0].Id);
+                        Settings.TwRewardId = Settings.TwRewardId;
+                        await ((Window_Settings)window).LoadRewards();
+                    }
+            }
+            catch (Exception ex)
+            {
+                LblStatus.Foreground = Brushes.Red;
+                LblStatus.Text = Properties.Resources.crw_CreateRewardError + " " + ex.Message;
+            }
         }
     }
 }
