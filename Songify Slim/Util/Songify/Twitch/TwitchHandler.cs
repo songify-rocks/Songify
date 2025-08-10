@@ -27,6 +27,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
@@ -74,6 +75,10 @@ namespace Songify_Slim.Util.Songify.Twitch
     {
         public const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
         private static readonly object _sync = new();
+
+        private static readonly SemaphoreSlim _lock = new(1, 1);
+        private static IHost? _host;
+        private static CancellationTokenSource? _cts;
 
         public static ValidateAccessTokenResponse BotTokenCheck;
         public static TwitchClient Client;
@@ -1207,7 +1212,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                                 };
                                 GlobalObjects.ReqList.Add(req);
 
-                                bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAtEnd);
+                                bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
                                 if (ok)
                                 {
                                     // Your success response logic
@@ -1259,7 +1264,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                             };
                             GlobalObjects.ReqList.Add(req);
 
-                            bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAtEnd);
+                            bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
                             if (ok)
                             {
                                 await SendChatMessage(message.Channel, $"Queued: {title}");
@@ -1281,7 +1286,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                         }
                     }
                     break;
-
             }
         }
 
@@ -1654,32 +1658,78 @@ namespace Songify_Slim.Util.Songify.Twitch
                     throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
             }
 
-            if (TwitchApi != null)
-            {
-                _ = Task.Run(async () =>
-                {
-                    try
-                    {
-                        await CreateHostBuilder([]).Build().RunAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                    }
-                });
-            }
+            // fire-and-forget is fine; the method itself is concurrency-safe
+            _ = TwitchApi != null ? StartOrRestartAsync() : StopAsync();
 
         }
 
+        public static async Task StartOrRestartAsync()
+        {
+            await _lock.WaitAsync();
+            try
+            {
+                // If there's an old host, stop & dispose it first
+                if (_host is not null)
+                {
+                    try
+                    {
+                        _cts?.Cancel();
+                        await _host.StopAsync(TimeSpan.FromSeconds(5));
+                    }
+                    catch { /* swallow or log */ }
+                    finally
+                    {
+                        _host.Dispose();
+                        _host = null;
+
+                        _cts?.Dispose();
+                        _cts = null;
+                    }
+                }
+
+                // Create and start a fresh host (non-blocking)
+                _cts = new CancellationTokenSource();
+                _host = CreateHostBuilder(Array.Empty<string>()).Build();
+                await _host.StartAsync(_cts.Token); // runs hosted services in background
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
+        public static async Task StopAsync()
+        {
+            await _lock.WaitAsync();
+            try
+            {
+                if (_host is null) return;
+
+                try
+                {
+                    _cts?.Cancel();
+                    await _host.StopAsync(TimeSpan.FromSeconds(5));
+                }
+                finally
+                {
+                    _host.Dispose();
+                    _host = null;
+
+                    _cts?.Dispose();
+                    _cts = null;
+                }
+            }
+            finally
+            {
+                _lock.Release();
+            }
+        }
+
+
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(configure =>
+                .ConfigureServices((ctx, services) =>
                 {
-                    //configure.AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json"));
-                })
-                .ConfigureServices((hostContext, services) =>
-                {
-                    //services.AddLogging();
                     services.AddTwitchLibEventSubWebsockets();
                     services.AddHostedService<WebsocketHostedService>();
                 });
@@ -4414,16 +4464,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             }
 
-            if (SpotifyApiHandler.Client == null)
-            {
-                await SendChatMessage(channel, "It seems that Spotify is not connected right now.");
-                if (Settings.Settings.RefundConditons.Any(c => c == (int)RefundCondition.SpotifyNotConnected))
-                {
-                    await RefundChannelPoints(rewardId, redemptionId, channel);
-                }
-                return;
-            }
-
             TwitchRequestUser user = new()
             {
                 Channel = channel,
@@ -4433,12 +4473,157 @@ namespace Songify_Slim.Util.Songify.Twitch
                 IsBroadcaster = isBroadcaster
             };
 
-            AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser, new RewardInfo
+            switch (Settings.Settings.Player)
             {
-                RewardId = rewardId,
-                RedemptionId = redemptionId,
-                Channel = channel
-            });
+                case PlayerType.SpotifyWeb:
+                    if (SpotifyApiHandler.Client == null)
+                    {
+                        await SendChatMessage(channel, "It seems that Spotify is not connected right now.");
+                        return;
+                    }
+
+                    AddSong(await GetTrackIdFromInput(userInput), user, SongRequestSource.Reward, existingUser, new RewardInfo
+                    {
+                        RewardId = rewardId,
+                        RedemptionId = redemptionId,
+                        Channel = channel
+                    });
+                    break;
+                case PlayerType.YtmDesktop:
+                case PlayerType.Ytmthch:
+                    switch (Settings.Settings.Player)
+                    {
+                        case PlayerType.YtmDesktop:
+                            {
+                                string videoId = ExtractYouTubeVideoIdFromText(userInput);
+
+                                string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                                string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+                                await SendChatMessage(channel, title);
+
+                                RequestObject o = new()
+                                {
+                                    Uuid = Settings.Settings.Uuid,
+                                    Trackid = videoId,
+                                    PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                                    Artist = "",
+                                    Title = title,
+                                    Length = "",
+                                    Requester = userName,
+                                    Played = 0,
+                                    Albumcover = thumbnail,
+                                };
+
+                                await UploadToQueue(o);
+                                break;
+                            }
+                        case PlayerType.Ytmthch:
+                            {
+                                string videoId = ExtractYouTubeVideoIdFromText(userInput);
+
+                                if (string.IsNullOrEmpty(videoId))
+                                {
+                                    string messageWithoutTrigger = userInput;
+                                    YTMYHCHSearchResponse sr = await WebHelper.SearchYouTubeMusic(messageWithoutTrigger);
+                                    if (sr == null) return;
+
+                                    if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
+                                    {
+                                        RequestObject req = new RequestObject
+                                        {
+                                            Uuid = Settings.Settings.Uuid,
+                                            Trackid = sr.VideoId,
+                                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                                            Artist = string.Join(", ", sr.Artists),
+                                            Title = sr.Title,
+                                            Length = sr.Duration,
+                                            Requester = userName,
+                                            Played = 0,
+                                            Albumcover = sr.ThumbnailUrl
+                                        };
+                                        GlobalObjects.ReqList.Add(req);
+
+                                        bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
+                                        if (ok)
+                                        {
+                                            // Your success response logic
+                                            await SendChatMessage(channel, $"Queued: {req.Artist} - {req.Title}");
+                                            // wait until YT queue actually contains the item
+                                            int? pos = await WaitForSongInQueueAsync(sr.VideoId,
+                                                TimeSpan.FromSeconds(3),
+                                                TimeSpan.FromMilliseconds(150));
+                                            if (pos == null)
+                                            {
+                                                // fallback: skip reorder now; try again later (timer/next enqueue)
+                                                return;
+                                            }
+                                            await EnsureOrderAsync();
+
+                                        }
+                                        else
+                                        {
+                                            await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                    }
+                                }
+                                else
+                                {
+                                    if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
+                                    {
+                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                        return;
+                                    }
+
+                                    string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                                    string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+                                    RequestObject req = new RequestObject
+                                    {
+                                        Uuid = Settings.Settings.Uuid,
+                                        Trackid = videoId,
+                                        PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                                        Artist = "",
+                                        Title = title,
+                                        Length = "",
+                                        Requester = userName,
+                                        Played = 0,
+                                        Albumcover = thumbnail
+                                    };
+                                    GlobalObjects.ReqList.Add(req);
+
+                                    bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
+                                    if (ok)
+                                    {
+                                        await SendChatMessage(channel, $"Queued: {title}");
+                                        // wait until YT queue actually contains the item
+                                        int? pos = await WaitForSongInQueueAsync(videoId,
+                                            TimeSpan.FromSeconds(3),
+                                            TimeSpan.FromMilliseconds(150));
+                                        if (pos == null)
+                                        {
+                                            // fallback: skip reorder now; try again later (timer/next enqueue)
+                                            return;
+                                        }
+                                        await EnsureOrderAsync();
+
+                                    }
+
+                                    else
+                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                }
+                            }
+                            break;
+                    }
+                    break;
+                default:
+                    await SendChatMessage(channel, "No player selected. Go to Settings -> Player and select a player.");
+                    return;
+            }
             
             return;
 

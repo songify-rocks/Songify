@@ -762,7 +762,7 @@ namespace Songify_Slim.Views
 
             return argsDictionary;
         }
-
+        
         private void SetupUiAndThemes()
         {
             Title = WindowTitle;
@@ -785,7 +785,7 @@ namespace Songify_Slim.Views
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-            LblCopyright.Content = App.IsBeta ? "Songify v1.6.8 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? "Songify v1.8.0 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
