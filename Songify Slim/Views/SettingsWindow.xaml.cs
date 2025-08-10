@@ -210,6 +210,7 @@ namespace Songify_Slim.Views
             Settings.UnlimitedSrUserlevelsCommand ??= [];
             Settings.UnlimitedSrUserlevelsReward ??= [];
 
+            TglOnlySkipNonSrRewards.IsOn = Settings.SkipOnlyNonSrSongs;
 
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
@@ -250,32 +251,64 @@ namespace Songify_Slim.Views
 
             if (SpotifyApiHandler.Client != null)
             {
-                PrivateUser profile = await SpotifyApiHandler.GetUser();
-                LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName}";
+                PrivateUser? profile = null;
+
                 try
                 {
-                    if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
-                    {
-                        BitmapImage bitmap = new();
-                        bitmap.BeginInit();
-                        bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
-                        bitmap.EndInit();
-                        ImgSpotifyProfile.ImageSource = bitmap;
-                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        ImgSpotifyProfile.ImageSource = null;
-                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
-                    }
+                    profile = await SpotifyApiHandler.GetUser(); // <-- used to crash here
                 }
-                catch (Exception ex)
+                catch (Exception ex) // Optional: catch specific SpotifyAPI exceptions if you have them
                 {
                     Logger.LogExc(ex);
                 }
 
-                await LoadSpotifyPlaylists();
+                if (profile != null)
+                {
+                    // Safe: DisplayName can be null as well
+                    LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName ?? "(unknown)"}";
+
+                    try
+                    {
+                        if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
+                        {
+                            var bitmap = new BitmapImage();
+                            bitmap.BeginInit();
+                            bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                            bitmap.EndInit();
+                            ImgSpotifyProfile.ImageSource = bitmap;
+                            ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            ImgSpotifyProfile.ImageSource = null;
+                            ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                        ImgSpotifyProfile.ImageSource = null;
+                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+                    }
+
+                    try
+                    {
+                        await LoadSpotifyPlaylists();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                        // keep UI alive even if playlists fail
+                    }
+                }
+                else
+                {
+                    // Graceful fallback when Spotify is unavailable / blocked / auth expired
+                    ImgSpotifyProfile.ImageSource = null;
+                    ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+                }
             }
+
 
             ThemeHandler.ApplyTheme();
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
@@ -1124,7 +1157,7 @@ namespace Songify_Slim.Views
                     return;
                 //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
                 List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
-                foreach (string s in idsToRemove) 
+                foreach (string s in idsToRemove)
                 {
                     Settings.TwRewardId.Remove(s);
                 }
@@ -1876,37 +1909,7 @@ namespace Songify_Slim.Views
 
         }
 
-        //private void GenerateRefundConditionToggles()
-        //{
-        //    RefundSwitchesPanel.Children.Clear();
-        //    _toggleMap.Clear();
-
-        //    foreach (KeyValuePair<Enums.RefundCondition, string> kvp in RefundConditionLabels)
-        //    {
-        //        Enums.RefundCondition condition = kvp.Key;
-        //        ToggleSwitch toggle = new ToggleSwitch
-        //        {
-        //            Tag = (int)condition,
-        //            Margin = new Thickness(5),
-        //            VerticalAlignment = VerticalAlignment.Top,
-        //            HorizontalAlignment = HorizontalAlignment.Left,
-        //            Content = new TextBlock
-        //            {
-        //                Text = kvp.Value,
-        //                TextWrapping = TextWrapping.Wrap
-        //            },
-        //            FontWeight = condition == Enums.RefundCondition.AlwaysRefund ? FontWeights.Bold : FontWeights.Normal
-        //        };
-
-        //        // Initialize state WITHOUT triggering toggle events
-        //        toggle.Toggled += RefundCondition_Toggled;
-        //        toggle.IsOn = Settings.RefundConditons.Contains((int)condition);
-
-        //        _toggleMap[condition] = toggle;
-        //        RefundSwitchesPanel.Children.Add(toggle);
-        //    }
-        //}
-
+     
         private void GenerateRefundConditionToggles()
         {
             RefundSwitchesPanel.Children.Clear();
@@ -2115,6 +2118,13 @@ namespace Songify_Slim.Views
                     tb.MaxWidth = columnWidth;
                 }
             }
+        }
+
+        private void TglOnlySkipNonSrRewards_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

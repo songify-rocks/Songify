@@ -807,6 +807,7 @@ namespace Songify_Slim.Util.Settings
         public bool LongBadgeNames { get; set; }
         public bool AddSrtoPlaylistOnly { get; set; } = false;
         public string SongifyApiKey { get; set; } = "";
+        public bool SkipOnlyNonSrSongs { get; set; } = false;
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

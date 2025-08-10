@@ -957,7 +957,23 @@ namespace Songify_Slim.Util.Songify.Twitch
             SendOrAnnounceMessage(message.Channel, response, cmd);
 
             if (SkipVotes.Count < Settings.Settings.BotCmdSkipVoteCount) return;
-            await SpotifyApiHandler.SkipSong();
+            switch (Settings.Settings.Player)
+            {
+                case PlayerType.SpotifyWeb:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+
+                case PlayerType.Ytmthch:
+                    await WebHelper.YtmNext();
+                    break;
+                case PlayerType.FooBar2000:
+                case PlayerType.Vlc:
+                case PlayerType.BrowserCompanion:
+                case PlayerType.YtmDesktop:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             await SendChatMessage(message.Channel, "Skipping song by vote...");
 
@@ -968,7 +984,6 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private static async Task HandleSkipCommand(ChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
-
             int count = 0;
             string name = "";
 
@@ -1042,11 +1057,26 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             }, cmd.Response);
 
-            await SpotifyApiHandler.SkipSong();
 
+            switch (Settings.Settings.Player)
+            {
+                case PlayerType.SpotifyWeb:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+
+                case PlayerType.Ytmthch:
+                    await WebHelper.YtmNext();
+                    break;
+                case PlayerType.FooBar2000:
+                case PlayerType.Vlc:
+                case PlayerType.BrowserCompanion:
+                case PlayerType.YtmDesktop:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             SendOrAnnounceMessage(message.Channel, response, cmd);
-
 
             _skipCooldown = true;
             SkipCooldownTimer.Start();
@@ -3285,7 +3315,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         public static async Task<bool> HandleSkipReward()
         {
 
-            if (GlobalObjects.CurrentSong.IsSongrequest())
+            if (GlobalObjects.CurrentSong.IsSongrequest() && Settings.Settings.SkipOnlyNonSrSongs)
                 return true;
             // Skip song
             if (_skipCooldown)
@@ -4624,7 +4654,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                     await SendChatMessage(channel, "No player selected. Go to Settings -> Player and select a player.");
                     return;
             }
-            
+
             return;
 
         }

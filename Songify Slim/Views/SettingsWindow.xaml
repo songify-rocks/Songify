@@ -1307,8 +1307,10 @@
                                 </Button.Content>
                             </Button>
                             <controls:ToggleSwitch
+                                x:Name="TglOnlySkipNonSrRewards"
                                 Grid.Row="1"
                                 Grid.Column="0"
+                                Toggled="TglOnlySkipNonSrRewards_OnToggled"
                                 Content="Disable Skip Rewards for Song Requests" />
                             <TabControl
                                 Grid.Row="2"

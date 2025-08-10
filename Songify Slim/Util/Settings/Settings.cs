@@ -29,6 +29,19 @@ namespace Songify_Slim.Util.Settings
             get => GetSongifyApikey(); set => SetSongifyApikey(value);
         }
 
+        public static bool SkipOnlyNonSrSongs { get => GetSkipOnlyNonSrSongs(); set => SetSkipOnlyNonSrSongs(value); }
+
+        private static void SetSkipOnlyNonSrSongs(bool value)
+        {
+            CurrentConfig.AppConfig.SkipOnlyNonSrSongs = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetSkipOnlyNonSrSongs()
+        {
+            return CurrentConfig.AppConfig.SkipOnlyNonSrSongs;
+        }
+
         private static string GetSongifyApikey()
         {
             return DecryptString(CurrentConfig.AppConfig.SongifyApiKey);
@@ -956,6 +969,7 @@ namespace Songify_Slim.Util.Settings
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 SongifyApiKey = CurrentConfig.AppConfig.SongifyApiKey,
+                SkipOnlyNonSrSongs = GetSkipOnlyNonSrSongs(),
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
                 AppendSpacesSplitFiles = GetAppendSpacesSplitFiles(),
