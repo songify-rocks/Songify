@@ -39,12 +39,12 @@ namespace Songify_Slim.Util.Spotify
             AuthTimer.Elapsed += AuthTimer_Elapsed;
             if (!string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
             {
-                Debug.WriteLine("Refreshing Tokens");
+                Logger.LogStr("SPOTIFY: Refreshing Tokens");
                 await RefreshTokens();
                 return;
             }
 
-            Debug.WriteLine("Getting new tokens");
+            Logger.LogStr("SPOTIFY: Getting new tokens");
             _server = new EmbedIOAuthServer(new Uri($"http://{Settings.Settings.SpotifyRedirectUri}:4002/auth"), 4002, Assembly.GetExecutingAssembly(), "Songify_Slim.default_site");
             await _server.Start();
 
@@ -66,6 +66,7 @@ namespace Songify_Slim.Util.Spotify
                     }
                 };
             Uri uri = request.ToUri();
+
             try
             {
                 BrowserUtil.Open(uri);
@@ -90,6 +91,7 @@ namespace Songify_Slim.Util.Spotify
 
         private static async Task RefreshTokens()
         {
+            // 1) Get new tokens (background thread is fine)
             OAuthClient oauth = new OAuthClient();
             TokenSwapRefreshRequest refreshRequest = new TokenSwapRefreshRequest(
                 new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
@@ -97,46 +99,62 @@ namespace Songify_Slim.Util.Spotify
             );
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
-            Debug.WriteLine($"We got a new refreshed access token from server: {refreshResponse.AccessToken}");
+            // Avoid logging secrets in production:
+            Debug.WriteLine("We got a refreshed access token from server.");
 
-            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(
-                new AuthorizationCodeAuthenticator(Settings.Settings.ClientId, Settings.Settings.ClientSecret,
-                    new AuthorizationCodeTokenResponse
-                    {
-                        AccessToken = Settings.Settings.SpotifyAccessToken,
-                        RefreshToken = Settings.Settings.SpotifyRefreshToken
-                    }));
-
+            // 2) Update settings with new tokens
             Settings.Settings.SpotifyAccessToken = refreshResponse.AccessToken;
             if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
                 Settings.Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
 
-            Client = new SpotifyClient(config);
-            if (!AuthTimer.Enabled)
-            {
-                AuthTimer.Start();
-            }
+            // 3) Build client using the *updated* tokens
+            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(
+                new AuthorizationCodeAuthenticator(
+                    Settings.Settings.ClientId,
+                    Settings.Settings.ClientSecret,
+                    new AuthorizationCodeTokenResponse
+                    {
+                        AccessToken = Settings.Settings.SpotifyAccessToken,
+                        RefreshToken = Settings.Settings.SpotifyRefreshToken
+                    }
+                )
+            );
 
-            // We are authenticated!
-            if (Application.Current?.MainWindow is MainWindow mw)
+            Client = new SpotifyClient(config);
+
+            // 4) Marshal any UI/DispatcherTimer work to the UI thread
+            Application app = Application.Current;
+            if (app != null)
             {
-                mw.Dispatcher.BeginInvoke(new Action(() =>
+                await app.Dispatcher.InvokeAsync(async () =>
                 {
-                    mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
-                    mw.IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
-                }));
+                    // If AuthTimer is a DispatcherTimer, start it on its owning Dispatcher (the UI thread)
+                    if (!AuthTimer.Enabled)   // or .Enabled if it's a different timer type
+                        AuthTimer.Start();
+                    GlobalObjects.SpotifyProfile = await GetUser();
+                    Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
+                    Logger.LogStr(
+                        $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                    Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
+
+                    if (app.MainWindow is MainWindow mw)
+                    {
+                        mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
+                        mw.IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    }
+                });
             }
         }
 
+
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
-            Debug.WriteLine("Got here");
             OAuthClient oauth = new OAuthClient();
             TokenSwapTokenRequest tokenRequest = new TokenSwapTokenRequest(
                 new Uri($"{BaseUrl}/swap?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
                 response.Code);
             AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
-            Debug.WriteLine($"We got an access token from server: {tokenResponse.AccessToken}");
+            Logger.LogStr($"SPOTIFY: We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
 
             TokenSwapRefreshRequest refreshRequest = new TokenSwapRefreshRequest(
                 new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
@@ -144,7 +162,7 @@ namespace Songify_Slim.Util.Spotify
             );
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
-            Debug.WriteLine($"We got a new refreshed access token from server: {refreshResponse.AccessToken}");
+            Logger.LogStr($"SPOTIFY: We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
 
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
                 .WithAuthenticator(new AuthorizationCodeAuthenticator(Settings.Settings.ClientId,
@@ -226,58 +244,88 @@ namespace Songify_Slim.Util.Spotify
 
         public static async Task<TrackInfo> GetSongInfo()
         {
-            if (Client == null)
-                return null;
+            if (Client == null) return null;
+
             try
             {
-                CurrentlyPlaying playback =
-                    await Client.Player.GetCurrentlyPlaying(new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track));
-                if (playback == null)
-                    return null;
-                if (playback.Item is not FullTrack track)
+                // 1) What’s currently playing?
+                CurrentlyPlaying playback = await Client.Player.GetCurrentlyPlaying(
+                    new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track)
+                    {
+                        Market = "from_token" // helps avoid market-related mismatches
+                    });
+
+                if (playback == null || playback.Item is not FullTrack track)
                     return null;
 
-                string artists = string.Join(", ", track.Artists.Select(a => a.Name));
+                // 2) Playback state / device (can be null when nothing active)
+                CurrentlyPlayingContext currentPlayback = null;
+                try
+                {
+                    currentPlayback = await Client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest()
+                    {
+                        Market = "from_token"
+                    });
+                }
+                catch (APIException apiEx) when ((int)apiEx.Response.StatusCode == 404 || (int)apiEx.Response.StatusCode == 204)
+                {
+                    // No active device or no content; continue without device info
+                    currentPlayback = null;
+                }
 
-                CurrentlyPlayingContext currentPlayback = await Client.Player.GetCurrentPlayback();
-                if (currentPlayback == null)
-                    return null;
-                if (Settings.Settings.SpotifyDeviceId != currentPlayback.Device.Id)
+                if (currentPlayback?.Device?.Id != null &&
+                    Settings.Settings.SpotifyDeviceId != currentPlayback.Device.Id)
                 {
                     Settings.Settings.SpotifyDeviceId = currentPlayback.Device.Id;
                 }
 
-                List<Image> albums = track.Album.Images;
+                // 3) Basics
+                string artists = string.Join(", ", track.Artists.Select(a => a.Name));
+                List<Image> albums = track.Album?.Images ?? new List<Image>();
+                if (playback.ProgressMs == null) return null;
+
                 double totalSeconds = track.DurationMs / 1000.0;
-                if (playback.ProgressMs == null)
-                    return null;
+                double currentSeconds = (double)playback.ProgressMs / 1000.0;
+                int percentage = totalSeconds == 0 ? 0 : (int)(100 * currentSeconds / totalSeconds);
 
-                double currentSeconds = (double)(playback.ProgressMs / 1000.0);
-                double percentage = totalSeconds == 0 ? 0 : (100 * currentSeconds / totalSeconds);
-
-                // Initialize playlist info as null by default
+                // 4) Playlist context (robust & safe)
                 PlaylistInfo playlistInfo = null;
-
-                // Only try to get playlist info if the context is a playlist
-                if (playback.Context is { Type: "playlist" })
+                if (playback.Context?.Type == "playlist" && !string.IsNullOrEmpty(playback.Context.Uri))
                 {
-                    string[] uriParts = playback.Context.Uri.Split(':');
-                    if (uriParts is { Length: 3 })
+                    // Support both "spotify:playlist:{id}" and "spotify:user:{uid}:playlist:{id}"
+                    string playlistId = null;
+                    string[] parts = playback.Context.Uri.Split(':');
+                    if (parts.Length >= 3 && parts[0] == "spotify")
                     {
-                        string playlistId = uriParts[2];
-                        FullPlaylist playlist = await Client.Playlists.Get(playlistId);
-                        playlistInfo = new PlaylistInfo
+                        if (parts.Length == 3 && parts[1] == "playlist")
+                            playlistId = parts[2];
+                        else if (parts.Length >= 5 && parts[1] == "user" && parts[3] == "playlist")
+                            playlistId = parts[4];
+                    }
+
+                    if (!string.IsNullOrEmpty(playlistId))
+                    {
+                        try
                         {
-                            Name = playlist.Name,
-                            Id = playlist.Id,
-                            Owner = playlist.Owner?.DisplayName,
-                            Url = playlist.Uri,
-                            Image = playlist.Images?.FirstOrDefault()?.Url
-                        };
+                            FullPlaylist playlist = await Client.Playlists.Get(playlistId);
+                            playlistInfo = new PlaylistInfo
+                            {
+                                Name = playlist.Name,
+                                Id = playlist.Id,
+                                Owner = playlist.Owner?.DisplayName,
+                                Url = playlist.Uri,
+                                Image = playlist.Images?.FirstOrDefault()?.Url
+                            };
+                        }
+                        catch (APIException apiEx) when ((int)apiEx.Response.StatusCode == 404 || (int)apiEx.Response.StatusCode == 403)
+                        {
+                            // Private / deleted / no access – skip playlist info gracefully
+                            Logger.LogStr($"Playlist context not accessible ({apiEx.Response.StatusCode}). Skipping playlist info.");
+                        }
                     }
                 }
 
-                // Create and return the TrackInfo object with all the information
+                // 5) Build result
                 return new TrackInfo
                 {
                     Artists = artists,
@@ -287,16 +335,29 @@ namespace Songify_Slim.Util.Spotify
                     DurationMs = (int)(track.DurationMs - playback.ProgressMs),
                     IsPlaying = playback.IsPlaying,
                     Url = "https://open.spotify.com/track/" + track.Id,
-                    DurationPercentage = (int)percentage,
+                    DurationPercentage = percentage,
                     DurationTotal = track.DurationMs,
                     Progress = (int)playback.ProgressMs,
                     Playlist = playlistInfo,
                     FullArtists = track.Artists.ToList()
                 };
             }
+            catch (APIException apiEx)
+            {
+                // Inspect the root cause cleanly
+                Logger.LogStr("ERROR: Couldn't fetch song info");
+                Logger.LogStr($"Spotify API error {(int)apiEx.Response.StatusCode}: {apiEx.Message}");
+                if (!string.IsNullOrEmpty((string)(apiEx.Response?.Body)))
+                    Logger.LogStr((string)apiEx.Response.Body); // often contains JSON with 'reason'
+
+                // Common hints based on endpoint behavior
+                // 404 -> no active device / no content / not found resource (playlist/track)
+                // 401 -> token/scopes issue
+                // 403 -> forbidden (private playlist without scope)
+            }
             catch (Exception ex)
             {
-                Logger.LogStr("ERROR: Couldn't fetch song info");
+                Logger.LogStr("ERROR: Couldn't fetch song info (unexpected)");
                 Logger.LogExc(ex);
             }
 

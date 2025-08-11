@@ -163,12 +163,6 @@ namespace Songify_Slim.Views
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
             NudBits.Value = Settings.MinimumBitsForSR;
-            CbxSpotifyRedirectUri.SelectedIndex = Settings.SpotifyRedirectUri switch
-            {
-                "localhost" => 0,
-                "127.0.0.1" => 1,
-                _ => CbxSpotifyRedirectUri.SelectedIndex
-            };
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -614,13 +608,13 @@ namespace Songify_Slim.Views
             // Shows a message box if the client id or secret is missing
             MessageDialogResult res = await this.ShowMessageAsync(
                 "Important",
-                $"Just to make sure: Even though you have \"{((ComboBoxItem)CbxSpotifyRedirectUri.SelectedItem).Content}\" selected.\nWhich redirect URI are you using on the Spotify Developer App?",
+                "Which redirect URI are you using on the Spotify Developer App?",
                 MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings
                 {
                     ColorScheme = MetroDialogColorScheme.Theme,
                     OwnerCanCloseWithDialog = true,
-                    AffirmativeButtonText = "http://127.0.0.1:4002/auth",
-                    NegativeButtonText = "http://localhost:4002/auth",
+                    AffirmativeButtonText = " http://127.0.0.1:4002/auth ",
+                    NegativeButtonText = " http://localhost:4002/auth ",
                     FirstAuxiliaryButtonText = "Cancel",
                 });
             switch (res)
@@ -637,6 +631,7 @@ namespace Songify_Slim.Views
                 default:
                     return;
             }
+
 
             // Links Spotify
             Settings.SpotifyRefreshToken = "";
@@ -1238,7 +1233,7 @@ namespace Songify_Slim.Views
 
         private void TglAutoStartWebserver_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.AutoStartWebServer = true;
+            Settings.AutoStartWebServer = ((ToggleSwitch)sender).IsOn;
         }
 
         private void BtnCreateNewReward_Click(object sender, RoutedEventArgs e)
@@ -1252,7 +1247,7 @@ namespace Songify_Slim.Views
 
         private void TglBetaUpdates_Toggled(object sender, RoutedEventArgs e)
         {
-            Settings.BetaUpdates = true;
+            Settings.BetaUpdates = ((ToggleSwitch)sender).IsOn;
         }
 
         private void BtnWebserverOpenUrl_OnClick(object sender, RoutedEventArgs e)
@@ -1909,7 +1904,7 @@ namespace Songify_Slim.Views
 
         }
 
-     
+
         private void GenerateRefundConditionToggles()
         {
             RefundSwitchesPanel.Children.Clear();

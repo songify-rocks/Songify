@@ -1310,8 +1310,8 @@
                                 x:Name="TglOnlySkipNonSrRewards"
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                Toggled="TglOnlySkipNonSrRewards_OnToggled"
-                                Content="Disable Skip Rewards for Song Requests" />
+                                Content="Disable Skip Rewards for Song Requests"
+                                Toggled="TglOnlySkipNonSrRewards_OnToggled" />
                             <TabControl
                                 Grid.Row="2"
                                 Grid.Column="0"
@@ -1349,7 +1349,8 @@
                                         <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
                                         <Grid
                                             x:Name="RefundSwitchesPanel"
-                                            VerticalAlignment="Top" SizeChanged="RefundSwitchesPanel_OnSizeChanged">
+                                            VerticalAlignment="Top"
+                                            SizeChanged="RefundSwitchesPanel_OnSizeChanged">
                                             <!--<controls:ToggleSwitch
                                     x:Name="ChkRefundUserLevel"
                                     Grid.Row="0"
@@ -2319,34 +2320,15 @@
                                 d:Content="{x:Static local:Resources.sw_Integration_SpotifyLinked}"
                                 Content="{DynamicResource sw_Integration_SpotifyLinked}" />
                         </DockPanel>
-                        <StackPanel
+                        <Button
+                            x:Name="BtnSpotifyLink"
                             Grid.Row="0"
+                            Width="90"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="Spotify redirect URI base " />
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                Text="?"
-                                TextDecorations="Underline"
-                                ToolTip="The base redirect URL. Change this to 127.0.0.1 if localhost is no longer working for you." />
-                            <ComboBox
-                                x:Name="CbxSpotifyRedirectUri"
-                                Width="100"
-                                Margin="6,0"
-                                SelectedIndex="1"
-                                SelectionChanged="CbxSpotifyRedirectUri_OnSelectionChanged">
-                                <ComboBoxItem Content="localhost" />
-                                <ComboBoxItem Content="127.0.0.1" />
-                            </ComboBox>
-                            <Button
-                                x:Name="BtnSpotifyLink"
-                                Width="90"
-                                d:Content="{x:Static local:Resources.sw_Integration_btnLink}"
-                                Click="Btn_spotifyLink_Click"
-                                Content="{DynamicResource sw_Integration_btnLink}" />
-                        </StackPanel>
-
+                            d:Content="{x:Static local:Resources.sw_Integration_btnLink}"
+                            Click="Btn_spotifyLink_Click"
+                            Content="{DynamicResource sw_Integration_btnLink}" />
                         <controls:ToggleSwitch
                             x:Name="TglswSpotify"
                             Grid.Row="1"

@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -211,12 +212,13 @@ namespace Songify_Slim.Util.Settings
         public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
             path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            Directory.CreateDirectory(path);
+
             ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
 
             string fileEnding = isBackup ? ".bak" : ".yaml";
-
             string fileName = configType switch
             {
                 ConfigTypes.SpotifyCredentials => "SpotifyCredentials",
@@ -240,51 +242,97 @@ namespace Songify_Slim.Util.Settings
             string yaml = serializer.Serialize(configObject);
 
             string fullPath = Path.Combine(path, fileName + fileEnding);
-            string tempPath = fullPath + ".tmp";
+            string tempPath = Path.Combine(path, Path.GetRandomFileName()); // same dir/volume
 
-            // Write atomically
             try
             {
-                using (FileStream fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                using (StreamWriter writer = new(fs))
+                // 1) Write temp file and flush to disk
+                using (FileStream fs = new FileStream(
+                    tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096,
+                    FileOptions.WriteThrough | FileOptions.SequentialScan))
+                using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
                 {
                     writer.Write(yaml);
                     writer.Flush();
-                    fs.Flush(flushToDisk: true); // <—— ensures OS writes it physically
+                    fs.Flush(flushToDisk: true);
                 }
 
+                // 2) Ensure destination isn’t read-only
                 if (File.Exists(fullPath))
                 {
-                    // Safe atomic replace
-                    File.Replace(tempPath, fullPath, null);
+                    FileAttributes attrs = File.GetAttributes(fullPath);
+                    if ((attrs & FileAttributes.ReadOnly) != 0)
+                        File.SetAttributes(fullPath, attrs & ~FileAttributes.ReadOnly);
                 }
-                else
+
+                // 3) Replace/move with small retry loop (handles transient locks/AV)
+                const int maxAttempts = 6;
+                int delayMs = 50;
+
+                for (int attempt = 1; ; attempt++)
                 {
-                    // First-time creation — no destination file exists yet
-                    File.Move(tempPath, fullPath);
+                    try
+                    {
+                        if (File.Exists(fullPath))
+                        {
+                            File.Replace(tempPath, fullPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+                        }
+                        else
+                        {
+                            File.Move(tempPath, fullPath);
+                        }
+                        break; // success
+                    }
+                    catch (IOException) when (attempt < maxAttempts)
+                    {
+                        Thread.Sleep(delayMs);
+                        delayMs *= 2;
+                    }
+                    catch (UnauthorizedAccessException) when (attempt < maxAttempts)
+                    {
+                        Thread.Sleep(delayMs);
+                        delayMs *= 2;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                if (File.Exists(tempPath))
-                    File.Delete(tempPath);
+                // Clean up temp if anything failed
+                try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { /* ignore */ }
                 Logger.LogExc(ex);
             }
         }
 
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
         {
-            string yamlPath = $@"{path}\{fileName}.yaml";
-            string bakPath = $@"{path}\{fileName}.bak";
+            string yamlPath = Path.Combine(path, fileName + ".yaml");
+            string bakPath = Path.Combine(path, fileName + ".bak");
 
-            if (File.Exists(yamlPath))
+            static T TryRead<T>(string p, IDeserializer d)
             {
-                return deserializer.Deserialize<T>(File.ReadAllText(yamlPath));
+                if (!File.Exists(p)) return default;
+                using FileStream fs = new FileStream(p, FileMode.Open, FileAccess.Read,
+                    FileShare.ReadWrite | FileShare.Delete);
+                using StreamReader sr = new StreamReader(fs);
+                string text = sr.ReadToEnd();
+                return d.Deserialize<T>(text);
             }
 
-            return File.Exists(bakPath) ? deserializer.Deserialize<T>(File.ReadAllText(bakPath)) :
-                // Return a new instance with default values already set
-                new T();
+            try
+            {
+                T fromYaml = TryRead<T>(yamlPath, deserializer);
+                if (fromYaml != null) return fromYaml;
+            }
+            catch { /* corrupted yaml? fall through to bak */ }
+
+            try
+            {
+                T fromBak = TryRead<T>(bakPath, deserializer);
+                if (fromBak != null) return fromBak;
+            }
+            catch { /* corrupted bak too */ }
+
+            return new T(); // defaults
         }
 
         public static void ReadConfig(string path = null)
