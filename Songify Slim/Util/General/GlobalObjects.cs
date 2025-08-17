@@ -51,7 +51,10 @@ namespace Songify_Slim.Util.General
         public static List<Moderator> moderators = [];
         public static List<ChannelVIPsResponseModel> vips = [];
 
-        public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H") ? "HH:mm:ss" : "hh:mm:ss tt";
+        public static string TimeFormat = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern.Contains("H")
+            ? "HH:mm:ss"
+            : "hh:mm:ss tt";
+
         public static WebServer WebServer = new();
         public static bool TwitchUserTokenExpired = false;
         public static bool TwitchBotTokenExpired = false;
@@ -121,7 +124,7 @@ namespace Songify_Slim.Util.General
         public static bool IsObjectDefault<T>(T obj)
         {
             if (obj == null)
-                return false;  // The object itself is not null based on your condition.
+                return false; // The object itself is not null based on your condition.
 
             // Get all properties of the object using reflection.
             PropertyInfo[] properties = typeof(T).GetProperties();
@@ -183,6 +186,7 @@ namespace Songify_Slim.Util.General
                 if (childOfChild != null)
                     return childOfChild;
             }
+
             return null;
         }
 
@@ -534,8 +538,10 @@ namespace Songify_Slim.Util.General
                             Trackid = item.Id,
                             Artist = item.Artist ?? "",
                             Title = item.Title ?? "",
-                            Length =item.Length.ToString() ?? "",
-                            Requester = ReqList.Any(r => r.Trackid == item.Id) ? ReqList.FirstOrDefault(r => r.Trackid == item.Id)?.Requester : "YouTube",
+                            Length = item.Length.ToString() ?? "",
+                            Requester = ReqList.Any(r => r.Trackid == item.Id)
+                                ? ReqList.FirstOrDefault(r => r.Trackid == item.Id)?.Requester
+                                : "YouTube",
                             Played = item.Id == ytmthchResponse.VideoId ? -1 : 0,
                             Albumcover = item.CoverUrl ?? "",
                             PlayerType = "YouTube",
@@ -599,7 +605,8 @@ namespace Songify_Slim.Util.General
             if (LikedPlaylistTracks == null)
                 await LoadLikedPlaylistTracks();
 
-            if (LikedPlaylistTracks != null && LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == trackInfo.SongId))
+            if (LikedPlaylistTracks != null &&
+                LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == trackInfo.SongId))
                 return true;
 
             IsInPlaylist = false;
@@ -636,5 +643,31 @@ namespace Songify_Slim.Util.General
                 _ => ""
             };
         }
+
+        public static string GetRefundConditionLabel(Enums.RefundCondition condition)
+        {
+            Dictionary<Enums.RefundCondition, string> refundConditionLabels = new Dictionary<Enums.RefundCondition, string>
+            {
+                { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.Sw_Integration_RefundUserLevelLow },
+                { Enums.RefundCondition.UserBlocked, Properties.Resources.Sw_Integration_RefundUSerBlocked },
+                { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.Sw_Integration_RefundSpotifyNotConnected },
+                { Enums.RefundCondition.SongUnavailable, Properties.Resources.Sw_Integration_RefundSongNotAvailable },
+                { Enums.RefundCondition.SongBlocked, Properties.Resources.Sw_Integration_RefundSongBlocked },
+                { Enums.RefundCondition.ArtistBlocked, Properties.Resources.Sw_Integration_RefundArtistBlocked },
+                { Enums.RefundCondition.SongTooLong, Properties.Resources.Sw_Integration_RefundSongTooLong },
+                { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.Sw_Integration_RefundSongAlreadyInQueue },
+                { Enums.RefundCondition.QueueLimitReached, Properties.Resources.Sw_Integration_RefundQueueLimitReached },
+                { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
+                { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
+                { Enums.RefundCondition.TrackIsEplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit },
+                { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways },
+            };
+
+            return refundConditionLabels.TryGetValue(condition, out string label)
+                ? label
+                : $"Unknown refund condition: {condition}";
+        }
+
+
     }
 }

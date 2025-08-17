@@ -358,7 +358,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text that gets added to the response if points are refunded.
+        ///   Looks up a localized string similar to Response when channel points have been refunded. (empty for no response).
         /// </summary>
         public static string brw_Refund {
             get {
@@ -1119,6 +1119,15 @@ namespace Songify_Slim.Properties {
         public static string Param_Queue_Desc {
             get {
                 return ResourceManager.GetString("Param_Queue_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The reason why the redemption got refunded..
+        /// </summary>
+        public static string Param_RefundReason_Desc {
+            get {
+                return ResourceManager.GetString("Param_RefundReason_Desc", resourceCulture);
             }
         }
         

@@ -612,9 +612,6 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Odpowiedź na polecenie !song</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Tekst dodawany do odpowiedzi w przypadku zwrotu punktów</value>
-  </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Język</value>
   </data>
@@ -932,5 +929,11 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>Piosenka jest zablokowana</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Odpowiedź w przypadku zwrotu punktów kanałowych. (puste pole oznacza brak odpowiedzi)</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>Powód zwrotu środków.</value>
   </data>
 </root>

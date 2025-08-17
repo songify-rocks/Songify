@@ -613,9 +613,6 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Réponse pour la commande !song</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Texte qui est ajouté à la réponse si les points sont remboursés</value>
-  </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Langue</value>
   </data>
@@ -936,5 +933,11 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>La chanson est bloquée</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Réponse lorsque les points de canal ont été remboursés. (vide pour aucune réponse)</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>La raison pour laquelle le rachat a été remboursé.</value>
   </data>
 </root>

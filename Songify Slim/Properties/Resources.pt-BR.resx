@@ -615,9 +615,6 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Resposta para o comando !song</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Texto que será adicionado à resposta se os pontos forem reembolsados</value>
-  </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Linguagem</value>
   </data>
@@ -932,5 +929,11 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>A música está bloqueada</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Resposta quando os pontos do canal forem reembolsados. (vazio para nenhuma resposta)</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>O motivo pelo qual o resgate foi reembolsado.</value>
   </data>
 </root>

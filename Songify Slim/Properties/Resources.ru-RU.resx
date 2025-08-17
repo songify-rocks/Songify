@@ -610,9 +610,6 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Ответ на команду !song</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Текст, который добавляется к ответу, если баллы возвращаются</value>
-  </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Язык</value>
   </data>
@@ -933,5 +930,11 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>Песня заблокирована</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Ответ при возврате баллов канала (пусто, если ответа нет)</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>Причина, по которой выкуп был возвращен.</value>
   </data>
 </root>

@@ -670,7 +670,7 @@
     <comment>Label content "Response for !song command"</comment>
   </data>
   <data name="brw_Refund" xml:space="preserve">
-    <value>Тэкст, які дадаецца да адказу, калі вяртаюцца балы</value>
+    <value>Адказ пасля вяртання балаў канала. (пуста, калі няма адказу)</value>
     <comment>Title for the text field</comment>
   </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
@@ -1109,5 +1109,8 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>Песня заблакаваная</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>Прычына, па якой выкуп быў вернуты.</value>
   </data>
 </root>

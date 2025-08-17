@@ -2,4 +2,4 @@
 <Values xmlns="urn:tom-englert.de/Configuration/1/0">
   <Value Key="SortFileContentOnSave">False</Value>
   <Value Key="PrefixTranslations">False</Value>
-</Values>
+<Value Key="AutoCreateNewLanguageFiles">True</Value></Values>

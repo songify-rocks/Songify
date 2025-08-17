@@ -55,7 +55,9 @@ namespace Songify_Slim.Views
                 { "{queue}", Application.Current.TryFindResource("Param_Queue_Desc") as string ?? "Next 5 songs in the queue" },
                 { "{commands}", Application.Current.TryFindResource("Param_Commands_Desc") as string ?? "List of all active commands" },
                 { "{userlevel}", Application.Current.TryFindResource("Param_Userlevel_Desc") as string ?? "The users userlevel (Folower, Subscriber etc)"},
-                { "{ttp}", Application.Current.TryFindResource("Param_TimeToPlay_Desc") as string ?? "The time in mm:ss when the song request will play."}
+                { "{ttp}", Application.Current.TryFindResource("Param_TimeToPlay_Desc") as string ?? "The time in mm:ss when the song request will play."},
+                { "{reason}", Application.Current.TryFindResource("Param_RefundReason_Desc") as string ?? "The reason why the reward got refunded."},
+
             };
 
             PnlParams.Children.Clear();

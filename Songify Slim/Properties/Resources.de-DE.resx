@@ -610,9 +610,6 @@
   <data name="brw_Song" xml:space="preserve">
     <value>Antwort auf den Befehl !song</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
-    <value>Text, welcher der Antwort hinzugefügt wird, wenn Punkte zurückerstattet werden</value>
-  </data>
   <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
     <value>Sprache</value>
   </data>
@@ -933,5 +930,11 @@
   </data>
   <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
     <value>Song ist blockiert</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Antwort, wenn Kanalpunkte zurückerstattet wurden. (leer für keine Antwort)</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>Der Grund, warum die Einlösung zurückerstattet wurde.</value>
   </data>
 </root>
