@@ -35,6 +35,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -1243,7 +1244,9 @@ namespace Songify_Slim.Util.Songify.Twitch
                                 };
                                 GlobalObjects.ReqList.Add(req);
 
-                                bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
+                                //bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
+
+                                bool ok = await YtmDesktopApi.AddToQueueAsync(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
                                 if (ok)
                                 {
                                     // Your success response logic
@@ -4686,7 +4689,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                     { Status = CustomRewardRedemptionStatus.CANCELED });
                 if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                 {
-                    if(string.IsNullOrEmpty(Settings.Settings.BotRespRefund))
+                    if (string.IsNullOrEmpty(Settings.Settings.BotRespRefund))
                         return;
                     string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                     {

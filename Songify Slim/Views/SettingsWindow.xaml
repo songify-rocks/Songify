@@ -2155,7 +2155,7 @@
                                         ContentPadding="0"
                                         FontFamily="Segoe UI"
                                         FontSize="12"
-                                        Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
+                                        Toggled="Tglsw_BitsForSr_OnToggled" />
                                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                         <Image
                                             x:Name="ImgBits"

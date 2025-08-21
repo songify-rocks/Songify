@@ -181,6 +181,7 @@ namespace Songify_Slim.Views
                 ? Properties.Resources.sw_WebServer_StopWebServer
                 : Properties.Resources.sw_WebServer_StartWebServer;
             ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
+            Tglsw_BitsForSr.IsOn = Settings.SrForBits;
             TglInformChat.IsOn = Settings.ChatLiveStatus;
             TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
             Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
@@ -2120,6 +2121,13 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void Tglsw_BitsForSr_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.SrForBits = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

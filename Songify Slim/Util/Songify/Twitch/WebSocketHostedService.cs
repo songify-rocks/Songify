@@ -115,6 +115,8 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task EventSubWebsocketClientOnChannelCheer(object sender, ChannelCheerArgs args)
         {
+            if(!Settings.Settings.SrForBits)
+                return;
             ChannelCheer eventData = args.Notification.Payload.Event;
             if (eventData.BroadcasterUserId != Settings.Settings.TwitchUser.Id)
                 return;

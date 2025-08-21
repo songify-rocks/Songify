@@ -30,6 +30,22 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static bool SkipOnlyNonSrSongs { get => GetSkipOnlyNonSrSongs(); set => SetSkipOnlyNonSrSongs(value); }
+        public static bool SrForBits
+        {
+            get => GetSrForBits(); 
+            set => SetSrForBits(value);
+        }
+
+        private static void SetSrForBits(bool value)
+        {
+            CurrentConfig.AppConfig.SrForBits = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetSrForBits()
+        {
+            return CurrentConfig.AppConfig.SrForBits;
+        }
 
         private static void SetSkipOnlyNonSrSongs(bool value)
         {
@@ -968,8 +984,6 @@ namespace Songify_Slim.Util.Settings
                 AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
-                SongifyApiKey = CurrentConfig.AppConfig.SongifyApiKey,
-                SkipOnlyNonSrSongs = GetSkipOnlyNonSrSongs(),
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
                 AppendSpacesSplitFiles = GetAppendSpacesSplitFiles(),
@@ -1016,12 +1030,15 @@ namespace Songify_Slim.Util.Settings
                 RewardGoalSong = GetRewardGoalSong(),
                 SaveHistory = GetSaveHistory(),
                 ShowUserLevelBadges = GetShowUserLevelBadges(),
+                SkipOnlyNonSrSongs = GetSkipOnlyNonSrSongs(),
                 SongBlacklist = GetSongBlacklist(),
+                SongifyApiKey = CurrentConfig.AppConfig.SongifyApiKey,
                 SpaceCount = GetSpaceCount(),
                 SplitOutput = GetSplitOutput(),
                 SpotifyControlVisible = GetSpotifyControlVisible(),
                 SpotifyPlaylistId = GetSpotifyPlaylistId(),
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
+                SrForBits = GetSrForBits(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),

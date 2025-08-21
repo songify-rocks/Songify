@@ -27,7 +27,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
-
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi; // for Enums
 
 namespace Songify_Slim.Util.General
 {
@@ -38,6 +39,168 @@ namespace Songify_Slim.Util.General
         private static readonly ConcurrentDictionary<Guid, WebSocket> ConnectedClients = new();
         private static readonly ConcurrentDictionary<string, ConcurrentDictionary<Guid, WebSocket>> ChannelClients = new();
 
+        // ---- Command routing (no giant switch) ----
+        private delegate Task<string> CommandHandler(WebSocketCommand command);
+
+        private static readonly Dictionary<string, CommandHandler> CommandMap = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["youtube"] = HandleYoutubeAsync,
+
+            ["queue_add"] = HandleQueueAddAsync,
+
+            ["vol_set"] = HandleVolSetAsync,
+            ["vol_up"] = c => HandleVolumeStepAsync(+5),
+            ["vol_down"] = c => HandleVolumeStepAsync(-5),
+
+            ["send_to_chat"] = HandleSendToChatAsync,
+
+            ["block_artist"] = c => { BlockArtist(); return Task.FromResult("Artist blocked."); },
+            ["block_all_artists"] = c => { BlockAllArtists(); return Task.FromResult("All artists blocked."); },
+            ["block_song"] = async c => { BlockSong(); return await Task.FromResult("Song blocked."); },
+            ["block_user"] = c =>
+            {
+                string user = BlockUser();
+                return Task.FromResult(!string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block.");
+            },
+
+            ["skip"] = HandleSkipAsync,
+            ["next"] = HandleSkipAsync,
+
+            ["play_pause"] = HandlePlayPauseAsync,
+            ["pause"] = HandlePlayPauseAsync,
+            ["play"] = HandlePlayPauseAsync,
+
+            ["stop_sr_reward"] = HandleStopSrRewardAsync
+        };
+
+        // Abstraction for player-specific ops
+        private interface IPlayerOps
+        {
+            Task<string> QueueAddAsync(QueueAddData data);
+            Task<string> SetVolumeAsync(int value);
+            Task<string> VolumeStepAsync(int change);
+            Task<string> SkipAsync();
+            Task<string> TogglePlayPauseAsync(string action); // "play", "pause", "play_pause"
+            Task<string> SendToChatAsync();
+        }
+
+        private sealed class SpotifyOps : IPlayerOps
+        {
+            public async Task<string> QueueAddAsync(QueueAddData data)
+            {
+                string trackId = await TwitchHandler.GetTrackIdFromInput(data.Track);
+                return await TwitchHandler.AddSongFromWebsocket(trackId, data.Requester ?? "");
+            }
+
+            public async Task<string> SetVolumeAsync(int value)
+            {
+                int volume = MathUtils.Clamp(value, 0, 100);
+                await SpotifyApiHandler.SetVolume(volume);
+                return $"Volume set to {volume}%";
+            }
+
+            public async Task<string> VolumeStepAsync(int change)
+            {
+                CurrentlyPlayingContext playback = await SpotifyApiHandler.GetPlayback();
+                int current = playback?.Device?.VolumePercent ?? 0;
+                int newVolume = MathUtils.Clamp(current + change, 0, 100);
+                await SpotifyApiHandler.SetVolume(newVolume);
+                return $"Volume set to {newVolume}%";
+            }
+
+            public async Task<string> SkipAsync()
+            {
+                await SpotifyApiHandler.SkipSong();
+                return "Song skipped.";
+            }
+
+            public async Task<string> TogglePlayPauseAsync(string action)
+            {
+                var playbackContext = await SpotifyApiHandler.GetPlayback();
+                bool isPlaying = playbackContext?.IsPlaying ?? false;
+
+                if (string.Equals(action, "pause", StringComparison.OrdinalIgnoreCase) || (string.Equals(action, "play_pause", StringComparison.OrdinalIgnoreCase) && isPlaying))
+                {
+                    await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Pause);
+                    return "Playback paused.";
+                }
+
+                await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Play);
+                return "Playback resumed.";
+            }
+
+            public Task<string> SendToChatAsync()
+            {
+                TwitchHandler.SendCurrSong();
+                return Task.FromResult("Current song sent to chat.");
+            }
+        }
+
+        private sealed class YtmthchOps : IPlayerOps
+        {
+            public async Task<string> QueueAddAsync(QueueAddData data)
+            {
+                string trackId = await TwitchHandler.GetTrackIdFromInput(data.Track);
+                return await TwitchHandler.AddSongFromWebsocket(trackId, data.Requester ?? "");
+            }
+
+            public async Task<string> SetVolumeAsync(int value)
+            {
+                int volume = MathUtils.Clamp(value, 0, 100);
+                await YtmDesktopApi.SetVolumeAsync(volume);
+                return $"Volume set to {volume}%";
+            }
+
+            public async Task<string> VolumeStepAsync(int change)
+            {
+                VolumeState vol = await YtmDesktopApi.GetVolume();
+                int current = vol.State;
+                int newVolume = MathUtils.Clamp(current + change, 0, 100);
+                await YtmDesktopApi.SetVolumeAsync(newVolume);
+                return $"Volume set to {newVolume}%";
+            }
+
+            public async Task<string> SkipAsync()
+            {
+                await YtmDesktopApi.NextAsync();
+                return "Song skipped.";
+            }
+
+            public async Task<string> TogglePlayPauseAsync(string action)
+            {
+                SongResponse playback = await YtmDesktopApi.GetCurrentSongAsync();
+                bool isPlaying = !playback?.IsPaused ?? false;
+                if (string.Equals(action, "pause", StringComparison.OrdinalIgnoreCase) || (string.Equals(action, "play_pause", StringComparison.OrdinalIgnoreCase) && isPlaying))
+                {
+                    await YtmDesktopApi.PlayPauseAsync();
+                    return "Playback paused.";
+                }
+                await YtmDesktopApi.PlayPauseAsync();
+                return "Playback resumed.";
+            }
+           
+            public Task<string> SendToChatAsync()
+            {
+                TwitchHandler.SendCurrSong();
+                return Task.FromResult("Current song sent to chat.");
+            }
+        }
+
+        private static readonly IPlayerOps Spotify = new SpotifyOps();
+        private static readonly IPlayerOps Ytm = new YtmthchOps();
+
+        private static IPlayerOps GetPlayerOps()
+        {
+            switch (Settings.Settings.Player)
+            {
+                case Enums.PlayerType.SpotifyWeb:
+                    return Spotify;
+                case Enums.PlayerType.Ytmthch:
+                    return Ytm;
+                default:
+                    return Spotify; // default to Spotify behavior
+            }
+        }
 
         public void StartWebServer(int port)
         {
@@ -219,7 +382,6 @@ namespace Songify_Slim.Util.General
             }
         }
 
-
         public async Task BroadcastToChannelAsync(string path, string message)
         {
             if (!ChannelClients.TryGetValue(path, out var clients))
@@ -253,18 +415,15 @@ namespace Songify_Slim.Util.General
             }
         }
 
-
+        // ---- New ProcessMessage using the router ----
         private static async Task<string> ProcessMessage(string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return "";
 
-            //Logger.LogStr($"WEBSOCKET: message '{message}' received");
-
             WebSocketCommand command;
             try
             {
-                Debug.WriteLine(message);
                 command = JsonConvert.DeserializeObject<WebSocketCommand>(message);
             }
             catch (JsonException)
@@ -275,101 +434,80 @@ namespace Songify_Slim.Util.General
             if (command == null || string.IsNullOrWhiteSpace(command.Action))
                 return "Invalid command format.";
 
-            switch (command.Action)
+            if (CommandMap.TryGetValue(command.Action, out var handler))
             {
-                case "youtube":
-                    if (command.Data == null)
-                        return "Missing data for youtube.";
-                    YoutubeData youtubeData = command.Data.ToObject<YoutubeData>();
-                    if (youtubeData == null)
-                        return "Invalid data for youtube.";
-                    if (!Equals(GlobalObjects.YoutubeData, youtubeData))
-                        GlobalObjects.YoutubeData = youtubeData;
-                    return "";
-
-                case "queue_add":
-                    if (command.Data == null)
-                        return "Missing data for queue_add.";
-
-                    QueueAddData queueData = command.Data.ToObject<QueueAddData>();
-
-                    string trackId = await TwitchHandler.GetTrackIdFromInput(queueData.Track);
-                    return await TwitchHandler.AddSongFromWebsocket(trackId, queueData.Requester ?? "");
-
-                case "vol_set":
-                    if (command.Data == null)
-                        return "Missing data for vol_set.";
-
-                    VolumeData volData = command.Data.ToObject<VolumeData>();
-
-                    int volume = MathUtils.Clamp(volData.Value, 0, 100);
-                    await SpotifyApiHandler.SetVolume(volume);
-                    return $"Volume set to {volume}%";
-
-                case "send_to_chat":
-                    TwitchHandler.SendCurrSong();
-                    return "Current song sent to chat.";
-
-                case "block_artist":
-                    BlockArtist();
-                    return "Artist blocked.";
-
-                case "block_all_artists":
-                    BlockAllArtists();
-                    return "All artists blocked.";
-
-                case "block_song":
-                    BlockSong();
-                    return "Song blocked.";
-
-                case "block_user":
-                    string user = BlockUser();
-                    return !string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block.";
-
-                case "skip":
-                case "next":
-                    await SpotifyApiHandler.SkipSong();
-                    return "Song skipped.";
-
-                case "play_pause":
-                case "pause":
-                case "play":
-                    var playbackContext = await SpotifyApiHandler.GetPlayback();
-                    if (playbackContext.IsPlaying)
-                    {
-                        await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Pause);
-                        return "Playback paused.";
-                    }
-                    await SpotifyApiHandler.PlayPause(Enums.PlaybackAction.Play);
-                    return "Playback resumed.";
-
-                case "stop_sr_reward":
-                    foreach (string rewardId in Settings.Settings.TwRewardId)
-                    {
-                        await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
-                            Settings.Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
-                            {
-                                IsPaused = true
-                            }, Settings.Settings.TwitchAccessToken);
-                    }
-                    return "Song request rewards stopped.";
-
-                case "vol_up":
-                case "vol_down":
-                    //var device = (await SpotifyApiHandler.Spotify.GetDevicesAsync()).Devices
-                    //    .FirstOrDefault(d => d.Id == Settings.Settings.SpotifyDeviceId);
-
-                    //if (device == null)
-                    //    return "No device found.";
-                    CurrentlyPlayingContext playback = await SpotifyApiHandler.GetPlayback();
-                    int change = command.Action == "vol_up" ? 5 : -5;
-                    int newVolume = MathUtils.Clamp((int)(playback.Device.VolumePercent == null ? 0 : playback.Device.VolumePercent + change), 0, 100);
-                    await SpotifyApiHandler.SetVolume(newVolume);
-                    return $"Volume set to {newVolume}%";
-
-                default:
-                    return $"Unknown action: {command.Action}";
+                return await handler(command);
             }
+
+            return $"Unknown action: {command.Action}";
+        }
+
+        // ---- Command Handlers ----
+        private static Task<string> HandleYoutubeAsync(WebSocketCommand command)
+        {
+            if (command.Data == null) return Task.FromResult("Missing data for youtube.");
+            YoutubeData youtubeData = command.Data.ToObject<YoutubeData>();
+            if (youtubeData == null) return Task.FromResult("Invalid data for youtube.");
+            if (!Equals(GlobalObjects.YoutubeData, youtubeData))
+                GlobalObjects.YoutubeData = youtubeData;
+            return Task.FromResult(string.Empty);
+        }
+
+        private static async Task<string> HandleQueueAddAsync(WebSocketCommand command)
+        {
+            if (command.Data == null) return "Missing data for queue_add.";
+            QueueAddData queueData = command.Data.ToObject<QueueAddData>();
+            if (queueData == null) return "Invalid data for queue_add.";
+
+            var ops = GetPlayerOps();
+            return await ops.QueueAddAsync(queueData);
+        }
+
+        private static async Task<string> HandleVolSetAsync(WebSocketCommand command)
+        {
+            if (command.Data == null) return "Missing data for vol_set.";
+            VolumeData volData = command.Data.ToObject<VolumeData>();
+            if (volData == null) return "Invalid data for vol_set.";
+
+            var ops = GetPlayerOps();
+            return await ops.SetVolumeAsync(MathUtils.Clamp(volData.Value, 0, 100));
+        }
+
+        private static async Task<string> HandleVolumeStepAsync(int change)
+        {
+            var ops = GetPlayerOps();
+            return await ops.VolumeStepAsync(change);
+        }
+
+        private static async Task<string> HandleSkipAsync(WebSocketCommand command)
+        {
+            var ops = GetPlayerOps();
+            return await ops.SkipAsync();
+        }
+
+        private static async Task<string> HandlePlayPauseAsync(WebSocketCommand command)
+        {
+            var ops = GetPlayerOps();
+            return await ops.TogglePlayPauseAsync(command.Action);
+        }
+
+        private static async Task<string> HandleSendToChatAsync(WebSocketCommand command)
+        {
+            var ops = GetPlayerOps();
+            return await ops.SendToChatAsync();
+        }
+
+        private static async Task<string> HandleStopSrRewardAsync(WebSocketCommand command)
+        {
+            foreach (string rewardId in Settings.Settings.TwRewardId)
+            {
+                await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
+                    Settings.Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
+                    {
+                        IsPaused = true
+                    }, Settings.Settings.TwitchAccessToken);
+            }
+            return "Song request rewards stopped.";
         }
 
         private static string BlockUser()

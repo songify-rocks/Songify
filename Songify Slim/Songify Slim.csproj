@@ -231,6 +231,7 @@
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\QueueParser.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\YTHCHSearchParser.cs" />
+    <Compile Include="Util\Youtube\YTMYHCH\YtmDesktopClient.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
