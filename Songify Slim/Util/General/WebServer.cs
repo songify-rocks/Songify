@@ -1,6 +1,17 @@
 ﻿using MahApps.Metro.IconPacks;
+using Newtonsoft.Json;
+using Songify_Slim.Models;
+using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi; // for Enums
 using Songify_Slim.Views;
+using SpotifyAPI.Web;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -10,25 +21,16 @@ using System.Net.Sockets;
 using System.Net.WebSockets;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Songify_Slim.Models;
-using Songify_Slim.Util.Songify;
-using Songify_Slim.Util.Spotify;
+using Songify_Slim.Models.YTMD;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
-using Newtonsoft.Json;
-using Songify_Slim.Models.WebSocket;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using Songify_Slim.Util.Songify.Twitch;
-using SpotifyAPI.Web;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi; // for Enums
 
 namespace Songify_Slim.Util.General
 {
@@ -140,9 +142,25 @@ namespace Songify_Slim.Util.General
         {
             public async Task<string> QueueAddAsync(QueueAddData data)
             {
-                string trackId = await TwitchHandler.GetTrackIdFromInput(data.Track);
-                return await TwitchHandler.AddSongFromWebsocket(trackId, data.Requester ?? "");
+                if (data == null || string.IsNullOrWhiteSpace(data.Track))
+                    return "No track provided.";
+
+                string input = data.Track.Trim();
+                string videoId = TwitchHandler.ExtractYouTubeVideoIdFromText(input);
+
+                if (string.IsNullOrEmpty(videoId))
+                {
+                    YTMYHCHSearchResponse sr = await WebHelper.SearchYouTubeMusic(input);
+                    if (sr != null)
+                        videoId = sr.VideoId;
+                }
+
+                if (string.IsNullOrEmpty(videoId))
+                    return "No valid YouTube video ID found.";
+
+                return await TwitchHandler.AddSongFromWebsocket(videoId, data.Requester ?? string.Empty);
             }
+
 
             public async Task<string> SetVolumeAsync(int value)
             {

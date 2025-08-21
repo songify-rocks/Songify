@@ -1265,19 +1265,19 @@ namespace Songify_Slim.Util.Songify.Twitch
                                 }
                                 else
                                 {
-                                    await SendChatMessage(message.Channel, "That song is already in the queue 🙂");
+                                    await SendChatMessage(message.Channel, "That song is already in the queue ");
                                 }
                             }
                             else
                             {
-                                await SendChatMessage(message.Channel, "That song is already in the queue 🙂");
+                                await SendChatMessage(message.Channel, "That song is already in the queue ");
                             }
                         }
                         else
                         {
                             if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
                             {
-                                await SendChatMessage(message.Channel, "That song is already in the queue 🙂");
+                                await SendChatMessage(message.Channel, "That song is already in the queue ");
                                 return;
                             }
 
@@ -1316,7 +1316,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                             }
 
                             else
-                                await SendChatMessage(message.Channel, "That song is already in the queue 🙂");
+                                await SendChatMessage(message.Channel, "That song is already in the queue ");
                         }
                     }
                     break;
@@ -2135,26 +2135,135 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task<string> AddSongFromWebsocket(string trackId, string requester = "")
         {
-            string validationError = ValidateTrackId(trackId);
-            if (validationError != null)
-                return validationError;
+            switch (Settings.Settings.Player)
+            {
+                case PlayerType.SpotifyWeb:
+                    {
+                        string validationError = ValidateTrackId(trackId);
+                        if (validationError != null)
+                            return validationError;
 
-            (bool valid, FullTrack track, string message) = await TryGetValidTrack(trackId);
-            if (!valid)
-                return message;
+                        (bool valid, FullTrack track, string message) = await TryGetValidTrack(trackId);
+                        if (!valid)
+                            return message;
 
-            await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+                        await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
-            if (Settings.Settings.AddSrToPlaylist)
-                await AddToPlaylist(track.Id);
+                        if (Settings.Settings.AddSrToPlaylist)
+                            await AddToPlaylist(track.Id);
 
-            RequestObject o = BuildRequestObject(track, requester);
-            await UploadToQueue(o);
+                        RequestObject o = BuildRequestObject(track, requester);
+                        await UploadToQueue(o);
 
-            //GlobalObjects.QueueUpdateQueueWindow();
+                        return $"{string.Join(", ", track.Artists.Take(2).Select(a => a.Name))} - {track.Name} has been added to the queue.";
+                    }
 
-            return $"{string.Join(", ", track.Artists.Take(2).Select(a => a.Name))} - {track.Name} by has been added to the queue.";
+                case PlayerType.Ytmthch:
+                    {
+                        // ---- YouTube Music Desktop (th-ch) via API server ----
+                        // Accept either a full URL or a bare videoId
+                        string videoId = ExtractYouTubeVideoIdFromText(trackId);
+                        if (string.IsNullOrWhiteSpace(videoId))
+                            videoId = trackId?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(videoId))
+                            return "Couldn’t parse a YouTube video ID.";
+
+                        // dup-check against your in-app queue
+                        if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
+                            return "That song is already in the queue ";
+
+                        // Try to add to YTM queue (insert after current)
+                        bool ok = await WebHelper.YtmAddToQueue(videoId, InsertPosition.InsertAfterCurrentVideo);
+                        if (!ok)
+                            return "That song is already in the queue ";
+
+                        // Grab title + thumb for your RequestObject + chat message
+                        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+                        // Best-effort parse "Artist - Title"
+                        (string artist, string songTitle) = SplitArtistTitle(title);
+
+                        RequestObject req = new RequestObject
+                        {
+                            Uuid = Settings.Settings.Uuid,
+                            Trackid = videoId,
+                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                            Artist = artist,
+                            Title = string.IsNullOrWhiteSpace(songTitle) ? title : songTitle,
+                            Length = "",
+                            Requester = requester ?? "",
+                            Played = 0,
+                            Albumcover = thumbnail
+                        };
+
+                        GlobalObjects.ReqList.Add(req);
+                        await UploadToQueue(req);
+
+                        // Wait for YT queue to actually contain the item, then ensure order
+                        int? pos = await WaitForSongInQueueAsync(videoId, TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(150));
+                        if (pos != null)
+                        {
+                            await EnsureOrderAsync();
+                        }
+                        // If pos == null we silently skip reorder now (same as your other method)
+
+                        return $"Queued: {(string.IsNullOrWhiteSpace(artist) ? title : $"{artist} - {req.Title}")}";
+                    }
+
+                case PlayerType.YtmDesktop:
+                    {
+                        // ---- Your "YtmDesktop" branch in HandleChannelPointSongRequst ----
+                        string videoId = ExtractYouTubeVideoIdFromText(trackId);
+                        if (string.IsNullOrWhiteSpace(videoId))
+                            videoId = trackId?.Trim();
+
+                        if (string.IsNullOrWhiteSpace(videoId))
+                            return "Couldn’t parse a YouTube video ID.";
+
+                        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+
+                        RequestObject req = new()
+                        {
+                            Uuid = Settings.Settings.Uuid,
+                            Trackid = videoId,
+                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                            Artist = "",
+                            Title = title,
+                            Length = "",
+                            Requester = requester ?? "",
+                            Played = 0,
+                            Albumcover = thumbnail
+                        };
+
+                        await UploadToQueue(req);
+                        return $"Queued: {title}";
+                    }
+
+                case PlayerType.FooBar2000:
+                case PlayerType.Vlc:
+                case PlayerType.BrowserCompanion:
+                    return "This player type does not support song requests via the API. Please use Spotify Web or YTM Desktop.";
+                    break;
+                default:
+                    return "No player selected. Go to Settings -> Player and select a player.";
+            }
+
+            // ---- local helper ----
+            static (string artist, string title) SplitArtistTitle(string fullTitle)
+            {
+                if (string.IsNullOrWhiteSpace(fullTitle)) return ("", "");
+                // Very simple heuristic: first " - " split
+                int idx = fullTitle.IndexOf(" - ", StringComparison.Ordinal);
+                if (idx <= 0) return ("", fullTitle.Trim());
+                string artist = fullTitle.Substring(0, idx).Trim();
+                string title = fullTitle.Substring(idx + 3).Trim();
+                return (artist, title);
+            }
         }
+
 
         public static TimeSpan ParseLength(string length)
         {
@@ -4597,19 +4706,19 @@ namespace Songify_Slim.Util.Songify.Twitch
                                         }
                                         else
                                         {
-                                            await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                            await SendChatMessage(channel, "That song is already in the queue ");
                                         }
                                     }
                                     else
                                     {
-                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                        await SendChatMessage(channel, "That song is already in the queue ");
                                     }
                                 }
                                 else
                                 {
                                     if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
                                     {
-                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                        await SendChatMessage(channel, "That song is already in the queue ");
                                         return;
                                     }
 
@@ -4648,7 +4757,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     }
 
                                     else
-                                        await SendChatMessage(channel, "That song is already in the queue 🙂");
+                                        await SendChatMessage(channel, "That song is already in the queue ");
                                 }
                             }
                             break;
@@ -4658,9 +4767,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                     await SendChatMessage(channel, "No player selected. Go to Settings -> Player and select a player.");
                     return;
             }
-
-            return;
-
         }
 
         private static async Task RefundChannelPoints(string rewardId, string redemptionId, string channel,
