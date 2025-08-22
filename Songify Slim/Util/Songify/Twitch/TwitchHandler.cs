@@ -1230,7 +1230,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                             if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
                             {
-                                RequestObject req = new RequestObject
+                                RequestObject req = new()
                                 {
                                     Uuid = Settings.Settings.Uuid,
                                     Trackid = sr.VideoId,
@@ -1284,7 +1284,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                             string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
                             string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                            RequestObject req = new RequestObject
+                            RequestObject req = new()
                             {
                                 Uuid = Settings.Settings.Uuid,
                                 Trackid = videoId,
@@ -2160,56 +2160,45 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 case PlayerType.Ytmthch:
                     {
-                        // ---- YouTube Music Desktop (th-ch) via API server ----
-                        // Accept either a full URL or a bare videoId
-                        string videoId = ExtractYouTubeVideoIdFromText(trackId);
-                        if (string.IsNullOrWhiteSpace(videoId))
-                            videoId = trackId?.Trim();
+                        //string videoId = ExtractYouTubeVideoIdFromText(trackId);
+                        string videoId = trackId;
 
-                        if (string.IsNullOrWhiteSpace(videoId))
-                            return "Couldn’t parse a YouTube video ID.";
-
-                        // dup-check against your in-app queue
                         if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
+                        {
                             return "That song is already in the queue ";
+                        }
 
-                        // Try to add to YTM queue (insert after current)
-                        bool ok = await WebHelper.YtmAddToQueue(videoId, InsertPosition.InsertAfterCurrentVideo);
-                        if (!ok)
-                            return "That song is already in the queue ";
-
-                        // Grab title + thumb for your RequestObject + chat message
                         string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
                         string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                        // Best-effort parse "Artist - Title"
-                        (string artist, string songTitle) = SplitArtistTitle(title);
-
-                        RequestObject req = new RequestObject
+                        RequestObject req = new()
                         {
                             Uuid = Settings.Settings.Uuid,
                             Trackid = videoId,
                             PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                            Artist = artist,
-                            Title = string.IsNullOrWhiteSpace(songTitle) ? title : songTitle,
+                            Artist = "",
+                            Title = title,
                             Length = "",
-                            Requester = requester ?? "",
+                            Requester = requester,
                             Played = 0,
                             Albumcover = thumbnail
                         };
-
                         GlobalObjects.ReqList.Add(req);
-                        await UploadToQueue(req);
 
-                        // Wait for YT queue to actually contain the item, then ensure order
-                        int? pos = await WaitForSongInQueueAsync(videoId, TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(150));
-                        if (pos != null)
+                        bool ok = await WebHelper.YtmAddToQueue(req.Trackid, InsertPosition.InsertAfterCurrentVideo);
+                        if (ok)
                         {
+                            int? pos = await WaitForSongInQueueAsync(videoId,
+                                TimeSpan.FromSeconds(3),
+                                TimeSpan.FromMilliseconds(150));
                             await EnsureOrderAsync();
-                        }
-                        // If pos == null we silently skip reorder now (same as your other method)
 
-                        return $"Queued: {(string.IsNullOrWhiteSpace(artist) ? title : $"{artist} - {req.Title}")}";
+                        }
+
+                        else
+                            return "That song is already in the queue ";
+
+                        return "Song queued successfully.";
                     }
 
                 case PlayerType.YtmDesktop:
@@ -3916,7 +3905,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static List<QueueItem> GetQueueItems(string requester = null)
         {
             // Copy the current queue
-            List<RequestObject> requestList = new List<RequestObject>(GlobalObjects.ReqList);
+            List<RequestObject> requestList = new(GlobalObjects.ReqList);
 
             // Get currently playing song title
             string currentSong = GetCurrentSongTitle();
@@ -4673,7 +4662,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                                     if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
                                     {
-                                        RequestObject req = new RequestObject
+                                        RequestObject req = new()
                                         {
                                             Uuid = Settings.Settings.Uuid,
                                             Trackid = sr.VideoId,
@@ -4725,7 +4714,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
                                     string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                                    RequestObject req = new RequestObject
+                                    RequestObject req = new()
                                     {
                                         Uuid = Settings.Settings.Uuid,
                                         Trackid = videoId,
@@ -4831,7 +4820,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             }
 
-            TwitchRequestUser user = new TwitchRequestUser
+            TwitchRequestUser user = new()
             {
                 Channel = channel,
                 DisplayName = userName,

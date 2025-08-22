@@ -11,7 +11,7 @@ namespace Songify_Slim.Models.YTMD
             public string Title { get; set; }
             public string AlternativeTitle { get; set; }
             public string Artist { get; set; }
-            public int Views { get; set; }
+            public long Views { get; set; }
             public DateTime UploadDate { get; set; }
             public string ImageSrc { get; set; }
             public bool IsPaused { get; set; }
