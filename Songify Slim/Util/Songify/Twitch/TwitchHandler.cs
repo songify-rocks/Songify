@@ -21,7 +21,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -31,9 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
-using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api;
@@ -48,7 +44,6 @@ using TwitchLib.Api.Helix.Models.Channels.GetChannelFollowers;
 using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
-using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
@@ -56,8 +51,6 @@ using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static Songify_Slim.Util.General.Enums;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
 using OnConnectedEventArgs = TwitchLib.Client.Events.OnConnectedEventArgs;
@@ -77,10 +70,11 @@ namespace Songify_Slim.Util.Songify.Twitch
     {
         public const string ClientId = "sgiysnqpffpcla6zk69yn8wmqnx56o";
         private static readonly object _sync = new();
-
+        private static int _syncRunning;
         private static readonly SemaphoreSlim _lock = new(1, 1);
         private static IHost? _host;
         private static CancellationTokenSource? _cts;
+        private static bool _syncTimerHooked;
 
         public static ValidateAccessTokenResponse BotTokenCheck;
         public static TwitchClient Client;
@@ -1529,7 +1523,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     continue;
                                 ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
                                 ((MainWindow)window).IconTwitchAPI.Kind =
-                                    PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                                    PackIconBoxIconsKind.LogosTwitch;
                                 ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
                                 MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
                                     "Twitch Account Issues",
@@ -1590,7 +1584,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                             if (window.GetType() != typeof(MainWindow))
                                 continue;
                             ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
-                            ((MainWindow)window).IconTwitchAPI.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                            //((MainWindow)window).IconTwitchAPI.Kind = PackIconBoxIconsKind.LogosTwitch;
                             ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
 
                             Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
@@ -1606,12 +1600,10 @@ namespace Songify_Slim.Util.Songify.Twitch
                     Settings.Settings.TwitchUserColor = chatColorResponse.Data.Any() ? chatColorResponse.Data[0].Color : "#f8953c";
 
                     ConfigHandler.WriteAllConfig(Settings.Settings.Export());
+                    //StreamUpTimer.Tick += StreamUpTimer_Tick;
+                    //StreamUpTimer.Start();
 
-                    StreamUpTimer.Tick += StreamUpTimer_Tick;
-                    StreamUpTimer.Start();
-
-                    TwitchUserSyncTimer.Tick += TwitchUserSyncTimer_Tick;
-                    TwitchUserSyncTimer.Start();
+                    InitTwitchUserSyncTimer();
                     await RunTwitchUserSync();
 
                     break;
@@ -2660,7 +2652,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                     ((MainWindow)window).mi_TwitchDisconnect.IsEnabled = true;
                     ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = false;
                     ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = true;
-                    ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    //((MainWindow)window).IconTwitchBot.Kind = PackIconBoxIconsKind.RegularChat;
                     ((MainWindow)window).IconTwitchBot.Foreground = Brushes.GreenYellow;
                 }
             });
@@ -2684,7 +2676,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                     ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[0].Enabled = true;
                     ((MainWindow)window).NotifyIcon.ContextMenu.MenuItems[0].MenuItems[1].Enabled = false;
                     ((MainWindow)window).IconTwitchBot.Foreground = Brushes.IndianRed;
-                    ((MainWindow)window).IconTwitchBot.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                    //((MainWindow)window).IconTwitchBot.Kind = PackIconBoxIconsKind.SolidErrorCircle;
                 }
             });
             Logger.LogStr("TWITCH: Disconnected from Twitch Chat");
@@ -2733,8 +2725,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             if (!e.ChatMessage.Message.StartsWith("!")) return;
-
-            Settings.Settings.IsLive = await CheckStreamIsUp();
 
             bool executed = TwitchCommandHandler.TryExecuteCommand(e.ChatMessage, new TwitchCommandParams
             {
@@ -3632,6 +3622,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 if (TwitchApi == null)
                 {
                     Logger.LogStr("TWITCH: TwitchApi is not initialized.");
+                    return;
                 }
 
                 if (string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken))
@@ -3647,13 +3638,16 @@ namespace Songify_Slim.Util.Songify.Twitch
 
 
                 // Corrected array creation for e.Channel
-                GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(
-                    null, [e.Channel],
-                    Settings.Settings.TwitchAccessToken);
+                if (TwitchApi != null)
+                {
+                    GetUsersResponse channels = await TwitchApi.Helix.Users.GetUsersAsync(
+                        null, [e.Channel],
+                        Settings.Settings.TwitchAccessToken);
 
-                if (channels.Users is not { Length: > 0 }) return;
+                    if (channels.Users is not { Length: > 0 }) return;
 
-                _joinedChannelId = channels.Users[0].Id;
+                    _joinedChannelId = channels.Users[0].Id;
+                }
             }
             catch (Exception exception)
             {
@@ -4357,15 +4351,25 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task RunTwitchUserSync()
         {
+            TwitchUserSyncTimer.Stop();
+            if (Settings.Settings.TwitchUser == null)
+                return;
+            if (string.IsNullOrEmpty(Settings.Settings.TwitchAccessToken))
+                return;
             if (TwitchApi == null) return;
             try
             {
+                Debug.WriteLine("TWITCH FETCHING USERS");
+
                 // Fetch all chatters and subscribers
                 GlobalObjects.chatters = await TwitchApiHelper.GetAllChattersAsync();
+                Debug.WriteLine("CHATTERS DONE");
                 GlobalObjects.subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
+                Debug.WriteLine("SUBS DONE");
                 GlobalObjects.moderators = await TwitchApiHelper.GetAllModeratorsAsync();
+                Debug.WriteLine("MODS DONE");
                 GlobalObjects.vips = await TwitchApiHelper.GetAllVipsAsync();
-
+                Debug.WriteLine("VIPS DONE");
                 if (GlobalObjects.chatters == null || GlobalObjects.subscribers == null)
                     return;
 
@@ -4450,12 +4454,14 @@ namespace Songify_Slim.Util.Songify.Twitch
                         });
                     }
                 }
+                TwitchUserSyncTimer.Start();
             }
             catch (Exception ex)
             {
                 // Log or handle exceptions here
                 Console.WriteLine(@$"Error in TwitchUserSyncTimer_Tick: {ex.Message}");
             }
+
         }
 
         private static async Task SendChatMessage(string channel, string message)
@@ -4501,15 +4507,40 @@ namespace Songify_Slim.Util.Songify.Twitch
             CooldownStopwatch.Start();
         }
 
+
+        public static void InitTwitchUserSyncTimer()
+        {
+            if (_syncTimerHooked) return;               // <-- prevents duplicates
+            TwitchUserSyncTimer.Tick += TwitchUserSyncTimer_Tick;
+            _syncTimerHooked = true;
+            TwitchUserSyncTimer.Start();
+        }
+
+        public static void DisposeTwitchUserSyncTimer()
+        {
+            if (!_syncTimerHooked) return;
+            TwitchUserSyncTimer.Stop();
+            TwitchUserSyncTimer.Tick -= TwitchUserSyncTimer_Tick; // <-- unsubscribe
+            _syncTimerHooked = false;
+        }
+
+
         private static async void TwitchUserSyncTimer_Tick(object sender, EventArgs e)
         {
+            if (Interlocked.Exchange(ref _syncRunning, 1) == 1) return; // already running
             try
             {
+                TwitchUserSyncTimer.Stop(); // pause ticks during work
                 await RunTwitchUserSync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(@$"Error in TwitchUserSyncTimer_Tick: {ex.Message}");
+                Console.WriteLine($"Error in Tick: {ex.Message}");
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _syncRunning, 0);
+                TwitchUserSyncTimer.Start();
             }
         }
 
@@ -4556,7 +4587,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
             string userInput, string channel, string rewardId, string redemptionId)
         {
-            Settings.Settings.IsLive = await CheckStreamIsUp();
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
             // Check if the user level is lower than broadcaster or not allowed to request songs
@@ -4805,7 +4835,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         public static async Task HandleBitsSongRequest(string userId, string userName,
             string userInput, string channel)
         {
-            Settings.Settings.IsLive = await CheckStreamIsUp();
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
             // Do nothing if the user is blocked, don't even reply
@@ -4869,6 +4898,98 @@ namespace Songify_Slim.Util.Songify.Twitch
             catch (Exception e)
             {
                 Logger.LogExc(e);
+            }
+        }
+
+        public static void ResetTwitchSetting(TwitchAccount account)
+        {
+            try
+            {
+                switch (account)
+                {
+                    case TwitchAccount.Main:
+                        // Clear persisted main account credentials/state
+                        Settings.Settings.TwitchAccessToken = "";
+                        Settings.Settings.TwitchUser = null;
+                        Settings.Settings.TwitchChannelId = "";
+                        Settings.Settings.TwChannel = "";
+                        Settings.Settings.TwitchAccessTokenExpiryDate = DateTime.MinValue;
+
+                        // Clear runtime objects
+                        TokenCheck = null;
+                        TwitchApi = null;
+                        break;
+
+                    case TwitchAccount.Bot:
+                        // Clear persisted bot account credentials/state
+                        Settings.Settings.TwitchBotToken = "";
+                        Settings.Settings.TwitchBotUser = null;
+                        Settings.Settings.TwAcc = "";
+                        Settings.Settings.TwOAuth = "";
+                        Settings.Settings.BotAccessTokenExpiryDate = DateTime.MinValue;
+
+                        // Clear runtime objects
+                        BotTokenCheck = null;
+                        _twitchApiBot = null;
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(account), account, null);
+                }
+
+                // Disconnect chat client if connected (fire-and-forget)
+                if (Client != null)
+                {
+                    try
+                    {
+                        if (Client.IsConnected)
+                            _ = Client.DisconnectAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                    }
+                    finally
+                    {
+                        Client = null;
+                    }
+                }
+
+                // Clear joined channel and stop EventSub host (depends on main token)
+                _joinedChannelId = "";
+                _ = StopAsync();
+                DisposeTwitchUserSyncTimer();
+
+                // Update UI hints
+                Application.Current?.Dispatcher?.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is not MainWindow mw) continue;
+
+                        // API icon to red when main reset; bot icon to red when bot reset
+                        if (account == TwitchAccount.Main)
+                        {
+                            mw.IconTwitchAPI.Foreground = Brushes.IndianRed;
+                            mw.mi_TwitchAPI.IsEnabled = false;
+                        }
+                        else
+                        {
+                            mw.IconTwitchBot.Foreground = Brushes.IndianRed;
+                        }
+
+                        // Reflect chat disconnect availability
+                        mw.mi_TwitchConnect.IsEnabled = true;
+                        mw.mi_TwitchDisconnect.IsEnabled = false;
+                        mw.LblStatus.Content = "Twitch credentials cleared.";
+                    }
+                });
+
+                Logger.LogStr($"TWITCH: Cleared {(account == TwitchAccount.Main ? "main" : "bot")} account credentials.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
     }

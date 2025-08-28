@@ -189,6 +189,7 @@ namespace Songify_Slim.Views
             ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
             ComboboxRedirectPort.Items.Clear();
             ComboboxfetchPort.Items.Clear();
+            NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
             ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
             ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
@@ -1278,6 +1279,7 @@ namespace Songify_Slim.Views
                     Settings.TwitchAccessToken = "";
                     Settings.TwitchUser = null;
                     TwitchHandler.TwitchApi = null;
+                    TwitchHandler.ResetTwitchSetting(Enums.TwitchAccount.Main);
                     break;
 
                 case "bot":
@@ -1646,14 +1648,12 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded)
                 return;
-            if (NudCooldownPerUser.Value.HasValue)
-            {
-                Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
-                int totalSeconds = (int)NudCooldownPerUser.Value.Value;
-                int minutes = totalSeconds / 60;
-                int seconds = totalSeconds % 60;
-                UserCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
-            }
+            if (!NudCooldownPerUser.Value.HasValue) return;
+            Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
+            int totalSeconds = (int)NudCooldownPerUser.Value.Value;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+            UserCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
         }
 
         private void Tgl_KeepCover_OnToggled(object sender, RoutedEventArgs e)
@@ -2128,6 +2128,14 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             Settings.SrForBits = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void NudSpotifyFetchRate_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded)
+                return;
+            if (!NudSpotifyFetchRate.Value.HasValue) return;
+            Settings.SpotifyFetchRate = (int)NudSpotifyFetchRate.Value;
         }
     }
 }

@@ -64,7 +64,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketConnected(object sender, WebsocketConnectedArgs e)
         {
             _logger.LogInformation($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
-
             if (!e.IsRequestedReconnect)
             {
                 // subscribe to topics
@@ -143,11 +142,13 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task EventSubWebsocketClientOnStreamOnline(object sender, StreamOnlineArgs args)
         {
+            Settings.Settings.IsLive = true;
             Logger.LogStr("TWITCH: Stream live");
         }
 
         private async Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
         {
+            Settings.Settings.IsLive = false;
             Logger.LogStr("TWITCH: Stream offline");
         }
 

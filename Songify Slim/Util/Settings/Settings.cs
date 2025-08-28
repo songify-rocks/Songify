@@ -36,6 +36,19 @@ namespace Songify_Slim.Util.Settings
             set => SetSrForBits(value);
         }
 
+        public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
+
+        private static void SetSpotifyFetchRate(int value)
+        {
+            CurrentConfig.AppConfig.SpotifyFetchRate = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static int GetSpotifyFetchRate()
+        {
+            return CurrentConfig.AppConfig.SpotifyFetchRate;
+        }
+
         private static void SetSrForBits(bool value)
         {
             CurrentConfig.AppConfig.SrForBits = value;
@@ -1039,6 +1052,7 @@ namespace Songify_Slim.Util.Settings
                 SpotifyPlaylistId = GetSpotifyPlaylistId(),
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 SrForBits = GetSrForBits(),
+                SpotifyFetchRate = GetSpotifyFetchRate(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),

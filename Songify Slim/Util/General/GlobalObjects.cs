@@ -70,6 +70,7 @@ namespace Songify_Slim.Util.General
         private static readonly ConcurrentQueue<TaskCompletionSource<bool>> UpdateQueue = new();
         private static bool _isProcessingQueue;
         public static YoutubeData YoutubeData = null;
+        public static List<string> ConnectedEventsubs = [];
 
 
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)

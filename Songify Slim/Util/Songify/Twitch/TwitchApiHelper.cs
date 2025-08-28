@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
+using TwitchLib.Api.Helix.Models.EventSub;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -123,6 +125,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.Settings.TwitchAccessToken);
             return x.Users.Length > 0 ? x.Users : [];
-        } 
+        }
+
+        public static async Task<EventSubSubscription[]> GetEventSubscriptions()
+        {
+            GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
+                Settings.Settings.TwitchAccessToken);
+            return x.Subscriptions;
+        }
     }
 }

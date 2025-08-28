@@ -197,7 +197,8 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
                                 d:Content="{x:Static local:Resources.sw_tcSystem_ChromeFetchRate}"
-                                Content="{DynamicResource sw_tcSystem_ChromeFetchRate}" />
+                                Content="{DynamicResource sw_tcSystem_ChromeFetchRate}"
+                                Visibility="Collapsed" />
                             <controls:NumericUpDown
                                 x:Name="NudChrome"
                                 Grid.Row="3"
@@ -211,7 +212,8 @@
                                 Minimum="1"
                                 NumericInputMode="Numbers"
                                 TabIndex="7"
-                                ValueChanged="NudChrome_ValueChanged" />
+                                ValueChanged="NudChrome_ValueChanged"
+                                Visibility="Collapsed" />
                             <controls:ToggleSwitch
                                 x:Name="TglUseDefaultBrowser"
                                 Grid.Row="4"
@@ -2062,7 +2064,7 @@
                                             DecimalPointCorrection="Number"
                                             DockPanel.Dock="Right"
                                             Interval="1"
-                                            Maximum="100"
+                                            Maximum="3600"
                                             Minimum="1"
                                             NumericInputMode="Numbers"
                                             ValueChanged="NudCooldown_ValueChanged" />
@@ -2092,7 +2094,7 @@
                                             Width="90"
                                             Height="28"
                                             Interval="1"
-                                            Maximum="3599"
+                                            Maximum="3600"
                                             Minimum="0"
                                             NumericInputMode="Numbers"
                                             ValueChanged="CooldownSpinner_OnValueChangedpinner_ValueChanged"
@@ -2286,6 +2288,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <DockPanel
                             x:Name="PnlSpotify"
@@ -2464,6 +2467,23 @@
                                 OnContent=""
                                 Toggled="TglLimitSrPlaylist_Toggled" />
                         </StackPanel>
+                        <TextBlock
+                            Grid.Row="7"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="Spotify fetch rate (seconds)" />
+                        <controls:NumericUpDown
+                            x:Name="NudSpotifyFetchRate"
+                            ValueChanged="NudSpotifyFetchRate_OnValueChanged"
+                            Grid.Row="7"
+                            Width="270"
+                            Margin="0,6"
+                            HorizontalAlignment="Right"
+                            Maximum="30"
+                            Minimum="1"
+                            NumericInputMode="Numbers"
+                            ParsingNumberStyle="Integer"
+                            Value="1" />
                     </Grid>
                 </Border>
             </TabItem>

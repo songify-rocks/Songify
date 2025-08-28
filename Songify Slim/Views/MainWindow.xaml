@@ -647,221 +647,133 @@
             Margin="0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
-            Background="{DynamicResource MahApps.Brushes.Control.Background}"
             LastChildFill="True"
             ScrollViewer.CanContentScroll="True"
             UseLayoutRounding="False">
-            <StatusBarItem Padding="3,0,0,0" Background="{DynamicResource MahApps.Brushes.Control.Background}">
-                <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
-                    <iconPacks:PackIconBootstrapIcons
-                        x:Name="IconTwitchBot"
-                        Width="14"
-                        Margin="0,0,8,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="ExclamationTriangleFill">
-                        <iconPacks:PackIconBootstrapIcons.Style>
-                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
-                                <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="IndianRed">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Twitch Chat Bot: " />
-                                                    <Binding Source="{x:Static local:Resources.s_Disconnected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="GreenYellow">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Twitch Chat Bot: " />
-                                                    <Binding Source="{x:Static local:Resources.s_Connected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconBootstrapIcons.Style>
-                    </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons
-                        x:Name="IconTwitchAPI"
-                        Width="14"
-                        Margin="0,0,8,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="ExclamationTriangleFill">
-                        <iconPacks:PackIconBootstrapIcons.Style>
-                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
-                                <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="IndianRed">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Twitch API: " />
-                                                    <Binding Source="{x:Static local:Resources.s_Disconnected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="GreenYellow">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Twitch API: " />
-                                                    <Binding Source="{x:Static local:Resources.s_Connected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconBootstrapIcons.Style>
-                    </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons
-                        x:Name="IconTwitchPubSub"
-                        Width="14"
-                        Margin="0,0,8,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="XCircleFill"
-                        Visibility="Collapsed">
-                        <iconPacks:PackIconBootstrapIcons.Style>
-                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
-                                <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="Gray">
-                                        <Setter Property="ToolTip" Value="Twitch PubSub: Disabled" />
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="GreenYellow">
-                                        <Setter Property="ToolTip" Value="Twitch PubSub: Connected" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconBootstrapIcons.Style>
-                    </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons
-                        x:Name="IconWebSpotify"
-                        Width="14"
-                        Margin="0,0,8,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="ExclamationTriangleFill">
-                        <iconPacks:PackIconBootstrapIcons.Style>
-                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
-                                <Style.Triggers>
-
-                                    <Trigger Property="Foreground" Value="IndianRed">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Spotify: " />
-                                                    <Binding Source="{x:Static local:Resources.s_Disconnected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="GreenYellow">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Spotify (Premium): " />
-                                                    <Binding Source="{x:Static local:Resources.s_Connected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="DarkOrange">
-                                        <Setter Property="ToolTip">
-                                            <Setter.Value>
-                                                <MultiBinding Converter="{StaticResource CombineStringConverter}">
-                                                    <Binding Path="." Source="Spotify (Free): " />
-                                                    <Binding Source="{x:Static local:Resources.s_Connected}" />
-                                                </MultiBinding>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconBootstrapIcons.Style>
-                    </iconPacks:PackIconBootstrapIcons>
-                    <iconPacks:PackIconBootstrapIcons
-                        x:Name="IconWebServer"
-                        Width="14"
-                        Margin="0,0,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Kind="ExclamationTriangleFill">
-                        <iconPacks:PackIconBootstrapIcons.Style>
-                            <Style TargetType="iconPacks:PackIconBootstrapIcons">
-                                <Style.Triggers>
-                                    <Trigger Property="Foreground" Value="Gray">
-                                        <Setter Property="ToolTip" Value="WebServer: Not Running" />
-                                    </Trigger>
-                                    <Trigger Property="Foreground" Value="GreenYellow">
-                                        <Setter Property="ToolTip" Value="WebServer: Running" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </iconPacks:PackIconBootstrapIcons.Style>
-                    </iconPacks:PackIconBootstrapIcons>
-                </StackPanel>
-            </StatusBarItem>
+            <DockPanel.Style>
+                <Style TargetType="DockPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Style>
             <Border
                 Height="20"
-                Margin="5,0,0,0"
                 Padding="5,0,12,0"
-                BorderThickness="1,0,0,0"
-                CornerRadius="10,0,0,10">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
-                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <DockPanel HorizontalAlignment="Stretch" LastChildFill="False">
-                    <StatusBarItem
-                        x:Name="LblStatus"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        Visibility="Collapsed">
-                        <StatusBar />
-                    </StatusBarItem>
-                    <StatusBarItem
-                        Margin="0,-2,0,-2"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        DockPanel.Dock="Right"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}">
-                        <StackPanel Orientation="Horizontal">
-                            <StatusBarItem
-                                x:Name="LblCopyright"
-                                Content="Songify v1.1.1-RC1 Copyright ©"
-                                Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
-                            <StatusBarItem
-                                x:Name="LblCopyrightLink"
-                                FontStyle="Italic"
-                                Foreground="{DynamicResource MahApps.Brushes.Control.Background}">
-                                <Hyperlink
-                                    FontStyle="Normal"
-                                    NavigateUri="https://songify.overcode.tv"
-                                    RequestNavigate="Hyperlink_RequestNavigate">
-                                    <Hyperlink.Foreground>
-                                        <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}" />
-                                    </Hyperlink.Foreground>
-                                    Songify.Rocks
-                                </Hyperlink>
-                            </StatusBarItem>
+                BorderThickness="1,0,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StatusBarItem Grid.Column="0">
+                        <StackPanel Margin="0,0,0,0" Orientation="Horizontal">
+                            <Button
+                                Margin="0,0,8,0"
+                                Click="ServiceIcon_Click"
+                                Style="{StaticResource IconOnlyButton}"
+                                Tag="TwitchBot"
+                                ToolTip=""
+                                ToolTipOpening="ServiceToolTipOpening">
+                                <iconPacks:PackIconBoxIcons
+                                    x:Name="IconTwitchBot"
+                                    Width="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SolidCircle" />
+                            </Button>
+
+                            <Button
+                                Margin="0,0,8,0"
+                                Click="ServiceIcon_Click"
+                                Style="{StaticResource IconOnlyButton}"
+                                Tag="TwitchAPI"
+                                ToolTip=""
+                                ToolTipOpening="ServiceToolTipOpening">
+                                <iconPacks:PackIconBoxIcons
+                                    x:Name="IconTwitchAPI"
+                                    Width="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SolidCircle" />
+                            </Button>
+
+                            <Button
+                                Margin="0,0,8,0"
+                                Click="ServiceIcon_Click"
+                                Style="{StaticResource IconOnlyButton}"
+                                Tag="Spotify"
+                                ToolTip=""
+                                ToolTipOpening="ServiceToolTipOpening">
+                                <iconPacks:PackIconBoxIcons
+                                    x:Name="IconWebSpotify"
+                                    Width="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SolidCircle" />
+                            </Button>
+
+                            <Button
+                                Click="ServiceIcon_Click"
+                                Style="{StaticResource IconOnlyButton}"
+                                Tag="WebServer"
+                                ToolTip=""
+                                ToolTipOpening="ServiceToolTipOpening">
+                                <iconPacks:PackIconBoxIcons
+                                    x:Name="IconWebServer"
+                                    Width="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SolidCircle" />
+                            </Button>
+
                         </StackPanel>
                     </StatusBarItem>
-                </DockPanel>
+                    <DockPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        LastChildFill="False">
+                        <StatusBarItem
+                            x:Name="LblStatus"
+                            Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                            Visibility="Collapsed">
+                            <StatusBar />
+                        </StatusBarItem>
+                        <StatusBarItem
+                            Margin="0,-2,0,-2"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            DockPanel.Dock="Right"
+                            Foreground="{DynamicResource MahApps.Brushes.IdealForeground}">
+                            <StackPanel Orientation="Horizontal">
+                                <StatusBarItem
+                                    x:Name="LblCopyright"
+                                    Content="Songify v1.1.1-RC1 Copyright ©"
+                                    Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                                <StatusBarItem
+                                    x:Name="LblCopyrightLink"
+                                    FontStyle="Italic"
+                                    Foreground="{DynamicResource MahApps.Brushes.Control.Background}">
+                                    <Hyperlink
+                                        FontStyle="Normal"
+                                        NavigateUri="https://songify.overcode.tv"
+                                        RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Hyperlink.Foreground>
+                                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}" />
+                                        </Hyperlink.Foreground>
+                                        Songify.Rocks
+                                    </Hyperlink>
+                                </StatusBarItem>
+                            </StackPanel>
+                        </StatusBarItem>
+                    </DockPanel>
+                </Grid>
+
             </Border>
         </DockPanel>
     </Grid>

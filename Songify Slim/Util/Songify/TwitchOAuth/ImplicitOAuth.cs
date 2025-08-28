@@ -285,11 +285,11 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 
                 <body>
                   <div class="card">
-                    <div class="content">
-                      <img src="https://songify.rocks/img/logo.png" alt="Songify Logo" />
-                      <span class="plus-sign">+</span>
-                      <img src="https://songify.overcode.tv/img/TwitchGlitchPurple.png" alt="Twitch Logo" />
-                    </div>
+                <div class="content">
+                  <img src="https://songify.overcode.tv/api/images/logo.png" alt="Songify Logo" />
+                  <span class="plus-sign">+</span>
+                  <img src="https://songify.overcode.tv/api/images/TwitchGlitchPurple.png" alt="Twitch Logo" />
+                </div>
                     <h1>Success!</h1>
                     <p><span class="songify-text">Songify</span> and Twitch are now connected!<br />You can close this page.</p>
                   </div>

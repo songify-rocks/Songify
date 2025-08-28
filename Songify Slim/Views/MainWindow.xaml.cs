@@ -51,8 +51,10 @@ using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
 using Windows.UI.Xaml.Controls.Maps;
 using Songify_Slim.Util.Songify.Twitch;
+using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
+using ToolTip = System.Windows.Controls.ToolTip;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -739,7 +741,7 @@ namespace Songify_Slim.Views
         // Method to parse arguments string to dictionary
         private Dictionary<string, string> ParseArguments(string arguments)
         {
-            var argsDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> argsDictionary = new Dictionary<string, string>();
 
             // Check if arguments are not null or empty
             if (!string.IsNullOrEmpty(arguments))
@@ -762,7 +764,7 @@ namespace Songify_Slim.Views
 
             return argsDictionary;
         }
-        
+
         private void SetupUiAndThemes()
         {
             Title = WindowTitle;
@@ -1038,9 +1040,8 @@ namespace Songify_Slim.Views
         {
             IconTwitchAPI.Foreground = Brushes.IndianRed;
             IconTwitchBot.Foreground = Brushes.IndianRed;
-            IconTwitchPubSub.Foreground = Brushes.IndianRed;
-            IconWebServer.Foreground = Brushes.Gray;
             IconWebSpotify.Foreground = Brushes.IndianRed;
+            IconWebServer.Foreground = Brushes.Gray;
         }
 
         private static void AutoUpdater_ApplicationExitEvent()
@@ -1186,6 +1187,26 @@ namespace Songify_Slim.Views
                 }
                 finally
                 {
+
+                    switch (_selectedSource)
+                    {
+                        case PlayerType.SpotifyWeb:
+                            _timerFetcher.Interval = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000;
+                            break;
+                        case PlayerType.FooBar2000:
+                        case PlayerType.Vlc:
+                        case PlayerType.Ytmthch:
+                            _timerFetcher.Interval = 1000;
+                            break;
+                        case PlayerType.BrowserCompanion:
+                            break;
+                        case PlayerType.YtmDesktop:
+                            _timerFetcher.Enabled = false;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     _sCts.Dispose();
                     _timerFetcher.Enabled = true;
                     _timerFetcher.Elapsed += OnTimedEvent;
@@ -1253,7 +1274,7 @@ namespace Songify_Slim.Views
                     break;
                 case PlayerType.SpotifyWeb:
                     // Prevent Rate Limiting
-                    FetchTimer(1000);
+                    FetchTimer(MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000);
                     break;
                 case PlayerType.BrowserCompanion:
                 default:
@@ -1522,5 +1543,100 @@ namespace Songify_Slim.Views
             Process.Start(direcotry);
         }
 
+        private async void ServiceToolTipOpening(object sender, ToolTipEventArgs e)
+        {
+            try
+            {
+                await ShowServiceToolTip(sender);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        private async Task ShowServiceToolTip(object sender)
+        {
+
+            if (sender is Button btn)
+            {
+                Style style = TryFindResource("StatusToolTip") as Style; // or null
+                // build rows dynamically (use your own data here)
+                List<(string Label, string Value)> rows;
+                string header;
+                PackIconBoxIcons icon = new();
+
+
+                switch ((string)btn.Tag)
+                {
+                    case "TwitchBot":
+                        header = "Twitch Chat Bot";
+                        icon.Kind = PackIconBoxIconsKind.LogosTwitch;
+                        rows =
+                        [
+                            ("Status", IconTwitchBot.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
+                        ];
+                        break;
+                    case "TwitchAPI":
+                        header = "Twitch API";
+                        icon.Kind = PackIconBoxIconsKind.LogosTwitch;
+                        EventSubSubscription[] x = await TwitchApiHelper.GetEventSubscriptions();
+                        List<EventSubSubscription> subs = x.ToList();
+                        rows =
+                        [
+                            ("Status", IconTwitchAPI.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
+                            ("EventSubs", string.Join("\n", subs.Where(s=> s.Status == "enabled").Select(s => s.Type)))
+                        ];
+                        break;
+                    case "Spotify":
+                        header = "Spotify";
+                        icon.Kind = PackIconBoxIconsKind.LogosSpotify;
+                        string status = IconWebSpotify.Foreground == Brushes.DarkOrange ? "Connected (Free)"
+                            : IconWebSpotify.Foreground == Brushes.GreenYellow ? "Connected (Premium)"
+                            : "Disconnected";
+                        rows =
+                        [
+                            ("Status", status),
+                            ("User", Settings.SpotifyProfile.DisplayName),
+                            ("Device", await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId))
+                        ];
+                        break;
+                    default:
+                        header = "WebServer";
+                        icon.Kind = PackIconBoxIconsKind.SolidServer;
+                        rows =
+                        [
+                            ("Status", IconWebServer.Foreground == Brushes.GreenYellow ? "Running" : "Not running"),
+                            ("Port", Settings.WebServerPort.ToString())
+                        ];
+                        break;
+                }
+
+                btn.ToolTip = ServiceToolTip.Build(header, rows, style, icon); // see helper below
+            }
+        }
+
+        private async void ServiceIcon_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: string tag }) return;
+            switch (tag)
+            {
+                case "TwitchBot":
+                case "TwitchAPI":
+                case "Spotify":
+                    break;
+                case "WebServer":
+                    {
+                        if (GlobalObjects.WebServer.Run)
+                        {
+                            GlobalObjects.WebServer.StopWebServer();
+                        }
+                        else GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
+                        break;
+                    }
+            }
+        }
     }
 }

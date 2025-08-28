@@ -1,3 +1,11 @@
+﻿using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using SpotifyAPI.Web.Auth;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,18 +15,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
-using Timer = System.Timers.Timer;
-using Application = System.Windows.Application;
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.Controls;
-using SpotifyAPI.Web.Auth;
-using SpotifyAPI.Web;
 using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.General.Enums.PlaybackAction;
+using static System.Net.WebRequestMethods;
+using Application = System.Windows.Application;
+using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Spotify
 {
@@ -28,11 +29,22 @@ namespace Songify_Slim.Util.Spotify
         private const string BaseUrl = "https://auth.overcode.tv";
         private static EmbedIOAuthServer _server;
         public static SpotifyClient Client;
-
+        private static int softLimitPerminute = 60;
         private static readonly Timer AuthTimer = new()
         {
             Interval = 1000 * 60 * 30,
         };
+
+        // ---- caching state (in SpotifyApiHandler) ----
+        private static CurrentlyPlayingContext _cachedPlayback;
+        private static DateTime _cachedPlaybackAt = DateTime.MinValue;
+        private static readonly TimeSpan PlaybackCacheTtl = TimeSpan.FromSeconds(5);
+
+        private static string _cachedPlaylistId;
+        private static PlaylistInfo _cachedPlaylistInfo;
+        private static DateTime _cachedPlaylistFetchedAt = DateTime.MinValue;
+        private static readonly TimeSpan PlaylistCacheTtl = TimeSpan.FromMinutes(10);
+
 
         public static async Task Auth()
         {
@@ -140,7 +152,7 @@ namespace Songify_Slim.Util.Spotify
                     if (app.MainWindow is MainWindow mw)
                     {
                         mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
-                        mw.IconWebSpotify.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                        //mw.IconWebSpotify.Kind = PackIconBoxIconsKind.LogosSpotify;
                     }
                 });
             }
@@ -192,8 +204,8 @@ namespace Songify_Slim.Util.Spotify
                         if (Application.Current.MainWindow == null) return;
                         ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
                             Brushes.GreenYellow;
-                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-                            PackIconBootstrapIconsKind.CheckCircleFill;
+                        //((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
+                        //    PackIconBoxIconsKind.LogosSpotify;
                         GlobalObjects.SpotifyProfile = await GetUser();
                         Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
                         Logger.LogStr(
@@ -248,29 +260,43 @@ namespace Songify_Slim.Util.Spotify
 
             try
             {
-                // 1) What�s currently playing?
-                CurrentlyPlaying playback = await Client.Player.GetCurrentlyPlaying(
-                    new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track)
-                    {
-                        Market = "from_token" // helps avoid market-related mismatches
-                    });
+                // 1) Track/progress (1/sec ok)
+                CurrentlyPlaying playback = await ApiCallMeter.RunAsync(
+                    "Player.GetCurrentlyPlaying",
+                    () => Client.Player.GetCurrentlyPlaying(
+                        new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track)
+                        {
+                            Market = "from_token"
+                        }),
+                    softLimitPerMinute: 60
+                );
 
-                if (playback == null || playback.Item is not FullTrack track)
+                if (playback == null || playback.Item is not FullTrack track || playback.ProgressMs == null)
                     return null;
 
-                // 2) Playback state / device (can be null when nothing active)
-                CurrentlyPlayingContext currentPlayback = null;
-                try
+                // 2) Playback state / device (cache 5s)
+                CurrentlyPlayingContext currentPlayback;
+                if ((DateTime.UtcNow - _cachedPlaybackAt) > PlaybackCacheTtl || _cachedPlayback == null)
                 {
-                    currentPlayback = await Client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest()
+                    try
                     {
-                        Market = "from_token"
-                    });
+                        currentPlayback = await ApiCallMeter.RunAsync(
+                            "Player.GetCurrentPlayback",
+                            () => Client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest { Market = "from_token" }),
+                            softLimitPerMinute: 12   // ~ once per 5s
+                        );
+                    }
+                    catch (APIException apiEx) when ((int)apiEx.Response.StatusCode is 404 or 204)
+                    {
+                        currentPlayback = null;
+                    }
+
+                    _cachedPlayback = currentPlayback;
+                    _cachedPlaybackAt = DateTime.UtcNow;
                 }
-                catch (APIException apiEx) when ((int)apiEx.Response.StatusCode == 404 || (int)apiEx.Response.StatusCode == 204)
+                else
                 {
-                    // No active device or no content; continue without device info
-                    currentPlayback = null;
+                    currentPlayback = _cachedPlayback;
                 }
 
                 if (currentPlayback?.Device?.Id != null &&
@@ -279,36 +305,95 @@ namespace Songify_Slim.Util.Spotify
                     Settings.Settings.SpotifyDeviceId = currentPlayback.Device.Id;
                 }
 
-                // 3) Basics
+                // 3) Artists / progress math
                 string artists = string.Join(", ", track.Artists.Select(a => a.Name));
                 List<Image> albums = track.Album?.Images ?? new List<Image>();
-                if (playback.ProgressMs == null) return null;
-
                 double totalSeconds = track.DurationMs / 1000.0;
                 double currentSeconds = (double)playback.ProgressMs / 1000.0;
                 int percentage = totalSeconds == 0 ? 0 : (int)(100 * currentSeconds / totalSeconds);
 
-                // 4) Playlist context (robust & safe)
+                // 4) Playlist context (only when ID changes; cache 10 min)
                 PlaylistInfo playlistInfo = null;
-                if (playback.Context?.Type == "playlist" && !string.IsNullOrEmpty(playback.Context.Uri))
+                if (playback.Context?.Type is not "playlist" && playback.Context?.Type is not "collection" || string.IsNullOrEmpty(playback.Context.Uri))
+                    return new TrackInfo
+                    {
+                        Artists = artists,
+                        Title = track.Name,
+                        Albums = albums.ToList(),
+                        SongId = track.Id,
+                        DurationMs = (int)(track.DurationMs - playback.ProgressMs),
+                        IsPlaying = playback.IsPlaying,
+                        Url = "https://open.spotify.com/track/" + track.Id,
+                        DurationPercentage = percentage,
+                        DurationTotal = track.DurationMs,
+                        Progress = (int)playback.ProgressMs,
+                        Playlist = playlistInfo,
+                        FullArtists = track.Artists.ToList()
+                    };
                 {
-                    // Support both "spotify:playlist:{id}" and "spotify:user:{uid}:playlist:{id}"
                     string playlistId = null;
                     string[] parts = playback.Context.Uri.Split(':');
-                    if (parts.Length >= 3 && parts[0] == "spotify")
+                    bool isCollection = false;
+
+                    if (parts.Length == 3 && parts[1] == "playlist")
                     {
-                        if (parts.Length == 3 && parts[1] == "playlist")
-                            playlistId = parts[2];
-                        else if (parts.Length >= 5 && parts[1] == "user" && parts[3] == "playlist")
-                            playlistId = parts[4];
+                        // spotify:playlist:{id}
+                        playlistId = parts[2];
+                    }
+                    else if (parts.Length >= 5 && parts[1] == "user" && parts[3] == "playlist")
+                    {
+                        // spotify:user:{uid}:playlist:{id}
+                        playlistId = parts[4];
+                    }
+                    else if (parts.Length >= 4 && parts[1] == "user" && parts[3] == "collection")
+                    {
+                        // spotify:user:{uid}:collection  → user’s liked songs
+                        isCollection = true;
                     }
 
-                    if (!string.IsNullOrEmpty(playlistId))
+                    if (isCollection)
+                    {
+                        playlistInfo = new PlaylistInfo
+                        {
+                            Name = "Liked Songs",
+                            Id = "collection",
+                            Owner = parts.Length > 2 ? parts[2] : null,
+                            Url = "spotify:collection",
+                            Image = "https://misc.scdn.co/liked-songs/liked-songs-300.jpg"
+                        };
+                    }
+
+                    if (string.IsNullOrEmpty(playlistId))
+                        return new TrackInfo
+                        {
+                            Artists = artists,
+                            Title = track.Name,
+                            Albums = albums.ToList(),
+                            SongId = track.Id,
+                            DurationMs = (int)(track.DurationMs - playback.ProgressMs),
+                            IsPlaying = playback.IsPlaying,
+                            Url = "https://open.spotify.com/track/" + track.Id,
+                            DurationPercentage = percentage,
+                            DurationTotal = track.DurationMs,
+                            Progress = (int)playback.ProgressMs,
+                            Playlist = playlistInfo,
+                            FullArtists = track.Artists.ToList()
+                        };
+                    bool needFetch = playlistId != _cachedPlaylistId ||
+                                     (DateTime.UtcNow - _cachedPlaylistFetchedAt) > PlaylistCacheTtl ||
+                                     _cachedPlaylistInfo == null;
+
+                    if (needFetch)
                     {
                         try
                         {
-                            FullPlaylist playlist = await Client.Playlists.Get(playlistId);
-                            playlistInfo = new PlaylistInfo
+                            FullPlaylist playlist = await ApiCallMeter.RunAsync(
+                                "Playlists.Get",
+                                () => Client.Playlists.Get(playlistId),
+                                softLimitPerMinute: 6 // you’ll hit this very rarely now
+                            );
+
+                            _cachedPlaylistInfo = new PlaylistInfo
                             {
                                 Name = playlist.Name,
                                 Id = playlist.Id,
@@ -316,13 +401,19 @@ namespace Songify_Slim.Util.Spotify
                                 Url = playlist.Uri,
                                 Image = playlist.Images?.FirstOrDefault()?.Url
                             };
+                            _cachedPlaylistId = playlistId;
+                            _cachedPlaylistFetchedAt = DateTime.UtcNow;
                         }
-                        catch (APIException apiEx) when ((int)apiEx.Response.StatusCode == 404 || (int)apiEx.Response.StatusCode == 403)
+                        catch (APIException apiEx) when ((int)apiEx.Response.StatusCode is 404 or 403)
                         {
-                            // Private / deleted / no access � skip playlist info gracefully
                             Logger.LogStr($"Playlist context not accessible ({apiEx.Response.StatusCode}). Skipping playlist info.");
+                            _cachedPlaylistInfo = null;
+                            _cachedPlaylistId = playlistId; // still set so we don’t retry every second
+                            _cachedPlaylistFetchedAt = DateTime.UtcNow;
                         }
                     }
+
+                    playlistInfo = _cachedPlaylistInfo;
                 }
 
                 // 5) Build result
@@ -344,16 +435,10 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException apiEx)
             {
-                // Inspect the root cause cleanly
                 Logger.LogStr("ERROR: Couldn't fetch song info");
                 Logger.LogStr($"Spotify API error {(int)apiEx.Response.StatusCode}: {apiEx.Message}");
                 if (!string.IsNullOrEmpty((string)(apiEx.Response?.Body)))
-                    Logger.LogStr((string)apiEx.Response.Body); // often contains JSON with 'reason'
-
-                // Common hints based on endpoint behavior
-                // 404 -> no active device / no content / not found resource (playlist/track)
-                // 401 -> token/scopes issue
-                // 403 -> forbidden (private playlist without scope)
+                    Logger.LogStr((string)apiEx.Response.Body);
             }
             catch (Exception ex)
             {
@@ -364,16 +449,17 @@ namespace Songify_Slim.Util.Spotify
             return null;
         }
 
+
         public static async Task<bool> AddToQueue(string songUri)
         {
             if (Client == null)
                 return false;
             try
             {
-                await Client.Player.AddToQueue(new PlayerAddToQueueRequest(songUri)
+                await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(new PlayerAddToQueueRequest(songUri)
                 {
                     DeviceId = Settings.Settings.SpotifyDeviceId
-                });
+                }), softLimitPerMinute: softLimitPerminute);
                 return true;
             }
             catch (APIException ex)
@@ -414,7 +500,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await Client.Tracks.Get(id);
+                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id), softLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -429,8 +515,8 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                SearchRequest request = new SearchRequest(SearchRequest.Types.Track, query) { Limit = 1 };
-                SearchResponse result = await Client.Search.Item(request);
+                SearchRequest request = new(SearchRequest.Types.Track, query) { Limit = 1 };
+                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request), softLimitPerminute);
 
                 return result.Tracks is { Items.Count: > 0 } ? result.Tracks.Items[0] : null;
             }
@@ -455,7 +541,7 @@ namespace Songify_Slim.Util.Spotify
                 }
 
                 Paging<PlaylistTrack<IPlayableItem>> tracks =
-                    await Client.Playlists.GetItems(Settings.Settings.SpotifyPlaylistId);
+                    await ApiCallMeter.RunAsync("Playlists.GetItems", () => Client.Playlists.GetItems(Settings.Settings.SpotifyPlaylistId), softLimitPerminute);
 
                 while (tracks.Items != null)
                 {
@@ -474,9 +560,8 @@ namespace Songify_Slim.Util.Spotify
                     tracks = await Client.NextPage(tracks);
                 }
 
-                PlaylistAddItemsRequest request =
-                    new PlaylistAddItemsRequest(new List<string> { "spotify:track:" + trackId });
-                await Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request);
+                PlaylistAddItemsRequest request = new(new List<string> { "spotify:track:" + trackId });
+                await ApiCallMeter.RunAsync("Playlists.AddItems", () => Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request), softLimitPerminute);
                 return false;
             }
             catch (Exception ex)
@@ -493,7 +578,7 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await Client.Player.SkipNext();
+                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(), softLimitPerminute);
             }
             catch (Exception)
             {
@@ -507,7 +592,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await Client.Player.GetQueue();
+                return await ApiCallMeter.RunAsync("Player.GetQueue", () => Client.Player.GetQueue(), softLimitPerminute);
             }
             catch (Exception)
             {
@@ -521,7 +606,7 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await Client.Player.SkipPrevious();
+                await ApiCallMeter.RunAsync("Player.SkipPrevius", () => Client.Player.SkipPrevious(), softLimitPerminute);
             }
             catch (Exception)
             {
@@ -535,10 +620,10 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await Client.Player.SeekTo(new PlayerSeekToRequest(0)
+                await ApiCallMeter.RunAsync("Player.SeekTo", () => Client.Player.SeekTo(new PlayerSeekToRequest(0)
                 {
                     DeviceId = Settings.Settings.SpotifyDeviceId
-                });
+                }), softLimitPerminute);
             }
             catch (Exception)
             {
@@ -552,7 +637,7 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
-                CurrentlyPlayingContext playback = await Client.Player.GetCurrentPlayback();
+                CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync("Player.GetCurrentPlayback", () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
 
                 bool isPlaying = playback is { IsPlaying: true };
 
@@ -564,16 +649,16 @@ namespace Songify_Slim.Util.Spotify
                 switch (action)
                 {
                     case Pause when isPlaying:
-                        await Client.Player.PausePlayback(new PlayerPausePlaybackRequest
+                        await ApiCallMeter.RunAsync("Player.PausePlayback", () => Client.Player.PausePlayback(new PlayerPausePlaybackRequest
                         {
                             DeviceId = Settings.Settings.SpotifyDeviceId
-                        });
+                        }), softLimitPerminute);
                         return false;
                     case Play when !isPlaying:
-                        await Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
+                        await ApiCallMeter.RunAsync("Player.ResumePlayback", () => Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
                         {
                             DeviceId = Settings.Settings.SpotifyDeviceId
-                        });
+                        }), softLimitPerminute);
                         return true;
                     // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                     case Toggle:
@@ -598,7 +683,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await Client.Player.GetCurrentPlayback();
+                return await ApiCallMeter.RunAsync("Player.GetCurrentPlayback", () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -613,7 +698,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                List<bool> response = await Client.Library.CheckTracks(new LibraryCheckTracksRequest(tracks));
+                List<bool> response = await ApiCallMeter.RunAsync("Library.GetTracks", () => Client.Library.CheckTracks(new LibraryCheckTracksRequest(tracks)), softLimitPerminute);
                 return response;
             }
             catch (Exception ex)
@@ -623,503 +708,13 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        //private static PlaylistInfo _playlistInfo;
-        //public static SpotifyWebAPI Spotify;
-        //private static Token _lastToken;
-        //public static bool Authed;
-
-        //private static readonly Timer AuthRefresh = new()
-        //{
-        //    // Interval for refreshing Spotify-Auth
-        //    Interval = (int)TimeSpan.FromMinutes(30).TotalMilliseconds
-        //};
-
-        //// Spotify Authentication flow with the webserver
-        //private static TokenSwapAuth _auth;
-
-        //public static async Task DoAuthAsync(bool altUrl = false)
-        //{
-        //    string url = altUrl ? GlobalObjects.AltAuthUrl : GlobalObjects.AuthUrl;
-        //    Debug.WriteLine(url);
-
-        //    string uriType = Settings.Settings.SpotifyRedirectUri switch
-        //    {
-        //        "localhost" => "name",
-        //        "127.0.0.1" => "ip",
-        //        _ => "name"
-        //    };
-
-        //    Debug.WriteLine($"{url}/auth/auth3.php?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}&uri_type={uriType}");
-
-        //    _auth = new TokenSwapAuth(
-        //        $"{url}/auth/auth3.php?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}&uri_type={uriType}",
-        //        $"http://{Settings.Settings.SpotifyRedirectUri}:4002/auth",
-        //        Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-        //        Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
-        //    );
-
-        //    //if (Settings.Settings.UseOwnApp)
-        //    //{
-        //    //    _auth = new TokenSwapAuth(
-        //    //        $"{url}/auth/auth.php?id=" + Settings.Settings.ClientId +
-        //    //        "&secret=" + Settings.Settings.ClientSecret,
-        //    //        "http://localhost:4002/auth",
-        //    //        Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-        //    //        Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
-        //    //    );
-
-        //    //}
-        //    //else
-        //    //{
-        //    //    _auth = new TokenSwapAuth(
-        //    //        $"{url}/auth/_index.php",
-        //    //        "http://localhost:4002/auth",
-        //    //        Scope.UserReadPlaybackState | Scope.UserReadPrivate | Scope.UserModifyPlaybackState |
-        //    //        Scope.PlaylistModifyPublic | Scope.PlaylistModifyPrivate | Scope.PlaylistReadPrivate | Scope.UserLibraryModify | Scope.UserLibraryRead
-        //    //    );
-        //    //}
-
-        //    try
-        //    {
-        //        // Execute the authentication flow and subscribe the timer elapsed event
-        //        AuthRefresh.Elapsed += AuthRefresh_Elapsed;
-
-        //        // If Refresh and Access-token are present, just refresh the auth
-        //        if (!string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken) &&
-        //            !string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken))
-        //        {
-        //            Authed = true;
-        //            Token token = await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken);
-        //            if (token == null)
-        //                return;
-        //            Spotify = new SpotifyWebAPI
-        //            {
-        //                TokenType = token.TokenType,
-        //                AccessToken = token.AccessToken
-        //            };
-        //            Spotify.AccessToken = token.AccessToken;
-        //            if (Application.Current.MainWindow != null)
-        //            {
-        //                ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-        //                    Brushes.GreenYellow;
-        //                ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-        //                    PackIconBootstrapIconsKind.CheckCircleFill;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Authed = false;
-        //        }
-
-        //        // if the auth was successful save the new tokens and
-        //        _auth.AuthReceived += static async (sender, response) =>
-        //        {
-        //            if (Authed)
-        //                return;
-
-        //            _lastToken = await _auth.ExchangeCodeAsync(response.Code);
-        //            if (_lastToken == null)
-        //                return;
-        //            try
-        //            {
-        //                // Save tokens
-        //                Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
-        //                Settings.Settings.SpotifyAccessToken = _lastToken.AccessToken;
-        //                // create ne Spotify object
-        //                Spotify = new SpotifyWebAPI
-        //                {
-        //                    TokenType = _lastToken.TokenType,
-        //                    AccessToken = _lastToken.AccessToken
-        //                };
-        //                _auth.Stop();
-        //                Authed = true;
-        //                AuthRefresh.Start();
-        //                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-        //                    new Action(async void () =>
-        //                    {
-        //                        foreach (Window window in Application.Current.Windows)
-        //                        {
-        //                            if (window.GetType() == typeof(Window_Settings))
-        //                                await ((Window_Settings)window).SetControls();
-        //                        }
-
-        //                        if (Application.Current.MainWindow == null) return;
-        //                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-        //                            Brushes.GreenYellow;
-        //                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-        //                            PackIconBootstrapIconsKind.CheckCircleFill;
-        //                        GlobalObjects.SpotifyProfile = await Spotify.GetPrivateProfileAsync();
-        //                        Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-        //                        Logger.LogStr(
-        //                            $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
-        //                        Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
-
-        //                        if (GlobalObjects.SpotifyProfile.Product == "premium") return;
-
-        //                        if (!Settings.Settings.HideSpotifyPremiumWarning)
-        //                            await ShowPremiumRequiredDialogAsync();
-
-        //                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-        //                            Brushes.DarkOrange;
-
-        //                    }));
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                Logger.LogStr("Error while saving Spotify tokens");
-        //                Logger.LogExc(e);
-        //            }
-        //        };
-
-        //        // automatically refreshes the token after it expires
-        //        _auth.OnAccessTokenExpired += async (sender, e) =>
-        //        {
-        //            Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken))
-        //                .AccessToken;
-        //            Settings.Settings.SpotifyRefreshToken = _lastToken.RefreshToken;
-        //            Settings.Settings.SpotifyAccessToken = Spotify.AccessToken;
-        //        };
-
-        //        _auth.Start();
-
-        //        if (Authed)
-        //        {
-        //            AuthRefresh.Start();
-        //            if (Application.Current.MainWindow == null) return;
-        //            ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-        //                Brushes.GreenYellow;
-        //            ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-        //                PackIconBootstrapIconsKind.CheckCircleFill;
-        //            PrivateProfile x = await Spotify.GetPrivateProfileAsync();
-
-        //            Logger.LogStr($"SPOTIFY: Connected Account: {x.DisplayName}");
-        //            Logger.LogStr($"SPOTIFY: Account Type: {x.Product}");
-
-        //            if (x.Product == "premium") return;
-        //            ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-        //                Brushes.DarkOrange;
-        //            return;
-        //        }
-
-        //        _auth.OpenBrowser();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogExc(ex);
-        //    }
-        //}
-
-        //public static async Task ShowPremiumRequiredDialogAsync()
-        //{
-        //    MetroDialogSettings dialogSettings = new MetroDialogSettings
-        //    {
-        //        AffirmativeButtonText = "OK",
-        //        NegativeButtonText = "Don't Show Again",
-        //        AnimateShow = true,
-        //        AnimateHide = true,
-        //    };
-
-        //    // You need a reference to the dialog host (usually the main window)
-        //    MetroWindow mainWindow = (Application.Current.MainWindow as MetroWindow);
-        //    if (mainWindow == null)
-        //        return;
-
-        //    MessageDialogResult result = await mainWindow.ShowMessageAsync(
-        //        "Spotify Premium required",
-        //        "Spotify Premium is required to perform song requests. Songify was unable to verify your Spotify Premium status.",
-        //        MessageDialogStyle.AffirmativeAndNegative,
-        //        dialogSettings);
-
-        //    if (result == MessageDialogResult.Negative)
-        //    {
-        //        Settings.Settings.HideSpotifyPremiumWarning = true;
-        //    }
-        //}
-
-
-        //private static async void AuthRefresh_Elapsed(object sender, ElapsedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        // When the timer elapses the tokens will get refreshed
-        //        Spotify.AccessToken = (await _auth.RefreshAuthAsync(Settings.Settings.SpotifyRefreshToken)).AccessToken;
-        //        Settings.Settings.SpotifyAccessToken = Spotify.AccessToken;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.LogExc(ex);
-        //    }
-        //}
-
-        //public static async Task<TrackInfo> GetSongInfo()
-        //{
-        //    // returns the trackinfo of the current playback (used in the fetch timer)
-
-        //    PlaybackContext context;
-        //    try
-        //    {
-        //        context = await Spotify.GetPlaybackAsync();
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        Logger.LogStr("SPOTIFY API: Couldn't fetch Song info");
-        //        return null;
-        //    }
-
-        //    if (context.Error != null)
-        //        Logger.LogStr("SPOTIFY API: " + context.Error.Status + " | " + context.Error.Message);
-
-        //    if (context.Item == null) return null;
-
-        //    string artists = "";
-
-        //    for (int i = 0; i < context.Item.Artists.Count; i++)
-        //        if (i != context.Item.Artists.Count - 1)
-        //            artists += context.Item.Artists[i].Name + ", ";
-        //        else
-        //            artists += context.Item.Artists[i].Name;
-
-        //    if (context.Device != null)
-        //    {
-        //        if (Settings.Settings.SpotifyDeviceId != context.Device.Id)
-        //            Settings.Settings.SpotifyDeviceId = context.Device.Id;
-        //    }
-
-        //    List<Image> albums = context.Item.Album.Images;
-        //    double totalSeconds = TimeSpan.FromMilliseconds(context.Item.DurationMs).TotalSeconds;
-        //    double currentDuration = TimeSpan.FromMilliseconds(context.ProgressMs).TotalSeconds;
-        //    double percentage = 100 / totalSeconds * currentDuration;
-        //    try
-        //    {
-        //        if (context.Context is { Type: "playlist" })
-        //        {
-        //            if (GlobalObjects.CurrentSong == null || GlobalObjects.CurrentSong.SongId != context.Item.Id)
-        //            {
-        //                FullPlaylist playlist = await Spotify.GetPlaylistAsync(context.Context.Uri.Split(':')[2]);
-        //                if (playlist != null || !GlobalObjects.IsObjectDefault(playlist))
-        //                {
-        //                    if (playlist is { Id: not null })
-        //                        _playlistInfo = new PlaylistInfo
-        //                        {
-        //                            Name = playlist.Name,
-        //                            Id = playlist.Id,
-        //                            Owner = playlist.Owner.DisplayName,
-        //                            Url = playlist.Uri,
-        //                            Image = playlist.Images[0].Url
-        //                        };
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        // ignored because it's not important if the playlist info can't be fetched
-        //        _playlistInfo = null;
-        //    }
-
-        //    return new TrackInfo
-        //    {
-        //        Artists = artists,
-        //        Title = context.Item.Name,
-        //        Albums = albums,
-        //        SongId = context.Item.Id,
-        //        DurationMs = (int)context.Item.DurationMs - context.ProgressMs,
-        //        IsPlaying = context.IsPlaying,
-        //        Url = "https://open.spotify.com/track/" + context.Item.Id,
-        //        DurationPercentage = (int)percentage,
-        //        DurationTotal = (int)context.Item.DurationMs,
-        //        Progress = context.ProgressMs,
-        //        Playlist = _playlistInfo,
-        //        FullArtists = context.Item.Artists
-        //    };
-        //}
-
-        //public static SearchItem GetArtist(string searchStr)
-        //{
-        //    try
-        //    {
-        //        // returns Artist matching the search string
-        //        return Spotify.SearchItems(searchStr, SearchType.Artist, 10);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
-
-        //public static ErrorResponse AddToQ(string songUri)
-        //{
-        //    try
-        //    {
-        //        // Tries to add a song to the current playback queue
-        //        ErrorResponse error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
-
-        //        // If the error message is "503 | Service unavailable" wait a second and retry for a total of 5 times.
-        //        if (!error.HasError()) return error;
-        //        if (error.Error.Status != 503) return error;
-        //        for (int i = 0; i < 5; i++)
-        //        {
-        //            Thread.Sleep(1000);
-        //            error = Spotify.AddToQueue(songUri, Settings.Settings.SpotifyDeviceId);
-        //            if (!error.HasError())
-        //                break;
-        //        }
-
-        //        return error;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e.Message == "Input string was not in a correct format.")
-        //            return null;
-        //        Logger.LogExc(e);
-        //        return null;
-        //    }
-        //}
-
-        //public static async Task<FullTrack> GetTrack(string id)
-        //{
-        //    try
-        //    {
-        //        FullTrack x = await Spotify.GetTrackAsync(id, "");
-        //        //Debug.WriteLine(Json.Serialize(x));
-        //        return x;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.LogExc(e);
-        //        return null;
-        //    }
-        //}
-
-        //public static SearchItem FindTrack(string searchQuery)
-        //{
-        //    // Returns a Track-Object matching a search query (artist - title). It only returns the first match which is found
-        //    try
-        //    {
-        //        string newQuery = UrlEncoder.Default.Encode(searchQuery);
-        //        //newQuery = newQuery.Replace("%20", "+");
-        //        Debug.WriteLine(searchQuery);
-        //        Debug.WriteLine(newQuery);
-        //        SearchItem search = Spotify.SearchItems(newQuery, SearchType.Track, 1);
-        //        return search;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.LogExc(e);
-        //        return null;
-        //    }
-        //}
-
-        //public static async Task<bool> AddToPlaylist(string trackId)
-        //{
-        //    if (Settings.Settings.SpotifyPlaylistId == null || Settings.Settings.SpotifyPlaylistId == "-1")
-        //    {
-        //        await Spotify.SaveTracksAsync([trackId]);
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            Paging<PlaylistTrack> tracks =
-        //                await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId);
-
-        //            while (tracks is { Items: not null })
-        //            {
-        //                if (tracks.Items.Any(t => t.Track.Id == trackId))
-        //                {
-        //                    return true;
-        //                }
-
-        //                if (!tracks.HasNextPage())
-        //                {
-        //                    break;  // Exit if no more pages
-        //                }
-
-        //                tracks = await Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
-        //            }
-
-        //            ErrorResponse x = await Spotify.AddPlaylistTrackAsync(Settings.Settings.SpotifyPlaylistId,
-        //                $"spotify:track:{trackId}");
-        //            return x == null || x.HasError();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Logger.LogStr("Error adding song to playlist");
-        //            Logger.LogExc(ex);
-        //            return true;
-        //        }
-        //    }
-        //    return false;
-        //}
-
-        //public static async Task<ErrorResponse> SkipSong()
-        //{
-        //    try
-        //    {
-        //        return await Spotify.SkipPlaybackToNextAsync();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        //ignored
-        //        return null;
-        //    }
-        //}
-
-        //public static async Task<SimpleQueue> GetQueueInfo()
-        //{
-        //    return await Spotify.GetQueueAsync();
-        //}
-
-        //public static async Task SkipPrevious()
-        //{
-        //    try
-        //    {
-        //        await Spotify.SkipPlaybackToPreviousAsync(Settings.Settings.SpotifyDeviceId);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        //ignored
-        //    }
-        //}
-
-        //public static async Task PlayFromStart()
-        //{
-        //    try
-        //    {
-        //        await Spotify.SeekPlaybackAsync(0, Settings.Settings.SpotifyDeviceId);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        //ignored
-        //    }
-        //}
-
-        //public static async Task<bool> PlayPause()
-        //{
-        //    PlaybackContext playback = await Spotify.GetPlaybackAsync();
-
-        //    try
-        //    {
-        //        if (playback.IsPlaying)
-        //            await Spotify.PausePlaybackAsync(Settings.Settings.SpotifyDeviceId);
-        //        else
-        //            await Spotify.ResumePlaybackAsync(Settings.Settings.SpotifyDeviceId, "", null, null, 0);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        //ignored
-        //    }
-        //    return !playback.IsPlaying;
-        //}
-
         public static async Task<Paging<PlaylistTrack<IPlayableItem>>> GetPlaylistTracks(string playlistId)
         {
             if (Client == null)
                 return null;
             try
             {
-                Paging<PlaylistTrack<IPlayableItem>> tracks = await Client.Playlists.GetItems(playlistId);
+                Paging<PlaylistTrack<IPlayableItem>> tracks = await ApiCallMeter.RunAsync("Playlists.GetItems", () => Client.Playlists.GetItems(playlistId), softLimitPerminute);
                 return tracks;
             }
             catch (Exception ex)
@@ -1135,7 +730,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                FullPlaylist playlist = await Client.Playlists.Get(spotifyPlaylistId);
+                FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get", () => Client.Playlists.Get(spotifyPlaylistId), softLimitPerminute);
                 return playlist;
             }
             catch (Exception ex)
@@ -1151,20 +746,13 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
-                return await Client.Player.SetVolume(new PlayerVolumeRequest(vol));
+                return await ApiCallMeter.RunAsync("Player.SetVolune", () => Client.Player.SetVolume(new PlayerVolumeRequest(vol)), softLimitPerminute);
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
                 return false;
             }
-        }
-
-        public class TrackScore
-        {
-            public string TrackName { get; set; }
-            public string ArtistName { get; set; }
-            public int Score { get; set; }
         }
 
         public static async Task<List<FullArtist>> GetArtist(string search)
@@ -1174,7 +762,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 1 };
-                SearchResponse result = await Client.Search.Item(request);
+                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request), softLimitPerminute);
                 return result.Artists.Items;
             }
             catch (Exception ex)
@@ -1190,7 +778,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                PrivateUser user = await Client.UserProfile.Current();
+                PrivateUser user = await ApiCallMeter.RunAsync("UserProfile.Current", () => Client.UserProfile.Current(), softLimitPerminute);
                 return user;
             }
             catch (Exception ex)
@@ -1206,7 +794,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                Paging<FullPlaylist> playlists = await Client.Playlists.CurrentUsers();
+                Paging<FullPlaylist> playlists = await ApiCallMeter.RunAsync("Playlists.CurrentUsers", () => Client.Playlists.CurrentUsers(), softLimitPerminute);
                 return playlists;
             }
             catch (Exception ex)
@@ -1214,6 +802,22 @@ namespace Songify_Slim.Util.Spotify
                 Logger.LogExc(ex);
                 return null;
             }
+        }
+
+        public static async Task<string> GetDeviceNameForId(string spotifyDeviceId)
+        {
+            if (Client == null)
+                return null;
+            try
+            {
+                DeviceResponse x = await ApiCallMeter.RunAsync("Player.GetAvailableDevices", () => Client.Player.GetAvailableDevices(), softLimitPerminute);
+                return x.Devices.FirstOrDefault(d => d.IsActive)?.Name;
+            }
+            catch (Exception e)
+            {
+                Logger.LogStr("SPOTIFY API: Couldn't get device");
+            }
+            return "No device found";
         }
     }
 }

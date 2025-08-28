@@ -267,7 +267,7 @@ namespace Songify_Slim.Util.General
                     if (Application.Current.MainWindow == null) return;
                     // Assuming these UI elements and methods exist in your MainWindow
                     ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.CheckCircleFill;
+                    //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
                 });
 
                 Logger.LogStr($"WebServer: Started on port {port}");
@@ -611,8 +611,8 @@ namespace Songify_Slim.Util.General
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Application.Current.MainWindow == null) return;
-                ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.Gray;
-                ((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBootstrapIconsKind.ExclamationTriangleFill;
+                ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.DarkGray;
+                //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
             });
             _listener.Stop();
         }
