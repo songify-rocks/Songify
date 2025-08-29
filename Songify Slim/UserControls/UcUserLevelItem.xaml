@@ -13,9 +13,13 @@
         <Style x:Key="UserLevelBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="Transparent" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
+                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                    <Setter Property="ToolTip" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
                     <Setter Property="Background" Value="SteelBlue" />
-                    <Setter Property="ToolTip" Value="User" />
+                    <Setter Property="ToolTip" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
                     <Setter Property="Background" Value="SteelBlue" />
@@ -59,6 +63,10 @@
         <Style x:Key="UserLevelIconStyle" TargetType="iconPacks:PackIconMaterial">
             <Setter Property="Kind" Value="Video" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
+                    <Setter Property="Kind" Value="None" />
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
                     <Setter Property="Kind" Value="Account" />
                 </DataTrigger>
@@ -95,6 +103,9 @@
         <Style x:Key="UserLevelTextStyle" TargetType="TextBlock">
             <Setter Property="Text" Value="Moderator" />
             <Style.Triggers>
+                <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
+                    <Setter Property="Text" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
                     <Setter Property="Text" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 </DataTrigger>
@@ -253,8 +264,7 @@
                     Margin="0,0,0,0"
                     VerticalAlignment="Center"
                     Foreground="White"
-                    Style="{StaticResource UserLevelIconStyle}"
-                    Visibility="Visible" />
+                    Style="{StaticResource UserLevelIconStyle}" />
                 <TextBlock
                     x:Name="Text"
                     Margin="6,0,3,0"

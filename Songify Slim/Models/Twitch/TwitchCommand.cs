@@ -25,6 +25,7 @@ namespace Songify_Slim.Models
 
         public string Name => CommandType.GetDescription();
         public string Trigger { get; set; }
+        public List<string> Aliases { get; set; }
         public string Response { get; set; }
         public bool IsEnabled { get; set; }
         public List<int> AllowedUserLevels { get; set; }

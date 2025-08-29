@@ -1399,9 +1399,11 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             }
 
-            string trackId =
-                await GetTrackIdFromInput(Regex.Replace(message.Message, $"!{cmd.Trigger}", "", RegexOptions.IgnoreCase)
-                    .Trim());
+            string msg = message.Message.Contains(' ')
+                ? message.Message.Substring(message.Message.IndexOf(' ') + 1)
+                : string.Empty;
+
+            string trackId = await GetTrackIdFromInput(msg.Trim());
 
             AddSong(trackId, TwitchRequestUser.FromChatMessage(message), SongRequestSource.Command, cmdParams.ExistingUser);
         }
@@ -1949,11 +1951,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             bool unlimitedSr = false;
-            if (user == null)
-            {
-                
-            }
-
             if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
             {
                 switch (source)
@@ -2699,6 +2696,12 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             List<int> userLevels = await GetUserLevels(e.ChatMessage);
             // Attempt to find the user in the existing list.
+
+            if (GlobalObjects.TwitchUsers.Count == 0)
+            {
+                await RunTwitchUserSync();
+            }
+
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == e.ChatMessage.UserId);
 
             int subtier = int.Parse(GlobalObjects.subscribers.Where(s => s.UserId == e.ChatMessage.UserId)

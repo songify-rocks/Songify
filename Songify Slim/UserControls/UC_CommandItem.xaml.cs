@@ -61,20 +61,62 @@ namespace Songify_Slim.UserControls
 
             Map = new Dictionary<Enums.CommandType, string>
             {
-                { Enums.CommandType.SongRequest, Application.Current.TryFindResource("sw_SpotifySR_SRCommand") as string ?? "Fallback SongRequest" },
-                { Enums.CommandType.Next, Application.Current.TryFindResource("brw_cmd_next") as string ?? "Fallback Next" },
-                { Enums.CommandType.Play, Application.Current.TryFindResource("brw_cmd_play") as string ?? "Fallback Play" },
-                { Enums.CommandType.Voteskip, Application.Current.TryFindResource("brw_cmd_skipvote") as string ?? "Fallback Voteskip" },
-                { Enums.CommandType.Position, Application.Current.TryFindResource("brw_cmd_pos") as string ?? "Fallback Position" },
-                { Enums.CommandType.Song, Application.Current.TryFindResource("brw_cmd_song") as string ?? "Fallback Song" },
-                { Enums.CommandType.Skip, Application.Current.TryFindResource("brw_cmd_skip") as string ?? "Fallback Skip" },
-                { Enums.CommandType.Remove, Application.Current.TryFindResource("brw_cmd_remove") as string ?? "Fallback Remove" },
-                { Enums.CommandType.Songlike, Application.Current.TryFindResource("brw_cmd_songlike") as string ?? "Fallback Songlike" },
-                { Enums.CommandType.Volume, Application.Current.TryFindResource("brw_cmd_vol") as string ?? "Fallback Volume" },
-                { Enums.CommandType.Queue, Application.Current.TryFindResource("brw_cmd_queue") as string ?? "Fallback Queue" },
-                { Enums.CommandType.Commands, Application.Current.TryFindResource("brw_cmd_commands") as string ?? "Fallback Commands" },
-                { Enums.CommandType.Pause, Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause" },
-                { Enums.CommandType.BanSong, Application.Current.TryFindResource("brw_cmd_bansong") as string ?? "Fallback BanSong" }
+                {
+                    Enums.CommandType.SongRequest,
+                    Application.Current.TryFindResource("sw_SpotifySR_SRCommand") as string ?? "Fallback SongRequest"
+                },
+                {
+                    Enums.CommandType.Next,
+                    Application.Current.TryFindResource("brw_cmd_next") as string ?? "Fallback Next"
+                },
+                {
+                    Enums.CommandType.Play,
+                    Application.Current.TryFindResource("brw_cmd_play") as string ?? "Fallback Play"
+                },
+                {
+                    Enums.CommandType.Voteskip,
+                    Application.Current.TryFindResource("brw_cmd_skipvote") as string ?? "Fallback Voteskip"
+                },
+                {
+                    Enums.CommandType.Position,
+                    Application.Current.TryFindResource("brw_cmd_pos") as string ?? "Fallback Position"
+                },
+                {
+                    Enums.CommandType.Song,
+                    Application.Current.TryFindResource("brw_cmd_song") as string ?? "Fallback Song"
+                },
+                {
+                    Enums.CommandType.Skip,
+                    Application.Current.TryFindResource("brw_cmd_skip") as string ?? "Fallback Skip"
+                },
+                {
+                    Enums.CommandType.Remove,
+                    Application.Current.TryFindResource("brw_cmd_remove") as string ?? "Fallback Remove"
+                },
+                {
+                    Enums.CommandType.Songlike,
+                    Application.Current.TryFindResource("brw_cmd_songlike") as string ?? "Fallback Songlike"
+                },
+                {
+                    Enums.CommandType.Volume,
+                    Application.Current.TryFindResource("brw_cmd_vol") as string ?? "Fallback Volume"
+                },
+                {
+                    Enums.CommandType.Queue,
+                    Application.Current.TryFindResource("brw_cmd_queue") as string ?? "Fallback Queue"
+                },
+                {
+                    Enums.CommandType.Commands,
+                    Application.Current.TryFindResource("brw_cmd_commands") as string ?? "Fallback Commands"
+                },
+                {
+                    Enums.CommandType.Pause,
+                    Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause"
+                },
+                {
+                    Enums.CommandType.BanSong,
+                    Application.Current.TryFindResource("brw_cmd_bansong") as string ?? "Fallback BanSong"
+                }
             };
 
             Command = cmd;
@@ -89,11 +131,15 @@ namespace Songify_Slim.UserControls
         private void UpdateUi()
         {
             _isUpdating = true;
-            MenuItemColorPrimary.BorderBrush = string.IsNullOrEmpty(Settings.TwitchUserColor) ? new SolidColorBrush(Colors.Coral) : new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
+            MenuItemColorPrimary.BorderBrush = string.IsNullOrEmpty(Settings.TwitchUserColor)
+                ? new SolidColorBrush(Colors.Coral)
+                : new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
             TbTrigger.Text = Command.Trigger;
             TglEnabled.IsOn = Command.IsEnabled;
             TbResponse.Text = Command.Response;
-            TbDescription.Text = Map.TryGetValue(Command.CommandType, out string description) ? description : "No Description";
+            TbDescription.Text = Map.TryGetValue(Command.CommandType, out string description)
+                ? description
+                : "No Description";
             Command.AllowedUserLevels ??= [];
             MenuItemAllNone.Header = Command.AllowedUserLevels.Count == 7 ? "None" : "All";
             MenuAnnounce.IsChecked = Command.IsAnnouncement;
@@ -125,6 +171,7 @@ namespace Songify_Slim.UserControls
                         Command.CustomProperties["SkipCount"] = skipCount; // store as int
                         NudSkipVoteCount.Value = skipCount;
                     }
+
                     PnlVoteSkipExtras.Visibility = Visibility.Visible;
                     break;
 
@@ -175,8 +222,8 @@ namespace Songify_Slim.UserControls
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            _isUpdatingMenuColors = false;
 
+            _isUpdatingMenuColors = false;
 
             foreach (MenuItem menuItem in MenuUserlevels.Items)
             {
@@ -237,7 +284,24 @@ namespace Songify_Slim.UserControls
             }
 
             UpdateUserLevelbadges();
+            UpdateAliasBadges();
             _isUpdating = false;
+        }
+
+        public void UpdateAliasBadges()
+        {
+            PnlSongrequestAliases.Children.Clear();
+            // Step 5: Add specific allowed users
+            foreach (string alias in Command.Aliases.Where(alias => !string.IsNullOrEmpty(alias)))
+            {
+                PnlSongrequestAliases.Children.Add(new UcUserLevelItem()
+                {
+                    UserName = $"!{alias}",
+                    UserId = alias,
+                    LongName = true,
+                    UserLevel = -3
+                });
+            }
         }
 
         private async void TextBoxTrigger_TextChanged(object sender, TextChangedEventArgs e)
@@ -444,6 +508,7 @@ namespace Songify_Slim.UserControls
                 _isUpdatingMenuColors = false;
             }
         }
+
         private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             if (_isUpdating)
@@ -459,6 +524,7 @@ namespace Songify_Slim.UserControls
                 if (value == skipCount)
                     return;
             }
+
             Command.CustomProperties["SkipCount"] = value;
             Settings.UpdateCommand(Command);
 
@@ -488,7 +554,8 @@ namespace Songify_Slim.UserControls
             MetroWindow window = (MetroWindow)Window.GetWindow(this);
             if (window != null)
             {
-                string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}", "Enter the usernames (comma separated)");
+                string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}",
+                    "Enter the usernames (comma separated)");
 
                 if (result == null) return;
 
@@ -527,6 +594,52 @@ namespace Songify_Slim.UserControls
             else
             {
                 // Handle error - window not found
+            }
+        }
+
+        private async void MenuAliases_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (_isUpdating)
+                return;
+            if (_isUpdating)
+                return;
+            MetroWindow window = (MetroWindow)Window.GetWindow(this);
+            if (window != null)
+            {
+                string result = await window.ShowInputAsync($"Aliases for !{Command.Trigger}",
+                    "Enter aliases (comma separated)");
+
+                if (result == null) return;
+
+                List<string> aliases = result.Split(',')
+                    .Select(alias => alias.Trim().Replace("!", ""))
+                    .Where(alias => !string.IsNullOrEmpty(alias))
+                    .ToList();
+
+                if (aliases is { Count: > 0 })
+                {
+                    List<string> existingAliases = Command.Aliases;
+
+                    List<string> newAliases = aliases
+                        .Where(u => !existingAliases.Contains(u))
+                        .ToList();
+
+                    if (newAliases.Count > 0)
+                    {
+                        Command.Aliases.AddRange(newAliases);
+                        Command.Aliases.RemoveAll(string.IsNullOrEmpty);
+                        Settings.UpdateCommand(Command);
+                        UpdateAliasBadges();    
+                    }
+                    else
+                    {
+                        await window.ShowMessageAsync("Info", "All aliases are already added.");
+                    }
+                }
+                else
+                {
+                    // Handle error - window not found
+                }
             }
         }
     }

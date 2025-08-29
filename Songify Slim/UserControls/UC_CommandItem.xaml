@@ -104,9 +104,14 @@
             </MenuItem>
             <MenuItem
                 x:Name="MenuExplicitUser"
+                Click="MenuExplicitUser_OnClick"
                 Header="Add Users"
-                Tag="users"
-                Click="MenuExplicitUser_OnClick"/>
+                Tag="users" />
+            <MenuItem
+                x:Name="MenuAliases"
+                Click="MenuAliases_OnClick"
+                Header="Add Aliases"
+                Tag="alias" />
             <MenuItem
                 Header="Announcement"
                 IsCheckable="False"
@@ -217,7 +222,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Border
                     Grid.Row="0"
@@ -311,6 +316,16 @@
                 <WrapPanel
                     x:Name="PnlSongrequestUserlevels"
                     Grid.Row="4"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    MaxWidth="600"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Left"
+                    Visibility="Visible" />
+
+                <WrapPanel
+                    x:Name="PnlSongrequestAliases"
+                    Grid.Row="5"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
                     MaxWidth="600"

@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Windows.UI.Composition;
 using MahApps.Metro.IconPacks;
+using MahApps.Metro.IconPacks.Converter;
 using Songify_Slim.Util.General;
 using YamlDotNet.Core.Tokens;
 using Songify_Slim.Util.Settings;
@@ -76,18 +77,14 @@ namespace Songify_Slim.UserControls
         private static object CoerceUserLevel(DependencyObject d, object baseValue)
         {
             int value = (int)baseValue;
-            return value switch
-            {
-                < -2 => -2,
-                > 7 => 7,
-                _ => value
-            };
+            return MathUtils.Clamp(value, -3, 7);
+
         }
 
         private static bool ValidateUserLevel(object value)
         {
             int level = (int)value;
-            return level is >= -2 and <= 7;
+            return level is >= -3 and <= 7;
         }
 
         private void BtnRemoveBadge_OnClick(object sender, RoutedEventArgs e)
@@ -95,22 +92,40 @@ namespace Songify_Slim.UserControls
             // Inside your child UserControl
             UC_CommandItem parent = FindParent<UC_CommandItem>(this);
             if (parent == null) return;
-            if (UserLevel == -2)
+            switch (UserLevel)
             {
-                if (parent.Command.AllowedUsers.All(u => u.Id != UserId)) return;
-                List<User> list = [.. parent.Command.AllowedUsers];
-                list.RemoveAll(u => u.Id == UserId);
-                parent.Command.AllowedUsers = list;
-            }
-            else
-            {
-                if (!parent.Command.AllowedUserLevels.Contains(UserLevel)) return;
-                List<int> list = [.. parent.Command.AllowedUserLevels];
-                list.Remove(UserLevel);
-                parent.Command.AllowedUserLevels = list;
+                case -3:
+                    {
+                        // Alias
+                        // Specific User
+                        if (parent.Command.Aliases.All(u => u != UserId)) return;
+                        List<string> list = [.. parent.Command.Aliases];
+                        list.RemoveAll(u => u == UserId);
+                        parent.Command.Aliases = list;
+                        break;
+                    }
+                case -2:
+                    {
+                        // Specific User
+                        if (parent.Command.AllowedUsers.All(u => u.Id != UserId)) return;
+                        List<User> list = [.. parent.Command.AllowedUsers];
+                        list.RemoveAll(u => u.Id == UserId);
+                        parent.Command.AllowedUsers = list;
+                        break;
+                    }
+                default:
+                    {
+                        // User Level
+                        if (!parent.Command.AllowedUserLevels.Contains(UserLevel)) return;
+                        List<int> list = [.. parent.Command.AllowedUserLevels];
+                        list.Remove(UserLevel);
+                        parent.Command.AllowedUserLevels = list;
+                        break;
+                    }
             }
             Settings.UpdateCommand(parent.Command);
             parent.UpdateUserLevelbadges();
+            parent.UpdateAliasBadges();
         }
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject

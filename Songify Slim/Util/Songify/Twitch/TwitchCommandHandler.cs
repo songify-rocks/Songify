@@ -10,76 +10,96 @@ namespace Songify_Slim.Util.Songify.Twitch
 
     public static class TwitchCommandHandler
     {
-        // Mapping by command Name.
+        // Mapping by command Name (unchanged).
         private static readonly Dictionary<string, TwitchCommand> CommandsByName =
             new Dictionary<string, TwitchCommand>(StringComparer.OrdinalIgnoreCase);
 
-        // Mapping by command Trigger.
+        // Mapping by trigger or alias → TwitchCommand.
+        // We still call it CommandsByTrigger to keep your public surface area unchanged.
         private static readonly Dictionary<string, TwitchCommand> CommandsByTrigger =
             new Dictionary<string, TwitchCommand>(StringComparer.OrdinalIgnoreCase);
 
-        // Command handlers keyed by trigger.
+        // Command handlers keyed by the canonical trigger (command.Trigger).
         private static readonly Dictionary<string, CommandHandlerDelegate> CommandHandlers =
             new Dictionary<string, CommandHandlerDelegate>(StringComparer.OrdinalIgnoreCase);
 
-        /// <summary>
-        /// Registers a command using its Name as the primary key,
-        /// and also indexes it by its trigger for execution.
-        /// </summary>
-        public static void RegisterCommand(TwitchCommand command, CommandHandlerDelegate handler)
+        private static string Normalize(string s)
         {
-            // Register by name.
-            if (!CommandsByName.ContainsKey(command.Name))
-            {
-                CommandsByName.Add(command.Name, command);
-            }
-            else
-            {
-                // Optionally update the command if duplicates are not allowed.
-                CommandsByName[command.Name] = command;
-            }
-
-            // Also register the command keyed by trigger.
-            if (!CommandsByTrigger.ContainsKey(command.Trigger))
-            {
-                CommandsByTrigger.Add(command.Trigger, command);
-            }
-            else
-            {
-                CommandsByTrigger[command.Trigger] = command;
-            }
-
-            // Register the command handler keyed by trigger.
-            if (!CommandHandlers.ContainsKey(command.Trigger))
-            {
-                CommandHandlers.Add(command.Trigger, handler);
-            }
-            else
-            {
-                CommandHandlers[command.Trigger] = handler;
-            }
+            if (string.IsNullOrWhiteSpace(s)) return string.Empty;
+            s = s.Trim();
+            if (s.StartsWith("!")) s = s.Substring(1);
+            return s;
         }
 
         /// <summary>
-        /// Executes a command based on the trigger parsed from the chat message.
+        /// Registers a command using its Name as the primary key,
+        /// and indexes it by its trigger and all aliases for execution.
+        /// The handler is registered under the command's canonical Trigger.
+        /// </summary>
+        public static void RegisterCommand(TwitchCommand command, CommandHandlerDelegate handler)
+        {
+            if (command == null) throw new ArgumentNullException(nameof(command));
+            if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+            // --- Register by Name ---
+            if (!CommandsByName.ContainsKey(command.Name))
+                CommandsByName.Add(command.Name, command);
+            else
+                CommandsByName[command.Name] = command;
+
+            // --- Register by canonical trigger ---
+            string canonical = Normalize(command.Trigger);
+            if (!string.IsNullOrEmpty(canonical))
+            {
+                CommandsByTrigger[canonical] = command;
+            }
+
+            // --- Register aliases (all map to the same TwitchCommand) ---
+            if (command.Aliases != null)
+            {
+                foreach (string alias in command.Aliases)
+                {
+                    string key = Normalize(alias);
+                    if (string.IsNullOrEmpty(key)) continue;
+                    CommandsByTrigger[key] = command;
+                }
+            }
+
+            // --- Register handler by canonical trigger only ---
+            if (!string.IsNullOrEmpty(canonical))
+                CommandHandlers[canonical] = handler;
+        }
+
+        /// <summary>
+        /// Executes a command based on the trigger or alias parsed from the chat message.
         /// </summary>
         public static bool TryExecuteCommand(ChatMessage message, TwitchCommandParams cmdParams)
         {
-            // Extract the trigger from the message.
-            // For example, assume message.Message is something like "!sr some parameters"
-            string trigger = message.Message.Split(' ')[0];
+            if (message == null || string.IsNullOrWhiteSpace(message.Message))
+                return false;
 
-            if (trigger.StartsWith("!"))
-                trigger = trigger.Substring(1);
+            // Extract first token (e.g., "!sr params..." -> "sr")
+            string firstToken = message.Message.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+            string key = Normalize(firstToken);
+            if (string.IsNullOrEmpty(key)) return false;
 
-            if (!CommandsByTrigger.TryGetValue(trigger, out TwitchCommand command) || !command.IsEnabled) return false;
-            if (!CommandHandlers.TryGetValue(trigger, out CommandHandlerDelegate handler)) return false;
+            // Look up command by trigger OR alias
+            if (!CommandsByTrigger.TryGetValue(key, out TwitchCommand command) || command is not { IsEnabled: true })
+                return false;
+
+            // Always resolve handler using the command's canonical trigger
+            string canonical = Normalize(command.Trigger);
+            if (string.IsNullOrEmpty(canonical)) return false;
+
+            if (!CommandHandlers.TryGetValue(canonical, out CommandHandlerDelegate handler) || handler == null)
+                return false;
+
             handler(message, command, cmdParams);
             return true;
         }
 
         /// <summary>
-        /// Retrieves a command by its name.
+        /// Retrieves a command by its Name (must also be enabled).
         /// </summary>
         public static bool TryGetCommand(string name, out TwitchCommand command)
         {
@@ -88,18 +108,18 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (string.IsNullOrWhiteSpace(name))
                 return false;
 
-            // Lookup by command Name.
-            if (CommandsByName.TryGetValue(name, out command))
+            if (CommandsByName.TryGetValue(name, out TwitchCommand found) && found?.IsEnabled == true)
             {
-                if (command.IsEnabled)
-                    return true;
+                command = found;
+                return true;
             }
 
-            command = null;
             return false;
         }
 
-        // This method clears all the registrations.
+        /// <summary>
+        /// Clears all registrations.
+        /// </summary>
         public static void ClearCommands()
         {
             CommandsByName.Clear();
