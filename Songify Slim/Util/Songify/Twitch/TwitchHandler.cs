@@ -1949,6 +1949,10 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             bool unlimitedSr = false;
+            if (user == null)
+            {
+                
+            }
 
             if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
             {
@@ -4587,6 +4591,11 @@ namespace Songify_Slim.Util.Songify.Twitch
         public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
             string userInput, string channel, string rewardId, string redemptionId)
         {
+            if (GlobalObjects.TwitchUsers.Count == 0)
+            {
+                await RunTwitchUserSync();
+            }
+
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
             // Check if the user level is lower than broadcaster or not allowed to request songs
