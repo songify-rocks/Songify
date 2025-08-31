@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -117,4 +117,250 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
+    <value>URL van de afspeellijst</value>
+  </data>
+  <data name="mw_menu_Settings" xml:space="preserve">
+    <value>Instellingen</value>
+    <comment>Menu content for "Settings"</comment>
+  </data>
+  <data name="mw_menu_Support" xml:space="preserve">
+    <value>Support ons</value>
+    <comment>Menu content for "Support Us" (unused)</comment>
+  </data>
+  <data name="mw_menu_Widget" xml:space="preserve">
+    <value>Widget</value>
+    <comment>Menu content for "Widget"</comment>
+  </data>
+  <data name="sw_Appearance_Color" xml:space="preserve">
+    <value>Kleur:</value>
+    <comment>Label content for "Color"</comment>
+  </data>
+  <data name="sw_Appearance_ThemeDark" xml:space="preserve">
+    <value>Donker thema</value>
+    <comment>Toggleswitch content for "Dark Theme"</comment>
+  </data>
+  <data name="sw_Appearance_ThemeLight" xml:space="preserve">
+    <value>Licht thema</value>
+    <comment>Toggleswitch content for "Light Theme"</comment>
+  </data>
+  <data name="sw_Config_Export" xml:space="preserve">
+    <value>Configuratie exporteren</value>
+    <comment>Button content for "Export Config"</comment>
+  </data>
+  <data name="sw_Config_Import" xml:space="preserve">
+    <value>Configuratie importeren</value>
+    <comment>Button content for "Import Config"</comment>
+  </data>
+  <data name="sw_Integration_btnLink" xml:space="preserve">
+    <value>KOPPELING</value>
+    <comment>Button content for "Link"</comment>
+  </data>
+  <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
+    <value>Configureer bot-antwoorden en commando’s</value>
+    <comment>Button content for "Configure Bot Responses &amp; Commands"</comment>
+  </data>
+  <data name="sw_Integration_NBWatermark" xml:space="preserve">
+    <value>NB-gebruikersnaam (Twitch-gebruikersnaam)</value>
+    <comment>Watermark for Nightbot Username (deprecated, unused)</comment>
+  </data>
+  <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
+    <value>Gekoppeld account:</value>
+    <comment>Label content for "Linked account:"</comment>
+  </data>
+  <data name="bw_cbUser" xml:space="preserve">
+    <value>Gebruiker</value>
+    <comment>Combobox item content for "User"</comment>
+  </data>
+  <data name="bw_lblBlockedArtists" xml:space="preserve">
+    <value>Geblokkeerde artiesten</value>
+    <comment>Label content for blocked artists</comment>
+  </data>
+  <data name="bw_lblBlockedUsers" xml:space="preserve">
+    <value>Geblokkeerde gebruikers</value>
+    <comment>Label content for blocked users</comment>
+  </data>
+  <data name="bw_menu_Delete" xml:space="preserve">
+    <value>Verwijder</value>
+    <comment>Contextmenu button content for "Delete"</comment>
+  </data>
+  <data name="lang_deDE" xml:space="preserve">
+    <value>Duits</value>
+    <comment>Language name for "German"</comment>
+  </data>
+  <data name="lang_en" xml:space="preserve">
+    <value>Engels</value>
+    <comment>Language name for "English"</comment>
+  </data>
+  <data name="mw_menu_Blacklist" xml:space="preserve">
+    <value>Blokkeerlijst</value>
+    <comment>Menu content for "Blocklist"</comment>
+  </data>
+  <data name="mw_menu_Disconnect" xml:space="preserve">
+    <value>Verbreken</value>
+    <comment>Menu content for "Disconnect"</comment>
+  </data>
+  <data name="mw_menu_Exit" xml:space="preserve">
+    <value>Afsluiten</value>
+    <comment>Menu content for "Exit"</comment>
+  </data>
+  <data name="mw_menu_File" xml:space="preserve">
+    <value>Bestand</value>
+    <comment>Menu content for "File"</comment>
+  </data>
+  <data name="mw_menu_Help" xml:space="preserve">
+    <value>Hulp</value>
+    <comment>Menu content for "Help"</comment>
+  </data>
+  <data name="mw_menu_Help_About" xml:space="preserve">
+    <value>Over</value>
+    <comment>Menu content for "About"</comment>
+  </data>
+  <data name="mw_menu_History_Browser" xml:space="preserve">
+    <value>Geschiedenis Verkenner</value>
+    <comment>Menu content for "History Browser"</comment>
+  </data>
+  <data name="mw_menu_Queue" xml:space="preserve">
+    <value>Wachtrij</value>
+    <comment>Menu content for "Queue"</comment>
+  </data>
+  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+    <value>Wachtrij Verkenner</value>
+    <comment>Menu content for "Queue Browser"</comment>
+  </data>
+  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+    <value>Wachtrij leegmaken</value>
+    <comment>Menu content for "Clear Queue"</comment>
+  </data>
+  <data name="brw_ArtistBlocked" xml:space="preserve">
+    <value>Artiest is geblokkeerd</value>
+    <comment>Header for the textbox when an artist is blocked</comment>
+  </data>
+  <data name="brw_FetchError" xml:space="preserve">
+    <value>Fout bij ophalen van songgegevens</value>
+    <comment>Header for the textbox when an error occurred while fetching song info</comment>
+  </data>
+  <data name="brw_Header" xml:space="preserve">
+    <value>Configureer de bot-antwoorden voor de volgende scenario’s:</value>
+    <comment>Header for the entire bot response configuration window</comment>
+  </data>
+  <data name="brw_MaxSongs" xml:space="preserve">
+    <value>Maximaal aantal nummers in de wachtrij</value>
+    <comment>Header for the textbox when max amount of songs are reached per suer</comment>
+  </data>
+  <data name="brw_NoSong" xml:space="preserve">
+    <value>Er is geen nummer opgegeven (lege aanvraag)</value>
+    <comment>Header for the textbox when no song was found</comment>
+  </data>
+  <data name="brw_SongInQueue" xml:space="preserve">
+    <value>Nummer staat al in de wachtrij</value>
+    <comment>Header for the textbox when the song is already in queue</comment>
+  </data>
+  <data name="brw_SongTooLong" xml:space="preserve">
+    <value>Nummer te lang</value>
+    <comment>Header for the textbox when the song is too long</comment>
+  </data>
+  <data name="brw_Success" xml:space="preserve">
+    <value>Nummer succesvol toegevoegd (commando &amp; beloning)</value>
+    <comment>Header for the textbox when the song has been added successfully</comment>
+  </data>
+  <data name="bw_btnAdd" xml:space="preserve">
+    <value>Toevoegen</value>
+    <comment>Button content for the "Add" button on the blocklist window</comment>
+  </data>
+  <data name="bw_btnClear" xml:space="preserve">
+    <value>Legen</value>
+    <comment>Button content for the "Clear" button on the blocklist window</comment>
+  </data>
+  <data name="Param_MaxLength_Desc" xml:space="preserve">
+    <value>Maximale duur van een nummer (in minuten)</value>
+  </data>
+  <data name="Param_MaxRequests_Desc" xml:space="preserve">
+    <value>Maximum aantal aanvragen per gebruiker</value>
+  </data>
+  <data name="Param_PlaylistName_Desc" xml:space="preserve">
+    <value>Naam van de afspeellijst</value>
+  </data>
+  <data name="Param_SongList_Desc" xml:space="preserve">
+    <value>Alleen voor het commando !pos: maakt een lijst van nummers die de gebruiker in de wachtrij heeft staan, inclusief hun positie</value>
+  </data>
+  <data name="Param_Votes_Desc" xml:space="preserve">
+    <value>Aantal stemmen voor voteskip: stemmen/totaal</value>
+  </data>
+  <data name="Param_Cooldown_Desc" xml:space="preserve">
+    <value>De cooldown in seconden (voor globale cd en gebruikers cd)</value>
+  </data>
+  <data name="Param_Url_Desc" xml:space="preserve">
+    <value>Spotify nummer URL</value>
+  </data>
+  <data name="Param_Queue_Desc" xml:space="preserve">
+    <value>Volgende 5 nummers in de wachtrij</value>
+  </data>
+  <data name="Param_Commands_Desc" xml:space="preserve">
+    <value>Lijst van alle actieve commando’s</value>
+  </data>
+  <data name="s_Copied" xml:space="preserve">
+    <value>Gekopieerd</value>
+    <comment>The word "Copied"</comment>
+  </data>
+  <data name="sw_ResponseVariables" xml:space="preserve">
+    <value>Reactievariabelen</value>
+  </data>
+  <data name="lang_beBY" xml:space="preserve">
+    <value>Belarussisch</value>
+  </data>
+  <data name="Param_Userlevel_Desc" xml:space="preserve">
+    <value>Het gebruikersniveau van de gebruiker (Volger, Abonnee, enz.)</value>
+  </data>
+  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+    <value>De tijd in mm:ss waarop het aangevraagde nummer wordt afgespeeld.</value>
+  </data>
+  <data name="brw_cmd_bansong" xml:space="preserve">
+    <value>Voegt het huidige nummer toe aan de blokkeerlijst en slaat het over.</value>
+  </data>
+  <data name="brw_SongBlocked" xml:space="preserve">
+    <value>Nummer is geblokkeerd</value>
+  </data>
+  <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
+    <value>Voeg verzoeken alleen toe aan de geselecteerde afspeellijst</value>
+  </data>
+  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+    <value>Schakel song requests in voor Bits</value>
+  </data>
+  <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
+    <value>Nummer bevat expliciete inhoud</value>
+  </data>
+  <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
+    <value>Gebruiker heeft de maximale wachtrijlengte bereikt</value>
+  </data>
+  <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
+    <value>Nummer is geblokkeerd</value>
+  </data>
+  <data name="Param_RefundReason_Desc" xml:space="preserve">
+    <value>De reden waarom de inwisseling is terugbetaald.</value>
+  </data>
+  <data name="bw_cbArtist" xml:space="preserve">
+    <value>Artiest</value>
+    <comment>Combobox item content for "Artist"</comment>
+  </data>
+  <data name="mw_menu_Connect" xml:space="preserve">
+    <value>Verbinden</value>
+    <comment>Menu content for "Connect"</comment>
+  </data>
+  <data name="mw_menu_History" xml:space="preserve">
+    <value>Geschiedenis</value>
+    <comment>Menu content for "History"</comment>
+  </data>
+  <data name="mw_menu_History_Window" xml:space="preserve">
+    <value>Geschiedenis Scherm</value>
+    <comment>Menu content for "History Window"</comment>
+  </data>
+  <data name="mw_menu_Queue_Window" xml:space="preserve">
+    <value>Wachtrij Scherm</value>
+    <comment>Menu content for "Queue Window"</comment>
+  </data>
+  <data name="sw_Integration_Autoconnect" xml:space="preserve">
+    <value>Automatische verbinding</value>
+    <comment>Toggleswitch content for "auto connect"</comment>
+  </data>
 </root>
