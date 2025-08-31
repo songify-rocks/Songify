@@ -937,4 +937,10 @@
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>Der Grund, warum die Einlösung zurückerstattet wurde.</value>
   </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Niederländisch</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Skip-Belohnung für Songanfragen deaktivieren</value>
+  </data>
 </root>

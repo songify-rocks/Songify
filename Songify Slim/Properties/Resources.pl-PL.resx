@@ -936,4 +936,10 @@
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>Powód zwrotu środków.</value>
   </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Holenderski</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Wyłącz funkcję pomijania nagród za prośby o piosenkę</value>
+  </data>
 </root>

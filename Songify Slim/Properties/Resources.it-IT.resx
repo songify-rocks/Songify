@@ -936,4 +936,10 @@
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>Il motivo per cui il riscatto è stato rimborsato.</value>
   </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Olandese</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Disabilitare la ricompensa per le richieste di brani</value>
+  </data>
 </root>

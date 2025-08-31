@@ -66,6 +66,7 @@ namespace Songify_Slim.Views
         {
             { "en", "English" },
             { "de-DE", "German" },
+            { "nl", "Dutch"},
             { "ru-RU", "Russian" },
             { "es", "Spanish" },
             { "fr", "French" },
@@ -789,6 +790,7 @@ namespace Songify_Slim.Views
             _supportedLanguages = new Dictionary<string, string>
             {
                 { "en", Application.Current.TryFindResource("lang_en") as string ?? "English"},
+                { "nl", Application.Current.TryFindResource("lang_nl") as string ?? "Dutch"},
                 { "de-DE", Application.Current.TryFindResource("lang_deDE") as string ??"German" },
                 { "ru-RU", Application.Current.TryFindResource("lang_ru") as string ??"Russian" },
                 { "es", Application.Current.TryFindResource("lang_es") as string ??"Spanish" },

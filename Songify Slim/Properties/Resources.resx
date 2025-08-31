@@ -1084,6 +1084,7 @@
   </data>
   <data name="lang_beBY" xml:space="preserve">
     <value>Belarusian</value>
+    <comment>Language name for "Belarusian"</comment>
   </data>
   <data name="Param_Userlevel_Desc" xml:space="preserve">
     <value>The users userlevel (Folower, Subscriber etc)</value>
@@ -1118,5 +1119,12 @@
   </data>
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>The reason why the redemption got refunded.</value>
+  </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Dutch</value>
+    <comment>Language name for "Dutch"</comment>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Disable Skip-Reward for Song Requests</value>
   </data>
 </root>

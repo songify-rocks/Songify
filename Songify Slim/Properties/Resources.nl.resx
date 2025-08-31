@@ -363,4 +363,13 @@
     <value>Automatische verbinding</value>
     <comment>Toggleswitch content for "auto connect"</comment>
   </data>
+  <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
+    <value>Upload songinfo</value>
+  </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Nederlands</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Skip-Reward uitschakelen voor nummerverzoeken</value>
+  </data>
 </root>

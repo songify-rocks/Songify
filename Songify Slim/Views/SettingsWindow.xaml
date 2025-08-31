@@ -220,8 +220,8 @@
                                 Width="467"
                                 Height="32"
                                 VerticalAlignment="Top"
-                                d:Content="{DynamicResource sw_tcSystem_UseDefaultBrowser}"
-                                Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
+                                d:Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
+                                Content="{DynamicResource sw_tcSystem_UseDefaultBrowser}"
                                 ContentPadding="0"
                                 Focusable="False"
                                 FontFamily="Segoe UI"
@@ -619,7 +619,8 @@
                             Grid.Row="7"
                             Grid.Column="0"
                             VerticalAlignment="Center"
-                            Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}" />
+                            d:Content="{x:Static local:Resources.sw_tcOutput_RequesterPrefix}"
+                            Content="{DynamicResource sw_tcOutput_RequesterPrefix}" />
                         <TextBox
                             x:Name="TbRequesterPrefix"
                             Grid.Row="7"
@@ -1052,20 +1053,19 @@
                             d:Content="{DynamicResource sw_Integration_ShowCreds}"
                             Content="{DynamicResource sw_Integration_ShowCreds}"
                             IsOn="False" />
-                        <Label
+                        <StackPanel
                             Grid.Row="1"
                             Grid.Column="0"
-                            Margin="6,6,6,6"
-                            VerticalAlignment="Center"
-                            Content="Chat Account" />
-                        <ComboBox
-                            x:Name="CbAccountSelection"
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Width="164"
-                            Margin="90,6,0,6"
-                            HorizontalAlignment="Left"
-                            SelectionChanged="CbAccountSelection_SelectionChanged" />
+                            Orientation="Horizontal">
+                            <Label VerticalAlignment="Center" Content="Chat Account" />
+                            <ComboBox
+                                x:Name="CbAccountSelection"
+                                Width="164"
+                                Height="32"
+                                Margin="6,0,0,0"
+                                HorizontalAlignment="Left"
+                                SelectionChanged="CbAccountSelection_SelectionChanged" />
+                        </StackPanel>
                         <Grid
                             Grid.Row="2"
                             Grid.Column="0"
@@ -1312,7 +1312,8 @@
                                 x:Name="TglOnlySkipNonSrRewards"
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                Content="Disable Skip Rewards for Song Requests"
+                                d:Content="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
+                                Content="{DynamicResource local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
                                 Toggled="TglOnlySkipNonSrRewards_OnToggled" />
                             <TabControl
                                 Grid.Row="2"
@@ -2474,7 +2475,6 @@
                             Text="Spotify fetch rate (seconds)" />
                         <controls:NumericUpDown
                             x:Name="NudSpotifyFetchRate"
-                            ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                             Grid.Row="7"
                             Width="270"
                             Margin="0,6"
@@ -2483,6 +2483,7 @@
                             Minimum="1"
                             NumericInputMode="Numbers"
                             ParsingNumberStyle="Integer"
+                            ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                             Value="1" />
                     </Grid>
                 </Border>

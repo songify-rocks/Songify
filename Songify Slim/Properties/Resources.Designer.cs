@@ -673,6 +673,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dutch.
+        /// </summary>
+        public static string lang_nl {
+            get {
+                return ResourceManager.GetString("lang_nl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Polish.
         /// </summary>
         public static string lang_pl {
@@ -2371,6 +2380,15 @@ namespace Songify_Slim.Properties {
         public static string sw_Twitch_Rewards_CreateNewReward {
             get {
                 return ResourceManager.GetString("sw_Twitch_Rewards_CreateNewReward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Skip-Reward for Song Requests.
+        /// </summary>
+        public static string sw_Twitch_Rewards_DisableSkipForRequests {
+            get {
+                return ResourceManager.GetString("sw_Twitch_Rewards_DisableSkipForRequests", resourceCulture);
             }
         }
         

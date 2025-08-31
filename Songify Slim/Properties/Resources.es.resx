@@ -937,4 +937,10 @@
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>El motivo por el cual se reembolsó el canje.</value>
   </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Holandés</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Desactivar la recompensa por omisión en las solicitudes de canciones</value>
+  </data>
 </root>

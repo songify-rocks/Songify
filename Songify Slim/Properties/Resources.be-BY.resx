@@ -1113,4 +1113,10 @@
   <data name="Param_RefundReason_Desc" xml:space="preserve">
     <value>Прычына вяртання балаў.</value>
   </data>
+  <data name="lang_nl" xml:space="preserve">
+    <value>Галандская</value>
+  </data>
+  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+    <value>Адключыць узнагароду за прапуск для запытаў песень</value>
+  </data>
 </root>
