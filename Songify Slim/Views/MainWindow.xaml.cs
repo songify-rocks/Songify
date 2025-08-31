@@ -44,6 +44,7 @@ using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Net.NetworkInformation;
+using System.Security;
 using MahApps.Metro.Controls;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
@@ -131,17 +132,49 @@ namespace Songify_Slim.Views
 
         public static void RegisterInStartup(bool isChecked)
         {
-            // Adding the RegKey for Songify in startup (autostart with windows)
-            RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(
-                "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-                true);
-            if (isChecked)
-                registryKey?.SetValue("Songify",
-                    Assembly.GetEntryAssembly()?.Location ?? throw new InvalidOperationException());
-            else
-                registryKey?.DeleteValue("Songify");
+            try
+            {
+                // Adding the RegKey for Songify in startup (autostart with windows)
+                using RegistryKey registryKey = Registry.CurrentUser.OpenSubKey(
+                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
+                    true);
+                if (registryKey == null)
+                {
+                    // Log error or throw appropriate exception
+                    throw new UnauthorizedAccessException("Cannot access registry key. Run as administrator.");
+                }
 
-            Settings.Autostart = isChecked;
+                if (isChecked)
+                {
+                    string appPath = Assembly.GetEntryAssembly()?.Location;
+                    if (string.IsNullOrEmpty(appPath))
+                    {
+                        throw new InvalidOperationException("Cannot determine application path.");
+                    }
+                    registryKey.SetValue("Songify", appPath);
+                }
+                else
+                {
+                    registryKey.DeleteValue("Songify", false); // false = don't throw if value doesn't exist
+                }
+
+                Settings.Autostart = isChecked;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Handle permission issues
+                throw new UnauthorizedAccessException("Administrator privileges required to modify startup settings.");
+            }
+            catch (SecurityException)
+            {
+                // Handle security exceptions
+                throw new SecurityException("Security policy prevents registry modification.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception and rethrow or handle appropriately
+                throw new Exception($"Failed to modify startup settings: {ex.Message}", ex);
+            }
         }
 
         private static bool IsWindowOpen<T>(string name = "") where T : Window
