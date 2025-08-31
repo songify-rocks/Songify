@@ -15,11 +15,13 @@ public static class Enums
 
     public enum PlayerType
     {
-        [Description("Spotify API")]
-        SpotifyWeb,
+        [Description("Spotify API")] SpotifyWeb,
 
         //[Description("Spotify (Legacy)")]
         //SpotifyLegacy,
+
+        [Description("Windows Playback API")]
+        WindowsPlayback,
 
         [Description("foobar2000")]
         FooBar2000,

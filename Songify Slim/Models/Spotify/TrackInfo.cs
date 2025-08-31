@@ -77,6 +77,8 @@ namespace Songify_Slim.Models
         }
     }
 
+
+
     public class PlaylistInfo
     {
         public string Name { get; set; }

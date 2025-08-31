@@ -1,17 +1,18 @@
-﻿using System;
+﻿using Songify_Slim.Views;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Songify_Slim.Views;
 
 namespace Songify_Slim.Util.General
 {
@@ -21,6 +22,12 @@ namespace Songify_Slim.Util.General
 
         public static void WriteOutput(string songPath, string currSong)
         {
+            if (currSong == null)
+            {
+                File.WriteAllText(songPath, "");
+                return;
+            }
+
             try
             {
                 string interpretedText = InterpretEscapeCharacters(currSong);
@@ -196,7 +203,7 @@ namespace Songify_Slim.Util.General
 
                 await _downloadSemaphore.WaitAsync(); // Prevent overlapping downloads
 
-                if (string.IsNullOrEmpty(cover))
+                if (string.IsNullOrWhiteSpace(cover))
                 {
                     // Create an empty transparent PNG
                     using Bitmap bmp = new(640, 640);
@@ -208,9 +215,42 @@ namespace Songify_Slim.Util.General
                 {
                     try
                     {
-                        using WebClient webClient = new();
-                        Uri uri = new(cover);
-                        await webClient.DownloadFileTaskAsync(uri, coverTemp);
+                        // Ensure temp dir exists
+                        Directory.CreateDirectory(Path.GetDirectoryName(coverTemp)!);
+
+                        if (IsDataUrl(cover))
+                        {
+                            // data:image/...;base64,XXXX
+                            WriteDataUrlToFile(cover, coverTemp);
+                        }
+                        else if (Uri.TryCreate(cover, UriKind.Absolute, out var uri))
+                        {
+                            if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                            {
+                                using WebClient webClient = new();
+                                await webClient.DownloadFileTaskAsync(uri, coverTemp);
+                            }
+                            else if (uri.Scheme == Uri.UriSchemeFile)
+                            {
+                                File.Copy(uri.LocalPath, coverTemp, overwrite: true);
+                            }
+                            else
+                            {
+                                // Unknown scheme – try as local path
+                                if (File.Exists(cover))
+                                    File.Copy(cover, coverTemp, overwrite: true);
+                                else
+                                    throw new InvalidOperationException($"Unsupported URI scheme: {uri.Scheme}");
+                            }
+                        }
+                        else
+                        {
+                            // Not a URI – treat as local path
+                            if (File.Exists(cover))
+                                File.Copy(cover, coverTemp, overwrite: true);
+                            else
+                                throw new FileNotFoundException("Cover path not found", cover);
+                        }
 
                         // Wait for the file to be unlocked if necessary
                         const int tries = 5;
@@ -234,6 +274,12 @@ namespace Songify_Slim.Util.General
                     catch (Exception ex)
                     {
                         Logger.LogExc(ex);
+
+                        // Fallback: write a transparent image if anything failed
+                        using Bitmap bmp = new(640, 640);
+                        using Graphics g = Graphics.FromImage(bmp);
+                        g.Clear(Color.Transparent);
+                        bmp.Save(coverPath, ImageFormat.Png);
                     }
                 }
 
@@ -256,6 +302,21 @@ namespace Songify_Slim.Util.General
             }
         }
 
+        private static readonly Regex DataUrlRegex = new(
+            @"^data:(?<mime>[\w/+.\-]+)?(?:;charset=[\w\-]+)?;base64,(?<data>[A-Za-z0-9+/=]+)$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static bool IsDataUrl(string s) => s != null && DataUrlRegex.IsMatch(s);
+
+        private static void WriteDataUrlToFile(string dataUrl, string path)
+        {
+            var m = DataUrlRegex.Match(dataUrl);
+            if (!m.Success) throw new FormatException("Invalid data URL");
+
+            string b64 = m.Groups["data"].Value;
+            byte[] bytes = Convert.FromBase64String(b64);
+            File.WriteAllBytes(path, bytes);
+        }
 
         private static readonly SemaphoreSlim _imageDownloadLock = new(1, 1);
 

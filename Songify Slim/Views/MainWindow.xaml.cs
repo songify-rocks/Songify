@@ -283,7 +283,7 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch when Settings.DownloadCover:
+                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
@@ -359,6 +359,11 @@ namespace Songify_Slim.Views
                     if (IoClient is { IsConnected: true })
                         await StopYtmdSocketIoClient();
                     await Sf.FetchYTMTHCH();
+                    break;
+                case PlayerType.WindowsPlayback:
+                    if (IoClient is { IsConnected: true })
+                        await StopYtmdSocketIoClient();
+                    await Sf.FetchWindowsApi();
                     break;
                 default:
                     break;
@@ -810,7 +815,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1154,7 +1159,7 @@ namespace Songify_Slim.Views
                 {
                     await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback && Settings.DownloadCover
                             ? Visibility.Visible
                             : Visibility.Collapsed;
 
@@ -1193,6 +1198,7 @@ namespace Songify_Slim.Views
                         case PlayerType.SpotifyWeb:
                             _timerFetcher.Interval = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000;
                             break;
+                        case PlayerType.WindowsPlayback:
                         case PlayerType.FooBar2000:
                         case PlayerType.Vlc:
                         case PlayerType.Ytmthch:
@@ -1265,8 +1271,7 @@ namespace Songify_Slim.Views
                     // stop the timer if the player is YTMDesktop
                     _timerFetcher.Enabled = false;
                     break;
-
-                //case PlayerType.SpotifyLegacy:
+                case PlayerType.WindowsPlayback:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
                 case PlayerType.Ytmthch:
@@ -1359,7 +1364,8 @@ namespace Songify_Slim.Views
                     if ((Settings.Player == PlayerType.SpotifyWeb
                          || Settings.Player == PlayerType.YtmDesktop
                          || Settings.Player == PlayerType.BrowserCompanion
-                         || Settings.Player == PlayerType.Ytmthch)
+                         || Settings.Player == PlayerType.Ytmthch
+                         || Settings.Player == PlayerType.WindowsPlayback)
                         && Settings.DownloadCover)
                     {
                         img_cover.Visibility = Visibility.Visible;

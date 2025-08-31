@@ -61,7 +61,6 @@
         </Style>
         <!--  Icon style  -->
         <Style x:Key="UserLevelIconStyle" TargetType="iconPacks:PackIconMaterial">
-            <Setter Property="Kind" Value="Video" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
                     <Setter Property="Kind" Value="None" />
@@ -101,7 +100,6 @@
         </Style>
         <!--  TextBlock style  -->
         <Style x:Key="UserLevelTextStyle" TargetType="TextBlock">
-            <Setter Property="Text" Value="Moderator" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
                     <Setter Property="Text" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />

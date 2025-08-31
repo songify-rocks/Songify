@@ -218,6 +218,7 @@
     <Compile Include="Util\General\SingleInstanceHelper.cs" />
     <Compile Include="Util\General\SubtractConverter.cs" />
     <Compile Include="Util\General\TaskQueue.cs" />
+    <Compile Include="Util\General\ThumbnailConverter.cs" />
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\ConfigComparer.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />

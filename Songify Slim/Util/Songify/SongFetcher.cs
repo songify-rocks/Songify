@@ -1,28 +1,34 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Models;
+using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Util.Spotify;
 using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using Swan.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Automation;
-using Swan.Formatters;
 using System.Windows.Threading;
-using System.Reflection;
 using System.Xml.Linq;
-using Songify_Slim.Models.YTMD;
-using Songify_Slim.Util.Spotify;
-using System.Web.UI.WebControls;
-using Songify_Slim.Models.WebSocket;
-using Songify_Slim.Util.Songify.Twitch;
-using SpotifyAPI.Web;
+using Windows.Media.Control;
+using Windows.Storage.Streams;
+using Image = SpotifyAPI.Web.Image;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -44,6 +50,7 @@ namespace Songify_Slim.Util.Songify
         private string _localTrackTitle;
         private static bool _isLocalTrack;
         private static Tuple<bool, string> _canvasResponse;
+        private static readonly Regex DriveLetterRegex = new Regex(@"^[A-Z]:", RegexOptions.IgnoreCase);
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -489,6 +496,185 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
+
+        public async Task FetchWindowsApi()
+        {
+            // Ensure all SMTC calls happen on UI STA
+            if (!Application.Current.Dispatcher.CheckAccess())
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () => await FetchWindowsApi());
+                return;
+            }
+
+            await FetchWindowsApiCoreAsync(retried: false);
+        }
+
+        public static async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
+        {
+            if (thumbRef == null) return null;
+
+            using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
+            byte[] bytes = new byte[stream.Size];
+            using (DataReader reader = new DataReader(stream))
+            {
+                await reader.LoadAsync((uint)stream.Size);
+                reader.ReadBytes(bytes);
+            }
+
+            // assume png/jpg bytes as provided by the session; png is common
+            string base64 = Convert.ToBase64String(bytes);
+            // If you want to be fancy, sniff first few bytes to choose image/png vs image/jpeg.
+            return $"data:image/png;base64,{base64}";
+        }
+
+        private async Task FetchWindowsApiCoreAsync(bool retried)
+        {
+            try
+            {
+                GlobalSystemMediaTransportControlsSessionManager mgr = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+                GlobalSystemMediaTransportControlsSession session = mgr.GetCurrentSession();
+                if (session == null) { Console.WriteLine("No active media session."); return; }
+
+                GlobalSystemMediaTransportControlsSessionMediaProperties props = await session.TryGetMediaPropertiesAsync();
+                string title = props?.Title ?? "";
+                string artistFlat = props?.Artist ?? "";
+                string albumTitle = props?.AlbumTitle ?? "";
+                string albumArtist = props?.AlbumArtist ?? "";
+                int trackNo = props?.TrackNumber ?? 0;
+                string[] genres = props?.Genres?.ToArray() ?? [];
+
+                string thumbPath = await SaveThumbnailToTempAsync(props?.Thumbnail); 
+
+                GlobalSystemMediaTransportControlsSessionPlaybackInfo playback = session.GetPlaybackInfo();
+                GlobalSystemMediaTransportControlsSessionTimelineProperties timeline = session.GetTimelineProperties();
+                bool isPlaying =
+                    playback?.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
+
+                TimeSpan start = timeline.StartTime;   
+                TimeSpan end = timeline.EndTime;     
+                TimeSpan position = timeline.Position;    
+
+                int totalMs = ClampToInt((end - start).TotalMilliseconds);
+                int progress = ClampToInt((position - start).TotalMilliseconds);
+                if (totalMs < 0) totalMs = 0;
+                if (progress < 0) progress = 0;
+                if (progress > totalMs && totalMs > 0) progress = totalMs;
+
+                int percent = (totalMs > 0) ? (int)Math.Round((double)progress * 100.0 / totalMs) : 0;
+                percent = Math.Max(0, Math.Min(100, percent));
+
+                List<SimpleArtist> fullArtists = SplitArtists(artistFlat);
+
+                TrackInfo tr = new TrackInfo
+                {
+                    Artists = artistFlat,                          
+                    Title = title,
+                    Albums = [new Image { Url = await ThumbnailToDataUrlAsync(props?.Thumbnail) }],
+                    SongId = GenerateId(artistFlat, title),       
+                    DurationMs = progress,                           
+                    IsPlaying = isPlaying,
+                    Url = null,                                
+                    DurationPercentage = percent,
+                    DurationTotal = totalMs,
+                    Progress = progress,
+                    Playlist = null,                                
+                    FullArtists = fullArtists
+                };
+
+                await UpdateWebServerResponse(tr);
+                tr.Albums = [new Image() { Url = thumbPath }];
+                if (GlobalObjects.CurrentSong == null ||
+                    (GlobalObjects.CurrentSong.SongId != tr.SongId && tr.SongId != null) ||
+                    (tr.SongId == null && !string.IsNullOrEmpty(tr.Title)))
+                {
+                    GlobalObjects.CurrentSong = tr;
+                    await WriteSongInfo(tr);
+                }
+            }
+            catch (COMException ex) when ((uint)ex.HResult == 0x80010108) 
+            {
+                if (!retried)
+                {
+                    await FetchWindowsApiCoreAsync(retried: true);
+                }
+                else
+                {
+                    // Logger.LogExc(ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Logger.LogExc(ex);
+            }
+        }
+
+        public static string GenerateId(string artist, string title)
+        {
+            if (string.IsNullOrWhiteSpace(artist) && string.IsNullOrWhiteSpace(title))
+                return null;
+
+            string combined = $"{artist?.Trim().ToLowerInvariant()}|{title?.Trim().ToLowerInvariant()}";
+
+            using SHA256 sha256 = SHA256.Create();
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(combined));
+            // shorten to something readable (e.g., first 16 hex chars)
+            return BitConverter.ToString(hashBytes).Replace("-", "").Substring(0, 16);
+        }
+
+        private static int ClampToInt(double ms)
+        {
+            return ms switch
+            {
+                <= int.MinValue => int.MinValue,
+                >= int.MaxValue => int.MaxValue,
+                _ => (int)Math.Round(ms)
+            };
+        }
+
+        /// <summary>
+        /// Save WinRT thumbnail stream to a temp PNG/JPEG file and return its absolute path (or null).
+        /// Must be called on the same STA thread where the WinRT object was obtained.
+        /// </summary>
+        private static async Task<string> SaveThumbnailToTempAsync(IRandomAccessStreamReference thumbRef)
+        {
+            if (thumbRef == null) return null;
+
+            string dir = Path.Combine(Path.GetTempPath(), "SongifySlim", "covers");
+            Directory.CreateDirectory(dir);
+            string path = Path.Combine(dir, $"cover_{Guid.NewGuid():N}.png");
+
+            using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
+            byte[] bytes = new byte[stream.Size];
+            using (DataReader reader = new Windows.Storage.Streams.DataReader(stream))
+            {
+                await reader.LoadAsync((uint)stream.Size);
+                reader.ReadBytes(bytes);
+            }
+            File.WriteAllBytes(path, bytes);
+            return path;
+        }
+
+        /// <summary>
+        /// Heuristic splitter for artist strings like "Artist1, Artist2 & Artist3 feat. Guest"
+        /// Produces List&lt;SimpleArtist&gt; with Name set; extend as needed.
+        /// </summary>
+        private static List<SimpleArtist> SplitArtists(string artists)
+        {
+            if (string.IsNullOrWhiteSpace(artists)) return [];
+
+            string norm = Regex.Replace(artists, "feat\\.", "ft.", RegexOptions.IgnoreCase);
+
+            List<string> parts = norm
+                .Split([",", "&", " x ", " ft. ", " feat. "], StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.Trim())
+                .Where(p => p.Length > 0)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            return parts.Select(p => new SimpleArtist { Name = p }).ToList();
+        }
+
+
         private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
             if (!songInfo.IsPlaying)
@@ -813,6 +999,13 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task UpdateWebServerResponse(TrackInfo track)
         {
+            foreach (Image album in track.Albums)
+            {
+                if (string.IsNullOrEmpty(album.Url) || !DriveLetterRegex.IsMatch(album.Url)) continue;
+                string normalized = album.Url.Replace("\\", "/");
+                album.Url = "file:///" + normalized;
+            }
+
             string j = Json.Serialize(track ?? new TrackInfo());
             dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
             IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
@@ -918,8 +1111,8 @@ namespace Songify_Slim.Util.Songify
                     Url = data.PlaylistId,
                     Image = null
                 },
-                FullArtists = new List<SimpleArtist>
-                {
+                FullArtists =
+                [
                     new SimpleArtist
                     {
                         ExternalUrls = new Dictionary<string, string>(),
@@ -929,7 +1122,7 @@ namespace Songify_Slim.Util.Songify
                         Type = string.Empty,
                         Uri = string.Empty
                     }
-                }
+                ]
             };
 
             await UpdateWebServerResponse(t);
@@ -955,7 +1148,7 @@ namespace Songify_Slim.Util.Songify
             lock (_sync)
             {
                 // mark first occurrence as played (optional if you keep history somewhere)
-                var first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == finishedId && r.Played == 0);
+                RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == finishedId && r.Played == 0);
                 if (first != null) first.Played = 1;
 
                 // actually remove all entries for that id
