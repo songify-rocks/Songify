@@ -408,4 +408,592 @@
     <value>Commando voor song requests (Commando + Spotify-link of Artiest – Titel)</value>
     <comment>Toggleswitch content for "Enable SR (Command)"</comment>
   </data>
+  <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
+    <value>Spaties toevoegen</value>
+  </data>
+  <data name="sw_tcOutput_Directory" xml:space="preserve">
+    <value>Uitvoermap</value>
+  </data>
+  <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
+    <value>Albumhoes downloaden (werkt alleen met API)</value>
+  </data>
+  <data name="sw_tcOutput_Format" xml:space="preserve">
+    <value>Uitvoerformaat (tekstbestand en widget)</value>
+  </data>
+  <data name="sw_tcOutput_PauseText" xml:space="preserve">
+    <value>Pauzetekst</value>
+  </data>
+  <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
+    <value>Aangepaste pauzetekst (leeg voor leeg tekstbestand)</value>
+  </data>
+  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+    <value>Splits artiest, titel en aanvrager</value>
+  </data>
+  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+    <value>Redden</value>
+  </data>
+  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+    <value>Gebruik je eigen Spotify-app</value>
+  </data>
+  <data name="sw_tcSystem_Autostart" xml:space="preserve">
+    <value>Automatisch starten met Windows</value>
+  </data>
+  <data name="sw_tcSystem_Behavior" xml:space="preserve">
+    <value>Gedrag</value>
+  </data>
+  <data name="sw_tcSystem_CheckButton" xml:space="preserve">
+    <value>CONTROLEER OP UPDATES</value>
+  </data>
+  <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
+    <value>Chrome-ophaalsnelheid (seconden)</value>
+  </data>
+  <data name="sw_tcSystem_Minimize" xml:space="preserve">
+    <value>Minimaliseren naar systeemvak</value>
+  </data>
+  <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
+    <value>Anonieme gegevens verzenden</value>
+  </data>
+  <data name="sw_tcSystem_Telemetry" xml:space="preserve">
+    <value>Telemetrie</value>
+  </data>
+  <data name="sw_tc_Appearance" xml:space="preserve">
+    <value>Verschijning</value>
+  </data>
+  <data name="sw_tc_Config" xml:space="preserve">
+    <value>Configuratie</value>
+  </data>
+  <data name="sw_tc_Integration" xml:space="preserve">
+    <value>Twitch</value>
+  </data>
+  <data name="sw_tc_Output" xml:space="preserve">
+    <value>Uitvoer</value>
+  </data>
+  <data name="sw_tc_System" xml:space="preserve">
+    <value>Systeem</value>
+  </data>
+  <data name="lang_ru" xml:space="preserve">
+    <value>Russisch</value>
+  </data>
+  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+    <value>Gebruik de Spotify-app van Songify</value>
+  </data>
+  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+    <value>Botconfiguratie</value>
+  </data>
+  <data name="lang_es" xml:space="preserve">
+    <value>Spaans</value>
+  </data>
+  <data name="lang_fr" xml:space="preserve">
+    <value>Frans</value>
+  </data>
+  <data name="sw_tcSystem_translated" xml:space="preserve">
+    <value>(vertaald met DeepL)</value>
+  </data>
+  <data name="brw_cmd_next" xml:space="preserve">
+    <value>Geeft het volgende nummer in de wachtrij weer</value>
+  </data>
+  <data name="brw_cmd_off" xml:space="preserve">
+    <value>Uit</value>
+  </data>
+  <data name="brw_cmd_on" xml:space="preserve">
+    <value>Op</value>
+  </data>
+  <data name="brw_cmd_pos" xml:space="preserve">
+    <value>Geeft de wachtrijpositie van de songverzoeken van de gebruikers weer</value>
+  </data>
+  <data name="brw_cmd_song" xml:space="preserve">
+    <value>Geeft het huidige nummer weer</value>
+  </data>
+  <data name="brw_cmd_description" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
+  <data name="brw_cmd_enabled" xml:space="preserve">
+    <value>Ingeschakeld</value>
+  </data>
+  <data name="brw_cmd_trigger" xml:space="preserve">
+    <value>Trekker</value>
+  </data>
+  <data name="sw_tcOutput_Format2" xml:space="preserve">
+    <value>Uitvoerformaat (Twitch Chat)</value>
+  </data>
+  <data name="crw_CreateReward" xml:space="preserve">
+    <value>Beloning creëren</value>
+  </data>
+  <data name="crw_RewardTitle" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Snel</value>
+  </data>
+  <data name="crw_RewardCost" xml:space="preserve">
+    <value>Kosten</value>
+  </data>
+  <data name="crw_CreateRewardError" xml:space="preserve">
+    <value>Er is een probleem opgetreden bij het aanmaken van de beloning. Controleer of er al een beloning met dezelfde naam bestaat.</value>
+  </data>
+  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+    <value>De beloning "{name}" is aangemaakt.</value>
+  </data>
+  <data name="mw_menu_PatchNotes" xml:space="preserve">
+    <value>Patch-notities</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Log-map</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+    <value>Inloggen met Twitch</value>
+  </data>
+  <data name="mw_menu_Console" xml:space="preserve">
+    <value>Troosten</value>
+  </data>
+  <data name="brw_cmd_skip" xml:space="preserve">
+    <value>Slaat het huidige nummer over</value>
+  </data>
+  <data name="brw_cmd_skipvote" xml:space="preserve">
+    <value>Start een stemming om het huidige nummer over te slaan</value>
+  </data>
+  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+    <value>Aantal benodigde stemmen</value>
+  </data>
+  <data name="sw_WebServer_Port" xml:space="preserve">
+    <value>Webserverpoort</value>
+  </data>
+  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+    <value>Webserver starten</value>
+  </data>
+  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+    <value>Open website</value>
+  </data>
+  <data name="Sw_System_Privacy" xml:space="preserve">
+    <value>Accountnamen en profielfoto's verbergen</value>
+  </data>
+  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+    <value>Open wachtrijvenster bij opstarten</value>
+  </data>
+  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+    <value>Automatisch een liedje aankondigen in de chat (gebruikt het !song-antwoord)</value>
+  </data>
+  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+    <value>Beperk Twitch-activiteit zodat deze alleen werkt als de stream live is (Twitch-aanmelding vereist)</value>
+  </data>
+  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+    <value>Beloningen beheren</value>
+  </data>
+  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+    <value>Max. SR / Gebruiker (gebaseerd op gebruikersniveau)</value>
+  </data>
+  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+    <value>Terugbetaling wanneer</value>
+  </data>
+  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+    <value>Gebruikersniveau is te laag</value>
+  </data>
+  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+    <value>Gebruiker is geblokkeerd voor SR</value>
+  </data>
+  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+    <value>Spotify is niet verbonden</value>
+  </data>
+  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+    <value>Nummer is niet beschikbaar in de regio</value>
+  </data>
+  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+    <value>Nummer bevat geblokkeerde artiest(en)</value>
+  </data>
+  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+    <value>De duur van het liedje is te lang</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+    <value>Nummer staat al in de wachtrij</value>
+  </data>
+  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+    <value>Er is geen nummer gevonden</value>
+  </data>
+  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+    <value>Lied is toegevoegd aan de wachtrij</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>altijd (SR gratis maken)</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+    <value>Rekeningen</value>
+  </data>
+  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+    <value>Beloningen</value>
+  </data>
+  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+    <value>Liedverzoeken</value>
+  </data>
+  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+    <value>Ingelogd met Twitch</value>
+  </data>
+  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+    <value>Onbeperkt aantal liedjesverzoeken</value>
+  </data>
+  <data name="mw_menu_SongRequests" xml:space="preserve">
+    <value>Liedverzoeken</value>
+  </data>
+  <data name="mw_menu_View" xml:space="preserve">
+    <value>Weergave</value>
+  </data>
+  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+    <value>Steun ons op Ko-Fi!</value>
+  </data>
+  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+    <value>Kunstenaar - Titel</value>
+  </data>
+  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+    <value>Controleer online status</value>
+  </data>
+  <data name="WinTitle_Queue" xml:space="preserve">
+    <value>Liedwachtrij</value>
+  </data>
+  <data name="s_Length" xml:space="preserve">
+    <value>Lengte</value>
+  </data>
+  <data name="s_Requester" xml:space="preserve">
+    <value>Aanvrager</value>
+  </data>
+  <data name="WinTitle_Blocklist" xml:space="preserve">
+    <value>Zwarte lijst</value>
+  </data>
+  <data name="WinTitle_History" xml:space="preserve">
+    <value>Liedgeschiedenis</value>
+  </data>
+  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+    <value>Privacy</value>
+  </data>
+  <data name="sw_tc_WebServer" xml:space="preserve">
+    <value>Webserver</value>
+  </data>
+  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+    <value>De webserver automatisch starten</value>
+  </data>
+  <data name="sw_Config_ResetConfig" xml:space="preserve">
+    <value>Configuratie resetten</value>
+  </data>
+  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+    <value>Webserver stoppen</value>
+  </data>
+  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+    <value>Ontvang bèta-updates</value>
+  </data>
+  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+    <value>Koppel je Spotify-account. Instellingen -&gt; Spotify</value>
+  </data>
+  <data name="s_Save" xml:space="preserve">
+    <value>Redden</value>
+  </data>
+  <data name="s_Upload" xml:space="preserve">
+    <value>Uploaden</value>
+  </data>
+  <data name="s_Name" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="s_Time" xml:space="preserve">
+    <value>Tijd</value>
+  </data>
+  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+    <value>Nieuwe beloning creëren</value>
+  </data>
+  <data name="brw_ModSkip" xml:space="preserve">
+    <value>De omroeper/moderator/aanvrager heeft het nummer overgeslagen</value>
+  </data>
+  <data name="brw_Pos" xml:space="preserve">
+    <value>Antwoord voor !pos-opdracht</value>
+  </data>
+  <data name="brw_Next" xml:space="preserve">
+    <value>Antwoord voor !next commando</value>
+  </data>
+  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+    <value>Botreacties en opdrachten</value>
+  </data>
+  <data name="brw_tc_Responses" xml:space="preserve">
+    <value>Reacties</value>
+  </data>
+  <data name="brw_tc_Commands" xml:space="preserve">
+    <value>Opdrachten</value>
+  </data>
+  <data name="brw_VoteSkip" xml:space="preserve">
+    <value>Gebruiker heeft gestemd om het huidige nummer over te slaan</value>
+  </data>
+  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+    <value>Beloning voor liedverzoeken</value>
+  </data>
+  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+    <value>Beloning voor het overslaan van een liedje</value>
+  </data>
+  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+    <value>!ssr-opdracht verplaatst naar botconfiguratie</value>
+  </data>
+  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+    <value>Minimaal vereist gebruikersniveau voor SR</value>
+  </data>
+  <data name="sw_Integration_Twitch" xml:space="preserve">
+    <value>Twitch-account</value>
+  </data>
+  <data name="sw_Twitch_LogOut" xml:space="preserve">
+    <value>Uitloggen</value>
+  </data>
+  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+    <value>Om punten te kunnen terugbetalen, moet de beloning via Songify worden aangemaakt. Selecteer een beheerbare beloning of maak een nieuwe aan.</value>
+  </data>
+  <data name="msgbx_BotAccount" xml:space="preserve">
+    <value>Bot-account</value>
+  </data>
+  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+    <value>Succesvol gekoppeld aan {account}. Wil je dit account ook als chatbot gebruiken?</value>
+  </data>
+  <data name="msgbx_Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="msgbx_No" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+    <value>Stuur offline melding naar chat</value>
+  </data>
+  <data name="brw_Song" xml:space="preserve">
+    <value>Antwoord op het commando !song</value>
+  </data>
+  <data name="brw_Refund" xml:space="preserve">
+    <value>Reactie wanneer kanaalpunten zijn terugbetaald. (leeg als er geen reactie is)</value>
+  </data>
+  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="brw_cmd_remove" xml:space="preserve">
+    <value>Verwijdert de laatste nummeraanvraag van de gebruiker.</value>
+  </data>
+  <data name="brw_SongLike" xml:space="preserve">
+    <value>Antwoord op het commando !songlike</value>
+  </data>
+  <data name="brw_cmd_songlike" xml:space="preserve">
+    <value>Voegt het huidige nummer toe aan de afspeellijst die is geselecteerd in de Spotify-configuratie.</value>
+  </data>
+  <data name="brw_cmd_play" xml:space="preserve">
+    <value>Hervat de huidige weergave.</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+    <value>Toegestane gebruikersniveaus voor SR-opdracht</value>
+  </data>
+  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+    <value>Toegestane gebruikersniveaus voor SR-beloning</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+    <value>Afspeellijst met favoriete nummers</value>
+  </data>
+  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+    <value>De afspeellijst waaraan nummers worden toegevoegd wanneer u de opdracht !songlike gebruikt of met de optie om automatisch nummers aan de afspeellijst toe te voegen.</value>
+  </data>
+  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+    <value>Voeg alle liedverzoeken toe aan de afspeellijst</value>
+  </data>
+  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+    <value>Reactie wanneer het nummer niet in de afspeellijst met toegestane nummers werd gevonden</value>
+  </data>
+  <data name="brw_Remove" xml:space="preserve">
+    <value>Reactie op de opdracht !remove</value>
+  </data>
+  <data name="lang_pl" xml:space="preserve">
+    <value>Pools</value>
+  </data>
+  <data name="lang_pt" xml:space="preserve">
+    <value>Portugees</value>
+  </data>
+  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+    <value>Toon referenties</value>
+  </data>
+  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+    <value>Alleen nummers uit deze afspeellijst toestaan (SR)</value>
+  </data>
+  <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
+    <value>Blokkeer alle expliciete nummers</value>
+  </data>
+  <data name="brw_ExplicitSongs" xml:space="preserve">
+    <value>Reactie wanneer een expliciet nummer is aangevraagd en 'expliciete nummers blokkeren' is ingeschakeld</value>
+  </data>
+  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+    <value>Tekstvoorvoegsel van de aanvrager</value>
+  </data>
+  <data name="lang_it" xml:space="preserve">
+    <value>Italiaans</value>
+  </data>
+  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+    <value>Standaardwebbrowser gebruiken</value>
+  </data>
+  <data name="brw_CommandOnCooldown" xml:space="preserve">
+    <value>Reactie wanneer de sr-opdracht in afkoeling is</value>
+  </data>
+  <data name="brw_NoTrackFound" xml:space="preserve">
+    <value>Reactie wanneer er geen spoor gevonden is</value>
+  </data>
+  <data name="brw_cmd_vol" xml:space="preserve">
+    <value>Geeft het huidige volume terug of stelt het in. '!vol [0-100]'</value>
+  </data>
+  <data name="lang_br" xml:space="preserve">
+    <value>Braziliaans Portugees</value>
+  </data>
+  <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
+    <value>Negeer de controle van de omroep/moderator</value>
+  </data>
+  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+    <value>Controleer op updates</value>
+  </data>
+  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+    <value>Ook van toepassing op gesplitste bestanden</value>
+  </data>
+  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+    <value>Niets doen</value>
+  </data>
+  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+    <value>Gebruik aangepaste pauzetekst</value>
+  </data>
+  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+    <value>Wis alle uitvoer</value>
+  </data>
+  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+    <value>Klik hier nadat u de beloning heeft geselecteerd</value>
+  </data>
+  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+    <value>Ingeschakelde beloningen voor Songrequests</value>
+  </data>
+  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+    <value>Retourneert de eerste 5 nummers van de huidige afspeelwachtrij</value>
+  </data>
+  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+    <value>Afkoeling SR-opdracht (per gebruiker)</value>
+  </data>
+  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+    <value>Reactie wanneer de gebruiker in afkoeling is (volgens de sr-opdracht van de gebruiker voor afkoeling)</value>
+  </data>
+  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+    <value>Donatieherinnering uitschakelen</value>
+  </data>
+  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+    <value>Gebruik Canvas indien beschikbaar</value>
+  </data>
+  <data name="WinQueue_NowPlaying" xml:space="preserve">
+    <value>Nu aan het spelen</value>
+  </data>
+  <data name="WinQueue_SongRequest" xml:space="preserve">
+    <value>Liedverzoek</value>
+  </data>
+  <data name="WinQueue_Skipping" xml:space="preserve">
+    <value>Overslaan</value>
+  </data>
+  <data name="WinQueue_Actions" xml:space="preserve">
+    <value>Acties</value>
+  </data>
+  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+    <value>Vergelijk de codes tussen Songify en de YouTube Music Desktop-speler. Accepteer het integratieverzoek alleen als de codes overeenkomen!</value>
+  </data>
+  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+    <value>Werkt het niet?</value>
+  </data>
+  <data name="sw_tcOutput_pause" xml:space="preserve">
+    <value>Wat te doen als het programma gepauzeerd is?</value>
+  </data>
+  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+    <value>De widget werkt alleen als 'Upload Song Info' is ingeschakeld. Je vindt deze optie onder Instellingen -&gt; Uitvoer. Wil je hem nu activeren?</value>
+  </data>
+  <data name="s_Connected" xml:space="preserve">
+    <value>Aangesloten</value>
+  </data>
+  <data name="s_Disconnected" xml:space="preserve">
+    <value>Losgekoppeld</value>
+  </data>
+  <data name="Window_Queue_QueueId" xml:space="preserve">
+    <value>Wachtrij-ID</value>
+  </data>
+  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+    <value>Wilt u de wachtrij echt leegmaken?</value>
+  </data>
+  <data name="s_Warning" xml:space="preserve">
+    <value>Waarschuwing</value>
+  </data>
+  <data name="s_Song" xml:space="preserve">
+    <value>Liedje</value>
+  </data>
+  <data name="bw_lblBlockedSongs" xml:space="preserve">
+    <value>Geblokkeerde liedjes</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+    <value>Gebruikersniveaus (opdracht)</value>
+  </data>
+  <data name="s_Viewer" xml:space="preserve">
+    <value>kijker</value>
+  </data>
+  <data name="s_Follower" xml:space="preserve">
+    <value>Volgeling</value>
+  </data>
+  <data name="s_Subscriber" xml:space="preserve">
+    <value>Abonnee</value>
+  </data>
+  <data name="s_VIP" xml:space="preserve">
+    <value>VIP</value>
+  </data>
+  <data name="s_Moderator" xml:space="preserve">
+    <value>Moderator</value>
+  </data>
+  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+    <value>Gebruikersniveaus (beloning)</value>
+  </data>
+  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+    <value>Commandoreacties</value>
+  </data>
+  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+    <value>Antwoorden op liedverzoeken</value>
+  </data>
+  <data name="s_TrackAdded" xml:space="preserve">
+    <value>Track is toegevoegd aan de wachtrij.</value>
+  </data>
+  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+    <value>Voer de Spotify-client-ID en het geheim in</value>
+  </data>
+  <data name="s_OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+    <value>Gebruikersniveau is te laag voor de opdracht !ssr</value>
+  </data>
+  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+    <value>Gebruikersniveau is te laag voor beloning bij verzoek om een nummer</value>
+  </data>
+  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+    <value>Toon gebruikersniveau-badges</value>
+  </data>
+  <data name="s_Columns" xml:space="preserve">
+    <value>Kolommen</value>
+  </data>
+  <data name="brw_cmd_queue" xml:space="preserve">
+    <value>Retourneert de eerste 5 nummers van de huidige afspeelwachtrij</value>
+  </data>
+  <data name="brw_cmd_pause" xml:space="preserve">
+    <value>Pauzeert de huidige weergave.</value>
+  </data>
+  <data name="brw_cmd_commands" xml:space="preserve">
+    <value>Retourneert alle actieve Songify-opdrachten.</value>
+  </data>
+  <data name="Param_User_Desc" xml:space="preserve">
+    <value>De gebruiker die de opdracht of kanaalbeloning heeft geactiveerd</value>
+  </data>
+  <data name="Param_Requester_Desc" xml:space="preserve">
+    <value>De aanvrager van het huidige nummer</value>
+  </data>
+  <data name="Param_ConditionalText_Desc" xml:space="preserve">
+    <value>De tekst in '{{' en '}}' wordt alleen geplaatst als het huidige nummer een verzoeknummer is</value>
+  </data>
+  <data name="Param_Artist_Desc" xml:space="preserve">
+    <value>Artiesten voor het huidige nummer of het nummerverzoek</value>
+  </data>
+  <data name="Param_SingleArtist_Desc" xml:space="preserve">
+    <value>Hoofdartiest voor het huidige nummer of nummerverzoek</value>
+  </data>
+  <data name="Param_ErrorMessage_Desc" xml:space="preserve">
+    <value>Foutmelding als er een fout optreedt</value>
+  </data>
+  <data name="Param_SongFormat_Desc" xml:space="preserve">
+    <value>{Artist - Title}</value>
+  </data>
 </root>
