@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Songify_Slim.Util.General;
 using TwitchLib.Api.Helix;
@@ -129,11 +130,11 @@ namespace Songify_Slim.Util.Songify.Twitch
             return x.Users.Length > 0 ? x.Users : [];
         }
 
-        public static async Task<EventSubSubscription[]> GetEventSubscriptions()
+        public static async Task<List<EventSubSubscription>> GetEventSubscriptions()
         {
             GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
                 Settings.Settings.TwitchAccessToken);
-            return x.Subscriptions;
+            return x.Subscriptions.ToList();
         }
     }
 }

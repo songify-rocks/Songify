@@ -1,27 +1,27 @@
-﻿using System;
+﻿using Songify_Slim.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Songify_Slim.Models;
 using TwitchLib.Client.Models;
+using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
-    public delegate Task CommandHandlerDelegate(ChatMessage message, TwitchCommand command, TwitchCommandParams cmdParams);
+    public delegate Task CommandHandlerDelegate(ChannelChatMessage message, TwitchCommand command, TwitchCommandParams cmdParams);
 
     public static class TwitchCommandHandler
     {
         // Mapping by command Name (unchanged).
-        private static readonly Dictionary<string, TwitchCommand> CommandsByName =
-            new Dictionary<string, TwitchCommand>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, TwitchCommand> CommandsByName = new(StringComparer.OrdinalIgnoreCase);
 
         // Mapping by trigger or alias → TwitchCommand.
         // We still call it CommandsByTrigger to keep your public surface area unchanged.
         private static readonly Dictionary<string, TwitchCommand> CommandsByTrigger =
-            new Dictionary<string, TwitchCommand>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         // Command handlers keyed by the canonical trigger (command.Trigger).
         private static readonly Dictionary<string, CommandHandlerDelegate> CommandHandlers =
-            new Dictionary<string, CommandHandlerDelegate>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         private static string Normalize(string s)
         {
@@ -73,13 +73,38 @@ namespace Songify_Slim.Util.Songify.Twitch
         /// <summary>
         /// Executes a command based on the trigger or alias parsed from the chat message.
         /// </summary>
-        public static bool TryExecuteCommand(ChatMessage message, TwitchCommandParams cmdParams)
+        //public static bool TryExecuteCommand(ChatMessage message, TwitchCommandParams cmdParams)
+        //{
+        //    if (message == null || string.IsNullOrWhiteSpace(message.Message))
+        //        return false;
+
+        //    // Extract first token (e.g., "!sr params..." -> "sr")
+        //    string firstToken = message.Message.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+        //    string key = Normalize(firstToken);
+        //    if (string.IsNullOrEmpty(key)) return false;
+
+        //    // Look up command by trigger OR alias
+        //    if (!CommandsByTrigger.TryGetValue(key, out TwitchCommand command) || command is not { IsEnabled: true })
+        //        return false;
+
+        //    // Always resolve handler using the command's canonical trigger
+        //    string canonical = Normalize(command.Trigger);
+        //    if (string.IsNullOrEmpty(canonical)) return false;
+
+        //    if (!CommandHandlers.TryGetValue(canonical, out CommandHandlerDelegate handler) || handler == null)
+        //        return false;
+
+        //    handler(message, command, cmdParams);
+        //    return true;
+        //}
+
+        public static bool TryExecuteCommand(ChannelChatMessage msg, TwitchCommandParams cmdParams)
         {
-            if (message == null || string.IsNullOrWhiteSpace(message.Message))
+            if (msg == null || string.IsNullOrEmpty(msg.Message.Text))
                 return false;
 
             // Extract first token (e.g., "!sr params..." -> "sr")
-            string firstToken = message.Message.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+            string firstToken = msg.Message.Text.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
             string key = Normalize(firstToken);
             if (string.IsNullOrEmpty(key)) return false;
 
@@ -94,7 +119,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (!CommandHandlers.TryGetValue(canonical, out CommandHandlerDelegate handler) || handler == null)
                 return false;
 
-            handler(message, command, cmdParams);
+            handler(msg, command, cmdParams);
             return true;
         }
 

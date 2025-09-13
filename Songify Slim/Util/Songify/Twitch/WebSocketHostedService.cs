@@ -8,9 +8,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using Songify_Slim.Views;
 using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
+using TwitchLib.Api.Helix.Models.EventSub;
 using TwitchLib.EventSub.Core.Models.Chat;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
@@ -62,9 +66,9 @@ namespace Songify_Slim.Util.Songify.Twitch
             ChannelChatMessage chatMsg = args.Notification.Payload.Event;
             if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
                 return;
-            if(!chatMsg.Message.Text.StartsWith("!"))
+            if (!chatMsg.Message.Text.StartsWith("!"))
                 return;
-            if(chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
+            if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
                 return;
             TwitchHandler.ExecuteChatCommand(chatMsg);
             Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
@@ -115,6 +119,17 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 // If you want to get Events for special Events you need to additionally add the AccessToken of the ChannelOwner to the request.
                 // https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/
+            }
+
+            // Update UI
+            List<EventSubSubscription> evSubs = await TwitchApiHelper.GetEventSubscriptions();
+            evSubs = evSubs.Where(sub => sub.Status == "enabled").ToList();
+            if (evSubs.Any(s => s.Type == "channel.chat.message"))
+            {
+                Application.Current.Dispatcher.Invoke((() =>
+                {
+                    (((MainWindow)Application.Current.MainWindow)!).IconTwitchBot.Foreground = evSubs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
+                }));
             }
         }
 

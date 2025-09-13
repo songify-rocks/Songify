@@ -109,7 +109,7 @@
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding ReadableUserLevel, Mode=OneWay}"
-                    Header="User level" />
+                    Header="User levels" />
                 <DataGridTemplateColumn
                     Width="auto"
                     MinWidth="70"

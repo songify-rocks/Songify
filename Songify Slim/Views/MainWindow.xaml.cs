@@ -1596,7 +1596,6 @@ namespace Songify_Slim.Views
 
         private async Task ShowServiceToolTip(object sender)
         {
-
             if (sender is Button btn)
             {
                 Style style = TryFindResource("StatusToolTip") as Style; // or null
@@ -1604,13 +1603,16 @@ namespace Songify_Slim.Views
                 List<(string Label, string Value)> rows;
                 string header;
                 PackIconBoxIcons icon = new();
-
+                EventSubSubscription[] eventSubscriptions;
+                List<EventSubSubscription> subs;
 
                 switch ((string)btn.Tag)
                 {
                     case "TwitchBot":
                         header = "Twitch Chat Bot";
                         icon.Kind = PackIconBoxIconsKind.LogosTwitch;
+                        subs = await TwitchApiHelper.GetEventSubscriptions();
+                        IconTwitchBot.Foreground = subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
                         rows =
                         [
                             ("Status", IconTwitchBot.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
@@ -1620,8 +1622,7 @@ namespace Songify_Slim.Views
                     case "TwitchAPI":
                         header = "Twitch API";
                         icon.Kind = PackIconBoxIconsKind.LogosTwitch;
-                        EventSubSubscription[] x = await TwitchApiHelper.GetEventSubscriptions();
-                        List<EventSubSubscription> subs = x.ToList();
+                        subs = await TwitchApiHelper.GetEventSubscriptions();
                         rows =
                         [
                             ("Status", IconTwitchAPI.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),

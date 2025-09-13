@@ -107,7 +107,6 @@
                     HorizontalAlignment="Right"
                     Click="BtnToGraph_OnClick"
                     Content="Graph" />
-
                 <DataGrid
                     Grid.Row="1"
                     Margin="8"
