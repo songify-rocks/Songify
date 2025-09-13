@@ -148,6 +148,7 @@
     <Compile Include="Models\Responses\BotResponseItem.cs" />
     <Compile Include="Models\Placeholders\PlaceholderContext.cs" />
     <Compile Include="Models\Responses\PSA.cs" />
+    <Compile Include="Models\Twitch\TwitchChatAccount.cs" />
     <Compile Include="Models\WebSocket\QueueAddData.cs" />
     <Compile Include="Models\Queue\QueueItem.cs" />
     <Compile Include="Models\Twitch\SimpleTwitchUser.cs" />

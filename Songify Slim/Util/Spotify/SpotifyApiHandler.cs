@@ -158,7 +158,6 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
             OAuthClient oauth = new OAuthClient();
@@ -448,8 +447,7 @@ namespace Songify_Slim.Util.Spotify
 
             return null;
         }
-
-
+        
         public static async Task<bool> AddToQueue(string songUri)
         {
             if (Client == null)

@@ -9,7 +9,6 @@
  */
 
 using System.Collections.Generic;
-using TwitchLib.Api.Helix;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
@@ -19,12 +18,16 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         {
             List<string> s =
             [
+                "bits:read",
+                "channel:bot",
                 "channel:manage:redemptions",
                 "channel:moderate",
                 "channel:read:redemptions",
                 "channel:read:subscriptions",
+                "channel:read:vips",
                 "chat:edit",
                 "chat:read",
+                "moderation:read",
                 "moderator:manage:announcements",
                 "moderator:manage:automod",
                 "moderator:manage:automod_settings",
@@ -36,43 +39,38 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 "moderator:read:chat_settings",
                 "moderator:read:chatters",
                 "moderator:read:followers",
-                "moderation:read",
-                "channel:read:vips",
-                "channel:bot",
-                "bits:read",
-                //s.Add("user:read:follows");
-                //s.Add("user:read:subscriptions");
-                //s.Add("analytics:read:extensions");
-                //s.Add("analytics:read:games");
-                //s.Add("bits:read");
-                //s.Add("channel:edit:commercial");
-                //s.Add("channel:manage:broadcast");
-                //s.Add("channel:manage:extensions");
-                //s.Add("channel:manage:polls");
-                //s.Add("channel:manage:predictions");
-                //s.Add("channel:manage:raids");
-                //s.Add("channel:manage:schedule");
-                //s.Add("channel:manage:videos");
-                //s.Add("channel:read:editors");
-                //s.Add("channel:read:goals");
-                //s.Add("channel:read:hype_train");
-                //s.Add("channel:read:polls");
-                //s.Add("channel:read:predictions");
-                //s.Add("channel:read:stream_key");
-                //s.Add("channel:read:subscriptions");
-                //s.Add("clips:edit");
-                //s.Add("moderation:read");
-                //s.Add("user:edit");
-                //s.Add("user:edit:follows");
-                //s.Add("user:manage:blocked_users");
-                //s.Add("user:read:blocked_users");
-                //s.Add("user:read:broadcast");
-                //s.Add("user:read:email");
+                "user:bot",
+                "user:read:chat",
+                "user:write:chat",
+                //"user:read:follows"
+                //"user:read:subscriptions"
+                //"analytics:read:extensions"
+                //"analytics:read:games"
+                //"bits:read"
+                //"channel:edit:commercial"
+                //"channel:manage:broadcast"
+                //"channel:manage:extensions"
+                //"channel:manage:polls"
+                //"channel:manage:predictions"
+                //"channel:manage:raids"
+                //"channel:manage:schedule"
+                //"channel:manage:videos"
+                //"channel:read:editors"
+                //"channel:read:goals"
+                //"channel:read:hype_train"
+                //"channel:read:polls"
+                //"channel:read:predictions"
+                //"channel:read:stream_key"
+                //"channel:read:subscriptions"
+                //"clips:edit"
+                //"moderation:read"
+                //"user:edit"
+                //"user:edit:follows"
+                //"user:manage:blocked_users"
+                //"user:read:blocked_users"
+                //"user:read:broadcast"
+                //"user:read:email"
             ];
-
-            //s.Add("whispers:read");
-            //s.Add("whispers:edit");
-
             return [.. s];
         }
     }

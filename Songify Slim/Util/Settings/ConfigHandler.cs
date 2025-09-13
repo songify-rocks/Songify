@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Twitch;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -652,7 +653,7 @@ namespace Songify_Slim.Util.Settings
         public string TwitchUserColor { get; set; }
         public DateTime AccessTokenExpiryDate { get; set; }
         public DateTime BotTokenExpiryDate { get; set; }
-
+        public TwitchChatAccount TwitchChatAccount { get; set; }
     }
 
     public class BotConfig

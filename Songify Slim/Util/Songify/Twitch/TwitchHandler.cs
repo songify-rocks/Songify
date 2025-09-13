@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows.Threading;
+using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
@@ -49,6 +50,7 @@ using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
+using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets.Extensions;
 using static Songify_Slim.Util.General.Enums;
 using Application = System.Windows.Application;
@@ -61,7 +63,6 @@ using Timer = System.Timers.Timer;
 using TwitchCommandParams = Songify_Slim.Models.TwitchCommandParams;
 using User = TwitchLib.Api.Helix.Models.Users.GetUsers.User;
 using Window = System.Windows.Window;
-
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -170,6 +171,14 @@ namespace Songify_Slim.Util.Songify.Twitch
                                 Settings.Settings.TwAcc = account == TwitchAccount.Main
                                     ? Settings.Settings.TwitchUser.Login
                                     : Settings.Settings.TwitchBotUser.Login;
+
+                                Settings.Settings.TwitchChatAccount = new TwitchChatAccount
+                                {
+                                    Id = Settings.Settings.TwitchUser.Id,
+                                    Name = Settings.Settings.TwitchUser.Login,
+                                    Token = Settings.Settings.TwOAuth
+                                };
+
                                 return Task.CompletedTask;
                             });
                         await ((Window_Settings)window).SetControls();
@@ -198,6 +207,12 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     ? Settings.Settings.TwitchUser.Login
                                     : Settings.Settings.TwitchBotUser.Login;
 
+                                Settings.Settings.TwitchChatAccount = new TwitchChatAccount
+                                {
+                                    Id = Settings.Settings.TwitchUser.Id,
+                                    Name = Settings.Settings.TwitchUser.Login,
+                                    Token = Settings.Settings.TwOAuth
+                                };
 
                                 return Task.CompletedTask;
                             });
@@ -252,6 +267,25 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task ConnectTwitchChatClient()
         {
+
+            if (Settings.Settings.TwAcc == Settings.Settings.TwitchUser.Login)
+            {
+                Settings.Settings.TwitchChatAccount = new TwitchChatAccount
+                {
+                    Id = Settings.Settings.TwitchUser.Id,
+                    Name = Settings.Settings.TwitchUser.Login,
+                    Token = Settings.Settings.TwOAuth
+                };
+            }
+            else
+            {
+                Settings.Settings.TwitchChatAccount = new TwitchChatAccount
+                {
+                    Id = Settings.Settings.TwitchBotUser.Id,
+                    Name = Settings.Settings.TwitchBotUser.Login,
+                    Token = Settings.Settings.TwOAuth
+                };
+            }
             try
             {
                 switch (Client)
@@ -2499,7 +2533,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 if (TokenCheck != null)
                 {
-                    await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
+                    await TwitchApi.Helix.Chat.SendChatAnnouncementAsync(Settings.Settings.TwitchUser.Id,
                         Settings.Settings.TwitchUser.Id, msg, announcementColors,
                         Settings.Settings.TwitchAccessToken);
                     return;
@@ -2683,6 +2717,12 @@ namespace Songify_Slim.Util.Songify.Twitch
             Logger.LogStr("TWITCH: Disconnected from Twitch Chat");
             return Task.CompletedTask;
         }
+
+        public static void ExecuteChatCommand(ChannelChatMessage channelChatMessage)
+        {
+            //TODO: Finish this to get rid of Twitch IRC chat and use API / Eventsub fully
+        }
+
 
         private static async Task Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
@@ -4473,10 +4513,21 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private static async Task SendChatMessage(string channel, string message)
         {
-            if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
-                await Client.SendMessageAsync(channel, message);
-            else
-                Logger.LogStr("DEBUG: Client.IsConnected returned FALSE or Client.JoinedChannels is NULL");
+            try
+            {
+                await TwitchApi.Helix.Chat.SendChatMessage(Settings.Settings.TwitchUser.Id,
+                    Settings.Settings.TwitchChatAccount.Id, message,
+                    accessToken: Settings.Settings.TwitchChatAccount.Token.Replace("oauth:",""));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            //if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
+            //    await Client.SendMessageAsync(channel, message);
+            //else
+            //    Logger.LogStr("DEBUG: Client.IsConnected returned FALSE or Client.JoinedChannels is NULL");
         }
 
         private static async Task<int?> SetSpotifyVolume(ChatMessage e)
@@ -5013,8 +5064,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         public string Channel { get; set; }
     }
 }
-
-
 
 public class TwitchUser : INotifyPropertyChanged
 {

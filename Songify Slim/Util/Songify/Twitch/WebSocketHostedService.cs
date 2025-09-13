@@ -3,17 +3,21 @@ using Microsoft.Extensions.Logging;
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
+using TwitchLib.EventSub.Core.Models.Chat;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Channel;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Stream;
+using ChatMessage = TwitchLib.Client.Models.ChatMessage;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -39,6 +43,8 @@ namespace Songify_Slim.Util.Songify.Twitch
             _eventSubWebsocketClient.StreamOffline += EventSubWebsocketClientOnStreamOffline;
             _eventSubWebsocketClient.StreamOnline += EventSubWebsocketClientOnStreamOnline;
             _eventSubWebsocketClient.ChannelCheer += EventSubWebsocketClientOnChannelCheer;
+            _eventSubWebsocketClient.ChannelChatMessage += _eventSubWebsocketClient_ChannelChatMessage;
+
             // Get ClientId and ClientSecret by register an Application here: https://dev.twitch.tv/console/apps
             // https://dev.twitch.tv/docs/authentication/register-app/
             _twitchApi.Settings.ClientId = TwitchHandler.ClientId;
@@ -49,6 +55,25 @@ namespace Songify_Slim.Util.Songify.Twitch
             // You need the UserID for the User/Channel you want to get Events from.
             // You can use await _api.Helix.Users.GetUsersAsync() for that.
             _userId = Settings.Settings.TwitchUser.Id;
+        }
+
+        private static async Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
+        {
+            ChannelChatMessage chatMsg = args.Notification.Payload.Event;
+            if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
+                return;
+            if(!chatMsg.Message.Text.StartsWith("!"))
+                return;
+            if(chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
+                return;
+            TwitchHandler.ExecuteChatCommand(chatMsg);
+            Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
+            Debug.WriteLine($"Broadcaster: {chatMsg.IsBroadcaster}");
+            Debug.WriteLine($"Moderator: {chatMsg.IsModerator}");
+            Debug.WriteLine($"VIP: {chatMsg.IsVip}");
+            Debug.WriteLine($"Subscriner: {chatMsg.IsSubscriber}");
+            string x = Json.Serialize(chatMsg.Badges);
+            Debug.WriteLine($"Badges: {x}");
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -69,19 +94,24 @@ namespace Songify_Slim.Util.Songify.Twitch
                 // subscribe to topics
                 // create condition Dictionary
                 // You need BOTH broadcaster and moderator values or EventSub returns an Error!
-                var condition = new Dictionary<string, string> { { "broadcaster_user_id", _userId }, { "moderator_user_id", _userId } };
+                Dictionary<string, string> conditionBM = new Dictionary<string, string> { { "broadcaster_user_id", _userId }, { "moderator_user_id", _userId } };
+                Dictionary<string, string> conditionBU = new Dictionary<string, string>
+                    { { "broadcaster_user_id", _userId }, { "user_id", _userId } };
                 // Create and send EventSubscription
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.channel_points_custom_reward_redemption.add", "1", condition, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.channel_points_custom_reward_redemption.add", "1", conditionBM, EventSubTransportMethod.Websocket,
                 _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.cheer", "1", condition, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.cheer", "1", conditionBM, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.online", "1", condition, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.online", "1", conditionBM, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.offline", "1", condition, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.offline", "1", conditionBM, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
+
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.chat.message", "1", conditionBU,
+                    EventSubTransportMethod.Websocket, _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
                 // If you want to get Events for special Events you need to additionally add the AccessToken of the ChannelOwner to the request.
                 // https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/
@@ -114,7 +144,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task EventSubWebsocketClientOnChannelCheer(object sender, ChannelCheerArgs args)
         {
-            if(!Settings.Settings.SrForBits)
+            if (!Settings.Settings.SrForBits)
                 return;
             ChannelCheer eventData = args.Notification.Payload.Event;
             if (eventData.BroadcasterUserId != Settings.Settings.TwitchUser.Id)

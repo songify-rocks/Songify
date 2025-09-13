@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Twitch;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.Util.Settings
@@ -37,6 +38,17 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
+        public static TwitchChatAccount TwitchChatAccount { get => GetTwitchChatAccount(); set => SetTwitchChatAccount(value); }
+
+        private static TwitchChatAccount GetTwitchChatAccount()
+        {
+            return CurrentConfig.TwitchCredentials.TwitchChatAccount;
+        }
+        private static void SetTwitchChatAccount(TwitchChatAccount value)
+        {
+            CurrentConfig.TwitchCredentials.TwitchChatAccount = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
 
         private static void SetSpotifyFetchRate(int value)
         {
@@ -928,6 +940,7 @@ namespace Songify_Slim.Util.Settings
                 BotAccountName = GetTwAcc(),
                 BotOAuthToken = GetTwOAuth(),
                 BotTokenExpiryDate = GetBotAccessTokenExpiryDate(),
+                TwitchChatAccount = GetTwitchChatAccount(),
                 BotUser = GetTwitchBotUser(),
                 ChannelId = GetTwitchChannelId(),
                 ChannelName = GetTwChannel(),

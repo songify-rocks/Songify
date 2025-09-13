@@ -297,7 +297,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                   <script>
                     // Wait for logo to load before starting animations
                     window.addEventListener('load', function() {
-                      const songifyLogo = document.querySelector('img[src*="songify.rocks"]');
+                      const songifyLogo = document.querySelector('img[src*="songify.overcode"]');
                       
                       function startAnimations() {
                         document.querySelector('.content').classList.add('animate');
