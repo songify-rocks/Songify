@@ -1347,7 +1347,7 @@
                                         </ListBox.ItemContainerStyle>
                                     </ListBox>
                                 </TabItem>
-                                <TabItem Header="Refund Contitions">
+                                <TabItem Header="Refund Conditions">
                                     <StackPanel Orientation="Vertical">
                                         <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
                                         <Grid
