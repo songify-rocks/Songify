@@ -1246,115 +1246,117 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-                    <TabControl Margin="10,12,0,0">
-                        <Grid x:Name="GrdTwitchReward">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                    <Grid x:Name="GrdTwitchReward" Margin="10,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,0,6"
-                                VerticalAlignment="Top"
-                                d:Text="{x:Static local:Resources.sw_Spotify_RewardSR}"
-                                Text="{DynamicResource sw_Spotify_RewardSR}" />
-                            <Button
-                                x:Name="BtnCreateNewReward"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Height="26"
-                                Margin="0,0,32,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Click="BtnCreateNewReward_Click"
-                                IsEnabled="False"
-                                ToolTip="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <iconPacks:PackIconMaterial
-                                            Width="12"
-                                            Height="12"
-                                            Kind="Plus" />
-                                        <TextBlock
-                                            Margin="5,0"
-                                            VerticalAlignment="Center"
-                                            Text="Create new Reward" />
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button
-                                x:Name="BtnUpdateRewards"
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Width="26"
-                                Height="26"
-                                Margin="0,0,0,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Click="BtnUpdateRewards_Click"
-                                ToolTip="Reload Rewards">
-                                <Button.Content>
-                                    <iconPacks:PackIconForkAwesome
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,0,6"
+                            VerticalAlignment="Top"
+                            d:Text="{x:Static local:Resources.sw_Spotify_RewardSR}"
+                            Text="{DynamicResource sw_Spotify_RewardSR}" />
+                        <Button
+                            x:Name="BtnCreateNewReward"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Height="26"
+                            Margin="0,0,32,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="BtnCreateNewReward_Click"
+                            IsEnabled="False"
+                            ToolTip="{x:Static local:Resources.sw_Twitch_Rewards_CreateNewReward}">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial
                                         Width="12"
                                         Height="12"
-                                        Kind="Refresh" />
-                                </Button.Content>
-                            </Button>
-                            <controls:ToggleSwitch
-                                x:Name="TglOnlySkipNonSrRewards"
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                d:Content="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
-                                Content="{DynamicResource local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
-                                Toggled="TglOnlySkipNonSrRewards_OnToggled" />
-                            <TabControl
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2">
-                                <TabItem Header="Channel Rewards">
-                                    <ListBox
-                                        x:Name="ListboxRewards"
-                                        Grid.Row="2"
-                                        Grid.Column="0"
-                                        Grid.ColumnSpan="2"
-                                        Margin="6"
-                                        IsEnabled="True"
-                                        ScrollViewer.CanContentScroll="True"
-                                        SelectionMode="Single"
-                                        Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
-                                        VirtualizingStackPanel.ScrollUnit="Item">
-                                        <ListBox.ItemContainerStyle>
-                                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                                <Setter Property="OverridesDefaultStyle" Value="True" />
-                                                <Setter Property="Background" Value="Transparent" />
-                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                            <ContentPresenter />
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </ListBox.ItemContainerStyle>
-                                    </ListBox>
-                                </TabItem>
-                                <TabItem Header="Refund Conditions">
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
-                                        <Grid
-                                            x:Name="RefundSwitchesPanel"
-                                            VerticalAlignment="Top"
-                                            SizeChanged="RefundSwitchesPanel_OnSizeChanged">
-                                            <!--<controls:ToggleSwitch
+                                        Kind="Plus" />
+                                    <TextBlock
+                                        Margin="5,0"
+                                        VerticalAlignment="Center"
+                                        Text="Create new Reward" />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button
+                            x:Name="BtnUpdateRewards"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Width="26"
+                            Height="26"
+                            Margin="0,0,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Click="BtnUpdateRewards_Click"
+                            ToolTip="Reload Rewards">
+                            <Button.Content>
+                                <iconPacks:PackIconForkAwesome
+                                    Width="12"
+                                    Height="12"
+                                    Kind="Refresh" />
+                            </Button.Content>
+                        </Button>
+                        <controls:ToggleSwitch
+                            x:Name="TglOnlySkipNonSrRewards"
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            d:Content="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
+                            Content="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
+                            OffContent="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
+                            OnContent="{x:Static local:Resources.sw_Twitch_Rewards_DisableSkipForRequests}"
+                            Toggled="TglOnlySkipNonSrRewards_OnToggled" />
+                        <TabControl
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2">
+                            <TabItem Header="Channel Rewards">
+                                <ListBox
+                                    x:Name="ListboxRewards"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Grid.ColumnSpan="2"
+                                    Margin="6"
+                                    IsEnabled="True"
+                                    ScrollViewer.CanContentScroll="True"
+                                    SelectionMode="Single"
+                                    Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
+                                    VirtualizingStackPanel.ScrollUnit="Item">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                            <Setter Property="OverridesDefaultStyle" Value="True" />
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                        <ContentPresenter />
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                            </TabItem>
+                            <TabItem Header="|" IsEnabled="False" />
+                            <TabItem Header="Refund Conditions">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Margin="6,6" Text="To be able to refund points the Reward has to be created through Songify!" />
+                                    <Grid
+                                        x:Name="RefundSwitchesPanel"
+                                        VerticalAlignment="Top"
+                                        SizeChanged="RefundSwitchesPanel_OnSizeChanged">
+                                        <!--<controls:ToggleSwitch
                                     x:Name="ChkRefundUserLevel"
                                     Grid.Row="0"
                                     Grid.Column="0"
@@ -1445,14 +1447,12 @@
                                     Tag="-1">
                                     <TextBlock Text="{x:Static local:Resources.Sw_Integration_RefundAlways}" TextWrapping="Wrap" />
                                 </controls:ToggleSwitch>-->
-                                        </Grid>
-                                    </StackPanel>
-                                </TabItem>
-                            </TabControl>
+                                    </Grid>
+                                </StackPanel>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
 
-
-                        </Grid>
-                    </TabControl>
                 </Border>
             </TabItem>
             <TabItem
