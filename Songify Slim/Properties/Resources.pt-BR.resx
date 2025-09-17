@@ -474,9 +474,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>A música foi adicionada à fila</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>sempre (tornar SR grátis)</value>
-  </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Contas</value>
   </data>
@@ -941,5 +938,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Desativar Skip-Reward para solicitações de músicas</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Pedidos de músicas gratuitas</value>
   </data>
 </root>

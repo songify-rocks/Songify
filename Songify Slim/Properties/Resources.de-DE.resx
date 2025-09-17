@@ -430,9 +430,6 @@
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
     <value>Es wurde kein Lied gefunden</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>immer (SR frei machen)</value>
-  </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
     <value>Warteschlangenfenster beim Start öffnen</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Skip-Belohnung für Songanfragen deaktivieren</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Kostenlose Songwünsche</value>
   </data>
 </root>

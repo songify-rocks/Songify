@@ -1,6 +1,7 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
+using Newtonsoft.Json.Linq;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
@@ -306,116 +307,14 @@ namespace Songify_Slim.Util.Spotify
 
                 // 3) Artists / progress math
                 string artists = string.Join(", ", track.Artists.Select(a => a.Name));
-                List<Image> albums = track.Album?.Images ?? new List<Image>();
+                List<Image> albums = track.Album?.Images ?? [];
                 double totalSeconds = track.DurationMs / 1000.0;
                 double currentSeconds = (double)playback.ProgressMs / 1000.0;
                 int percentage = totalSeconds == 0 ? 0 : (int)(100 * currentSeconds / totalSeconds);
 
                 // 4) Playlist context (only when ID changes; cache 10 min)
                 PlaylistInfo playlistInfo = null;
-                if (playback.Context?.Type is not "playlist" && playback.Context?.Type is not "collection" || string.IsNullOrEmpty(playback.Context.Uri))
-                    return new TrackInfo
-                    {
-                        Artists = artists,
-                        Title = track.Name,
-                        Albums = albums.ToList(),
-                        SongId = track.Id,
-                        DurationMs = (int)(track.DurationMs - playback.ProgressMs),
-                        IsPlaying = playback.IsPlaying,
-                        Url = "https://open.spotify.com/track/" + track.Id,
-                        DurationPercentage = percentage,
-                        DurationTotal = track.DurationMs,
-                        Progress = (int)playback.ProgressMs,
-                        Playlist = playlistInfo,
-                        FullArtists = track.Artists.ToList()
-                    };
-                {
-                    string playlistId = null;
-                    string[] parts = playback.Context.Uri.Split(':');
-                    bool isCollection = false;
 
-                    if (parts.Length == 3 && parts[1] == "playlist")
-                    {
-                        // spotify:playlist:{id}
-                        playlistId = parts[2];
-                    }
-                    else if (parts.Length >= 5 && parts[1] == "user" && parts[3] == "playlist")
-                    {
-                        // spotify:user:{uid}:playlist:{id}
-                        playlistId = parts[4];
-                    }
-                    else if (parts.Length >= 4 && parts[1] == "user" && parts[3] == "collection")
-                    {
-                        // spotify:user:{uid}:collection  → user’s liked songs
-                        isCollection = true;
-                    }
-
-                    if (isCollection)
-                    {
-                        playlistInfo = new PlaylistInfo
-                        {
-                            Name = "Liked Songs",
-                            Id = "collection",
-                            Owner = parts.Length > 2 ? parts[2] : null,
-                            Url = "spotify:collection",
-                            Image = "https://misc.scdn.co/liked-songs/liked-songs-300.jpg"
-                        };
-                    }
-
-                    if (string.IsNullOrEmpty(playlistId))
-                        return new TrackInfo
-                        {
-                            Artists = artists,
-                            Title = track.Name,
-                            Albums = albums.ToList(),
-                            SongId = track.Id,
-                            DurationMs = (int)(track.DurationMs - playback.ProgressMs),
-                            IsPlaying = playback.IsPlaying,
-                            Url = "https://open.spotify.com/track/" + track.Id,
-                            DurationPercentage = percentage,
-                            DurationTotal = track.DurationMs,
-                            Progress = (int)playback.ProgressMs,
-                            Playlist = playlistInfo,
-                            FullArtists = track.Artists.ToList()
-                        };
-                    bool needFetch = playlistId != _cachedPlaylistId ||
-                                     (DateTime.UtcNow - _cachedPlaylistFetchedAt) > PlaylistCacheTtl ||
-                                     _cachedPlaylistInfo == null;
-
-                    if (needFetch)
-                    {
-                        try
-                        {
-                            FullPlaylist playlist = await ApiCallMeter.RunAsync(
-                                "Playlists.Get",
-                                () => Client.Playlists.Get(playlistId),
-                                softLimitPerMinute: 6 // you’ll hit this very rarely now
-                            );
-
-                            _cachedPlaylistInfo = new PlaylistInfo
-                            {
-                                Name = playlist.Name,
-                                Id = playlist.Id,
-                                Owner = playlist.Owner?.DisplayName,
-                                Url = playlist.Uri,
-                                Image = playlist.Images?.FirstOrDefault()?.Url
-                            };
-                            _cachedPlaylistId = playlistId;
-                            _cachedPlaylistFetchedAt = DateTime.UtcNow;
-                        }
-                        catch (APIException apiEx) when ((int)apiEx.Response.StatusCode is 404 or 403)
-                        {
-                            Logger.LogStr($"Playlist context not accessible ({apiEx.Response.StatusCode}). Skipping playlist info.");
-                            _cachedPlaylistInfo = null;
-                            _cachedPlaylistId = playlistId; // still set so we don’t retry every second
-                            _cachedPlaylistFetchedAt = DateTime.UtcNow;
-                        }
-                    }
-
-                    playlistInfo = _cachedPlaylistInfo;
-                }
-
-                // 5) Build result
                 return new TrackInfo
                 {
                     Artists = artists,
@@ -816,6 +715,77 @@ namespace Songify_Slim.Util.Spotify
                 Logger.LogStr("SPOTIFY API: Couldn't get device");
             }
             return "No device found";
+        }
+
+        static (int? status, string message) TryExtractSpotifyError(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body)) return (null, null);
+            try
+            {
+                var jo = JObject.Parse(body);
+                var err = jo["error"];
+                if (err == null) return (null, null);
+
+                int? status = err["status"]?.Type switch
+                {
+                    JTokenType.Integer => (int?)err["status"],
+                    JTokenType.String => int.TryParse((string)err["status"], out var n) ? n : (int?)null,
+                    _ => null
+                };
+                string message = (string)(err["message"] ?? jo["error_description"]) ?? "";
+                return (status, message);
+            }
+            catch
+            {
+                // Body wasn’t JSON; ignore
+                return (null, null);
+            }
+        }
+
+        public static async Task<PlaylistInfo> GetPlaybackPlaylist()
+        {
+            if(Client == null)
+                return null;
+            try
+            {
+                // Get current playback
+                CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync("Player.GetCurrentPlayback", () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
+                if (playback?.Context?.Type != "playlist" || playback.Context.Uri == null)
+                {
+                    _cachedPlaylistId = null;
+                    _cachedPlaylistInfo = null;
+                    return null;
+                }
+                string playlistId = playback.Context.Uri.Split(':').Last();
+                if (playlistId == _cachedPlaylistId &&
+                    (DateTime.UtcNow - _cachedPlaylistFetchedAt) < PlaylistCacheTtl &&
+                    _cachedPlaylistInfo != null)
+                {
+                    return _cachedPlaylistInfo; // Cache hit
+                }
+                FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get", () => Client.Playlists.Get(playlistId), softLimitPerminute);
+                if (playlist == null)
+                {
+                    _cachedPlaylistId = null;
+                    _cachedPlaylistInfo = null;
+                    return null;
+                }
+                _cachedPlaylistId = playlistId;
+                _cachedPlaylistInfo = new PlaylistInfo
+                {
+                    Id = playlist.Id,
+                    Name = playlist.Name,
+                    Owner = playlist.Owner?.DisplayName ?? playlist.Owner?.Id ?? "unknown",
+                    Url = playlist.ExternalUrls?["spotify"]
+                };
+                _cachedPlaylistFetchedAt = DateTime.UtcNow;
+                return _cachedPlaylistInfo;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
     }
 }

@@ -279,7 +279,6 @@ namespace Songify_Slim.Views
                     // Disconnects
                     case "Disconnect":
                         TwitchHandler.ForceDisconnect = true;
-                        await TwitchHandler.Client.DisconnectAsync();
                         break;
                 }
             }
@@ -1032,7 +1031,6 @@ namespace Songify_Slim.Views
                     {
                         try
                         {
-                            await TwitchHandler.Client.DisconnectAsync();
                         }
                         catch (Exception e)
                         {
@@ -1603,7 +1601,6 @@ namespace Songify_Slim.Views
                 List<(string Label, string Value)> rows;
                 string header;
                 PackIconBoxIcons icon = new();
-                EventSubSubscription[] eventSubscriptions;
                 List<EventSubSubscription> subs;
 
                 switch ((string)btn.Tag)

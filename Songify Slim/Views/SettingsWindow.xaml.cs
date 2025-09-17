@@ -163,7 +163,7 @@ namespace Songify_Slim.Views
             //TxtbxRewardId.Text = Settings.TwRewardId;
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
-            NudBits.Value = Settings.MinimumBitsForSR;
+            NudBits.Value = Settings.MinimumBitsForSr;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -1350,8 +1350,6 @@ namespace Songify_Slim.Views
         {
             Settings.TwAcc = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
             Settings.TwOAuth = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
-            await TwitchHandler.Client?.DisconnectAsync()!;
-            TwitchHandler.Client = null;
             await TwitchHandler.ConnectTwitchChatClient();
             _ = SetControls();
         }
@@ -1938,7 +1936,7 @@ namespace Songify_Slim.Views
 
                 ToggleSwitch toggle = new()
                 {
-                    Tag = (int)condition,
+                    Tag = condition,
                     Margin = new Thickness(5),
                     VerticalAlignment = VerticalAlignment.Top,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -1952,7 +1950,7 @@ namespace Songify_Slim.Views
                 };
 
                 toggle.Toggled += RefundCondition_Toggled;
-                toggle.IsOn = Settings.RefundConditons.Contains((int)condition);
+                toggle.IsOn = Settings.RefundConditons.Contains(condition);
 
                 _toggleMap[condition] = toggle;
 
@@ -1972,9 +1970,8 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded) return;
 
-            if (sender is not ToggleSwitch { Tag: int conditionValue } toggle) return;
-            List<int> current = Settings.RefundConditons.ToList();
-
+            if (sender is not ToggleSwitch { Tag: Enums.RefundCondition conditionValue } toggle) return;
+            List<Enums.RefundCondition> current = Settings.RefundConditons;
             if (toggle.IsOn)
             {
                 if (!current.Contains(conditionValue))
@@ -1985,7 +1982,7 @@ namespace Songify_Slim.Views
                 current.Remove(conditionValue);
             }
 
-            Settings.RefundConditons = current.ToArray();
+            Settings.RefundConditons = current;
         }
 
         private async void BtnSaveCloudSettings_OnClick(object sender, RoutedEventArgs e)

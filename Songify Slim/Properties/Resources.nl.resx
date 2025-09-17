@@ -613,7 +613,7 @@
     <value>Lied is toegevoegd aan de wachtrij</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>altijd (SR gratis maken)</value>
+    <value>Gratis liedverzoeken</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Rekeningen</value>

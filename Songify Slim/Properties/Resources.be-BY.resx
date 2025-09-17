@@ -512,9 +512,6 @@
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
     <value>Песня не знойдзена</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>заўсёды (зрабіць запыты дармовымі)</value>
-  </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Уліковыя запісы</value>
     <comment>TabControl header content for "Accoutns"</comment>
@@ -1118,5 +1115,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Адключыць Узнагароду-Пропуск для запытаў песень</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Бясплатныя запыты на песні</value>
   </data>
 </root>

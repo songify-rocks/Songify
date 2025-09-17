@@ -621,7 +621,6 @@ namespace Songify_Slim.Util.General
                 return;
             }
 
-            bool firstFetch = true;
             LikedPlaylistTracks = [];
             Paging<PlaylistTrack<IPlayableItem>> tracks;
             do

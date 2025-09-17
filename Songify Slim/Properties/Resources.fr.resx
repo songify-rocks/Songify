@@ -469,9 +469,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>La musique a été ajoutée à la file d'attente</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>toujours (demandes gratuites)</value>
-  </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
     <value>Masquer les noms de compte et les photos de profil</value>
   </data>
@@ -945,5 +942,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Désactiver la récompense de saut pour les demandes de chansons</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Demandes de chansons gratuites</value>
   </data>
 </root>

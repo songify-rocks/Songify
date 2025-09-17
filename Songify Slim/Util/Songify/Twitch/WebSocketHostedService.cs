@@ -61,24 +61,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             _userId = Settings.Settings.TwitchUser.Id;
         }
 
-        private static async Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
-        {
-            ChannelChatMessage chatMsg = args.Notification.Payload.Event;
-            if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
-                return;
-            if (!chatMsg.Message.Text.StartsWith("!"))
-                return;
-            if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
-                return;
-            TwitchHandler.ExecuteChatCommand(chatMsg);
-            Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
-            Debug.WriteLine($"Broadcaster: {chatMsg.IsBroadcaster}");
-            Debug.WriteLine($"Moderator: {chatMsg.IsModerator}");
-            Debug.WriteLine($"VIP: {chatMsg.IsVip}");
-            Debug.WriteLine($"Subscriner: {chatMsg.IsSubscriber}");
-            string x = Json.Serialize(chatMsg.Badges);
-            Debug.WriteLine($"Badges: {x}");
-        }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -166,7 +148,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             _logger.LogInformation($"{eventData.UserName} cheered {eventData.Bits} bits at {eventData.BroadcasterUserName}. Their message was {eventData.Message}");
             // Handle the cheer event here, e.g., update UI or notify users
-            if (eventData.Bits >= Settings.Settings.MinimumBitsForSR)
+            if (eventData.Bits >= Settings.Settings.MinimumBitsForSr)
             {
                 string input = eventData.Message;
                 string pattern = @"\bcheer\w*?\d+\b";
@@ -226,6 +208,26 @@ namespace Songify_Slim.Util.Songify.Twitch
                 await TwitchHandler.HandleSkipReward();
             }
         }
+
+        private static async Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
+        {
+            ChannelChatMessage chatMsg = args.Notification.Payload.Event;
+            if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
+                return;
+            if (!chatMsg.Message.Text.StartsWith("!"))
+                return;
+            if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
+                return;
+            TwitchHandler.ExecuteChatCommand(chatMsg);
+            Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
+            Debug.WriteLine($"Broadcaster: {chatMsg.IsBroadcaster}");
+            Debug.WriteLine($"Moderator: {chatMsg.IsModerator}");
+            Debug.WriteLine($"VIP: {chatMsg.IsVip}");
+            Debug.WriteLine($"Subscriner: {chatMsg.IsSubscriber}");
+            string x = Json.Serialize(chatMsg.Badges);
+            Debug.WriteLine($"Badges: {x}");
+        }
+
 
         #endregion
     }

@@ -471,9 +471,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>La canzone è stata aggiunta alla coda</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>sempre (rendere SR gratuito)</value>
-  </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Conti</value>
   </data>
@@ -941,5 +938,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Disabilitare la ricompensa per le richieste di brani</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Richieste di brani gratuiti</value>
   </data>
 </root>

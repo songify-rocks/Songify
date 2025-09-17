@@ -1547,7 +1547,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to always (make SR free).
+        ///   Looks up a localized string similar to Free Song Requests.
         /// </summary>
         public static string Sw_Integration_RefundAlways {
             get {

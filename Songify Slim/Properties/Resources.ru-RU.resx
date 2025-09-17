@@ -466,9 +466,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>Песня добавлена в очередь</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>всегда (сделать SR бесплатным)</value>
-  </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
     <value>Скрыть имена учетных записей и изображения профиля</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Отключить Skip-Reward для запросов песен</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Бесплатные запросы песен</value>
   </data>
 </root>

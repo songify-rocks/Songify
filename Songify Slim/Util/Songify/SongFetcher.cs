@@ -39,6 +39,7 @@ namespace Songify_Slim.Util.Songify
     public class SongFetcher
     {
         private YoutubeData currentYoutubeData = new();
+        
         private static readonly List<string> AudioFileTypes =
         [
             ".3gp", ".aa", ".aac", ".aax", ".act", ".aiff", ".alac", ".amr", ".ape", ".au", ".awb", ".dss", ".dvf",
@@ -51,6 +52,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _isLocalTrack;
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new Regex(@"^[A-Z]:", RegexOptions.IgnoreCase);
+        private PlaylistInfo playbackPlaylist = null;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -376,7 +378,7 @@ namespace Songify_Slim.Util.Songify
             {
                 return;
             }
-
+            songInfo.Playlist = playbackPlaylist;
             if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
             {
                 GlobalObjects.ForceUpdate = true;
@@ -410,6 +412,9 @@ namespace Songify_Slim.Util.Songify
                     RequestObject previous = GlobalObjects.CurrentSong != null ? GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId) : null;
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
+                    // Get Playlist info for current song if available
+                    playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                    
                     GlobalObjects.CurrentSong = songInfo;
                     _canvasResponse = await WebHelper.GetCanvasAsync(songInfo.SongId);
                     GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
@@ -543,16 +548,16 @@ namespace Songify_Slim.Util.Songify
                 int trackNo = props?.TrackNumber ?? 0;
                 string[] genres = props?.Genres?.ToArray() ?? [];
 
-                string thumbPath = await SaveThumbnailToTempAsync(props?.Thumbnail); 
+                string thumbPath = await SaveThumbnailToTempAsync(props?.Thumbnail);
 
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo playback = session.GetPlaybackInfo();
                 GlobalSystemMediaTransportControlsSessionTimelineProperties timeline = session.GetTimelineProperties();
                 bool isPlaying =
                     playback?.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
 
-                TimeSpan start = timeline.StartTime;   
-                TimeSpan end = timeline.EndTime;     
-                TimeSpan position = timeline.Position;    
+                TimeSpan start = timeline.StartTime;
+                TimeSpan end = timeline.EndTime;
+                TimeSpan position = timeline.Position;
 
                 int totalMs = ClampToInt((end - start).TotalMilliseconds);
                 int progress = ClampToInt((position - start).TotalMilliseconds);
@@ -567,17 +572,17 @@ namespace Songify_Slim.Util.Songify
 
                 TrackInfo tr = new TrackInfo
                 {
-                    Artists = artistFlat,                          
+                    Artists = artistFlat,
                     Title = title,
                     Albums = [new Image { Url = await ThumbnailToDataUrlAsync(props?.Thumbnail) }],
-                    SongId = GenerateId(artistFlat, title),       
-                    DurationMs = progress,                           
+                    SongId = GenerateId(artistFlat, title),
+                    DurationMs = progress,
                     IsPlaying = isPlaying,
-                    Url = null,                                
+                    Url = null,
                     DurationPercentage = percent,
                     DurationTotal = totalMs,
                     Progress = progress,
-                    Playlist = null,                                
+                    Playlist = null,
                     FullArtists = fullArtists
                 };
 
@@ -591,7 +596,7 @@ namespace Songify_Slim.Util.Songify
                     await WriteSongInfo(tr);
                 }
             }
-            catch (COMException ex) when ((uint)ex.HResult == 0x80010108) 
+            catch (COMException ex) when ((uint)ex.HResult == 0x80010108)
             {
                 if (!retried)
                 {
@@ -599,12 +604,12 @@ namespace Songify_Slim.Util.Songify
                 }
                 else
                 {
-                    // Logger.LogExc(ex);
+                    Logger.LogExc(ex);
                 }
             }
             catch (Exception ex)
             {
-                // Logger.LogExc(ex);
+                Logger.LogExc(ex);
             }
         }
 

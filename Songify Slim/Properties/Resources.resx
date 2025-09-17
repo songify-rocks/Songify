@@ -598,7 +598,7 @@
     <value>Song has been added to the queue</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>always (make SR free)</value>
+    <value>Free Song Requests</value>
   </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Accounts</value>

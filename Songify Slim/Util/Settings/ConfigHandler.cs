@@ -824,7 +824,7 @@ namespace Songify_Slim.Util.Settings
         public int TwSrPerUserCooldown { get; set; } = 0;
         public int TwSrUserLevel { get; set; } = 1;
         public int WebServerPort { get; set; } = 65530;
-        public int[] RefundConditons { get; set; } = [];
+        public List<RefundCondition> RefundConditons { get; set; } = [];
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public List<int> ReadNotificationIds { get; set; } = [];
         public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];

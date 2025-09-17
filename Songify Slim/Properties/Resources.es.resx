@@ -463,9 +463,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>La canción se agregó a la cola</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>Siempre (hacer SR gratis)</value>
-  </data>
   <data name="Sw_System_Privacy" xml:space="preserve">
     <value>ocultar nombres de cuenta e imágenes de perfil</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Desactivar la recompensa por omisión en las solicitudes de canciones</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Solicitudes de canciones gratis</value>
   </data>
 </root>

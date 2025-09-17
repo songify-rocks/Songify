@@ -471,9 +471,6 @@
   <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
     <value>Utwór został dodany do kolejki</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
-    <value>zawsze (uwolnij SR)</value>
-  </data>
   <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
     <value>Konta</value>
   </data>
@@ -941,5 +938,8 @@
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Wyłącz funkcję pomijania nagród za prośby o piosenkę</value>
+  </data>
+  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+    <value>Bezpłatne prośby o piosenki</value>
   </data>
 </root>

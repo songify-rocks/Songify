@@ -384,8 +384,6 @@ namespace Songify_Slim.Util.Songify
                 Console.WriteLine(e);
                 throw;
             }
-
-            return null;
         }
 
         public static async Task<YTMYHCHSearchResponse> SearchYouTubeMusic(string messageWithoutTrigger)
