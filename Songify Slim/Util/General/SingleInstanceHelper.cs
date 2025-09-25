@@ -11,17 +11,13 @@ namespace Songify_Slim.Util.General
 {
     internal class SingleInstanceHelper
     {
-        private const string PipeName = "SongifyPipe";
-
-        public static void NotifyFirstInstance()
+        public static void NotifyFirstInstance(string[] args)
         {
             try
             {
-                using NamedPipeClientStream client = new(".", PipeName, PipeDirection.Out);
-                client.Connect(2000);
-                using StreamWriter writer = new(client);
-                writer.AutoFlush = true;
-                writer.WriteLine("SHOW");
+                // Forward URL if present; otherwise send a simple SHOW command
+                string msg = args.Length > 1 ? args[1] : "SHOW";
+                PipeMessenger.SendToExistingInstance(msg);
             }
             catch (Exception e)
             {

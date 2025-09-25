@@ -370,7 +370,7 @@ namespace Songify_Slim.Util.General
                                         Length = MsToMmSsConverter((int)fullTrack.DurationMs),
                                         Requester = "Spotify",
                                         Played = 0,
-                                        Albumcover = null,
+                                        Albumcover = fullTrack.Album.Images.First().Url,
                                         IsLiked = isInLikedPlaylist,
                                         PlayerType = "Spotify"
                                     });

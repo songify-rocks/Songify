@@ -1025,7 +1025,8 @@ namespace Songify_Slim.Util.Songify
             dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
             dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
             dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
-            dictionary["Queue"] = GlobalObjects.ReqList;
+            dictionary["RequestQueue"] = GlobalObjects.ReqList;
+            dictionary["Queue"] = GlobalObjects.QueueTracks;
             string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
             await GlobalObjects.WebServer.BroadcastToChannelAsync("/ws/data", updatedJson);

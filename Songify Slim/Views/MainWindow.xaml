@@ -14,7 +14,6 @@
     Height="285"
     MinWidth="600"
     MinHeight="285"
-    Closed="MetroWindowClosed"
     Closing="MetroWindow_Closing"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     KeyDown="MetroWindow_KeyDown"

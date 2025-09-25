@@ -1,29 +1,16 @@
 ﻿using Songify_Slim.Util.Settings;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.WebSockets;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Markdig.Parsers;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
-using Markdig.Wpf;
-using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
-using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.UserControls
@@ -48,10 +35,9 @@ namespace Songify_Slim.UserControls
                 new FrameworkPropertyMetadata(false, null, null));
 
         public Dictionary<Enums.CommandType, string> Map { get; private set; }
-
-
         private static readonly List<int> AllUsers = [0, 1, 2, 3, 4, 5, 6];
-        private bool _isUpdating = false;
+        private bool _isUpdating;
+        private bool _isUpdatingMenuColors;
 
         public TwitchCommand Command { get; }
 
@@ -291,12 +277,19 @@ namespace Songify_Slim.UserControls
         public void UpdateAliasBadges()
         {
             PnlSongrequestAliases.Children.Clear();
-            // Step 5: Add specific allowed users
-            foreach (string alias in Command.Aliases.Where(alias => !string.IsNullOrEmpty(alias)))
+
+            // take a stable snapshot of the current aliases
+            List<string> aliases = Command?.Aliases;
+
+            if (aliases == null || aliases.Count == 0)
+                return;
+
+            // if Aliases can change while iterating, materialize to a list
+            foreach (string alias in aliases.Where(a => !string.IsNullOrEmpty(a)).ToList())
             {
-                PnlSongrequestAliases.Children.Add(new UcUserLevelItem()
+                PnlSongrequestAliases.Children.Add(new UcUserLevelItem
                 {
-                    UserName = $"!{alias}",
+                    UserName = "!" + alias,
                     UserId = alias,
                     LongName = true,
                     UserLevel = -3
@@ -306,21 +299,27 @@ namespace Songify_Slim.UserControls
 
         private async void TextBoxTrigger_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_isUpdating || !IsLoaded)
-                return;
+            try
+            {
+                if (_isUpdating || !IsLoaded)
+                    return;
 
-            string newText = ((TextBox)sender).Text;
-            if (newText == Command.Trigger)
-                return; // No change, so don't update.
+                string newText = ((TextBox)sender).Text;
+                if (newText == Command.Trigger)
+                    return; // No change, so don't update.
 
-            TextBox tb = (TextBox)sender;
-            int startLength = tb.Text.Length;
+                TextBox tb = (TextBox)sender;
+                int startLength = tb.Text.Length;
 
-            await Task.Delay(300);
-            if (startLength != tb.Text.Length) return;
-            Command.Trigger = newText;
-            Settings.UpdateCommand(Command);
-
+                await Task.Delay(300);
+                if (startLength != tb.Text.Length) return;
+                Command.Trigger = newText;
+                Settings.UpdateCommand(Command);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private void TglEnabled_OnToggled(object sender, RoutedEventArgs e)
@@ -441,19 +440,25 @@ namespace Songify_Slim.UserControls
 
         private async void TbResponse_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_isUpdating)
-                return;
-            if (_isUpdating)
-                return;
-            if (Command.Response == ((TextBox)sender).Text)
-                return;
-            TextBox tb = (TextBox)sender;
-            int startLength = tb.Text.Length;
-
-            await Task.Delay(300);
-            if (startLength != tb.Text.Length) return;
-            Command.Response = ((TextBox)sender).Text;
-            Settings.UpdateCommand(Command);
+            try
+            {
+                if (IsLoaded)
+                    return;
+                if (_isUpdating)
+                    return;
+                if (Command.Response == ((TextBox)sender).Text)
+                    return;
+                TextBox tb = (TextBox)sender;
+                int startLength = tb.Text.Length;
+                await Task.Delay(300);
+                if (startLength != tb.Text.Length) return;
+                Command.Response = ((TextBox)sender).Text;
+                Settings.UpdateCommand(Command);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private void MenuAnnounce_OnChecked(object sender, RoutedEventArgs e)
@@ -473,7 +478,6 @@ namespace Songify_Slim.UserControls
             UpdateUi();
         }
 
-        private bool _isUpdatingMenuColors = false;
 
         private void MenuColor_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -532,28 +536,37 @@ namespace Songify_Slim.UserControls
 
         private async void TbVolSetResponse_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (_isUpdating)
-                return;
-            if (!IsLoaded)
-                return;
-            TextBox tb = (TextBox)sender;
-            int startLength = tb.Text.Length;
+            try
+            {
+                if (_isUpdating)
+                    return;
+                if (!IsLoaded)
+                    return;
+                TextBox tb = (TextBox)sender;
+                int startLength = tb.Text.Length;
 
-            await Task.Delay(300);
-            if (startLength != tb.Text.Length) return;
-            Command.CustomProperties["VolumeSetResponse"] = ((TextBox)sender).Text;
-            Settings.UpdateCommand(Command);
+                await Task.Delay(300);
+                if (startLength != tb.Text.Length) return;
+                Command.CustomProperties["VolumeSetResponse"] = ((TextBox)sender).Text;
+                Settings.UpdateCommand(Command);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         private async void MenuExplicitUser_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_isUpdating)
-                return;
-            if (_isUpdating)
-                return;
-            MetroWindow window = (MetroWindow)Window.GetWindow(this);
-            if (window != null)
+            try
             {
+                if(!IsLoaded)
+                    return;
+                if (_isUpdating)
+                    return;
+
+                MetroWindow window = (MetroWindow)Window.GetWindow(this);
+                if (window == null) return;
                 string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}",
                     "Enter the usernames (comma separated)");
 
@@ -589,57 +602,53 @@ namespace Songify_Slim.UserControls
                 {
                     await window.ShowMessageAsync("Error", "No users found. Please check the usernames and try again.");
                 }
-
             }
-            else
+            catch (Exception ex)
             {
-                // Handle error - window not found
+                Logger.LogExc(ex);
             }
         }
 
         private async void MenuAliases_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_isUpdating)
-                return;
-            if (_isUpdating)
-                return;
-            MetroWindow window = (MetroWindow)Window.GetWindow(this);
-            if (window != null)
+            try
             {
+                if (_isUpdating)
+                    return;
+                if (_isUpdating)
+                    return;
+                MetroWindow window = (MetroWindow)Window.GetWindow(this);
+                if (window == null) return;
                 string result = await window.ShowInputAsync($"Aliases for !{Command.Trigger}",
                     "Enter aliases (comma separated)");
 
-                if (result == null) return;
-
-                List<string> aliases = result.Split(',')
+                List<string> aliases = result?.Split(',')
                     .Select(alias => alias.Trim().Replace("!", ""))
                     .Where(alias => !string.IsNullOrEmpty(alias))
                     .ToList();
 
-                if (aliases is { Count: > 0 })
+                if (aliases is not { Count: > 0 }) return;
+                List<string> existingAliases = Command.Aliases;
+
+                List<string> newAliases = aliases
+                    .Where(u => !existingAliases.Contains(u))
+                    .ToList();
+
+                if (newAliases.Count > 0)
                 {
-                    List<string> existingAliases = Command.Aliases;
-
-                    List<string> newAliases = aliases
-                        .Where(u => !existingAliases.Contains(u))
-                        .ToList();
-
-                    if (newAliases.Count > 0)
-                    {
-                        Command.Aliases.AddRange(newAliases);
-                        Command.Aliases.RemoveAll(string.IsNullOrEmpty);
-                        Settings.UpdateCommand(Command);
-                        UpdateAliasBadges();    
-                    }
-                    else
-                    {
-                        await window.ShowMessageAsync("Info", "All aliases are already added.");
-                    }
+                    Command.Aliases.AddRange(newAliases);
+                    Command.Aliases.RemoveAll(string.IsNullOrEmpty);
+                    Settings.UpdateCommand(Command);
+                    UpdateAliasBadges();
                 }
                 else
                 {
-                    // Handle error - window not found
+                    await window.ShowMessageAsync("Info", "All aliases are already added.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
             }
         }
     }

@@ -15,13 +15,11 @@ using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.EventSub;
-using TwitchLib.EventSub.Core.Models.Chat;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Channel;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Stream;
-using ChatMessage = TwitchLib.Client.Models.ChatMessage;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -60,7 +58,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             // You can use await _api.Helix.Users.GetUsersAsync() for that.
             _userId = Settings.Settings.TwitchUser.Id;
         }
-
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
@@ -227,8 +224,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             string x = Json.Serialize(chatMsg.Badges);
             Debug.WriteLine($"Badges: {x}");
         }
-
-
+        
         #endregion
     }
 }

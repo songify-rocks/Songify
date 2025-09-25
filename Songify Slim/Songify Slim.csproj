@@ -205,6 +205,7 @@
       <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\General\PipeMessenger.cs" />
     <Compile Include="Util\General\ServiceToolTip.cs" />
     <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />

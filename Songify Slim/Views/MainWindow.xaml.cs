@@ -9,13 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Net.Http;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -39,23 +36,17 @@ using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 using Timer = System.Timers.Timer;
 using Microsoft.Toolkit.Uwp.Notifications;
-using TwitchLib.Api.Helix;
 using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
-using System.Net.NetworkInformation;
 using System.Security;
-using MahApps.Metro.Controls;
 using Songify_Slim.Models.YTMD;
 using Songify_Slim.Util.Songify.YTMDesktop;
-using Songify_Slim.Properties;
 using Songify_Slim.Util.Spotify;
-using Windows.UI.Xaml.Controls.Maps;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
-using ToolTip = System.Windows.Controls.ToolTip;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -274,7 +265,7 @@ namespace Songify_Slim.Views
                 {
                     // Connects
                     case "Connect":
-                        await TwitchHandler.ConnectTwitchChatClient();
+                        TwitchHandler.ConnectTwitchChatClient();
                         break;
                     // Disconnects
                     case "Disconnect":
@@ -412,6 +403,10 @@ namespace Songify_Slim.Views
         {
             if (_forceClose)
                 return;
+
+            Settings.PosX = Left;
+            Settings.PosY = Top;
+
             if (!Settings.Systray)
             {
                 NotifyIcon.Visible = false;
@@ -433,12 +428,6 @@ namespace Songify_Slim.Views
             //{
             //    Crash();
             //}
-        }
-
-        private void MetroWindowClosed(object sender, EventArgs e)
-        {
-            Settings.PosX = Left;
-            Settings.PosY = Top;
         }
 
         private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
@@ -868,7 +857,7 @@ namespace Songify_Slim.Views
             if (Settings.OpenQueueOnStartup) OpenQueue();
             if (Settings.TwAutoConnect)
             {
-                await TwitchHandler.ConnectTwitchChatClient();
+                TwitchHandler.ConnectTwitchChatClient();
             }
             if (Settings.AutoClearQueue)
             {
@@ -1020,7 +1009,7 @@ namespace Songify_Slim.Views
                     {
                         try
                         {
-                            await TwitchHandler.ConnectTwitchChatClient();
+                            TwitchHandler.ConnectTwitchChatClient();
                         }
                         catch (Exception e)
                         {

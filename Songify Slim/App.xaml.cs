@@ -1,10 +1,14 @@
-﻿using Songify_Slim.Models;
+﻿using MahApps.Metro.Controls.Dialogs;
+using Microsoft.Win32;
+using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -13,7 +17,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Resources;
+using System.Text;
 using System.Threading;
+using System.Web;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -55,9 +61,172 @@ namespace Songify_Slim
             }
         }
 
+        private static void HandleDeepLink(string rawUrl)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(rawUrl)) return;
+
+                // Some shells pass the arg quoted:  "songify://import-token?token=..."
+                string url = rawUrl.Trim().Trim('"');
+
+                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                {
+                    Logger.LogStr("DeepLink: invalid URI: " + rawUrl);
+                    return;
+                }
+
+                if (!uri.Scheme.Equals("songify", StringComparison.OrdinalIgnoreCase))
+                {
+                    Logger.LogStr("DeepLink: wrong scheme: " + uri.Scheme);
+                    return;
+                }
+
+                // For songify://import-token?token=...
+                string action = uri.Host; // "import-token"
+                var query = HttpUtility.ParseQueryString(uri.Query);
+
+                switch (action.ToLowerInvariant())
+                {
+                    case "import-token":
+                        {
+                            // Accept "token" (primary) and "t" (alias)
+                            string token = query["token"] ?? query["t"];
+                            token = HttpUtility.UrlDecode(token);
+
+                            if (string.IsNullOrWhiteSpace(token))
+                            {
+                                // Optional UX: inform the user
+                                Logger.LogStr("DeepLink: missing token parameter.");
+                                return;
+                            }
+
+                            // Optional sanity checks (tune to your format/limits)
+                            if (token.Length > 4096)
+                            {
+                                Logger.LogStr("DeepLink: token too long.");
+                                return;
+                            }
+
+                            // If you expect base64url, you could normalize here (only if needed):
+                            // token = token.Replace('-', '+').Replace('_', '/'); // then pad '=' and decode
+
+                            // Hand off to your app logic
+                            ImportToken(token);
+
+                            // Bring UI to front (assuming you have this)
+                            RestoreWindow();
+
+                            // Optional: UX confirmation
+                            // Toast/MessageBox/etc.
+                            // MessageBox.Show("Token imported successfully.", "Songify", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            break;
+                        }
+                    case "twitch-token":
+                        {
+                            // Accept "token" (primary) and "t" (alias)
+                            string token = query["token"] ?? query["t"];
+                            token = HttpUtility.UrlDecode(token);
+
+                            if (string.IsNullOrWhiteSpace(token))
+                            {
+                                // Optional UX: inform the user
+                                Logger.LogStr("DeepLink: missing token parameter.");
+                                return;
+                            }
+
+                            // Optional sanity checks (tune to your format/limits)
+                            if (token.Length > 4096)
+                            {
+                                Logger.LogStr("DeepLink: token too long.");
+                                return;
+                            }
+
+                            // If you expect base64url, you could normalize here (only if needed):
+                            // token = token.Replace('-', '+').Replace('_', '/'); // then pad '=' and decode
+
+                            // Hand off to your app logic
+                            ImportTwitchToken(token);
+                            break;
+                        }
+
+                    default:
+                        Logger.LogStr("DeepLink: unknown action: " + action);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                MessageBox.Show("Failed to handle deep link.\n" + ex.Message, "Songify", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private static async void ImportTwitchToken(string token)
+        {
+            try
+            {
+                MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
+                    "Notification",
+                    "Received Twitch Token. Do you want to use this account as Main or Bot?",
+                    MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
+                    {
+                        AffirmativeButtonText = "Main",
+                        NegativeButtonText = "Bot"
+                    }
+                );
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    // Main
+                    Settings.TwitchAccessToken = token;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+                }
+                else
+                {
+                    // Bot
+                    Settings.TwitchBotToken = token;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private static async void ImportToken(string token)
+        {
+            Settings.SongifyApiKey = token;
+            MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
+               "Notification",
+               "Your Songify API Token has been imported successfully",
+               MessageDialogStyle.Affirmative, new MetroDialogSettings()
+               {
+                   AffirmativeButtonText = "OK",
+               }
+            );
+
+            foreach (Window currentWindow in Application.Current.Windows)
+            {
+                if (currentWindow is not Window_Settings settings)
+                    continue;
+                await settings.SetControls();
+            }
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             const string appName = "Songify";
+
+            CheckOrRegisterDeeplink();
+
+            string[] args = Environment.GetCommandLineArgs();
+            // args[0] is exe; args[1] (if present) is the URL like songify://queue?payload=...
+            if (args.Length > 1 && args[1].StartsWith("songify://", StringComparison.OrdinalIgnoreCase))
+            {
+                HandleDeepLink(args[1]);
+            }
 
             // Check if restart argument exists
             bool isRestart = e.Args.Contains("--restart");
@@ -72,14 +241,8 @@ namespace Songify_Slim
                     _mutex = Mutex.OpenExisting(appName);
                     if (_mutex != null)
                     {
-                        SingleInstanceHelper.NotifyFirstInstance();
+                        SingleInstanceHelper.NotifyFirstInstance(args);
                         Environment.Exit(0);
-                        //Window mainWindow = Current.MainWindow;
-                        //if (mainWindow != null)
-                        //{
-                        //    mainWindow.Show();
-                        //    mainWindow.Activate();
-                        //}
                     }
                     Current.Shutdown();
                     return;
@@ -123,6 +286,37 @@ namespace Songify_Slim
             StartPipeServer();
         }
 
+        private static void CheckOrRegisterDeeplink()
+        {
+            try
+            {
+                const string scheme = "songify";
+                const string baseKey = @"Software\Classes\" + scheme;
+
+                using RegistryKey existing = Registry.CurrentUser.OpenSubKey(baseKey);
+                if (existing != null) return; // already registered for this user
+
+                using RegistryKey newKey = Registry.CurrentUser.CreateSubKey(baseKey);
+                newKey?.SetValue("", "URL:Songify Protocol", RegistryValueKind.String);
+                newKey?.SetValue("URL Protocol", "", RegistryValueKind.String);
+
+                using (RegistryKey defaultIcon = newKey?.CreateSubKey("DefaultIcon"))
+                {
+                    string iconPath = Assembly.GetExecutingAssembly().Location;
+                    defaultIcon?.SetValue("", $"\"{iconPath}\",1", RegistryValueKind.String);
+                }
+
+                using (RegistryKey commandKey = newKey?.CreateSubKey(@"shell\open\command"))
+                {
+                    string exePath = Assembly.GetExecutingAssembly().Location;
+                    commandKey?.SetValue("", $"\"{exePath}\" \"%1\"", RegistryValueKind.String);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
 
         public static class ResxToDictionaryHelper
         {
@@ -140,7 +334,6 @@ namespace Songify_Slim
                 return dict;
             }
         }
-
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
@@ -218,13 +411,23 @@ namespace Songify_Slim
                         // Wait for a connection (blocking)
                         server.WaitForConnection();
 
-                        using StreamReader reader = new(server);
+                        using StreamReader reader = new(server, new UTF8Encoding(false));
                         string message = reader.ReadLine();
-                        if (message == "SHOW")
+                        if (!string.IsNullOrWhiteSpace(message))
                         {
-                            // Use the dispatcher to interact with UI elements.
-                            Current.Dispatcher.Invoke(RestoreWindow);
+                            message = message.TrimEnd('\r', '\n');
+
+                            if (message == "SHOW")
+                            {
+                                Current.Dispatcher.Invoke(RestoreWindow);
+                            }
+                            else if (message.StartsWith("songify://", StringComparison.OrdinalIgnoreCase))
+                            {
+                                // Handle deep link URL
+                                Current.Dispatcher.Invoke(() => HandleDeepLink(message));
+                            }
                         }
+
                     }
                     catch
                     {
