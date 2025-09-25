@@ -120,7 +120,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                         return;
                 }
 
-
                 FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
                 if (Settings.Settings.LimitSrToPlaylist &&
@@ -769,6 +768,11 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task<string> GetTrackIdFromInput(string input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return "";
+            }
+
             if (input.StartsWith("https://spotify.link/"))
             {
                 input = await GetFullSpotifyUrl(input);

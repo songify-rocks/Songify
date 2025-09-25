@@ -198,7 +198,9 @@ namespace Songify_Slim
         private static async void ImportToken(string token)
         {
             Settings.SongifyApiKey = token;
-            MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
+            if ((MainWindow)Current.MainWindow != null)
+            {
+                MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
                "Notification",
                "Your Songify API Token has been imported successfully",
                MessageDialogStyle.Affirmative, new MetroDialogSettings()
@@ -206,8 +208,9 @@ namespace Songify_Slim
                    AffirmativeButtonText = "OK",
                }
             );
+            }
 
-            foreach (Window currentWindow in Application.Current.Windows)
+            foreach (Window currentWindow in Current.Windows)
             {
                 if (currentWindow is not Window_Settings settings)
                     continue;
