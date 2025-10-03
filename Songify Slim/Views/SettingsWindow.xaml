@@ -295,9 +295,14 @@
                                 OnContent="{DynamicResource sw_Appearance_ThemeDark}"
                                 TabIndex="10"
                                 Toggled="ThemeToggleSwitchIsCheckedChanged" />
-                            <DockPanel Grid.Row="9" Margin="0,6">
-                                <TextBlock VerticalAlignment="Center" Text="Songify API Token" />
-                                <Grid Margin="6,0,0,0">
+                            <Grid Grid.Row="9" Margin="0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Songify API Token" />
+                                <Grid Grid.Column="1" Margin="6,0">
                                     <!--  Password Box  -->
                                     <PasswordBox
                                         x:Name="PasswordBox"
@@ -337,9 +342,8 @@
                                             Kind="EyeSlashSolid" />
                                     </Button>
                                 </Grid>
-                            </DockPanel>
-
-
+                                <Button Grid.Column="2" Width="32" Content="?" x:Name="btnApiToken" Click="BtnApiToken_OnClick"/>
+                            </Grid>
                         </Grid>
                     </ScrollViewer>
                 </Border>

@@ -609,32 +609,7 @@ namespace Songify_Slim.Views
             }
 
             // Shows a message box if the client id or secret is missing
-            MessageDialogResult res = await this.ShowMessageAsync(
-                "Important",
-                "Which redirect URI are you using on the Spotify Developer App?",
-                MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary, new MetroDialogSettings
-                {
-                    ColorScheme = MetroDialogColorScheme.Theme,
-                    OwnerCanCloseWithDialog = true,
-                    AffirmativeButtonText = " http://127.0.0.1:4002/auth ",
-                    NegativeButtonText = " http://localhost:4002/auth ",
-                    FirstAuxiliaryButtonText = "Cancel",
-                });
-            switch (res)
-            {
-                case MessageDialogResult.Negative:
-                    Settings.SpotifyRedirectUri = "localhost";
-                    break;
-                case MessageDialogResult.Affirmative:
-                    Settings.SpotifyRedirectUri = "127.0.0.1";
-                    break;
-                case MessageDialogResult.Canceled:
-                case MessageDialogResult.FirstAuxiliary:
-                case MessageDialogResult.SecondAuxiliary:
-                default:
-                    return;
-            }
-
+            Settings.SpotifyRedirectUri = "127.0.0.1";
 
             // Links Spotify
             Settings.SpotifyRefreshToken = "";
@@ -2135,6 +2110,11 @@ namespace Songify_Slim.Views
                 return;
             if (!NudSpotifyFetchRate.Value.HasValue) return;
             Settings.SpotifyFetchRate = (int)NudSpotifyFetchRate.Value;
+        }
+
+        private void BtnApiToken_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://v2.songify.rocks/faq/what-is-the-songify-api-token");
         }
     }
 }
