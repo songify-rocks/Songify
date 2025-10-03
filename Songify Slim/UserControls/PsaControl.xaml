@@ -25,7 +25,7 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <StackPanel
                 Grid.Row="0"
@@ -70,15 +70,13 @@
                     </Button.Content>
                 </Button>
             </StackPanel>
-
-            <TextBlock
-                x:Name="TbMessage"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Margin="6"
-                TextAlignment="Justify"
-                TextWrapping="Wrap" />
+            <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" VerticalAlignment="Stretch">
+                <TextBlock
+                    x:Name="TbMessage"
+                    Margin="6"
+                    TextAlignment="Justify"
+                    TextWrapping="Wrap" />
+            </ScrollViewer>
         </Grid>
     </Border>
 </UserControl>

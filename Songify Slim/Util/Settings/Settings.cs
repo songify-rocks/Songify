@@ -2751,11 +2751,21 @@ namespace Songify_Slim.Util.Settings
 
         private static string DecryptString(string encryptedText)
         {
+
             if (string.IsNullOrEmpty(encryptedText))
                 return "";
-            byte[] data = Convert.FromBase64String(encryptedText);
-            byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
-            return Encoding.UTF8.GetString(decrypted);
+            try
+            {
+                byte[] data = Convert.FromBase64String(encryptedText);
+                byte[] decrypted = ProtectedData.Unprotect(data, null, DataProtectionScope.CurrentUser);
+                return Encoding.UTF8.GetString(decrypted);
+            }
+            catch (Exception e)
+            {
+                Logger.LogStr("Failed to decrypt string: " + e.Message);
+                return "";
+            }
+
         }
     }
-}
+} 
