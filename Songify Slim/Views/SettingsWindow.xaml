@@ -333,7 +333,7 @@
                                         Background="Transparent"
                                         BorderBrush="Transparent"
                                         BorderThickness="0"
-                                        Click="ShowHideButton_OnClickn_Click"
+                                        Click="ShowHideButton_OnClick"
                                         Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
                                         <iconPacks:PackIconFontAwesome
                                             x:Name="EyeIcon"

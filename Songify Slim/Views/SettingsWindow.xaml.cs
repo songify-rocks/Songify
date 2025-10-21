@@ -1841,7 +1841,7 @@ namespace Songify_Slim.Views
                 TextBox.Text = PasswordBox.Password;
         }
 
-        private void ShowHideButton_OnClickn_Click(object sender, RoutedEventArgs e)
+        private void ShowHideButton_OnClick(object sender, RoutedEventArgs e)
         {
             _showPassword = !_showPassword;
 
