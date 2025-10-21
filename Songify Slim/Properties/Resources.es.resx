@@ -133,7 +133,7 @@
     <value>No se especificó ninguna canción (solicitud vacía)</value>
   </data>
   <data name="brw_SongInQueue" xml:space="preserve">
-    <value>La canción ya está en la cola</value>
+    <value>La canción ya está en cola</value>
   </data>
   <data name="brw_SongTooLong" xml:space="preserve">
     <value>La canción es muy larga</value>
@@ -163,7 +163,7 @@
     <value>Inglés</value>
   </data>
   <data name="mw_menu_Blacklist" xml:space="preserve">
-    <value>Lista de Bloqueo</value>
+    <value>Lista de bloqueos</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
     <value>Conectar</value>
@@ -230,7 +230,7 @@
     <value>IMPORTAR CONFIG</value>
   </data>
   <data name="sw_Integration_Autoconnect" xml:space="preserve">
-    <value>conectar automáticamente</value>
+    <value>Conectar automáticamente</value>
   </data>
   <data name="sw_Integration_btnLink" xml:space="preserve">
     <value>ENLACE</value>
@@ -251,7 +251,7 @@
     <value>ID de Recompensa de Puntos del Canal</value>
   </data>
   <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
-    <value>borrar cola al iniciar</value>
+    <value>Borrar cola al iniciar</value>
   </data>
   <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
     <value>Duración máxima de la canción (en minutos)</value>
@@ -266,7 +266,7 @@
     <value>activar SR (Recompensas del Canal)</value>
   </data>
   <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
-    <value>añadir espacios</value>
+    <value>Agregar espacios</value>
   </data>
   <data name="sw_tcOutput_Directory" xml:space="preserve">
     <value>Directorio de salida</value>
@@ -278,7 +278,7 @@
     <value>Formato de salida (Texto &amp; Widget)</value>
   </data>
   <data name="sw_tcOutput_PauseText" xml:space="preserve">
-    <value>texto de pausa</value>
+    <value>Texto de pausa</value>
   </data>
   <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
     <value>Texto de pausa personalizado (dejar en blanco para que el archivo de texto quede vacío)</value>
@@ -290,10 +290,10 @@
     <value>Guardar</value>
   </data>
   <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
-    <value>usar AppID propio</value>
+    <value>Usar ID propio de Spotify</value>
   </data>
   <data name="sw_tcSystem_Autostart" xml:space="preserve">
-    <value>iniciar automáticamente con windows</value>
+    <value>Iniciar automáticamente con windows</value>
   </data>
   <data name="sw_tcSystem_Behavior" xml:space="preserve">
     <value>Funcionamiento</value>
@@ -305,10 +305,10 @@
     <value>Tasa de búsqueda de Chrome (segundos)</value>
   </data>
   <data name="sw_tcSystem_Minimize" xml:space="preserve">
-    <value>minimizar a la bandeja del sistema</value>
+    <value>Minimizar a la bandeja del sistema</value>
   </data>
   <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
-    <value>enviar datos anónimos</value>
+    <value>Enviar datos anónimos</value>
   </data>
   <data name="sw_tcSystem_Telemetry" xml:space="preserve">
     <value>Telemetría</value>
@@ -332,7 +332,7 @@
     <value>Ruso</value>
   </data>
   <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
-    <value>usar AppID de Songify</value>
+    <value>usar ID de Songify</value>
   </data>
   <data name="mw_menu_Twitch_Bot" xml:space="preserve">
     <value>Configuración del Bot</value>
@@ -371,7 +371,7 @@
     <value>Comando</value>
   </data>
   <data name="sw_tcOutput_Format2" xml:space="preserve">
-    <value>Fomato de Salida (Chat de Twitch)</value>
+    <value>Formato de Salida (Chat de Twitch)</value>
   </data>
   <data name="crw_CreateReward" xml:space="preserve">
     <value>Crear Recompensa</value>
@@ -422,7 +422,7 @@
     <value>Abrir Sitio Web</value>
   </data>
   <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
-    <value>abrir ventana de cola al iniciar</value>
+    <value>Abrir ventana de cola al iniciar</value>
   </data>
   <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
     <value>limita la actividad de Twitch para que sólo funcione cuando la transmisión se encuentre en vivo (necesitas iniciar sesión en Twitch)</value>
@@ -455,7 +455,7 @@
     <value>La duración de la canción es demasiado larga</value>
   </data>
   <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
-    <value>La canción ya está en la cola</value>
+    <value>La canción ya está en cola</value>
   </data>
   <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
     <value>No se encontró ninguna canción</value>
@@ -479,7 +479,7 @@
     <value>Sesión Iniciada en Twitch</value>
   </data>
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
-    <value>solicitudes de canciones ilimitadas</value>
+    <value>Solicitudes de canciones ilimitadas</value>
   </data>
   <data name="bw_cbArtist" xml:space="preserve">
     <value>Artista</value>
@@ -494,7 +494,7 @@
     <value>Artista - Título</value>
   </data>
   <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
-    <value>Verificar Estado de Línea</value>
+    <value>Verificar estado en línea</value>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
     <value>Cola de Canciones</value>
@@ -527,7 +527,7 @@
     <value>Detener Servidor Web</value>
   </data>
   <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
-    <value>obtener actualizaciones de la beta</value>
+    <value>Obtener actualizaciones de la beta</value>
   </data>
   <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
     <value>Por favor conecta tu cuenta de Spotify. Archivo -&gt; Ajustes -&gt; Spotify</value>
@@ -545,7 +545,7 @@
     <value>Hora</value>
   </data>
   <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
-    <value>Crear Recompensa Nueva</value>
+    <value>Crear nueva recompensa</value>
   </data>
   <data name="brw_ModSkip" xml:space="preserve">
     <value>Streamer / Mod / Solicitante saltó la canción</value>
@@ -641,7 +641,7 @@
     <value>Respuesta al comando !remove</value>
   </data>
   <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
-    <value>Dividir artista, título y solicitante</value>
+    <value>Separar artista, título y solicitante</value>
   </data>
   <data name="lang_pl" xml:space="preserve">
     <value>Polaco</value>
@@ -671,7 +671,7 @@
     <value>Utilice el navegador web predeterminado</value>
   </data>
   <data name="brw_CommandOnCooldown" xml:space="preserve">
-    <value>Respuesta cuando el comando sr está en tiempo de reutilización</value>
+    <value>Respuesta cuando el comando "sr" está en recarga</value>
   </data>
   <data name="brw_NoTrackFound" xml:space="preserve">
     <value>Respuesta cuando no se encontró ninguna pista</value>
