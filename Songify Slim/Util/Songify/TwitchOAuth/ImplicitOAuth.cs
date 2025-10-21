@@ -111,7 +111,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 {
                     _redirectListener.Prefixes.Add(ApplicationDetails.RedirectUri);
                     _redirectListener.Start();
-                    _redirectListener.BeginGetContext(IncommingTwitchRequest, _redirectListener);
+                    _redirectListener.BeginGetContext(IncomingTwitchRequest, _redirectListener);
                 }
 
                 if (!_fetchListener.IsListening)
@@ -154,7 +154,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// <summary>
         /// Get the data from the URL hash and send it to the other listener.
         /// </summary>
-        private void IncommingTwitchRequest(IAsyncResult result)
+        private void IncomingTwitchRequest(IAsyncResult result)
         {
             HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);

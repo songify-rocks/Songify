@@ -11,4 +11,10 @@ namespace Songify_Slim.Models
         public int Value { get; set; }
 
     }
+
+    public class PlayPlaylistData
+    {
+        public string playlist { get; set; }
+        public bool Shuffle { get; set; }
+    }
 }

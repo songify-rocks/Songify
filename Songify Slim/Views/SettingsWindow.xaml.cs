@@ -1803,7 +1803,7 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded) return;
             if (!NudBits.Value.HasValue) return;
-            Settings.TwSrPerUserCooldown = (int)NudBits.Value;
+            Settings.MinimumBitsForSr = (int)NudBits.Value;
             string imageName = GetImageNameForValue((int)NudBits.Value);
             string uri = $"pack://application:,,,/Resources/img/{imageName}.png";
             ImgBits.Source = new BitmapImage(new Uri(uri));

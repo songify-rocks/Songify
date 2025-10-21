@@ -442,7 +442,7 @@ namespace Songify_Slim.UserControls
         {
             try
             {
-                if (IsLoaded)
+                if (!IsLoaded)
                     return;
                 if (_isUpdating)
                     return;

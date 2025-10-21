@@ -2043,7 +2043,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             StartCooldown();
             cmdParams.ExistingUser.UpdateCommandTime();
         }
-
         private static async Task HandleVolumeCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
             try

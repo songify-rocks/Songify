@@ -72,7 +72,8 @@ namespace Songify_Slim.Util.General
             ["pause"] = HandlePlayPauseAsync,
             ["play"] = HandlePlayPauseAsync,
 
-            ["stop_sr_reward"] = HandleStopSrRewardAsync
+            ["stop_sr_reward"] = HandleStopSrRewardAsync,
+            ["play_playlist"] = PlayPlaylist,
         };
 
         // Abstraction for player-specific ops
@@ -136,6 +137,13 @@ namespace Songify_Slim.Util.General
                 TwitchHandler.SendCurrSong();
                 return Task.FromResult("Current song sent to chat.");
             }
+
+            public async Task<string> PlayPlaylist(string playlistId, bool shuffle = false)
+            {
+                await SpotifyApiHandler.SetShuffle(true);
+                await SpotifyApiHandler.PlayFromPlaylist(playlistId);
+                return "Playing playlist.";
+            }
         }
 
         private sealed class YtmthchOps : IPlayerOps
@@ -196,7 +204,7 @@ namespace Songify_Slim.Util.General
                 await YtmDesktopApi.PlayPauseAsync();
                 return "Playback resumed.";
             }
-           
+
             public Task<string> SendToChatAsync()
             {
                 TwitchHandler.SendCurrSong();
@@ -526,6 +534,15 @@ namespace Songify_Slim.Util.General
                     }, Settings.Settings.TwitchAccessToken);
             }
             return "Song request rewards stopped.";
+        }
+
+        private static async Task<string> PlayPlaylist(WebSocketCommand command)
+        {
+            PlayPlaylistData playlistData = command.Data.ToObject<PlayPlaylistData>();
+            if (playlistData == null) return "Invalid data for play_playlist.";
+            await SpotifyApiHandler.SetShuffle(playlistData.Shuffle);
+            await SpotifyApiHandler.PlayFromPlaylist(playlistData.playlist);
+            return "Playing playlist.";
         }
 
         private static string BlockUser()
