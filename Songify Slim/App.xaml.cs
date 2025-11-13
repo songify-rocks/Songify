@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -36,6 +37,7 @@ namespace Songify_Slim
         private static Mutex _mutex;
         public static bool IsBeta = true;
         private const string PipeName = "SongifyPipe";
+        private const string FolderName = "Songify.Rocks";
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Logger.LogExc(e.Exception);
@@ -70,7 +72,7 @@ namespace Songify_Slim
                 // Some shells pass the arg quoted:  "songify://import-token?token=..."
                 string url = rawUrl.Trim().Trim('"');
 
-                if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
                 {
                     Logger.LogStr("DeepLink: invalid URI: " + rawUrl);
                     return;
@@ -84,7 +86,7 @@ namespace Songify_Slim
 
                 // For songify://import-token?token=...
                 string action = uri.Host; // "import-token"
-                var query = HttpUtility.ParseQueryString(uri.Query);
+                NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
 
                 switch (action.ToLowerInvariant())
                 {
@@ -187,6 +189,14 @@ namespace Songify_Slim
                     // Bot
                     Settings.TwitchBotToken = token;
                     await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+                }
+
+                foreach (Window currentWindow in Application.Current.Windows)
+                {
+                    Window_Settings settings = (Window_Settings)currentWindow;
+                    if (settings == null)
+                        continue;
+                    await settings.SetControls();
                 }
             }
             catch (Exception e)
@@ -399,7 +409,16 @@ namespace Songify_Slim
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
 
-            main.Show();
+            try
+            {
+                main.Show();
+            }
+            catch (ConfigurationErrorsException)
+            {
+                AskDeleteAndRelaunch();
+                // throw; // only reached if user said "No"
+            }
+
         }
 
         private void StartPipeServer()
@@ -483,5 +502,73 @@ namespace Songify_Slim
                 win.Activate();
             }
         }
+
+        public static void AskDeleteAndRelaunch()
+        {
+            string basePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string target = Path.Combine(basePath, FolderName);
+
+            MessageBoxResult result = MessageBox.Show(
+                "Songify settings appear corrupted.\n\n" +
+                $"Delete the settings folder and restart?\n\n{target}",
+                "Reset settings",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            try
+            {
+                if (Directory.Exists(target))
+                {
+                    foreach (string file in Directory.GetFiles(target, "*", SearchOption.AllDirectories))
+                    {
+                        try { File.SetAttributes(file, FileAttributes.Normal); } catch { }
+                    }
+
+                    Directory.Delete(target, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Failed to delete folder automatically.\nPlease delete it manually:\n\n{target}\n\n{ex.Message}",
+                    "Delete failed",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+
+                try { Process.Start("explorer.exe", basePath); } catch { }
+                return;
+            }
+
+            // --- Relaunch (Framework-safe) ---
+            try
+            {
+                string exe = Assembly.GetExecutingAssembly().Location;
+                string args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1).Select(QuoteIfNeeded));
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = exe,
+                    Arguments = args,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Cleanup done, but restarting failed:\n\n" + ex, "Restart Failed");
+            }
+
+            Current.Shutdown();
+        }
+
+        private static string QuoteIfNeeded(string s)
+        {
+            return s.Contains(" ") || s.Contains("\"")
+                ? "\"" + s.Replace("\"", "\\\"") + "\""
+                : s;
+        }
+
     }
 }

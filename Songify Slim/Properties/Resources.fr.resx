@@ -400,9 +400,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Notes de mise à jour</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Dossier journal</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Connectez-vous avec Twitch</value>
   </data>
@@ -945,5 +942,8 @@
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Demandes de chansons gratuites</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Dossier journal</value>
   </data>
 </root>

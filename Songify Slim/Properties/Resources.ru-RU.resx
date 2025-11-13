@@ -397,9 +397,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Примечания к патчу</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Логи</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Войти с Twitch</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Бесплатные запросы песен</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Папка журнала</value>
   </data>
 </root>

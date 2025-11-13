@@ -636,7 +636,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task EnsureOrderAsync()
         {
-            await Task.Delay(250); // tiny settle delay
+            await Task.Delay(500); // tiny settle delay
 
             // queue snapshot (once!)
             List<Song> queue = await WebHelper.GetYtmthchQueue2();
@@ -2215,15 +2215,15 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     {
                                         // Your success response logic
                                         await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
-                                        // wait until YT queue actually contains the item
-                                        int? pos = await WaitForSongInQueueAsync(sr.VideoId,
-                                            TimeSpan.FromSeconds(3),
-                                            TimeSpan.FromMilliseconds(150));
-                                        if (pos == null)
-                                        {
-                                            // fallback: skip reorder now; try again later (timer/next enqueue)
-                                            return;
-                                        }
+                                        //// wait until YT queue actually contains the item
+                                        //int? pos = await WaitForSongInQueueAsync(sr.VideoId,
+                                        //    TimeSpan.FromSeconds(3),
+                                        //    TimeSpan.FromMilliseconds(150));
+                                        //if (pos == null)
+                                        //{
+                                        //    // fallback: skip reorder now; try again later (timer/next enqueue)
+                                        //    return;
+                                        //}
 
                                         await EnsureOrderAsync();
                                     }
@@ -2267,15 +2267,15 @@ namespace Songify_Slim.Util.Songify.Twitch
                                 if (ok)
                                 {
                                     await SendChatMessage($"Queued: {title}");
-                                    // wait until YT queue actually contains the item
-                                    int? pos = await WaitForSongInQueueAsync(videoId,
-                                        TimeSpan.FromSeconds(3),
-                                        TimeSpan.FromMilliseconds(150));
-                                    if (pos == null)
-                                    {
-                                        // fallback: skip reorder now; try again later (timer/next enqueue)
-                                        return;
-                                    }
+                                    //// wait until YT queue actually contains the item
+                                    //int? pos = await WaitForSongInQueueAsync(videoId,
+                                    //    TimeSpan.FromSeconds(3),
+                                    //    TimeSpan.FromMilliseconds(150));
+                                    //if (pos == null)
+                                    //{
+                                    //    // fallback: skip reorder now; try again later (timer/next enqueue)
+                                    //    return;
+                                    //}
 
                                     await EnsureOrderAsync();
                                 }

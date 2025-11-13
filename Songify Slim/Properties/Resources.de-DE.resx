@@ -397,9 +397,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Update Informationen</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Log-Ordner</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Twitch Login</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Kostenlose Songwünsche</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Log Ordner</value>
   </data>
 </root>

@@ -399,9 +399,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Notas de atualização</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Pasta de registro</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Faça login com Twitch</value>
   </data>
@@ -941,5 +938,8 @@
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Pedidos de músicas gratuitas</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Pasta de registro</value>
   </data>
 </root>

@@ -93,7 +93,7 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
                 var payload = new
                 {
                     videoId = reqTrackid,
-                    insertAfterCurrentVideo = insertAfterCurrentVideo == Enums.InsertPosition.InsertAfterCurrentVideo
+                    insertPosition = insertAfterCurrentVideo
                 };
                 HttpResponseMessage resp = await Http.PostAsync(BaseUrl + "/api/v1/queue", new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json")).ConfigureAwait(false);
                 return resp.IsSuccessStatusCode;

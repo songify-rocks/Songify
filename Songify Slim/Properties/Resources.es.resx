@@ -394,9 +394,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Notas del parche</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Carpeta de Registro</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Iniciar Sesión con Twitch</value>
   </data>
@@ -942,5 +939,8 @@
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Solicitudes de canciones gratis</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Carpeta de registro</value>
   </data>
 </root>

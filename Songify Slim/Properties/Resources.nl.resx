@@ -537,9 +537,6 @@
   <data name="mw_menu_PatchNotes" xml:space="preserve">
     <value>Patch-notities</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Log-map</value>
-  </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
     <value>Inloggen met Twitch</value>
   </data>
@@ -995,5 +992,8 @@
   </data>
   <data name="Param_SongFormat_Desc" xml:space="preserve">
     <value>{Artist - Title}</value>
+  </data>
+  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+    <value>Logboekmap</value>
   </data>
 </root>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Youtube.YTMYHCH;
 
@@ -20,29 +21,44 @@ public static class QueueParser
 {
     public static List<Song> ExtractSongs(string json)
     {
-        var list = new List<Song>();
-        var root = JToken.Parse(json);
-        var items = root["items"] as JArray ?? new JArray();
+        List<Song> list = [];
+        JToken root = JToken.Parse(json);
+        JArray items = root["items"] as JArray ?? [];
 
         for (int i = 0; i < items.Count; i++)
         {
-            var r = items[i]["playlistPanelVideoRenderer"];
-            if (r == null) continue;
+            JToken item = items[i];
+
+            // 1) direct shape
+            JToken r = item["playlistPanelVideoRenderer"];
+
+            // 2) wrapped: items[i].playlistPanelVideoWrapperRenderer.primaryRenderer.playlistPanelVideoRenderer
+            r ??= item["playlistPanelVideoWrapperRenderer"]?["primaryRenderer"]?["playlistPanelVideoRenderer"];
+
+            // 3) wrapped counterpart: items[i].playlistPanelVideoWrapperRenderer.counterpart[0].counterpartRenderer.playlistPanelVideoRenderer
+            r ??= item["playlistPanelVideoWrapperRenderer"]?["counterpart"]?
+                    .FirstOrDefault()?["counterpartRenderer"]?["playlistPanelVideoRenderer"];
+
+            if (r == null)
+            {
+                // Unknown shape – just skip this entry
+                Logger.LogStr($"DEBUG[Ytmthch]: Skipping item[{i}] – no playlistPanelVideoRenderer found.");
+                continue;
+            }
 
             string id = (string)r["videoId"]
-                         ?? (string)r.SelectToken("navigationEndpoint.watchEndpoint.videoId")
-                         ?? "";
+                        ?? (string)r.SelectToken("navigationEndpoint.watchEndpoint.videoId")
+                        ?? "";
 
             string title = (string)r.SelectToken("title.runs[0].text") ?? "";
             string artist = (string)r.SelectToken("shortBylineText.runs[0].text") ?? "";
             string lenStr = (string)r.SelectToken("lengthText.runs[0].text") ?? "";
 
             TimeSpan length = ParseDuration(lenStr);
-
             bool isCurrent = r.Value<bool?>("selected") ?? false;
 
             // pick largest thumbnail
-            var thumbs = r.SelectToken("thumbnail.thumbnails") as JArray;
+            JArray thumbs = r.SelectToken("thumbnail.thumbnails") as JArray;
             string cover = thumbs?
                 .OrderByDescending(t => (int?)t["width"] ?? 0)
                 .FirstOrDefault()?["url"]?.ToString() ?? "";
@@ -53,7 +69,7 @@ public static class QueueParser
                 Title = title,
                 Artist = artist,
                 Length = length,
-                Pos = i,          // <-- this is what you should use for ordering/patching
+                Pos = i,          // used by your ordering/patching logic
                 CoverUrl = cover,
                 IsCurrent = isCurrent
             });
@@ -61,6 +77,8 @@ public static class QueueParser
 
         return list;
     }
+
+
 
     private static TimeSpan ParseDuration(string text)
     {

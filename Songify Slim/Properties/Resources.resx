@@ -506,7 +506,7 @@
     <comment>MenuItem content for "Patch notes"</comment>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
-    <value>Log-folder</value>
+    <value>Log Folder</value>
     <comment>MenuItem content for "Log Folder"</comment>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
