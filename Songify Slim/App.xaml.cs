@@ -63,6 +63,31 @@ namespace Songify_Slim
             }
         }
 
+        public static void BringAllWindowsToFront()
+        {
+            // Must run on UI thread
+            if (!Application.Current.Dispatcher.CheckAccess())
+            {
+                Application.Current.Dispatcher.Invoke(BringAllWindowsToFront);
+                return;
+            }
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (!window.IsVisible)
+                    continue;
+
+                // Restore if minimized
+                if (window.WindowState == WindowState.Minimized)
+                    window.WindowState = WindowState.Normal;
+
+                // Force Z-order bump
+                window.Activate();         // gives it input focus if possible
+                window.Topmost = true;     // push above others
+                window.Topmost = false;    // but don’t *stay* always-on-top
+            }
+        }
+
         private static void HandleDeepLink(string rawUrl)
         {
             try
@@ -87,6 +112,8 @@ namespace Songify_Slim
                 // For songify://import-token?token=...
                 string action = uri.Host; // "import-token"
                 NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
+
+                BringAllWindowsToFront();
 
                 switch (action.ToLowerInvariant())
                 {
@@ -191,12 +218,21 @@ namespace Songify_Slim
                     await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
                 }
 
-                foreach (Window currentWindow in Application.Current.Windows)
+                foreach (Window currentWindow in Current.Windows)
                 {
-                    Window_Settings settings = (Window_Settings)currentWindow;
-                    if (settings == null)
-                        continue;
-                    await settings.SetControls();
+                    if (currentWindow is WindowManualTwitchLogin login)
+                    {
+                        login.Close();
+                    }
+
+                }
+
+                foreach (Window currentWindow in Current.Windows)
+                {
+                    if (currentWindow is Window_Settings settings)
+                    {
+                        await settings.SetControls();
+                    }
                 }
             }
             catch (Exception e)
