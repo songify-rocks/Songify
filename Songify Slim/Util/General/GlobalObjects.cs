@@ -438,7 +438,7 @@ namespace Songify_Slim.Util.General
                     }
 
                     break;
-                case Enums.PlayerType.YtmDesktop:
+                //case Enums.PlayerType.YtmDesktop:
                     YtmdResponse response = await WebHelper.GetYtmData();
                     if (response == null)
                     {
@@ -639,7 +639,7 @@ namespace Songify_Slim.Util.General
                 Enums.PlayerType.FooBar2000 => "Foobar2000",
                 Enums.PlayerType.Vlc => "VLC",
                 Enums.PlayerType.BrowserCompanion => "Browser Extension",
-                Enums.PlayerType.YtmDesktop => "YTM Desktop",
+                //Enums.PlayerType.YtmDesktop => "YTM Desktop",
                 _ => ""
             };
         }

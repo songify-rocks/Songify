@@ -12,13 +12,10 @@ namespace Songify_Slim.Util.General;
 
 public static class Enums
 {
-
     public enum PlayerType
     {
-        [Description("Spotify API")] SpotifyWeb,
-
-        //[Description("Spotify (Legacy)")]
-        //SpotifyLegacy,
+        [Description("Spotify")]
+        SpotifyWeb,
 
         [Description("Windows Playback API")]
         WindowsPlayback,
@@ -32,13 +29,9 @@ public static class Enums
         [Description("Browser Companion")]
         BrowserCompanion,
 
-        [Description("YTM Desktop")]
-        YtmDesktop,
-
-        [Description("YouTube Music (th-ch)")]
+        [Description("Pear Desktop (Formerly Yotube Music th-ch)")]
         Ytmthch
     }
-
 
     public enum SongRequestSource
     {
@@ -51,30 +44,43 @@ public static class Enums
     {
         [Description("Song Request")]
         SongRequest,
+
         [Description("Song")]
         Song,
+
         [Description("Next")]
         Next,
+
         [Description("Skip")]
         Skip,
+
         [Description("Voteskip")]
         Voteskip,
+
         [Description("Remove")]
         Remove,
+
         [Description("Position")]
         Position,
+
         [Description("Queue")]
         Queue,
+
         [Description("Songlike")]
         Songlike,
+
         [Description("Volume")]
         Volume,
+
         [Description("Play")]
         Play,
+
         [Description("Pause")]
         Pause,
+
         [Description("Commands")]
         Commands,
+
         [Description("Ban Song")]
         BanSong,
     }
@@ -163,5 +169,4 @@ public static class Enums
         SongBlocked,
         QueueLimitReached
     }
-
 }

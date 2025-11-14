@@ -67,7 +67,7 @@ namespace Songify_Slim.Views
 
         #region Variables
 
-        public SocketIoClient IoClient;
+        //public SocketIoClient IoClient;
         private bool _forceClose;
         private CancellationTokenSource _sCts;
         private DispatcherTimer _disclaimerTimer = new();
@@ -306,13 +306,13 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback when Settings.DownloadCover:
+                    case PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
-                        if (Settings.Player == PlayerType.YtmDesktop)
-                            if (IoClient != null)
-                                IoClient.PrevResponse = new YtmdResponse();
+                        //if (Settings.Player == PlayerType.YtmDesktop)
+                        //    if (IoClient != null)
+                        //        IoClient.PrevResponse = new YtmdResponse();
                         break;
                     default:
                         img_cover.Visibility = Visibility.Collapsed;
@@ -349,43 +349,38 @@ namespace Songify_Slim.Views
                 //    break;
 
                 case PlayerType.BrowserCompanion:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchYoutubeData();
                     break;
 
                 case PlayerType.Vlc:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchDesktopPlayer("vlc");
                     break;
 
                 case PlayerType.FooBar2000:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchDesktopPlayer("foobar2000");
                     break;
 
                 case PlayerType.SpotifyWeb:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchSpotifyWeb();
                     break;
 
-                case PlayerType.YtmDesktop:
-                    if (IoClient is { IsConnected: true })
-                        await StartYtmdSocketIoClient();
-                    await Sf.FetchYtm(IoClient.YoutubeMusicresponse);
-                    break;
 
                 case PlayerType.Ytmthch:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchYTMTHCH();
                     break;
                 case PlayerType.WindowsPlayback:
-                    if (IoClient is { IsConnected: true })
-                        await StopYtmdSocketIoClient();
+
+
                     await Sf.FetchWindowsApi();
                     break;
                 default:
@@ -509,42 +504,6 @@ namespace Songify_Slim.Views
             Logger.LogStr("Final Setup done");
         }
 
-        public async Task StartYtmdSocketIoClient()
-        {
-            // Replace with your server URL and token
-            const string serverUrl = "http://127.0.0.1:9863/api/v1/realtime";
-            string token = Settings.YtmdToken;
-
-            // Initialize the Socket.IO client
-            IoClient = new SocketIoClient(serverUrl, token);
-
-            // Run connection in a separate task
-            try
-            {
-                await IoClient.ConnectAsync();
-                GlobalObjects.IoClientConnected = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-            }
-        }
-
-        public async Task StopYtmdSocketIoClient()
-        {
-            if (IoClient != null)
-            {
-                try
-                {
-                    await IoClient.DisconnectAsync();
-                    GlobalObjects.IoClientConnected = false;
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                }
-            }
-        }
 
         private static async Task<bool> WaitForInternetConnectionAsync()
         {
@@ -836,7 +795,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1179,11 +1138,11 @@ namespace Songify_Slim.Views
                 {
                     await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback && Settings.DownloadCover
+                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback && Settings.DownloadCover
                             ? Visibility.Visible
                             : Visibility.Collapsed;
 
-                        double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.YtmDesktop or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                        double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
                             ? 500
                             : (int)Width - 6;
 
@@ -1225,9 +1184,6 @@ namespace Songify_Slim.Views
                             _timerFetcher.Interval = 1000;
                             break;
                         case PlayerType.BrowserCompanion:
-                            break;
-                        case PlayerType.YtmDesktop:
-                            _timerFetcher.Enabled = false;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -1287,10 +1243,6 @@ namespace Songify_Slim.Views
 
             switch (_selectedSource)
             {
-                case PlayerType.YtmDesktop:
-                    // stop the timer if the player is YTMDesktop
-                    _timerFetcher.Enabled = false;
-                    break;
                 case PlayerType.WindowsPlayback:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
@@ -1382,7 +1334,6 @@ namespace Songify_Slim.Views
 
                     // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
                     if ((Settings.Player == PlayerType.SpotifyWeb
-                         || Settings.Player == PlayerType.YtmDesktop
                          || Settings.Player == PlayerType.BrowserCompanion
                          || Settings.Player == PlayerType.Ytmthch
                          || Settings.Player == PlayerType.WindowsPlayback)

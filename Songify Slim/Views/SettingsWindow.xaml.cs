@@ -170,7 +170,6 @@ namespace Songify_Slim.Views
             TxtbxCustompausetext.Text = Settings.CustomPauseText;
             TxtbxOutputformat.Text = Settings.OutputString;
             TxtbxOutputformat2.Text = Settings.OutputString2;
-            TbYTMDesktopToken.Password = Settings.YtmdToken;
             CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
             NudServerPort.Value = Settings.WebServerPort;
             tgl_KeepCover.IsOn = Settings.KeepAlbumCover;
@@ -1645,36 +1644,6 @@ namespace Songify_Slim.Views
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
 
-        private async void Btn_YTMDesktopLink_Click(object sender, RoutedEventArgs e)
-        {
-            const string baseUrl = "http://localhost:9863/api/v1/";
-            YtmdAuthentication auth = new(baseUrl);
-
-            try
-            {
-                // Step 1: Request the auth code
-                string appId = "songify";
-                string appName = "Songify";
-                string appVersion = FormatAppVersion(GlobalObjects.AppVersion);
-
-                string authCode = await auth.RequestAuthCodeAsync(appId, appName, appVersion);
-
-                TbYTMDesktopAuthcode.Text = $"AUTH CODE: {authCode}";
-                PnlYTMDesktopAuthcode.Visibility = Visibility.Visible;
-                Activate();
-
-                // Step 2: Request the token using the auth code
-                string token = await auth.RequestTokenAsync(appId, authCode);
-                if (string.IsNullOrEmpty(token)) return;
-                TbYTMDesktopToken.Password = token;
-                Settings.YtmdToken = token;
-                await ((MainWindow)Application.Current.MainWindow)?.StartYtmdSocketIoClient()!;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-            }
-        }
 
         public static string FormatAppVersion(string appVersion)
         {

@@ -371,35 +371,35 @@ namespace Songify_Slim.Util.Songify.Twitch
                         return "Song queued successfully.";
                     }
 
-                case PlayerType.YtmDesktop:
-                    {
-                        // ---- Your "YtmDesktop" branch in HandleChannelPointSongRequst ----
-                        string videoId = ExtractYouTubeVideoIdFromText(trackId);
-                        if (string.IsNullOrWhiteSpace(videoId))
-                            videoId = trackId?.Trim();
+                //case PlayerType.YtmDesktop:
+                //    {
+                //        // ---- Your "YtmDesktop" branch in HandleChannelPointSongRequst ----
+                //        string videoId = ExtractYouTubeVideoIdFromText(trackId);
+                //        if (string.IsNullOrWhiteSpace(videoId))
+                //            videoId = trackId?.Trim();
 
-                        if (string.IsNullOrWhiteSpace(videoId))
-                            return "Couldn’t parse a YouTube video ID.";
+                //        if (string.IsNullOrWhiteSpace(videoId))
+                //            return "Couldn’t parse a YouTube video ID.";
 
-                        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+                //        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                //        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                        RequestObject req = new()
-                        {
-                            Uuid = Settings.Settings.Uuid,
-                            Trackid = videoId,
-                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                            Artist = "",
-                            Title = title,
-                            Length = "",
-                            Requester = requester ?? "",
-                            Played = 0,
-                            Albumcover = thumbnail
-                        };
+                //        RequestObject req = new()
+                //        {
+                //            Uuid = Settings.Settings.Uuid,
+                //            Trackid = videoId,
+                //            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                //            Artist = "",
+                //            Title = title,
+                //            Length = "",
+                //            Requester = requester ?? "",
+                //            Played = 0,
+                //            Albumcover = thumbnail
+                //        };
 
-                        await UploadToQueue(req);
-                        return $"Queued: {title}";
-                    }
+                //        await UploadToQueue(req);
+                //        return $"Queued: {title}";
+                //    }
 
                 case PlayerType.FooBar2000:
                 case PlayerType.Vlc:
@@ -636,7 +636,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task EnsureOrderAsync()
         {
-            await Task.Delay(500); // tiny settle delay
+            await Task.Delay(250); // tiny settle delay
 
             // queue snapshot (once!)
             List<Song> queue = await WebHelper.GetYtmthchQueue2();
@@ -949,35 +949,35 @@ namespace Songify_Slim.Util.Songify.Twitch
                         Channel = channel
                     });
                     break;
-                case PlayerType.YtmDesktop:
+                //case PlayerType.YtmDesktop:
                 case PlayerType.Ytmthch:
                     switch (Settings.Settings.Player)
                     {
-                        case PlayerType.YtmDesktop:
-                            {
-                                string videoId = ExtractYouTubeVideoIdFromText(userInput);
+                        //case PlayerType.YtmDesktop:
+                        //    {
+                        //        string videoId = ExtractYouTubeVideoIdFromText(userInput);
 
-                                string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                                string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+                        //        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                        //        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                                await SendChatMessage(title);
+                        //        await SendChatMessage(title);
 
-                                RequestObject o = new()
-                                {
-                                    Uuid = Settings.Settings.Uuid,
-                                    Trackid = videoId,
-                                    PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                                    Artist = "",
-                                    Title = title,
-                                    Length = "",
-                                    Requester = userName,
-                                    Played = 0,
-                                    Albumcover = thumbnail,
-                                };
+                        //        RequestObject o = new()
+                        //        {
+                        //            Uuid = Settings.Settings.Uuid,
+                        //            Trackid = videoId,
+                        //            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                        //            Artist = "",
+                        //            Title = title,
+                        //            Length = "",
+                        //            Requester = userName,
+                        //            Played = 0,
+                        //            Albumcover = thumbnail,
+                        //        };
 
-                                await UploadToQueue(o);
-                                break;
-                            }
+                        //        await UploadToQueue(o);
+                        //        break;
+                        //    }
                         case PlayerType.Ytmthch:
                             {
                                 string videoId = ExtractYouTubeVideoIdFromText(userInput);
@@ -1107,7 +1107,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 case PlayerType.FooBar2000:
                 case PlayerType.Vlc:
                 case PlayerType.BrowserCompanion:
-                case PlayerType.YtmDesktop:
+                //case PlayerType.YtmDesktop:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -1841,7 +1841,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 case PlayerType.FooBar2000:
                 case PlayerType.Vlc:
                 case PlayerType.BrowserCompanion:
-                case PlayerType.YtmDesktop:
+                //case PlayerType.YtmDesktop:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2030,7 +2030,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 case PlayerType.SpotifyWeb:
                     await HandleSpotifyRequest(message, cmdParams, cmd);
                     break;
-                case PlayerType.YtmDesktop:
+                //case PlayerType.YtmDesktop:
                 case PlayerType.Ytmthch:
                     await HandleYtmRequest(message, cmdParams, cmd);
                     break;
@@ -2139,7 +2139,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 case PlayerType.FooBar2000:
                 case PlayerType.Vlc:
                 case PlayerType.BrowserCompanion:
-                case PlayerType.YtmDesktop:
+                //case PlayerType.YtmDesktop:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2155,31 +2155,31 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             switch (Settings.Settings.Player)
             {
-                case PlayerType.YtmDesktop:
-                    {
-                        string videoId = ExtractYouTubeVideoIdFromText(message.Message.Text);
+                //case PlayerType.YtmDesktop:
+                //    {
+                //        string videoId = ExtractYouTubeVideoIdFromText(message.Message.Text);
 
-                        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+                //        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                //        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
-                        await SendChatMessage(title);
+                //        await SendChatMessage(title);
 
-                        RequestObject o = new()
-                        {
-                            Uuid = Settings.Settings.Uuid,
-                            Trackid = videoId,
-                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                            Artist = "",
-                            Title = title,
-                            Length = "",
-                            Requester = message.ChatterUserName,
-                            Played = 0,
-                            Albumcover = thumbnail,
-                        };
+                //        RequestObject o = new()
+                //        {
+                //            Uuid = Settings.Settings.Uuid,
+                //            Trackid = videoId,
+                //            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                //            Artist = "",
+                //            Title = title,
+                //            Length = "",
+                //            Requester = message.ChatterUserName,
+                //            Played = 0,
+                //            Albumcover = thumbnail,
+                //        };
 
-                        await UploadToQueue(o);
-                        break;
-                    }
+                //        await UploadToQueue(o);
+                //        break;
+                //    }
                 case PlayerType.Ytmthch:
                     {
                         {
@@ -2215,15 +2215,15 @@ namespace Songify_Slim.Util.Songify.Twitch
                                     {
                                         // Your success response logic
                                         await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
-                                        //// wait until YT queue actually contains the item
-                                        //int? pos = await WaitForSongInQueueAsync(sr.VideoId,
-                                        //    TimeSpan.FromSeconds(3),
-                                        //    TimeSpan.FromMilliseconds(150));
-                                        //if (pos == null)
-                                        //{
-                                        //    // fallback: skip reorder now; try again later (timer/next enqueue)
-                                        //    return;
-                                        //}
+                                        // wait until YT queue actually contains the item
+                                        int? pos = await WaitForSongInQueueAsync(sr.VideoId,
+                                            TimeSpan.FromSeconds(3),
+                                            TimeSpan.FromMilliseconds(150));
+                                        if (pos == null)
+                                        {
+                                            // fallback: skip reorder now; try again later (timer/next enqueue)
+                                            return;
+                                        }
 
                                         await EnsureOrderAsync();
                                     }

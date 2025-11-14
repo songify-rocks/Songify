@@ -304,9 +304,6 @@ namespace Songify_Slim.Views
                     _lastBackButtonClickTime = currentTime;
                     break;
 
-                case Enums.PlayerType.YtmDesktop:
-                    await WebHelper.YtmdPrevious();
-                    break;
             }
         }
 
@@ -316,10 +313,6 @@ namespace Songify_Slim.Views
             {
                 case 0:
                     await SpotifyApiHandler.SkipSong();
-                    break;
-
-                case Enums.PlayerType.YtmDesktop:
-                    await WebHelper.YtmdNext();
                     break;
             }
             await SpotifyApiHandler.SkipSong();
@@ -342,9 +335,6 @@ namespace Songify_Slim.Views
                         BtnPlayPause.Content = grd;
                         break;
                     }
-                case Enums.PlayerType.YtmDesktop:
-                    await WebHelper.YtmdPlayPause();
-                    break;
             }
         }
 

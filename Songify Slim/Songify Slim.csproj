@@ -230,7 +230,6 @@
     <Compile Include="Util\Songify\Twitch\TwitchCommandHandler.cs" />
     <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
-    <Compile Include="Util\Songify\YTMDesktop\SocketIoClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
     <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
     <Compile Include="Util\Spotify\ApiCallMeter.cs" />

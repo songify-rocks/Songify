@@ -297,11 +297,14 @@
                                 Toggled="ThemeToggleSwitchIsCheckedChanged" />
                             <Grid Grid.Row="9" Margin="0,6">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Songify API Token" />
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    Text="Songify API Token" />
                                 <Grid Grid.Column="1" Margin="6,0">
                                     <!--  Password Box  -->
                                     <PasswordBox
@@ -342,7 +345,12 @@
                                             Kind="EyeSlashSolid" />
                                     </Button>
                                 </Grid>
-                                <Button Grid.Column="2" Width="32" Content="?" x:Name="btnApiToken" Click="BtnApiToken_OnClick"/>
+                                <Button
+                                    x:Name="btnApiToken"
+                                    Grid.Column="2"
+                                    Width="32"
+                                    Click="BtnApiToken_OnClick"
+                                    Content="?" />
                             </Grid>
                         </Grid>
                     </ScrollViewer>
@@ -2489,66 +2497,6 @@
                             ParsingNumberStyle="Integer"
                             ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                             Value="1" />
-                    </Grid>
-                </Border>
-            </TabItem>
-            <TabItem Header="YTMDesktop">
-                <Border
-                    Margin="10,0,0,0"
-                    BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
-                    BorderThickness="2,0,0,0">
-                    <Grid Margin="10,16,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            x:Name="BtnYTMDesktopLink"
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Width="90"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Click="Btn_YTMDesktopLink_Click">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        Margin="0,0,8,0"
-                                        d:Text="{DynamicResource sw_Integration_btnLink}"
-                                        Text="{DynamicResource sw_Integration_btnLink}" />
-                                    <iconPacks:FontAwesome Kind="LinkSolid" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <PasswordBox
-                            x:Name="TbYTMDesktopToken"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Margin="6,0" />
-                        <StackPanel
-                            x:Name="PnlYTMDesktopAuthcode"
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2"
-                            Margin="16"
-                            Orientation="Vertical">
-                            <TextBlock
-                                MaxWidth="400"
-                                HorizontalAlignment="Center"
-                                d:Text="{DynamicResource sw_YTMDesktop_disclaimer}"
-                                Text="{DynamicResource sw_YTMDesktop_disclaimer}"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                            <TextBlock
-                                x:Name="TbYTMDesktopAuthcode"
-                                HorizontalAlignment="Center"
-                                FontSize="36"
-                                Text="AUTH CODE:" />
-                        </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>
