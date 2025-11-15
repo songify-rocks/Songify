@@ -44,8 +44,7 @@ Songify not only works with Spotify but with these players as well:
   - ~Deezer~
   - foobar2000
   - VLC
-  - [YTMDesktop](https://github.com/ytmdesktop/ytmdesktop)
-  - [th-ch/youtube-music](https://github.com/th-ch/youtube-music)
+  - [Pear Dekstop (formerly known as th-ch youtube music)](https://github.com/th-ch/youtube-music)
 
 ---
 
