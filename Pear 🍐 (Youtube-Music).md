@@ -1,11 +1,11 @@
-## 🎵 How to Enable YouTube Music Support in Songify
+## 🎵 How to Enable Pear 🍐 (YouTube Music) Support in Songify
 
-Songify now supports song requests from **YouTube Music** using the [YouTube Music Desktop Client](https://github.com/th-ch/youtube-music).
+Songify now supports song requests from **YouTube Music** using [Pear 🍐 Desktop](https://github.com/pear-devs/pear-desktop) (Formerly known as Youtube Music (th-ch)).
 
 Follow these steps to set it up:
 
 1. **Download & Install**  
-   Get the [YouTube Music Desktop Client](https://github.com/th-ch/youtube-music/releases) and install it on your system.
+   Get the [YouTube Music Desktop Client](https://github.com/pear-devs/pear-desktop/releases) and install it on your system.
 
 2. **Open the App**  
    Launch the YouTube Music Desktop Client.
