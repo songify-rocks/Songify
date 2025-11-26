@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Songify_Slim.Util.General;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Songify_Slim.Util.General;
+using TwitchLib.Api;
 using TwitchLib.Api.Helix;
+using TwitchLib.Api.Helix.Models.ChannelPoints;
+using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.EventSub;
@@ -135,6 +138,23 @@ namespace Songify_Slim.Util.Songify.Twitch
             GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
                 Settings.Settings.TwitchAccessToken);
             return x.Subscriptions.ToList();
+        }
+
+        public static async Task<List<CustomReward>> GetChannelRewards(bool b)
+        {
+            GetCustomRewardsResponse rewardsResponse = null;
+            try
+            {
+                rewardsResponse =
+                    await TwitchHandler.TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null,
+                        b);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return rewardsResponse?.Data.ToList();
         }
     }
 }

@@ -72,28 +72,29 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketConnected(object sender, WebsocketConnectedArgs e)
         {
             _logger.LogInformation($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
+            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
+
             if (!e.IsRequestedReconnect)
             {
                 // subscribe to topics
                 // create condition Dictionary
                 // You need BOTH broadcaster and moderator values or EventSub returns an Error!
-                Dictionary<string, string> conditionBM = new Dictionary<string, string> { { "broadcaster_user_id", _userId }, { "moderator_user_id", _userId } };
-                Dictionary<string, string> conditionBU = new Dictionary<string, string>
-                    { { "broadcaster_user_id", _userId }, { "user_id", _userId } };
+                Dictionary<string, string> conditionBm = new() { { "broadcaster_user_id", _userId }, { "moderator_user_id", _userId } };
+                Dictionary<string, string> conditionBu = new() { { "broadcaster_user_id", _userId }, { "user_id", _userId } };
                 // Create and send EventSubscription
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.channel_points_custom_reward_redemption.add", "1", conditionBM, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.channel_points_custom_reward_redemption.add", "1", conditionBm, EventSubTransportMethod.Websocket,
                 _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.cheer", "1", conditionBM, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.cheer", "1", conditionBm, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.online", "1", conditionBM, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.online", "1", conditionBm, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.offline", "1", conditionBM, EventSubTransportMethod.Websocket,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.offline", "1", conditionBm, EventSubTransportMethod.Websocket,
                     _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.chat.message", "1", conditionBU,
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.chat.message", "1", conditionBu,
                     EventSubTransportMethod.Websocket, _eventSubWebsocketClient.SessionId, accessToken: Settings.Settings.TwitchAccessToken);
 
                 // If you want to get Events for special Events you need to additionally add the AccessToken of the ChannelOwner to the request.
@@ -120,6 +121,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             while (!await _eventSubWebsocketClient.ReconnectAsync())
             {
                 _logger.LogError("Websocket reconnect failed!");
+                Logger.LogStr("Websocket reconnect failed!");
                 await Task.Delay(1000);
             }
         }
@@ -127,11 +129,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketReconnected(object sender, EventArgs e)
         {
             _logger.LogWarning($"Websocket {_eventSubWebsocketClient.SessionId} reconnected");
+            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
         }
 
         private async Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
         {
             _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
+            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
         }
 
         #region Events
@@ -187,6 +191,9 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (Settings.Settings.TwRewardId.Any(id => id == eventData.Reward.Id) &&
                 Settings.Settings.TwSrReward)
             {
+                await TwitchHandler.RunTwitchUserSync();
+                Logger.LogStr($"Twitch Redeem: {eventData.Reward.Title} by {eventData.UserName}");
+
                 // Handle Song Request Command
                 await TwitchHandler.HandleChannelPointSongRequst(
                     isBroadcaster: eventData.UserId == eventData.BroadcasterUserId,
@@ -224,7 +231,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             string x = Json.Serialize(chatMsg.Badges);
             Debug.WriteLine($"Badges: {x}");
         }
-        
-        #endregion
+
+        #endregion Events
     }
 }

@@ -62,6 +62,7 @@ namespace Songify_Slim.Views
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
         private Window_ResponseParams _wRp;
+
         private Dictionary<string, string> _supportedLanguages = new()
         {
             { "en", "English" },
@@ -93,7 +94,6 @@ namespace Songify_Slim.Views
             { Enums.RefundCondition.TrackIsEplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
             { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways },
         };
-
 
         public Window_Settings()
         {
@@ -305,7 +305,6 @@ namespace Songify_Slim.Views
                 }
             }
 
-
             ThemeHandler.ApplyTheme();
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
             CbxLanguage.ItemsSource = _supportedLanguages;
@@ -393,7 +392,6 @@ namespace Songify_Slim.Views
             if (TwitchHandler.TwitchApi != null)
                 await LoadRewards();
 
-
             if (Settings.RefundConditons == null) return;
             foreach (int condition in Settings.RefundConditons)
             {
@@ -409,7 +407,6 @@ namespace Songify_Slim.Views
 
             GridLoading.Visibility = Visibility.Collapsed;
             TabCtrl.IsEnabled = true;
-
         }
 
         private async Task LoadCommands()
@@ -441,6 +438,7 @@ namespace Songify_Slim.Views
                     btnAlt.Visibility = Visibility.Visible;
                     lbl.Content += $"{user.DisplayName} (Token Expired)";
                     break;
+
                 case 1 when GlobalObjects.TwitchBotTokenExpired:
                     btn.Visibility = Visibility.Visible;
                     btnAlt.Visibility = Visibility.Visible;
@@ -459,6 +457,7 @@ namespace Songify_Slim.Views
                 case 0:
                     LblMainExpiry.Content = $"Expires on {Settings.TwitchAccessTokenExpiryDate}";
                     break;
+
                 case 1:
                     LblBotExpiry.Content = $"Expires on {Settings.BotAccessTokenExpiryDate}";
                     break;
@@ -515,7 +514,6 @@ namespace Songify_Slim.Views
 
             // Place the caret after the inserted text
             tb.SelectionStart = selectionStart + text.Length;
-
 
             tb.SelectionLength = 0;
 
@@ -734,7 +732,6 @@ namespace Songify_Slim.Views
             //// Restart the application to apply the language change
             //Process.Start(Application.ResourceAssembly.Location);
             //Application.Current.Shutdown();
-
 
             if (CbxLanguage.SelectedValue is not string selectedLanguageCode)
                 return;
@@ -1124,8 +1121,8 @@ namespace Songify_Slim.Views
             BtnCreateNewReward.IsEnabled = true;
             try
             {
-                List<CustomReward> managableRewards = await TwitchHandler.GetChannelRewards(true);
-                List<CustomReward> rewards = await TwitchHandler.GetChannelRewards(false);
+                List<CustomReward> managableRewards = await TwitchApiHelper.GetChannelRewards(true);
+                List<CustomReward> rewards = await TwitchApiHelper.GetChannelRewards(false);
                 if (rewards == null)
                     return;
                 //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
@@ -1141,7 +1138,6 @@ namespace Songify_Slim.Views
                 {
                     foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
                     {
-
                         bool manageable = managableRewards.Find(r => r.Id == reward.Id) != null;
                         ListboxRewards.Items.Add(new UcTwitchReward(reward, manageable));
                     }
@@ -1297,13 +1293,15 @@ namespace Songify_Slim.Views
             Settings.TwitchFetchPort = (int)ComboboxfetchPort.SelectedItem;
         }
 
-        private void Cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
                 return;
-            if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
+            if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item) return;
+            if (item.Playlist.Id == Settings.SpotifyPlaylistId)
                 return;
             Settings.SpotifyPlaylistId = item.Playlist.Id;
+            await SpotifyApiHandler.EnsurePlaylistCacheAsync(this, true);
         }
 
         private async void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1644,7 +1642,6 @@ namespace Songify_Slim.Views
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
 
-
         public static string FormatAppVersion(string appVersion)
         {
             if (string.IsNullOrWhiteSpace(appVersion))
@@ -1687,7 +1684,6 @@ namespace Songify_Slim.Views
             responseParams.Left = Left + Width;
             responseParams.Top = Top;
             responseParams.LocationChanged += responseParams.Window_ResponseParams_OnLocationChanged;
-
         }
 
         private void MetroWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1698,7 +1694,6 @@ namespace Songify_Slim.Views
             _wRp.Left = Left + Width;
             _wRp.Top = Top;
             _wRp.LocationChanged += _wRp.Window_ResponseParams_OnLocationChanged;
-
         }
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -1799,7 +1794,6 @@ namespace Songify_Slim.Views
 
         private bool _showPassword = false;
 
-
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded)
@@ -1822,7 +1816,6 @@ namespace Songify_Slim.Views
                 EyeIcon.Kind = PackIconFontAwesomeKind.EyeSlashRegular;
                 EyeIcon.Width = 20;
                 EyeIcon.Height = 20;
-
             }
             else
             {
@@ -1846,9 +1839,7 @@ namespace Songify_Slim.Views
 
             if (_showPassword)
                 PasswordBox.Password = TextBox.Text;
-
         }
-
 
         private void GenerateRefundConditionToggles()
         {
@@ -1909,7 +1900,6 @@ namespace Songify_Slim.Views
             }
         }
 
-
         private void RefundCondition_Toggled(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded) return;
@@ -1967,9 +1957,11 @@ namespace Songify_Slim.Views
                         case HttpStatusCode.Unauthorized:
                             TblError.Text = "Unauthorized access. Please check your API token.";
                             return;
+
                         case HttpStatusCode.Forbidden:
                             TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
                             return;
+
                         case HttpStatusCode.InternalServerError:
                             TblError.Text = "Internal server error. Please try again later.";
                             return;
@@ -1982,12 +1974,10 @@ namespace Songify_Slim.Views
             }
         }
 
-
         private async void BtnRestoreCloudSettings_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-
                 if (string.IsNullOrEmpty(Settings.SongifyApiKey))
                 {
                     TblError.Text = "Please enter your Songify API key.";
@@ -2022,22 +2012,25 @@ namespace Songify_Slim.Views
                         case HttpStatusCode.Unauthorized:
                             TblError.Text = "Unauthorized access. Please check your API token.";
                             return;
+
                         case HttpStatusCode.Forbidden:
                             TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
                             return;
+
                         case HttpStatusCode.InternalServerError:
                             TblError.Text = "Internal server error. Please try again later.";
                             return;
+
                         case HttpStatusCode.NotModified:
                             TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
                             TblError.Text = "No changes have been detected, keeping local settings.";
                             return;
+
                         case HttpStatusCode.NotAcceptable:
                             TblError.Text = "Cancelled by user.";
                             break;
                     }
                 }
-
             }
             catch (Exception ex)
             {

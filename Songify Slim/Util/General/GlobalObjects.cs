@@ -72,13 +72,11 @@ namespace Songify_Slim.Util.General
         public static YoutubeData YoutubeData = null;
         public static List<string> ConnectedEventsubs = [];
 
-
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
             : Settings.Settings.Directory;
 
         public static SimpleTwitchUser FullRequester { get; set; }
-
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
@@ -438,7 +436,7 @@ namespace Songify_Slim.Util.General
                     }
 
                     break;
-                //case Enums.PlayerType.YtmDesktop:
+                    //case Enums.PlayerType.YtmDesktop:
                     YtmdResponse response = await WebHelper.GetYtmData();
                     if (response == null)
                     {
@@ -471,7 +469,6 @@ namespace Songify_Slim.Util.General
                         Albumcover = queueItem.Thumbnails.Last().Url,
                         IsLiked = false,
                         PlayerType = "Youtube"
-
                     }));
 
                     QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
@@ -569,9 +566,8 @@ namespace Songify_Slim.Util.General
                         return Task.CompletedTask;
                     });
 
-
-
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -667,7 +663,5 @@ namespace Songify_Slim.Util.General
                 ? label
                 : $"Unknown refund condition: {condition}";
         }
-
-
     }
 }

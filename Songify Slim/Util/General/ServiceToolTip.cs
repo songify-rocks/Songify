@@ -37,7 +37,10 @@ namespace Songify_Slim.Util.General
             {
                 Text = header,
                 FontWeight = FontWeights.SemiBold,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground =
+                    Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                    ?? SystemColors.ControlTextBrush,
             });
 
             Grid.SetRow(headerPanel, r);
@@ -55,7 +58,10 @@ namespace Songify_Slim.Util.General
                     Text = label + ":",
                     Opacity = 0.8,
                     Margin = new Thickness(0, 0, 8, 2),
-                    VerticalAlignment = VerticalAlignment.Top
+                    VerticalAlignment = VerticalAlignment.Top,
+                    Foreground =
+                        Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                        ?? SystemColors.ControlTextBrush,
                 };
                 Grid.SetRow(lbl, r);
                 Grid.SetColumn(lbl, 0);
@@ -64,6 +70,10 @@ namespace Songify_Slim.Util.General
                 {
                     Text = value ?? "—",
                     VerticalAlignment = VerticalAlignment.Top
+                    ,
+                    Foreground =
+                        Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                        ?? SystemColors.ControlTextBrush,
                 };
                 Grid.SetRow(val, r);
                 Grid.SetColumn(val, 1);

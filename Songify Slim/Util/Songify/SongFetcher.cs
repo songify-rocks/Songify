@@ -1004,6 +1004,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task UpdateWebServerResponse(TrackInfo track)
         {
+            // Normalize album image URLs
             foreach (Image album in track.Albums)
             {
                 if (string.IsNullOrEmpty(album.Url) || !DriveLetterRegex.IsMatch(album.Url)) continue;
@@ -1011,9 +1012,48 @@ namespace Songify_Slim.Util.Songify
                 album.Url = "file:///" + normalized;
             }
 
-            string j = Json.Serialize(track ?? new TrackInfo());
-            dynamic obj = JsonConvert.DeserializeObject<dynamic>(j);
-            IDictionary<string, object> dictionary = obj.ToObject<IDictionary<string, object>>();
+            var userInfo = new
+            {
+                TwitchUser = new
+                {
+                    Settings.Settings.TwitchUser.Id,
+                    Settings.Settings.TwitchUser.Login,
+                    Settings.Settings.TwitchUser.BroadcasterType
+                },
+                SpotifyUser = new
+                {
+                    Settings.Settings.SpotifyProfile.Id,
+                    Settings.Settings.SpotifyProfile.DisplayName,
+                    Settings.Settings.SpotifyProfile.Product
+                }
+            };
+
+            var songifyInfo = new
+            {
+                version = GlobalObjects.AppVersion,
+                beta = App.IsBeta
+            };
+
+            Dictionary<string, object> trackDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
+                JsonConvert.SerializeObject(track)
+            );
+
+            // Serialize track -> base dictionary
+            string j = JsonConvert.SerializeObject(track); // you can drop Json.Serialize and just use Newtonsoft
+            Dictionary<string, object> dictionary =  new Dictionary<string, object>
+            {
+                // Add your "first dynamics"
+                ["UserInfo"] = userInfo,
+                ["SongifyInfo"] = songifyInfo
+            };
+
+            if (trackDict != null)
+            {
+                foreach (KeyValuePair<string, object> kv in trackDict)
+                    dictionary[kv.Key] = kv.Value;
+            }
+
+            // Add the rest
             if (GlobalObjects.Canvas != null)
                 dictionary["CanvasUrl"] = GlobalObjects.Canvas.Item1 ? GlobalObjects.Canvas.Item2 : "";
             else
@@ -1021,14 +1061,18 @@ namespace Songify_Slim.Util.Songify
 
             dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
             dictionary["Requester"] = GlobalObjects.Requester;
-            dictionary["RequesterProfilePic"] = GlobalObjects.FullRequester == null ? "" : GlobalObjects.FullRequester.ProfileImageUrl;
+            dictionary["RequesterProfilePic"] = GlobalObjects.FullRequester == null
+                ? ""
+                : GlobalObjects.FullRequester.ProfileImageUrl;
             dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
             dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
             dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
             dictionary["RequestQueue"] = GlobalObjects.ReqList;
             dictionary["Queue"] = GlobalObjects.QueueTracks;
+
             string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
+
             await GlobalObjects.WebServer.BroadcastToChannelAsync("/ws/data", updatedJson);
         }
 

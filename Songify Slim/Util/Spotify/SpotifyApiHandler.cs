@@ -10,12 +10,17 @@ using SpotifyAPI.Web.Auth;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using FuzzySharp;
 using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.General.Enums.PlaybackAction;
 using static System.Net.WebRequestMethods;
@@ -39,6 +44,7 @@ namespace Songify_Slim.Util.Spotify
 
         // ---- caching state (in SpotifyApiHandler) ----
         private static CurrentlyPlayingContext _cachedPlayback;
+
         private static DateTime _cachedPlaybackAt = DateTime.MinValue;
         private static readonly TimeSpan PlaybackCacheTtl = TimeSpan.FromSeconds(5);
 
@@ -47,6 +53,9 @@ namespace Songify_Slim.Util.Spotify
         private static DateTime _cachedPlaylistFetchedAt = DateTime.MinValue;
         private static readonly TimeSpan PlaylistCacheTtl = TimeSpan.FromMinutes(10);
 
+        private static readonly HashSet<string> _playlistTrackIds = new();
+        private static bool _playlistCacheInitialized = false;
+        private static readonly object _playlistLock = new();
 
         public static async Task Auth()
         {
@@ -157,6 +166,8 @@ namespace Songify_Slim.Util.Spotify
                         mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
                         //mw.IconWebSpotify.Kind = PackIconBoxIconsKind.LogosSpotify;
                     }
+
+                    await EnsurePlaylistCacheAsync(null, true);
                 });
             }
         }
@@ -229,6 +240,8 @@ namespace Songify_Slim.Util.Spotify
                         Logger.LogExc(ex);
                     }
                 }));
+
+            await EnsurePlaylistCacheAsync(null, true);
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()
@@ -412,17 +425,102 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        public static async Task<FullTrack> FindTrack(string query)
+        //public static async Task<FullTrack> FindTrack(string query)
+        //{
+        //    if (Client == null)
+        //        return null;
+        //    try
+        //    {
+        //        SearchRequest request = new(SearchRequest.Types.Track, query) { Limit = 1 };
+        //        SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request),
+        //            softLimitPerminute);
+
+        //        return result.Tracks is { Items.Count: > 0 } ? result.Tracks.Items[0] : null;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.LogExc(ex);
+        //        return null;
+        //    }
+        //}
+
+        public static async Task<FullTrack> FindTrack(
+            string query,
+            int take = 10,
+            int confidenceThreshold = 60)
         {
             if (Client == null)
                 return null;
+
+            if (string.IsNullOrWhiteSpace(query))
+                return null;
+
             try
             {
-                SearchRequest request = new(SearchRequest.Types.Track, query) { Limit = 1 };
-                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request),
+                SearchRequest request = new SearchRequest(SearchRequest.Types.Track, query)
+                {
+                    Limit = take
+                };
+
+                SearchResponse result = await ApiCallMeter.RunAsync(
+                    "Search.Item",
+                    () => Client.Search.Item(request),
                     softLimitPerminute);
 
-                return result.Tracks is { Items.Count: > 0 } ? result.Tracks.Items[0] : null;
+                List<FullTrack> tracks = result.Tracks?.Items?.Take(take).ToList();
+                if (tracks == null || tracks.Count == 0)
+                    return null;
+
+                List<ParsedQuery> interpretations = GenerateInterpretations(query);
+
+                var scored = tracks
+                    .Select(t => new
+                    {
+                        Track = t,
+                        Score = ScoreTrack(t, interpretations)
+                    })
+                    .OrderByDescending(x => x.Score)
+                    .ToList();
+
+                // ---- LOGGING ----
+                Logger.LogStr($"Search '{query}' - Found {scored.Count} track candidates:");
+                int rank = 1;
+                foreach (var item in scored)
+                {
+                    string artists = string.Join(", ", item.Track.Artists.Select(a => a.Name));
+
+                    Logger.LogStr($"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
+
+                    // Log each interpretation's score
+                    foreach (ParsedQuery pq in interpretations)
+                    {
+                        int interpScore = ScoreTrackForInterpretation(item.Track, pq);
+
+                        Logger.LogStr($"      -> [{pq.SourceHint}] " +
+                                       $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
+                                       $"Score={interpScore}");
+                    }
+
+                    rank++;
+                }
+
+                // -------------------
+
+                var best = scored.First();
+
+                // Optional: inspect these logs to tune threshold later
+                // Logger.LogInfo($"Search '{query}' best match: \"{best.Track.Name}\" " +
+                //                $"by {string.Join(", ", best.Track.Artists.Select(a => a.Name))} (Score {best.Score})");
+
+                if (best.Score < confidenceThreshold)
+                {
+                    // Fallback: if our fuzzy match is weak, use Spotify's first result (what you currently do)
+                    FullTrack fallback = tracks.First();
+                    // Logger.LogInfo($"Score {best.Score} < {confidenceThreshold}, falling back to first result \"{fallback.Name}\"");
+                    return fallback;
+                }
+
+                return best.Track;
             }
             catch (Exception ex)
             {
@@ -435,39 +533,44 @@ namespace Songify_Slim.Util.Spotify
         {
             if (Client == null)
                 return false;
+
             try
             {
+                // No playlist configured -> save to library
                 if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
                     Settings.Settings.SpotifyPlaylistId == "-1")
                 {
-                    await Client.Library.SaveTracks(new LibrarySaveTracksRequest(new List<string> { trackId }));
+                    await Client.Library.SaveTracks(
+                        new LibrarySaveTracksRequest(new List<string> { trackId })
+                    );
                     return false;
                 }
 
-                Paging<PlaylistTrack<IPlayableItem>> tracks =
-                    await ApiCallMeter.RunAsync("Playlists.GetItems",
-                        () => Client.Playlists.GetItems(Settings.Settings.SpotifyPlaylistId), softLimitPerminute);
+                // Make sure cache is filled once
+                await EnsurePlaylistCacheAsync();
 
-                while (tracks.Items != null)
+                lock (_playlistLock)
                 {
-                    foreach (PlaylistTrack<IPlayableItem> item in tracks.Items)
+                    if (_playlistTrackIds.Contains(trackId))
                     {
-                        // item is PlaylistTrack<IPlayableItem>
-                        if (item.Track is FullTrack fullTrack && fullTrack.Id == trackId)
-                        {
-                            return true;
-                        }
+                        // Already in playlist
+                        return true;
                     }
-
-                    if (tracks.Next == null)
-                        break;
-
-                    tracks = await Client.NextPage(tracks);
                 }
 
+                // Not in playlist -> add
                 PlaylistAddItemsRequest request = new(new List<string> { "spotify:track:" + trackId });
+
                 await ApiCallMeter.RunAsync("Playlists.AddItems",
-                    () => Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request), softLimitPerminute);
+                    () => Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request),
+                    softLimitPerminute);
+
+                // Update cache
+                lock (_playlistLock)
+                {
+                    _playlistTrackIds.Add(trackId);
+                }
+
                 return false;
             }
             catch (Exception ex)
@@ -564,6 +667,7 @@ namespace Songify_Slim.Util.Spotify
                                 DeviceId = Settings.Settings.SpotifyDeviceId
                             }), softLimitPerminute);
                         return false;
+
                     case Play when !isPlaying:
                         await ApiCallMeter.RunAsync("Player.ResumePlayback", () =>
                             Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
@@ -575,6 +679,7 @@ namespace Songify_Slim.Util.Spotify
                     case Toggle:
                         // Heuristically unreachable but included for completeness
                         break;
+
                     default:
                         return isPlaying;
                 }
@@ -741,19 +846,19 @@ namespace Songify_Slim.Util.Spotify
             return "No device found";
         }
 
-        static (int? status, string message) TryExtractSpotifyError(string body)
+        private static (int? status, string message) TryExtractSpotifyError(string body)
         {
             if (string.IsNullOrWhiteSpace(body)) return (null, null);
             try
             {
-                var jo = JObject.Parse(body);
-                var err = jo["error"];
+                JObject jo = JObject.Parse(body);
+                JToken err = jo["error"];
                 if (err == null) return (null, null);
 
                 int? status = err["status"]?.Type switch
                 {
                     JTokenType.Integer => (int?)err["status"],
-                    JTokenType.String => int.TryParse((string)err["status"], out var n) ? n : (int?)null,
+                    JTokenType.String => int.TryParse((string)err["status"], out int n) ? n : (int?)null,
                     _ => null
                 };
                 string message = (string)(err["message"] ?? jo["error_description"]) ?? "";
@@ -852,6 +957,277 @@ namespace Songify_Slim.Util.Spotify
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        private class ParsedQuery
+        {
+            public string Raw { get; set; } = "";
+            public string? TitleCandidate { get; set; }
+            public string? ArtistCandidate { get; set; }
+            public string SourceHint { get; set; } = "";
+        }
+
+        /// <summary>
+        /// Unicode-aware normalization: lowercases, strips accents, removes punctuation.
+        /// Keeps letters from all languages and digits.
+        /// </summary>
+        private static string Normalize(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            // Strip diacritics (é -> e, ö -> o, etc.)
+            string formD = input.Normalize(NormalizationForm.FormD);
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char ch in formD)
+            {
+                UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(ch);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(ch);
+                }
+            }
+
+            string noAccents = sb.ToString().Normalize(NormalizationForm.FormC);
+
+            // Lowercase
+            noAccents = noAccents.ToLowerInvariant();
+
+            // Keep only letters (any language), digits, whitespace
+            noAccents = Regex.Replace(noAccents, @"[^\p{L}\p{Nd}\s]", " ");
+
+            // Collapse whitespace
+            noAccents = Regex.Replace(noAccents, @"\s+", " ").Trim();
+
+            return noAccents;
+        }
+
+        private static int Similarity(string a, string b)
+        {
+            a = Normalize(a);
+            b = Normalize(b);
+
+            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
+                return 0;
+
+            // 0–100
+            return Fuzz.TokenSetRatio(a, b);
+        }
+
+        /// <summary>
+        /// Generate multiple interpretations so "by" in titles doesn't break us.
+        /// </summary>
+        private static List<ParsedQuery> GenerateInterpretations(string query)
+        {
+            List<ParsedQuery> list = new List<ParsedQuery>();
+            string raw = query.Trim();
+
+            // 1) No structure assumption
+            list.Add(new ParsedQuery
+            {
+                Raw = raw,
+                TitleCandidate = null,
+                ArtistCandidate = null,
+                SourceHint = "none"
+            });
+
+            string qLower = raw.ToLowerInvariant();
+
+            // 2) Artist - Title pattern
+            if (qLower.Contains(" - "))
+            {
+                string[] parts = raw.Split(new[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length >= 2)
+                {
+                    list.Add(new ParsedQuery
+                    {
+                        Raw = raw,
+                        ArtistCandidate = parts[0],
+                        TitleCandidate = string.Join(" - ", parts.Skip(1)),
+                        SourceHint = "dash"
+                    });
+                }
+            }
+
+            // 3) Title by Artist pattern – only as a *candidate*
+            int byIndex = qLower.LastIndexOf(" by ", StringComparison.Ordinal);
+            if (byIndex > 0)
+            {
+                string title = raw.Substring(0, byIndex);
+                string artist = raw.Substring(byIndex + 4);
+
+                list.Add(new ParsedQuery
+                {
+                    Raw = raw,
+                    TitleCandidate = title,
+                    ArtistCandidate = artist,
+                    SourceHint = "by"
+                });
+            }
+
+            // 4) Heuristic: first word = artist, rest = title
+            string[] tokens = raw.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (tokens.Length >= 2)
+            {
+                // first word as artist
+                string firstArtist = tokens[0];
+                string firstTitle = string.Join(" ", tokens.Skip(1));
+
+                list.Add(new ParsedQuery
+                {
+                    Raw = raw,
+                    ArtistCandidate = firstArtist,
+                    TitleCandidate = firstTitle,
+                    SourceHint = "first-word-artist"
+                });
+
+                // last word as artist (handles "live forever headhunterz")
+                string lastArtist = tokens[tokens.Length - 1];
+                string lastTitle = string.Join(" ", tokens.Take(tokens.Length - 1));
+
+                list.Add(new ParsedQuery
+                {
+                    Raw = raw,
+                    ArtistCandidate = lastArtist,
+                    TitleCandidate = lastTitle,
+                    SourceHint = "last-word-artist"
+                });
+            }
+
+            return list;
+        }
+
+        private static int ScoreTrackForInterpretation(FullTrack track, ParsedQuery pq)
+        {
+            string title = track.Name ?? "";
+            string artists = string.Join(" ", track.Artists?.Select(a => a.Name ?? "") ?? Array.Empty<string>());
+            string full = $"{title} {artists}";
+
+            int titleScore = 0;
+            int artistScore = 0;
+            int fullScore = Similarity(pq.Raw, full);
+
+            if (!string.IsNullOrWhiteSpace(pq.TitleCandidate))
+                titleScore = Similarity(pq.TitleCandidate!, title);
+
+            if (!string.IsNullOrWhiteSpace(pq.ArtistCandidate))
+                artistScore = Similarity(pq.ArtistCandidate!, artists);
+
+            double score;
+
+            if (pq.TitleCandidate != null && pq.ArtistCandidate != null)
+            {
+                // We think we know both artist & title
+                score = 0.5 * titleScore + 0.3 * artistScore + 0.2 * fullScore;
+            }
+            else
+            {
+                // No strong structure → rely more on full query
+                score = 0.7 * fullScore + 0.3 * Math.Max(titleScore, artistScore);
+            }
+
+            return (int)Math.Round(score);
+        }
+
+        private static int ScoreTrack(FullTrack track, List<ParsedQuery> interpretations)
+        {
+            int best = 0;
+
+            foreach (ParsedQuery pq in interpretations)
+            {
+                int s = ScoreTrackForInterpretation(track, pq);
+                if (s > best)
+                    best = s;
+            }
+
+            return best;
+        }
+
+        public static async Task EnsurePlaylistCacheAsync(Window_Settings windowSettings = null, bool force = false)
+        {
+            if (Client == null)
+                return;
+
+            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
+                Settings.Settings.SpotifyPlaylistId == "-1")
+                return;
+
+            // Fast path: already initialized
+            if (_playlistCacheInitialized && !force)
+                return;
+
+            lock (_playlistLock)
+            {
+                if (_playlistCacheInitialized && !force)
+                    return;
+                _playlistCacheInitialized = true; // mark as initialized; actual fill happens below
+            }
+
+            if (windowSettings != null)
+            {
+                windowSettings.TbGridLoading.Text = "Caching Playlist: 0";
+                windowSettings.GridLoading.Visibility = Visibility.Visible;
+            }
+
+            Stopwatch sw = new();
+
+            Logger.LogStr("SPOTIFY: Started caching playlist");
+            sw.Reset();
+            sw.Start();
+            try
+            {
+                _playlistTrackIds.Clear();
+
+                // Basic pagination – adapt to your SpotifyAPI-NET overloads
+                Paging<PlaylistTrack<IPlayableItem>> page = await ApiCallMeter.RunAsync("Playlists.GetItems",
+                    () => Client.Playlists.GetItems(Settings.Settings.SpotifyPlaylistId),
+                    softLimitPerminute);
+
+                int counter = 0;
+
+                while (page?.Items is { Count: > 0 })
+                {
+                    foreach (PlaylistTrack<IPlayableItem> item in page.Items)
+                    {
+                        if (item.Track is FullTrack fullTrack && !string.IsNullOrEmpty(fullTrack.Id))
+                            _playlistTrackIds.Add(fullTrack.Id);
+
+                        counter++;
+                        if (windowSettings == null) continue;
+                        if (counter % 25 == 0) // update UI every 25 items
+                        {
+                            await windowSettings.Dispatcher.InvokeAsync(() =>
+                            {
+                                windowSettings.TbGridLoading.Text =
+                                    $"Caching Playlist: {_playlistTrackIds.Count}";
+                            }, DispatcherPriority.Background);
+                        }
+                    }
+
+                    if (page.Next == null)
+                        break;
+
+                    page = await ApiCallMeter.RunAsync("Client.NextPage", () => Client.NextPage(page), softLimitPerminute);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Logger.LogStr("Error initializing playlist cache");
+                Logger.LogExc(ex);
+                // If you want, you can set _playlistCacheInitialized = false here to retry later
+            }
+            finally
+            {
+                sw.Stop();
+                Logger.LogStr($"SPOTIFY: Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.Seconds}s)");
+                if (windowSettings != null)
+                {
+                    windowSettings.TbGridLoading.Text = "Getting things ready";
+                    windowSettings.GridLoading.Visibility = Visibility.Collapsed;
+                }
             }
         }
     }
