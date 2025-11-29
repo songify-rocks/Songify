@@ -28,6 +28,8 @@ using System.Xml.Linq;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Models.Spotify;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Image = SpotifyAPI.Web.Image;
@@ -121,8 +123,8 @@ namespace Songify_Slim.Util.Songify
 
                             if (!wintitle.Contains(" - VLC media player"))
                             {
-                                trackinfo = Settings.Settings.CustomPauseTextEnabled
-                                    ? new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" }
+                                trackinfo = Settings.CustomPauseTextEnabled
+                                    ? new TrackInfo { Artists = Settings.CustomPauseText, Title = "" }
                                     : new TrackInfo { Artists = "", Title = "" };
                                 break;
                             }
@@ -158,9 +160,9 @@ namespace Songify_Slim.Util.Songify
 
                         case "foobar2000":
                             // Splitting the win title which is always Artist - Title
-                            if (wintitle.StartsWith("foobar2000") && Settings.Settings.CustomPauseTextEnabled)
+                            if (wintitle.StartsWith("foobar2000") && Settings.CustomPauseTextEnabled)
                             {
-                                trackinfo = new TrackInfo { Artists = Settings.Settings.CustomPauseText, Title = "" };
+                                trackinfo = new TrackInfo { Artists = Settings.CustomPauseText, Title = "" };
                                 break; // Exit early, do NOT continue with the parsing
                             }
 
@@ -203,7 +205,7 @@ namespace Songify_Slim.Util.Songify
             GlobalObjects.CurrentSong = trackinfo;
             await UpdateWebServerResponse(trackinfo);
 
-            string output = Settings.Settings.OutputString;
+            string output = Settings.OutputString;
 
             int start = output.IndexOf("{{", StringComparison.Ordinal);
             int end = output.LastIndexOf("}}", StringComparison.Ordinal) + 2;
@@ -229,7 +231,7 @@ namespace Songify_Slim.Util.Songify
             //IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/songify.txt", output.Trim());
             IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "songify.txt"), output.Trim());
 
-            if (Settings.Settings.SplitOutput)
+            if (Settings.SplitOutput)
             {
                 IoManager.WriteSplitOutput(trackinfo.Artists, trackinfo.Title, "");
             }
@@ -259,7 +261,7 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task ExecutePauseActions()
         {
-            switch (Settings.Settings.PauseOption)
+            switch (Settings.PauseOption)
             {
                 case Enums.PauseOptions.Nothing:
                     return;
@@ -267,27 +269,27 @@ namespace Songify_Slim.Util.Songify
                 case Enums.PauseOptions.PauseText:
                     // read the text file
                     if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
-                    IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.Settings.CustomPauseText);
-                    if (Settings.Settings.DownloadCover &&
-                        (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText))
+                    IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
+                    if (Settings.DownloadCover &&
+                        (Settings.PauseOption == Enums.PauseOptions.PauseText))
                         await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
-                    if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
-                    await SongifyService.UploadSong(Settings.Settings.CustomPauseText);
+                    if (Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
+                    await SongifyService.UploadSong(Settings.CustomPauseText);
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         MainWindow main = Application.Current.MainWindow as MainWindow;
                         main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                         {
-                            main.SetTextPreview(Settings.Settings.CustomPauseText);
+                            main.SetTextPreview(Settings.CustomPauseText);
                         }));
                     });
                     break;
 
                 case Enums.PauseOptions.ClearAll:
-                    if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                    if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
-                    if (Settings.Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
+                    if (Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
                     await SongifyService.UploadSong("");
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
@@ -363,8 +365,8 @@ namespace Songify_Slim.Util.Songify
             //_updating = true;
             if (SpotifyApiHandler.Client == null)
             {
-                if (!string.IsNullOrEmpty(Settings.Settings.SpotifyAccessToken) &&
-                    !string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
+                if (!string.IsNullOrEmpty(Settings.SpotifyAccessToken) &&
+                    !string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                 {
                     await SpotifyApiHandler.Auth();
                 }
@@ -433,8 +435,8 @@ namespace Songify_Slim.Util.Songify
                     {
                         dynamic payload = new
                         {
-                            uuid = Settings.Settings.Uuid,
-                            key = Settings.Settings.AccessKey,
+                            uuid = Settings.Uuid,
+                            key = Settings.AccessKey,
                             queueid = current.Queueid,
                         };
                         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
@@ -479,7 +481,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId))
+                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
                     {
                         //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await QueueService.CleanupServerQueueAsync();
@@ -681,7 +683,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (!songInfo.IsPlaying)
             {
-                switch (Settings.Settings.PauseOption)
+                switch (Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
                         return;
@@ -689,27 +691,27 @@ namespace Songify_Slim.Util.Songify
                     case Enums.PauseOptions.PauseText:
                         // read the text file
                         if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
-                        IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.Settings.CustomPauseText);
-                        if (!Settings.Settings.KeepAlbumCover)
+                        IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
+                        if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.Settings.DownloadCover && (Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
-                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.PauseText)
+                            if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.PauseText)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                                 GlobalObjects.Canvas = null;
                             }
                         }
-                        IoManager.WriteSplitOutput(Settings.Settings.CustomPauseText, "", "");
+                        IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
 
-                        await SongifyService.UploadSong(Settings.Settings.CustomPauseText);
+                        await SongifyService.UploadSong(Settings.CustomPauseText);
 
                         break;
 
                     case Enums.PauseOptions.ClearAll:
-                        if (!Settings.Settings.KeepAlbumCover)
+                        if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.Settings.DownloadCover && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
-                            if (Settings.Settings.DownloadCanvas && Settings.Settings.PauseOption == Enums.PauseOptions.ClearAll)
+                            if (Settings.DownloadCover && Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.ClearAll)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                                 GlobalObjects.Canvas = null;
@@ -729,10 +731,10 @@ namespace Songify_Slim.Util.Songify
                     MainWindow main = Application.Current.MainWindow as MainWindow;
                     main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        switch (Settings.Settings.PauseOption)
+                        switch (Settings.PauseOption)
                         {
                             case Enums.PauseOptions.PauseText:
-                                main.SetTextPreview(Settings.Settings.CustomPauseText);
+                                main.SetTextPreview(Settings.CustomPauseText);
                                 break;
 
                             case Enums.PauseOptions.ClearAll:
@@ -758,7 +760,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
-            string currentSongOutput = Settings.Settings.OutputString;
+            string currentSongOutput = Settings.OutputString;
             // this only is used for Spotify because here the artist and title are split
             // replace parameters with actual info
             string s_singleArtist = songInfo.FullArtists?.FirstOrDefault() != null
@@ -863,7 +865,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             IoManager.WriteSplitOutput(
-                Settings.Settings.OutputString.Contains("{single_artist}")
+                Settings.OutputString.Contains("{single_artist}")
                     ? songInfo.FullArtists?.FirstOrDefault()?.Name ?? ""
                     : songInfo.Artists ?? "",
                 songInfo.Title ?? "",
@@ -893,8 +895,8 @@ namespace Songify_Slim.Util.Songify
 
             //Write History
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";
-            if (Settings.Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
-                historySongOutput.Trim() != Settings.Settings.CustomPauseText)
+            if (Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
+                historySongOutput.Trim() != Settings.CustomPauseText)
             {
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
@@ -931,8 +933,8 @@ namespace Songify_Slim.Util.Songify
             }
 
             //Upload History
-            if (Settings.Settings.UploadHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
-                currentSongOutput.Trim() != Settings.Settings.CustomPauseText)
+            if (Settings.UploadHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
+                currentSongOutput.Trim() != Settings.CustomPauseText)
             {
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
@@ -956,19 +958,19 @@ namespace Songify_Slim.Util.Songify
             //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
             // Send Message to Twitch if checked
-            if (Settings.Settings.AnnounceInChat)
+            if (Settings.AnnounceInChat)
             {
                 TwitchHandler.SendCurrSong();
             }
 
             //Save Album Cover
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
-            if (Settings.Settings.DownloadCanvas && _canvasResponse is { Item1: true })
+            if (Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
                 IoManager.DownloadCanvas(_canvasResponse.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                 await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
-            else if (Settings.Settings.DownloadCover)
+            else if (Settings.DownloadCover)
             {
                 await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
@@ -1012,15 +1014,15 @@ namespace Songify_Slim.Util.Songify
             {
                 TwitchUser = new
                 {
-                    Settings.Settings.TwitchUser.Id,
-                    Settings.Settings.TwitchUser.Login,
-                    Settings.Settings.TwitchUser.BroadcasterType
+                    Settings.TwitchUser.Id,
+                    Settings.TwitchUser.Login,
+                    Settings.TwitchUser.BroadcasterType
                 },
                 SpotifyUser = new
                 {
-                    Settings.Settings.SpotifyProfile.Id,
-                    Settings.Settings.SpotifyProfile.DisplayName,
-                    Settings.Settings.SpotifyProfile.Product
+                    Settings.SpotifyProfile.Id,
+                    Settings.SpotifyProfile.DisplayName,
+                    Settings.SpotifyProfile.Product
                 }
             };
 
@@ -1060,7 +1062,7 @@ namespace Songify_Slim.Util.Songify
             dictionary["RequesterProfilePic"] = GlobalObjects.FullRequester == null
                 ? ""
                 : GlobalObjects.FullRequester.ProfileImageUrl;
-            dictionary["GoalTotal"] = Settings.Settings.RewardGoalAmount;
+            dictionary["GoalTotal"] = Settings.RewardGoalAmount;
             dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
             dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
             dictionary["RequestQueue"] = GlobalObjects.ReqList;

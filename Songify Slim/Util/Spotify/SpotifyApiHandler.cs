@@ -21,6 +21,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FuzzySharp;
+using Songify_Slim.Models.Spotify;
+using Songify_Slim.Util.Configuration;
 using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.General.Enums.PlaybackAction;
 using static System.Net.WebRequestMethods;
@@ -60,7 +62,7 @@ namespace Songify_Slim.Util.Spotify
         public static async Task Auth()
         {
             AuthTimer.Elapsed += AuthTimer_Elapsed;
-            if (!string.IsNullOrEmpty(Settings.Settings.SpotifyRefreshToken))
+            if (!string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
             {
                 Logger.LogStr("SPOTIFY: Refreshing Tokens");
                 await RefreshTokens();
@@ -68,14 +70,14 @@ namespace Songify_Slim.Util.Spotify
             }
 
             Logger.LogStr("SPOTIFY: Getting new tokens");
-            _server = new EmbedIOAuthServer(new Uri($"http://{Settings.Settings.SpotifyRedirectUri}:4002/auth"), 4002,
+            _server = new EmbedIOAuthServer(new Uri($"http://{Settings.SpotifyRedirectUri}:4002/auth"), 4002,
                 Assembly.GetExecutingAssembly(), "Songify_Slim.default_site");
             await _server.Start();
 
             _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
 
             LoginRequest request =
-                new(_server.BaseUri, Settings.Settings.ClientId, LoginRequest.ResponseType.Code)
+                new(_server.BaseUri, Settings.ClientId, LoginRequest.ResponseType.Code)
                 {
                     Scope = new List<string>
                     {
@@ -118,8 +120,8 @@ namespace Songify_Slim.Util.Spotify
             // 1) Get new tokens (background thread is fine)
             OAuthClient oauth = new();
             TokenSwapRefreshRequest refreshRequest = new(
-                new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
-                Settings.Settings.SpotifyRefreshToken
+                new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
+                Settings.SpotifyRefreshToken
             );
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
@@ -127,19 +129,19 @@ namespace Songify_Slim.Util.Spotify
             Debug.WriteLine("We got a refreshed access token from server.");
 
             // 2) Update settings with new tokens
-            Settings.Settings.SpotifyAccessToken = refreshResponse.AccessToken;
+            Settings.SpotifyAccessToken = refreshResponse.AccessToken;
             if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
-                Settings.Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
+                Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
 
             // 3) Build client using the *updated* tokens
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(
                 new AuthorizationCodeAuthenticator(
-                    Settings.Settings.ClientId,
-                    Settings.Settings.ClientSecret,
+                    Settings.ClientId,
+                    Settings.ClientSecret,
                     new AuthorizationCodeTokenResponse
                     {
-                        AccessToken = Settings.Settings.SpotifyAccessToken,
-                        RefreshToken = Settings.Settings.SpotifyRefreshToken
+                        AccessToken = Settings.SpotifyAccessToken,
+                        RefreshToken = Settings.SpotifyRefreshToken
                     }
                 )
             );
@@ -156,7 +158,7 @@ namespace Songify_Slim.Util.Spotify
                     if (!AuthTimer.Enabled) // or .Enabled if it's a different timer type
                         AuthTimer.Start();
                     GlobalObjects.SpotifyProfile = await GetUser();
-                    Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
+                    Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
                     Logger.LogStr(
                         $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                     Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
@@ -176,14 +178,14 @@ namespace Songify_Slim.Util.Spotify
         {
             OAuthClient oauth = new();
             TokenSwapTokenRequest tokenRequest = new(
-                new Uri($"{BaseUrl}/swap?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
+                new Uri($"{BaseUrl}/swap?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
                 response.Code);
             AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
             Logger.LogStr(
                 $"SPOTIFY: We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
 
             TokenSwapRefreshRequest refreshRequest = new(
-                new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
+                new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
                 tokenResponse.RefreshToken
             );
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
@@ -192,11 +194,11 @@ namespace Songify_Slim.Util.Spotify
                 $"SPOTIFY: We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
 
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
-                .WithAuthenticator(new AuthorizationCodeAuthenticator(Settings.Settings.ClientId,
-                    Settings.Settings.ClientSecret, tokenResponse));
+                .WithAuthenticator(new AuthorizationCodeAuthenticator(Settings.ClientId,
+                    Settings.ClientSecret, tokenResponse));
 
-            Settings.Settings.SpotifyAccessToken = tokenResponse.AccessToken;
-            Settings.Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
+            Settings.SpotifyAccessToken = tokenResponse.AccessToken;
+            Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
 
             Client = new SpotifyClient(config);
             if (!AuthTimer.Enabled)
@@ -222,14 +224,14 @@ namespace Songify_Slim.Util.Spotify
                         //((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
                         //    PackIconBoxIconsKind.LogosSpotify;
                         GlobalObjects.SpotifyProfile = await GetUser();
-                        Settings.Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
+                        Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
                         Logger.LogStr(
                             $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                         Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
 
                         if (GlobalObjects.SpotifyProfile.Product == "premium") return;
 
-                        if (!Settings.Settings.HideSpotifyPremiumWarning)
+                        if (!Settings.HideSpotifyPremiumWarning)
                             await ShowPremiumRequiredDialogAsync();
 
                         ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
@@ -267,7 +269,7 @@ namespace Songify_Slim.Util.Spotify
 
             if (result == MessageDialogResult.Negative)
             {
-                Settings.Settings.HideSpotifyPremiumWarning = true;
+                Settings.HideSpotifyPremiumWarning = true;
             }
         }
 
@@ -318,9 +320,9 @@ namespace Songify_Slim.Util.Spotify
                 }
 
                 if (currentPlayback?.Device?.Id != null &&
-                    Settings.Settings.SpotifyDeviceId != currentPlayback.Device.Id)
+                    Settings.SpotifyDeviceId != currentPlayback.Device.Id)
                 {
-                    Settings.Settings.SpotifyDeviceId = currentPlayback.Device.Id;
+                    Settings.SpotifyDeviceId = currentPlayback.Device.Id;
                 }
 
                 // 3) Artists / progress math
@@ -374,7 +376,7 @@ namespace Songify_Slim.Util.Spotify
                 await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                     new PlayerAddToQueueRequest(songUri)
                     {
-                        DeviceId = Settings.Settings.SpotifyDeviceId
+                        DeviceId = Settings.SpotifyDeviceId
                     }), softLimitPerMinute: softLimitPerminute);
                 return true;
             }
@@ -389,7 +391,7 @@ namespace Songify_Slim.Util.Spotify
                         {
                             await Client.Player.AddToQueue(new PlayerAddToQueueRequest(songUri)
                             {
-                                DeviceId = Settings.Settings.SpotifyDeviceId
+                                DeviceId = Settings.SpotifyDeviceId
                             });
                             return true;
                         }
@@ -537,8 +539,8 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 // No playlist configured -> save to library
-                if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
-                    Settings.Settings.SpotifyPlaylistId == "-1")
+                if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
+                    Settings.SpotifyPlaylistId == "-1")
                 {
                     await Client.Library.SaveTracks(
                         new LibrarySaveTracksRequest(new List<string> { trackId })
@@ -562,7 +564,7 @@ namespace Songify_Slim.Util.Spotify
                 PlaylistAddItemsRequest request = new(new List<string> { "spotify:track:" + trackId });
 
                 await ApiCallMeter.RunAsync("Playlists.AddItems",
-                    () => Client.Playlists.AddItems(Settings.Settings.SpotifyPlaylistId, request),
+                    () => Client.Playlists.AddItems(Settings.SpotifyPlaylistId, request),
                     softLimitPerminute);
 
                 // Update cache
@@ -633,7 +635,7 @@ namespace Songify_Slim.Util.Spotify
             {
                 await ApiCallMeter.RunAsync("Player.SeekTo", () => Client.Player.SeekTo(new PlayerSeekToRequest(0)
                 {
-                    DeviceId = Settings.Settings.SpotifyDeviceId
+                    DeviceId = Settings.SpotifyDeviceId
                 }), softLimitPerminute);
             }
             catch (Exception)
@@ -664,7 +666,7 @@ namespace Songify_Slim.Util.Spotify
                         await ApiCallMeter.RunAsync("Player.PausePlayback", () =>
                             Client.Player.PausePlayback(new PlayerPausePlaybackRequest
                             {
-                                DeviceId = Settings.Settings.SpotifyDeviceId
+                                DeviceId = Settings.SpotifyDeviceId
                             }), softLimitPerminute);
                         return false;
 
@@ -672,7 +674,7 @@ namespace Songify_Slim.Util.Spotify
                         await ApiCallMeter.RunAsync("Player.ResumePlayback", () =>
                             Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
                             {
-                                DeviceId = Settings.Settings.SpotifyDeviceId
+                                DeviceId = Settings.SpotifyDeviceId
                             }), softLimitPerminute);
                         return true;
                     // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
@@ -932,7 +934,7 @@ namespace Songify_Slim.Util.Spotify
                 await ApiCallMeter.RunAsync("Player.SetShuffle", () => Client.Player.SetShuffle(
                     new PlayerShuffleRequest(b)
                     {
-                        DeviceId = Settings.Settings.SpotifyDeviceId
+                        DeviceId = Settings.SpotifyDeviceId
                     }), softLimitPerminute);
             }
             catch (Exception ex)
@@ -950,7 +952,7 @@ namespace Songify_Slim.Util.Spotify
                 await ApiCallMeter.RunAsync("Player.ResumePlayback", () => Client.Player.ResumePlayback(
                     new PlayerResumePlaybackRequest
                     {
-                        DeviceId = Settings.Settings.SpotifyDeviceId,
+                        DeviceId = Settings.SpotifyDeviceId,
                         ContextUri = playlistId.Contains("spotify:playlist") ? playlistId : "spotify:playlist:" + playlistId,
                         PositionMs = 0
                     }), softLimitPerminute);
@@ -1151,8 +1153,8 @@ namespace Songify_Slim.Util.Spotify
             if (Client == null)
                 return;
 
-            if (string.IsNullOrEmpty(Settings.Settings.SpotifyPlaylistId) ||
-                Settings.Settings.SpotifyPlaylistId == "-1")
+            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
+                Settings.SpotifyPlaylistId == "-1")
                 return;
 
             // Fast path: already initialized
@@ -1183,7 +1185,7 @@ namespace Songify_Slim.Util.Spotify
 
                 // Basic pagination – adapt to your SpotifyAPI-NET overloads
                 Paging<PlaylistTrack<IPlayableItem>> page = await ApiCallMeter.RunAsync("Playlists.GetItems",
-                    () => Client.Playlists.GetItems(Settings.Settings.SpotifyPlaylistId),
+                    () => Client.Playlists.GetItems(Settings.SpotifyPlaylistId),
                     softLimitPerminute);
 
                 int counter = 0;

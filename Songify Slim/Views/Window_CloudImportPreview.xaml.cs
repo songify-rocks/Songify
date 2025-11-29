@@ -11,7 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Songify_Slim.Util.Settings;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Views
 {
@@ -101,7 +101,6 @@ namespace Songify_Slim.Views
                 DiffTextBox.Document.Blocks.Add(paragraph);
             }
         }
-
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {

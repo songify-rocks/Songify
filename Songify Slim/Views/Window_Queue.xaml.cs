@@ -2,7 +2,6 @@
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using System;
 using System.Collections.Generic;
@@ -14,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Spotify;
 using Swan.Formatters;

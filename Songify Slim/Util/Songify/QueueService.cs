@@ -9,6 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Queue;
+using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -51,7 +54,7 @@ namespace Songify_Slim.Util.Songify
             GlobalObjects.ReqList.Add(new RequestObject
             {
                 Queueid = GlobalObjects.ReqList.Count + 1,
-                Uuid = Settings.Settings.Uuid,
+                Uuid = Settings.Uuid,
                 Trackid = (string)x["queueItem"]?["Trackid"],
                 Artist = (string)x["queueItem"]?["Artist"],
                 Title = (string)x["queueItem"]?["Title"],
@@ -96,11 +99,11 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                List<Models.QueueItem> serverQueue =
-                    Json.Deserialize<List<Models.QueueItem>>(result);
+                List<QueueItem> serverQueue =
+                    Json.Deserialize<List<QueueItem>>(result);
 
                 // Find every item in SQL that isn't in ReqList
-                List<Models.QueueItem> toRemove = serverQueue
+                List<QueueItem> toRemove = serverQueue
                     .Where(q => GlobalObjects.ReqList.All(o => o.Queueid != q.Queueid))
                     .ToList();
 

@@ -6,7 +6,8 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
-using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi; // for Enums
+
+// for Enums
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using System;
@@ -27,7 +28,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.Pear;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
@@ -215,7 +218,7 @@ namespace Songify_Slim.Util.General
 
         private static IPlayerOps GetPlayerOps()
         {
-            switch (Settings.Settings.Player)
+            switch (Settings.Player)
             {
                 case Enums.PlayerType.Spotify:
                     return Spotify;
@@ -524,13 +527,13 @@ namespace Songify_Slim.Util.General
 
         private static async Task<string> HandleStopSrRewardAsync(WebSocketCommand command)
         {
-            foreach (string rewardId in Settings.Settings.TwRewardId)
+            foreach (string rewardId in Settings.TwRewardId)
             {
                 await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
-                    Settings.Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
+                    Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
                     {
                         IsPaused = true
-                    }, Settings.Settings.TwitchAccessToken);
+                    }, Settings.TwitchAccessToken);
             }
             return "Song request rewards stopped.";
         }
@@ -551,8 +554,8 @@ namespace Songify_Slim.Util.General
                 RequestObject req =
                     GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                 if (req == null) return "";
-                Settings.Settings.UserBlacklist.Add(req.Requester);
-                Settings.Settings.UserBlacklist = Settings.Settings.UserBlacklist;
+                Settings.UserBlacklist.Add(req.Requester);
+                Settings.UserBlacklist = Settings.UserBlacklist;
                 return req.Requester;
             }
         }
@@ -561,7 +564,7 @@ namespace Songify_Slim.Util.General
         {
             FullTrack result = await SpotifyApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
             if (result != null)
-                Settings.Settings.SongBlacklist.Add(new TrackItem
+                Settings.SongBlacklist.Add(new TrackItem
                 {
                     Artists = string.Join(", ", result.Artists.Select(o => o.Name).ToList()),
                     TrackName = result.Name,
@@ -569,7 +572,7 @@ namespace Songify_Slim.Util.General
                     TrackUri = result.Uri,
                     ReadableName = string.Join(", ", result.Artists.Select(o => o.Name).ToList()) + " - " + result.Name
                 });
-            Settings.Settings.SongBlacklist = Settings.Settings.SongBlacklist;
+            Settings.SongBlacklist = Settings.SongBlacklist;
             await SpotifyApiHandler.SkipSong();
             // If Window_Blacklist is open, call LoadBlacklists();
             Application.Current.Dispatcher.Invoke(() =>
@@ -584,15 +587,15 @@ namespace Songify_Slim.Util.General
         {
             foreach (SimpleArtist currentSongFullArtist in GlobalObjects.CurrentSong.FullArtists)
             {
-                Settings.Settings.ArtistBlacklist.Add(currentSongFullArtist.Name);
+                Settings.ArtistBlacklist.Add(currentSongFullArtist.Name);
             }
-            Settings.Settings.ArtistBlacklist = Settings.Settings.ArtistBlacklist;
+            Settings.ArtistBlacklist = Settings.ArtistBlacklist;
         }
 
         private static void BlockArtist()
         {
-            Settings.Settings.ArtistBlacklist.Add(GlobalObjects.CurrentSong.FullArtists[0].Name);
-            Settings.Settings.ArtistBlacklist = Settings.Settings.ArtistBlacklist;
+            Settings.ArtistBlacklist.Add(GlobalObjects.CurrentSong.FullArtists[0].Name);
+            Settings.ArtistBlacklist = Settings.ArtistBlacklist;
         }
 
         private static bool IsWebSocketRequest(HttpListenerRequest request)

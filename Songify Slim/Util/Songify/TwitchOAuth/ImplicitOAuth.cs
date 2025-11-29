@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
@@ -65,7 +66,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             // Open the browser and send the user to the implicit autentication page on Twitch.
             try
             {
-                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") && !Settings.Settings.UseDefaultBrowser)
+                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") && !Settings.UseDefaultBrowser)
                 {
                     Process process = new()
                     {
@@ -168,7 +169,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 <style>
                   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
                   @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-                  
+
                   body {
                     text-align: center;
                     min-height: 100vh;
@@ -181,7 +182,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     background-size: 20px 20px;
                     font-family: 'Inter', sans-serif;
                   }
-                
+
                   h1 {
                     color: #1ed760;
                     font-weight: 700;
@@ -190,11 +191,11 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     opacity: 0;
                     transform: translateY(20px);
                   }
-                
+
                   h1.animate {
                     animation: fadeUp 0.6s ease-out forwards 0.5s;
                   }
-                
+
                   p {
                     color: #e2e8f0;
                     font-size: 1.125rem;
@@ -203,16 +204,16 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     opacity: 0;
                     transform: translateY(20px);
                   }
-                
+
                   p.animate {
                     animation: fadeUp 0.6s ease-out forwards 0.7s;
                   }
-                
+
                   .songify-text {
                     font-family: 'Pacifico', cursive;
                     color: #1ed760;
                   }
-                
+
                   .content {
                     height: 200px;
                     width: 200px;
@@ -224,27 +225,27 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     opacity: 0;
                     transform: scale(0.9);
                   }
-                
+
                   .content.animate {
                     animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
                   }
-                
+
                   .content img {
                     height: 70;
                     transition: transform 0.3s ease;
                   }
-                
+
                   .content img:hover {
                     transform: scale(1.1);
                   }
-                
+
                   .plus-sign {
                     margin: 0 1.5rem;
                     color: #e2e8f0;
                     font-size: 1.5rem;
                     font-weight: bold;
                   }
-                
+
                   .card {
                     background: #2b2b2b;
                     padding: 3rem;
@@ -257,7 +258,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     overflow: hidden;
                     border: 1px solid #363636;
                   }
-                
+
                   .card::before {
                     content: '';
                     position: absolute;
@@ -267,14 +268,14 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     height: 4px;
                     background: linear-gradient(90deg, #1ed760, #9147ff);
                   }
-                
+
                   @keyframes fadeUp {
                     to {
                       opacity: 1;
                       transform: translateY(0);
                     }
                   }
-                
+
                   @keyframes popIn {
                     to {
                       opacity: 1;
@@ -293,42 +294,42 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     <h1>Success!</h1>
                     <p><span class="songify-text">Songify</span> and Twitch are now connected!<br />You can close this page.</p>
                   </div>
-                
+
                   <script>
                     // Wait for logo to load before starting animations
                     window.addEventListener('load', function() {
                       const songifyLogo = document.querySelector('img[src*="songify.overcode"]');
-                      
+
                       function startAnimations() {
                         document.querySelector('.content').classList.add('animate');
                         document.querySelector('h1').classList.add('animate');
                         document.querySelector('p').classList.add('animate');
                       }
-                
+
                       if (songifyLogo.complete) {
                         startAnimations();
                       } else {
                         songifyLogo.addEventListener('load', startAnimations);
                       }
                     });
-                
+
                     let values = {
                       access_token: "TOKEN",
                       state: "STATE"
                     };
-                
+
                     const url = new URLSearchParams("?" + window.location.hash.substring(1))
                     window.history.replaceState(null, '', '/');
                     values.access_token = url.get('access_token');
                     values.state = url.get('state');
-                
+
                     jsonData = JSON.stringify(values);
-                
+
                     fetch('VARIABLE_FETCHURI', {
                       method: "POST",
                       body: JSON.stringify(jsonData)
                     })
-                
+
                     setTimeout(function() {
                       window.close();
                     }, 5000);

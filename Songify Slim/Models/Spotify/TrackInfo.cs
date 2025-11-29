@@ -4,7 +4,7 @@ using System.Linq;
 using Songify_Slim.Util.General;
 using SpotifyAPI.Web;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Spotify
 {
     public class TrackInfo : IEquatable<TrackInfo>
     {
@@ -76,8 +76,6 @@ namespace Songify_Slim.Models
             return !(left == right);
         }
     }
-
-
 
     public class PlaylistInfo
     {

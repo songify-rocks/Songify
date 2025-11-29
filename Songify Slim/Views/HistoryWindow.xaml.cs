@@ -1,5 +1,4 @@
 ﻿using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Xml.Linq;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Views
 {

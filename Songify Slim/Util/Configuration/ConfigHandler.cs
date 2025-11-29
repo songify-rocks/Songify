@@ -1,10 +1,4 @@
-﻿using Newtonsoft.Json;
-using Songify_Slim.Models;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
-using SpotifyAPI;
-using SpotifyAPI.Web;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,17 +9,20 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Newtonsoft.Json;
 using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using static Songify_Slim.Util.General.Enums;
-using static Songify_Slim.Util.Settings.YamlTypeConverters;
-using static System.Net.WebRequestMethods;
+using static Songify_Slim.Util.Configuration.YamlTypeConverters;
 using File = System.IO.File;
 using FileMode = System.IO.FileMode;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Slim.Util.Configuration
 {
     /// <summary>
     ///     This class is for writing, exporting and importing the config file

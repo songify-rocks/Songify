@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.General
 {
@@ -31,10 +32,10 @@ namespace Songify_Slim.Util.General
             try
             {
                 string interpretedText = InterpretEscapeCharacters(currSong);
-                if (songPath.ToLower().Contains("songify.txt") && Settings.Settings.AppendSpaces && !string.IsNullOrEmpty(currSong))
-                    interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
-                else if (Settings.Settings.AppendSpacesSplitFiles && !string.IsNullOrEmpty(currSong))
-                    interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.Settings.SpaceCount);
+                if (songPath.ToLower().Contains("songify.txt") && Settings.AppendSpaces && !string.IsNullOrEmpty(currSong))
+                    interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.SpaceCount);
+                else if (Settings.AppendSpacesSplitFiles && !string.IsNullOrEmpty(currSong))
+                    interpretedText = interpretedText.PadRight(interpretedText.Length + Settings.SpaceCount);
 
                 if (interpretedText.Trim().StartsWith("-"))
                 {
@@ -88,7 +89,7 @@ namespace Songify_Slim.Util.General
 
             WriteOutput(GlobalObjects.RootDirectory + "/Artist.txt", artist);
             WriteOutput(GlobalObjects.RootDirectory + "/Title.txt", title + extra);
-            WriteOutput(GlobalObjects.RootDirectory + "/Requester.txt", string.IsNullOrEmpty(requester) ? "" : Settings.Settings.RequesterPrefix + requester);
+            WriteOutput(GlobalObjects.RootDirectory + "/Requester.txt", string.IsNullOrEmpty(requester) ? "" : Settings.RequesterPrefix + requester);
         }
 
         public static async void DownloadCanvas(string canvasUrl, string canvasPath)

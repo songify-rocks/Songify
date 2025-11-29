@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
@@ -28,10 +29,10 @@ namespace Songify_Slim.Util.Songify.Twitch
                 // Get Subscriber status for the user and determine if they are t1 t2 or t3
                 GetBroadcasterSubscriptionsResponse subscriptionsResponse =
                     await TwitchHandler.TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(
-                        Settings.Settings.TwitchUser.Id,
+                        Settings.TwitchUser.Id,
                         100,
                         pagination,
-                        Settings.Settings.TwitchAccessToken);
+                        Settings.TwitchAccessToken);
                 if (subscriptionsResponse?.Data != null)
                 {
                     allSubscribers.AddRange(subscriptionsResponse.Data);
@@ -52,11 +53,11 @@ namespace Songify_Slim.Util.Songify.Twitch
             {
                 // Fetch a page of chatters
                 GetChattersResponse chattersResponse = await TwitchHandler.TwitchApi.Helix.Chat.GetChattersAsync(
-                    Settings.Settings.TwitchUser.Id,
-                    Settings.Settings.TwitchUser.Id,
+                    Settings.TwitchUser.Id,
+                    Settings.TwitchUser.Id,
                     100,
                     pagination,
-                    Settings.Settings.TwitchAccessToken);
+                    Settings.TwitchAccessToken);
 
                 // Add chatters from the current page to the list
                 if (chattersResponse?.Data != null)
@@ -80,11 +81,11 @@ namespace Songify_Slim.Util.Songify.Twitch
             {
                 // Fetch a page of chatters
                 GetModeratorsResponse moderatorsResponse = await TwitchHandler.TwitchApi.Helix.Moderation.GetModeratorsAsync(
-                    Settings.Settings.TwitchUser.Id,
+                    Settings.TwitchUser.Id,
                     null,
                     100,
                     pagination,
-                    Settings.Settings.TwitchAccessToken);
+                    Settings.TwitchAccessToken);
 
                 // Add chatters from the current page to the list
                 if (moderatorsResponse?.Data != null)
@@ -108,11 +109,11 @@ namespace Songify_Slim.Util.Songify.Twitch
             {
                 // Fetch a page of chatters
                 GetChannelVIPsResponse vipsResponse = await TwitchHandler.TwitchApi.Helix.Channels.GetVIPsAsync(
-                    Settings.Settings.TwitchUser.Id,
+                    Settings.TwitchUser.Id,
                     null,
                     100,
                     pagination,
-                    Settings.Settings.TwitchAccessToken);
+                    Settings.TwitchAccessToken);
 
                 // Add chatters from the current page to the list
                 if (vipsResponse?.Data != null)
@@ -129,14 +130,14 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         public static async Task<User[]> GetTwitchUsersAsync(List<string> users)
         {
-            GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.Settings.TwitchAccessToken);
+            GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.TwitchAccessToken);
             return x.Users.Length > 0 ? x.Users : [];
         }
 
         public static async Task<List<EventSubSubscription>> GetEventSubscriptions()
         {
             GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
-                Settings.Settings.TwitchAccessToken);
+                Settings.TwitchAccessToken);
             return x.Subscriptions.ToList();
         }
 
@@ -146,7 +147,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             try
             {
                 rewardsResponse =
-                    await TwitchHandler.TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.Settings.TwitchChannelId, null,
+                    await TwitchHandler.TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.TwitchChannelId, null,
                         b);
             }
             catch (Exception e)

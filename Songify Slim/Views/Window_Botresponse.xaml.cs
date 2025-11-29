@@ -1,9 +1,9 @@
 ﻿using MahApps.Metro.Controls;
-using Songify_Slim.Util.Settings;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Views
 {
@@ -16,6 +16,7 @@ namespace Songify_Slim.Views
         {
             InitializeComponent();
         }
+
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             //Cctrl.Content = new UC_BotResponses();
@@ -48,10 +49,12 @@ namespace Songify_Slim.Views
         {
             Settings.BotCmdNext = ((ToggleSwitch)sender).IsOn;
         }
+
         private void tgl_botcmd_skip_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.BotCmdSkip = ((ToggleSwitch)sender).IsOn;
         }
+
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             //ConfigHandler.WriteXml(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml", true);
@@ -85,26 +88,31 @@ namespace Songify_Slim.Views
                         ? "song"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "pos":
                     Settings.BotCmdPosTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "pos"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "next":
                     Settings.BotCmdNextTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "next"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "skip":
                     Settings.BotCmdSkipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "skip"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "voteskip":
                     Settings.BotCmdVoteskipTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "voteskip"
                         : ((TextBox)sender).Text;
                     break;
+
                 case "ssr":
                     Settings.BotCmdSsrTrigger = string.IsNullOrWhiteSpace(((TextBox)sender).Text)
                         ? "ssr"

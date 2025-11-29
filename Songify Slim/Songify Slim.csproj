@@ -222,9 +222,9 @@
     <Compile Include="Util\General\TaskQueue.cs" />
     <Compile Include="Util\General\ThumbnailConverter.cs" />
     <Compile Include="Util\General\Utils.cs" />
-    <Compile Include="Util\Settings\ConfigComparer.cs" />
-    <Compile Include="Util\Settings\PlayerTypeYamlConverter.cs" />
-    <Compile Include="Util\Settings\YamlTypeConverters.cs" />
+    <Compile Include="Util\Configuration\ConfigComparer.cs" />
+    <Compile Include="Util\Configuration\PlayerTypeYamlConverter.cs" />
+    <Compile Include="Util\Configuration\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
     <Compile Include="Util\Songify\APIs\SongifyApi.cs" />
     <Compile Include="Util\Songify\CanvasService.cs" />
@@ -282,13 +282,13 @@
     <Compile Include="Util\General\StringExtension.cs" />
     <Compile Include="Util\General\WebServer.cs" />
     <Compile Include="Util\Spotify\SpotifyApiHandler.cs" />
-    <Compile Include="Util\Settings\ConfigHandler.cs" />
+    <Compile Include="Util\Configuration\ConfigHandler.cs" />
     <Compile Include="Views\ApiMetricsViewModel.cs" />
     <Compile Include="Views\HistoryWindow.xaml.cs">
       <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\General\Logger.cs" />
-    <Compile Include="Util\Settings\Settings.cs" />
+    <Compile Include="Util\Configuration\Settings.cs" />
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

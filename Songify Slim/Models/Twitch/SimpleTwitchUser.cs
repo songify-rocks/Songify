@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Twitch
 {
     public class SimpleTwitchUser
     {
@@ -42,5 +38,4 @@ namespace Songify_Slim.Models
             };
         }
     }
-
 }

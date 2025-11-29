@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.Songify.APIs
 {
@@ -12,7 +13,7 @@ namespace Songify_Slim.Util.Songify.APIs
     {
         private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
 
-        public static Task<string> GetQueueRawAsync() => ApiClient.Get("queue", Settings.Settings.Uuid);
+        public static Task<string> GetQueueRawAsync() => ApiClient.Get("queue", Settings.Uuid);
 
         public static Task<string> PostQueueAsync(string body) => ApiClient.Post("queue", body);
 
@@ -22,8 +23,8 @@ namespace Songify_Slim.Util.Songify.APIs
         {
             var payload = new
             {
-                uuid = Settings.Settings.Uuid,
-                key = Settings.Settings.AccessKey,
+                uuid = Settings.Uuid,
+                key = Settings.AccessKey,
                 queueid = queueId
             };
 

@@ -1,6 +1,5 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Spotify;
 using SpotifyAPI.Web;
 

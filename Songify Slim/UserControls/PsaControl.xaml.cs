@@ -14,8 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Responses;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 
 namespace Songify_Slim.UserControls

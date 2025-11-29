@@ -1,23 +1,18 @@
-﻿using Songify_Slim.Models;
-using Songify_Slim.Models.Twitch;
-using Songify_Slim.UserControls;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Songify;
-using Songify_Slim.Util.Songify.Twitch;
-using Songify_Slim.Views;
-using SpotifyAPI.Web;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using static Songify_Slim.Util.General.Enums;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Slim.Util.Configuration
 {
     /// <summary>
     ///     This class is a getter and setter for Settings
@@ -32,9 +27,10 @@ namespace Songify_Slim.Util.Settings
         }
 
         public static bool SkipOnlyNonSrSongs { get => GetSkipOnlyNonSrSongs(); set => SetSkipOnlyNonSrSongs(value); }
+
         public static bool SrForBits
         {
-            get => GetSrForBits(); 
+            get => GetSrForBits();
             set => SetSrForBits(value);
         }
 
@@ -45,6 +41,7 @@ namespace Songify_Slim.Util.Settings
         {
             return CurrentConfig.TwitchCredentials.TwitchChatAccount;
         }
+
         private static void SetTwitchChatAccount(TwitchChatAccount value)
         {
             CurrentConfig.TwitchCredentials.TwitchChatAccount = value;
@@ -813,7 +810,6 @@ namespace Songify_Slim.Util.Settings
         {
             return CurrentConfig.TwitchCredentials.BotTokenExpiryDate;
         }
-
 
         private static void SetUnlimitedSrUserlevelsReward(List<int> value)
         {
@@ -2397,7 +2393,7 @@ namespace Songify_Slim.Util.Settings
             CurrentConfig.AppConfig.RewardGoalAmount = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
-        
+
         private static void SetSaveHistory(bool value)
         {
             CurrentConfig.AppConfig.SaveHistory = value;
@@ -2751,7 +2747,6 @@ namespace Songify_Slim.Util.Settings
 
         private static string DecryptString(string encryptedText)
         {
-
             if (string.IsNullOrEmpty(encryptedText))
                 return "";
             try
@@ -2765,7 +2760,6 @@ namespace Songify_Slim.Util.Settings
                 Logger.LogStr("Failed to decrypt string: " + e.Message);
                 return "";
             }
-
         }
     }
-} 
+}

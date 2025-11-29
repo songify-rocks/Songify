@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using YamlDotNet.Core.Events;
 using YamlDotNet.Core;
+using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Slim.Util.Configuration
 {
     internal class YamlTypeConverters
     {

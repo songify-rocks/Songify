@@ -1,10 +1,10 @@
 ﻿using System;
+using Songify_Slim.Util.General;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
-using Songify_Slim.Util.General;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Slim.Util.Configuration
 {
     public class PlayerTypeYamlConverter : IYamlTypeConverter
     {

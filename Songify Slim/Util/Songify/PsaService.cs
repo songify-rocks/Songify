@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Models.Responses;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify

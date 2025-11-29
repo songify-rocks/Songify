@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using Songify_Slim.Models.Spotify;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Placeholders
 {
     public class PlaceholderContext
     {
@@ -44,6 +45,4 @@ namespace Songify_Slim.Models
             PlaylistUrl = track.Playlist?.Url;
         }
     }
-
-
 }

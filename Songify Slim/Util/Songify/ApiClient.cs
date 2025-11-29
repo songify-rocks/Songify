@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -20,8 +21,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     case HttpStatusCode.InternalServerError:
                         return null;
+
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
+
                     case HttpStatusCode.OK:
                         return await response.Content.ReadAsStringAsync();
                 }
@@ -43,8 +46,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     case HttpStatusCode.InternalServerError:
                         return null;
+
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
+
                     case HttpStatusCode.OK:
                         return await response.Content.ReadAsStringAsync();
                 }
@@ -63,7 +68,7 @@ namespace Songify_Slim.Util.Songify
             {
                 UriBuilder builder = new($"{baseUrl}/{endpoint}")
                 {
-                    Query = $"api_key={Settings.Settings.AccessKey}"
+                    Query = $"api_key={Settings.AccessKey}"
                 };
                 StringContent content = new(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
@@ -71,14 +76,17 @@ namespace Songify_Slim.Util.Songify
                 {
                     case HttpStatusCode.InternalServerError:
                         return null;
+
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
+
                     case HttpStatusCode.OK:
                         switch (endpoint)
                         {
                             case "song":
                                 Logger.LogStr("API: Upload Song: success");
                                 break;
+
                             case "telemetry":
                                 Logger.LogStr("API: Telemetry: success");
                                 break;
@@ -101,7 +109,7 @@ namespace Songify_Slim.Util.Songify
             {
                 UriBuilder builder = new($"{baseUrl}/{endpoint}")
                 {
-                    Query = $"api_key={Settings.Settings.AccessKey}"
+                    Query = $"api_key={Settings.AccessKey}"
                 };
                 StringContent content = new(payload, Encoding.UTF8, "application/json");
                 HttpMethod method = new("PATCH");
@@ -112,8 +120,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     case HttpStatusCode.InternalServerError:
                         return null;
+
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
+
                     case HttpStatusCode.OK:
                         return await response.Content.ReadAsStringAsync();
                 }
@@ -131,7 +141,7 @@ namespace Songify_Slim.Util.Songify
             {
                 UriBuilder builder = new($"{baseUrl}/{endpoint}")
                 {
-                    Query = $"api_key={Settings.Settings.AccessKey}"
+                    Query = $"api_key={Settings.AccessKey}"
                 };
                 StringContent content = new(payload, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
@@ -140,8 +150,10 @@ namespace Songify_Slim.Util.Songify
                 {
                     case HttpStatusCode.InternalServerError:
                         return null;
+
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
+
                     case HttpStatusCode.OK:
                         return await response.Content.ReadAsStringAsync();
                 }

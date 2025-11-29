@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SpotifyAPI.Web;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Spotify
 {
     public class SongInfo
     {

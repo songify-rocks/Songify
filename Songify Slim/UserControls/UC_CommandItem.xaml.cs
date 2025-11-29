@@ -1,5 +1,4 @@
-﻿using Songify_Slim.Util.Settings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +8,8 @@ using System.Windows.Media;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -20,7 +21,6 @@ namespace Songify_Slim.UserControls
     /// </summary>
     public partial class UC_CommandItem
     {
-
         public bool ShowBottomBorder
         {
             get => (bool)GetValue(ShowBottomBorderProperty);
@@ -145,6 +145,7 @@ namespace Songify_Slim.UserControls
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
                     break;
+
                 case Enums.CommandType.Voteskip:
                     if (Command.CustomProperties.TryGetValue("SkipCount", out object skipCountObj) &&
                         int.TryParse(skipCountObj?.ToString(), out int skipCount))
@@ -160,7 +161,6 @@ namespace Songify_Slim.UserControls
 
                     PnlVoteSkipExtras.Visibility = Visibility.Visible;
                     break;
-
 
                 case Enums.CommandType.Volume:
                     // Create a second response textbox if CustomProperties contains a "VolumeSet" key.
@@ -189,22 +189,27 @@ namespace Songify_Slim.UserControls
                 case Enums.AnnouncementColor.Blue:
                     ((MenuItem)MenuColors.Items[0]).IsChecked = true;
                     break;
+
                 case Enums.AnnouncementColor.Green:
                     ((MenuItem)MenuColors.Items[1]).IsChecked = true;
 
                     break;
+
                 case Enums.AnnouncementColor.Orange:
                     ((MenuItem)MenuColors.Items[2]).IsChecked = true;
 
                     break;
+
                 case Enums.AnnouncementColor.Purple:
                     ((MenuItem)MenuColors.Items[3]).IsChecked = true;
 
                     break;
+
                 case Enums.AnnouncementColor.Primary:
                     ((MenuItem)MenuColors.Items[4]).IsChecked = true;
 
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -471,13 +476,11 @@ namespace Songify_Slim.UserControls
             if (Command.IsAnnouncement == ((MenuItem)sender).IsChecked)
                 return;
 
-
             Command.IsAnnouncement = ((MenuItem)sender).IsChecked;
 
             Settings.UpdateCommand(Command);
             UpdateUi();
         }
-
 
         private void MenuColor_OnChecked(object sender, RoutedEventArgs e)
         {
@@ -531,7 +534,6 @@ namespace Songify_Slim.UserControls
 
             Command.CustomProperties["SkipCount"] = value;
             Settings.UpdateCommand(Command);
-
         }
 
         private async void TbVolSetResponse_OnTextChanged(object sender, TextChangedEventArgs e)
@@ -560,7 +562,7 @@ namespace Songify_Slim.UserControls
         {
             try
             {
-                if(!IsLoaded)
+                if (!IsLoaded)
                     return;
                 if (_isUpdating)
                     return;

@@ -1,5 +1,4 @@
 ﻿using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify.Twitch;
 using System;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Songify_Slim.Util.Configuration;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
 namespace Songify_Slim.UserControls

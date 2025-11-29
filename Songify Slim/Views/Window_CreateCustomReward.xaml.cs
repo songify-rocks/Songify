@@ -1,5 +1,4 @@
-﻿using Songify_Slim.Util.Settings;
-using Songify_Slim.Util.Songify;
+﻿using Songify_Slim.Util.Songify;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 

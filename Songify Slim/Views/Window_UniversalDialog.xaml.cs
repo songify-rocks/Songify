@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Responses;
 using Songify_Slim.UserControls;
 
 namespace Songify_Slim.Views

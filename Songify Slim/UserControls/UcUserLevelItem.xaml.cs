@@ -15,9 +15,9 @@ using System.Windows.Shapes;
 using Windows.UI.Composition;
 using MahApps.Metro.IconPacks;
 using MahApps.Metro.IconPacks.Converter;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using YamlDotNet.Core.Tokens;
-using Songify_Slim.Util.Settings;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
 namespace Songify_Slim.UserControls
@@ -78,7 +78,6 @@ namespace Songify_Slim.UserControls
         {
             int value = (int)baseValue;
             return MathUtils.Clamp(value, -3, 7);
-
         }
 
         private static bool ValidateUserLevel(object value)
@@ -139,6 +138,5 @@ namespace Songify_Slim.UserControls
 
             return parentObject as T;
         }
-
     }
 }

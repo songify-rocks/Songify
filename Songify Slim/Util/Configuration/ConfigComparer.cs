@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.Settings
+namespace Songify_Slim.Util.Configuration
 {
     public static class ConfigComparer
     {

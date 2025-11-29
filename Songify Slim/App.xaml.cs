@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using System;
@@ -26,6 +25,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim
 {

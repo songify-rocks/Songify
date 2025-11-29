@@ -1,23 +1,13 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Youtube.YTMYHCH
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Net.Http;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Newtonsoft.Json;
-
     namespace YtmDesktopApi
     {
         public static class YtmDesktopApi

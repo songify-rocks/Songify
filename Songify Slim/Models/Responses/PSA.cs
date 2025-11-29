@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Responses
 {
     public class Psa
     {
@@ -39,9 +34,8 @@ namespace Songify_Slim.Models
 
         // Computed properties to convert Unix timestamp to DateTime
         public DateTime? CreatedAtDateTime => ConvertUnixTimeToDateTime(CreatedAt);
+
         public DateTime? StartDateDateTime => ConvertUnixTimeToDateTime(StartDate);
         public DateTime? EndDateDateTime => ConvertUnixTimeToDateTime(EndDate);
     }
-
-
 }

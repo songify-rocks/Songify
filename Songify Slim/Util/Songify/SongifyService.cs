@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -17,8 +18,8 @@ namespace Songify_Slim.Util.Songify
             {
                 dynamic payload = new
                 {
-                    uuid = Settings.Settings.Uuid,
-                    key = Settings.Settings.AccessKey,
+                    uuid = Settings.Uuid,
+                    key = Settings.AccessKey,
                     song = currSong,
                     cover = coverUrl,
                     song_id = GlobalObjects.CurrentSong?.SongId,
@@ -43,10 +44,10 @@ namespace Songify_Slim.Util.Songify
 
                 dynamic payload = new
                 {
-                    id = Settings.Settings.Uuid,
+                    id = Settings.Uuid,
                     tst = unixTimestamp,
                     song,
-                    key = Settings.Settings.AccessKey
+                    key = Settings.AccessKey
                 };
                 await SongifyApi.PostHistoryAsync(Json.Serialize(payload));
             }

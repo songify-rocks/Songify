@@ -1,5 +1,4 @@
 ﻿using Songify_Slim.Util.General;
-using Songify_Slim.Util.Settings;
 using Songify_Slim.Views;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.UserControls
 {
@@ -73,7 +73,6 @@ namespace Songify_Slim.UserControls
                     { "{cd}", "5" },
                     { "{userlevel}", "subscribers" },
                     { "{ttp}", "1m 37s" },
-
                 };
                 response = replacements.Aggregate(response, (current, pair) => current.Replace(pair.Key, pair.Value));
             }
@@ -265,7 +264,7 @@ namespace Songify_Slim.UserControls
             Settings.BotRespPlaylist = TbNotFoundInPlaylist.Text;
             SetPreview(sender as TextBox);
         }
-        
+
         private void TbExplicit_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespTrackExplicit = TbExplicit.Text;

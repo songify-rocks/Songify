@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.WebSocket
 {
     /// <summary>
     /// Represents a generic WebSocket command structure.
@@ -40,12 +33,10 @@ namespace Songify_Slim.Models
     /// </remarks>
     public class WebSocketCommand
     {
-
         [JsonProperty("action")]
         public string Action { get; set; }
 
         [JsonProperty("data")]
         public JObject Data { get; set; }
     }
-
 }

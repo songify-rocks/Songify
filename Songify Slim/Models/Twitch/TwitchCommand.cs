@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Songify;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace Songify_Slim.Models
+namespace Songify_Slim.Models.Twitch
 {
     public class TwitchCommand
     {
@@ -31,6 +26,7 @@ namespace Songify_Slim.Models
         public List<int> AllowedUserLevels { get; set; }
         public bool IsAnnouncement { get; set; }
         public Enums.AnnouncementColor AnnouncementColor { get; set; }
+
         // Dictionary for custom properties.
         public Dictionary<string, object> CustomProperties { get; set; }
 
