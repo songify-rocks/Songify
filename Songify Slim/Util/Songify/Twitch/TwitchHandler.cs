@@ -1908,6 +1908,28 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private static async Task HandleSongLikeCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
         {
+            int count = 0;
+            string name = "";
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                count = GlobalObjects.ReqList.Count;
+                if (count <= 0) return;
+                RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
+                if (firstRequest == null || firstRequest.Trackid != GlobalObjects.CurrentSong.SongId) return;
+                name = firstRequest.Requester;
+                GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)
+                    ?.UpdateCommandTime(true);
+            });
+
+            if (count > 0 && name.Equals(message.ChatterUserName, StringComparison.CurrentCultureIgnoreCase))
+            {
+                if (cmdParams.UserLevels.All(ul => ul != -1))
+                {
+                    cmdParams.UserLevels.Add(-1);
+                }
+            }
+
             if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
             try
             {
