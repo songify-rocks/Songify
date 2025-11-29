@@ -145,6 +145,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Models\Pear\WebSocket\PearImage.cs" />
+    <Compile Include="Models\Pear\WebSocket\PearMessage.cs" />
+    <Compile Include="Models\Pear\WebSocket\PearSong.cs" />
+    <Compile Include="Models\Pear\WebSocket\PlayerStateChanged.cs" />
+    <Compile Include="Models\Pear\WebSocket\PositionChangedMessage .cs" />
+    <Compile Include="Models\Pear\WebSocket\VideoChangedMessage .cs" />
     <Compile Include="Models\Responses\BotResponseItem.cs" />
     <Compile Include="Models\Placeholders\PlaceholderContext.cs" />
     <Compile Include="Models\Responses\PSA.cs" />
@@ -238,9 +244,10 @@
     <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Spotify\ApiCallMeter.cs" />
-    <Compile Include="Util\Youtube\YTMYHCH\QueueParser.cs" />
-    <Compile Include="Util\Youtube\YTMYHCH\YTHCHSearchParser.cs" />
-    <Compile Include="Util\Youtube\YTMYHCH\YtmDesktopClient.cs" />
+    <Compile Include="Util\Youtube\Pear\PearWebSocketClient.cs" />
+    <Compile Include="Util\Youtube\Pear\QueueParser.cs" />
+    <Compile Include="Util\Youtube\Pear\YTHCHSearchParser.cs" />
+    <Compile Include="Util\Youtube\Pear\YtmDesktopClient.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

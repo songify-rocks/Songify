@@ -348,10 +348,6 @@ namespace Songify_Slim.Views
         {
             switch (_selectedSource)
             {
-                //case PlayerType.SpotifyLegacy:
-                //    await Sf.FetchDesktopPlayer("Spotify");
-                //    break;
-
                 case PlayerType.BrowserCompanion:
 
                     await Sf.FetchYoutubeData();
@@ -373,7 +369,10 @@ namespace Songify_Slim.Views
                     break;
 
                 case PlayerType.Pear:
-
+                    //if (true)
+                    //{
+                    //    await Sf.FetchPearWebsocket();
+                    //}
                     await Sf.FetchPear();
                     break;
 
@@ -381,9 +380,8 @@ namespace Songify_Slim.Views
 
                     await Sf.FetchWindowsApi();
                     break;
-
                 default:
-                    break;
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -1166,6 +1164,7 @@ namespace Songify_Slim.Views
                 }
                 finally
                 {
+                    bool enable = true;
                     switch (_selectedSource)
                     {
                         case PlayerType.Spotify:
@@ -1177,6 +1176,7 @@ namespace Songify_Slim.Views
                         case PlayerType.Vlc:
                         case PlayerType.Pear:
                             _timerFetcher.Interval = 1000;
+                            //enable = false;
                             break;
 
                         case PlayerType.BrowserCompanion:
@@ -1187,7 +1187,7 @@ namespace Songify_Slim.Views
                     }
 
                     _sCts.Dispose();
-                    _timerFetcher.Enabled = true;
+                    _timerFetcher.Enabled = enable;
                     _timerFetcher.Elapsed += OnTimedEvent;
                 }
             }

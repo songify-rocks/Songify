@@ -1,9 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Pear;
+using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.WebSocket;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.APIs;
+using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Pear;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using Swan.Formatters;
@@ -27,12 +33,9 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
-using Songify_Slim.Models.Pear;
-using Songify_Slim.Models.Spotify;
-using Songify_Slim.Util.Configuration;
-using Songify_Slim.Util.Songify.APIs;
-using Songify_Slim.Util.Songify.Pear;
+using Songify_Slim.Models.Pear.WebSocket;
 using Image = SpotifyAPI.Web.Image;
+using JsonDocument = System.Text.Json.JsonDocument;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -58,6 +61,9 @@ namespace Songify_Slim.Util.Songify
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo playbackPlaylist = null;
+
+        private PearSong currentSong = null;
+        private TrackInfo tI = null;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -1153,6 +1159,76 @@ namespace Songify_Slim.Util.Songify
                         GlobalObjects.ReqList.RemoveAt(i);
                 }
             }
+        }
+
+        public async Task FetchPearWebsocket()
+        {
+            PearWebSocketClient.SetMessageHandler(async msg =>
+            {
+                string type = JsonDocument.Parse(msg)
+                               .RootElement
+                               .GetProperty("type")
+                               .GetString();
+
+                switch (type)
+                {
+                    case "PLAYER_STATE_CHANGED":
+                        {
+                            PlayerStateChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<PlayerStateChangedMessage>(msg)!;
+                            break;
+                        }
+
+                    case "POSITION_CHANGED":
+                        {
+                            PositionChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<PositionChangedMessage>(msg)!;
+                            // Handle event here
+                            if (tI != null)
+                            {
+                                tI.Progress = (int)data.Position;
+                                tI.DurationPercentage = (int)((data.Position / tI.DurationTotal) * 100);
+                                await UpdateWebServerResponse(tI);
+                            }
+                            break;
+                        }
+
+                    case "VIDEO_CHANGED":
+                        {
+                            VideoChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<VideoChangedMessage>(msg)!;
+                            currentSong = data.Song;
+                            tI = new TrackInfo
+                            {
+                                Artists = currentSong.Artist,
+                                Title = currentSong.Title,
+                                Albums =
+                                [
+                                    new Image
+                                    {
+                                        Height = 720,
+                                        Width = 1280,
+                                        Url = currentSong.ImageSrc
+                                    }
+                                ],
+                                SongId = currentSong.PlaylistId,
+                                DurationMs = (int)TimeSpan.FromSeconds(currentSong.SongDuration).TotalMilliseconds,
+                                IsPlaying = !currentSong.IsPaused,
+                                Url = currentSong.Url,
+                                DurationPercentage = (currentSong.ElapsedSeconds / currentSong.SongDuration) * 100,
+                                DurationTotal = currentSong.SongDuration,
+                                Progress = currentSong.ElapsedSeconds,
+                                Playlist = null,
+                                FullArtists = null
+                            };
+                            await WriteSongInfo(tI, Enums.RequestPlayerType.Youtube);
+                            break;
+                        }
+
+                    default:
+                        Debug.WriteLine("Unknown Pear event type: " + type);
+                        break;
+                }
+            });
+
+            await PearWebSocketClient.ConnectAsync();
         }
     }
 }
