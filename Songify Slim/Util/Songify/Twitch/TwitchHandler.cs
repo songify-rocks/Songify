@@ -2109,6 +2109,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                         response = response.Replace("{vol}", $"{pearVolume}");
 
                         break;
+
                     case PlayerType.WindowsPlayback:
                     case PlayerType.FooBar2000:
                     case PlayerType.Vlc:
@@ -2172,9 +2173,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 case PlayerType.FooBar2000:
                 case PlayerType.Vlc:
                 case PlayerType.BrowserCompanion:
-                    //case PlayerType.YtmDesktop:
-                    break;
-
+                case PlayerType.WindowsPlayback:
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -4013,7 +4012,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return null;
             return vol;
         }
-
 
         private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
