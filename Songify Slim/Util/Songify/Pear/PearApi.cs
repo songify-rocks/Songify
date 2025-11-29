@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify.Pear
@@ -166,6 +167,59 @@ namespace Songify_Slim.Util.Songify.Pear
 
             Logger.LogStr($"{LogPrefix}: next failed with status code: {response.StatusCode}");
             return false;
+        }
+
+        public static async Task<int> GetVolumeAsync()
+        {
+            try
+            {
+                HttpResponseMessage response = await _httpClient.GetAsync("volume");
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.LogStr($"{LogPrefix}: HTTP Request failed with status code: {response.StatusCode}");
+                    return -1;
+                }
+
+                string result = await response.Content.ReadAsStringAsync();
+
+                Volume volumeResponse =
+                    JsonConvert.DeserializeObject<Volume>(result);
+
+                if (volumeResponse == null)
+                    return -1;
+
+                // If muted → treat as volume = 0 or return separate?
+                return volumeResponse.IsMuted ? 0 : volumeResponse.State; // 0–100
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+                return -1;
+            }
+        }
+
+        public static async Task<ApiOk> SetVolumeAsncy(int volume)
+        {
+            var payload = new
+            {
+                volume
+            };
+
+            string json = JsonConvert.SerializeObject(payload);
+            using StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync("volume", content);
+            if (response.IsSuccessStatusCode)
+                return new ApiOk
+                {
+                    Ok = true
+                };
+            Logger.LogStr($"{LogPrefix}: set volume failed with status code: {response.StatusCode}");
+            return new ApiOk
+            {
+                Ok = false
+            };
+
         }
     }
 }

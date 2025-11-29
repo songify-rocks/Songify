@@ -2072,37 +2072,52 @@ namespace Songify_Slim.Util.Songify.Twitch
             {
                 // Volume Set
                 cmd.CustomProperties.TryGetValue("VolumeSetResponse", out object volSetResponse);
-                string response = (string)volSetResponse;
+                string response = (string)volSetResponse ?? "";
+
                 if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
-                int? vol = await SetSpotifyVolume(message.Message.Text);
+                int? vol = Settings.Settings.Player switch
+                {
+                    PlayerType.Spotify => await SetSpotifyVolume(message.Message.Text),
+                    PlayerType.Pear => await SetPearVolume(message.Message.Text),
+                    _ => 0
+                };
+
                 if (vol == null)
                 {
                     await SendChatMessage("Error setting volume.");
                     return;
                 }
-
-                if (response == null) return;
-                response = response.Replace("{user}", message.ChatterUserName);
                 response = response.Replace("{vol}", vol.ToString());
+                response = response.Replace("{user}", message.ChatterUserName);
 
                 SendOrAnnounceMessage(response, cmd);
             }
             else
             {
+                string response = cmd.Response;
                 // Volume Get
                 if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
                 switch (Settings.Settings.Player)
                 {
                     case PlayerType.Spotify:
+                        CurrentlyPlayingContext spotifyPlaybackAsync = await SpotifyApiHandler.GetPlayback();
+                        response = response.Replace("{vol}", spotifyPlaybackAsync?.Device.VolumePercent.ToString());
                         break;
 
                     case PlayerType.Pear:
+                        int pearVolume = await PearApi.GetVolumeAsync();
+                        response = response.Replace("{vol}", $"{pearVolume}");
+
                         break;
+                    case PlayerType.WindowsPlayback:
+                    case PlayerType.FooBar2000:
+                    case PlayerType.Vlc:
+                    case PlayerType.BrowserCompanion:
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-                CurrentlyPlayingContext spotifyPlaybackAsync = await SpotifyApiHandler.GetPlayback();
-                string response = cmd.Response;
+
                 response = response.Replace("{user}", message.ChatterUserName);
-                response = response.Replace("{vol}", spotifyPlaybackAsync?.Device.VolumePercent.ToString());
 
                 SendOrAnnounceMessage(response, cmd);
             }
@@ -3986,6 +4001,19 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return null;
             return vol;
         }
+
+        private static async Task<int?> SetPearVolume(string msg)
+        {
+            string[] split = msg.Split(' ');
+            if (split.Length <= 1) return null;
+            if (!int.TryParse(split[1], out int volume)) return null;
+            int vol = MathUtils.Clamp(volume, 0, 100);
+            ApiOk response = await PearApi.SetVolumeAsncy(vol);
+            if (!response.Ok)
+                return null;
+            return vol;
+        }
+
 
         private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {

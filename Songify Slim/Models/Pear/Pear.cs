@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Songify_Slim.Models.Pear
 {
@@ -94,5 +95,14 @@ namespace Songify_Slim.Models.Pear
         Video = 1,
         Uploaded = 2,
         Podcast = 3
+    }
+
+    public class Volume
+    {
+        [JsonProperty("state")]
+        public int State { get; set; }
+
+        [JsonProperty("isMuted")]
+        public bool IsMuted { get; set; }
     }
 }
