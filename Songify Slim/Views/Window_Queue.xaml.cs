@@ -14,7 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using Songify_Slim.Util.Songify.YTMDesktop;
+using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Spotify;
 using Swan.Formatters;
 using Button = System.Windows.Controls.Button;
@@ -110,7 +110,7 @@ namespace Songify_Slim.Views
                 key = Settings.AccessKey,
                 queueid = req.Queueid,
             };
-            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);
@@ -146,7 +146,7 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey
                 };
-                await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
+                await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
             }
             await GlobalObjects.QueueUpdateQueueWindow();
         }
@@ -192,7 +192,7 @@ namespace Songify_Slim.Views
                 key = Settings.AccessKey,
                 queueid = req.Queueid,
             };
-            await WebHelper.QueueRequest(WebHelper.RequestMethod.Patch, Json.Serialize(payload));
+            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);
@@ -303,7 +303,6 @@ namespace Songify_Slim.Views
                     // Update the last click time
                     _lastBackButtonClickTime = currentTime;
                     break;
-
             }
         }
 

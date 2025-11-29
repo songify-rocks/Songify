@@ -18,7 +18,7 @@ namespace Songify_Slim.Util.General
         Style style = null,
         PackIconBoxIcons icon = null)
         {
-            Grid grid = new Grid();
+            Grid grid = new();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
@@ -26,7 +26,7 @@ namespace Songify_Slim.Util.General
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             // Header row with optional icon + text
-            StackPanel headerPanel = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
+            StackPanel headerPanel = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
 
             if (icon != null)
             {
@@ -53,7 +53,7 @@ namespace Songify_Slim.Util.General
             {
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-                TextBlock lbl = new TextBlock
+                TextBlock lbl = new()
                 {
                     Text = label + ":",
                     Opacity = 0.8,
@@ -66,7 +66,7 @@ namespace Songify_Slim.Util.General
                 Grid.SetRow(lbl, r);
                 Grid.SetColumn(lbl, 0);
 
-                TextBlock val = new TextBlock
+                TextBlock val = new()
                 {
                     Text = value ?? "—",
                     VerticalAlignment = VerticalAlignment.Top
@@ -90,7 +90,7 @@ namespace Songify_Slim.Util.General
         private static PackIconBoxIcons CloneIcon(PackIconBoxIcons src)
         {
             // Height defaults to Width if not set; tweak as you like
-            PackIconBoxIcons clone = new PackIconBoxIcons
+            PackIconBoxIcons clone = new()
             {
                 Kind = src.Kind,
                 Width = src.Width > 0 ? src.Width : 14,

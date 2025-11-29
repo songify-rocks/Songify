@@ -18,11 +18,11 @@ public static class PipeMessenger
     {
         try
         {
-            using var client = new NamedPipeClientStream(".", PipeName, PipeDirection.Out);
+            using NamedPipeClientStream client = new(".", PipeName, PipeDirection.Out);
             client.Connect(timeoutMs); // wait for server
 
             // IMPORTANT: Use WriteLine + Flush so server's ReadLine() completes
-            using var writer = new StreamWriter(client, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false))
+            using StreamWriter writer = new(client, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false))
             {
                 AutoFlush = true
             };

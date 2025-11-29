@@ -1,15 +1,14 @@
-﻿
-using Songify_Slim.Models.YTMD;
-using System;
+﻿using System;
 using System.Linq;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
+using Songify_Slim.Models.Pear;
 
 namespace Songify_Slim.Util.Youtube.YTMYHCH
 {
-    class YTHCHSearchParser
+    internal class YTHCHSearchParser
     {
-        public static YTMYHCHSearchResponse? ParseTopSongResult(string json)
+        public static PearSearch? ParseTopSongResult(string json)
         {
             JsonNode root = JsonNode.Parse(json);
             JsonNode contents = root?["contents"]?["tabbedSearchResultsRenderer"]?["tabs"]?[0]?["tabRenderer"]?["content"]
@@ -30,7 +29,7 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
                 JsonNode item = items[0]?["musicResponsiveListItemRenderer"];
                 if (item == null) continue;
 
-                YTMYHCHSearchResponse result = new YTMYHCHSearchResponse();
+                PearSearch result = new();
 
                 // Title
                 result.Title = item["flexColumns"]?[0]?["musicResponsiveListItemFlexColumnRenderer"]?["text"]?["runs"]?[0]?["text"]?.ToString();

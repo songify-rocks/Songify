@@ -157,10 +157,10 @@
     <Compile Include="Models\WebSocket\VolumeData.cs" />
     <Compile Include="Models\WebSocket\WebSocketCommand.cs" />
     <Compile Include="Models\WebSocket\YoutubeData.cs" />
-    <Compile Include="Models\YTMD\YTMDResponse.cs" />
-    <Compile Include="Models\YTMD\YTMYHCHQueue.cs" />
-    <Compile Include="Models\YTMD\YTMYHCHResponse.cs" />
-    <Compile Include="Models\YTMD\YTMYHCHSearchResponse.cs" />
+    <Compile Include="Models\Pear\Pear.cs" />
+    <Compile Include="Models\Pear\PearQueue.cs" />
+    <Compile Include="Models\Pear\PearResponse.cs" />
+    <Compile Include="Models\Pear\PearSearch.cs" />
     <Compile Include="Properties\Resources.be-BY.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -223,15 +223,20 @@
     <Compile Include="Util\General\ThumbnailConverter.cs" />
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Settings\ConfigComparer.cs" />
+    <Compile Include="Util\Settings\PlayerTypeYamlConverter.cs" />
     <Compile Include="Util\Settings\YamlTypeConverters.cs" />
     <Compile Include="Util\Songify\ApiClient.cs" />
+    <Compile Include="Util\Songify\APIs\SongifyApi.cs" />
+    <Compile Include="Util\Songify\CanvasService.cs" />
+    <Compile Include="Util\Songify\Pear\PearApi.cs" />
+    <Compile Include="Util\Songify\PsaService.cs" />
+    <Compile Include="Util\Songify\QueueService.cs" />
+    <Compile Include="Util\Songify\SongifyService.cs" />
     <Compile Include="Util\Songify\Twitch\SharedChatExtensions.cs" />
     <Compile Include="Util\Songify\Twitch\TwitchApiHelper.cs" />
     <Compile Include="Util\Songify\Twitch\TwitchCommandHandler.cs" />
     <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
-    <Compile Include="Util\Songify\YTMDesktop\YTMDApiClient.cs" />
-    <Compile Include="Util\Songify\YTMDesktop\YTMDAuthentication.cs" />
     <Compile Include="Util\Spotify\ApiCallMeter.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\QueueParser.cs" />
     <Compile Include="Util\Youtube\YTMYHCH\YTHCHSearchParser.cs" />

@@ -42,7 +42,7 @@ public static class QueueParser
             if (r == null)
             {
                 // Unknown shape – just skip this entry
-                Logger.LogStr($"DEBUG[Ytmthch]: Skipping item[{i}] – no playlistPanelVideoRenderer found.");
+                Logger.LogStr($"DEBUG[Pear]: Skipping item[{i}] – no playlistPanelVideoRenderer found.");
                 continue;
             }
 

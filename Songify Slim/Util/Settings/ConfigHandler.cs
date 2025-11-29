@@ -248,10 +248,10 @@ namespace Songify_Slim.Util.Settings
             try
             {
                 // 1) Write temp file and flush to disk
-                using (FileStream fs = new FileStream(
+                using (FileStream fs = new(
                     tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096,
                     FileOptions.WriteThrough | FileOptions.SequentialScan))
-                using (StreamWriter writer = new StreamWriter(fs, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
+                using (StreamWriter writer = new(fs, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
                 {
                     writer.Write(yaml);
                     writer.Flush();
@@ -312,9 +312,9 @@ namespace Songify_Slim.Util.Settings
             static T TryRead<T>(string p, IDeserializer d)
             {
                 if (!File.Exists(p)) return default;
-                using FileStream fs = new FileStream(p, FileMode.Open, FileAccess.Read,
+                using FileStream fs = new(p, FileMode.Open, FileAccess.Read,
                     FileShare.ReadWrite | FileShare.Delete);
-                using StreamReader sr = new StreamReader(fs);
+                using StreamReader sr = new(fs);
                 string text = sr.ReadToEnd();
                 return d.Deserialize<T>(text);
             }
@@ -342,6 +342,7 @@ namespace Songify_Slim.Util.Settings
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new SingleStringToListConverter())
+                .WithTypeConverter(new PlayerTypeYamlConverter())
                 .IgnoreUnmatchedProperties()
                 .Build();
 
@@ -485,11 +486,11 @@ namespace Songify_Slim.Util.Settings
                     settings = base64
                 };
 
-                StringContent content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+                StringContent content = new(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
 
                 string url = $"{GlobalObjects.ApiUrl}/user_settings?token={apiToken}";
 
-                using HttpClient http = new HttpClient();
+                using HttpClient http = new();
                 HttpResponseMessage response = await http.PostAsync(url, content);
                 switch (response.StatusCode)
                 {
@@ -500,9 +501,11 @@ namespace Songify_Slim.Util.Settings
                     case HttpStatusCode.Unauthorized:
                         Logger.LogStr("Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
+
                     case HttpStatusCode.Forbidden:
                         Logger.LogStr("Cloud restore failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
+
                     case HttpStatusCode.InternalServerError:
                         Logger.LogStr("Cloud restore failed: Internal server error. Please try again later.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
@@ -537,7 +540,7 @@ namespace Songify_Slim.Util.Settings
             {
                 string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}&token={apiToken}";
 
-                using HttpClient http = new HttpClient();
+                using HttpClient http = new();
                 HttpResponseMessage response = await http.GetAsync(url);
 
                 switch (response.StatusCode)
@@ -549,9 +552,11 @@ namespace Songify_Slim.Util.Settings
                     case HttpStatusCode.Unauthorized:
                         Logger.LogStr("Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
+
                     case HttpStatusCode.Forbidden:
                         Logger.LogStr("Cloud restore failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
+
                     case HttpStatusCode.InternalServerError:
                         Logger.LogStr("Cloud restore failed: Internal server error. Please try again later.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
@@ -600,7 +605,6 @@ namespace Songify_Slim.Util.Settings
 
                 await Settings.ImportCloudSave(restoredConfig);
                 return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
-
             }
             catch (Exception ex)
             {

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Songify_Slim.Models.YTMD
+namespace Songify_Slim.Models.Pear
 {
-    class YTMYHCHSearchResponse
+    internal class PearSearch
     {
         public string Title { get; set; }
         public string VideoId { get; set; }
-        public List<string> Artists { get; set; } = new();
+        public List<string> Artists { get; set; } = [];
         public string Album { get; set; }
         public string Duration { get; set; }
         public string ThumbnailUrl { get; set; }

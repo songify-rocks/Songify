@@ -26,6 +26,7 @@ namespace Songify_Slim.UserControls
     public partial class UcTwitchReward
     {
         private readonly CustomReward _reward;
+
         // Place this as a class-level field:
         private CancellationTokenSource _debounceTokenSource;
 
@@ -96,6 +97,7 @@ namespace Songify_Slim.UserControls
             byte b = (byte)random.Next(256);
             return new SolidColorBrush(Color.FromRgb(r, g, b));
         }
+
         private void AddUnique(List<string> list, string item)
         {
             if (!list.Contains(item))
@@ -103,6 +105,7 @@ namespace Songify_Slim.UserControls
                 list.Add(item);
             }
         }
+
         private enum RewardAction
         {
             Remove = 0,
@@ -149,6 +152,7 @@ namespace Songify_Slim.UserControls
                     songRequestRewards.Remove(rewardId);
                     AddUnique(skipSongRewards, rewardId);
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -171,7 +175,7 @@ namespace Songify_Slim.UserControls
                 // Cancel any previous debounce task
                 _debounceTokenSource?.Cancel();
                 _debounceTokenSource = new CancellationTokenSource();
-                var token = _debounceTokenSource.Token;
+                CancellationToken token = _debounceTokenSource.Token;
 
                 // Validate input, but don't update yet
                 if (!int.TryParse(textBox.Text, out int cost) || cost <= 0)

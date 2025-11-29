@@ -116,7 +116,8 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketDisconnected(object sender, EventArgs e)
         {
             _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} disconnected!");
-
+            Logger.LogStr($"Websocket disconnected...");
+            await TwitchHandler.StartOrRestartAsync();
             // Don't do this in production. You should implement a better reconnect strategy with exponential backoff
             while (!await _eventSubWebsocketClient.ReconnectAsync())
             {
@@ -168,16 +169,18 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private async Task EventSubWebsocketClientOnStreamOnline(object sender, StreamOnlineArgs args)
+        private static Task EventSubWebsocketClientOnStreamOnline(object sender, StreamOnlineArgs args)
         {
             Settings.Settings.IsLive = true;
             Logger.LogStr("TWITCH: Stream live");
+            return Task.CompletedTask;
         }
 
-        private async Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
+        private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
         {
             Settings.Settings.IsLive = false;
             Logger.LogStr("TWITCH: Stream offline");
+            return Task.CompletedTask;
         }
 
         private async Task EventSubWebsocketClientOnChannelPointsCustomRewardRedemptionAdd(object sender, ChannelPointsCustomRewardRedemptionArgs e)
@@ -213,15 +216,15 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private static async Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
+        private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
         {
             ChannelChatMessage chatMsg = args.Notification.Payload.Event;
             //if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
             //    return;
             if (!chatMsg.Message.Text.StartsWith("!"))
-                return;
+                return Task.CompletedTask;
             if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.Settings.TwitchUser.Id)
-                return;
+                return Task.CompletedTask;
             TwitchHandler.ExecuteChatCommand(chatMsg);
             Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
             Debug.WriteLine($"Broadcaster: {chatMsg.IsBroadcaster}");
@@ -230,6 +233,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             Debug.WriteLine($"Subscriber: {chatMsg.IsSubscriber}");
             string x = Json.Serialize(chatMsg.Badges);
             Debug.WriteLine($"Badges: {x}");
+            return Task.CompletedTask;
         }
 
         #endregion Events

@@ -15,7 +15,7 @@ namespace Songify_Slim.Util.General
             FieldInfo fi = value.GetType().GetField(value.ToString());
             if (fi != null)
             {
-                var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
                 if (attributes.Length > 0)
                     return attributes[0].Description;
             }

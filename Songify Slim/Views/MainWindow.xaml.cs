@@ -40,8 +40,7 @@ using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Security;
-using Songify_Slim.Models.YTMD;
-using Songify_Slim.Util.Songify.YTMDesktop;
+using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.EventSub;
@@ -57,18 +56,20 @@ namespace Songify_Slim.Views
         #region Interfaces
 
         public Button BtnSupportUs => this.BtnSupport;
+
         public string WindowTitle
         {
             get => "Songify";
             set { }
         }
 
-        #endregion
+        #endregion Interfaces
 
         #region Variables
 
         //public SocketIoClient IoClient;
         private bool _forceClose;
+
         private CancellationTokenSource _sCts;
         private DispatcherTimer _disclaimerTimer = new();
         private readonly DispatcherTimer _motdTimer = new();
@@ -105,7 +106,7 @@ namespace Songify_Slim.Views
                     playertype = GlobalObjects.GetReadablePlayer(),
                 };
 
-                await WebHelper.TelemetryRequest(WebHelper.RequestMethod.Post, Json.Serialize(telemetryPayload));
+                await SongifyApi.PostTelemetryAsync(Json.Serialize(telemetryPayload));
             }
             catch (Exception ex)
             {
@@ -265,7 +266,8 @@ namespace Songify_Slim.Views
                 {
                     // Connects
                     case "Connect":
-                        TwitchHandler.ConnectTwitchChatClient();
+                        // TwitchHandler.ConnectTwitchChatClient();
+                        await TwitchHandler.StartOrRestartAsync();
                         break;
                     // Disconnects
                     case "Disconnect":
@@ -306,7 +308,7 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback when Settings.DownloadCover:
+                    case PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback when Settings.DownloadCover:
                         img_cover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
@@ -314,6 +316,7 @@ namespace Songify_Slim.Views
                         //    if (IoClient != null)
                         //        IoClient.PrevResponse = new YtmdResponse();
                         break;
+
                     default:
                         img_cover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
@@ -350,39 +353,34 @@ namespace Songify_Slim.Views
 
                 case PlayerType.BrowserCompanion:
 
-
                     await Sf.FetchYoutubeData();
                     break;
 
                 case PlayerType.Vlc:
-
 
                     await Sf.FetchDesktopPlayer("vlc");
                     break;
 
                 case PlayerType.FooBar2000:
 
-
                     await Sf.FetchDesktopPlayer("foobar2000");
                     break;
 
-                case PlayerType.SpotifyWeb:
-
+                case PlayerType.Spotify:
 
                     await Sf.FetchSpotifyWeb();
                     break;
 
+                case PlayerType.Pear:
 
-                case PlayerType.Ytmthch:
-
-
-                    await Sf.FetchYTMTHCH();
+                    await Sf.FetchPear();
                     break;
-                case PlayerType.WindowsPlayback:
 
+                case PlayerType.WindowsPlayback:
 
                     await Sf.FetchWindowsApi();
                     break;
+
                 default:
                     break;
             }
@@ -461,7 +459,6 @@ namespace Songify_Slim.Views
                 FirstAuxiliaryButtonText = "Ignore and Continue"
             };
 
-
             while (!internetAvailable)
             {
                 // Show a dialog to the user that the app can't run without internet connection and wait for the user to click close or retry
@@ -503,7 +500,6 @@ namespace Songify_Slim.Views
             await FinalSetupAndUpdatesAsync();
             Logger.LogStr("Final Setup done");
         }
-
 
         private static async Task<bool> WaitForInternetConnectionAsync()
         {
@@ -567,7 +563,7 @@ namespace Songify_Slim.Views
 
         private async void SetPsAs()
         {
-            PsAs = await WebHelper.GetPsa();
+            PsAs = await PsaService.GetPsaAsync();
             if (PsAs == null || PsAs.Count == 0)
             {
                 PnlMotds.Children.Clear();
@@ -608,7 +604,6 @@ namespace Songify_Slim.Views
                         {
                             Settings.LastShownMotdId = highSeverityPsa.Id;
                         }
-
                     }
                 }
             }
@@ -726,7 +721,7 @@ namespace Songify_Slim.Views
         // Method to parse arguments string to dictionary
         private Dictionary<string, string> ParseArguments(string arguments)
         {
-            Dictionary<string, string> argsDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> argsDictionary = new();
 
             // Check if arguments are not null or empty
             if (!string.IsNullOrEmpty(arguments))
@@ -795,7 +790,7 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
+            img_cover.Visibility = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -826,7 +821,7 @@ namespace Songify_Slim.Views
                     uuid = Settings.Uuid,
                     key = Settings.AccessKey
                 };
-                await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
+                await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
             }
 
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
@@ -964,7 +959,7 @@ namespace Songify_Slim.Views
         {
             _contextMenu.MenuItems.AddRange([
                 new System.Windows.Forms.MenuItem("Twitch", [
-                    new System.Windows.Forms.MenuItem("Connect", async void (_, _) =>
+                    new System.Windows.Forms.MenuItem("Connect", void (_, _) =>
                     {
                         try
                         {
@@ -975,7 +970,7 @@ namespace Songify_Slim.Views
                             Logger.LogExc(e);
                         }
                     }),
-                    new System.Windows.Forms.MenuItem("Disconnect", async void(_, _) =>
+                    new System.Windows.Forms.MenuItem("Disconnect", void(_, _) =>
                     {
                         try
                         {
@@ -1110,7 +1105,7 @@ namespace Songify_Slim.Views
                 uuid = Settings.Uuid,
                 key = Settings.AccessKey
             };
-            await WebHelper.QueueRequest(WebHelper.RequestMethod.Clear, Json.Serialize(payload));
+            await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
         }
 
         private void Mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
@@ -1138,11 +1133,11 @@ namespace Songify_Slim.Views
                 {
                     await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        Visibility vis = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch or PlayerType.WindowsPlayback && Settings.DownloadCover
+                        Visibility vis = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback && Settings.DownloadCover
                             ? Visibility.Visible
                             : Visibility.Collapsed;
 
-                        double maxWidth = _selectedSource is PlayerType.SpotifyWeb or PlayerType.BrowserCompanion or PlayerType.Ytmthch && Settings.DownloadCover
+                        double maxWidth = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear && Settings.DownloadCover
                             ? 500
                             : (int)Width - 6;
 
@@ -1153,7 +1148,6 @@ namespace Songify_Slim.Views
                         if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
                             TxtblockLiveoutput.MaxWidth = maxWidth;
                     }));
-
                 }
                 catch
                 {
@@ -1171,20 +1165,22 @@ namespace Songify_Slim.Views
                 }
                 finally
                 {
-
                     switch (_selectedSource)
                     {
-                        case PlayerType.SpotifyWeb:
+                        case PlayerType.Spotify:
                             _timerFetcher.Interval = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000;
                             break;
+
                         case PlayerType.WindowsPlayback:
                         case PlayerType.FooBar2000:
                         case PlayerType.Vlc:
-                        case PlayerType.Ytmthch:
+                        case PlayerType.Pear:
                             _timerFetcher.Interval = 1000;
                             break;
+
                         case PlayerType.BrowserCompanion:
                             break;
+
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
@@ -1246,17 +1242,18 @@ namespace Songify_Slim.Views
                 case PlayerType.WindowsPlayback:
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
-                case PlayerType.Ytmthch:
+                case PlayerType.Pear:
                     FetchTimer(1000);
                     break;
-                case PlayerType.SpotifyWeb:
+
+                case PlayerType.Spotify:
                     // Prevent Rate Limiting
                     FetchTimer(MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000);
                     break;
+
                 case PlayerType.BrowserCompanion:
                 default:
                     break;
-
             }
         }
 
@@ -1283,7 +1280,7 @@ namespace Songify_Slim.Views
                 try
                 {
                     PlayVideoFromUrl(canvasUrl);
-                    // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
+                    // if Settings.Player (int) != playerType.Spotify, hide the cover image
                     if (Settings.Player != 0 && Settings.DownloadCover)
                     {
                         GrdCover.Visibility = Visibility.Collapsed;
@@ -1332,10 +1329,10 @@ namespace Songify_Slim.Views
                         continue;
                     }
 
-                    // if Settings.Player (int) != playerType.SpotifyWeb, hide the cover image
-                    if ((Settings.Player == PlayerType.SpotifyWeb
+                    // if Settings.Player (int) != playerType.Spotify, hide the cover image
+                    if ((Settings.Player == PlayerType.Spotify
                          || Settings.Player == PlayerType.BrowserCompanion
-                         || Settings.Player == PlayerType.Ytmthch
+                         || Settings.Player == PlayerType.Pear
                          || Settings.Player == PlayerType.WindowsPlayback)
                         && Settings.DownloadCover)
                     {
@@ -1556,6 +1553,7 @@ namespace Songify_Slim.Views
                             ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
                         ];
                         break;
+
                     case "TwitchAPI":
                         header = "Twitch API";
                         icon.Kind = PackIconBoxIconsKind.LogosTwitch;
@@ -1567,6 +1565,7 @@ namespace Songify_Slim.Views
                             ("EventSubs", string.Join("\n", subs.Where(s=> s.Status == "enabled").Select(s => s.Type)))
                         ];
                         break;
+
                     case "Spotify":
                         header = "Spotify";
                         icon.Kind = PackIconBoxIconsKind.LogosSpotify;
@@ -1580,6 +1579,7 @@ namespace Songify_Slim.Views
                             ("Device", await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId))
                         ];
                         break;
+
                     default:
                         header = "WebServer";
                         icon.Kind = PackIconBoxIconsKind.SolidServer;
@@ -1595,7 +1595,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private async void ServiceIcon_Click(object sender, RoutedEventArgs e)
+        private void ServiceIcon_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button { Tag: string tag }) return;
             switch (tag)
@@ -1604,6 +1604,7 @@ namespace Songify_Slim.Views
                 case "TwitchAPI":
                 case "Spotify":
                     break;
+
                 case "WebServer":
                     {
                         if (GlobalObjects.WebServer.Run)

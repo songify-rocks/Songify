@@ -18,16 +18,22 @@ public sealed class ApiMetricsRow : INotifyPropertyChanged
 {
     private string _key;
     private int _rpm;
-    public string Key { get => _key; set { _key = value; OnPropertyChanged(); } }
-    public int RequestsPerMinute { get => _rpm; set { _rpm = value; OnPropertyChanged(); } }
+
+    public string Key
+    { get => _key; set { _key = value; OnPropertyChanged(); } }
+
+    public int RequestsPerMinute
+    { get => _rpm; set { _rpm = value; OnPropertyChanged(); } }
+
     public event PropertyChangedEventHandler PropertyChanged;
+
     private void OnPropertyChanged([CallerMemberName] string p = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }
 
 public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
 {
-    public ObservableCollection<ApiMetricsRow> Rows { get; } = new();
+    public ObservableCollection<ApiMetricsRow> Rows { get; } = [];
 
     // ---- OxyPlot model bound in XAML ----
     public PlotModel PlotModel { get; } = CreatePlotModel();
@@ -44,7 +50,7 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
 
     private static PlotModel CreatePlotModel()
     {
-        var pm = new PlotModel
+        PlotModel pm = new()
         {
             Title = "API calls per endpoint (last 60s)",
             TitleFont = "Segoe UI",
@@ -117,14 +123,15 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
 
         return pm;
     }
+
     private void Refresh()
     {
         // ---- table rows ----
-        var snapshot = ApiCallMeter.GetAllCountsPerMinute(); // Dictionary<string,int>
+        IDictionary<string, int> snapshot = ApiCallMeter.GetAllCountsPerMinute(); // Dictionary<string,int>
 
-        foreach (var kv in snapshot)
+        foreach (KeyValuePair<string, int> kv in snapshot)
         {
-            var row = Rows.FirstOrDefault(r => r.Key == kv.Key);
+            ApiMetricsRow row = Rows.FirstOrDefault(r => r.Key == kv.Key);
             if (row == null) Rows.Add(new ApiMetricsRow { Key = kv.Key, RequestsPerMinute = kv.Value });
             else row.RequestsPerMinute = kv.Value;
         }
@@ -132,15 +139,15 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
             if (Rows[i].Key != "TOTAL" && !snapshot.ContainsKey(Rows[i].Key))
                 Rows.RemoveAt(i);
 
-        var total = snapshot.Values.Sum();
-        var totalRow = Rows.FirstOrDefault(r => r.Key == "TOTAL");
+        int total = snapshot.Values.Sum();
+        ApiMetricsRow totalRow = Rows.FirstOrDefault(r => r.Key == "TOTAL");
         if (totalRow == null) Rows.Add(new ApiMetricsRow { Key = "TOTAL", RequestsPerMinute = total });
         else totalRow.RequestsPerMinute = total;
 
         // ---- chart series (one line per endpoint) ----
-        foreach (var kv in snapshot.Where(k => k.Key != "TOTAL"))
+        foreach (KeyValuePair<string, int> kv in snapshot.Where(k => k.Key != "TOTAL"))
         {
-            if (!_seriesByKey.TryGetValue(kv.Key, out var series))
+            if (!_seriesByKey.TryGetValue(kv.Key, out LineSeries series))
             {
                 series = new LineSeries
                 {
@@ -155,7 +162,7 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
                 PlotModel.Series.Add(series);
             }
 
-            var pts = series.Points;
+            List<DataPoint> pts = series.Points;
             if (pts.Count >= Capacity) pts.RemoveAt(0);
             pts.Add(new DataPoint(pts.Count, kv.Value));
 
@@ -165,7 +172,7 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
         }
 
         // remove vanished endpoints
-        foreach (var gone in _seriesByKey.Keys.Where(k => !snapshot.ContainsKey(k)).ToList())
+        foreach (string gone in _seriesByKey.Keys.Where(k => !snapshot.ContainsKey(k)).ToList())
         {
             PlotModel.Series.Remove(_seriesByKey[gone]);
             _seriesByKey.Remove(gone);
@@ -186,6 +193,7 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
     ];
 
     private int _seriesColorIndex = 0;
+
     private OxyColor NextSeriesColor() =>
         SeriesColors[_seriesColorIndex++ % SeriesColors.Length];
 
@@ -196,6 +204,7 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
     private void OnPropertyChanged([CallerMemberName] string p = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
 }

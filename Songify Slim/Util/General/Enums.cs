@@ -15,7 +15,7 @@ public static class Enums
     public enum PlayerType
     {
         [Description("Spotify")]
-        SpotifyWeb,
+        Spotify,
 
         [Description("Windows Playback API")]
         WindowsPlayback,
@@ -30,7 +30,7 @@ public static class Enums
         BrowserCompanion,
 
         [Description("Pear Desktop (Formerly Yotube Music th-ch)")]
-        Ytmthch
+        Pear
     }
 
     public enum SongRequestSource

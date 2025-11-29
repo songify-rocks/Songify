@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Songify_Slim.Models.YTMD
+namespace Songify_Slim.Models.Pear
 {
-    class YTMYHCHQueue
+    internal class PearQueue
     {
         public List<Item> Items { get; set; }
         public bool AutoPlaying { get; set; }
         public string Continuation { get; set; }
     }
-    
+
     public partial class Item
     {
         public PlaylistPanelVideoWrapperRenderer PlaylistPanelVideoWrapperRenderer { get; set; }
@@ -180,5 +176,4 @@ namespace Songify_Slim.Models.YTMD
     {
         public string IconType { get; set; }
     }
-
 }

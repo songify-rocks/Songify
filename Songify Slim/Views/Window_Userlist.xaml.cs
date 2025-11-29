@@ -83,7 +83,7 @@ namespace Songify_Slim.Views
                     return;
 
                 // Animate from the current angle to the next full rotation.
-                DoubleAnimation finishingAnimation = new DoubleAnimation
+                DoubleAnimation finishingAnimation = new()
                 {
                     From = currentAngle,
                     To = currentAngle + additionalRotation,

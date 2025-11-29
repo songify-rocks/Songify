@@ -22,7 +22,7 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
     {
         public static class YtmDesktopApi
         {
-            private static readonly HttpClient Http = new HttpClient();
+            private static readonly HttpClient Http = new();
             private const string BaseUrl = "http://127.0.0.1:26538";
 
             // ---- READ ----
@@ -39,6 +39,12 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
                 GetAsync<VolumeState>("/api/v1/volume");
 
             // ---- CONTROLS ----
+            public static Task<ApiOk> PlayAsync() =>
+                PostAsync<ApiOk>("/api/v1/play");
+
+            public static Task<ApiOk> PauseAsync() =>
+                PostAsync<ApiOk>("/api/v1/pause");
+
             public static Task<ApiOk> PlayPauseAsync() =>
                 PostAsync<ApiOk>("/api/v1/toggle-play");
 
@@ -60,7 +66,6 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
             public static Task<ApiOk> SetVolumeAsync(int volume) =>
                 PostJsonAsync<ApiOk>("/api/v1/volume", new { volume });
 
-
             // ---- HELPERS ----
             private static async Task<T> GetAsync<T>(string path)
             {
@@ -81,13 +86,13 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
             private static async Task<T> PostJsonAsync<T>(string path, object payload)
             {
                 string json = JsonConvert.SerializeObject(payload);
-                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                StringContent content = new(json, Encoding.UTF8, "application/json");
                 HttpResponseMessage resp = await Http.PostAsync(BaseUrl + path, content).ConfigureAwait(false);
                 resp.EnsureSuccessStatusCode();
                 string respJson = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<T>(respJson);
             }
-            
+
             public static async Task<bool> AddToQueueAsync(string reqTrackid, Enums.InsertPosition insertAfterCurrentVideo)
             {
                 var payload = new
@@ -101,7 +106,8 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
         }
 
         // ---- Models ----
-        public enum RepeatMode { Off, One, All }
+        public enum RepeatMode
+        { Off, One, All }
 
         public sealed class ApiOk
         {
@@ -153,7 +159,5 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
             [JsonProperty("state")]
             public int State { get; set; }
         }
-
     }
-
 }

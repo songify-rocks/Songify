@@ -38,6 +38,7 @@ namespace Songify_Slim
         public static bool IsBeta = true;
         private const string PipeName = "SongifyPipe";
         private const string FolderName = "Songify.Rocks";
+
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             Logger.LogExc(e.Exception);
@@ -224,7 +225,6 @@ namespace Songify_Slim
                     {
                         login.Close();
                     }
-
                 }
 
                 foreach (Window currentWindow in Current.Windows)
@@ -310,7 +310,7 @@ namespace Songify_Slim
             // Override the Markdig CodeStyleKey at runtime
             if (Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
             {
-                Style newStyle = new Style(typeof(Run));
+                Style newStyle = new(typeof(Run));
 
                 newStyle.Setters.Add(new Setter(TextElement.ForegroundProperty, new SolidColorBrush(Colors.White)));
                 newStyle.Setters.Add(new Setter(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Black)));
@@ -371,7 +371,7 @@ namespace Songify_Slim
         {
             public static ResourceDictionary CreateResourceDictionary(CultureInfo culture)
             {
-                ResourceDictionary dict = new ResourceDictionary();
+                ResourceDictionary dict = new();
                 ResourceManager rm = Songify_Slim.Properties.Resources.ResourceManager;
                 // Retrieve the resource set for the specified culture.
                 ResourceSet resourceSet = rm.GetResourceSet(culture, true, true);
@@ -454,7 +454,6 @@ namespace Songify_Slim
                 AskDeleteAndRelaunch();
                 // throw; // only reached if user said "No"
             }
-
         }
 
         private void StartPipeServer()
@@ -485,7 +484,6 @@ namespace Songify_Slim
                                 Current.Dispatcher.Invoke(() => HandleDeepLink(message));
                             }
                         }
-
                     }
                     catch
                     {
@@ -505,7 +503,7 @@ namespace Songify_Slim
             string args =
                 $"advfirewall firewall add rule name=\"{appName}\" dir=in action=allow program=\"{exePath}\" enable=yes";
 
-            ProcessStartInfo psi = new ProcessStartInfo
+            ProcessStartInfo psi = new()
             {
                 FileName = "netsh",
                 Arguments = args,
@@ -605,6 +603,5 @@ namespace Songify_Slim
                 ? "\"" + s.Replace("\"", "\\\"") + "\""
                 : s;
         }
-
     }
 }

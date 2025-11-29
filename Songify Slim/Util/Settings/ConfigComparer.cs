@@ -10,17 +10,16 @@ namespace Songify_Slim.Util.Settings
 {
     public static class ConfigComparer
     {
-        static readonly HashSet<string> ExcludedPaths = new HashSet<string>
-        {
+        private static readonly HashSet<string> ExcludedPaths =
+        [
             "AppConfig.SongifyApiKey",
             "SpotifyCredentials",
-            "TwitchCredentials",
-        };
-
+            "TwitchCredentials"
+        ];
 
         public static List<string> GetDifferences(object original, object incoming, string prefix = "")
         {
-            List<string> diffs = new();
+            List<string> diffs = [];
             if (original == null || incoming == null)
                 return diffs;
 
@@ -73,7 +72,6 @@ namespace Songify_Slim.Util.Settings
                     if (oldList != newList)
                         diffs.Add($"{fullName}: {oldList} → {newList}");
                 }
-
                 else
                 {
                     if (!Equals(originalValue, incomingValue))
@@ -87,7 +85,5 @@ namespace Songify_Slim.Util.Settings
 
             return diffs;
         }
-
     }
-
 }

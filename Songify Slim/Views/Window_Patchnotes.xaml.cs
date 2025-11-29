@@ -16,8 +16,7 @@ using System.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-
-
+using Songify_Slim.Util.Songify.APIs;
 using ComboBox = System.Windows.Controls.ComboBox;
 using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 
@@ -35,7 +34,7 @@ namespace Songify_Slim.Views
                                 <meta charset="utf-8" />
                                 <title>Patch Notes</title>
                               <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css">
-                              
+
                                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                                 <style>
                                   body {
@@ -59,17 +58,16 @@ namespace Songify_Slim.Views
                               <script id="md" type="application/json">
                                 {{MARKDOWN_CONTENT}}
                               </script>
-                              
+
                               <script>
                                 const raw = JSON.parse(document.getElementById("md").textContent);
                                 document.getElementById("markdown-content").innerHTML = marked.parse(raw);
                               </script>
-                              
+
                               </body>
                               </html>
 
                               """;
-
 
         // Constructor to initialize the window
         public WindowPatchnotes()

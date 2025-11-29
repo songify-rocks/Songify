@@ -53,7 +53,7 @@ namespace Songify_Slim.Util.Spotify
         private static DateTime _cachedPlaylistFetchedAt = DateTime.MinValue;
         private static readonly TimeSpan PlaylistCacheTtl = TimeSpan.FromMinutes(10);
 
-        private static readonly HashSet<string> _playlistTrackIds = new();
+        private static readonly HashSet<string> _playlistTrackIds = [];
         private static bool _playlistCacheInitialized = false;
         private static readonly object _playlistLock = new();
 
@@ -116,8 +116,8 @@ namespace Songify_Slim.Util.Spotify
         private static async Task RefreshTokens()
         {
             // 1) Get new tokens (background thread is fine)
-            OAuthClient oauth = new OAuthClient();
-            TokenSwapRefreshRequest refreshRequest = new TokenSwapRefreshRequest(
+            OAuthClient oauth = new();
+            TokenSwapRefreshRequest refreshRequest = new(
                 new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
                 Settings.Settings.SpotifyRefreshToken
             );
@@ -174,15 +174,15 @@ namespace Songify_Slim.Util.Spotify
 
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
-            OAuthClient oauth = new OAuthClient();
-            TokenSwapTokenRequest tokenRequest = new TokenSwapTokenRequest(
+            OAuthClient oauth = new();
+            TokenSwapTokenRequest tokenRequest = new(
                 new Uri($"{BaseUrl}/swap?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
                 response.Code);
             AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
             Logger.LogStr(
                 $"SPOTIFY: We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
 
-            TokenSwapRefreshRequest refreshRequest = new TokenSwapRefreshRequest(
+            TokenSwapRefreshRequest refreshRequest = new(
                 new Uri($"{BaseUrl}/refresh?id={Settings.Settings.ClientId}&secret={Settings.Settings.ClientSecret}"),
                 tokenResponse.RefreshToken
             );
@@ -246,7 +246,7 @@ namespace Songify_Slim.Util.Spotify
 
         public static async Task ShowPremiumRequiredDialogAsync()
         {
-            MetroDialogSettings dialogSettings = new MetroDialogSettings
+            MetroDialogSettings dialogSettings = new()
             {
                 AffirmativeButtonText = "OK",
                 NegativeButtonText = "Don't Show Again",
@@ -457,7 +457,7 @@ namespace Songify_Slim.Util.Spotify
 
             try
             {
-                SearchRequest request = new SearchRequest(SearchRequest.Types.Track, query)
+                SearchRequest request = new(SearchRequest.Types.Track, query)
                 {
                     Limit = take
                 };
@@ -841,6 +841,7 @@ namespace Songify_Slim.Util.Spotify
             catch (Exception e)
             {
                 Logger.LogStr("SPOTIFY API: Couldn't get device");
+                Logger.LogExc(e);
             }
 
             return "No device found";
@@ -979,7 +980,7 @@ namespace Songify_Slim.Util.Spotify
 
             // Strip diacritics (é -> e, ö -> o, etc.)
             string formD = input.Normalize(NormalizationForm.FormD);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             foreach (char ch in formD)
             {
@@ -1021,7 +1022,7 @@ namespace Songify_Slim.Util.Spotify
         /// </summary>
         private static List<ParsedQuery> GenerateInterpretations(string query)
         {
-            List<ParsedQuery> list = new List<ParsedQuery>();
+            List<ParsedQuery> list = [];
             string raw = query.Trim();
 
             // 1) No structure assumption
@@ -1038,7 +1039,7 @@ namespace Songify_Slim.Util.Spotify
             // 2) Artist - Title pattern
             if (qLower.Contains(" - "))
             {
-                string[] parts = raw.Split(new[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = raw.Split([" - "], StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length >= 2)
                 {
                     list.Add(new ParsedQuery
@@ -1068,7 +1069,7 @@ namespace Songify_Slim.Util.Spotify
             }
 
             // 4) Heuristic: first word = artist, rest = title
-            string[] tokens = raw.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] tokens = raw.Split([' '], StringSplitOptions.RemoveEmptyEntries);
             if (tokens.Length >= 2)
             {
                 // first word as artist
@@ -1102,7 +1103,7 @@ namespace Songify_Slim.Util.Spotify
         private static int ScoreTrackForInterpretation(FullTrack track, ParsedQuery pq)
         {
             string title = track.Name ?? "";
-            string artists = string.Join(" ", track.Artists?.Select(a => a.Name ?? "") ?? Array.Empty<string>());
+            string artists = string.Join(" ", track.Artists?.Select(a => a.Name ?? "") ?? []);
             string full = $"{title} {artists}";
 
             int titleScore = 0;
@@ -1211,7 +1212,6 @@ namespace Songify_Slim.Util.Spotify
 
                     page = await ApiCallMeter.RunAsync("Client.NextPage", () => Client.NextPage(page), softLimitPerminute);
                 }
-
             }
             catch (Exception ex)
             {

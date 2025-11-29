@@ -26,7 +26,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Songify_Slim.Models.YTMD;
+using Songify_Slim.Models.Pear;
+using Songify_Slim.Util.Songify.Pear;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Client.Models;
 using Application = System.Windows.Application;
@@ -47,15 +48,11 @@ namespace Songify_Slim.Util.General
         private static readonly Dictionary<string, CommandHandler> CommandMap = new(StringComparer.OrdinalIgnoreCase)
         {
             ["youtube"] = HandleYoutubeAsync,
-
             ["queue_add"] = HandleQueueAddAsync,
-
             ["vol_set"] = HandleVolSetAsync,
             ["vol_up"] = c => HandleVolumeStepAsync(+5),
             ["vol_down"] = c => HandleVolumeStepAsync(-5),
-
             ["send_to_chat"] = HandleSendToChatAsync,
-
             ["block_artist"] = c => { BlockArtist(); return Task.FromResult("Artist blocked."); },
             ["block_all_artists"] = c => { BlockAllArtists(); return Task.FromResult("All artists blocked."); },
             ["block_song"] = async c => { BlockSong(); return await Task.FromResult("Song blocked."); },
@@ -64,14 +61,11 @@ namespace Songify_Slim.Util.General
                 string user = BlockUser();
                 return Task.FromResult(!string.IsNullOrWhiteSpace(user) ? $"User {user} blocked" : "No user to block.");
             },
-
             ["skip"] = HandleSkipAsync,
             ["next"] = HandleSkipAsync,
-
             ["play_pause"] = HandlePlayPauseAsync,
             ["pause"] = HandlePlayPauseAsync,
             ["play"] = HandlePlayPauseAsync,
-
             ["stop_sr_reward"] = HandleStopSrRewardAsync,
             ["play_playlist"] = PlayPlaylist,
         };
@@ -80,10 +74,15 @@ namespace Songify_Slim.Util.General
         private interface IPlayerOps
         {
             Task<string> QueueAddAsync(QueueAddData data);
+
             Task<string> SetVolumeAsync(int value);
+
             Task<string> VolumeStepAsync(int change);
+
             Task<string> SkipAsync();
+
             Task<string> TogglePlayPauseAsync(string action); // "play", "pause", "play_pause"
+
             Task<string> SendToChatAsync();
         }
 
@@ -119,7 +118,7 @@ namespace Songify_Slim.Util.General
 
             public async Task<string> TogglePlayPauseAsync(string action)
             {
-                var playbackContext = await SpotifyApiHandler.GetPlayback();
+                CurrentlyPlayingContext playbackContext = await SpotifyApiHandler.GetPlayback();
                 bool isPlaying = playbackContext?.IsPlaying ?? false;
 
                 if (string.Equals(action, "pause", StringComparison.OrdinalIgnoreCase) || (string.Equals(action, "play_pause", StringComparison.OrdinalIgnoreCase) && isPlaying))
@@ -146,7 +145,7 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        private sealed class YtmthchOps : IPlayerOps
+        private sealed class PearOps : IPlayerOps
         {
             public async Task<string> QueueAddAsync(QueueAddData data)
             {
@@ -158,7 +157,7 @@ namespace Songify_Slim.Util.General
 
                 if (string.IsNullOrEmpty(videoId))
                 {
-                    YTMYHCHSearchResponse sr = await WebHelper.SearchYouTubeMusic(input);
+                    PearSearch sr = await PearApi.SearchAsync(input);
                     if (sr != null)
                         videoId = sr.VideoId;
                 }
@@ -168,7 +167,6 @@ namespace Songify_Slim.Util.General
 
                 return await TwitchHandler.AddSongFromWebsocket(videoId, data.Requester ?? string.Empty);
             }
-
 
             public async Task<string> SetVolumeAsync(int value)
             {
@@ -213,16 +211,18 @@ namespace Songify_Slim.Util.General
         }
 
         private static readonly IPlayerOps Spotify = new SpotifyOps();
-        private static readonly IPlayerOps Ytm = new YtmthchOps();
+        private static readonly IPlayerOps Ytm = new PearOps();
 
         private static IPlayerOps GetPlayerOps()
         {
             switch (Settings.Settings.Player)
             {
-                case Enums.PlayerType.SpotifyWeb:
+                case Enums.PlayerType.Spotify:
                     return Spotify;
-                case Enums.PlayerType.Ytmthch:
+
+                case Enums.PlayerType.Pear:
                     return Ytm;
+
                 default:
                     return Spotify; // default to Spotify behavior
             }
@@ -323,7 +323,7 @@ namespace Songify_Slim.Util.General
                 {
                     while (socket.State == WebSocketState.Open)
                     {
-                        var buffer = new ArraySegment<byte>(new byte[4096]);
+                        ArraySegment<byte> buffer = new(new byte[4096]);
                         WebSocketReceiveResult result;
 
                         try
@@ -374,7 +374,6 @@ namespace Songify_Slim.Util.General
 
                     socket.Dispose();
                 }
-
             }
             catch (Exception e)
             {
@@ -382,7 +381,7 @@ namespace Songify_Slim.Util.General
             }
             finally
             {
-                if (ChannelClients.TryGetValue(path, out var clients))
+                if (ChannelClients.TryGetValue(path, out ConcurrentDictionary<Guid, WebSocket> clients))
                 {
                     clients.TryRemove(clientId, out _);
                 }
@@ -395,7 +394,7 @@ namespace Songify_Slim.Util.General
 
         private async Task SafeSendAsync(WebSocket socket, byte[] data, WebSocketMessageType type)
         {
-            var sem = _sendLocks.GetOrAdd(socket, _ => new SemaphoreSlim(1, 1));
+            SemaphoreSlim sem = _sendLocks.GetOrAdd(socket, _ => new SemaphoreSlim(1, 1));
             await sem.WaitAsync();
             try
             {
@@ -410,7 +409,7 @@ namespace Songify_Slim.Util.General
 
         public async Task BroadcastToChannelAsync(string path, string message)
         {
-            if (!ChannelClients.TryGetValue(path, out var clients))
+            if (!ChannelClients.TryGetValue(path, out ConcurrentDictionary<Guid, WebSocket> clients))
                 return;
 
             byte[] messageBytes = Encoding.UTF8.GetBytes(message);
@@ -460,7 +459,7 @@ namespace Songify_Slim.Util.General
             if (command == null || string.IsNullOrWhiteSpace(command.Action))
                 return "Invalid command format.";
 
-            if (CommandMap.TryGetValue(command.Action, out var handler))
+            if (CommandMap.TryGetValue(command.Action, out CommandHandler handler))
             {
                 return await handler(command);
             }
@@ -485,7 +484,7 @@ namespace Songify_Slim.Util.General
             QueueAddData queueData = command.Data.ToObject<QueueAddData>();
             if (queueData == null) return "Invalid data for queue_add.";
 
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.QueueAddAsync(queueData);
         }
 
@@ -495,31 +494,31 @@ namespace Songify_Slim.Util.General
             VolumeData volData = command.Data.ToObject<VolumeData>();
             if (volData == null) return "Invalid data for vol_set.";
 
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.SetVolumeAsync(MathUtils.Clamp(volData.Value, 0, 100));
         }
 
         private static async Task<string> HandleVolumeStepAsync(int change)
         {
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.VolumeStepAsync(change);
         }
 
         private static async Task<string> HandleSkipAsync(WebSocketCommand command)
         {
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.SkipAsync();
         }
 
         private static async Task<string> HandlePlayPauseAsync(WebSocketCommand command)
         {
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.TogglePlayPauseAsync(command.Action);
         }
 
         private static async Task<string> HandleSendToChatAsync(WebSocketCommand command)
         {
-            var ops = GetPlayerOps();
+            IPlayerOps ops = GetPlayerOps();
             return await ops.SendToChatAsync();
         }
 

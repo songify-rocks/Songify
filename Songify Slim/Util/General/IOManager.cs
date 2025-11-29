@@ -223,7 +223,7 @@ namespace Songify_Slim.Util.General
                             // data:image/...;base64,XXXX
                             WriteDataUrlToFile(cover, coverTemp);
                         }
-                        else if (Uri.TryCreate(cover, UriKind.Absolute, out var uri))
+                        else if (Uri.TryCreate(cover, UriKind.Absolute, out Uri uri))
                         {
                             if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
                             {
@@ -310,7 +310,7 @@ namespace Songify_Slim.Util.General
 
         private static void WriteDataUrlToFile(string dataUrl, string path)
         {
-            var m = DataUrlRegex.Match(dataUrl);
+            Match m = DataUrlRegex.Match(dataUrl);
             if (!m.Success) throw new FormatException("Invalid data URL");
 
             string b64 = m.Groups["data"].Value;
@@ -383,7 +383,6 @@ namespace Songify_Slim.Util.General
                 _imageDownloadLock.Release();
             }
         }
-
 
         private static bool IsFileLocked(FileInfo file)
         {

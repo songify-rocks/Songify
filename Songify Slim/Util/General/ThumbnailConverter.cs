@@ -21,7 +21,7 @@ public static class ThumbnailConverter
 
         // Copy to byte[]
         byte[] bytes;
-        using (var reader = new DataReader(stream.GetInputStreamAt(0)))
+        using (DataReader reader = new(stream.GetInputStreamAt(0)))
         {
             bytes = new byte[stream.Size];
             await reader.LoadAsync((uint)stream.Size);

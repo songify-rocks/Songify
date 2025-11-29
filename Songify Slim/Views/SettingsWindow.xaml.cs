@@ -9,7 +9,6 @@ using Songify_Slim.Util.Settings;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Songify.TwitchOAuth;
-using Songify_Slim.Util.Songify.YTMDesktop;
 using Songify_Slim.Util.Spotify;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Http;
@@ -267,7 +266,7 @@ namespace Songify_Slim.Views
                     {
                         if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
                         {
-                            var bitmap = new BitmapImage();
+                            BitmapImage bitmap = new();
                             bitmap.BeginInit();
                             bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
                             bitmap.EndInit();
@@ -332,7 +331,7 @@ namespace Songify_Slim.Views
                 LblMainExpiry.Visibility = Visibility.Collapsed;
                 Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
                 Bitmap bitmap = icon.ToBitmap();
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
                 BitmapImage bitmapImage = new();
@@ -366,7 +365,7 @@ namespace Songify_Slim.Views
                 LblBotExpiry.Visibility = Visibility.Collapsed;
                 Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
                 Bitmap bitmap = icon.ToBitmap();
-                MemoryStream ms = new MemoryStream();
+                MemoryStream ms = new();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
                 BitmapImage bitmapImage = new();
@@ -672,7 +671,7 @@ namespace Songify_Slim.Views
         {
             // enables / disables telemetry
             Settings.TwSrReward = ChbxTwReward.IsOn;
-            TwitchHandler.SetTwitchSrRewardsEnabledState(ChbxTwReward.IsOn);
+            _ = TwitchHandler.SetTwitchSrRewardsEnabledState(ChbxTwReward.IsOn);
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
@@ -1318,12 +1317,13 @@ namespace Songify_Slim.Views
             }
         }
 
-        public async Task ResetTwitchConnection()
+        public Task ResetTwitchConnection()
         {
             Settings.TwAcc = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).Username;
             Settings.TwOAuth = ((UcAccountItem)((ComboBoxItem)CbAccountSelection.SelectedItem).Content).OAuth;
             TwitchHandler.ConnectTwitchChatClient();
             _ = SetControls();
+            return Task.CompletedTask;
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
