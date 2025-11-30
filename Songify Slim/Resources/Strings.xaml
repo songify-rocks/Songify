@@ -5,18 +5,17 @@
     <system:String x:Key="LicenseUsing" xml:space="preserve">The MIT License (MIT)
 applies to:
 - Mahapps Metro, Copyright (c) 2016 MahApps
-- MahApps Metro IconPacks, Copyright (c) 2016 MahApps        
+- MahApps Metro IconPacks, Copyright (c) 2016 MahApps
 - Costura.Fody, Copyright (c) 2012 Simon Cropp and contributors
 - OctoKit.net, Copyright (c) 2017 GitHub, Inc.
 - TwitchLib, Copyright (c) swiftyspiffy
-        
+
 GNU LESSER GENERAL PUBLIC LICENSE (GNU GPLv3)
 applies to:
 - SpotifyAPI-NET, Copyright (c) 2019 JohnnyCrazy
-        
-        
+
 ------------------------------------------------------
-        
+
 MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,9 +34,8 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.        
-        
-        
+SOFTWARE.
+
 ------------------------------------------------------
 
      GNU LESSER GENERAL PUBLIC LICENSE
@@ -46,7 +44,6 @@ SOFTWARE.
  Copyright (C) 2007 Free Software Foundation, Inc.
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
-
 
   This version of the GNU Lesser General Public License incorporates
 the terms and conditions of version 3 of the GNU General Public
@@ -207,7 +204,7 @@ permanent authorization for you to choose that version for the
 Library.
     </system:String>
     <system:String x:Key="data_colletion" xml:space="preserve">Hey there!
-        
+
 This seems to be the first time you are running the software. I'd like to anonymously collect some data such as:
 
 ● UUID (randomly generate unique identifier, nothing personalized!)
@@ -240,8 +237,6 @@ your use of our desktop applications, including Songify for Windows (the
 "Software"). IF YOU DO NOT AGREE TO ALL OF THE TERMS OF THIS EULA, DO
 NOT INSTALL, USE OR COPY THE SOFTWARE.
 
- 
-
 Summary
 
 You must agree to all of the terms of this EULA to use this Software.
@@ -260,16 +255,12 @@ with it.
 You really ought to just go ahead and read the whole EULA.
 It's not all that long. You should not only rely on this summary.
 
-
-
 The Agreement
 
 By downloading, installing, using, or copying the Software,
 you accept and agree to be bound by the terms of this EULA. If you do not agree
 to all of the terms of this EULA, you may not download, install, use or copy
 the Software.
-
- 
 
 The License
 
@@ -278,8 +269,6 @@ Software as you want, and use the Software for any lawful purpose consistent
 with this EULA. Your license to use the Software is expressly conditioned upon
 your agreement to all of the terms of this EULA. This software is licensed, not
 sold. Songify reserves all other rights not granted by this EULA.
-
- 
 
 The Restrictions
 
@@ -295,8 +284,6 @@ EULA and you may not repackage or bundle the Software with any other software.
 You may not remove or alter any proprietary notices or marks
 on the Software.
 
-
-
 Privacy Notices
 
 The Software automatically communicates with Songify and GitHub
@@ -306,8 +293,6 @@ about the specific information we send, please visit http://songify.rocks/usage_
 You may opt out of sending the anonymized usage data, but if you
 do not want the Software to update automatically, you must uninstall the
 Software.
-
- 
 
 Automatic Software Updates. The Software communicates with
 GitHub (and sends information described at the URL above) to determine whether
@@ -325,8 +310,6 @@ URL above) to Songify‘s servers. If you do not want to send anonymized usage
 data to Songify, you may opt out by changing your settings in the Settings
 view.
 
-
-
 Open-Source Notices
 
 Certain components of the Software may be subject to
@@ -338,8 +321,6 @@ such license, requires that the distributor make the software available in
 source code format. The Software documentation includes copies of the licenses
 applicable to the Open-Source Components.
 
- 
-
 To the extent there is conflict between the license terms
 covering the Open-Source Components and this EULA, the terms of such licenses
 will apply in lieu of the terms of this EULA. To the extent the terms of the
@@ -350,16 +331,12 @@ licenses applicable to Open-Source Components require Licensor to make an offer
 to provide source code in connection with the Product, such offer is hereby
 made, and you may exercise it by contacting info@songify.rocks
 
- 
-
 Intellectual Property Notices
 
 The Software and all worldwide copyrights, trade secrets,
 and other intellectual property rights therein are the exclusive property of Songify.
 Songify reserves all rights in and to the Software not expressly granted to you
 in this EULA.
-
- 
 
 Disclaimers and Limitations on Liability
 
@@ -374,8 +351,6 @@ products, services, information, or other material purchased or obtained by you
 through the Software will meet your expectations; or (vi) any errors in the
 Software will be corrected.
 
- 
-
 YOU EXPRESSLY UNDERSTAND AND AGREE THAT SONGIFY SHALL NOT BE
 LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR
 EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO, DAMAGES FOR LOSS OF PROFITS,
@@ -389,15 +364,11 @@ access to or alteration of your transmissions or data; (iv) statements or
 conduct of any third-party on the Software; (v) or any other matter relating to
 the Software.
 
- 
-
 Songify reserves the right at any time and from time to time
 to modify or discontinue, temporarily or permanently, the Software (or any part
 thereof) with or without notice. Songify shall not be liable to you or to any
 third-party for any modification, price change, suspension or discontinuance of
 the Software.
-
- 
 
 Miscellanea
 
@@ -415,6 +386,6 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
 Hertz • karimawii
 
 Supporters
-VigilSC • TraumaStoo • zopney • Royston Holland • Schwifty • Hurz • Twokinds • Preheet • Antiphrost • Jezzca • Nanito42 • RocketStar • Matthew Ward • yukee • Dati • Peter • ticoarmy88  • pacey • SpeedRaiseR • MRxAmazingSC (Jeremy J) • Katy • Shaggedy • loungegamer.ttv • Paws • ptngms • Aziz • Brianna Sherman • GenXJim • SydGTV • Block57 • Leppely+ • Zacriel • OtterNas3n • Abu &lt;3 • :) • Snobias • DoubleDual63 • Mr.Wiggo • soup • slowclap • Bruce Charles • OrdinaryJohnQ • mrxamazingsc • RubMyBelly • Kori • Eduardo Walecki • Neovisonn • PapyJoky • AT • Ko-fi Supporter • Simon Gonzalo • HM • Lanky • Flame6 • Kai • ET__Studios • CasiOak TTV • Marquinhos Samurai • eXanderOne • miron • BadWolf • The_Harvster • Augustas Jursenas • Flippage • IAmBrokeAsF • xdhxxx • bertisnotreal • Amir • Eaaz3 • lazarusjames • paatuneetlurjukset • Ko-fi Supporter • Paddix • Bajinzin • Samppax83 • Droi_ • JBaity • mux
+loungegamer.ttv • SpeedRaiseR • TraumaStoo • Sabashjon • Royston Holland • Vigil • PapyJoky • NotToBlame • McFe
 </system:String>
 </ResourceDictionary>

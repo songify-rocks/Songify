@@ -1,22 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Web;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Threading;
-using MahApps.Metro.Controls.Dialogs;
+﻿using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +20,26 @@ using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using Swan;
 using Swan.Formatters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Web;
+using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
+using Windows.Security.Authentication.OnlineId;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -57,6 +59,8 @@ using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets.Extensions;
+using Windows.UI.Text.Core;
+using TwitchLib.EventSub.Core.Models.Chat;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 using Timer = System.Timers.Timer;
@@ -657,37 +661,32 @@ public static class TwitchHandler
             }
 
             TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == msg.ChatterUserId);
-
-            if (existingUser == null)
-            {
-                Logger.LogStr($"User {msg.ChatterUserName} ({msg.ChatterUserId}) not found. Cancelling request.");
-                return;
-            }
-
-            List<int> userLevels = await GetUserLevels(msg);
-            // Attempt to find the user in the existing list.
-
+            List<int> userLevels = await GetUserLevels(msg.ChatterUserId, msg.BroadcasterUserId, msg.IsModerator, msg.IsVip, msg.IsSubscriber, msg.IsBroadcaster);
             int subtier = int.Parse(GlobalObjects.Subscribers.Where(s => s.UserId == msg.ChatterUserId)
                 // Helix tier is a string like "1000"/"2000"/"3000"
                 .OrderByDescending(s => int.Parse(s.Tier))
                 .FirstOrDefault()?.Tier ?? "0") / 1000;
+
             if (existingUser == null)
             {
-                // If the user doesn't exist, add them.
-                TwitchUser newUser = new()
+                Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(msg.ChatterUserId, Settings.TwitchUser.Id);
+                existingUser = new TwitchUser
                 {
-                    UserId = msg.ChatterUserId,
-                    UserName = msg.ChatterUserLogin,
-                    LastCommandTime = null,
                     DisplayName = msg.ChatterUserName,
-                    UserLevels = userLevels, // Convert enum to int for storage
-                    IsFollowing = false,
-                    FollowInformation = new ChannelFollower(),
-                    SubTier = subtier,
-                    IsSrBlocked = IsUserBlocked(msg.ChatterUserName)
+                    FollowInformation = isUserFollowing.Item1 == true ? isUserFollowing.Item2 : null,
+                    IsFollowing = isUserFollowing.Item1,
+                    IsSrBlocked = IsUserBlocked(msg.ChatterUserName),
+                    LastCommandTime = null,
+                    SubTier = int.Parse(GlobalObjects.Subscribers.Where(s => s.UserId == msg.ChatterUserId)
+                        // Helix tier is a string like "1000"/"2000"/"3000"
+                        .OrderByDescending(s => int.Parse(s.Tier))
+                        .FirstOrDefault()?.Tier ?? "0") / 1000,
+                    UserId = msg.ChatterUserId,
+                    UserLevels = userLevels,
+                    UserName = msg.ChatterUserLogin
                 };
-                Application.Current.Dispatcher.Invoke(() => { GlobalObjects.TwitchUsers.Add(newUser); });
-                existingUser = newUser;
+                Logger.LogStr($"User {msg.ChatterUserName} ({msg.ChatterUserId}) not found. Adding manually.");
+                GlobalObjects.TwitchUsers.Add(existingUser);
             }
             else
             {
@@ -811,6 +810,31 @@ public static class TwitchHandler
     {
         TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
+        int subtier = int.Parse(GlobalObjects.Subscribers.Where(s => s.UserId == userId)
+              // Helix tier is a string like "1000"/"2000"/"3000"
+              .OrderByDescending(s => int.Parse(s.Tier))
+              .FirstOrDefault()?.Tier ?? "0") / 1000;
+
+        if (existingUser == null)
+        {
+            Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(userId, Settings.TwitchUser.Id);
+            existingUser = new TwitchUser
+            {
+                DisplayName = userName,
+                FollowInformation = isUserFollowing.Item1 == true ? isUserFollowing.Item2 : null,
+                IsFollowing = isUserFollowing.Item1,
+                IsSrBlocked = IsUserBlocked(userName),
+                LastCommandTime = null,
+                SubTier = subtier,
+                UserId = userId,
+                UserLevels = null,
+                UserName = userName
+            };
+            Logger.LogStr($"User {userName} ({userId}) not found. Added manually");
+            GlobalObjects.TwitchUsers.Add(existingUser);
+        }
+
+
         // Do nothing if the user is blocked, don't even reply
         if (IsUserBlocked(userName))
         {
@@ -844,12 +868,30 @@ public static class TwitchHandler
         }
 
         TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
+        List<int> userLevels = await GetUserLevels(userId, Settings.TwitchUser.Id);
+        int subtier = int.Parse(GlobalObjects.Subscribers.Where(s => s.UserId == userId)
+            // Helix tier is a string like "1000"/"2000"/"3000"
+            .OrderByDescending(s => int.Parse(s.Tier))
+            .FirstOrDefault()?.Tier ?? "0") / 1000;
+
         if (existingUser == null)
         {
-            Logger.LogStr($"User {userName} ({userId}) not found. Cancelling request.");
-            return;
+            Tuple<bool?, ChannelFollower> isUserFollowing = await GetIsUserFollowing(userId, Settings.TwitchUser.Id);
+            existingUser = new TwitchUser
+            {
+                DisplayName = userName,
+                FollowInformation = isUserFollowing.Item1 == true ? isUserFollowing.Item2 : null,
+                IsFollowing = isUserFollowing.Item1,
+                IsSrBlocked = IsUserBlocked(userName),
+                LastCommandTime = null,
+                SubTier = subtier,
+                UserId = userId,
+                UserLevels = userLevels,
+                UserName = userName
+            };
+            Logger.LogStr($"User {userName} ({userId}) not found. Adding manually.");
+            GlobalObjects.TwitchUsers.Add(existingUser);
         }
-
         // Check if the user level is lower than broadcaster or not allowed to request songs
 
         if (!IsUserAllowed(Settings.UserLevelsReward, new TwitchCommandParams
@@ -3516,89 +3558,48 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task<List<int>> GetUserLevels(ChannelChatMessage msg)
+    private static async Task<List<int>> GetUserLevels(
+        string userId,
+        string broadcasterId,
+        bool isModerator = false,
+        bool isVip = false,
+        bool isSubscriber = false,
+        bool isBroadcaster = false)
     {
-        string chatterUserId = msg.ChatterUserId;
-        List<int> userLevels =
-        [
-            (int)Enums.TwitchUserLevels.Viewer
-        ];
+        List<int> userLevels = [(int)Enums.TwitchUserLevels.Viewer];
 
-        try
-        {
-            GlobalObjects.Subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
-            //GlobalObjects.moderators = await TwitchApiHelper.GetAllModeratorsAsync();
-            //GlobalObjects.vips = await TwitchApiHelper.GetAllVipsAsync();
-        }
-        catch (Exception e)
-        {
-            // Missing scopes, prompt to reconnect Twitch
-            Logger.LogExc(e);
-            Logger.LogStr("TWITCH: MISSING SCOPES, PLEASE RE-LINK TWITCH");
-            try
-            {
-                if (!_toastSent)
-                    new ToastContentBuilder()
-                        .AddText("Songify")
-                        .AddText("Can't fetch Twitch Users, please re-link Twitch")
-                        .AddAttributionText(DateTime.Now.ToString(CultureInfo.CurrentCulture))
-                        .Show();
-                _toastSent = true;
-            }
-            catch (Exception exception)
-            {
-                Logger.LogExc(exception);
-            }
-            return userLevels;
-        }
-
-        // Check if the user is a moderator
-        if (msg.IsModerator)
-        {
+        // Mod
+        if (isModerator || GlobalObjects.Moderators.Any(m => m.UserId == userId))
             userLevels.Add((int)Enums.TwitchUserLevels.Moderator);
-        }
 
-        if (msg.IsVip)
-        {
+        // VIP
+        if (isVip || GlobalObjects.Vips.Any(m => m.UserId == userId))
             userLevels.Add((int)Enums.TwitchUserLevels.Vip);
-        }
 
-        if (msg.IsSubscriber)
+        // Subscriber
+        if (isSubscriber || GlobalObjects.Subscribers.Any(s => s.UserId == userId))
         {
             userLevels.Add((int)Enums.TwitchUserLevels.Subscriber);
 
-            Subscription subscription = GlobalObjects.Subscribers.Where(s => s.UserId == chatterUserId)
-                // Helix tier is a string like "1000"/"2000"/"3000"
+            Subscription sub = GlobalObjects.Subscribers
+                .Where(s => s.UserId == userId)
                 .OrderByDescending(s => int.Parse(s.Tier))
                 .FirstOrDefault();
 
-            if (subscription != null)
-            {
-                switch (subscription.Tier)
-                {
-                    case "2000":
-                        userLevels.Add((int)Enums.TwitchUserLevels.SubscriberT2);
-                        break;
-
-                    case "3000":
-                        userLevels.Add((int)Enums.TwitchUserLevels.SubscriberT3);
-                        break;
-                }
-            }
+            if (sub?.Tier == "2000")
+                userLevels.Add((int)Enums.TwitchUserLevels.SubscriberT2);
+            else if (sub?.Tier == "3000")
+                userLevels.Add((int)Enums.TwitchUserLevels.SubscriberT3);
         }
 
-        if (msg.IsBroadcaster)
-        {
+        // Broadcaster (you can still override with true if msg reports it)
+        if (isBroadcaster || userId == broadcasterId)
             userLevels.Add((int)Enums.TwitchUserLevels.Broadcaster);
-        }
 
-        // Get follow status
-        (bool? isFollowing, ChannelFollower _) = await GetIsUserFollowing(chatterUserId, msg.BroadcasterUserId);
-
-        if (isFollowing != null && (bool)isFollowing)
-        {
+        // Follower check
+        (bool? isFollowing, _) = await GetIsUserFollowing(userId, broadcasterId);
+        if (isFollowing == true)
             userLevels.Add((int)Enums.TwitchUserLevels.Follower);
-        }
 
         return userLevels;
     }
