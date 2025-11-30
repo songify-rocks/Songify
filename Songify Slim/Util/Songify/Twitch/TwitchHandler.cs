@@ -250,7 +250,7 @@ public static class TwitchHandler
                 await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
             if (Settings.AddSrToPlaylist)
-                await AddToPlaylist(track.Id);
+                await SpotifyApiHandler.AddToPlaylist(track.Id);
 
             string successResponse = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
             response = CreateSuccessResponse(track, e.DisplayName, successResponse);
@@ -332,7 +332,7 @@ public static class TwitchHandler
                     await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
 
                     if (Settings.AddSrToPlaylist)
-                        await AddToPlaylist(track.Id);
+                        await SpotifyApiHandler.AddToPlaylist(track.Id);
 
                     RequestObject o = BuildRequestObject(track, requester);
                     await UploadToQueue(o);
@@ -833,7 +833,6 @@ public static class TwitchHandler
             Logger.LogStr($"User {userName} ({userId}) not found. Added manually");
             GlobalObjects.TwitchUsers.Add(existingUser);
         }
-
 
         // Do nothing if the user is blocked, don't even reply
         if (IsUserBlocked(userName))
@@ -1962,7 +1961,11 @@ public static class TwitchHandler
 
         try
         {
-            if (await AddToPlaylist(GlobalObjects.CurrentSong.SongId, true)) return;
+            if (await SpotifyApiHandler.AddToPlaylist(GlobalObjects.CurrentSong.SongId))
+            {
+                await SendChatMessage($"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                return;
+            }
 
             string response = cmd.Response;
             response = response.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
@@ -4109,7 +4112,7 @@ public static class TwitchHandler
                 queueItem = track
             };
 
-            await QueueService.AddRequestAsync(payload);
+            await QueueService.AddRequestAsync(Json.Serialize(payload));
         }
         catch (Exception ex)
         {
