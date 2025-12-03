@@ -32,7 +32,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error uploading Song information", e);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error uploading history information", e);
             }
         }
     }

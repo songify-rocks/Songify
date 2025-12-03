@@ -169,7 +169,7 @@
     <value>Lista di Bloccati</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Collegare</value>
+    <value>(Ri)connettersi</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Disconnetti</value>

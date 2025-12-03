@@ -169,7 +169,7 @@
     <value>Черный список</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Подключение</value>
+    <value>(Повторное) подключение</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Отключение</value>

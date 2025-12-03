@@ -169,7 +169,7 @@
     <value>Lista de bloqueio</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Conectar</value>
+    <value>(Re)Conectar</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>desconectar</value>

@@ -323,7 +323,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error during text input", ex);
             }
         }
 
@@ -462,7 +462,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error during text input.", ex);
             }
         }
 
@@ -554,7 +554,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error during text input.", ex);
             }
         }
 
@@ -607,7 +607,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error adding explicit user to command.", ex);
             }
         }
 
@@ -650,7 +650,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error adding command alias.", ex);
             }
         }
     }

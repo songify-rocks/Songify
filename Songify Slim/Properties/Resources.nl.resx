@@ -344,7 +344,7 @@
     <comment>Combobox item content for "Artist"</comment>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Verbinden</value>
+    <value>(Opnieuw) verbinden</value>
     <comment>Menu content for "Connect"</comment>
   </data>
   <data name="mw_menu_History" xml:space="preserve">

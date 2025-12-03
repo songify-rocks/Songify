@@ -31,7 +31,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error in API client processing.", e);
             }
 
             return null;
@@ -56,7 +56,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error in GET request", e);
             }
 
             return null;
@@ -75,8 +75,6 @@ namespace Songify_Slim.Util.Songify
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
-                        return null;
-
                     case HttpStatusCode.ServiceUnavailable:
                         return null;
 
@@ -84,11 +82,11 @@ namespace Songify_Slim.Util.Songify
                         switch (endpoint)
                         {
                             case "song":
-                                Logger.LogStr("API: Upload Song: success");
+                                Logger.Info(LogSource.Api, "Upload Song: success");
                                 break;
 
                             case "telemetry":
-                                Logger.LogStr("API: Telemetry: success");
+                                Logger.Info(LogSource.Api, "Telemetry: success");
                                 break;
                         }
                         return await response.Content.ReadAsStringAsync();
@@ -97,8 +95,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogStr($"API: Error posting to {endpoint}");
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, $"Error posting to {endpoint}", e);
             }
             return null;
         }
@@ -130,7 +127,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error in patch request.", e);
             }
             return null;
         }
@@ -160,7 +157,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error in Clear request", e);
             }
             return null;
         }

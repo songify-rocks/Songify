@@ -73,7 +73,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketConnected(object sender, WebsocketConnectedArgs e)
         {
             _logger.LogInformation($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
-            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
+            Logger.Info(LogSource.Twitch, $"EventSub connected. ({_eventSubWebsocketClient.SessionId})");
 
             if (!e.IsRequestedReconnect)
             {
@@ -117,13 +117,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketDisconnected(object sender, EventArgs e)
         {
             _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} disconnected!");
-            Logger.LogStr($"Websocket disconnected...");
+            Logger.Info(LogSource.Twitch, $"Websocket disconnected...");
             await TwitchHandler.StartOrRestartAsync();
             // Don't do this in production. You should implement a better reconnect strategy with exponential backoff
             while (!await _eventSubWebsocketClient.ReconnectAsync())
             {
                 _logger.LogError("Websocket reconnect failed!");
-                Logger.LogStr("Websocket reconnect failed!");
+                Logger.Error(LogSource.Twitch, $"Websocket reconnect failed!");
                 await Task.Delay(1000);
             }
         }
@@ -131,13 +131,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         private async Task OnWebsocketReconnected(object sender, EventArgs e)
         {
             _logger.LogWarning($"Websocket {_eventSubWebsocketClient.SessionId} reconnected");
-            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
+            Logger.Error(LogSource.Twitch, $"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
         }
 
         private async Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
         {
             _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
-            Logger.LogStr($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
+            Logger.Error(LogSource.Twitch, $"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
         }
 
         #region Events
@@ -173,14 +173,14 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static Task EventSubWebsocketClientOnStreamOnline(object sender, StreamOnlineArgs args)
         {
             Settings.IsLive = true;
-            Logger.LogStr("TWITCH: Stream live");
+            Logger.Info(LogSource.Twitch, "Stream live");
             return Task.CompletedTask;
         }
 
         private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
         {
             Settings.IsLive = false;
-            Logger.LogStr("TWITCH: Stream offline");
+            Logger.Info(LogSource.Twitch, "Stream offline");
             return Task.CompletedTask;
         }
 
@@ -196,7 +196,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 Settings.TwSrReward)
             {
                 await TwitchHandler.RunTwitchUserSync();
-                Logger.LogStr($"Twitch Redeem: {eventData.Reward.Title} by {eventData.UserName}");
+                Logger.Info(LogSource.Twitch, $"Redeem: {eventData.Reward.Title} by {eventData.UserName}");
 
                 // Handle Song Request Command
                 await TwitchHandler.HandleChannelPointSongRequst(

@@ -169,7 +169,7 @@
     <value>Blockliste</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Verbinden</value>
+    <value>(Wieder)Verbinden</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Trennen</value>

@@ -64,12 +64,12 @@ namespace Songify_Slim.Util.Spotify
             AuthTimer.Elapsed += AuthTimer_Elapsed;
             if (!string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
             {
-                Logger.LogStr("SPOTIFY: Refreshing Tokens");
+                Logger.Info(LogSource.Spotify, "Refreshing Tokens");
                 await RefreshTokens();
                 return;
             }
 
-            Logger.LogStr("SPOTIFY: Getting new tokens");
+            Logger.Info(LogSource.Spotify, "Getting new tokens");
             _server = new EmbedIOAuthServer(new Uri($"http://{Settings.SpotifyRedirectUri}:4002/auth"), 4002,
                 Assembly.GetExecutingAssembly(), "Songify_Slim.default_site");
             await _server.Start();
@@ -159,9 +159,8 @@ namespace Songify_Slim.Util.Spotify
                         AuthTimer.Start();
                     GlobalObjects.SpotifyProfile = await GetUser();
                     Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-                    Logger.LogStr(
-                        $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
-                    Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
+                    Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                    Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
 
                     if (app.MainWindow is MainWindow mw)
                     {
@@ -181,8 +180,7 @@ namespace Songify_Slim.Util.Spotify
                 new Uri($"{BaseUrl}/swap?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
                 response.Code);
             AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
-            Logger.LogStr(
-                $"SPOTIFY: We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
+            Logger.Info(LogSource.Spotify, $"We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
 
             TokenSwapRefreshRequest refreshRequest = new(
                 new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
@@ -190,8 +188,7 @@ namespace Songify_Slim.Util.Spotify
             );
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
-            Logger.LogStr(
-                $"SPOTIFY: We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
+            Logger.Info(LogSource.Spotify, $"We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
 
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
                 .WithAuthenticator(new AuthorizationCodeAuthenticator(Settings.ClientId,
@@ -225,9 +222,8 @@ namespace Songify_Slim.Util.Spotify
                         //    PackIconBoxIconsKind.LogosSpotify;
                         GlobalObjects.SpotifyProfile = await GetUser();
                         Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-                        Logger.LogStr(
-                            $"SPOTIFY: Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
-                        Logger.LogStr($"SPOTIFY: Account Type: {GlobalObjects.SpotifyProfile.Product}");
+                        Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                        Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
 
                         if (GlobalObjects.SpotifyProfile.Product == "premium") return;
 
@@ -353,15 +349,14 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException apiEx)
             {
-                Logger.LogStr("ERROR: Couldn't fetch song info");
-                Logger.LogStr($"Spotify API error {(int)apiEx.Response.StatusCode}: {apiEx.Message}");
+                Logger.Error(LogSource.Spotify, "Couldn't fetch song info");
+                Logger.Error(LogSource.Spotify, $"Spotify API error", apiEx);
                 if (!string.IsNullOrEmpty((string)(apiEx.Response?.Body)))
-                    Logger.LogStr((string)apiEx.Response.Body);
+                    Logger.Error(LogSource.Spotify, (string)apiEx.Response.Body);
             }
             catch (Exception ex)
             {
-                Logger.LogStr("ERROR: Couldn't fetch song info (unexpected)");
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Spotify, "Couldn't fetch song info (unexpected)", ex);
             }
 
             return null;
@@ -485,22 +480,22 @@ namespace Songify_Slim.Util.Spotify
                     .ToList();
 
                 // ---- LOGGING ----
-                Logger.LogStr($"Search '{query}' - Found {scored.Count} track candidates:");
+                Logger.Trace(LogSource.Spotify, $"Search '{query}' - Found {scored.Count} track candidates:");
                 int rank = 1;
                 foreach (var item in scored)
                 {
                     string artists = string.Join(", ", item.Track.Artists.Select(a => a.Name));
 
-                    Logger.LogStr($"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
+                    Logger.Trace(LogSource.Spotify, $"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
 
                     // Log each interpretation's score
                     foreach (ParsedQuery pq in interpretations)
                     {
                         int interpScore = ScoreTrackForInterpretation(item.Track, pq);
 
-                        Logger.LogStr($"      -> [{pq.SourceHint}] " +
-                                       $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
-                                       $"Score={interpScore}");
+                        Logger.Trace(LogSource.Spotify, $"      -> [{pq.SourceHint}] " +
+                                                        $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
+                                                        $"Score={interpScore}");
                     }
 
                     rank++;
@@ -577,8 +572,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.LogStr("Error adding song to playlist");
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Spotify, "Error adding song to playlist", ex);
                 return true;
             }
         }
@@ -842,8 +836,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception e)
             {
-                Logger.LogStr("SPOTIFY API: Couldn't get device");
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Spotify, "SPOTIFY API: Couldn't get device", e);
             }
 
             return "No device found";
@@ -1176,7 +1169,7 @@ namespace Songify_Slim.Util.Spotify
 
             Stopwatch sw = new();
 
-            Logger.LogStr("SPOTIFY: Started caching playlist");
+            Logger.Info(LogSource.Spotify, "Started caching playlist");
             sw.Reset();
             sw.Start();
             try
@@ -1217,14 +1210,13 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.LogStr("Error initializing playlist cache");
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Spotify, "Error initializing playlist cache", ex);
                 // If you want, you can set _playlistCacheInitialized = false here to retry later
             }
             finally
             {
                 sw.Stop();
-                Logger.LogStr($"SPOTIFY: Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.Seconds}s)");
+                Logger.Info(LogSource.Spotify, $"Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.Seconds}s)");
                 if (windowSettings != null)
                 {
                     windowSettings.TbGridLoading.Text = "Getting things ready";

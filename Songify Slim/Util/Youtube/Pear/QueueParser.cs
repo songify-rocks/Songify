@@ -42,7 +42,7 @@ public static class QueueParser
             if (r == null)
             {
                 // Unknown shape – just skip this entry
-                Logger.LogStr($"DEBUG[Pear]: Skipping item[{i}] – no playlistPanelVideoRenderer found.");
+                Logger.Debug(LogSource.Pear, $"Skipping item[{i}] – no playlistPanelVideoRenderer found.");
                 continue;
             }
 
@@ -77,8 +77,6 @@ public static class QueueParser
 
         return list;
     }
-
-
 
     private static TimeSpan ParseDuration(string text)
     {

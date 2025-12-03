@@ -42,7 +42,7 @@ namespace Songify_Slim.Util.Songify.Pear
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.LogStr($"{LogPrefix}: HTTP Request failed with status code: {response.StatusCode}");
+                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
                     return null;
                 }
 
@@ -54,7 +54,7 @@ namespace Songify_Slim.Util.Songify.Pear
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Pear, "An error occurred while getting now playing", e);
             }
 
             return null;
@@ -71,7 +71,7 @@ namespace Songify_Slim.Util.Songify.Pear
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.LogStr($"{LogPrefix}: HTTP Request failed with status code: {response.StatusCode}");
+                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
                     return null;
                 }
 
@@ -81,7 +81,7 @@ namespace Songify_Slim.Util.Songify.Pear
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Pear, "An error occurred while getting the queue", e);
                 return null;
             }
         }
@@ -102,7 +102,7 @@ namespace Songify_Slim.Util.Songify.Pear
             HttpResponseMessage response = await _httpClient.PostAsync("search", content);
             if (!response.IsSuccessStatusCode)
             {
-                Logger.LogStr($"{LogPrefix}: search failed with status code: {response.StatusCode}");
+                Logger.Error(LogSource.Pear, $"search failed with status code: {response.StatusCode}");
                 return null;
             }
 
@@ -130,7 +130,7 @@ namespace Songify_Slim.Util.Songify.Pear
             if (response.IsSuccessStatusCode)
                 return true;
 
-            Logger.LogStr($"{LogPrefix}: enqueue failed with status code: {response.StatusCode}");
+            Logger.Error(LogSource.Pear, $"enqueue failed with status code: {response.StatusCode}");
             return false;
         }
 
@@ -151,7 +151,7 @@ namespace Songify_Slim.Util.Songify.Pear
             if (response.IsSuccessStatusCode)
                 return true;
 
-            Logger.LogStr($"{LogPrefix}: reorder failed with status code: {response.StatusCode}");
+            Logger.Error(LogSource.Pear, $"reorder failed with status code: {response.StatusCode}");
             return false;
         }
 
@@ -165,7 +165,7 @@ namespace Songify_Slim.Util.Songify.Pear
             if (response.IsSuccessStatusCode)
                 return true;
 
-            Logger.LogStr($"{LogPrefix}: next failed with status code: {response.StatusCode}");
+            Logger.Error(LogSource.Pear, $"next failed with status code: {response.StatusCode}");
             return false;
         }
 
@@ -176,7 +176,7 @@ namespace Songify_Slim.Util.Songify.Pear
                 HttpResponseMessage response = await _httpClient.GetAsync("volume");
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.LogStr($"{LogPrefix}: HTTP Request failed with status code: {response.StatusCode}");
+                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
                     return -1;
                 }
 
@@ -193,7 +193,7 @@ namespace Songify_Slim.Util.Songify.Pear
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Pear, "Error getting volume", e);
                 return -1;
             }
         }
@@ -214,12 +214,11 @@ namespace Songify_Slim.Util.Songify.Pear
                 {
                     Ok = true
                 };
-            Logger.LogStr($"{LogPrefix}: set volume failed with status code: {response.StatusCode}");
+            Logger.Error(LogSource.Pear, $"set volume failed with status code: {response.StatusCode}");
             return new ApiOk
             {
                 Ok = false
             };
-
         }
     }
 }

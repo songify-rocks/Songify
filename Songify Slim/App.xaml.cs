@@ -41,7 +41,7 @@ namespace Songify_Slim
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Logger.LogExc(e.Exception);
+            Logger.Error(LogSource.Core, "Unhandled exception occurred", e.Exception);
         }
 
         private App()
@@ -53,8 +53,9 @@ namespace Songify_Slim
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
-                Logger.LogStr("SYSTEM: Couldn't set language, reverting to english");
+                Logger.Warning(LogSource.Core,
+                    $"Couldn't set language '{Settings.Language}', reverting to English.",
+                    e);
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             }
 
@@ -100,13 +101,13 @@ namespace Songify_Slim
 
                 if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
                 {
-                    Logger.LogStr("DeepLink: invalid URI: " + rawUrl);
+                    Logger.Error(LogSource.Core, "DeepLink: invalid URI: " + rawUrl);
                     return;
                 }
 
                 if (!uri.Scheme.Equals("songify", StringComparison.OrdinalIgnoreCase))
                 {
-                    Logger.LogStr("DeepLink: wrong scheme: " + uri.Scheme);
+                    Logger.Error(LogSource.Core, "DeepLink: wrong scheme: " + uri.Scheme);
                     return;
                 }
 
@@ -127,14 +128,14 @@ namespace Songify_Slim
                             if (string.IsNullOrWhiteSpace(token))
                             {
                                 // Optional UX: inform the user
-                                Logger.LogStr("DeepLink: missing token parameter.");
+                                Logger.Warning(LogSource.Core, "DeepLink: missing token parameter.");
                                 return;
                             }
 
                             // Optional sanity checks (tune to your format/limits)
                             if (token.Length > 4096)
                             {
-                                Logger.LogStr("DeepLink: token too long.");
+                                Logger.Warning(LogSource.Core, "DeepLink: token too long.");
                                 return;
                             }
 
@@ -162,14 +163,14 @@ namespace Songify_Slim
                             if (string.IsNullOrWhiteSpace(token))
                             {
                                 // Optional UX: inform the user
-                                Logger.LogStr("DeepLink: missing token parameter.");
+                                Logger.Warning(LogSource.Core, "DeepLink: missing token parameter.");
                                 return;
                             }
 
                             // Optional sanity checks (tune to your format/limits)
                             if (token.Length > 4096)
                             {
-                                Logger.LogStr("DeepLink: token too long.");
+                                Logger.Warning(LogSource.Core, "DeepLink: token too long.");
                                 return;
                             }
 
@@ -182,13 +183,13 @@ namespace Songify_Slim
                         }
 
                     default:
-                        Logger.LogStr("DeepLink: unknown action: " + action);
+                        Logger.Error(LogSource.Core, "DeepLink: unknown action: " + action);
                         break;
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Failed to handle deep link.", ex);
                 MessageBox.Show("Failed to handle deep link.\n" + ex.Message, "Songify", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -237,7 +238,7 @@ namespace Songify_Slim
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Core, "Failed to import Twitch Token", e);
             }
         }
 
@@ -363,7 +364,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error registering / checking deeplink.", ex);
             }
         }
 
@@ -386,39 +387,66 @@ namespace Songify_Slim
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            Exception e = (Exception)args.ExceptionObject;
-            Logger.LogStr("##### Unhandled Exception #####");
-            Logger.LogStr("MyHandler caught : " + e.Message);
-            Logger.LogStr("Stack Trace: " + e.StackTrace);
+            var ex = args.ExceptionObject as Exception;
 
-            if (e.InnerException != null)
+            if (ex != null)
             {
-                Logger.LogStr("Inner Exception: " + e.InnerException.Message);
-                Logger.LogStr("Inner Exception Stack Trace: " + e.InnerException.StackTrace);
+                // Single, structured fatal log entry
+                Logger.Fatal(
+                    LogSource.Core,
+                    $"Unhandled exception caught in MyHandler. IsTerminating={args.IsTerminating}.",
+                    ex
+                );
+
+                if (ex.InnerException != null)
+                {
+                    Logger.Error(
+                        LogSource.Core,
+                        "Unhandled exception has inner exception.",
+                        ex.InnerException
+                    );
+                }
+            }
+            else
+            {
+                // In case someone throws a non-Exception object
+                Logger.Fatal(
+                    LogSource.Core,
+                    $"Unhandled non-Exception object in MyHandler: {args.ExceptionObject} (IsTerminating={args.IsTerminating})."
+                );
             }
 
-            Logger.LogStr("Runtime terminating: " + args.IsTerminating);
-            Logger.LogStr("###############################");
-            Logger.LogExc(e);
-
+            // If the runtime is not actually terminating, just log and bail out.
             if (!args.IsTerminating) return;
-            if (MessageBox.Show("Would you like to open the log file directory?\n\nFeel free to submit the log file in our Discord.", "Songify just crashed :(",
-                    MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+
+            // From here on it’s user interaction / restart logic
+            if (MessageBox.Show(
+                    "Would you like to open the log file directory?\n\n" +
+                    "Feel free to submit the log file in our Discord.",
+                    "Songify just crashed :(",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Error) == MessageBoxResult.Yes)
             {
                 Process.Start(Logger.LogDirectoryPath);
             }
 
-            if (MessageBox.Show("Restart Songify?", "Songify", MessageBoxButton.YesNo, MessageBoxImage.Question) !=
-                MessageBoxResult.Yes) return;
+            if (MessageBox.Show(
+                    "Restart Songify?",
+                    "Songify",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
             // Pass an argument to indicate this is a restart
-            ProcessStartInfo startInfo = new()
+            var startInfo = new ProcessStartInfo
             {
                 FileName = Assembly.GetExecutingAssembly().Location,
-                Arguments = "--restart", // Custom argument
+                Arguments = "--restart",
                 UseShellExecute = false
             };
 
-            // Start the new process
             Process.Start(startInfo);
 
             // Shutdown the current instance
@@ -496,30 +524,6 @@ namespace Songify_Slim
             };
 
             pipeThread.Start();
-        }
-
-        public static void AddFirewallException(string appName, string exePath)
-        {
-            string args =
-                $"advfirewall firewall add rule name=\"{appName}\" dir=in action=allow program=\"{exePath}\" enable=yes";
-
-            ProcessStartInfo psi = new()
-            {
-                FileName = "netsh",
-                Arguments = args,
-                Verb = "runas", // <--- This prompts for admin
-                UseShellExecute = true,
-                CreateNoWindow = true
-            };
-
-            try
-            {
-                Process.Start(psi);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex); // or show MessageBox
-            }
         }
 
         private static void RestoreWindow()

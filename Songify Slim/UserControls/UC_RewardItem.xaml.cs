@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.Build.Utilities;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
@@ -81,7 +82,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception exception)
             {
-                Util.General.Logger.LogExc(exception);
+                Util.General.Logger.Error(LogSource.Twitch, "Error loading rewards", exception);
             }
         }
     }

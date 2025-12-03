@@ -2757,7 +2757,7 @@ namespace Songify_Slim.Util.Configuration
             }
             catch (Exception e)
             {
-                Logger.LogStr("Failed to decrypt string: " + e.Message);
+                Logger.Error(LogSource.Core, "Failed to decrypt string: " + e.Message);
                 return "";
             }
         }

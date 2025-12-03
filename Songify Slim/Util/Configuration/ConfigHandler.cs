@@ -297,7 +297,7 @@ namespace Songify_Slim.Util.Configuration
             {
                 // Clean up temp if anything failed
                 try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { /* ignore */ }
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error writing config files.", ex);
             }
         }
 
@@ -496,22 +496,22 @@ namespace Songify_Slim.Util.Configuration
                     // 403 Forbidden: User not found, no email, or no premium status
                     // 500 Internal Server Error: Database error
                     case HttpStatusCode.Unauthorized:
-                        Logger.LogStr("Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
+                        Logger.Warning(LogSource.Api, "Cloud save failed: Unauthorized access. Invalid API token or user ID.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
 
                     case HttpStatusCode.Forbidden:
-                        Logger.LogStr("Cloud restore failed: Forbidden access. User not found or no premium status.");
+                        Logger.Warning(LogSource.Api, "Cloud save failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
 
                     case HttpStatusCode.InternalServerError:
-                        Logger.LogStr("Cloud restore failed: Internal server error. Please try again later.");
+                        Logger.Warning(LogSource.Api, "Cloud save failed: Internal server error. Please try again later.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
                 }
                 return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error during cloud save.", ex);
                 return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
             }
         }
@@ -547,15 +547,15 @@ namespace Songify_Slim.Util.Configuration
                     // 403 Forbidden: User not found, no email, or no premium status
                     // 500 Internal Server Error: Database error
                     case HttpStatusCode.Unauthorized:
-                        Logger.LogStr("Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
+                        Logger.Warning(LogSource.Api, "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
 
                     case HttpStatusCode.Forbidden:
-                        Logger.LogStr("Cloud restore failed: Forbidden access. User not found or no premium status.");
+                        Logger.Warning(LogSource.Api, "Cloud restore failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
 
                     case HttpStatusCode.InternalServerError:
-                        Logger.LogStr("Cloud restore failed: Internal server error. Please try again later.");
+                        Logger.Warning(LogSource.Api, "Cloud restore failed: Internal server error. Please try again later.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
                 }
 
@@ -605,7 +605,7 @@ namespace Songify_Slim.Util.Configuration
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error restoring cloud save.", ex);
                 return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
             }
         }

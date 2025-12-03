@@ -485,7 +485,7 @@ namespace Songify_Slim.Views
             }
             catch
             {
-                Logger.LogStr($"Couldn't load profile picture for {(account == 0 ? "Main" : "Bot")}");
+                Logger.Info(LogSource.Twitch, $"Couldn't load profile picture for {(account == 0 ? "Main" : "Bot")}");
             }
         }
 
@@ -617,7 +617,7 @@ namespace Songify_Slim.Views
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Spotify, "Error linking Spotify.", ex);
             }
         }
 
@@ -1145,7 +1145,7 @@ namespace Songify_Slim.Views
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Twitch, "Error loading rewards.", e);
             }
         }
 

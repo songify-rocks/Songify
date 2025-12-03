@@ -234,15 +234,15 @@ namespace Songify_Slim.Util.General
         public void StartWebServer(int port)
         {
             _listener = new HttpListener();
-            if (port < 1025 || port > 65535)
+            if (port is < 1025 or > 65535)
             {
-                Logger.LogStr($"Webserver: Invalid port number {port}.");
+                Logger.Error(LogSource.Core, $"Webserver: Invalid port number {port}.");
                 return;
             }
 
             if (!PortIsFree(port))
             {
-                Logger.LogStr($"Webserver: The Port {port} is blocked. Can't start webserver.");
+                Logger.Error(LogSource.Core, $"Webserver: The Port {port} is blocked. Can't start webserver.");
                 return;
             }
 
@@ -266,7 +266,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception ex)
             {
-                Logger.LogStr($"WebServer: Failed to start on port {port}. Exception: {ex.Message}");
+                Logger.Error(LogSource.Core, $"WebServer: Failed to start on port {port}.", ex);
                 return;
             }
 
@@ -281,8 +281,8 @@ namespace Songify_Slim.Util.General
                     //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
                 });
 
-                Logger.LogStr($"WebServer: Started on port {port}");
-                Logger.LogStr($"WebSocket: Started on ws://127.0.0.1:{port}");
+                Logger.Info(LogSource.Core, $"WebServer: Started on port {port}");
+                Logger.Info(LogSource.Core, $"WebSocket: Started on ws://127.0.0.1:{port}");
 
                 while (Run)
                 {
@@ -302,7 +302,7 @@ namespace Songify_Slim.Util.General
                     }
                     catch (Exception e)
                     {
-                        Logger.LogExc(e);
+                        Logger.Error(LogSource.Core, "Error processing websocket request", e);
                     }
                 }
             });
@@ -335,7 +335,7 @@ namespace Songify_Slim.Util.General
                         }
                         catch (WebSocketException ex)
                         {
-                            Logger.LogExc(ex); // Log and break the loop
+                            Logger.Error(LogSource.Core, "Error processing WebSocket request", ex); // Log and break the loop
                             break;
                         }
 
@@ -359,7 +359,7 @@ namespace Songify_Slim.Util.General
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogExc(ex); // Fallback logging
+                    Logger.Error(LogSource.Core, "Error processing websocket request", ex); // Fallback logging
                 }
                 finally
                 {
@@ -380,7 +380,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Core, "Error processing WebSocket request", e);
             }
             finally
             {
@@ -436,7 +436,7 @@ namespace Songify_Slim.Util.General
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogExc(ex);
+                    Logger.Error(LogSource.Core, "Error broadcasting websocket message.", ex);
                     clients.TryRemove(id, out _);
                     socket.Dispose();
                 }
@@ -626,7 +626,7 @@ namespace Songify_Slim.Util.General
         public void StopWebServer()
         {
             Run = false;
-            Logger.LogStr("WebServer: Started stopped");
+            Logger.Info(LogSource.Core, "WebServer: Stopped");
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Application.Current.MainWindow == null) return;

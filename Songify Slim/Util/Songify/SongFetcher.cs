@@ -111,7 +111,7 @@ namespace Songify_Slim.Util.Songify
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogExc(ex);
+                                    Logger.Error(LogSource.Core, "Error grabbing Spotify window information", ex);
                                 }
                             }
                             else if (wintitle is "Spotify" or "Spotify Premium")
@@ -146,7 +146,7 @@ namespace Songify_Slim.Util.Songify
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogExc(ex);
+                                Logger.Error(LogSource.Core, "Error grabbing VLC window information", ex);
                             }
                             finally
                             {
@@ -182,7 +182,7 @@ namespace Songify_Slim.Util.Songify
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogExc(ex);
+                                Logger.Error(LogSource.Core, "Error grabbing foobar2000 window information", ex);
                             }
 
                             int dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
@@ -247,7 +247,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Api, "Error uploading song information", ex);
                 // if error occurs write text to the status asynchronous
                 Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
@@ -322,9 +322,9 @@ namespace Songify_Slim.Util.Songify
             if (ytData.Hash == currentYoutubeData.Hash)
                 return;
 
-            Logger.LogStr($"CORE: Previous Song {currentYoutubeData.Artist} - {currentYoutubeData.Title}");
+            Logger.Info(LogSource.Core, $"Previous Song {currentYoutubeData.Artist} - {currentYoutubeData.Title}");
 
-            Logger.LogStr($"CORE: Now Playing {ytData.Artist} - {ytData.Title}");
+            Logger.Info(LogSource.Core, $"Now Playing {ytData.Artist} - {ytData.Title}");
 
             currentYoutubeData = ytData;
 
@@ -412,9 +412,9 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     if (GlobalObjects.CurrentSong != null)
-                        Logger.LogStr($"CORE: Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+                        Logger.Info(LogSource.Core, $"Previous Song {GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
                     if (songInfo.SongId != null)
-                        Logger.LogStr($"CORE: Now Playing {songInfo.Artists} - {songInfo.Title}");
+                        Logger.Info(LogSource.Core, $"Now Playing {songInfo.Artists} - {songInfo.Title}");
 
                     RequestObject previous = GlobalObjects.CurrentSong != null ? GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId) : null;
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
@@ -451,7 +451,7 @@ namespace Songify_Slim.Util.Songify
                     //if Previous is not null then try to remove it from the internal queue (ReqList)
                     if (previous != null)
                     {
-                        Logger.LogStr($"QUEUE: Trying to remove {previous.Artist} - {previous.Title}");
+                        Logger.Info(LogSource.Core, $"Trying to remove {previous.Artist} - {previous.Title} from queue.");
                         do
                         {
                             await Application.Current.Dispatcher.BeginInvoke(() =>
@@ -461,7 +461,7 @@ namespace Songify_Slim.Util.Songify
                             Thread.Sleep(250);
                         } while (GlobalObjects.ReqList.Contains(previous));
 
-                        Logger.LogStr($"QUEUE: Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
+                        Logger.Info(LogSource.Core, $"Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
 
                         Application.Current.Dispatcher.Invoke(() =>
                                         {
@@ -867,7 +867,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception)
             {
-                Logger.LogStr($"File {Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")} couldn't be accessed.");
+                Logger.Error(LogSource.Core, $"File {Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")} couldn't be accessed.");
             }
 
             IoManager.WriteSplitOutput(

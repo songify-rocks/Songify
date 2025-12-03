@@ -33,16 +33,13 @@ namespace Songify_Slim.Util.Songify
                 RequestObject response = Json.Deserialize<RequestObject>(result);
                 response.FullRequester ??= ExtractFullRequester(payload);
 
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    GlobalObjects.ReqList.Add(response);
-                });
+                await Application.Current.Dispatcher.InvokeAsync(() => { GlobalObjects.ReqList.Add(response); });
 
                 await GlobalObjects.QueueUpdateQueueWindow();
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error while uploading queue", e);
             }
         }
 
@@ -84,7 +81,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error extracting full requester information.", e);
             }
 
             return null;
@@ -118,7 +115,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Api, "Error cleaning up server queue.", e);
             }
         }
     }

@@ -330,7 +330,8 @@
                     Click="BtnTwitch_Click"
                     Header="{DynamicResource mw_menu_Disconnect}"
                     IsEnabled="False"
-                    Tag="Disconnect" />
+                    Tag="Disconnect"
+                    Visibility="Collapsed" />
                 <MenuItem
                     x:Name="mi_TwitchCheckOnlineStatus"
                     d:Header="{x:Static local:Resources.mw_menu_Twitch_CheckOnlineStatus}"

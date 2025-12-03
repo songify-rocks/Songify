@@ -169,7 +169,7 @@
     <value>Lista zablokowanych</value>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>Połącz</value>
+    <value>(Na nowo połączyć</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Rozłącz się</value>

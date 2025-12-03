@@ -380,6 +380,7 @@ namespace Songify_Slim.Views
 
                     await Sf.FetchWindowsApi();
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -487,17 +488,17 @@ namespace Songify_Slim.Views
                 }
             }
 
-            Logger.LogStr("Starting Spotify init");
+            Logger.Info(LogSource.Spotify, "Starting Spotify init");
             await HandleSpotifyInitializationAsync();
-            Logger.LogStr("Spotify init done");
+            Logger.Info(LogSource.Spotify, "Spotify init done");
 
-            Logger.LogStr("Starting Twitch init");
+            Logger.Info(LogSource.Twitch, "Starting Twitch init");
             await HandleTwitchInitializationAsync();
-            Logger.LogStr("Twitch init done");
+            Logger.Info(LogSource.Twitch, "Twitch init done");
 
-            Logger.LogStr("Starting Final Setup");
+            Logger.Info(LogSource.Core, "Starting Final Setup");
             await FinalSetupAndUpdatesAsync();
-            Logger.LogStr("Final Setup done");
+            Logger.Info(LogSource.Core, "Final Setup done");
         }
 
         private static async Task<bool> WaitForInternetConnectionAsync()
@@ -533,7 +534,7 @@ namespace Songify_Slim.Views
                     // Check if the response from the completed task was successful
                     if (completedTask is not null && (await completedTask).IsSuccessStatusCode)
                     {
-                        Logger.LogStr("CORE: Internet Connection Established");
+                        Logger.Info(LogSource.Core, "Internet Connection Established");
                         return true;
                     }
                 }
@@ -542,7 +543,7 @@ namespace Songify_Slim.Views
                     // Ignore exceptions and continue
                 }
 
-                Logger.LogStr("CORE: No Internet Connection");
+                Logger.Info(LogSource.Core, "No Internet Connection");
                 tries++;
                 // Wait for a short period before retrying
                 await Task.Delay(5000);
@@ -831,7 +832,7 @@ namespace Songify_Slim.Views
 
         private static void CheckAndNotifyConfigurationIssues()
         {
-            Logger.LogStr($"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
+            Logger.Info(LogSource.Core, $"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
 
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             if (assemblyLocation != null && assemblyLocation.Contains(".zip"))
@@ -873,26 +874,26 @@ namespace Songify_Slim.Views
         {
             try
             {
-                Logger.LogStr("Starting final setup and updates");
-                Logger.LogStr("Sending Telemetry");
+                Logger.Info(LogSource.Core, "Starting final setup and updates");
+                Logger.Info(LogSource.Core, "Sending Telemetry");
                 await SendTelemetry();
-                Logger.LogStr("Telemetry sent");
-                Logger.LogStr("Check Stream up");
+                Logger.Info(LogSource.Core, "Telemetry sent");
+                Logger.Info(LogSource.Core, "Check Stream up");
                 Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-                Logger.LogStr("Check Stream up done");
+                Logger.Info(LogSource.Twitch, "Check Stream up done");
                 switch (Settings.IsLive)
                 {
                     case true:
-                        Logger.LogStr("Stream is LIVE");
+                        Logger.Info(LogSource.Twitch, "Stream is LIVE");
                         break;
 
                     case false:
-                        Logger.LogStr("Stream is NOT live");
+                        Logger.Info(LogSource.Twitch, "Stream is NOT live");
                         break;
                 }
-                Logger.LogStr("SetFetchTimer");
+                Logger.Info(LogSource.Core, "SetFetchTimer");
                 SetFetchTimer();
-                Logger.LogStr("SetFetchTimer done");
+                Logger.Info(LogSource.Core, "SetFetchTimer done");
 
                 if (Settings.UpdateRequired)
                 {
@@ -948,7 +949,7 @@ namespace Songify_Slim.Views
             AutoUpdater.AppTitle = "Songify";
             AutoUpdater.RunUpdateAsAdmin = false;
             AutoUpdater.ApplicationExitEvent += AutoUpdater_ApplicationExitEvent;
-            Logger.LogStr("Checking for update...");
+            Logger.Info(LogSource.Core, "Checking for update...");
             AutoUpdater.Start(Settings.BetaUpdates
                 ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
                 : $"{GlobalObjects.BaseUrl}/update.xml");
@@ -1294,7 +1295,7 @@ namespace Songify_Slim.Views
                     }
                     img_cover.Visibility = Visibility.Collapsed;
 
-                    Logger.LogStr("COVER: Set succesfully");
+                    Logger.Info(LogSource.Cover, "COVER: Set successfully");
                     break;
                 }
                 catch (Exception) when (i <= numberOfRetries)
@@ -1347,7 +1348,7 @@ namespace Songify_Slim.Views
                     }
                     CoverCanvas.Visibility = Visibility.Collapsed;
 
-                    Logger.LogStr("COVER: Set succesfully");
+                    Logger.Info(LogSource.Cover, "COVER: Set successfully");
                     break;
                 }
                 catch (Exception) when (i <= numberOfRetries)
@@ -1394,7 +1395,7 @@ namespace Songify_Slim.Views
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
             mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(Settings.IsLive ? "Live" : "Offline")})";
             LblStatus.Content = Settings.IsLive ? "Stream is Up!" : "Stream is offline.";
-            Logger.LogStr($"TWITCH: Stream is {(Settings.IsLive ? "Live" : "Offline")}");
+            Logger.Info(LogSource.Twitch, $"Stream is {(Settings.IsLive ? "Live" : "Offline")}");
         }
 
         private void BtnWebServerUrl_Click(object sender, RoutedEventArgs e)

@@ -568,7 +568,7 @@ public static class TwitchHandler
             else
             {
                 // neither matches / is present
-                Logger.LogStr("TWITCH: No valid chat account (user/bot) available.");
+                Logger.Warning(LogSource.Twitch, "No valid chat account (user/bot) available.");
                 return;
             }
 
@@ -599,7 +599,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr($"TWITCH: Couldn't connect to Twitch. {ex.GetType().Name}: {ex.Message}");
+            Logger.Error(LogSource.Twitch, $"Couldn't connect to Twitch.", ex);
         }
     }
 
@@ -685,7 +685,7 @@ public static class TwitchHandler
                     UserLevels = userLevels,
                     UserName = msg.ChatterUserLogin
                 };
-                Logger.LogStr($"User {msg.ChatterUserName} ({msg.ChatterUserId}) not found. Adding manually.");
+                Logger.Warning(LogSource.Twitch, $"User {msg.ChatterUserName} ({msg.ChatterUserId}) not found. Adding manually.");
                 GlobalObjects.TwitchUsers.Add(existingUser);
             }
             else
@@ -700,9 +700,14 @@ public static class TwitchHandler
                 UserLevels = userLevels
             });
 
-            Logger.LogStr(!executed
-                ? $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Not executed (not found or disabled)."
-                : $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Executed successfully.");
+            if (executed)
+                Logger.Info(LogSource.Twitch,
+                    $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Executed successfully.");
+            else
+            {
+                Logger.Warning(LogSource.Twitch,
+                    $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Not executed (not found or disabled).");
+            }
         }
         catch (Exception ex)
         {
@@ -830,7 +835,7 @@ public static class TwitchHandler
                 UserLevels = null,
                 UserName = userName
             };
-            Logger.LogStr($"User {userName} ({userId}) not found. Added manually");
+            Logger.Warning(LogSource.Twitch, $"User {userName} ({userId}) not found. Added manually");
             GlobalObjects.TwitchUsers.Add(existingUser);
         }
 
@@ -888,7 +893,7 @@ public static class TwitchHandler
                 UserLevels = userLevels,
                 UserName = userName
             };
-            Logger.LogStr($"User {userName} ({userId}) not found. Adding manually.");
+            Logger.Warning(LogSource.Twitch, $"User {userName} ({userId}) not found. Adding manually.");
             GlobalObjects.TwitchUsers.Add(existingUser);
         }
         // Check if the user level is lower than broadcaster or not allowed to request songs
@@ -1121,15 +1126,19 @@ public static class TwitchHandler
                 }
                 catch (HttpRequestException ex)
                 {
-                    Logger.LogStr("HttpRequestException during Twitch token validation.");
-                    Logger.LogStr($"Message: {ex.Message}");
-                    if (ex.InnerException != null)
-                        Logger.LogStr($"Inner Exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
+                    Logger.Warning(
+                        LogSource.Twitch,
+                        "HTTP error occurred during Twitch token validation.",
+                        ex
+                    );
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogStr("General exception during Twitch token validation.");
-                    Logger.LogExc(ex);
+                    Logger.Error(
+                        LogSource.Twitch,
+                        "Unexpected exception during Twitch token validation.",
+                        ex
+                    );
                 }
 
                 if (TokenCheck == null)
@@ -1206,7 +1215,7 @@ public static class TwitchHandler
                         //((MainWindow)window).IconTwitchAPI.Kind = PackIconBoxIconsKind.LogosTwitch;
                         ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
 
-                        Logger.LogStr($"TWITCH API: Logged into Twitch API ({user.DisplayName})");
+                        Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
                     }
                 });
 
@@ -1247,15 +1256,19 @@ public static class TwitchHandler
                 }
                 catch (HttpRequestException ex)
                 {
-                    Logger.LogStr("HttpRequestException during Twitch token validation.");
-                    Logger.LogStr($"Message: {ex.Message}");
-                    if (ex.InnerException != null)
-                        Logger.LogStr($"Inner Exception: {ex.InnerException.GetType().Name} - {ex.InnerException.Message}");
+                    Logger.Warning(
+                        LogSource.Twitch,
+                        "HTTP error occurred during Twitch token validation.",
+                        ex
+                    );
                 }
                 catch (Exception ex)
                 {
-                    Logger.LogStr("General exception during Twitch token validation.");
-                    Logger.LogExc(ex);
+                    Logger.Error(
+                        LogSource.Twitch,
+                        "Unexpected exception during Twitch token validation.",
+                        ex
+                    );
                 }
 
                 if (BotTokenCheck == null)
@@ -1384,7 +1397,7 @@ public static class TwitchHandler
 
     private static async Task HandleBanSongCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
         try
         {
@@ -1413,28 +1426,15 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("Error while banning song");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Twitch, "Error while banning song", ex);
         }
     }
 
     private static async Task HandleCommandsCommand(ChannelChatMessage message, TwitchCommand cmd,
         TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
         List<TwitchCommand> x = Settings.Commands.Where(c => c.IsEnabled).ToList();
 
         List<string> cmds =
@@ -1455,20 +1455,8 @@ public static class TwitchHandler
 
     private static async Task HandleNextCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
 
         string response = cmd.Response;
         response = response.Replace("{user}", message.ChatterUserName);
@@ -1481,20 +1469,8 @@ public static class TwitchHandler
 
     private static async Task HandlePauseCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
         try
         {
             switch (Settings.Player)
@@ -1526,21 +1502,8 @@ public static class TwitchHandler
 
     private static async Task HandlePlayCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
-
         try
         {
             switch (Settings.Player)
@@ -1571,22 +1534,8 @@ public static class TwitchHandler
 
     private static async Task HandlePositionCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus)
-                    await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.LogStr($"Error checking live status: {ex.Message}");
-        }
 
         List<QueueItem> queueItems = GetQueueItems(message.ChatterUserName);
         if (queueItems == null || queueItems.Count == 0)
@@ -1627,20 +1576,8 @@ public static class TwitchHandler
 
     private static async Task HandleQueueCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
-
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
         string output = "";
         int counter = 1;
         foreach (RequestObject requestObject in GlobalObjects.QueueTracks.Take(5))
@@ -1660,21 +1597,8 @@ public static class TwitchHandler
 
     private static async Task HandleRemoveCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
-
         bool modAction = false;
         RequestObject reqObj;
 
@@ -1774,6 +1698,12 @@ public static class TwitchHandler
 
     private static async Task HandleSkipCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
+
+        if (_skipCooldown)
+            return;
+
         int count = 0;
         string name = "";
 
@@ -1795,24 +1725,6 @@ public static class TwitchHandler
                 cmdParams.UserLevels.Add(-1);
             }
         }
-
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
-            return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
-
-        if (_skipCooldown)
-            return;
 
         Application.Current.Dispatcher.Invoke(() =>
         {
@@ -1874,19 +1786,11 @@ public static class TwitchHandler
     {
         try
         {
-            if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
-            try
-            {
-                if (!CheckLiveStatus())
-                {
-                    if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                    return;
-                }
-            }
-            catch (Exception)
-            {
-                Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-            }
+            if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+                return;
+
+            if (_skipCooldown)
+                return;
 
             string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
@@ -1911,12 +1815,14 @@ public static class TwitchHandler
         }
         catch
         {
-            Logger.LogStr("Error sending song info.");
+            Logger.Error(LogSource.Twitch, "Error sending song info.");
         }
     }
 
     private static async Task HandleSongLikeCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
         int count = 0;
         string name = "";
 
@@ -1937,20 +1843,6 @@ public static class TwitchHandler
             {
                 cmdParams.UserLevels.Add(-1);
             }
-        }
-
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId)) return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
         }
 
         if (string.IsNullOrWhiteSpace(Settings.SpotifyPlaylistId))
@@ -1974,7 +1866,7 @@ public static class TwitchHandler
         }
         catch (Exception exception)
         {
-            Logger.LogStr("SPOTIFY: Error while adding song to playlist");
+            Logger.Error(LogSource.Spotify, "Error while adding song to playlist");
             Logger.LogExc(exception);
         }
     }
@@ -2016,7 +1908,7 @@ public static class TwitchHandler
         }
         catch (Exception)
         {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+            Logger.Error(LogSource.Twitch, "Error sending chat message \"The stream is not live right now.\"");
         }
 
         if (message.Message.Text.Split(' ').Length <= 1)
@@ -2037,7 +1929,7 @@ public static class TwitchHandler
             // Inform user about the cooldown
             if (cmdParams.ExistingUser.LastCommandTime == null) return;
             TimeSpan remaining = cooldown - (DateTime.Now - cmdParams.ExistingUser.LastCommandTime.Value);
-            Logger.LogStr($"{cmdParams.ExistingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
+            Logger.Info(LogSource.Twitch, $"{cmdParams.ExistingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
             // if remaining is more than 1 minute format to mm:ss, else to ss
             string time = remaining.Minutes >= 1
                 ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
@@ -2090,18 +1982,8 @@ public static class TwitchHandler
 
     private static async Task HandleVolumeCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
 
         if (message.Message.Text.Split(' ').Length > 1)
         {
@@ -2161,20 +2043,8 @@ public static class TwitchHandler
 
     private static async Task HandleVoteSkipCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
-        try
-        {
-            if (!CheckLiveStatus())
-            {
-                if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
-                return;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
-        }
 
         if (_skipCooldown) return;
         //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
@@ -2610,12 +2480,43 @@ public static class TwitchHandler
                 }
             });
 
-            Logger.LogStr($"TWITCH: Cleared {(account == Enums.TwitchAccount.Main ? "main" : "bot")} account credentials.");
+            Logger.Info(LogSource.Twitch, $"Cleared {(account == Enums.TwitchAccount.Main ? "main" : "bot")} account credentials.");
         }
         catch (Exception ex)
         {
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Twitch, "Error clearing Twitch settings", ex);
         }
+    }
+
+    private static async Task<bool> PreCheckCommandAsync(
+        TwitchCommand cmd,
+        TwitchCommandParams cmdParams,
+        ChannelChatMessage message)
+    {
+        // 1. User permission check
+        if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+            return false;
+
+        // 2. Live-status check
+        try
+        {
+            if (!CheckLiveStatus())
+            {
+                if (Settings.ChatLiveStatus)
+                    await SendChatMessage("The stream is not live right now.");
+
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch,
+                "Error sending chat message \"The stream is not live right now.\"",
+                ex);
+            return false;
+        }
+
+        return true; // All checks passed
     }
 
     public static void ResetVotes()
@@ -2808,9 +2709,11 @@ public static class TwitchHandler
                     return;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Logger.LogStr("Error sending chat message \"The stream is not live right now.\"");
+                Logger.Error(LogSource.Twitch,
+                    "Error sending chat message \"The stream is not live right now.\"",
+                    ex);
             }
 
             string msg = GetCurrentSong();
@@ -2935,67 +2838,6 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task<bool> AddToPlaylist(string trackId, bool sendResponse = false)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
-                Settings.SpotifyPlaylistId == "-1")
-            {
-                List<bool> x = await SpotifyApiHandler.CheckLibrary([trackId]);
-                if (x.Count > 0)
-                {
-                    switch (x[0])
-                    {
-                        case true:
-                            if (sendResponse)
-                            {
-                                await SendChatMessage($"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
-                            }
-                            return true;
-
-                        case false:
-                            await SpotifyApiHandler.AddToPlaylist(trackId);
-                            return false;
-                    }
-                }
-            }
-            else
-            {
-                Paging<PlaylistTrack<IPlayableItem>> tracks = await SpotifyApiHandler.GetPlaylistTracks(Settings.SpotifyPlaylistId);
-
-                while (tracks is { Items: not null })
-                {
-                    if (tracks.Items.Any(t => t.Track.Type == ItemType.Track && ((FullTrack)t.Track).Id == trackId))
-                    {
-                        if (sendResponse)
-                        {
-                            await SendChatMessage($"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
-                        }
-                        return true;
-                    }
-
-                    if (tracks.Next == null)
-                    {
-                        break;  // Exit if no more pages
-                    }
-
-                    //tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
-                }
-
-                await SpotifyApiHandler.AddToPlaylist(trackId);
-                return false;
-            }
-        }
-        catch (Exception)
-        {
-            Logger.LogStr("Error adding song to playlist");
-            return true;
-        }
-
-        return false;
-    }
-
     private static async Task AnnounceChatMessage(string msg, Enums.AnnouncementColor color)
     {
         AnnouncementColors announcementColors = color switch
@@ -3025,9 +2867,9 @@ public static class TwitchHandler
                 return;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Logger.LogStr("TWITCH API: Could not send announcement. Has the bot been created through the app?");
+            Logger.Error(LogSource.Twitch, "Could not send announcement. Has the bot been created through the app?", ex);
         }
 
         await SendChatMessage($"{msg}");
@@ -3092,13 +2934,13 @@ public static class TwitchHandler
     {
         if (Settings.IsLive)
         {
-            Logger.LogStr("STREAM: Stream is live.");
+            Logger.Info(LogSource.Twitch, "Stream is live.");
             return true;
         }
         if (!Settings.BotOnlyWorkWhenLive)
             return true;
 
-        Logger.LogStr("STREAM: Stream is down.");
+        Logger.Info(LogSource.Twitch, "Stream is down.");
         return false;
     }
 
@@ -3417,7 +3259,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr($"Error calculating TTP: {ex.Message}");
+            Logger.Error(LogSource.Twitch, $"Error calculating TTP", ex);
             return "";
         }
     }
@@ -3612,7 +3454,7 @@ public static class TwitchHandler
         response = string.Empty;
         if (track?.Artists == null || track.Artists.Count == 0)
         {
-            Logger.LogStr("ERROR: No artist was found on the track object.");
+            Logger.Warning(LogSource.Songrequest, "No artist was found on the track object.");
             return false;
         }
 
@@ -3633,8 +3475,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Artist Blacklist");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Artist Blacklist", ex);
         }
 
         return false;
@@ -3680,8 +3521,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Song Blacklist");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Song Blacklist", ex);
         }
 
         return Task.FromResult((false, string.Empty));
@@ -3723,8 +3563,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Track Already In Queue");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Already In Queue", ex);
         }
 
         return false;
@@ -3753,8 +3592,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Track Unavailable");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Unavailable", ex);
         }
 
         return false;
@@ -3782,8 +3620,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Track Too Long");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Too Long", ex);
         }
 
         return false;
@@ -3814,8 +3651,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking Track Unavailable");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Unavailable", ex);
         }
 
         return false;
@@ -3828,7 +3664,7 @@ public static class TwitchHandler
 
         if (cmd != null && cmd.AllowedUsers.Any(u => u.Id == chatterId))
         {
-            Logger.LogStr($"CMDS: User {cmd.AllowedUsers.First(u => u.Id == chatterId).DisplayName} is explicitly allowed to use !{cmd.Trigger}");
+            Logger.Info(LogSource.Twitch, $"User {cmd.AllowedUsers.First(u => u.Id == chatterId).DisplayName} is explicitly allowed to use !{cmd.Trigger}");
             return true;
         }
 
@@ -3855,8 +3691,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.LogStr("ERROR: Issue checking User At Max Requests");
-            Logger.LogExc(ex);
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking User At Max Requests", ex);
         }
 
         return false;
@@ -3908,7 +3743,7 @@ public static class TwitchHandler
 
                 if (resp.Data == null || !resp.Data.Any())
                 {
-                    Logger.LogStr("TWITCH API: Cannot refund because the reward is not created through Songify.");
+                    Logger.Warning(LogSource.Twitch, "TWITCH API: Cannot refund because the reward is not created through Songify.");
                     return;
                 }
 
@@ -3939,8 +3774,7 @@ public static class TwitchHandler
         }
         catch (Exception e)
         {
-            Logger.LogStr("TWITCH: Failed to refund channel points");
-            Logger.LogExc(e);
+            Logger.Error(LogSource.Twitch, "TWITCH: Failed to refund channel points", e);
         }
     }
 
@@ -3952,19 +3786,15 @@ public static class TwitchHandler
                 Settings.TwitchChatAccount.Id, message,
                 accessToken: Settings.TwitchChatAccount.Token.Replace("oauth:", ""));
             ChatMessageInfo msgInfo = chatResponse.Data[0];
-            Logger.LogStr(msgInfo.IsSent
-                ? $"Twitch Chat: Sent: {message}"
-                : $"Twitch Chat: Failed to send ({msgInfo.DropReason})");
+            if (msgInfo.IsSent)
+                Logger.Info(LogSource.Twitch, $"Twitch Chat: Sent: {message}");
+            else
+                Logger.Error(LogSource.Twitch, $"Twitch Chat: Failed to send ({msgInfo.DropReason})");
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error(LogSource.Twitch, "Error sending chat message", e);
         }
-
-        //if (Client.IsConnected && Client.JoinedChannels.Any(c => c.Channel == channel))
-        //    await Client.SendMessageAsync(channel, message);
-        //else
-        //    Logger.LogStr("DEBUG: Client.IsConnected returned FALSE or Client.JoinedChannels is NULL");
     }
 
     private static async void SendOrAnnounceMessage(string message, TwitchCommand cmd)
@@ -3978,8 +3808,7 @@ public static class TwitchHandler
         }
         catch (Exception e)
         {
-            Logger.LogStr("TWITCH: Failed to send chat or announcement");
-            Logger.LogExc(e);
+            Logger.Error(LogSource.Twitch, "Failed to send chat or announcement", e);
         }
     }
 

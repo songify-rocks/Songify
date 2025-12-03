@@ -220,8 +220,7 @@ namespace Songify_Slim.Util.General
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogStr("CORE: UpdateQueueWindow threw an exception.");
-                        Logger.LogExc(ex);
+                        Logger.Error(LogSource.Core, "An error occurred while updating the queue: " + ex.Message);
                         tcs.SetException(ex);
                     }
                 }
@@ -230,7 +229,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Core, "Error updating queue window.", e);
             }
         }
 
@@ -273,8 +272,7 @@ namespace Songify_Slim.Util.General
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogStr("API: Error updating value in web queue");
-                                    Logger.LogExc(ex);
+                                    Logger.Error(LogSource.Api, "Error updating value in web queue", ex);
                                 }
                             }
 
@@ -293,8 +291,7 @@ namespace Songify_Slim.Util.General
                                     }
                                     catch (Exception ex)
                                     {
-                                        Logger.LogStr("CORE: Error removing item from ReqList");
-                                        Logger.LogExc(ex);
+                                        Logger.Error(LogSource.Core, "Error removing item from ReqList", ex);
                                     }
                                 });
                             }
@@ -327,7 +324,7 @@ namespace Songify_Slim.Util.General
                         }
                         catch (Exception)
                         {
-                            Logger.LogStr("Spotify API: Error getting Liked Songs");
+                            Logger.Error(LogSource.Spotify, "Error getting Liked Songs");
                         }
 
                         List<RequestObject> tempQueueList = [];
@@ -380,8 +377,7 @@ namespace Songify_Slim.Util.General
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogStr("CORE: Error processing queue item");
-                                Logger.LogExc(ex);
+                                Logger.Error(LogSource.Core, "Error processing queue item", ex);
                             }
                         }
 
@@ -428,15 +424,13 @@ namespace Songify_Slim.Util.General
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogStr("CORE: Encountered an error while updating the UI");
-                                Logger.LogExc(ex);
+                                Logger.Error(LogSource.Core, "Encountered an error while updating the UI", ex);
                             }
                         });
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogStr("CORE: Error in QueueUpdate method");
-                        Logger.LogExc(ex);
+                        Logger.Error(LogSource.Core, "CORE: Error in QueueUpdate method", ex);
                     }
 
                     break;

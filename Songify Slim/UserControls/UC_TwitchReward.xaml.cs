@@ -199,7 +199,7 @@ namespace Songify_Slim.UserControls
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Twitch, "Error setting reward cost.", ex);
             }
         }
 

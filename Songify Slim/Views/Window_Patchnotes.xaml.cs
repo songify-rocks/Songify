@@ -161,8 +161,7 @@ namespace Songify_Slim.Views
             }
             catch (Exception ex)
             {
-                Logger.LogStr("PATCHNOTES: Error displaying patch notes");
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Patch notes: Error displaying patch notes", ex);
             }
         }
     }

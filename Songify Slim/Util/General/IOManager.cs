@@ -46,7 +46,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception e)
             {
-                Logger.LogExc(e);
+                Logger.Error(LogSource.Core, $"Error writing to file: {songPath}", e);
             }
         }
 
@@ -116,7 +116,7 @@ namespace Songify_Slim.Util.General
                     {
                         if (e.Error != null)
                         {
-                            Logger.LogExc(e.Error);
+                            Logger.Error(LogSource.Core, "Error downloading canvas.", e.Error);
                         }
 
                         Application.Current.Dispatcher.Invoke(() =>
@@ -181,7 +181,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error downloading canvas", ex);
             }
         }
 
@@ -274,7 +274,7 @@ namespace Songify_Slim.Util.General
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogExc(ex);
+                        Logger.Error(LogSource.Core, "Error downloading cover", ex);
 
                         // Fallback: write a transparent image if anything failed
                         using Bitmap bmp = new(640, 640);
@@ -295,7 +295,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error downloading cover", ex);
             }
             finally
             {
@@ -371,13 +371,13 @@ namespace Songify_Slim.Util.General
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogExc(ex);
+                        Logger.Error(LogSource.Core, "Error processing image download", ex);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Logger.LogExc(ex);
+                Logger.Error(LogSource.Core, "Error in image download process", ex);
             }
             finally
             {
