@@ -755,7 +755,8 @@ namespace Songify_Slim.Views
             // get the software version from assembly
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-            GlobalObjects.AppVersion = fvi.FileVersion;
+            Version v = new(fvi.FileVersion);
+            GlobalObjects.AppVersion = $"{v.Major}.{v.Minor}.{v.Build}";
 
             // set the cbx index to the correct source
             cbx_Source.SelectedValue = Settings.Player;
@@ -767,7 +768,7 @@ namespace Songify_Slim.Views
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-            LblCopyright.Content = App.IsBeta ? "Songify v1.8.0 BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? "Songify v1.8.0 RC1 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             tbFontSize.Text = Settings.Fontsize.ToString();
