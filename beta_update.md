@@ -1,112 +1,135 @@
-# 🎶 Songify — 1.8 Beta (Latest Update)
+# ✨ Songify **1.8.0** – Pre Release
 
-Please help us by reporting any bugs you encounter in the beta version.  
-You can create a new issue on GitHub or join our [Discord Server](https://discord.com/invite/H8nd4T4) to share feedback in the beta-discussion channels.
-
----
-
-## 🆕 Latest Beta Changes
-- **Deep Link Support**
-One-click token importing: You can now import Twitch and Songify tokens directly through special links. From the new Songify website you can import the Songify API token with one click. Same for the alternative Twitch Login method (auth code).
-
-- **Changed phrasing on Refund Conditions**
-Updated terminology: What was previously called "Refund Always" is now clearly labeled as "Free Song Requests".
-
-- **Interface Improvements**
-Settings Window Redesign: Reorganized the Twitch rewards section for better navigation.
-
-- **Chat & User Management**
-More accurate user data: Improved how the app handles Twitch chat messages and user information. Enhanced user role checking for commands and requests. 
-
-- **Removed Twitch IRC**
-Removed Twitch IRC client and now fully work with Twitch Eventsub websockets and API to receive and send chat messages.
-
-- **Under the Hood Improvements**
-Crash prevention: Fixed potential crashes when importing tokens. Improved validation when processing song requests. 
-
-- **Bug Fixes**
-Fixed issues with token importing that could cause the app to crash. Resolved problems with window management during setup. Improved input validation to prevent invalid song requests. Enhanced connection stability for Twitch chat
+Songify 1.8.0 is our biggest update yet. Faster, cleaner, and packed with improvements.
 
 ---
 
-## ✨ New Features
-- **Enhanced Refund System**  
-  Improved refund handling with detailed reason tracking and better user feedback. Refunds now include specific reasons (e.g., "song blocked", "queue full") and support localized messages.  
-- **YouTube Music Desktop Integration**  
-  Added full API support for YouTube Music Desktop Client with playback control, queue management, and volume adjustment.  
-- **Song Requests for Bits**  
-  The toggle button for this option now works properly.  
-- **New Tooltips for Checkmarks**  
-  Checkmarks have been replaced with green/red dots and have richer tooltips.  
-- **Real-Time Twitch Events**  
-  Direct WebSocket connection to Twitch for instant and reliable detection of redemptions and events.  
-- **Song Requests with Bits**  
-  Viewers can request songs using Twitch Bits with a configurable minimum amount.  
-- **Cloud Backup & Restore (Premium)**  
-  Save and restore Songify settings to the cloud with preview before importing.  
-  > Requires a **Ko-fi membership**.  
-  > [Guide: How to link Ko-fi with Songify](https://v2.songify.rocks/faq/how-to-link-ko-fi-with-songify).  
-- **Full YouTube Music Support**  
-  Request songs from YouTube using the [YouTube Music Desktop Client](https://github.com/th-ch/youtube-music).  
-  - [Setup Guide](https://github.com/songify-rocks/Songify/blob/master/th-ch%20Youtube-Music.md)  
-- **Spotify Rate Limit Monitor**  
-  Added a rate limit monitor (View -> Console -> API Metrics)  
-  - <img width="633" height="285" alt="image" src="https://github.com/user-attachments/assets/85862208-c41e-44bf-94cd-f3ac38828b3c" />
-  - <img width="633" height="285" alt="image" src="https://github.com/user-attachments/assets/d8a1cc9a-cf80-4678-8287-0ee3288323af" />  
+## 🍐 Pear (YouTube Music) Support
 
-- **Command Aliases**  
-  Added command aliases (Right-click on command -> Add Aliases)  
-
+- Full support for [**Pear** 🍐](https://github.com/pear-devs/pear-desktop) (formerly known as YouTube Music Dekstop (th-ch))
+- Improved playback detection and stability  
+- Working commands: play, pause, skip, voteskip, vol, vol [0-100]
+- UI & settings updated to reflect the new player
 
 ---
 
-## 🌍 Localization
-- Added Dutch (NL) translation  
-- Updated localization strings across multiple languages: Belarusian, German, Spanish, French, Italian, Polish, Portuguese, and Russian  
-- Added `{reason}` parameter for refund responses in all supported languages  
-- Added Belarusian language support  
----
+## 🎵 Spotify Improvements
 
-## ⚡ Improvements
-- **Refunds**  
-  Automatic refunds now provide clear, localized reasons (explicit content, queue full, blocked, etc.).  
-- **YouTube Music**  
-  Improved queue management and track detection.  
-- **UI/UX**  
-  Cleaner settings and reward screens; improved elements for displaying refund information.  
-- **Technical Enhancements**  
-  - Refactored web server command handling for better structure and readability  
-  - Improved Songify WebSocket server to support commands on YouTube Music Desktop  
+- More reliable and accurate track detection  
+- Faster communication between Songify and Spotify  
+- Better handling of errors, playback state, and metadata
+- songlike can now be used by the requester (if enabled on the command settings)
+- Automatically add Song Requests to the liked songs playlist now reliably works (songlike too). For that the playlist has to be cached on app startup (also happens when selecting a new liked song playlist). This can take a few seconds (~150 tracks per second). Tested with a 5500+ track playlist and it took about 32s.
 
 ---
 
-## 🐞 Fixes
-- More stable Twitch event handling and song requests, even after temporary disconnects  
-- Better error handling so Songify recovers faster when issues occur  
+## 💬 Smarter Twitch Song Requests
+
+- Added **Bits support** for requesting songs  
+- Added **alias support** (multiple names for the same command)  
+- New option: **Skip only non-requested songs** 
+  - This disables Skip-Reward for requested songs
+- Better handling of channel point requests  
+- Much more accurate and reliable permission detection  
+  (mods, VIPs, followers, and T1–T3 subscribers)
 
 ---
 
-## 🛠 Behind the Scenes
-- Simplified and streamlined the codebase by removing outdated components  
-- Completely rewrote Spotify API handling to make it more future-proof and less error-prone  
+## ⚡ Major Twitch Stability Improvements
+
+A huge rewrite of the Twitch system makes Songify far more stable:
+
+- Stronger chat connection  
+- More accurate user role & permission detection  
+- Better error recovery  
+- Cleaner internal logic = fewer surprises and more predictable behavior
+
+(EventSub WebSocket support has been added behind the scenes for future improvements.)
 
 ---
 
-This was a major update that took significant time and effort to develop.  
-If you enjoy using Songify and want to support its continued development, consider donating:  
+## ☁️ Cloud Settings Enhancements
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S167PLK)
+- Improved sync between local and cloud settings  
+- Added **cloud vs. local comparison** tools  
+- Better UI feedback for cloud-enabled users  
+- Smoother experience when switching between machines
 
 ---
 
-### 🔑 Checksums
+## 🪄 New Quality-of-Life Features
 
-Songify.zip:
-MD5:    80559C38090A94A8F8D93056E0493F02
-SHA1:   E695B4E0492D2A32DF56881090AF7CCC60299E93
-SHA256: 935D5E8DAB3D625122881E9BA4C8196D374042DAFE492DC89314259519865F47
+- **Windows Playback API support** → detect “what’s playing” across local music players  
+- Updated tooltips and UI hints throughout Songify  
+- Improved deep-link handling  
+- Cleaner error/warning messages
 
-Songify.exe:
-MD5:    484D2EC11C8A2A96939D4422AD07464E
-SHA1:   336A653CDCBB91528D520AA269C67249C110D982
-SHA256: C21894DBE7A7CDAF068E02678222D21E95FD6DC3C7EE21EB6B65C3617575915B
+---
+
+## 🌍 Localization Updates
+
+New or updated translations for:
+
+- Dutch  
+- French  
+- Spanish  
+- Italian  
+- Portuguese  
+- Belarusian  
+
+Plus improvements across many existing languages.
+
+---
+
+## 🧹 General UI Improvements
+
+- Cleaner and more responsive Settings window  
+- Improved refund tab layout  
+- Updated command list and permission UI  
+- More consistent theming  
+- Removed outdated integrations and unused options  
+- Overall cleaner, more modern feel
+
+---
+
+## 🐞 Bug Fixes
+
+- Fixed incorrect ordering of YouTube song request results (thanks to @NaGeL182 for the help)  
+- Fixed rare crashes and several null-reference issues  
+- Fixed label typos and inconsistent UI states  
+- Fixed Allow only songs from specific playlist not working (https://github.com/songify-rocks/Songify/issues/170)
+- Fixed !bansong command be usable by any user (https://github.com/songify-rocks/Songify/issues/164, https://github.com/songify-rocks/Songify/pull/153) (@folle)
+- Fixed stream online status check (https://github.com/songify-rocks/Songify/issues/166)
+- Improved handling of Twitch login and token importing  
+- More reliable Spotify and Twitch recovery (fewer “stuck state” issues)
+
+---
+
+## 📦 Other Improvements
+
+- Streamlined internal logic for better performance  
+- Removed outdated services and old APIs  
+- Numerous refactors to keep Songify stable long-term
+
+---
+
+## 🌐 New: Redesigned Songify Website
+
+We’re excited to launch the new **Songify website**!
+
+It includes:
+- Queue Display  
+- Status Page  
+- FAQ Section
+- Widgets (Premium and Free)
+- Login through Twitch
+- ... and more
+
+👉 Visit: https://v2.songify.rocks
+
+---
+
+## ❤️ Thank You!
+
+Thank you to everyone who helped test the beta versions and provided feedback.  
+Songify 1.8.0 is a big milestone, enjoy the new features, and keep the suggestions coming!
