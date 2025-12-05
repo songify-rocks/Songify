@@ -232,6 +232,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable / Disable Song Requests (disables them in App and also tries to pause the Reward).
+        /// </summary>
+        public static string brw_cmd_togglesr {
+            get {
+                return ResourceManager.GetString("brw_cmd_togglesr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trigger.
         /// </summary>
         public static string brw_cmd_trigger {
@@ -799,7 +808,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect.
+        ///   Looks up a localized string similar to (Re)Connect.
         /// </summary>
         public static string mw_menu_Connect {
             get {
@@ -862,7 +871,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log-folder.
+        ///   Looks up a localized string similar to Log Folder.
         /// </summary>
         public static string mw_menu_Help_LogFolder {
             get {

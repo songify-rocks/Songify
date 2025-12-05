@@ -8,6 +8,7 @@ using TwitchLib.Api;
 using TwitchLib.Api.Helix;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
+using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Api.Helix.Models.Channels.GetChannelVIPs;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.EventSub;
@@ -156,6 +157,31 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             return rewardsResponse?.Data.ToList();
+        }
+
+        public static async Task EnableRewards(List<string> twRewardId, bool isEnabled)
+        {
+            UpdateCustomRewardRequest rewardUpdate = new()
+            {
+                IsPaused = !isEnabled
+            };
+
+            foreach (string s in twRewardId)
+            {
+                try
+                {
+                    UpdateCustomRewardResponse result = await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, s,
+                        rewardUpdate, Settings.TwitchAccessToken);
+                    if (result.Data[0].IsPaused == !isEnabled)
+                    {
+                        Logger.Log(LogLevel.Info, LogSource.Twitch, $"Reward {result.Data[0].Title} has been {(!isEnabled ? "paused" : "enabled")}.");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.Log(LogLevel.Error, LogSource.Twitch, "Error updating reward");
+                }
+            }
         }
     }
 }

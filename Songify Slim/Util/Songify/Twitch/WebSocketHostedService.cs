@@ -227,14 +227,8 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
                 return Task.CompletedTask;
             TwitchHandler.ExecuteChatCommand(chatMsg);
-            Debug.WriteLine($"{chatMsg.ChatterUserName}: {chatMsg.Message.Text}");
-            Debug.WriteLine($"Broadcaster: {chatMsg.IsBroadcaster}");
-            Debug.WriteLine($"Moderator: {chatMsg.IsModerator}");
-            Debug.WriteLine($"VIP: {chatMsg.IsVip}");
-            Debug.WriteLine($"Subscriber: {chatMsg.IsSubscriber}");
-            string x = Json.Serialize(chatMsg.Badges);
-            Debug.WriteLine($"Badges: {x}");
-            return Task.CompletedTask;
+                                                                        string x = Json.Serialize(chatMsg.Badges);
+                        return Task.CompletedTask;
         }
 
         #endregion Events

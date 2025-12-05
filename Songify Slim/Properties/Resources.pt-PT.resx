@@ -942,4 +942,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Pasta de registro</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Ativar/Desativar Pedidos de Música (desativa-os no aplicativo e também tenta pausar a recompensa)</value>
+  </data>
 </root>

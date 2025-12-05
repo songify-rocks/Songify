@@ -90,6 +90,9 @@ public static class Enums
 
         [Description("Ban Song")]
         BanSong,
+
+        [Description("Toggle Songrequest")]
+        ToggleSr
     }
 
     public enum ConfigTypes

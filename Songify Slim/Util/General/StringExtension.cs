@@ -24,8 +24,7 @@ namespace Songify_Slim.Util.General
             }
             catch (Exception e)
             {
-                Debug.WriteLine(e);
-            }
+                            }
             return sb.ToString();
 
         }

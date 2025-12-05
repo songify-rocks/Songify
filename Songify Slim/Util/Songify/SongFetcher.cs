@@ -1223,8 +1223,7 @@ namespace Songify_Slim.Util.Songify
                         }
 
                     default:
-                        Debug.WriteLine("Unknown Pear event type: " + type);
-                        break;
+                                                break;
                 }
             });
 

@@ -102,6 +102,10 @@ namespace Songify_Slim.UserControls
                 {
                     Enums.CommandType.BanSong,
                     Application.Current.TryFindResource("brw_cmd_bansong") as string ?? "Fallback BanSong"
+                },
+                {
+                    Enums.CommandType.ToggleSr,
+                    Application.Current.TryFindResource("brw_cmd_togglesr") as string ?? "Fallback BanSong"
                 }
             };
 
@@ -144,6 +148,7 @@ namespace Songify_Slim.UserControls
                 case Enums.CommandType.Songlike:
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
+                case Enums.CommandType.ToggleSr:
                     break;
 
                 case Enums.CommandType.Voteskip:

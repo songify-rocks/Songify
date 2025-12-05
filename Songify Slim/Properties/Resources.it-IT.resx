@@ -942,4 +942,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Cartella di registro</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Abilita/Disabilita le richieste di brani (le disabilita nell'app e tenta anche di mettere in pausa la ricompensa)</value>
+  </data>
 </root>

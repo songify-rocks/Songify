@@ -359,7 +359,7 @@
     <value>Ein</value>
   </data>
   <data name="brw_cmd_pos" xml:space="preserve">
-    <value>Zeigt die Position der Songanfragen in der Warteschlange für den aktuellen Benutzer an</value>
+    <value>Zeigt die Position der Musikwünsche in der Warteschlange für den aktuellen Benutzer an</value>
   </data>
   <data name="brw_cmd_song" xml:space="preserve">
     <value>Zeigt den aktuellen Song an</value>
@@ -566,7 +566,7 @@
     <value>Der Benutzer hat dafür gestimmt, den aktuellen Song zu überspringen</value>
   </data>
   <data name="sw_Spotify_RewardSR" xml:space="preserve">
-    <value>Belohnung für Songanfragen</value>
+    <value>Belohnung für Musikwünsche</value>
   </data>
   <data name="sw_Spotify_RewardSkip" xml:space="preserve">
     <value>Belohnung für Song-Skip</value>
@@ -707,7 +707,7 @@
     <value>Klicke hier, nachdem die Belohnung ausgewählt wurde</value>
   </data>
   <data name="sw_rewards_enabledRewards" xml:space="preserve">
-    <value>Aktivierte Kanal-Belohnungen für Songanfragen</value>
+    <value>Aktivierte Kanal-Belohnungen für Musikwünsche</value>
   </data>
   <data name="brw_cmd_QueueReturn" xml:space="preserve">
     <value>Gibt die ersten 5 Songs der aktuellen Wiedergabewarteschlange zurück</value>
@@ -797,7 +797,7 @@
     <value>Befehlsantworten</value>
   </data>
   <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
-    <value>Antworten auf Songanfragen</value>
+    <value>Antworten auf Musikwünsche</value>
   </data>
   <data name="s_TrackAdded" xml:space="preserve">
     <value>Der Titel wurde zur Warteschlange hinzugefügt.</value>
@@ -935,12 +935,15 @@
     <value>Niederländisch</value>
   </data>
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
-    <value>Skip-Belohnung für Songanfragen deaktivieren</value>
+    <value>Skip-Belohnung für Musikwünsche deaktivieren</value>
   </data>
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Kostenlose Songwünsche</value>
   </data>
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Log Ordner</value>
+  </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Musikwünsche aktivieren/deaktivieren (deaktiviert diese in der App und versucht außerdem, die Belohnung anzuhalten)</value>
   </data>
 </root>

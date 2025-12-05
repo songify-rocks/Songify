@@ -996,4 +996,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Logboekmap</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Verzoeknummers in-/uitschakelen (schakelt ze uit in de app en probeert ook de beloning te pauzeren)</value>
+  </data>
 </root>

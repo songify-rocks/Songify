@@ -20,6 +20,7 @@ namespace Songify_Slim.Models.Placeholders
         public string PlaylistUrl { get; set; }
         public string Cd { get; set; }
         public string Reason { get; set; }
+        public string State { get; set; }
 
         // Constructor that accepts a FullTrack object
         public PlaceholderContext(TrackInfo track = null)

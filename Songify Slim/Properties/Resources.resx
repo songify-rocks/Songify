@@ -1127,4 +1127,7 @@
   <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
     <value>Disable Skip-Reward for Song Requests</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Enable / Disable Song Requests (disables them in App and also tries to pause the Reward)</value>
+  </data>
 </root>

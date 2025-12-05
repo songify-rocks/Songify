@@ -235,8 +235,7 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-            Debug.Write(Settings.Player);
-            int index;
+                        int index;
             List<RequestObject> tempQueueList2;
             switch (Settings.Player)
             {

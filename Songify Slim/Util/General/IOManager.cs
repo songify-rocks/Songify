@@ -148,8 +148,7 @@ namespace Songify_Slim.Util.General
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(ex);
-                            }
+                                                            }
 
                         try
                         {
@@ -157,8 +156,7 @@ namespace Songify_Slim.Util.General
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
-                        }
+                                                    }
                         _isWriting = false;
                     };
 

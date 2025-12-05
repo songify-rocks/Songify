@@ -943,4 +943,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Carpeta de registro</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Habilitar/Deshabilitar solicitudes de canciones (las deshabilita en la aplicación y también intenta pausar la recompensa)</value>
+  </data>
 </root>

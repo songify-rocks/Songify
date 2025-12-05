@@ -943,4 +943,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Папка журнала</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Включить/отключить запросы песен (отключает их в приложении, а также пытается приостановить вознаграждение)</value>
+  </data>
 </root>

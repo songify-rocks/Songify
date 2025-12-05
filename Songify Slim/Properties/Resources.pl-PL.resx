@@ -942,4 +942,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Folder dziennika</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Włącz/Wyłącz prośby o piosenkę (wyłącza je w aplikacji i próbuje wstrzymać nagrodę)</value>
+  </data>
 </root>

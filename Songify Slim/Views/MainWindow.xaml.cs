@@ -1327,8 +1327,7 @@ namespace Songify_Slim.Views
                     }
                     catch (Exception)
                     {
-                        //Debug.WriteLine(ex);
-                        await Task.Delay(1000);
+                        //                        await Task.Delay(1000);
                         continue;
                     }
 

@@ -80,7 +80,20 @@ namespace Songify_Slim.Util.Configuration
                 CustomProperties = new Dictionary<string, object>()
             },
 
-            new()
+            new ()
+           {
+               CommandType = CommandType.ToggleSr,
+               Trigger = "togglesr",
+               Aliases = null,
+               Response = "Song requests are now {state}",
+               IsEnabled = false,
+               AllowedUserLevels = [6],
+               IsAnnouncement = false,
+               AnnouncementColor = AnnouncementColor.Blue,
+               CustomProperties = new Dictionary<string, object>()
+           },
+
+           new()
             {
                 CommandType = CommandType.Position,
                 Trigger = "pos",

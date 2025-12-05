@@ -1173,7 +1173,6 @@ public static class TwitchHandler
 
                 if (!missingItems.Any())
                 {
-                    Debug.WriteLine("All elements are present in the list.");
                 }
                 else
                 {
@@ -1344,6 +1343,7 @@ public static class TwitchHandler
                 Enums.CommandType.Volume => HandleVolumeCommand,
                 Enums.CommandType.Commands => HandleCommandsCommand,
                 Enums.CommandType.BanSong => HandleBanSongCommand,
+                Enums.CommandType.ToggleSr => HandleToggleSrCommand,
                 _ => null
             };
 
@@ -1361,6 +1361,11 @@ public static class TwitchHandler
                 case Enums.CommandType.Queue:
                 case Enums.CommandType.Remove:
                 case Enums.CommandType.Skip:
+                case Enums.CommandType.Song:
+                case Enums.CommandType.Songlike:
+                case Enums.CommandType.Commands:
+                case Enums.CommandType.BanSong:
+                case Enums.CommandType.ToggleSr:
                     break;
 
                 case Enums.CommandType.Voteskip:
@@ -1370,19 +1375,11 @@ public static class TwitchHandler
                     }
                     break;
 
-                case Enums.CommandType.Song:
-                case Enums.CommandType.Songlike:
-                    break;
-
                 case Enums.CommandType.Volume:
                     if (command.CustomProperties?.ContainsKey("VolumeSetResponse") == false)
                     {
                         command.CustomProperties["VolumeSetResponse"] = "Volume set to {vol}%";
                     }
-                    break;
-
-                case Enums.CommandType.Commands:
-                case Enums.CommandType.BanSong:
                     break;
 
                 default:
@@ -2090,6 +2087,50 @@ public static class TwitchHandler
         SkipCooldownTimer.Start();
     }
 
+    private static async Task HandleToggleSrCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+    {
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
+        try
+        {
+            //Toggle SR Reward
+            Settings.TwSrReward = !Settings.TwSrReward;
+            try
+            {
+                await TwitchApiHelper.EnableRewards(Settings.TwRewardId, Settings.TwSrReward);
+
+                string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+                {
+                    User = message.ChatterUserName,
+                    Artist = null,
+                    SingleArtist = null,
+                    Title = null,
+                    MaxReq = $"{Settings.TwSrMaxReq}",
+                    ErrorMsg = null,
+                    MaxLength = $"{Settings.MaxSongLength}",
+                    Votes = $"{SkipVotes.Count}/{Settings.BotCmdSkipVoteCount}",
+                    Song = null,
+                    Req = GlobalObjects.Requester,
+                    Url = null,
+                    PlaylistName = null,
+                    PlaylistUrl = null,
+                    Cd = Settings.TwSrCooldown.ToString(),
+                    State = Settings.TwSrReward ? "enabled" : "disabled"
+                }, cmd.Response);
+                SendOrAnnounceMessage(response, cmd);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
     private static async Task HandleSpotifyRequest(ChannelChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         if (SpotifyApiHandler.Client == null)
@@ -2381,20 +2422,15 @@ public static class TwitchHandler
             if (TwitchApi == null)
                 return;
 
-            Debug.WriteLine("TWITCH FETCHING USERS");
 
             // Fetch all chatters and subscribers
             GlobalObjects.Chatters = await TwitchApiHelper.GetAllChattersAsync();
-            Debug.WriteLine("CHATTERS DONE");
 
             GlobalObjects.Subscribers = await TwitchApiHelper.GetAllSubscribersAsync();
-            Debug.WriteLine("SUBS DONE");
 
             GlobalObjects.Moderators = await TwitchApiHelper.GetAllModeratorsAsync();
-            Debug.WriteLine("MODS DONE");
 
             GlobalObjects.Vips = await TwitchApiHelper.GetAllVipsAsync();
-            Debug.WriteLine("VIPS DONE");
 
             if (GlobalObjects.Chatters == null || GlobalObjects.Subscribers == null)
                 return;

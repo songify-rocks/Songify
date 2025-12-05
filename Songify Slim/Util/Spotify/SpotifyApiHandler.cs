@@ -126,8 +126,7 @@ namespace Songify_Slim.Util.Spotify
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
             // Avoid logging secrets in production:
-            Debug.WriteLine("We got a refreshed access token from server.");
-
+            
             // 2) Update settings with new tokens
             Settings.SpotifyAccessToken = refreshResponse.AccessToken;
             if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))

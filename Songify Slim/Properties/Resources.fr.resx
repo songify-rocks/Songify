@@ -946,4 +946,7 @@
   <data name="mw_menu_Help_LogFolder" xml:space="preserve">
     <value>Dossier journal</value>
   </data>
+  <data name="brw_cmd_togglesr" xml:space="preserve">
+    <value>Activer/Désactiver les demandes de chansons (les désactive dans l'application et tente également de mettre en pause la récompense)</value>
+  </data>
 </root>
