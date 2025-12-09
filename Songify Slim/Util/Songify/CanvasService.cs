@@ -17,7 +17,10 @@ namespace Songify_Slim.Util.Songify
             }
 
             string result = await SongifyApi.GetCanvasRawAsync(songId).ConfigureAwait(false);
-
+            if (result == null)
+            {
+                return new Tuple<bool, string>(false, "");
+            }
             // API sends quoted string, so remove quotes
             result = result.Replace("\"", "");
 

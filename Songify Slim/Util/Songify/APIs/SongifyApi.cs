@@ -12,6 +12,7 @@ namespace Songify_Slim.Util.Songify.APIs
     internal static class SongifyApi
     {
         private static readonly ApiClient ApiClient = new(GlobalObjects.ApiUrl);
+        //private static readonly ApiClient ApiClient = new("unreachable.host");
 
         public static Task<string> GetQueueRawAsync() => ApiClient.Get("queue", Settings.Uuid);
 

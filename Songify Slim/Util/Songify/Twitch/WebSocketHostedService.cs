@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -29,7 +28,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         private readonly ILogger<WebsocketHostedService> _logger;
         private readonly EventSubWebsocketClient _eventSubWebsocketClient;
         private readonly TwitchAPI _twitchApi = new();
-        private string _userId;
+        private readonly string _userId = Settings.TwitchUser.Id;
 
         public WebsocketHostedService(ILogger<WebsocketHostedService> logger, EventSubWebsocketClient eventSubWebsocketClient)
         {
@@ -54,10 +53,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             // Get Application Token with Client credentials grant flow.
             // https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#client-credentials-grant-flow
             _twitchApi.Settings.AccessToken = Settings.TwitchAccessToken;
-
-            // You need the UserID for the User/Channel you want to get Events from.
-            // You can use await _api.Helix.Users.GetUsersAsync() for that.
-            _userId = Settings.TwitchUser.Id;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -220,15 +215,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
         {
             ChannelChatMessage chatMsg = args.Notification.Payload.Event;
-            //if (chatMsg.ChatterUserId == Settings.Settings.TwitchChatAccount.Id)
-            //    return;
+
             if (!chatMsg.Message.Text.StartsWith("!"))
                 return Task.CompletedTask;
             if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
                 return Task.CompletedTask;
             TwitchHandler.ExecuteChatCommand(chatMsg);
-                                                                        string x = Json.Serialize(chatMsg.Badges);
-                        return Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
         #endregion Events

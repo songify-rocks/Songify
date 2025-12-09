@@ -125,24 +125,6 @@ namespace Songify_Slim.Util.General
             return foundChild;
         }
 
-        public static bool IsObjectDefault<T>(T obj)
-        {
-            if (obj == null)
-                return false; // The object itself is not null based on your condition.
-
-            // Get all properties of the object using reflection.
-            PropertyInfo[] properties = typeof(T).GetProperties();
-
-            // Check each property if it's equal to the default value of its type.
-            return !(from property in properties
-                     let propertyValue = property.GetValue(obj)
-                     let defaultValue = property.PropertyType.IsValueType
-                         ? Activator.CreateInstance(property.PropertyType)
-                         : null
-                     where !Equals(propertyValue, defaultValue)
-                     select propertyValue).Any();
-        }
-
         public static string MsToMmSsConverter(int milliseconds)
         {
             // Convert milliseconds to seconds
@@ -235,7 +217,7 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-                        int index;
+            int index;
             List<RequestObject> tempQueueList2;
             switch (Settings.Player)
             {
@@ -497,17 +479,6 @@ namespace Songify_Slim.Util.General
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-        }
-
-        private static string ComputeQueueHash(IEnumerable<FullTrack> queue)
-        {
-            return string.Join(",", queue.Select(t => t.Id)).GetHashCode().ToString();
-        }
-
-        public static string SecondsToMmss(int totalSeconds)
-        {
-            TimeSpan timeSpan = TimeSpan.FromSeconds(totalSeconds);
-            return $"{(int)timeSpan.TotalMinutes:D2}:{timeSpan.Seconds:D2}";
         }
 
         public static async Task<bool> CheckInLikedPlaylist(TrackInfo trackInfo)
