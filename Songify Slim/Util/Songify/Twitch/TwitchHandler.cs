@@ -3598,7 +3598,7 @@ public static class TwitchHandler
 
         if (track.AvailableMarkets.Any(s => s == Settings.SpotifyProfile.Country))
         {
-            Logger.Log(LogLevel.Info, LogSource.Spotify, $"User Country {Settings.SpotifyProfile.Country} | Available Markets for Track {string.Join(", ", track.AvailableMarkets)}");
+            Logger.Log(LogLevel.Info, LogSource.Spotify, $"User Country {Settings.SpotifyProfile.Country} | Available Markets for Track {track.Name}({track.Uri}): {string.Join(", ", track.AvailableMarkets)}");
             return false;
         }
         try
