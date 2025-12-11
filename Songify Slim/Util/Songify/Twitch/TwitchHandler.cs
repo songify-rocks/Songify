@@ -2252,7 +2252,6 @@ public static class TwitchHandler
                                 response = response.Replace("{ttp}", "");
                                 SendOrAnnounceMessage(response, cmd);
 
-
                                 // wait until YT queue actually contains the item
                                 int? pos = await WaitForSongInQueueAsync(sr.VideoId,
                                     TimeSpan.FromSeconds(3),
@@ -2511,7 +2510,6 @@ public static class TwitchHandler
 
             if (TwitchApi == null)
                 return;
-
 
             // Fetch all chatters and subscribers
             GlobalObjects.Chatters = await TwitchApiHelper.GetAllChattersAsync();
@@ -3599,8 +3597,10 @@ public static class TwitchHandler
         response = string.Empty;
 
         if (track.AvailableMarkets.Any(s => s == Settings.SpotifyProfile.Country))
+        {
+            Logger.Log(LogLevel.Info, LogSource.Spotify, $"User Country {Settings.SpotifyProfile.Country} | Available Markets for Track {string.Join(", ", track.AvailableMarkets)}");
             return false;
-
+        }
         try
         {
             if (track.IsPlayable)
