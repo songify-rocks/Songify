@@ -174,7 +174,7 @@
     <comment>Menu content for "Blocklist"</comment>
   </data>
   <data name="mw_menu_Connect" xml:space="preserve">
-    <value>(Зноў) Злучэнне</value>
+    <value>(Пера)Падключэнне</value>
     <comment>Menu content for "Connect"</comment>
   </data>
   <data name="mw_menu_Exit" xml:space="preserve">
@@ -1120,6 +1120,6 @@
     <value>Бясплатныя запыты на песні</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
-    <value>Уключыць/адключыць запыты на песні (адключае іх у дадатку, а таксама спрабуе прыпыніць узнагароду)</value>
+    <value>Уключыць/адключыць запыты на песні (адключае іх у праграме, а таксама спрабуе прыпыніць узнагароду)</value>
   </data>
 </root>
