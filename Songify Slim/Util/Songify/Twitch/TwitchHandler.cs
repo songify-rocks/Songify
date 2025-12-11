@@ -35,6 +35,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
+using System.Web.Caching;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -989,8 +990,24 @@ public static class TwitchHandler
                         bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
                         if (ok)
                         {
+                            TwitchCommand cmd = Settings.Commands.First(cmd => cmd.CommandType == Enums.CommandType.SongRequest);
                             // Your success response logic
-                            await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
+                            List<SimpleArtist> artists = [];
+                            artists.AddRange(sr.Artists.Select(srArtist => new SimpleArtist { Name = srArtist, }));
+
+                            string response = CreateSuccessResponse(new FullTrack
+                            {
+                                Artists = artists,
+                                Href = $"https://www.youtube.com/watch?v={sr.VideoId}",
+                                Id = sr.VideoId,
+                                IsPlayable = true,
+                                Name = sr.Title,
+                                Type = ItemType.Track,
+                                Uri = $"https://www.youtube.com/watch?v={sr.VideoId}",
+                                IsLocal = false
+                            }, userName, cmd.Response);
+                            response = response.Replace("{ttp}", "");
+                            SendOrAnnounceMessage(response, cmd);
                             // wait until YT queue actually contains the item
                             int? pos = await WaitForSongInQueueAsync(sr.VideoId,
                                 TimeSpan.FromSeconds(3),
@@ -1040,7 +1057,32 @@ public static class TwitchHandler
                     bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
                     if (ok)
                     {
-                        await SendChatMessage($"Queued: {title}");
+                        TwitchCommand cmd = Settings.Commands.First(cmd => cmd.CommandType == Enums.CommandType.SongRequest);
+
+                        string response = CreateSuccessResponse(new FullTrack
+                        {
+                            Artists =
+                            [
+                                new SimpleArtist
+                                {
+                                    Href = "",
+                                    Id = "",
+                                    Name = "",
+                                    Type = "",
+                                    Uri = ""
+                                }
+                            ],
+                            Href = $"https://www.youtube.com/watch?v={videoId}",
+                            Id = videoId,
+                            Restrictions = [],
+                            Name = title,
+                            Type = ItemType.Track,
+                            Uri = $"https://www.youtube.com/watch?v={videoId}",
+                            IsLocal = false
+                        }, userName, cmd.Response);
+                        response = response.Replace("{ttp}", "");
+                        SendOrAnnounceMessage(response, cmd);
+
                         // wait until YT queue actually contains the item
                         int? pos = await WaitForSongInQueueAsync(videoId,
                             TimeSpan.FromSeconds(3),
@@ -2165,7 +2207,12 @@ public static class TwitchHandler
                         string messageWithoutTrigger = message.Message.Text.Replace($"!{cmd.Trigger}", "").Trim();
                         PearSearch sr = await PearApi.SearchAsync(messageWithoutTrigger);
                         if (sr == null) return;
-
+                        if (sr.VideoId == null)
+                        {
+                            await SendChatMessage(
+                                $"Youtube search did not return any result for \"{messageWithoutTrigger}\"");
+                            return;
+                        }
                         if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
                         {
                             RequestObject req = new()
@@ -2186,7 +2233,26 @@ public static class TwitchHandler
                             if (ok)
                             {
                                 // Your success response logic
-                                await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
+                                // await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
+
+                                List<SimpleArtist> artists = [];
+                                artists.AddRange(sr.Artists.Select(srArtist => new SimpleArtist { Name = srArtist, }));
+
+                                string response = CreateSuccessResponse(new FullTrack
+                                {
+                                    Artists = artists,
+                                    Href = $"https://www.youtube.com/watch?v={sr.VideoId}",
+                                    Id = sr.VideoId,
+                                    IsPlayable = true,
+                                    Name = sr.Title,
+                                    Type = ItemType.Track,
+                                    Uri = $"https://www.youtube.com/watch?v={sr.VideoId}",
+                                    IsLocal = false
+                                }, message.ChatterUserName, cmd.Response);
+                                response = response.Replace("{ttp}", "");
+                                SendOrAnnounceMessage(response, cmd);
+
+
                                 // wait until YT queue actually contains the item
                                 int? pos = await WaitForSongInQueueAsync(sr.VideoId,
                                     TimeSpan.FromSeconds(3),
@@ -2236,7 +2302,31 @@ public static class TwitchHandler
                         bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
                         if (ok)
                         {
-                            await SendChatMessage($"Queued: {title}");
+                            string response = CreateSuccessResponse(new FullTrack
+                            {
+                                Artists =
+                                [
+                                    new SimpleArtist
+                                    {
+                                        ExternalUrls = null,
+                                        Href = "",
+                                        Id = "",
+                                        Name = "",
+                                        Type = "",
+                                        Uri = ""
+                                    }
+                                ],
+                                Href = $"https://www.youtube.com/watch?v={videoId}",
+                                Id = videoId,
+                                Restrictions = [],
+                                Name = title,
+                                Type = ItemType.Track,
+                                Uri = $"https://www.youtube.com/watch?v={videoId}",
+                                IsLocal = false
+                            }, message.ChatterUserName, cmd.Response);
+                            response = response.Replace("{ttp}", "");
+                            SendOrAnnounceMessage(response, cmd);
+
                             // wait until YT queue actually contains the item
                             int? pos = await WaitForSongInQueueAsync(videoId,
                                 TimeSpan.FromSeconds(3),
@@ -3524,6 +3614,8 @@ public static class TwitchHandler
             response = response.Replace("{title}", "");
             response = response.Replace("{maxreq}", "");
             response = response.Replace("{errormsg}", "");
+            response = response.Replace("{song}", "");
+
             response = CleanFormatString(response);
             return true;
         }
