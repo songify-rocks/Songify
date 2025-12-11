@@ -183,12 +183,13 @@ public static class TwitchHandler
                 return;
             }
 
-            if (IsTrackUnavailable(track, e, out response))
-            {
-                await SendChatMessage(response);
-                await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
-                return;
-            }
+            if (track.AvailableMarkets.Count > 0)
+                if (IsTrackUnavailable(track, e, out response))
+                {
+                    await SendChatMessage(response);
+                    await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
+                    return;
+                }
 
             if (IsArtistBlacklisted(track, e, out response))
             {
