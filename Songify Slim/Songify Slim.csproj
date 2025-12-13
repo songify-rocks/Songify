@@ -226,6 +226,7 @@
     <Compile Include="Util\General\SingleInstanceHelper.cs" />
     <Compile Include="Util\General\SubtractConverter.cs" />
     <Compile Include="Util\General\TaskQueue.cs" />
+    <Compile Include="Util\General\ThirdPartyLibrary.cs" />
     <Compile Include="Util\General\ThumbnailConverter.cs" />
     <Compile Include="Util\General\Utils.cs" />
     <Compile Include="Util\Configuration\ConfigComparer.cs" />
@@ -504,6 +505,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="app.manifest" />
+    <EmbeddedResource Include="Resources\thirdparty.json" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="songify.ico" />

@@ -1,0 +1,118 @@
+[
+  {
+    "name": "AutoUpdater.NET",
+    "license": "MIT",
+    "url": "https://github.com/ravibpatel/AutoUpdater.NET"
+  },
+  {
+    "name": "AvalonEdit",
+    "license": "MIT",
+    "url": "https://github.com/icsharpcode/AvalonEdit"
+  },
+  {
+    "name": "Common.Logging",
+    "license": "Apache-2.0",
+    "url": "https://github.com/net-commons/common-logging"
+  },
+  {
+    "name": "ControlzEx",
+    "license": "MIT",
+    "url": "https://github.com/ControlzEx/ControlzEx"
+  },
+  {
+    "name": "Costura.Fody",
+    "license": "MIT",
+    "url": "https://github.com/Fody/Costura"
+  },
+  {
+    "name": "Fody",
+    "license": "MIT",
+    "url": "https://github.com/Fody/Fody"
+  },
+  {
+    "name": "EmbedIO",
+    "license": "MIT",
+    "url": "https://github.com/unosquare/embedio"
+  },
+  {
+    "name": "FuzzySharp",
+    "license": "MIT",
+    "url": "https://github.com/JakeBayer/FuzzySharp"
+  },
+  {
+    "name": "HtmlAgilityPack",
+    "license": "MIT",
+    "url": "https://github.com/zzzprojects/html-agility-pack"
+  },
+
+  {
+    "name": "MahApps.Metro",
+    "license": "MIT",
+    "url": "https://github.com/MahApps/MahApps.Metro"
+  },
+  {
+    "name": "MahApps.Metro.IconPacks",
+    "license": "MIT",
+    "url": "https://github.com/MahApps/MahApps.Metro.IconPacks"
+  },
+  {
+    "name": "Microsoft.Xaml.Behaviors.Wpf",
+    "license": "MIT",
+    "url": "https://github.com/microsoft/XamlBehaviorsWpf"
+  },
+  {
+    "name": "OxyPlot.Wpf",
+    "license": "MIT",
+    "url": "https://github.com/oxyplot/oxyplot"
+  },
+
+  {
+    "name": "Markdig",
+    "license": "BSD-2-Clause",
+    "url": "https://github.com/xoofx/markdig"
+  },
+  {
+    "name": "Markdig.Wpf",
+    "license": "BSD-2-Clause",
+    "url": "https://github.com/Kryptos-FR/markdig.wpf"
+  },
+  {
+    "name": "YamlDotNet",
+    "license": "MIT",
+    "url": "https://github.com/aaubry/YamlDotNet"
+  },
+
+  {
+    "name": "Octokit.NET",
+    "license": "MIT",
+    "url": "https://github.com/octokit/octokit.net"
+  },
+  {
+    "name": "SocketIOClient",
+    "license": "MIT",
+    "url": "https://github.com/doghappy/socket.io-client-csharp"
+  },
+  {
+    "name": "NHttp",
+    "license": "MIT",
+    "url": "https://github.com/keremk/NHttp"
+  },
+
+  {
+    "name": "SpotifyAPI-NET",
+    "license": "MIT",
+    "url": "https://github.com/JohnnyCrazy/SpotifyAPI-NET"
+  },
+
+  {
+    "name": "TwitchLib",
+    "license": "MIT",
+    "url": "https://github.com/TwitchLib/TwitchLib"
+  },
+
+  {
+    "name": "System.Data.SQLite.Core",
+    "license": "Public Domain",
+    "url": "https://www.sqlite.org"
+  }
+]

@@ -10,6 +10,7 @@
     Width="710"
     Height="490"
     MaxWidth="710"
+    Loaded="MetroWindow_Loaded"
     ResizeMode="CanResizeWithGrip"
     mc:Ignorable="d">
     <Grid>
@@ -26,15 +27,44 @@
             Grid.Column="0"
             Margin="0,25,0,14"
             VerticalScrollBarVisibility="Auto">
-            <TextBlock
-                Margin="5,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                ScrollViewer.CanContentScroll="True"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                Text="{DynamicResource LicenseUsing}"
-                TextWrapping="Wrap" />
+
+            <StackPanel Margin="5,0,0,0">
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontWeight="SemiBold"
+                    Text="Third-Party Libraries Licenses" />
+
+                <TextBlock Text="Songify Slim makes use of the following open-source libraries." TextWrapping="Wrap" />
+                <TextBlock
+                    Margin="0,0,0,12"
+                    Text="All listed libraries remain the property of their respective authors and are used in accordance with their licenses."
+                    TextWrapping="Wrap" />
+
+                <Separator Margin="0,0,0,12" />
+
+                <ItemsControl x:Name="ThirdPartyItems">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,14">
+                                <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
+
+                                <TextBlock>
+                                    <Run Text="License: " />
+                                    <Run Text="{Binding License}" />
+                                </TextBlock>
+
+                                <TextBlock>
+                                    <Hyperlink NavigateUri="{Binding Url}" RequestNavigate="Hyperlink_RequestNavigate">
+                                        <Run Text="{Binding Url}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </ScrollViewer>
+
         <StackPanel Grid.Column="1" Orientation="Vertical">
             <TextBlock
                 Height="83"
@@ -69,6 +99,5 @@
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
         </StackPanel>
-
     </Grid>
 </controls:MetroWindow>
