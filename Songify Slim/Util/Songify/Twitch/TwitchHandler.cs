@@ -2,7 +2,6 @@
 using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Toolkit.Uwp.Notifications;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Models.Placeholders;
@@ -26,7 +25,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -35,12 +33,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
-using System.Web.Caching;
 using System.Windows;
-using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Windows.Security.Authentication.OnlineId;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -60,8 +55,6 @@ using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets.Extensions;
-using Windows.UI.Text.Core;
-using TwitchLib.EventSub.Core.Models.Chat;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 using Timer = System.Timers.Timer;
@@ -74,7 +67,6 @@ public static class TwitchHandler
     private static bool _onCooldown;
     private static bool _skipCooldown;
     private static bool _syncTimerHooked;
-    private static bool _toastSent;
     private static CancellationTokenSource _cts;
     private static IHost _host;
     private static int _syncRunning;
@@ -277,7 +269,7 @@ public static class TwitchHandler
             RequestObject o = new()
             {
                 Trackid = track.Id,
-                PlayerType = Enums.RequestPlayerType.Spotify.ToString(),
+                PlayerType = nameof(Enums.RequestPlayerType.Spotify),
                 Artist = artists,
                 Title = track.Name,
                 Length = length,
@@ -601,7 +593,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.Error(LogSource.Twitch, $"Couldn't connect to Twitch.", ex);
+            Logger.Error(LogSource.Twitch, "Couldn't connect to Twitch.", ex);
         }
     }
 
@@ -903,7 +895,7 @@ public static class TwitchHandler
         if (!IsUserAllowed(Settings.UserLevelsReward, new TwitchCommandParams
         {
             ExistingUser = existingUser,
-            UserLevels = existingUser?.UserLevels
+            UserLevels = existingUser.UserLevels
         }, isBroadcaster, null, userId))
         {
             // Send a message to the user that their user level is too low to request songs
@@ -968,8 +960,7 @@ public static class TwitchHandler
 
                 if (string.IsNullOrEmpty(videoId))
                 {
-                    string messageWithoutTrigger = userInput;
-                    PearSearch sr = await PearApi.SearchAsync(messageWithoutTrigger);
+                    PearSearch sr = await PearApi.SearchAsync(userInput);
                     if (sr == null) return;
 
                     if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
@@ -2174,6 +2165,7 @@ public static class TwitchHandler
         }
     }
 
+    // ReSharper disable once UnusedParameter.Local
     private static async Task HandleSpotifyRequest(ChannelChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         if (SpotifyApiHandler.Client == null)
@@ -2191,6 +2183,7 @@ public static class TwitchHandler
         AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
     }
 
+    // ReSharper disable once UnusedParameter.Local
     private static async Task HandleYtmRequest(ChannelChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         switch (Settings.Player)
@@ -2308,7 +2301,7 @@ public static class TwitchHandler
                                 [
                                     new SimpleArtist
                                     {
-                                        ExternalUrls = null,
+                                        ExternalUrls = null!,
                                         Href = "",
                                         Id = "",
                                         Name = "",
@@ -2659,8 +2652,7 @@ public static class TwitchHandler
         if (string.IsNullOrEmpty(tier))
             return 0;
 
-        int parsed;
-        return int.TryParse(tier, out parsed) ? parsed : 0;
+        return int.TryParse(tier, out int parsed) ? parsed : 0;
     }
 
     public static async void SendCurrSong()
@@ -2850,7 +2842,7 @@ public static class TwitchHandler
         return new RequestObject
         {
             Trackid = track.Id,
-            PlayerType = Enums.RequestPlayerType.Spotify.ToString(),
+            PlayerType = nameof(Enums.RequestPlayerType.Spotify),
             Artist = artists,
             Title = track.Name,
             Length = length,
@@ -3226,7 +3218,7 @@ public static class TwitchHandler
         }
         catch (Exception ex)
         {
-            Logger.Error(LogSource.Twitch, $"Error calculating TTP", ex);
+            Logger.Error(LogSource.Twitch, "Error calculating TTP", ex);
             return "";
         }
     }
@@ -3994,37 +3986,27 @@ public class TwitchRequestUser
 
 public class TwitchUser : INotifyPropertyChanged
 {
-    private string _displayName;
-    private ChannelFollower _followInformation;
-    private bool? _isFollowing;
-    private bool _isSrBlocked;
-    private DateTime? _lastCommandTime;
-    private int _subTier;
-    private string _userId;
-    private List<int> _userLevel;
-    private string _userName;
-
     // Public event required by INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     public string DisplayName
     {
-        get => _displayName;
+        get;
         set
         {
-            if (_displayName == value) return;
-            _displayName = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(DisplayName));
         }
     }
 
     public ChannelFollower FollowInformation
     {
-        get => _followInformation;
+        get;
         set
         {
-            if (_followInformation == value) return;
-            _followInformation = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(FollowInformation));
         }
     }
@@ -4033,33 +4015,33 @@ public class TwitchUser : INotifyPropertyChanged
 
     public bool? IsFollowing
     {
-        get => _isFollowing;
+        get;
         set
         {
-            if (_isFollowing == value) return;
-            _isFollowing = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(IsFollowing));
         }
     }
 
     public bool IsSrBlocked
     {
-        get => _isSrBlocked;
+        get;
         set
         {
-            if (_isSrBlocked == value) return;
-            _isSrBlocked = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(IsSrBlocked));
         }
     }
 
     public DateTime? LastCommandTime
     {
-        get => _lastCommandTime;
+        get;
         set
         {
-            if (_lastCommandTime == value) return;
-            _lastCommandTime = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(LastCommandTime));
         }
     }
@@ -4069,11 +4051,11 @@ public class TwitchUser : INotifyPropertyChanged
 
     public int SubTier
     {
-        get => _subTier;
+        get;
         set
         {
-            if (_subTier == value) return;
-            _subTier = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(SubTier));
         }
     }
@@ -4083,22 +4065,22 @@ public class TwitchUser : INotifyPropertyChanged
     //       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
     public string UserId
     {
-        get => _userId;
+        get;
         set
         {
-            if (_userId == value) return;
-            _userId = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(UserId));
         }
     }
 
     public List<int> UserLevels
     {
-        get => _userLevel;
+        get;
         set
         {
-            if (_userLevel == value) return;
-            _userLevel = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(UserLevels));
             // Also raise on "ReadableUserLevel" since it depends on UserLevels
             OnPropertyChanged(nameof(ReadableUserLevel));
@@ -4107,11 +4089,11 @@ public class TwitchUser : INotifyPropertyChanged
 
     public string UserName
     {
-        get => _userName;
+        get;
         set
         {
-            if (_userName == value) return;
-            _userName = value;
+            if (field == value) return;
+            field = value;
             OnPropertyChanged(nameof(UserName));
         }
     }
