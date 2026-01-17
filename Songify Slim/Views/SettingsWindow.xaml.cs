@@ -200,6 +200,7 @@ namespace Songify_Slim.Views
             Cctrl.Content = new UcBotResponses();
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
+            TglDebugLogging.IsOn = Settings.DebugLogging;
             Settings.UserLevelsCommand ??= [];
             Settings.UserLevelsReward ??= [];
 
@@ -2078,6 +2079,13 @@ namespace Songify_Slim.Views
         private void BtnApiToken_OnClick(object sender, RoutedEventArgs e)
         {
             Process.Start("https://v2.songify.rocks/faq/what-is-the-songify-api-token");
+        }
+
+        private void TglDebugLogging_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.DebugLogging = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

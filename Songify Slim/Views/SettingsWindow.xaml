@@ -54,7 +54,7 @@
         <Grid
             x:Name="GridLoading"
             Background="#CC000000"
-            Visibility="Visible"
+            Visibility="Collapsed"
             ZIndex="10001">
             <StackPanel
                 HorizontalAlignment="Center"
@@ -94,9 +94,11 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal">
                                 <Label
+                                    Padding="0,6,3,6"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     d:Content="{x:Static local:Resources.sw_tcSystem_lblLanguage}"
@@ -218,8 +220,6 @@
                             <controls:ToggleSwitch
                                 x:Name="TglUseDefaultBrowser"
                                 Grid.Row="4"
-                                Width="467"
-                                Height="32"
                                 VerticalAlignment="Top"
                                 d:Content="{x:Static local:Resources.sw_tcSystem_UseDefaultBrowser}"
                                 Content="{DynamicResource sw_tcSystem_UseDefaultBrowser}"
@@ -229,8 +229,21 @@
                                 FontSize="12"
                                 TabIndex="8"
                                 Toggled="TglUseDefaultBrowser_OnToggled" />
-                            <Label
+                            <controls:ToggleSwitch
+                                x:Name="TglDebugLogging"
                                 Grid.Row="5"
+                                Grid.Column="0"
+                                Width="467"
+                                Height="32"
+                                Content="Enable Debug Logging"
+                                ContentPadding="0"
+                                Focusable="False"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                TabIndex="8"
+                                Toggled="TglDebugLogging_OnToggled" />
+                            <Label
+                                Grid.Row="6"
                                 Padding="0,5,5,5"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Top"
@@ -2640,7 +2653,6 @@
                                     SelectionChanged="ComboboxfetchPort_SelectionChanged" />
                             </StackPanel>
                         </StackPanel>
-
                         <TextBlock
                             Grid.Row="3"
                             Grid.Column="0"

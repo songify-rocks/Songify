@@ -1,7 +1,15 @@
-﻿using System;
+﻿using MahApps.Metro.IconPacks;
+using Songify_Slim.Models;
+using Songify_Slim.Models.Responses;
+using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,12 +20,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MahApps.Metro.IconPacks;
-using Songify_Slim.Models;
-using Songify_Slim.Models.Responses;
-using Songify_Slim.Util.Configuration;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
 
 namespace Songify_Slim.UserControls
 {
@@ -44,10 +46,12 @@ namespace Songify_Slim.UserControls
             TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
             TbSeverity.Text = Psa.Severity;
 
-            TbMessage.Text = IoManager.InterpretEscapeCharacters(Psa.MessageText);
+            string message = IoManager.InterpretEscapeCharacters(Psa.MessageText);
+            // Instead of TbMessage.Text = message;
+            SetTextWithHyperlinks(TbMessage, message);
+
             if (!byPassLimit)
-                DisplayMessageWithReadMore(IoManager.InterpretEscapeCharacters(Psa.MessageText));
-            // if the message is longer than 200 characters, add a "read more" clickable text that opens the message in a new window
+                DisplayMessageWithReadMore(message);
 
             Brush severitybrush = Psa.Severity switch
             {
@@ -68,6 +72,81 @@ namespace Songify_Slim.UserControls
             if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
             {
                 btnRead.Content = _readIcon;
+            }
+        }
+
+        private static readonly Regex UrlRegex = new Regex(
+    @"(?<url>(https?://[^\s<>()]+)|(\bwww\.[^\s<>()]+))",
+    RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private void SetTextWithHyperlinks(TextBlock tb, string text)
+        {
+            tb.Inlines.Clear();
+
+            if (string.IsNullOrEmpty(text))
+                return;
+
+            int lastIndex = 0;
+
+            foreach (Match m in UrlRegex.Matches(text))
+            {
+                // Add text before the link
+                if (m.Index > lastIndex)
+                    AddRunsWithLineBreaks(tb, text.Substring(lastIndex, m.Index - lastIndex));
+
+                var raw = m.Groups["url"].Value;
+                var uriString = raw.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                    ? raw
+                    : "https://" + raw;
+
+                if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
+                {
+                    var link = new Hyperlink(new Run(raw))
+                    {
+                        NavigateUri = uri,
+                        ToolTip = uri.ToString()
+                    };
+
+                    // Optional: you can style links here if you want
+                    // link.TextDecorations = null;
+
+                    tb.Inlines.Add(link);
+                }
+                else
+                {
+                    // Fallback if parsing fails
+                    tb.Inlines.Add(new Run(raw));
+                }
+
+                lastIndex = m.Index + m.Length;
+            }
+
+            // Add remaining text after last link
+            if (lastIndex < text.Length)
+                AddRunsWithLineBreaks(tb, text.Substring(lastIndex));
+        }
+
+        private static void AddRunsWithLineBreaks(TextBlock tb, string chunk)
+        {
+            // Preserve line breaks in TextBlock
+            var parts = chunk.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+            for (int i = 0; i < parts.Length; i++)
+            {
+                if (i > 0) tb.Inlines.Add(new LineBreak());
+                if (parts[i].Length > 0) tb.Inlines.Add(new Run(parts[i]));
+            }
+        }
+
+        private void TbMessage_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+                e.Handled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Could not open link:\n{e.Uri}\n\n{ex.Message}", "Songify", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

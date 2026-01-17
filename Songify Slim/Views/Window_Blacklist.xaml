@@ -5,29 +5,405 @@
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="{DynamicResource WinTitle_Blocklist}"
     Width="658"
     Height="506"
     d:Title="{x:Static local:Resources.WinTitle_Blocklist}"
-    Closing="MetroWindow_Closing"
-    Loaded="MetroWindow_Loaded"
     WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     mc:Ignorable="d">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+    <controls:MetroWindow.Resources>
+        <mah:CustomDialog
+            x:Key="ArtistPickerDialog"
+            Title="Select Artist"
+            KeyDown="ArtistPickerDialog_OnKeyDown">
+            <mah:CustomDialog.Content>
+                <Grid
+                    MaxHeight="420"
+                    Margin="10"
+                    VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Opacity="0.75"
+                        Text="Multiple artists matched your search. Select one to block." />
+
+                    <DataGrid
+                        Grid.Row="1"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                        CanUserAddRows="False"
+                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ArtistPickerItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding SelectedArtistPickerItem, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="ArtistsRow_DoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="50"
+                                Binding="{Binding Num}"
+                                Header="#" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Artist}"
+                                Header="Artist" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel
+                        Grid.Row="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            MinWidth="100"
+                            Margin="0,0,10,0"
+                            Click="ArtistDialog_Close_Click"
+                            Content="Close" />
+                        <Button
+                            MinWidth="140"
+                            Click="ArtistDialog_Select_Click"
+                            Content="Block selected" />
+                    </StackPanel>
+                </Grid>
+            </mah:CustomDialog.Content>
+        </mah:CustomDialog>
+        <mah:CustomDialog x:Key="ArtistResolveDialog" Title="Resolve artist ID">
+            <mah:CustomDialog.Content>
+                <Grid
+                    Width="560"
+                    MaxHeight="440"
+                    Margin="0,10,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Opacity="0.75"
+                        Text="{Binding ResolveDialogHint}" />
+
+                    <DataGrid
+                        Grid.Row="1"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ResolveCandidates}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding SelectedResolveCandidate, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+
+                        <!--  Keep MahApps selection visuals  -->
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="ResolveRow_DoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Name}"
+                                Header="Artist" />
+                            <DataGridTextColumn
+                                Width="260"
+                                Binding="{Binding Id}"
+                                Header="Id" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel
+                        Grid.Row="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            MinWidth="90"
+                            Margin="0,0,10,0"
+                            Click="Resolve_Skip_Click"
+                            Content="Skip" />
+
+                        <Button
+                            MinWidth="120"
+                            Click="Resolve_UseSelected_Click"
+                            Content="Use selected" />
+                    </StackPanel>
+                </Grid>
+            </mah:CustomDialog.Content>
+        </mah:CustomDialog>
+    </controls:MetroWindow.Resources>
+
+    <Grid Margin="8">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBox
+        <!--  Header / hint  -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,10">
+            <TextBlock
+                Margin="0,4,0,0"
+                Opacity="0.75"
+                Text="Block artists, songs, or users from being requested. Artist and Songs only work for Spotify!" />
+        </StackPanel>
+
+        <controls:MetroAnimatedTabControl
+            x:Name="BlacklistTabs"
+            Grid.Row="1"
+            TabStripPlacement="Top">
+
+            <!--  ===================== ARTISTS =====================  -->
+            <controls:MetroTabItem Header="Artists">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Add row  -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox
+                            x:Name="ArtistInput"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            KeyDown="ArtistInput_KeyDown" />
+
+                        <Button
+                            Grid.Column="1"
+                            MinWidth="90"
+                            Click="AddArtist_Click"
+                            Content="Add" />
+                    </Grid>
+
+                    <!--  List  -->
+                    <ListBox
+                        x:Name="ArtistList"
+                        Grid.Row="1"
+                        Margin="0,0,0,10"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <!--  Reusable row control  -->
+                                <userControls:UC_BlacklistEntry Loaded="ArtistEntry_Loaded" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Id}" Value="">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Id}" Value="{x:Null}">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                    <!--  Footer actions  -->
+                    <DockPanel Grid.Row="2" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Opacity="0.75"
+                            Text="{Binding ElementName=ArtistList, Path=Items.Count, StringFormat={}{0} blocked}" />
+
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button
+                                MinWidth="120"
+                                Margin="0,0,10,0"
+                                Click="RefreshArtists_Click"
+                                Content="Refresh IDs" />
+
+                            <Button
+                                MinWidth="110"
+                                Click="ClearArtists_Click"
+                                Content="Remove all" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </controls:MetroTabItem>
+
+            <!--  ===================== SONGS =====================  -->
+            <controls:MetroTabItem Header="Songs">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Add row  -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox
+                            x:Name="SongInput"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            KeyDown="SongInput_KeyDown" />
+
+                        <Button
+                            Grid.Column="1"
+                            MinWidth="90"
+                            Click="AddSong_Click"
+                            Content="Add" />
+                    </Grid>
+
+                    <ListBox
+                        x:Name="SongList"
+                        Grid.Row="1"
+                        Margin="0,0,0,10"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <userControls:UC_BlacklistEntry Loaded="SongEntry_Loaded" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+
+                        <ListBox.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Id}" Value="">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Id}" Value="{x:Null}">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                    <DockPanel Grid.Row="2" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Opacity="0.75"
+                            Text="{Binding ElementName=SongList, Path=Items.Count, StringFormat={}{0} blocked}" />
+
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button
+                                MinWidth="110"
+                                Click="ClearSongs_Click"
+                                Content="Remove all" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </controls:MetroTabItem>
+
+            <!--  ===================== USERS =====================  -->
+            <controls:MetroTabItem Header="Users">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Add row  -->
+                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox
+                            x:Name="UserInput"
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            KeyDown="UserInput_KeyDown" />
+
+                        <Button
+                            Grid.Column="1"
+                            MinWidth="90"
+                            Click="AddUser_Click"
+                            Content="Add" />
+                    </Grid>
+
+                    <ListBox
+                        x:Name="UserList"
+                        Grid.Row="1"
+                        Margin="0,0,0,10"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <userControls:UC_BlacklistEntry Loaded="UserEntry_Loaded" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Id}" Value="">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Id}" Value="{x:Null}">
+                                        <Setter Property="Foreground" Value="IndianRed" />
+                                        <Setter Property="ToolTip" Value="Legacy entry: missing ID. Click Refresh to fix." />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+
+                    <DockPanel Grid.Row="2" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Left"
+                            Opacity="0.75"
+                            Text="{Binding ElementName=UserList, Path=Items.Count, StringFormat={}{0} blocked}" />
+
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button
+                                MinWidth="90"
+                                Margin="0,0,10,0"
+                                Click="RefreshUsers_Click"
+                                Content="Refresh user ids" />
+                            <Button
+                                MinWidth="110"
+                                Click="ClearUsers_Click"
+                                Content="Remove all" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </controls:MetroTabItem>
+        </controls:MetroAnimatedTabControl>
+
+        <!--<TextBox
             x:Name="tb_Blacklist"
             Grid.RowSpan="1"
             Height="26"
@@ -224,6 +600,6 @@
                     Click="Btn_AddArtists_Click"
                     Content="Add selected" />
             </Grid>
-        </ContentControl>
+        </ContentControl>-->
     </Grid>
 </controls:MetroWindow>

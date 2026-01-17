@@ -27,6 +27,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using Windows.ApplicationModel.Resources.Core;
+using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.Pear;
@@ -554,7 +556,10 @@ namespace Songify_Slim.Util.General
                 RequestObject req =
                     GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId);
                 if (req == null) return "";
-                Settings.UserBlacklist.Add(req.Requester);
+                Settings.UserBlacklist.Add(new BlockedUser()
+                {
+                    Username = req.Requester
+                });
                 Settings.UserBlacklist = Settings.UserBlacklist;
                 return req.Requester;
             }
@@ -564,22 +569,21 @@ namespace Songify_Slim.Util.General
         {
             FullTrack result = await SpotifyApiHandler.GetTrack(GlobalObjects.CurrentSong.SongId);
             if (result != null)
-                Settings.SongBlacklist.Add(new TrackItem
+                Settings.SongBlacklist.Add(new BlockedSong()
                 {
-                    Artists = string.Join(", ", result.Artists.Select(o => o.Name).ToList()),
-                    TrackName = result.Name,
-                    TrackId = result.Id,
-                    TrackUri = result.Uri,
-                    ReadableName = string.Join(", ", result.Artists.Select(o => o.Name).ToList()) + " - " + result.Name
+                    Id = result.Id,
+                    Artist = string.Join(", ", result.Artists.Select(o => o.Name).ToList()),
+                    Title = result.Name
                 });
             Settings.SongBlacklist = Settings.SongBlacklist;
             await SpotifyApiHandler.SkipSong();
             // If Window_Blacklist is open, call LoadBlacklists();
+
             Application.Current.Dispatcher.Invoke(() =>
             {
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(Window_Blacklist))
-                        ((Window_Blacklist)window).LoadBlacklists();
+                //foreach (Window window in Application.Current.Windows)
+                //    if (window.GetType() == typeof(Window_Blacklist))
+                //        ((Window_Blacklist)window).LoadBlacklists();
             });
         }
 
@@ -587,14 +591,22 @@ namespace Songify_Slim.Util.General
         {
             foreach (SimpleArtist currentSongFullArtist in GlobalObjects.CurrentSong.FullArtists)
             {
-                Settings.ArtistBlacklist.Add(currentSongFullArtist.Name);
+                Settings.ArtistBlacklist.Add(new BlockedArtist()
+                {
+                    Id = currentSongFullArtist.Id,
+                    Name = currentSongFullArtist.Name
+                });
             }
             Settings.ArtistBlacklist = Settings.ArtistBlacklist;
         }
 
         private static void BlockArtist()
         {
-            Settings.ArtistBlacklist.Add(GlobalObjects.CurrentSong.FullArtists[0].Name);
+            Settings.ArtistBlacklist.Add(new BlockedArtist()
+            {
+                Id = GlobalObjects.CurrentSong.FullArtists[0].Id,
+                Name = GlobalObjects.CurrentSong.FullArtists[0].Name
+            });
             Settings.ArtistBlacklist = Settings.ArtistBlacklist;
         }
 

@@ -70,10 +70,16 @@
                     </Button.Content>
                 </Button>
             </StackPanel>
-            <ScrollViewer Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="6" VerticalAlignment="Stretch">
+            <ScrollViewer
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Margin="6"
+                VerticalAlignment="Stretch">
                 <TextBlock
                     x:Name="TbMessage"
                     Margin="6"
+                    Hyperlink.RequestNavigate="TbMessage_OnRequestNavigate"
                     TextAlignment="Justify"
                     TextWrapping="Wrap" />
             </ScrollViewer>

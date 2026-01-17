@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Songify_Slim.Models.Blocklist;
+using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util.General;
+using Songify_Slim.Views;
+using SpotifyAPI.Web;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,16 +15,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Newtonsoft.Json;
-using Songify_Slim.Models.Twitch;
-using Songify_Slim.Util.General;
-using Songify_Slim.Views;
-using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
-using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.Configuration.YamlTypeConverters;
+using static Songify_Slim.Util.General.Enums;
 using File = System.IO.File;
 using FileMode = System.IO.FileMode;
 
@@ -353,6 +354,9 @@ namespace Songify_Slim.Util.Configuration
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new SingleStringToListConverter())
                 .WithTypeConverter(new PlayerTypeYamlConverter())
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedUser>(s => new BlockedUser { Username = s }))
+                .WithTypeConverter(new SongBlacklistConverter())
                 .IgnoreUnmatchedProperties()
                 .Build();
 
@@ -376,6 +380,7 @@ namespace Songify_Slim.Util.Configuration
 
                     case ConfigTypes.AppConfig:
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
+                        WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
                     case ConfigTypes.TwitchCommands:
@@ -843,11 +848,11 @@ namespace Songify_Slim.Util.Configuration
         public List<int> ReadNotificationIds { get; set; } = [];
         public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
         public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
-        public List<string> ArtistBlacklist { get; set; } = [];
+        public List<BlockedArtist> ArtistBlacklist { get; set; } = [];
         public List<string> TwRewardId { get; set; } = [];
         public List<string> TwRewardSkipId { get; set; } = [];
-        public List<string> UserBlacklist { get; set; } = [];
-        public List<TrackItem> SongBlacklist { get; set; } = [];
+        public List<BlockedUser> UserBlacklist { get; set; } = [];
+        public List<BlockedSong> SongBlacklist { get; set; } = [];
         public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public string BaseUrl { get; set; } = "https://songify.rocks";
         public string Color { get; set; } = "Blue";
@@ -860,7 +865,7 @@ namespace Songify_Slim.Util.Configuration
         public string RewardGoalSong { get; set; } = "";
         public string SpotifyPlaylistId { get; set; } = "";
         public string SpotifySongLimitPlaylist { get; set; } = "";
-        public string Theme { get; set; } = "Light";
+        public string Theme { get; set; } = "Dark";
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;
@@ -873,6 +878,7 @@ namespace Songify_Slim.Util.Configuration
         public bool SkipOnlyNonSrSongs { get; set; } = false;
         public bool SrForBits { get; set; } = false;
         public int SpotifyFetchRate { get; set; } = 2;
+        public bool DebugLogging { get; set; } = false;
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

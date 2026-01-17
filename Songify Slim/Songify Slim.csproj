@@ -145,6 +145,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Models\Blocklist\BlockedArtist.cs" />
+    <Compile Include="Models\Blocklist\BlockedSong.cs" />
+    <Compile Include="Models\Blocklist\BlockedUser.cs" />
+    <Compile Include="Models\Blocklist\IBlacklistItem.cs" />
     <Compile Include="Models\Pear\WebSocket\PearImage.cs" />
     <Compile Include="Models\Pear\WebSocket\PearMessage.cs" />
     <Compile Include="Models\Pear\WebSocket\PearSong.cs" />
@@ -201,6 +205,9 @@
     <Compile Include="UserControls\UC_AccountItem.xaml.cs">
       <DependentUpon>UC_AccountItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\UC_BlacklistEntry.xaml.cs">
+      <DependentUpon>UC_BlacklistEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\UC_CommandItem.xaml.cs">
       <DependentUpon>UC_CommandItem.xaml</DependentUpon>
     </Compile>
@@ -211,6 +218,8 @@
       <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\Configuration\ListStringOrObjectConverter.cs" />
+    <Compile Include="Util\Configuration\SongBlacklistConverter .cs" />
     <Compile Include="Util\General\PipeMessenger.cs" />
     <Compile Include="Util\General\ServiceToolTip.cs" />
     <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
@@ -353,6 +362,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_AccountItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UC_BlacklistEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

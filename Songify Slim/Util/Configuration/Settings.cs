@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
@@ -20,6 +21,23 @@ namespace Songify_Slim.Util.Configuration
     internal class Settings
     {
         public static Configuration CurrentConfig = new();
+
+        public static bool DebugLogging
+        {
+            get => GetDebugLogging();
+            set => SetDebugLogging(value);
+        }
+
+        private static void SetDebugLogging(bool value)
+        {
+            CurrentConfig.AppConfig.DebugLogging = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetDebugLogging()
+        {
+            return CurrentConfig.AppConfig.DebugLogging;
+        }
 
         public static string SongifyApiKey
         {
@@ -114,7 +132,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool AppendSpacesSplitFiles { get => GetAppendSpacesSplitFiles(); set => SetAppendSpacesSplitFiles(value); }
 
-        public static List<string> ArtistBlacklist
+        public static List<BlockedArtist> ArtistBlacklist
         {
             get => GetArtistBlacklist();
             set => SetArtistBlacklist(value);
@@ -465,7 +483,7 @@ namespace Songify_Slim.Util.Configuration
             set => SetSaveHistory(value);
         }
 
-        public static List<TrackItem> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
+        public static List<BlockedSong> SongBlacklist { get => GetSongBlacklist(); set => SetSongBlacklist(value); }
 
         public static int SpaceCount
         {
@@ -693,7 +711,7 @@ namespace Songify_Slim.Util.Configuration
             set => SetUseOwnApp(value);
         }
 
-        public static List<string> UserBlacklist
+        public static List<BlockedUser> UserBlacklist
         {
             get => GetUserBlacklist();
             set => SetUserBlacklist(value);
@@ -1178,7 +1196,7 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.AppendSpacesSplitFiles;
         }
 
-        private static List<string> GetArtistBlacklist()
+        private static List<BlockedArtist> GetArtistBlacklist()
         {
             return CurrentConfig.AppConfig.ArtistBlacklist;
         }
@@ -1598,7 +1616,7 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.SaveHistory;
         }
 
-        private static List<TrackItem> GetSongBlacklist()
+        private static List<BlockedSong> GetSongBlacklist()
         {
             return CurrentConfig.AppConfig.SongBlacklist;
         }
@@ -1843,7 +1861,7 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.UseOwnApp;
         }
 
-        private static List<string> GetUserBlacklist()
+        private static List<BlockedUser> GetUserBlacklist()
         {
             return CurrentConfig.AppConfig.UserBlacklist;
         }
@@ -1908,7 +1926,7 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetArtistBlacklist(List<string> value)
+        private static void SetArtistBlacklist(List<BlockedArtist> value)
         {
             CurrentConfig.AppConfig.ArtistBlacklist = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
@@ -2400,7 +2418,7 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetSongBlacklist(List<TrackItem> value)
+        private static void SetSongBlacklist(List<BlockedSong> value)
         {
             CurrentConfig.AppConfig.SongBlacklist = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
@@ -2690,7 +2708,7 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetUserBlacklist(List<string> value)
+        private static void SetUserBlacklist(List<BlockedUser> value)
         {
             CurrentConfig.AppConfig.UserBlacklist = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);

@@ -36,6 +36,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Models.Blocklist;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -999,6 +1000,7 @@ public static class TwitchHandler
                                 IsLocal = false
                             }, userName, cmd.Response);
                             response = response.Replace("{ttp}", "");
+                            response = response.TrimStart('-', ' ');
                             SendOrAnnounceMessage(response, cmd);
                             // wait until YT queue actually contains the item
                             int? pos = await WaitForSongInQueueAsync(sr.VideoId,
@@ -1072,6 +1074,7 @@ public static class TwitchHandler
                             Uri = $"https://www.youtube.com/watch?v={videoId}",
                             IsLocal = false
                         }, userName, cmd.Response);
+                        response = response.Replace("{ttp}", "");
                         response = response.Replace("{ttp}", "");
                         SendOrAnnounceMessage(response, cmd);
 
@@ -1434,17 +1437,15 @@ public static class TwitchHandler
         {
             TrackInfo currentSong = GlobalObjects.CurrentSong;
             if (currentSong == null ||
-                Settings.SongBlacklist.Any(track => track.TrackId == currentSong.SongId))
+                Settings.SongBlacklist.Any(track => track.Id == currentSong.SongId))
                 return;
 
-            List<TrackItem> blacklist = Settings.SongBlacklist;
-            blacklist.Add(new TrackItem
+            List<BlockedSong> blacklist = Settings.SongBlacklist;
+            blacklist.Add(new BlockedSong
             {
-                Artists = currentSong.Artists,
-                TrackName = currentSong.Title,
-                TrackId = currentSong.SongId,
-                TrackUri = $"spotify:track:{currentSong.SongId}",
-                ReadableName = $"{currentSong.Artists} - {currentSong.Title}"
+                Id = currentSong.SongId,
+                Artist = currentSong.Artists,
+                Title = currentSong.Title
             });
             Settings.SongBlacklist = Settings.SongBlacklist;
 
@@ -1817,11 +1818,17 @@ public static class TwitchHandler
     {
         try
         {
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Checking if user is allowed");
             if (!await PreCheckCommandAsync(cmd, cmdParams, message))
                 return;
 
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "User is allowed");
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Check if on Cooldown");
+
             if (_skipCooldown)
                 return;
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Not on Cooldown");
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Creating response");
 
             string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
@@ -1841,12 +1848,14 @@ public static class TwitchHandler
                 response = response.Replace("{single_artist}", GlobalObjects.CurrentSong.FullArtists != null
                     ? GlobalObjects.CurrentSong.FullArtists.First().Name
                     : GlobalObjects.CurrentSong.Artists);
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, $"Response created ({response})");
 
+            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Trying to send chat message");
             SendOrAnnounceMessage(response, cmd);
         }
-        catch
+        catch (Exception e)
         {
-            Logger.Error(LogSource.Twitch, "Error sending song info.");
+            Logger.Error(LogSource.Twitch, "Error in Song command.", e);
         }
     }
 
@@ -2244,6 +2253,7 @@ public static class TwitchHandler
                                     IsLocal = false
                                 }, message.ChatterUserName, cmd.Response);
                                 response = response.Replace("{ttp}", "");
+                                response = response.TrimStart('-', ' ');
                                 SendOrAnnounceMessage(response, cmd);
 
                                 // wait until YT queue actually contains the item
@@ -2318,6 +2328,8 @@ public static class TwitchHandler
                                 IsLocal = false
                             }, message.ChatterUserName, cmd.Response);
                             response = response.Replace("{ttp}", "");
+                            response = response.TrimStart('-', ' ');
+
                             SendOrAnnounceMessage(response, cmd);
 
                             // wait until YT queue actually contains the item
@@ -3419,12 +3431,11 @@ public static class TwitchHandler
 
         try
         {
-            foreach (string s in Settings.ArtistBlacklist.Where(s =>
-                         Array.IndexOf(track.Artists.Select(x => x.Name).ToArray(), s) != -1))
+            foreach (BlockedArtist artist in Settings.ArtistBlacklist.Where(a => Array.IndexOf(track.Artists.Select(x => x.Id).ToArray(), a.Id) != -1))
             {
                 response = Settings.BotRespBlacklist;
                 response = response.Replace("{user}", e.DisplayName);
-                response = response.Replace("{artist}", s);
+                response = response.Replace("{artist}", artist.Name);
                 response = response.Replace("{title}", "");
                 response = response.Replace("{maxreq}", "");
                 response = response.Replace("{errormsg}", "");
@@ -3472,7 +3483,7 @@ public static class TwitchHandler
         try
         {
             if (Settings.SongBlacklist != null &&
-                Settings.SongBlacklist.Any(s => s.TrackId == trackId))
+                Settings.SongBlacklist.Any(s => s.Id == trackId))
             {
                 string response = Settings.BotRespBlacklistSong;
                 return Task.FromResult((true, response));
@@ -3664,7 +3675,7 @@ public static class TwitchHandler
     {
         // checks if one of the artist in the requested song is on the blacklist
         return Settings.UserBlacklist.Any(s =>
-            s.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
+            s.Username.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
     }
 
     private static bool MaxQueueItems(string requester, List<int> userLevels)
@@ -3986,117 +3997,133 @@ public class TwitchRequestUser
 
 public class TwitchUser : INotifyPropertyChanged
 {
-    // Public event required by INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
+
+    private string _displayName;
 
     public string DisplayName
     {
-        get;
+        get => _displayName;
         set
         {
-            if (field == value) return;
-            field = value;
+            if (_displayName == value) return;
+            _displayName = value;
             OnPropertyChanged(nameof(DisplayName));
         }
     }
 
+    private ChannelFollower _followInformation;
+
     public ChannelFollower FollowInformation
     {
-        get;
+        get => _followInformation;
         set
         {
-            if (field == value) return;
-            field = value;
+            if (_followInformation == value) return;
+            _followInformation = value;
             OnPropertyChanged(nameof(FollowInformation));
+        }
+    }
+
+    private bool? _isFollowing;
+
+    public bool? IsFollowing
+    {
+        get => _isFollowing;
+        set
+        {
+            if (_isFollowing == value) return;
+            _isFollowing = value;
+            OnPropertyChanged(nameof(IsFollowing));
+        }
+    }
+
+    private bool _isSrBlocked;
+
+    public bool IsSrBlocked
+    {
+        get => _isSrBlocked;
+        set
+        {
+            if (_isSrBlocked == value) return;
+            _isSrBlocked = value;
+            OnPropertyChanged(nameof(IsSrBlocked));
+        }
+    }
+
+    private DateTime? _lastCommandTime;
+
+    public DateTime? LastCommandTime
+    {
+        get => _lastCommandTime;
+        set
+        {
+            if (_lastCommandTime == value) return;
+            _lastCommandTime = value;
+            OnPropertyChanged(nameof(LastCommandTime));
+        }
+    }
+
+    private int _subTier;
+
+    public int SubTier
+    {
+        get => _subTier;
+        set
+        {
+            if (_subTier == value) return;
+            _subTier = value;
+            OnPropertyChanged(nameof(SubTier));
+        }
+    }
+
+    private string _userId;
+
+    public string UserId
+    {
+        get => _userId;
+        set
+        {
+            if (_userId == value) return;
+            _userId = value;
+            OnPropertyChanged(nameof(UserId));
+        }
+    }
+
+    private List<int> _userLevels;
+
+    public List<int> UserLevels
+    {
+        get => _userLevels;
+        set
+        {
+            if (ReferenceEquals(_userLevels, value)) return;
+            _userLevels = value;
+            OnPropertyChanged(nameof(UserLevels));
+            OnPropertyChanged(nameof(ReadableUserLevel));
+            OnPropertyChanged(nameof(HighestUserLevel));
+        }
+    }
+
+    private string _userName;
+
+    public string UserName
+    {
+        get => _userName;
+        set
+        {
+            if (_userName == value) return;
+            _userName = value;
+            OnPropertyChanged(nameof(UserName));
         }
     }
 
     public int HighestUserLevel => (UserLevels != null && UserLevels.Any()) ? UserLevels.Max() : 0;
 
-    public bool? IsFollowing
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(IsFollowing));
-        }
-    }
-
-    public bool IsSrBlocked
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(IsSrBlocked));
-        }
-    }
-
-    public DateTime? LastCommandTime
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(LastCommandTime));
-        }
-    }
-
-    //public string ReadableUserLevel => ((TwitchUserLevels)UserLevels.Max()).ToString();
-    public string ReadableUserLevel => string.Join(", ", UserLevels.Select(level => ((Enums.TwitchUserLevels)level).ToString()));
-
-    public int SubTier
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(SubTier));
-        }
-    }
-
-    // For convenience in C# 5+:
-    //   protected void OnPropertyChanged([CallerMemberName] string propName = null) =>
-    //       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-    public string UserId
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(UserId));
-        }
-    }
-
-    public List<int> UserLevels
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(UserLevels));
-            // Also raise on "ReadableUserLevel" since it depends on UserLevels
-            OnPropertyChanged(nameof(ReadableUserLevel));
-        }
-    }
-
-    public string UserName
-    {
-        get;
-        set
-        {
-            if (field == value) return;
-            field = value;
-            OnPropertyChanged(nameof(UserName));
-        }
-    }
+    public string ReadableUserLevel =>
+        UserLevels == null
+            ? string.Empty
+            : string.Join(", ", UserLevels.Select(level => ((Enums.TwitchUserLevels)level).ToString()));
 
     public bool IsCooldownExpired(TimeSpan cooldown)
     {
@@ -4115,7 +4142,6 @@ public class TwitchUser : INotifyPropertyChanged
         bool isSrBlocked = false,
         ChannelFollower channelFollower = null)
     {
-        // As you set each property, OnPropertyChanged will be raised:
         UserName = username;
         DisplayName = displayname;
         UserLevels = userlevel;
@@ -4127,10 +4153,9 @@ public class TwitchUser : INotifyPropertyChanged
 
     public void UpdateCommandTime(bool reset = false)
     {
-        LastCommandTime = reset ? null : DateTime.Now;
+        LastCommandTime = reset ? (DateTime?)null : DateTime.Now;
     }
 
-    // Helper method to raise the event
     protected void OnPropertyChanged(string propertyName)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }

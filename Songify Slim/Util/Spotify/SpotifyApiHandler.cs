@@ -777,7 +777,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 1 };
+                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit =  5};
                 SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request),
                     softLimitPerminute);
                 return result.Artists.Items;

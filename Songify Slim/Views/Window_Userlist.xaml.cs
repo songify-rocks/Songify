@@ -16,6 +16,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Windows.UI.Xaml.Controls.Primitives;
+using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
@@ -99,14 +100,18 @@ namespace Songify_Slim.Views
         private void MenuItem_BlockSr_Click(object sender, RoutedEventArgs e)
         {
             if (DgvViewers.SelectedItem is not TwitchUser selectedItem) return;
-            if (Settings.UserBlacklist.Contains(selectedItem.DisplayName.ToLower()))
+            if (Settings.UserBlacklist.Any(u => string.Equals(u.Username, selectedItem.DisplayName, StringComparison.CurrentCultureIgnoreCase)))
             {
-                Settings.UserBlacklist.Remove(selectedItem.DisplayName.ToLower());
+                Settings.UserBlacklist.Remove(Settings.UserBlacklist.First(u => string.Equals(u.Username, selectedItem.DisplayName, StringComparison.CurrentCultureIgnoreCase)));
                 selectedItem.IsSrBlocked = false;
             }
             else
             {
-                Settings.UserBlacklist.Add(selectedItem.DisplayName.ToLower());
+                Settings.UserBlacklist.Add(new BlockedUser
+                {
+                    Id = selectedItem.UserId,
+                    Username = selectedItem.DisplayName
+                });
                 selectedItem.IsSrBlocked = true;
             }
 

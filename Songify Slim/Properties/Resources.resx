@@ -653,7 +653,7 @@
     <comment>The word "Requester"</comment>
   </data>
   <data name="WinTitle_Blocklist" xml:space="preserve">
-    <value>Blacklist</value>
+    <value>Blocklist</value>
     <comment>The window title for the Blocklist Window</comment>
   </data>
   <data name="WinTitle_History" xml:space="preserve">
