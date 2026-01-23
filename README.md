@@ -94,6 +94,13 @@ Don’t let your music be an afterthought—make it the centerpiece of your stre
 
 ---
 
+### Our Contributors
+<a href="https://github.com/songify-rocks/songify/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=songify-rocks/songify" />
+</a>
+
+---
+
 ### Powered by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
