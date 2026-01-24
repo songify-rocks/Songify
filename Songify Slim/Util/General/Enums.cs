@@ -174,7 +174,7 @@ public static class Enums
         SongAlreadyInQueue,
         NoSongFound,
         SongAddedButError,
-        AlwaysRefund,
+        OnSuccess,
         TrackIsEplicit,
         SongBlocked,
         QueueLimitReached

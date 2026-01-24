@@ -1,11 +1,17 @@
-﻿using Songify_Slim.Util.General;
+﻿using Newtonsoft.Json;
+using Songify_Slim.Models.Pear;
+using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
+using SpotifyAPI.Web;
 using Swan.Formatters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Songify_Slim.Util.Configuration;
+using static System.Net.WebRequestMethods;
 
 namespace Songify_Slim.Util.Songify.APIs
 {
@@ -43,5 +49,13 @@ namespace Songify_Slim.Util.Songify.APIs
         public static Task<string> GetMotdAsync() => ApiClient.Get("motd", "");
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);
+
+        public static async Task<PearSearch> GetYoutubeData(string videoId)
+        {
+            if (string.IsNullOrWhiteSpace(videoId))
+                throw new ArgumentException("videoId is required", nameof(videoId));
+            string result = await ApiClient.PostYtEndpoint(videoId);
+            return JsonConvert.DeserializeObject<PearSearch>(result);
+        }
     }
 }

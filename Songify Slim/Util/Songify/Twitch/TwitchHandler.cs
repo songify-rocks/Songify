@@ -3,6 +3,7 @@ using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Models.Placeholders;
 using Songify_Slim.Models.Spotify;
@@ -36,10 +37,10 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Songify_Slim.Models.Blocklist;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
+using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
@@ -51,6 +52,7 @@ using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
+using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -86,7 +88,7 @@ public static class TwitchHandler
     public static ValidateAccessTokenResponse BotTokenCheck;
     public static ValidateAccessTokenResponse TokenCheck;
 
-    public static async void AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
+    public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
         try
         {
@@ -302,7 +304,7 @@ public static class TwitchHandler
 
             response = response.Replace("{ttp}", "");
             SendOrAnnounceMessage(response, cmd);
-            await CheckAndRefund(source, reward, Enums.RefundCondition.AlwaysRefund, e);
+            await CheckAndRefund(source, reward, Enums.RefundCondition.OnSuccess, e);
         }
         catch (Exception ex)
         {
@@ -948,7 +950,7 @@ public static class TwitchHandler
                     return;
                 }
 
-                AddSong(await GetTrackIdFromInput(userInput), user, Enums.SongRequestSource.Reward, existingUser, new RewardInfo
+                await AddSong(await GetTrackIdFromInput(userInput), user, Enums.SongRequestSource.Reward, existingUser, new RewardInfo
                 {
                     RewardId = rewardId,
                     RedemptionId = redemptionId,
@@ -957,142 +959,12 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                string videoId = ExtractYouTubeVideoIdFromText(userInput);
-
-                if (string.IsNullOrEmpty(videoId))
+                await AddYtSong(userInput, user, Enums.SongRequestSource.Reward, existingUser, new RewardInfo
                 {
-                    PearSearch sr = await PearApi.SearchAsync(userInput);
-                    if (sr == null) return;
-
-                    if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
-                    {
-                        RequestObject req = new()
-                        {
-                            Uuid = Settings.Uuid,
-                            Trackid = sr.VideoId,
-                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                            Artist = string.Join(", ", sr.Artists),
-                            Title = sr.Title,
-                            Length = sr.Duration,
-                            Requester = userName,
-                            Played = 0,
-                            Albumcover = sr.ThumbnailUrl
-                        };
-                        GlobalObjects.ReqList.Add(req);
-
-                        bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
-                        if (ok)
-                        {
-                            TwitchCommand cmd = Settings.Commands.First(cmd => cmd.CommandType == Enums.CommandType.SongRequest);
-                            // Your success response logic
-                            List<SimpleArtist> artists = [];
-                            artists.AddRange(sr.Artists.Select(srArtist => new SimpleArtist { Name = srArtist, }));
-
-                            string response = CreateSuccessResponse(new FullTrack
-                            {
-                                Artists = artists,
-                                Href = $"https://www.youtube.com/watch?v={sr.VideoId}",
-                                Id = sr.VideoId,
-                                IsPlayable = true,
-                                Name = sr.Title,
-                                Type = ItemType.Track,
-                                Uri = $"https://www.youtube.com/watch?v={sr.VideoId}",
-                                IsLocal = false
-                            }, userName, cmd.Response);
-                            response = response.Replace("{ttp}", "");
-                            response = response.TrimStart('-', ' ');
-                            SendOrAnnounceMessage(response, cmd);
-                            // wait until YT queue actually contains the item
-                            int? pos = await WaitForSongInQueueAsync(sr.VideoId,
-                                TimeSpan.FromSeconds(3),
-                                TimeSpan.FromMilliseconds(150));
-                            if (pos == null)
-                            {
-                                // fallback: skip reorder now; try again later (timer/next enqueue)
-                                return;
-                            }
-                            await EnsureOrderAsync();
-                        }
-                        else
-                        {
-                            await SendChatMessage("That song is already in the queue ");
-                        }
-                    }
-                    else
-                    {
-                        await SendChatMessage("That song is already in the queue ");
-                    }
-                }
-                else
-                {
-                    if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
-                    {
-                        await SendChatMessage("That song is already in the queue ");
-                        return;
-                    }
-
-                    string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                    string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
-
-                    RequestObject req = new()
-                    {
-                        Uuid = Settings.Uuid,
-                        Trackid = videoId,
-                        PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                        Artist = "",
-                        Title = title,
-                        Length = "",
-                        Requester = userName,
-                        Played = 0,
-                        Albumcover = thumbnail
-                    };
-                    GlobalObjects.ReqList.Add(req);
-
-                    bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
-                    if (ok)
-                    {
-                        TwitchCommand cmd = Settings.Commands.First(cmd => cmd.CommandType == Enums.CommandType.SongRequest);
-
-                        string response = CreateSuccessResponse(new FullTrack
-                        {
-                            Artists =
-                            [
-                                new SimpleArtist
-                                {
-                                    Href = "",
-                                    Id = "",
-                                    Name = "",
-                                    Type = "",
-                                    Uri = ""
-                                }
-                            ],
-                            Href = $"https://www.youtube.com/watch?v={videoId}",
-                            Id = videoId,
-                            Restrictions = [],
-                            Name = title,
-                            Type = ItemType.Track,
-                            Uri = $"https://www.youtube.com/watch?v={videoId}",
-                            IsLocal = false
-                        }, userName, cmd.Response);
-                        response = response.Replace("{ttp}", "");
-                        response = response.Replace("{ttp}", "");
-                        SendOrAnnounceMessage(response, cmd);
-
-                        // wait until YT queue actually contains the item
-                        int? pos = await WaitForSongInQueueAsync(videoId,
-                            TimeSpan.FromSeconds(3),
-                            TimeSpan.FromMilliseconds(150));
-                        if (pos == null)
-                        {
-                            // fallback: skip reorder now; try again later (timer/next enqueue)
-                            return;
-                        }
-                        await EnsureOrderAsync();
-                    }
-                    else
-                        await SendChatMessage("That song is already in the queue ");
-                }
-
+                    Channel = channel,
+                    RedemptionId = redemptionId,
+                    RewardId = rewardId
+                });
                 break;
 
             case Enums.PlayerType.WindowsPlayback:
@@ -1102,6 +974,146 @@ public static class TwitchHandler
             default:
                 await SendChatMessage("No player selected. Go to Settings -> Player and select a player.");
                 return;
+        }
+    }
+
+    private static async Task AddYtSong(string userInput, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
+    {
+        try
+        {
+            PearSearch sr;
+            string videoId = ExtractYouTubeVideoIdFromText(userInput);
+            if (string.IsNullOrEmpty(videoId))
+            {
+                sr = await PearApi.SearchAsync(userInput);
+            }
+            else
+            {
+                sr = await SongifyApi.GetYoutubeData(videoId);
+            }
+
+            if (IsTrackTooLong(sr, e, out string response))
+            {
+                await SendChatMessage(response);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongTooLong, e);
+                return;
+            }
+
+            if (IsTrackAlreadyInQueue(sr, e, out response))
+            {
+                await SendChatMessage(response);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongAlreadyInQueue, e);
+                return;
+            }
+
+            bool unlimitedSr = false;
+            if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
+            {
+                switch (source)
+                {
+                    case Enums.SongRequestSource.Reward:
+                        if (Settings.UnlimitedSrUserlevelsReward != null &&
+                            Settings.UnlimitedSrUserlevelsReward.Count > 0)
+                        {
+                            unlimitedSr = Settings.UnlimitedSrUserlevelsReward.Intersect(user.UserLevels).Any();
+                        }
+                        break;
+
+                    case Enums.SongRequestSource.Command:
+                        if (Settings.UnlimitedSrUserlevelsCommand != null &&
+                            Settings.UnlimitedSrUserlevelsCommand.Count > 0)
+                        {
+                            unlimitedSr = Settings.UnlimitedSrUserlevelsCommand.Intersect(user.UserLevels).Any();
+                        }
+                        break;
+
+                    case Enums.SongRequestSource.Websocket:
+                    default:
+                        //ignored
+                        break;
+                }
+            }
+
+            if (!unlimitedSr && !e.IsBroadcaster)
+                if (IsUserAtMaxRequests(e, user, out response))
+                {
+                    await SendChatMessage(response);
+                    await CheckAndRefund(source, reward, Enums.RefundCondition.QueueLimitReached, e);
+                    return;
+                }
+
+            // this will take the first 4 artists and join their names with ", "
+            string artists = string.Join(", ", sr.Artists
+                .Take(4));
+
+            string length = sr.Duration;
+
+            // Get the Requester Twitch User Object from the api
+            GetUsersResponse x = await TwitchApi.Helix.Users.GetUsersAsync([e.UserId], null, Settings.TwitchAccessToken);
+
+            SimpleTwitchUser requestUser = null;
+            if (x.Users.Length > 0)
+            {
+                requestUser = x.Users[0].ToSimpleUser();
+            }
+
+            RequestObject req = new()
+            {
+                Trackid = sr.VideoId,
+                PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                Artist = artists,
+                Title = sr.Title,
+                Length = length,
+                Requester = e.DisplayName,
+                FullRequester = requestUser,
+                Played = 0,
+                Albumcover = sr.ThumbnailUrl,
+            };
+            TwitchCommand cmd = Settings.Commands.FirstOrDefault(c => c.Name == "Song Request");
+            if (cmd == null)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Pear, "Command 'Song Request' not found.");
+                return;
+            }
+
+            bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
+            if (!ok)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Pear, "Error adding the song to the Pear queue.");
+                SendOrAnnounceMessage("Error adding the song to the Pear queue.", cmd);
+                return;
+            }
+
+            await UploadToQueue(req);
+
+            string successResponse = cmd.Response;
+            response = CreateSuccessResponse(sr, e.DisplayName, successResponse);
+
+            if (cmd.Response.Contains("{ttp}"))
+            {
+                try
+                {
+                    if (GlobalObjects.QueueTracks.Count > 0)
+                    {
+                        string timeToPlay = await GetEstimatedTimeToPlay(sr.VideoId);
+
+                        response = response.Replace("{ttp}", timeToPlay);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Console.WriteLine(exception);
+                }
+            }
+
+            response = response.Replace("{ttp}", "");
+            SendOrAnnounceMessage(response, cmd);
+            await CheckAndRefund(source, reward, Enums.RefundCondition.OnSuccess, e);
+            await EnsureOrderAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
         }
     }
 
@@ -2189,7 +2201,7 @@ public static class TwitchHandler
 
         string trackId = await GetTrackIdFromInput(msg.Trim());
 
-        AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
+        await AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
     }
 
     // ReSharper disable once UnusedParameter.Local
@@ -2204,149 +2216,7 @@ public static class TwitchHandler
                         : string.Empty;
 
                     string videoId = ExtractYouTubeVideoIdFromText(msg.Trim());
-
-                    if (string.IsNullOrEmpty(videoId))
-                    {
-                        string messageWithoutTrigger = message.Message.Text.Replace($"!{cmd.Trigger}", "").Trim();
-                        PearSearch sr = await PearApi.SearchAsync(messageWithoutTrigger);
-                        if (sr == null) return;
-                        if (sr.VideoId == null)
-                        {
-                            await SendChatMessage(
-                                $"Youtube search did not return any result for \"{messageWithoutTrigger}\"");
-                            return;
-                        }
-                        if (GlobalObjects.ReqList.All(r => r.Trackid != sr.VideoId))
-                        {
-                            RequestObject req = new()
-                            {
-                                Uuid = Settings.Uuid,
-                                Trackid = sr.VideoId,
-                                PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                                Artist = string.Join(", ", sr.Artists),
-                                Title = sr.Title,
-                                Length = sr.Duration,
-                                Requester = message.ChatterUserName,
-                                Played = 0,
-                                Albumcover = sr.ThumbnailUrl
-                            };
-                            GlobalObjects.ReqList.Add(req);
-
-                            bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
-                            if (ok)
-                            {
-                                // Your success response logic
-                                // await SendChatMessage($"Queued: {req.Artist} - {req.Title}");
-
-                                List<SimpleArtist> artists = [];
-                                artists.AddRange(sr.Artists.Select(srArtist => new SimpleArtist { Name = srArtist, }));
-
-                                string response = CreateSuccessResponse(new FullTrack
-                                {
-                                    Artists = artists,
-                                    Href = $"https://www.youtube.com/watch?v={sr.VideoId}",
-                                    Id = sr.VideoId,
-                                    IsPlayable = true,
-                                    Name = sr.Title,
-                                    Type = ItemType.Track,
-                                    Uri = $"https://www.youtube.com/watch?v={sr.VideoId}",
-                                    IsLocal = false
-                                }, message.ChatterUserName, cmd.Response);
-                                response = response.Replace("{ttp}", "");
-                                response = response.TrimStart('-', ' ');
-                                SendOrAnnounceMessage(response, cmd);
-
-                                // wait until YT queue actually contains the item
-                                int? pos = await WaitForSongInQueueAsync(sr.VideoId,
-                                    TimeSpan.FromSeconds(3),
-                                    TimeSpan.FromMilliseconds(150));
-                                if (pos == null)
-                                {
-                                    // fallback: skip reorder now; try again later (timer/next enqueue)
-                                    return;
-                                }
-                                await EnsureOrderAsync();
-                            }
-                            else
-                            {
-                                await SendChatMessage("That song is already in the queue ");
-                            }
-                        }
-                        else
-                        {
-                            await SendChatMessage("That song is already in the queue ");
-                        }
-                    }
-                    else
-                    {
-                        if (GlobalObjects.ReqList.Any(r => r.Trackid == videoId))
-                        {
-                            await SendChatMessage("That song is already in the queue ");
-                            return;
-                        }
-
-                        string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                        string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
-
-                        RequestObject req = new()
-                        {
-                            Uuid = Settings.Uuid,
-                            Trackid = videoId,
-                            PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                            Artist = "",
-                            Title = title,
-                            Length = "",
-                            Requester = message.ChatterUserName,
-                            Played = 0,
-                            Albumcover = thumbnail
-                        };
-                        GlobalObjects.ReqList.Add(req);
-
-                        bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
-                        if (ok)
-                        {
-                            string response = CreateSuccessResponse(new FullTrack
-                            {
-                                Artists =
-                                [
-                                    new SimpleArtist
-                                    {
-                                        ExternalUrls = null!,
-                                        Href = "",
-                                        Id = "",
-                                        Name = "",
-                                        Type = "",
-                                        Uri = ""
-                                    }
-                                ],
-                                Href = $"https://www.youtube.com/watch?v={videoId}",
-                                Id = videoId,
-                                Restrictions = [],
-                                Name = title,
-                                Type = ItemType.Track,
-                                Uri = $"https://www.youtube.com/watch?v={videoId}",
-                                IsLocal = false
-                            }, message.ChatterUserName, cmd.Response);
-                            response = response.Replace("{ttp}", "");
-                            response = response.TrimStart('-', ' ');
-
-                            SendOrAnnounceMessage(response, cmd);
-
-                            // wait until YT queue actually contains the item
-                            int? pos = await WaitForSongInQueueAsync(videoId,
-                                TimeSpan.FromSeconds(3),
-                                TimeSpan.FromMilliseconds(150));
-                            if (pos == null)
-                            {
-                                // fallback: skip reorder now; try again later (timer/next enqueue)
-                                return;
-                            }
-                            await EnsureOrderAsync();
-                        }
-                        else
-                            await SendChatMessage("That song is already in the queue ");
-                    }
-
+                    await AddYtSong(videoId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
                     break;
                 }
 
@@ -3038,6 +2908,35 @@ public static class TwitchHandler
         return response;
     }
 
+    private static string CreateSuccessResponse(PearSearch track, string displayName, string response)
+    {
+        string artists = "";
+        string singleArtist = "";
+
+        try
+        {
+            artists = string.Join(", ", track.Artists);
+            singleArtist = track.Artists.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            Logger.LogExc(e);
+            IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/dev_log.txt", Json.Serialize(track));
+        }
+
+        response = response.Replace("{user}", displayName);
+        response = response.Replace("{artist}", artists);
+        response = response.Replace("{single_artist}", singleArtist);
+        response = response.Replace("{title}", track.Title);
+        response = response.Replace("{maxreq}", "");
+        response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
+        response = response.Replace("{pos}", $"{GlobalObjects.ReqList.Count}");
+        response = response.Replace("{errormsg}", "");
+        response = CleanFormatString(response);
+
+        return response;
+    }
+
     /// <summary>
     /// Extracts a YouTube video ID from a single token (URL string).
     /// For example:
@@ -3539,6 +3438,36 @@ public static class TwitchHandler
         return false;
     }
 
+    private static bool IsTrackAlreadyInQueue(PearSearch track, TwitchRequestUser e, out string response)
+    {
+        response = string.Empty;
+        try
+        {
+            if (IsInQueue(track.VideoId))
+            {
+                Dictionary<string, string> parameters = new()
+                {
+                    {"user", e.DisplayName},
+                    {"song", $"{string.Join(", ", track.Artists)} - {track.Title}"},
+                    {"artist", string.Join(", ", track.Artists)},
+                    {"single_artist", track.Artists.First()},
+                    {"title", track.Title},
+                    {"maxreq", Settings.TwSrMaxReq.ToString()},
+                    {"errormsg", ""}
+                };
+
+                response = ReplaceParameters(Settings.BotRespIsInQueue, parameters);
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Already In Queue", ex);
+        }
+
+        return false;
+    }
+
     private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, out string response)
     {
         response = string.Empty;
@@ -3575,6 +3504,41 @@ public static class TwitchHandler
         try
         {
             if (track.DurationMs >= TimeSpan.FromMinutes(Settings.MaxSongLength).TotalMilliseconds)
+            {
+                response = Settings.BotRespLength;
+                response = response.Replace("{user}", e.DisplayName);
+                response = response.Replace("{artist}", "");
+                response = response.Replace("{title}", "");
+                response = response.Replace("{maxreq}", "");
+                response = response.Replace("{errormsg}", "");
+                response = response.Replace("{maxlength}", Settings.MaxSongLength.ToString());
+                response = CleanFormatString(response);
+
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Too Long", ex);
+        }
+
+        return false;
+    }
+
+    private static bool IsTrackTooLong(PearSearch track, TwitchRequestUser e, out string response)
+    {
+        response = string.Empty;
+
+        try
+        {
+            TimeSpan? songDuration = DurationHelper.ParseDuration(track.Duration);
+            if (songDuration == null)
+            {
+                response = "Couldn't convert duration";
+                return true;
+            }
+
+            if (songDuration >= TimeSpan.FromMinutes(Settings.MaxSongLength))
             {
                 response = Settings.BotRespLength;
                 response = response.Replace("{user}", e.DisplayName);

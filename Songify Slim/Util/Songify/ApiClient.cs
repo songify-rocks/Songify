@@ -1,10 +1,13 @@
-﻿using Songify_Slim.Util.General;
+﻿using Newtonsoft.Json;
+using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
+using SpotifyAPI.Web;
 using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Songify_Slim.Util.Configuration;
+using static System.Net.WebRequestMethods;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -160,6 +163,28 @@ namespace Songify_Slim.Util.Songify
                 Logger.Error(LogSource.Api, "Error in Clear request", e);
             }
             return null;
+        }
+
+        public async Task<string> PostYtEndpoint(string videoId)
+        {
+            var payload = new
+            {
+                videoId = videoId
+            };
+
+            string json = JsonConvert.SerializeObject(payload);
+            StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            using HttpResponseMessage resp = await _httpClient.PostAsync($"{baseUrl}/youtube/meta", content).ConfigureAwait(false);
+            string respJson = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                throw new Exception(
+                    $"Songify API error {(int)resp.StatusCode}: {respJson}");
+            }
+
+            return respJson;
         }
     }
 }

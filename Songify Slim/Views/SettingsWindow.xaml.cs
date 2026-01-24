@@ -92,7 +92,7 @@ namespace Songify_Slim.Views
             { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
             { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
             { Enums.RefundCondition.TrackIsEplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
-            { Enums.RefundCondition.AlwaysRefund, Properties.Resources.Sw_Integration_RefundAlways },
+            { Enums.RefundCondition.OnSuccess, Properties.Resources.Sw_Integration_RefundAlways },
         };
 
         public Window_Settings()
@@ -1883,7 +1883,7 @@ namespace Songify_Slim.Views
                         MaxWidth = 250,
                         TextWrapping = TextWrapping.Wrap
                     },
-                    FontWeight = condition == Enums.RefundCondition.AlwaysRefund ? FontWeights.Bold : FontWeights.Normal
+                    FontWeight = condition == Enums.RefundCondition.OnSuccess ? FontWeights.Bold : FontWeights.Normal
                 };
 
                 toggle.Toggled += RefundCondition_Toggled;
