@@ -174,7 +174,7 @@ public static class TwitchHandler
             if (IsTrackExplicit(track, e, out response))
             {
                 await SendChatMessage(response);
-                await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsEplicit, e);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsExplicit, e);
                 return;
             }
 

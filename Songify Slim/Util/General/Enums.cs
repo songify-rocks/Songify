@@ -175,7 +175,7 @@ public static class Enums
         NoSongFound,
         SongAddedButError,
         OnSuccess,
-        TrackIsEplicit,
+        TrackIsExplicit,
         SongBlocked,
         QueueLimitReached
     }

@@ -91,7 +91,7 @@ namespace Songify_Slim.Views
             { Enums.RefundCondition.QueueLimitReached, Properties.Resources.Sw_Integration_RefundQueueLimitReached},
             { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
             { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
-            { Enums.RefundCondition.TrackIsEplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
+            { Enums.RefundCondition.TrackIsExplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
             { Enums.RefundCondition.OnSuccess, Properties.Resources.Sw_Integration_RefundAlways },
         };
 
