@@ -22,6 +22,23 @@ namespace Songify_Slim.Util.Configuration
     {
         public static Configuration CurrentConfig = new();
 
+        public static string YoutubeApiKey
+        {
+            get => GetYoutubeApiKey();
+            set => SetYoutubeApiKey(value);
+        }
+
+        private static void SetYoutubeApiKey(string value)
+        {
+            CurrentConfig.AppConfig.YoutubeApiKey = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetYoutubeApiKey()
+        {
+            return CurrentConfig.AppConfig.YoutubeApiKey;
+        }
+
         public static bool DebugLogging
         {
             get => GetDebugLogging();
@@ -1119,6 +1136,7 @@ namespace Songify_Slim.Util.Configuration
                 WebServerPort = GetWebServerPort(),
                 WebUserAgent = GetWebua(),
                 YtmdToken = GetYtmdToken(),
+                YoutubeApiKey = GetYoutubeApiKey(),
             };
 
             TwitchCommands twitchCommands = new()

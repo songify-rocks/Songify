@@ -2,7 +2,7 @@
 
 namespace Songify_Slim.Models.Pear
 {
-    internal class PearSearch
+    public class PearSearch
     {
         public string Title { get; set; }
         public string VideoId { get; set; }

@@ -259,6 +259,7 @@
     <Compile Include="Util\Youtube\Pear\QueueParser.cs" />
     <Compile Include="Util\Youtube\Pear\YTHCHSearchParser.cs" />
     <Compile Include="Util\Youtube\Pear\YtmDesktopClient.cs" />
+    <Compile Include="Util\Youtube\Youtube\YoutubeDataApiClient.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>

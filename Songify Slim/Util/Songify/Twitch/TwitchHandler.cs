@@ -37,6 +37,7 @@ using System.Web;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Songify_Slim.Util.Youtube.Youtube;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
@@ -989,7 +990,9 @@ public static class TwitchHandler
             }
             else
             {
-                sr = await SongifyApi.GetYoutubeData(videoId);
+                sr = await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
+
+                // sr = await SongifyApi.GetYoutubeData(videoId);
             }
 
             if (IsTrackTooLong(sr, e, out string response))

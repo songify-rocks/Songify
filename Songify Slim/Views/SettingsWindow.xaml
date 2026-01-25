@@ -2513,6 +2513,58 @@
                     </Grid>
                 </Border>
             </TabItem>
+            <TabItem Header="Youtube">
+                <Border
+                    Margin="10,0,0,0"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                    BorderThickness="2,0,0,0">
+                    <Grid Margin="10,16,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Text="Youtube API Key" />
+
+                        <PasswordBox
+                            x:Name="PasswordBox_YoutubeApiKey"
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Height="30"
+                            Margin="6"
+                            Padding="0,0,30,0"
+                            VerticalContentAlignment="Center"
+                            PasswordChanged="PasswordBox_YoutubeApiKey_OnPasswordChanged" />
+
+                        <Button
+                            x:Name="BtnTestYoutubeApi"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,6"
+                            VerticalAlignment="Top"
+                            Click="BtnTestYoutubeApi_OnClick"
+                            Content="Test API" />
+                        <TextBlock
+                            x:Name="TextBlock_YoutubeApiResult"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="12,6" />
+                    </Grid>
+                </Border>
+            </TabItem>
             <TabItem d:Header="{x:Static local:Resources.sw_tc_WebServer}" Header="{DynamicResource sw_tc_WebServer}">
                 <Border
                     Margin="10,0,0,0"

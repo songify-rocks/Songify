@@ -479,6 +479,11 @@ namespace Songify_Slim.Util.Configuration
                 // Deep clone entire Configuration object
                 Configuration clonedConfig = DeepCloneYaml(config);
 
+                // Exclude tokens and sensitive data
+                clonedConfig.AppConfig.YoutubeApiKey = null;
+                clonedConfig.AppConfig.SongifyApiKey = null;
+                clonedConfig.AppConfig.AccessKey = null;
+
                 // Strip sensitive information
                 clonedConfig.SpotifyCredentials = null;
                 clonedConfig.TwitchCredentials = null;
@@ -879,6 +884,7 @@ namespace Songify_Slim.Util.Configuration
         public bool SrForBits { get; set; } = false;
         public int SpotifyFetchRate { get; set; } = 2;
         public bool DebugLogging { get; set; } = false;
+        public string YoutubeApiKey { get; set; }
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

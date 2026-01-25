@@ -12,13 +12,6 @@ namespace Songify_Slim.Util.General;
 
 public static class Enums
 {
-    public enum PearMessageType
-    {
-        PLAYER_STATE_CHANGED,
-        POSITION_CHANGED,
-        VIDEO_CHANGED
-    }
-
     public enum PlayerType
     {
         [Description("Spotify")]

@@ -31,8 +31,10 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Songify_Slim.Models.Pear;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.Youtube.Youtube;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -47,6 +49,7 @@ using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Icon = System.Drawing.Icon;
 using Image = SpotifyAPI.Web.Image;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
@@ -62,6 +65,8 @@ namespace Songify_Slim.Views
         private readonly FolderBrowserDialog _fbd = new();
         private Window _mW;
         private Window_ResponseParams _wRp;
+        private bool _showPassword = false;
+        private bool _showYoutubeApikey = false;
 
         private Dictionary<string, string> _supportedLanguages = new()
         {
@@ -163,6 +168,7 @@ namespace Songify_Slim.Views
             //TxtbxRewardId.Text = Settings.TwRewardId;
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
+            PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
             NudBits.Value = Settings.MinimumBitsForSr;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
@@ -1794,8 +1800,6 @@ namespace Songify_Slim.Views
             Settings.SongifyApiKey = ((PasswordBox)sender).Password;
         }
 
-        private bool _showPassword = false;
-
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (!IsLoaded)
@@ -2086,6 +2090,44 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             Settings.DebugLogging = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void PasswordBox_YoutubeApiKey_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.YoutubeApiKey = PasswordBox_YoutubeApiKey.Password;
+        }
+
+        private void BtnTestYoutubeApi_OnClick(object sender, RoutedEventArgs e)
+        {
+            //TODO: Youtube API test
+            TestYoutubeApi();
+        }
+
+        private async Task TestYoutubeApi()
+        {
+            try
+            {
+                PearSearch result = await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, "dQw4w9WgXcQ");
+                if (result != null)
+                {
+                    TextBlock_YoutubeApiResult.Text = $"Title: {result.Title}\n" +
+                                                      $"Video ID: {result.VideoId}\n" +
+                                                      $"Artists: {string.Join(", ", result.Artists)}\n" +
+                                                      $"Album: {result.Album}\n" +
+                                                      $"Duration: {result.Duration}\n" +
+                                                      $"Views: {result.Views}";
+                }
+                else
+                {
+                    TextBlock_YoutubeApiResult.Text = "No data was returned. Please check your API key and try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
     }
 }
