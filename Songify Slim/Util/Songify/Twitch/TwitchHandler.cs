@@ -990,9 +990,10 @@ public static class TwitchHandler
             }
             else
             {
-                sr = await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
-
-                // sr = await SongifyApi.GetYoutubeData(videoId);
+                if (string.IsNullOrEmpty(Settings.YoutubeApiKey))
+                    sr = await SongifyApi.GetYoutubeData(videoId);
+                else
+                    sr = await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
             }
 
             if (IsTrackTooLong(sr, e, out string response))
@@ -2101,6 +2102,15 @@ public static class TwitchHandler
         if (!await PreCheckCommandAsync(cmd, cmdParams, message))
             return;
 
+        int skipCount = 5;
+
+        if (cmd.CustomProperties != null &&
+            cmd.CustomProperties.TryGetValue("SkipCount", out object value) &&
+            value is int configuredSkipCount and > 0)
+        {
+            skipCount = configuredSkipCount;
+        }
+
         if (_skipCooldown) return;
         //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
         if (SkipVotes.Any(o => o == message.ChatterUserName)) return;
@@ -2112,14 +2122,14 @@ public static class TwitchHandler
             MaxReq = $"{Settings.TwSrMaxReq}",
             ErrorMsg = null,
             MaxLength = $"{Settings.MaxSongLength}",
-            Votes = $"{SkipVotes.Count}/{Settings.BotCmdSkipVoteCount}",
+            Votes = $"{SkipVotes.Count}/{skipCount}",
             Req = GlobalObjects.Requester,
             Cd = Settings.TwSrCooldown.ToString()
         }, cmd.Response);
 
         SendOrAnnounceMessage(response, cmd);
 
-        if (SkipVotes.Count < Settings.BotCmdSkipVoteCount) return;
+        if (SkipVotes.Count < skipCount) return;
         switch (Settings.Player)
         {
             case Enums.PlayerType.Spotify:

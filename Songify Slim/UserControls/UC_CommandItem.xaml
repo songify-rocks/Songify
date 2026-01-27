@@ -294,6 +294,7 @@
                         Width="98"
                         Height="26"
                         HorizontalAlignment="Left"
+                        Minimum="1"
                         NumericInputMode="Numbers"
                         ParsingNumberStyle="Integer"
                         ValueChanged="NudSkipVoteCount_ValueChanged" />
