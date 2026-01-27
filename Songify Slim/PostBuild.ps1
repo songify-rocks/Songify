@@ -1,7 +1,11 @@
 # Define paths
 $releaseDir = "$PSScriptRoot\bin\Release\app.publish"
+$runtimeDir = "$PSScriptRoot\bin\Release\runtimes"
 $zipFilePath = "$releaseDir\Songify.zip"
 $exeFilePath = "$releaseDir\Songify.exe"
+
+# Copy runtimes folder to the release directory
+Copy-Item -Path "$runtimeDir" -Destination "$releaseDir" -Recurse
 
 # Step 1: Zip the app.publish folder
 if (Test-Path -Path $zipFilePath) {

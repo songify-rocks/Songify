@@ -906,10 +906,7 @@ namespace Songify_Slim.Views
 
                     if (result == MessageDialogResult.Affirmative)
                     {
-                        Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
-                        {
-                            UseShellExecute = true
-                        });
+                        OpenPatchNotes();
                     }
 
                     Settings.UpdateRequired = false;
@@ -1209,12 +1206,12 @@ namespace Songify_Slim.Views
         private void BtnPatchNotes_Click(object sender, RoutedEventArgs e)
         {
             // Check if the patch notes window is already open, if not open it, else switch to it
-            //OpenPatchNotes();
+            OpenPatchNotes();
 
-            Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
-            {
-                UseShellExecute = true
-            });
+            //Process.Start(new ProcessStartInfo(App.IsBeta ? "https://github.com/songify-rocks/Songify/blob/master/beta_update.md" : "https://github.com/songify-rocks/Songify/releases/latest")
+            //{
+            //    UseShellExecute = true
+            //});
         }
 
         private static void OpenPatchNotes()
@@ -1546,7 +1543,7 @@ namespace Songify_Slim.Views
                 {
                     case "TwitchBot":
                         header = "Twitch Chat Bot";
-                        icon.Kind = PackIconBoxIconsKind.LogosTwitch;
+                        icon.Kind = PackIconBoxIconsKind.BrandsTwitch;
                         subs = await TwitchApiHelper.GetEventSubscriptions();
                         IconTwitchBot.Foreground = subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
                         rows =
@@ -1558,7 +1555,7 @@ namespace Songify_Slim.Views
 
                     case "TwitchAPI":
                         header = "Twitch API";
-                        icon.Kind = PackIconBoxIconsKind.LogosTwitch;
+                        icon.Kind = PackIconBoxIconsKind.BrandsTwitch;
                         subs = await TwitchApiHelper.GetEventSubscriptions();
                         rows =
                         [
@@ -1570,7 +1567,7 @@ namespace Songify_Slim.Views
 
                     case "Spotify":
                         header = "Spotify";
-                        icon.Kind = PackIconBoxIconsKind.LogosSpotify;
+                        icon.Kind = PackIconBoxIconsKind.BrandsSpotify;
                         string status = IconWebSpotify.Foreground == Brushes.DarkOrange ? "Connected (Free)"
                             : IconWebSpotify.Foreground == Brushes.GreenYellow ? "Connected (Premium)"
                             : "Disconnected";

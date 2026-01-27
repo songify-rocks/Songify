@@ -1,22 +1,26 @@
 ﻿using Markdig;
+using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Wpf;
 using Octokit;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.APIs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
-using Songify_Slim.Util.Songify.APIs;
+using Color = System.Drawing.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
 using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 
@@ -25,144 +29,194 @@ namespace Songify_Slim.Views
     /// <summary>
     /// Interaction logic for Window_Patchnotes.xaml
     /// </summary>
+
     public partial class WindowPatchnotes
     {
-        private string htmlTemplate = """
-                              <!DOCTYPE html>
-                              <html>
-                              <head>
-                                <meta charset="utf-8" />
-                                <title>Patch Notes</title>
-                              <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css">
+        // One template for both GitHub HTML and beta markdown
+        private readonly string htmlTemplate = """
+                                               <!DOCTYPE html>
+                                               <html>
+                                               <head>
+                                                 <meta charset="utf-8" />
+                                                 <title>Patch Notes</title>
 
-                                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-                                <style>
-                                  body {
-                                    background-color: #0d1117 !important;
-                                    color: #c9d1d9 !important;
-                                    font-family: system-ui, sans-serif !important;
-                                    padding: 2rem !important;
-                                  }
-                                  .markdown-body {
-                                    max-width: 768px;
-                                    margin: 0 auto;
-                                  }
-                                  pre, code {
-                                    background-color: #1e1e1e;
-                                    color: #f5f5f5;
-                                  }
-                                </style>
-                              </head>
-                              <body>
-                              <article class="markdown-body" id="markdown-content">Loading patch notes...</article>
-                              <script id="md" type="application/json">
-                                {{MARKDOWN_CONTENT}}
-                              </script>
+                                                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown-dark.min.css">
+                                                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-                              <script>
-                                const raw = JSON.parse(document.getElementById("md").textContent);
-                                document.getElementById("markdown-content").innerHTML = marked.parse(raw);
-                              </script>
+                                                 <style>
+                                                   body {
+                                                     background-color: #0d1117 !important;
+                                                     color: #c9d1d9 !important;
+                                                     font-family: system-ui, sans-serif !important;
+                                                     padding: 2rem !important;
+                                                   }
+                                                   .markdown-body {
+                                                     max-width: 900px;
+                                                     margin: 0 auto;
+                                                   }
+                                                   pre, code {
+                                                     background-color: #1e1e1e;
+                                                     color: #f5f5f5;
+                                                   }
+                                                   a { color: #58a6ff; }
+                                                 </style>
+                                               </head>
+                                               <body>
+                                                 <article class="markdown-body" id="content">Loading patch notes...</article>
 
-                              </body>
-                              </html>
+                                                 <script id="payload" type="application/json">
+                                                   {{PAYLOAD_JSON}}
+                                                 </script>
 
-                              """;
+                                                 <script>
+                                                   const payload = JSON.parse(document.getElementById("payload").textContent);
+                                                   const el = document.getElementById("content");
 
-        // Constructor to initialize the window
+                                                   if (payload.isMarkdown) {
+                                                     el.innerHTML = marked.parse(payload.content || "");
+                                                   } else {
+                                                     // GitHub already provides sanitized HTML in body_html
+                                                     el.innerHTML = payload.content || "";
+                                                   }
+                                                 </script>
+                                               </body>
+                                               </html>
+                                               """;
+
         public WindowPatchnotes()
         {
             InitializeComponent();
+            // Set webview2 background color to #0d1117
+            WebBrowser.DefaultBackgroundColor = Color.FromArgb(13, 17, 23);
         }
 
-        // Event handler for when the window is loaded
         private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Create a GitHub client to fetch release information
-            GitHubClient client = new(new ProductHeaderValue("SongifyInfo"));
-            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("songify-rocks", "Songify");
-
-            // Add each release to the ComboBox
-            foreach (Release release in releases)
+            try
             {
-                CbxVersions.Items.Add(new ReleaseObject() { Version = release.TagName, Content = release.Body, Url = release.HtmlUrl });
-            }
+                // Optional: clear in case window is reused
+                CbxVersions.Items.Clear();
 
-            // If the application is in beta, fetch and add beta patch notes
-            if (App.IsBeta)
-            {
-                string patchnotes = await WebHelper.GetBetaPatchNotes($"{GlobalObjects.BaseUrl}/beta_update.md");
-                CbxVersions.Items.Insert(0, new ReleaseObject
+                // Fetch releases with body_html
+                List<GitHubReleaseDto> releases = await FetchGitHubReleasesHtmlAsync("songify-rocks", "Songify");
+
+                // if App.IsBeta is false, filter out pre-releases
+                if (!App.IsBeta)
                 {
-                    Version = $"{GlobalObjects.AppVersion}_beta",
-                    Content = patchnotes,
-                    Url = ""
-                });
-            }
-
-            // Select the first item in the ComboBox
-            CbxVersions.SelectedIndex = 0;
-        }
-
-        // Class to represent a release object with version, content, and URL
-        private class ReleaseObject
-        {
-            public string Version { get; set; }
-            public string Content { get; set; }
-            public string Url { get; set; }
-        }
-
-        // Event handler for when a hyperlink is clicked
-        private void Hyperlink_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(((Hyperlink)sender).NavigateUri.ToString());
-        }
-
-        // Command handler to open a hyperlink
-        private void OpenHyperlink(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
-        {
-            Process.Start(e.Parameter.ToString());
-        }
-
-        // Custom XAML schema context to handle namespace compatibility
-        private class MyXamlSchemaContext : XamlSchemaContext
-        {
-            public override bool TryGetCompatibleXamlNamespace(string xamlNamespace, out string compatibleNamespace)
-            {
-                if (xamlNamespace.Equals("clr-namespace:Markdig.Wpf", StringComparison.Ordinal))
-                {
-                    compatibleNamespace = $"clr-namespace:Markdig.Wpf;assembly={Assembly.GetAssembly(typeof(Markdig.Wpf.Styles)).FullName}";
-                    return true;
+                    releases.RemoveAll(r => r.IsPrelease);
                 }
-                return base.TryGetCompatibleXamlNamespace(xamlNamespace, out compatibleNamespace);
+
+                foreach (GitHubReleaseDto r in releases)
+                {
+                    CbxVersions.Items.Add(new ReleaseObject
+                    {
+                        Version = r.TagName,
+                        Content = r.BodyHtml ?? "",
+                        IsMarkdown = false,
+                        Url = r.HtmlUrl ?? ""
+                    });
+                }
+
+                // Select first
+                if (CbxVersions.Items.Count > 0)
+                    CbxVersions.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Core, "Patch notes: Error loading patch notes list", ex);
             }
         }
 
-        // Event handler for when the selected item in the ComboBox changes
         private async void CbxVersions_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
+                if (CbxVersions.SelectedItem is not ReleaseObject ro)
+                    return;
+
+                var payload = new
+                {
+                    isMarkdown = ro.IsMarkdown,
+                    content = ro.Content
+                };
+
+                string html = htmlTemplate.Replace("{{PAYLOAD_JSON}}", JsonSerializer.Serialize(payload));
+
                 try
                 {
-                    string markdown = (string)((ComboBox)sender).SelectedValue;
-                    string html = htmlTemplate.Replace("{{MARKDOWN_CONTENT}}", JsonSerializer.Serialize(markdown));
-                    await WebBrowser.EnsureCoreWebView2Async(null); // Ensures runtime exists
-                    WebBrowser.NavigateToString(html); // Your HTML string
+                    await WebBrowser.EnsureCoreWebView2Async(null);
+                    WebBrowser.NavigateToString(html);
                 }
                 catch (WebView2RuntimeNotFoundException)
                 {
-                    MessageBox.Show("WebView2 Runtime is not installed. Opening patch notes in your browser instead.", "Missing WebView2", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show(
+                        "WebView2 Runtime is not installed. Opening patch notes in your browser instead.",
+                        "Missing WebView2",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
 
-                    // Fallback: open external browser
-                    Process.Start(new ProcessStartInfo("https://your-site.com/pn/cached") { UseShellExecute = true });
-                    this.Close(); // Optional: close the window
+                    // Fallback: prefer the actual GitHub release page if we have it
+                    string url = string.IsNullOrWhiteSpace(ro.Url)
+                        ? "https://github.com/songify-rocks/Songify/releases"
+                        : ro.Url;
+
+                    Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                    Close();
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Core, "Patch notes: Error displaying patch notes", ex);
             }
+        }
+
+        private class ReleaseObject
+        {
+            public string Version { get; set; }
+            public string Content { get; set; } // HTML or Markdown depending on IsMarkdown
+            public bool IsMarkdown { get; set; }
+            public string Url { get; set; }
+
+            public override string ToString() => Version; // makes ComboBox show Version by default
+        }
+
+        // Minimal DTO for GitHub API (releases endpoint)
+        private sealed class GitHubReleaseDto
+        {
+            [JsonPropertyName("tag_name")] public string TagName { get; set; }
+
+            [JsonPropertyName("html_url")] public string HtmlUrl { get; set; }
+
+            [JsonPropertyName("body_html")] public string BodyHtml { get; set; }
+
+            [JsonPropertyName("prerelease")] public bool IsPrelease { get; set; }
+        }
+
+        // Fetch list of releases including body_html
+        private static async Task<List<GitHubReleaseDto>> FetchGitHubReleasesHtmlAsync(string owner, string repo)
+        {
+            using HttpClient client = new();
+            client.Timeout = TimeSpan.FromSeconds(15);
+
+            // GitHub requires a User-Agent
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("SongifyInfo");
+
+            // This media type returns body_html in the response
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/vnd.github.v3.html+json");
+
+            string url = $"https://api.github.com/repos/{owner}/{repo}/releases";
+            string json = await client.GetStringAsync(url);
+
+            List<GitHubReleaseDto> releases = JsonSerializer.Deserialize<List<GitHubReleaseDto>>(json) ??
+                                              new List<GitHubReleaseDto>();
+
+            // Keep same ordering as GitHub returns (usually newest first)
+            return releases;
+        }
+
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/songify-rocks/songify/releases");
         }
     }
 }

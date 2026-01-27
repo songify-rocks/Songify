@@ -1205,7 +1205,7 @@ public static class TwitchHandler
                                 continue;
                             ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
                             ((MainWindow)window).IconTwitchAPI.Kind =
-                                PackIconBoxIconsKind.LogosTwitch;
+                                PackIconBoxIconsKind.BrandsTwitch;
                             ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
                             MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
                                 "Twitch Account Issues",
