@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Utilities;
-using Songify_Slim.Models.Blocklist;
+﻿using Songify_Slim.Models.Blocklist;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

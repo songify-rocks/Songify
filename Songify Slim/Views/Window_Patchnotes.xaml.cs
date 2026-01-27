@@ -1,7 +1,6 @@
 ﻿using Markdig;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.Wpf;
-using Octokit;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.APIs;

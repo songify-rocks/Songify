@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.Build.Utilities;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.General;
