@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Windows.UI.Xaml.Controls.Primitives;
 using Songify_Slim.Util.Configuration;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 
@@ -63,6 +64,10 @@ namespace Songify_Slim.UserControls
             {
                 CbxAction.SelectedIndex = 1;
             }
+            else if (Settings.TwRewardSkipPoll.Any(o => o == _reward.Id))
+            {
+                CbxAction.SelectedIndex = 3;
+            }
             else
             {
                 CbxAction.SelectedIndex = 0;
@@ -110,7 +115,8 @@ namespace Songify_Slim.UserControls
         {
             Remove = 0,
             SongRequest,
-            SkipSong
+            SkipSong,
+            StartSkipPoll
         }
 
         private void CbxAction_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -122,7 +128,7 @@ namespace Songify_Slim.UserControls
             }
 
             // Validate the selected index
-            if (comboBox.SelectedIndex is < 0 or > 2)
+            if (comboBox.SelectedIndex is < 0 or > 3)
             {
                 return;
             }
@@ -134,23 +140,33 @@ namespace Songify_Slim.UserControls
             // Retrieve the reward lists; initialize if null to avoid null-reference issues
             List<string> songRequestRewards = (Settings.TwRewardId ?? []).ToList();
             List<string> skipSongRewards = (Settings.TwRewardSkipId ?? []).ToList();
-
+            List<string> skipPollRewards = (Settings.TwRewardSkipPoll ?? []).ToList();
             // Process the action based on the selected enum value
             switch (action)
             {
                 case RewardAction.Remove:
+                    skipPollRewards.Remove(rewardId);
                     songRequestRewards.Remove(rewardId);
                     skipSongRewards.Remove(rewardId);
                     break;
 
                 case RewardAction.SongRequest:
+                    skipPollRewards.Remove(rewardId);
                     skipSongRewards.Remove(rewardId);
                     AddUnique(songRequestRewards, rewardId);
                     break;
 
                 case RewardAction.SkipSong:
+                    skipPollRewards.Remove(rewardId);
                     songRequestRewards.Remove(rewardId);
                     AddUnique(skipSongRewards, rewardId);
+                    break;
+
+                case RewardAction.StartSkipPoll:
+                    songRequestRewards.Remove(rewardId);
+                    skipSongRewards.Remove(rewardId);
+                    AddUnique(skipPollRewards, rewardId);
+
                     break;
 
                 default:
@@ -160,6 +176,7 @@ namespace Songify_Slim.UserControls
             // Update settings (assuming the setters trigger change notifications or persistence)
             Settings.TwRewardId = songRequestRewards;
             Settings.TwRewardSkipId = skipSongRewards;
+            Settings.TwRewardSkipPoll = skipPollRewards;
         }
 
         private async void TxtRewardcost_OnTextChanged(object sender, TextChangedEventArgs e)

@@ -20,7 +20,41 @@ namespace Songify_Slim.Util.Configuration
     /// </summary>
     internal class Settings
     {
+        public static List<string> TwRewardSkipPoll
+        {
+            get => GetTwRewardSkipPoll();
+            set => SetTwRewardSkipPoll(value);
+        }
+
+        private static void SetTwRewardSkipPoll(List<string> value)
+        {
+            CurrentConfig.AppConfig.TwRewardSkipPoll = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static List<string> GetTwRewardSkipPoll()
+        {
+            return CurrentConfig.AppConfig.TwRewardSkipPoll;
+        }
+
         public static Configuration CurrentConfig = new();
+
+        public static TwitchPollSettings TwitchPollSettings
+        {
+            get => GetTwitchPollSettings();
+            set => SetTwitchPollSettings(value);
+        }
+
+        private static void SetTwitchPollSettings(TwitchPollSettings value)
+        {
+            CurrentConfig.AppConfig.TwitchPollSettings = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static TwitchPollSettings GetTwitchPollSettings()
+        {
+            return CurrentConfig.AppConfig.TwitchPollSettings;
+        }
 
         public static string YoutubeApiKey
         {
@@ -1098,6 +1132,7 @@ namespace Songify_Slim.Util.Configuration
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 SrForBits = GetSrForBits(),
                 SpotifyFetchRate = GetSpotifyFetchRate(),
+                DebugLogging = GetDebugLogging(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
@@ -1137,6 +1172,8 @@ namespace Songify_Slim.Util.Configuration
                 WebUserAgent = GetWebua(),
                 YtmdToken = GetYtmdToken(),
                 YoutubeApiKey = GetYoutubeApiKey(),
+                TwitchPollSettings = GetTwitchPollSettings(),
+                TwRewardSkipPoll = GetTwRewardSkipPoll(),
             };
 
             TwitchCommands twitchCommands = new()

@@ -20,8 +20,10 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             [
                 "bits:read",
                 "channel:bot",
+                "channel:manage:polls",
                 "channel:manage:redemptions",
                 "channel:moderate",
+                "channel:read:polls",
                 "channel:read:redemptions",
                 "channel:read:subscriptions",
                 "channel:read:vips",
@@ -50,7 +52,6 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 //"channel:edit:commercial"
                 //"channel:manage:broadcast"
                 //"channel:manage:extensions"
-                //"channel:manage:polls"
                 //"channel:manage:predictions"
                 //"channel:manage:raids"
                 //"channel:manage:schedule"
@@ -58,7 +59,6 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                 //"channel:read:editors"
                 //"channel:read:goals"
                 //"channel:read:hype_train"
-                //"channel:read:polls"
                 //"channel:read:predictions"
                 //"channel:read:stream_key"
                 //"channel:read:subscriptions"

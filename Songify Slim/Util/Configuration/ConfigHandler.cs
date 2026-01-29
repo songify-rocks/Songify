@@ -885,6 +885,8 @@ namespace Songify_Slim.Util.Configuration
         public int SpotifyFetchRate { get; set; } = 2;
         public bool DebugLogging { get; set; } = false;
         public string YoutubeApiKey { get; set; }
+        public TwitchPollSettings TwitchPollSettings { get; set; } = new();
+        public List<string> TwRewardSkipPoll { get; set; } = [];
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

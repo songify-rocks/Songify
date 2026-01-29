@@ -2,13 +2,18 @@
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
+using Newtonsoft.Json.Linq;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Pear;
+using Songify_Slim.Models.Twitch;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Youtube;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Http;
 using System;
@@ -31,10 +36,6 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using Songify_Slim.Models.Pear;
-using Songify_Slim.Models.Twitch;
-using Songify_Slim.Util.Configuration;
-using Songify_Slim.Util.Youtube.Youtube;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -53,6 +54,7 @@ using Icon = System.Drawing.Icon;
 using Image = SpotifyAPI.Web.Image;
 using MenuItem = System.Windows.Controls.MenuItem;
 using NumericUpDown = MahApps.Metro.Controls.NumericUpDown;
+using RadioButton = System.Windows.Controls.RadioButton;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Songify_Slim.Views
@@ -129,8 +131,24 @@ namespace Songify_Slim.Views
                         break;
                 }
             }
+            Settings.TwitchPollSettings ??= new TwitchPollSettings();
 
             await LoadCommands();
+
+            TextBoxPollTitle.Text = Settings.TwitchPollSettings.Title;
+            TextBoxPollAnswer1.Text = Settings.TwitchPollSettings.Choices.First();
+            TextBoxPollAnswer2.Text = Settings.TwitchPollSettings.Choices.Last();
+            ToggleSwitchPollAdditionalVotes.IsOn = Settings.TwitchPollSettings.AdditionalVotesEnabled;
+            NumericUpDownPollChannelPointsPerVote.Value = Settings.TwitchPollSettings.ChannelPointsPerVote;
+            NumericUpDownPollDuration.Value = Settings.TwitchPollSettings.Duration;
+            if ((string)RadioButtonPollAnswer1.Content == Settings.TwitchPollSettings.Choices.First())
+            {
+                RadioButtonPollAnswer1.IsChecked = true;
+            }
+            else if ((string)RadioButtonPollAnswer2.Content == Settings.TwitchPollSettings.Choices.Last())
+            {
+                RadioButtonPollAnswer2.IsChecked = true;
+            }
 
             NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
             CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
@@ -2127,6 +2145,69 @@ namespace Songify_Slim.Views
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+            }
+        }
+
+        private void TextBoxPollTitle_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            Settings.TwitchPollSettings.Title = ((TextBox)sender).Text;
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void TextBoxPollAnswer1_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            Settings.TwitchPollSettings.Choices[0] = ((TextBox)sender).Text;
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void TextBoxPollAnswer2_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            Settings.TwitchPollSettings.Choices[1] = ((TextBox)sender).Text;
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void ToggleSwitchPollAdditionalVotes_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+
+            Settings.TwitchPollSettings.AdditionalVotesEnabled = ((ToggleSwitch)sender).IsOn;
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void NumericUpDownPollChannelPointsPerVote_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded) return;
+
+            double? value = ((NumericUpDown)sender).Value;
+            if (value == null)
+                return;
+            Settings.TwitchPollSettings.ChannelPointsPerVote = (int)value;
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void RadioButtonPollAnswer1_OnChecked(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            Settings.TwitchPollSettings.WinningChoice = ((RadioButton)sender).Content.ToString();
+            Settings.TwitchPollSettings = Settings.TwitchPollSettings;
+        }
+
+        private void NumericUpDownPollDuration_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            double? value = ((NumericUpDown)sender).Value;
+            if (value != null)
+            {
+                Settings.TwitchPollSettings.Duration = (int)value;
+
+                int totalSeconds = (int)value;
+                int minutes = totalSeconds / 60;
+                int seconds = totalSeconds % 60;
+                TextBlockPollDuration.Text = $"({minutes:D2}m {seconds:D2}s)";
             }
         }
     }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,6 +16,7 @@ using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.EventSub;
+using TwitchLib.EventSub.Core.Models.Polls;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
@@ -46,6 +48,9 @@ namespace Songify_Slim.Util.Songify.Twitch
             _eventSubWebsocketClient.StreamOnline += EventSubWebsocketClientOnStreamOnline;
             _eventSubWebsocketClient.ChannelCheer += EventSubWebsocketClientOnChannelCheer;
             _eventSubWebsocketClient.ChannelChatMessage += _eventSubWebsocketClient_ChannelChatMessage;
+            _eventSubWebsocketClient.ChannelPollBegin += _eventSubWebsocketClient_ChannelPollBegin;
+            _eventSubWebsocketClient.ChannelPollProgress += EventSubWebsocketClientOnChannelPollProgress;
+            _eventSubWebsocketClient.ChannelPollEnd += _eventSubWebsocketClient_ChannelPollEnd;
 
             // Get ClientId and ClientSecret by register an Application here: https://dev.twitch.tv/console/apps
             // https://dev.twitch.tv/docs/authentication/register-app/
@@ -92,6 +97,18 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.chat.message", "1", conditionBu,
                     EventSubTransportMethod.Websocket, _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.begin", "1", conditionBm,
+                    EventSubTransportMethod.Websocket,
+                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.progress", "1", conditionBm,
+                    EventSubTransportMethod.Websocket,
+                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+
+                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.end", "1", conditionBm,
+                    EventSubTransportMethod.Websocket,
+                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
 
                 // If you want to get Events for special Events you need to additionally add the AccessToken of the ChannelOwner to the request.
                 // https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/
@@ -210,6 +227,11 @@ namespace Songify_Slim.Util.Songify.Twitch
                 // Handle Skip Reward
                 await TwitchHandler.HandleSkipReward();
             }
+
+            if (Settings.TwRewardSkipPoll.Any(id => id == eventData.Reward.Id))
+            {
+                await TwitchHandler.StartSkipPoll();
+            }
         }
 
         private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
@@ -221,6 +243,62 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
                 return Task.CompletedTask;
             TwitchHandler.ExecuteChatCommand(chatMsg);
+            return Task.CompletedTask;
+        }
+
+        private static Task _eventSubWebsocketClient_ChannelPollEnd(object sender, ChannelPollEndArgs args)
+        {
+            Debug.WriteLine(args);
+            ChannelPollEnd pollEvent = args.Notification.Payload.Event;
+            if (pollEvent.Status.ToUpper() == "ARCHIVED" || pollEvent.Id != GlobalObjects.CurrentSkipPollId)
+                return Task.CompletedTask;
+
+            // Go through all the choices and find the winning one, compare with Settings.TwitchPollSettings.Choices to find the matching one
+            PollChoice winningChoice = pollEvent.Choices.OrderByDescending(c => c.Votes).FirstOrDefault();
+            if (winningChoice == null) return Task.CompletedTask;
+
+            string matchedChoice = Settings.TwitchPollSettings.WinningChoice;
+            if (matchedChoice != null)
+            {
+                // Go over the choices and get the percentage and count of votes
+                List<Tuple<string, int>> choiceVotes = (from choice in pollEvent.Choices let votes = choice.Votes ?? 0 select new Tuple<string, int>(choice.Title, votes)).ToList();
+
+                int totalVotes = choiceVotes.Sum(c => c.Item2);
+
+                // Get the percentage of the matchedChoice
+                double winPercentage = 0;
+                double losePercentage = 0;
+                int matchedVotes = choiceVotes.FirstOrDefault(c => c.Item1 == matchedChoice)?.Item2 ?? 0;
+                if (totalVotes > 0)
+                {
+                    winPercentage = (double)matchedVotes / totalVotes * 100;
+                }
+                if (winPercentage > 0)
+                {
+                    winPercentage = Math.Round(winPercentage, 2);
+                }
+                losePercentage = 100 - winPercentage;
+
+                if (matchedChoice == winningChoice.Title)
+                {
+                    // Execute skip
+                    TwitchHandler.ExecuteSkipPollChoice(matchedChoice, totalVotes, winPercentage, losePercentage);
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private static Task EventSubWebsocketClientOnChannelPollProgress(object sender, ChannelPollProgressArgs args)
+        {
+            Debug.WriteLine(args);
+            return Task.CompletedTask;
+        }
+
+        private static Task _eventSubWebsocketClient_ChannelPollBegin(object sender, ChannelPollBeginArgs args)
+        {
+            Debug.WriteLine(args);
+
             return Task.CompletedTask;
         }
 

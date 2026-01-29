@@ -1481,6 +1481,166 @@
                 </Border>
             </TabItem>
             <TabItem
+                x:Name="TabItemTwitchPoll"
+                Padding="20,0,0,0"
+                d:Header="Polls"
+                Header="Polls"
+                Visibility="Visible">
+                <Border
+                    Margin="10,0,0,0"
+                    BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                    BorderThickness="2,0,0,0">
+                    <Grid x:Name="GrdTwitchPoll" Margin="10,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="6"
+                            Text="Setup the poll system for skip votes" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Poll Title" />
+                        <TextBox
+                            x:Name="TextBoxPollTitle"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="6"
+                            TextChanged="TextBoxPollTitle_OnTextChanged" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Answer 1" />
+                        <TextBox
+                            x:Name="TextBoxPollAnswer1"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Margin="6"
+                            TextChanged="TextBoxPollAnswer1_OnTextChanged" />
+
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Answer 2" />
+                        <TextBox
+                            x:Name="TextBoxPollAnswer2"
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Margin="6"
+                            TextChanged="TextBoxPollAnswer2_OnTextChanged" />
+
+                        <TextBlock
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Allow Additional Votes" />
+                        <Grid Grid.Row="4" Grid.Column="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <controls:ToggleSwitch
+                                x:Name="ToggleSwitchPollAdditionalVotes"
+                                Grid.Column="0"
+                                MinWidth="100"
+                                Margin="6"
+                                HorizontalAlignment="Left"
+                                Toggled="ToggleSwitchPollAdditionalVotes_OnToggled" />
+                            <StackPanel
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    Margin="6"
+                                    VerticalAlignment="Center"
+                                    Text="Channel points per Vote" />
+                                <controls:NumericUpDown
+                                    x:Name="NumericUpDownPollChannelPointsPerVote"
+                                    MinWidth="150"
+                                    Margin="6"
+                                    HorizontalAlignment="Left"
+                                    Minimum="1"
+                                    ValueChanged="NumericUpDownPollChannelPointsPerVote_OnValueChanged" />
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock
+                            Grid.Row="6"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Duration" />
+                        <StackPanel
+                            Grid.Row="6"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                            <controls:NumericUpDown
+                                x:Name="NumericUpDownPollDuration"
+                                MinWidth="150"
+                                Margin="6"
+                                HorizontalAlignment="Left"
+                                Interval="1"
+                                Maximum="1800"
+                                Minimum="15"
+                                ValueChanged="NumericUpDownPollDuration_OnValueChanged" />
+                            <TextBlock VerticalAlignment="Center" Text="Seconds" />
+                            <TextBlock
+                                Name="TextBlockPollDuration"
+                                Margin="10,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="(00:00)" />
+                        </StackPanel>
+
+                        <TextBlock
+                            Grid.Row="7"
+                            Grid.Column="0"
+                            Margin="6"
+                            VerticalAlignment="Center"
+                            Text="Skip when this answer wins" />
+                        <StackPanel
+                            Grid.Row="7"
+                            Grid.Column="1"
+                            Orientation="Horizontal">
+                            <RadioButton
+                                x:Name="RadioButtonPollAnswer1"
+                                MinWidth="200"
+                                Checked="RadioButtonPollAnswer1_OnChecked"
+                                Content="{Binding Text, ElementName=TextBoxPollAnswer1}"
+                                GroupName="PollRadioButtons" />
+                            <RadioButton
+                                x:Name="RadioButtonPollAnswer2"
+                                MinWidth="200"
+                                Checked="RadioButtonPollAnswer1_OnChecked"
+                                Content="{Binding Text, ElementName=TextBoxPollAnswer2}"
+                                GroupName="PollRadioButtons" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </TabItem>
+            <TabItem
                 x:Name="TabItemTwitchSr"
                 Padding="20,0,0,0"
                 Header="SongRequest"

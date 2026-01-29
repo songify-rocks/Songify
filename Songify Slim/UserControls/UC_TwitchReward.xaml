@@ -65,7 +65,7 @@
                 Text="500"
                 TextChanged="TxtRewardcost_OnTextChanged">
                 <TextBox.Style>
-                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                    <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
                         <Setter Property="Foreground" Value="White" />
                         <Setter Property="BorderBrush" Value="White" />
                         <Setter Property="Background" Value="Transparent" />
@@ -73,14 +73,16 @@
                             <Setter.Value>
                                 <ControlTemplate TargetType="TextBox">
                                     <Grid>
-                                        <Border x:Name="Border"
-                                                Background="{TemplateBinding Background}"
-                                                BorderBrush="{TemplateBinding BorderBrush}"
-                                                BorderThickness="1"
-                                                CornerRadius="2" />
-                                        <ScrollViewer x:Name="PART_ContentHost"
-                                                      Margin="2"
-                                                      VerticalAlignment="Center" />
+                                        <Border
+                                            x:Name="Border"
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="2" />
+                                        <ScrollViewer
+                                            x:Name="PART_ContentHost"
+                                            Margin="2"
+                                            VerticalAlignment="Center" />
                                     </Grid>
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsEnabled" Value="False">
@@ -116,6 +118,7 @@
                 <ComboBoxItem Content="-" />
                 <ComboBoxItem Content="Song Request" />
                 <ComboBoxItem Content="Skip Song" />
+                <ComboBoxItem Content="Start Skip Poll" />
             </ComboBox>
             <mah:ToggleSwitch
                 x:Name="TglRewardActive"

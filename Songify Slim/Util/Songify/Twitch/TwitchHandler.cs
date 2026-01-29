@@ -53,6 +53,7 @@ using TwitchLib.Api.Helix.Models.Chat;
 using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
+using TwitchLib.Api.Helix.Models.Polls.CreatePoll;
 using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Subscriptions;
@@ -3929,6 +3930,49 @@ public static class TwitchHandler
             await Task.Delay(pollInterval);
         }
         return null; // timed out
+    }
+
+    public static async Task StartSkipPoll()
+    {
+        CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
+        {
+            BroadcasterId = Settings.TwitchUser.Id,
+            Title = Settings.TwitchPollSettings.Title,
+            Choices =
+            [
+                new Choice()
+                {
+                    Title = Settings.TwitchPollSettings.Choices.First()
+                },
+                new Choice()
+                {
+                    Title = Settings.TwitchPollSettings.Choices.Last()
+                }
+            ],
+            ChannelPointsVotingEnabled = Settings.TwitchPollSettings.AdditionalVotesEnabled,
+            ChannelPointsPerVote = Settings.TwitchPollSettings.ChannelPointsPerVote,
+            DurationSeconds = Settings.TwitchPollSettings.Duration
+        });
+
+        if (response.Data != null && response.Data.Any())
+        {
+            GlobalObjects.CurrentSkipPollId = response.Data[0].Id;
+            Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPollId}");
+        }
+    }
+
+    public static async void ExecuteSkipPollChoice(string matchedChoice, int totalVotes, double winPercentage, double losePercentage)
+    {
+        try
+        {
+            await SendChatMessage($"{matchedChoice} won with {winPercentage}%! Skipping song...");
+            await SpotifyApiHandler.SkipSong();
+            Logger.Info(LogSource.Twitch, "Skip poll passed, skipped song.");
+        }
+        catch (Exception e)
+        {
+            Logger.Log(LogLevel.Error, LogSource.Spotify, "Unable to skip song...");
+        }
     }
 }
 
