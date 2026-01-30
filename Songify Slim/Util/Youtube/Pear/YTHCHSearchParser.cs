@@ -62,7 +62,8 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
                             result.Duration ??= text;
                         }
                         else if (!text.Equals("Song", StringComparison.OrdinalIgnoreCase) &&
-                                 !text.Equals("Video", StringComparison.OrdinalIgnoreCase))
+                                 !text.Equals("Video", StringComparison.OrdinalIgnoreCase) &&
+                                 !text.Contains("views"))
                         {
                             result.Artists.Add(text);
                         }

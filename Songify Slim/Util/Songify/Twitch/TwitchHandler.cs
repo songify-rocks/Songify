@@ -1049,7 +1049,7 @@ public static class TwitchHandler
 
             // this will take the first 4 artists and join their names with ", "
             string artists = string.Join(", ", sr.Artists
-                .Take(4));
+                .Take(1));
 
             string length = sr.Duration;
 
@@ -2229,8 +2229,7 @@ public static class TwitchHandler
                         ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1)
                         : string.Empty;
 
-                    string videoId = ExtractYouTubeVideoIdFromText(msg.Trim());
-                    await AddYtSong(videoId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
+                    await AddYtSong(msg.Trim(), TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
                     break;
                 }
 
