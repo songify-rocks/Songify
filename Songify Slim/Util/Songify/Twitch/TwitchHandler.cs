@@ -2105,11 +2105,15 @@ public static class TwitchHandler
 
         int skipCount = 5;
 
-        if (cmd.CustomProperties != null &&
-            cmd.CustomProperties.TryGetValue("SkipCount", out object value) &&
-            value is int configuredSkipCount and > 0)
+        if (cmd.CustomProperties != null)
         {
-            skipCount = configuredSkipCount;
+            cmd.CustomProperties.TryGetValue("SkipCount", out object value);
+            if (value != null)
+            {
+                int configuredSkipCount = int.Parse(value.ToString());
+                if (configuredSkipCount > 0)
+                    skipCount = configuredSkipCount;
+            }
         }
 
         if (_skipCooldown) return;
