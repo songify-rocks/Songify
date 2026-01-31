@@ -46,6 +46,7 @@ namespace Songify_Slim.Util.Songify
     public class SongFetcher
     {
         private YoutubeData currentYoutubeData = new();
+        private int fetchCounter = 0;
 
         private static readonly List<string> AudioFileTypes =
         [
@@ -1082,6 +1083,8 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchPear()
         {
+            fetchCounter += 1;
+
             PearResponse data = await PearApi.GetNowPlayingAsync();
             if (data == null) return;
 
@@ -1128,13 +1131,23 @@ namespace Songify_Slim.Util.Songify
 
             await UpdateWebServerResponse(t);
 
+            if (fetchCounter >= 5)
+            {
+                await TwitchHandler.EnsureOrderAsync();
+                fetchCounter = 0;
+            }
+
             // 2) If same song, nothing to do
             if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == data.VideoId)
                 return;
 
             // 3) Song changed -> previous finished: mark & remove
-            if (!string.IsNullOrEmpty(prevId) && prevId != data.VideoId)
-                MarkPlayedAndRemove(prevId);
+            string prevKey = GlobalObjects.CurrentSong == null
+                ? null
+                : NormalizeKey(GlobalObjects.CurrentSong.Artists, GlobalObjects.CurrentSong.Title);
+
+            if (!string.IsNullOrEmpty(prevKey))
+                MarkPlayedAndRemoveByKey(prevKey);
 
             // 4) Update current & UI
             GlobalObjects.CurrentSong = t;
@@ -1144,13 +1157,34 @@ namespace Songify_Slim.Util.Songify
 
         private static readonly object _sync = new();
 
+        private static void MarkPlayedAndRemoveByKey(string finishedKey)
+        {
+            lock (_sync)
+            {
+                // mark first occurrence
+                RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r =>
+                    r.Played == 0 &&
+                    NormalizeKey(r.Artist, r.Title) == finishedKey);
+
+                if (first != null) first.Played = 1;
+
+                // remove all matching entries
+                for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
+                {
+                    RequestObject r = GlobalObjects.ReqList[i];
+                    if (NormalizeKey(r.Artist, r.Title) == finishedKey)
+                        GlobalObjects.ReqList.RemoveAt(i);
+                }
+            }
+        }
+
         private static void MarkPlayedAndRemove(string finishedId)
         {
             lock (_sync)
             {
                 // mark first occurrence as played (optional if you keep history somewhere)
                 RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == finishedId && r.Played == 0);
-                if (first != null) first.Played = 1;
+                first?.Played = 1;
 
                 // actually remove all entries for that id
                 for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
@@ -1159,6 +1193,34 @@ namespace Songify_Slim.Util.Songify
                         GlobalObjects.ReqList.RemoveAt(i);
                 }
             }
+        }
+
+        private static string NormalizeKey(string artist, string title, int? durationSec = null)
+        {
+            static string norm(string s)
+            {
+                if (string.IsNullOrWhiteSpace(s)) return "";
+                s = s.ToLowerInvariant().Trim();
+
+                // remove common noise
+                s = Regex.Replace(s, @"\s+", " ");
+                s = Regex.Replace(s, @"\((.*?)\)", " ");          // (...) like (Official Video)
+                s = Regex.Replace(s, @"\[(.*?)\]", " ");          // [...] like [Lyrics]
+                s = Regex.Replace(s, @"\bfeat\.?\b|\bft\.?\b", " ");
+                s = Regex.Replace(s, @"[^a-z0-9\s]", " ");        // punctuation
+                s = Regex.Replace(s, @"\s+", " ").Trim();
+                return s;
+            }
+
+            string a = norm(artist);
+            string t = norm(title);
+
+            // bucket duration to reduce false positives, but keep tolerant
+            string d = durationSec.HasValue && durationSec.Value > 0
+                ? (durationSec.Value / 5).ToString()             // 5-second buckets
+                : "";
+
+            return $"{a}|{t}|{d}";
         }
 
         public async Task FetchPearWebsocket()
@@ -1223,7 +1285,7 @@ namespace Songify_Slim.Util.Songify
                         }
 
                     default:
-                                                break;
+                        break;
                 }
             });
 

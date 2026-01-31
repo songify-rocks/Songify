@@ -624,7 +624,7 @@ public static class TwitchHandler
 
         // pending snapshot (distinct, exclude what's playing)
         List<RequestObject> pending = GlobalObjects.ReqList
-            .Where(r => r.Played == 0 && r.Trackid != currentId)
+            .Where(r => r.Played == 0 && r.Trackid != currentId && r.Requester != "YouTube")
             .GroupBy(r => r.Trackid)
             .Select(g => g.First())
             .ToList();
@@ -3551,8 +3551,8 @@ public static class TwitchHandler
             TimeSpan? songDuration = DurationHelper.ParseDuration(track.Duration);
             if (songDuration == null)
             {
-                response = "Couldn't convert duration";
-                return true;
+                Logger.Log(LogLevel.Warning, LogSource.Pear, $"Couldn't convert \"{track.Duration}\" to a valid duration. Allowing Song anyways.");
+                return false;
             }
 
             if (songDuration >= TimeSpan.FromMinutes(Settings.MaxSongLength))

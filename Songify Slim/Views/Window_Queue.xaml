@@ -309,7 +309,6 @@
                                                 <!--  Show only if Playertype is Spotify  -->
                                                 <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
                                                     <Setter Property="IsEnabled" Value="True" />
-
                                                 </DataTrigger>
                                                 <!--  Hide if Requester is 'Skipping...'  -->
                                                 <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
@@ -323,7 +322,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">

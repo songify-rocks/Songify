@@ -13,8 +13,10 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Songify_Slim.Models.Pear;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.APIs;
+using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Spotify;
 using Swan.Formatters;
 using Button = System.Windows.Controls.Button;
@@ -41,13 +43,30 @@ namespace Songify_Slim.Views
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (GlobalObjects.CurrentSong == null) return;
-            Grid grd = new();
-            if (!GlobalObjects.CurrentSong.IsPlaying)
-                grd.Margin = new Thickness(3, 0, 0, 0);
-            grd.Children.Add(GlobalObjects.CurrentSong.IsPlaying
-                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
-                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
-            BtnPlayPause.Content = grd;
+            switch (Settings.Player)
+            {
+                case Enums.PlayerType.Spotify:
+                    SetButtonContent(!GlobalObjects.CurrentSong.IsPlaying);
+                    break;
+
+                case Enums.PlayerType.WindowsPlayback:
+                    break;
+
+                case Enums.PlayerType.FooBar2000:
+                    break;
+
+                case Enums.PlayerType.Vlc:
+                    break;
+
+                case Enums.PlayerType.BrowserCompanion:
+                    break;
+
+                case Enums.PlayerType.Pear:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         // This window shows the current Queue in a DataGrid
@@ -283,27 +302,59 @@ namespace Songify_Slim.Views
 
         private async void BtnBack_OnClick(object sender, RoutedEventArgs e)
         {
-            switch (Settings.Player)
+            DateTime currentTime = DateTime.Now;
+
+            // Check if the button was clicked within the last 3 seconds
+            if ((currentTime - _lastBackButtonClickTime).TotalSeconds < 3)
             {
-                case 0:
-                    DateTime currentTime = DateTime.Now;
-
-                    // Check if the button was clicked within the last 3 seconds
-                    if ((currentTime - _lastBackButtonClickTime).TotalSeconds < 3)
-                    {
-                        // If clicked again within 3 seconds, skip to the previous track
+                switch (Settings.Player)
+                {
+                    // If clicked again within 3 seconds, skip to the previous track
+                    case Enums.PlayerType.Spotify:
                         await SpotifyApiHandler.SkipPrevious();
-                    }
-                    else
-                    {
-                        // If not, restart the current track from the beginning
-                        await SpotifyApiHandler.PlayFromStart();
-                    }
+                        break;
 
-                    // Update the last click time
-                    _lastBackButtonClickTime = currentTime;
-                    break;
+                    case Enums.PlayerType.Pear:
+                        await PearApi.Previous();
+                        break;
+
+                    case Enums.PlayerType.WindowsPlayback:
+                    case Enums.PlayerType.FooBar2000:
+                    case Enums.PlayerType.Vlc:
+                    case Enums.PlayerType.BrowserCompanion:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
+            else
+            {
+                switch (Settings.Player)
+                {
+                    // If clicked again within 3 seconds, skip to the previous track
+                    case Enums.PlayerType.Spotify:
+                        await SpotifyApiHandler.PlayFromStart();
+                        break;
+
+                    case Enums.PlayerType.Pear:
+                        await PearApi.SeekTo(0);
+                        break;
+
+                    case Enums.PlayerType.WindowsPlayback:
+                    case Enums.PlayerType.FooBar2000:
+                    case Enums.PlayerType.Vlc:
+                    case Enums.PlayerType.BrowserCompanion:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                // If not, restart the current track from the beginning
+            }
+
+            // Update the last click time
+            _lastBackButtonClickTime = currentTime;
         }
 
         private async void BtnNext_OnClick(object sender, RoutedEventArgs e)
@@ -313,28 +364,64 @@ namespace Songify_Slim.Views
                 case 0:
                     await SpotifyApiHandler.SkipSong();
                     break;
+
+                case Enums.PlayerType.Pear:
+                    await PearApi.Next();
+                    break;
+
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            await SpotifyApiHandler.SkipSong();
         }
 
         private async void BtnPlayPause_OnClick(object sender, RoutedEventArgs e)
         {
             switch (Settings.Player)
             {
-                case 0:
+                case Enums.PlayerType.Spotify:
                     {
                         bool isPlaying = await SpotifyApiHandler.PlayPause();
-
-                        Grid grd = new();
-                        if (!isPlaying)
-                            grd.Margin = new Thickness(3, 0, 0, 0);
-                        grd.Children.Add(isPlaying
-                            ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
-                            : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
-                        BtnPlayPause.Content = grd;
+                        SetButtonContent(!isPlaying);
                         break;
                     }
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Pear:
+                    {
+                        PearResponse nowPlaying = await PearApi.GetNowPlayingAsync();
+                        bool isPlaying = !nowPlaying.IsPaused;
+
+                        if (isPlaying)
+                            await PearApi.Pause();
+                        else
+                            await PearApi.Play();
+
+                        SetButtonContent(isPlaying);
+                        break;
+                    }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void SetButtonContent(bool isPlaying)
+        {
+            Grid grd = new();
+
+            if (!isPlaying)
+                grd.Margin = new Thickness(0, 0, 0, 0);
+            grd.Children.Add(!isPlaying
+                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
+                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
+            BtnPlayPause.Content = grd;
         }
 
         private void BtnPlayerControlsVisibility_OnClick(object sender, RoutedEventArgs e)

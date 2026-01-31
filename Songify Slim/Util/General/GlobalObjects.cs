@@ -218,8 +218,6 @@ namespace Songify_Slim.Util.General
 
         public static async Task UpdateQueueWindow()
         {
-            int index;
-            List<RequestObject> tempQueueList2;
             switch (Settings.Player)
             {
                 case Enums.PlayerType.Spotify:
@@ -424,18 +422,21 @@ namespace Songify_Slim.Util.General
                     List<Song> pearQueue = await PearApi.GetQueueAsync();
                     PearResponse pearResponse = await PearApi.GetNowPlayingAsync();
 
+                    // queue id = "KBoHZ3qNivY"
+                    // now playing id = "TeSvDu7Jb-8"
+
                     if (pearQueue == null || pearResponse == null)
                     {
                         return;
                     }
 
-                    index = pearQueue.FindIndex(item => item.Id == pearResponse.VideoId
-                    );
+                    // if index = -1 then we assuem the id's did match and we try to match artist and title
+                    int index = pearQueue.FindIndex(item => item.IsCurrent);
 
                     if (index > 0)
                         pearQueue.RemoveRange(0, index);
 
-                    tempQueueList2 = [];
+                    List<RequestObject> tempQueueList2 = [];
 
                     tempQueueList2.AddRange(
                         pearQueue.Select(item => new RequestObject
@@ -455,6 +456,8 @@ namespace Songify_Slim.Util.General
                             IsLiked = false
                         }).Where(x => x != null)
                     );
+
+                    tempQueueList2.First().Played = -1;
 
                     QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
 
@@ -477,6 +480,7 @@ namespace Songify_Slim.Util.General
 
                     break;
 
+                case Enums.PlayerType.WindowsPlayback:
                 default:
                     throw new ArgumentOutOfRangeException();
             }

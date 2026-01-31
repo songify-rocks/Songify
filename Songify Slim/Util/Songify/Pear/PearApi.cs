@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Youtube.YTMYHCH;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
+using YamlDotNet.Core.Tokens;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify.Pear
@@ -219,6 +220,49 @@ namespace Songify_Slim.Util.Songify.Pear
             {
                 Ok = false
             };
+        }
+
+        public static async Task Pause()
+        {
+            await _httpClient.PostAsync("pause", null);
+        }
+
+        public static async Task Play()
+        {
+            await _httpClient.PostAsync("play", null);
+        }
+
+        public static async Task Next()
+        {
+            await _httpClient.PostAsync("next", null);
+        }
+
+        public static async Task<ApiOk> SeekTo(int position)
+        {
+            var payload = new
+            {
+                seconds = position
+            };
+
+            string json = JsonConvert.SerializeObject(payload);
+            using StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage response = await _httpClient.PostAsync("seek-to", content);
+            if (response.IsSuccessStatusCode)
+                return new ApiOk
+                {
+                    Ok = true
+                };
+            Logger.Error(LogSource.Pear, $"set volume failed with status code: {response.StatusCode}");
+            return new ApiOk
+            {
+                Ok = false
+            };
+        }
+
+        public static async Task Previous()
+        {
+            await _httpClient.PostAsync("previous", null);
         }
     }
 }
