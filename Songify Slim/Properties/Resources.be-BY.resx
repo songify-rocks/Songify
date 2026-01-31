@@ -422,7 +422,7 @@
     <comment>Label content for "Title"</comment>
   </data>
   <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Падказка</value>
+    <value>Апісанне</value>
     <comment>Label content for "Prompt"</comment>
   </data>
   <data name="crw_RewardCost" xml:space="preserve">

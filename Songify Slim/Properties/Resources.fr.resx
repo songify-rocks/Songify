@@ -385,9 +385,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Titre</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Description</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Prix</value>
   </data>
@@ -948,5 +945,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Activer/Désactiver les demandes de chansons (les désactive dans l'application et tente également de mettre en pause la récompense)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Description</value>
   </data>
 </root>

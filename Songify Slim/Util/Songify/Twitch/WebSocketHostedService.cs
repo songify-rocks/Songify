@@ -230,7 +230,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             if (Settings.TwRewardSkipPoll.Any(id => id == eventData.Reward.Id))
             {
-                await TwitchHandler.StartSkipPoll();
+                await TwitchHandler.StartSkipPoll(eventData.Id, eventData.Reward.Id);
             }
         }
 
@@ -250,8 +250,10 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             Debug.WriteLine(args);
             ChannelPollEnd pollEvent = args.Notification.Payload.Event;
-            if (pollEvent.Status.ToUpper() == "ARCHIVED" || pollEvent.Id != GlobalObjects.CurrentSkipPollId)
+            if (pollEvent.Status.ToUpper() == "ARCHIVED" || pollEvent.Status.ToUpper() == "TERMINATED" || pollEvent.Id != GlobalObjects.CurrentSkipPoll.Id)
                 return Task.CompletedTask;
+
+            GlobalObjects.CurrentSkipPoll.IsActive = false;
 
             // Go through all the choices and find the winning one, compare with Settings.TwitchPollSettings.Choices to find the matching one
             PollChoice winningChoice = pollEvent.Choices.OrderByDescending(c => c.Votes).FirstOrDefault();
@@ -297,8 +299,11 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private static Task _eventSubWebsocketClient_ChannelPollBegin(object sender, ChannelPollBeginArgs args)
         {
-            Debug.WriteLine(args);
-
+            ChannelPollBegin poll = args.Notification.Payload.Event;
+            if (GlobalObjects.CurrentSkipPoll.Id == poll.Id)
+            {
+                GlobalObjects.CurrentSkipPoll.IsActive = true;
+            }
             return Task.CompletedTask;
         }
 

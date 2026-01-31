@@ -522,9 +522,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Titel</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Snel</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Kosten</value>
   </data>
@@ -998,5 +995,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Verzoeknummers in-/uitschakelen (schakelt ze uit in de app en probeert ook de beloning te pauzeren)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Beschrijving</value>
   </data>
 </root>

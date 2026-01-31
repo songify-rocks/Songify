@@ -486,7 +486,7 @@
     <comment>Label content for "Title"</comment>
   </data>
   <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Prompt</value>
+    <value>Description</value>
     <comment>Label content for "Prompt"</comment>
   </data>
   <data name="crw_RewardCost" xml:space="preserve">

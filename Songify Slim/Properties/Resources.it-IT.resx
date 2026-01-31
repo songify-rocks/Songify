@@ -384,9 +384,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Titolo</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Richiesta</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Costo</value>
   </data>
@@ -944,5 +941,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Abilita/Disabilita le richieste di brani (le disabilita nell'app e tenta anche di mettere in pausa la ricompensa)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Descrizione</value>
   </data>
 </root>

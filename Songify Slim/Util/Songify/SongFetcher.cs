@@ -397,6 +397,12 @@ namespace Songify_Slim.Util.Songify
             {
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null) || (songInfo.SongId == null && !string.IsNullOrEmpty(songInfo.Title)))
                 {
+                    if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
+                    {
+                        // Terminate the poll because the song changed while poll was active
+                        await TwitchHandler.TerminatePoll(GlobalObjects.CurrentSkipPoll);
+                    }
+
                     //for local files: store track title, match it and check if id == null
                     if (songInfo.SongId == null && _localTrackTitle == songInfo.Title)
                     {
@@ -1140,6 +1146,12 @@ namespace Songify_Slim.Util.Songify
             // 2) If same song, nothing to do
             if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == data.VideoId)
                 return;
+
+            if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
+            {
+                // Terminate the poll because the song changed while poll was active
+                await TwitchHandler.TerminatePoll(GlobalObjects.CurrentSkipPoll);
+            }
 
             // 3) Song changed -> previous finished: mark & remove
             string prevKey = GlobalObjects.CurrentSong == null

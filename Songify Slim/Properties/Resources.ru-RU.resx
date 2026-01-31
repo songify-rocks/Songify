@@ -382,9 +382,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Заголовок</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Подсказка</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Стоимость</value>
   </data>
@@ -945,5 +942,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Включить/отключить запросы песен (отключает их в приложении, а также пытается приостановить вознаграждение)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Описание</value>
   </data>
 </root>

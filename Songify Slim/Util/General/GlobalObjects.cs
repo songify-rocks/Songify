@@ -82,7 +82,7 @@ namespace Songify_Slim.Util.General
             : Settings.Directory;
 
         public static SimpleTwitchUser FullRequester { get; set; }
-        public static string CurrentSkipPollId { get; set; }
+        public static PollItem CurrentSkipPoll { get; set; }
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject

@@ -54,6 +54,7 @@ using TwitchLib.Api.Helix.Models.Chat.GetChatters;
 using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Polls.CreatePoll;
+using TwitchLib.Api.Helix.Models.Polls.EndPoll;
 using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Subscriptions;
@@ -3683,7 +3684,7 @@ public static class TwitchHandler
     }
 
     private static async Task RefundChannelPoints(string rewardId, string redemptionId,
-        TwitchRequestUser twitchRequestUser, Enums.RefundCondition condition)
+        TwitchRequestUser twitchRequestUser, Enums.RefundCondition condition, bool silent = false)
     {
         try
         {
@@ -3708,6 +3709,10 @@ public static class TwitchHandler
                     [redemptionId],
                     new UpdateCustomRewardRedemptionStatusRequest
                     { Status = CustomRewardRedemptionStatus.CANCELED });
+
+                if (silent)
+                    return;
+
                 if (updateRedemptionStatus.Data[0].Status == CustomRewardRedemptionStatus.CANCELED)
                 {
                     if (string.IsNullOrEmpty(Settings.BotRespRefund))
@@ -3935,7 +3940,35 @@ public static class TwitchHandler
         return null; // timed out
     }
 
-    public static async Task StartSkipPoll()
+    public static async Task TerminatePoll(PollItem poll)
+    {
+        EndPollResponse response = await TwitchApi.Helix.Polls.EndPollAsync(Settings.TwitchUser.Id, poll.Id,
+            PollStatusEnum.TERMINATED, Settings.TwitchAccessToken);
+        if (response.Data != null && response.Data.Any())
+        {
+            Logger.Info(LogSource.Twitch, $"Terminated poll with ID: {poll.Id}");
+        }
+
+        GlobalObjects.CurrentSkipPoll.IsActive = false;
+
+        // Refund the user who did the Chnnaleoint Redemption
+        UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
+            Settings.TwitchUser.Id, poll.RewardId,
+            [poll.RedemptionId],
+            new UpdateCustomRewardRedemptionStatusRequest
+            { Status = CustomRewardRedemptionStatus.CANCELED });
+        if (updateRedemptionStatus.Data == null || !updateRedemptionStatus.Data.Any())
+        {
+            Logger.Warning(LogSource.Twitch, "TWITCH API: Cannot refund because the reward is not created through Songify.");
+        }
+        else
+        {
+            Logger.Log(LogLevel.Info, LogSource.Twitch, $"Refunded Channel Points to {updateRedemptionStatus.Data[0].UserName}");
+        }
+
+    }
+
+    public static async Task StartSkipPoll(string redemptionId, string rewardId)
     {
         CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
         {
@@ -3959,8 +3992,14 @@ public static class TwitchHandler
 
         if (response.Data != null && response.Data.Any())
         {
-            GlobalObjects.CurrentSkipPollId = response.Data[0].Id;
-            Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPollId}");
+            GlobalObjects.CurrentSkipPoll = new PollItem()
+            {
+                Id = response.Data[0].Id,
+                IsActive = true,
+                RedemptionId = redemptionId,
+                RewardId = rewardId
+            };
+            Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPoll.Id}");
         }
     }
 
@@ -3969,7 +4008,22 @@ public static class TwitchHandler
         try
         {
             await SendChatMessage($"{matchedChoice} won with {winPercentage}%! Skipping song...");
-            await SpotifyApiHandler.SkipSong();
+            switch (Settings.Player)
+            {
+                case Enums.PlayerType.Spotify:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+                case Enums.PlayerType.Pear:
+                    await PearApi.Next();
+                    break;
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             Logger.Info(LogSource.Twitch, "Skip poll passed, skipped song.");
         }
         catch (Exception e)

@@ -385,9 +385,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Titel</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Prompt</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Kosten</value>
   </data>
@@ -945,5 +942,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Musikwünsche aktivieren/deaktivieren (deaktiviert diese in der App und versucht außerdem, die Belohnung anzuhalten)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Beschreibung</value>
   </data>
 </root>

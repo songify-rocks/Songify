@@ -384,9 +384,6 @@
   <data name="crw_RewardTitle" xml:space="preserve">
     <value>Tytuł</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
-    <value>Podpowiedź</value>
-  </data>
   <data name="crw_RewardCost" xml:space="preserve">
     <value>Koszt</value>
   </data>
@@ -944,5 +941,8 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Włącz/Wyłącz prośby o piosenkę (wyłącza je w aplikacji i próbuje wstrzymać nagrodę)</value>
+  </data>
+  <data name="crw_RewardPrompt" xml:space="preserve">
+    <value>Opis</value>
   </data>
 </root>
