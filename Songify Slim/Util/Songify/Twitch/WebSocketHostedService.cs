@@ -22,6 +22,7 @@ using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Channel;
 using TwitchLib.EventSub.Websockets.Core.EventArgs.Stream;
+using LogLevel = Songify_Slim.Util.General.LogLevel;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -203,7 +204,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (eventData.BroadcasterUserId != Settings.TwitchUser.Id)
                 return;
 
-            _logger.LogInformation($"{eventData.UserName} redeemed {eventData.Reward.Title}");
+            Logger.Log(LogLevel.Info, LogSource.Twitch, $"{eventData.UserName} redeemed {eventData.Reward.Title}");
             if (Settings.TwRewardId.Any(id => id == eventData.Reward.Id) &&
                 Settings.TwSrReward)
             {
