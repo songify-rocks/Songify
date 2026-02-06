@@ -8,6 +8,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     x:Name="UserlevelItem"
     VerticalAlignment="Center"
     d:DesignWidth="500"
@@ -47,28 +48,28 @@
                     Tag="-2" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_Requester}"
+                    Header="{i18n:Loc s_Requester}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="-1"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_Viewer}"
+                    Header="{i18n:Loc s_Viewer}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="0"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_Follower}"
+                    Header="{i18n:Loc s_Follower}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="1"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_Subscriber}"
+                    Header="{i18n:Loc s_Subscriber}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="2"
@@ -89,14 +90,14 @@
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_VIP}"
+                    Header="{i18n:Loc s_VIP}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="5"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{x:Static properties:Resources.s_Moderator}"
+                    Header="{i18n:Loc s_Moderator}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="6"
@@ -288,7 +289,7 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Visibility="Collapsed">
-                    <Label HorizontalAlignment="Right" Content="{x:Static properties:Resources.brw_cmd_skipvotecount}" />
+                    <Label HorizontalAlignment="Right" Content="{i18n:Loc brw_cmd_skipvotecount}" />
                     <mah:NumericUpDown
                         x:Name="NudSkipVoteCount"
                         Width="98"

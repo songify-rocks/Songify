@@ -201,15 +201,15 @@
     <value>Exit</value>
     <comment>Menu content for "Exit"</comment>
   </data>
-  <data name="mw_menu_File" xml:space="preserve">
+  <data name="menu.file" xml:space="preserve">
     <value>File</value>
     <comment>Menu content for "File"</comment>
   </data>
-  <data name="mw_menu_Help" xml:space="preserve">
+  <data name="menu.help" xml:space="preserve">
     <value>Help</value>
     <comment>Menu content for "Help"</comment>
   </data>
-  <data name="mw_menu_Help_About" xml:space="preserve">
+  <data name="menu.help.about" xml:space="preserve">
     <value>About</value>
     <comment>Menu content for "About"</comment>
   </data>
@@ -241,7 +241,7 @@
     <value>Queue Window</value>
     <comment>Menu content for "Queue Window"</comment>
   </data>
-  <data name="mw_menu_Settings" xml:space="preserve">
+  <data name="menu.settings" xml:space="preserve">
     <value>Settings</value>
     <comment>Menu content for "Settings"</comment>
   </data>
@@ -249,7 +249,7 @@
     <value>Support Us</value>
     <comment>Menu content for "Support Us" (unused)</comment>
   </data>
-  <data name="mw_menu_Widget" xml:space="preserve">
+  <data name="menu.widget" xml:space="preserve">
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
@@ -501,11 +501,11 @@
     <value>The reward "{name}" has been created.</value>
     <comment>Label content for "The reward "{name}" has been created."</comment>
   </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
+  <data name="menu.patchnotes" xml:space="preserve">
     <value>Patch notes</value>
     <comment>MenuItem content for "Patch notes"</comment>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+  <data name="menu.help.logfolder" xml:space="preserve">
     <value>Log Folder</value>
     <comment>MenuItem content for "Log Folder"</comment>
   </data>

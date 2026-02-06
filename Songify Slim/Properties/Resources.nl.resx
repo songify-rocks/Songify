@@ -120,7 +120,7 @@
   <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
     <value>URL van de afspeellijst</value>
   </data>
-  <data name="mw_menu_Settings" xml:space="preserve">
+  <data name="menu.settings" xml:space="preserve">
     <value>Instellingen</value>
     <comment>Menu content for "Settings"</comment>
   </data>
@@ -128,7 +128,7 @@
     <value>Support ons</value>
     <comment>Menu content for "Support Us" (unused)</comment>
   </data>
-  <data name="mw_menu_Widget" xml:space="preserve">
+  <data name="menu.widget" xml:space="preserve">
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
@@ -204,15 +204,15 @@
     <value>Afsluiten</value>
     <comment>Menu content for "Exit"</comment>
   </data>
-  <data name="mw_menu_File" xml:space="preserve">
+  <data name="menu.file" xml:space="preserve">
     <value>Bestand</value>
     <comment>Menu content for "File"</comment>
   </data>
-  <data name="mw_menu_Help" xml:space="preserve">
+  <data name="menu.help" xml:space="preserve">
     <value>Hulp</value>
     <comment>Menu content for "Help"</comment>
   </data>
-  <data name="mw_menu_Help_About" xml:space="preserve">
+  <data name="menu.help.about" xml:space="preserve">
     <value>Over</value>
     <comment>Menu content for "About"</comment>
   </data>
@@ -531,7 +531,7 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>De beloning "{name}" is aangemaakt.</value>
   </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
+  <data name="menu.patchnotes" xml:space="preserve">
     <value>Patch-notities</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
@@ -990,7 +990,7 @@
   <data name="Param_SongFormat_Desc" xml:space="preserve">
     <value>{Artist - Title}</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+  <data name="menu.help.logfolder" xml:space="preserve">
     <value>Logboekmap</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

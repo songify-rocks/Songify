@@ -7,7 +7,8 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    Title="{x:Static properties:Resources.WinTitle_History}"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
+    Title="{i18n:Loc WinTitle_History}"
     Width="588"
     Height="247.9"
     Closed="MetroWindow_Closed"
@@ -61,12 +62,12 @@
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Binding="{Binding Path=Time}"
-                    Header="{x:Static properties:Resources.s_Time}"
+                    Header="{i18n:Loc s_Time}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding Path=Name}"
-                    Header="{x:Static properties:Resources.s_Name}"
+                    Header="{i18n:Loc s_Name}"
                     IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>

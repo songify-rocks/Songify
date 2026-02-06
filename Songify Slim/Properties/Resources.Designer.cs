@@ -718,6 +718,69 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string menu_file {
+            get {
+                return ResourceManager.GetString("menu.file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string menu_help {
+            get {
+                return ResourceManager.GetString("menu.help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string menu_help_about {
+            get {
+                return ResourceManager.GetString("menu.help.about", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log Folder.
+        /// </summary>
+        public static string menu_help_logfolder {
+            get {
+                return ResourceManager.GetString("menu.help.logfolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patch notes.
+        /// </summary>
+        public static string menu_patchnotes {
+            get {
+                return ResourceManager.GetString("menu.patchnotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string menu_settings {
+            get {
+                return ResourceManager.GetString("menu.settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Widget.
+        /// </summary>
+        public static string menu_widget {
+            get {
+                return ResourceManager.GetString("menu.widget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bot Account.
         /// </summary>
         public static string msgbx_BotAccount {
@@ -844,42 +907,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to File.
-        /// </summary>
-        public static string mw_menu_File {
-            get {
-                return ResourceManager.GetString("mw_menu_File", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Help.
-        /// </summary>
-        public static string mw_menu_Help {
-            get {
-                return ResourceManager.GetString("mw_menu_Help", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to About.
-        /// </summary>
-        public static string mw_menu_Help_About {
-            get {
-                return ResourceManager.GetString("mw_menu_Help_About", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Log Folder.
-        /// </summary>
-        public static string mw_menu_Help_LogFolder {
-            get {
-                return ResourceManager.GetString("mw_menu_Help_LogFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to History.
         /// </summary>
         public static string mw_menu_History {
@@ -903,15 +930,6 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_History_Window {
             get {
                 return ResourceManager.GetString("mw_menu_History_Window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Patch notes.
-        /// </summary>
-        public static string mw_menu_PatchNotes {
-            get {
-                return ResourceManager.GetString("mw_menu_PatchNotes", resourceCulture);
             }
         }
         
@@ -948,15 +966,6 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_Queue_Window {
             get {
                 return ResourceManager.GetString("mw_menu_Queue_Window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings.
-        /// </summary>
-        public static string mw_menu_Settings {
-            get {
-                return ResourceManager.GetString("mw_menu_Settings", resourceCulture);
             }
         }
         
@@ -1029,15 +1038,6 @@ namespace Songify_Slim.Properties {
         public static string mw_menu_View {
             get {
                 return ResourceManager.GetString("mw_menu_View", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Widget.
-        /// </summary>
-        public static string mw_menu_Widget {
-            get {
-                return ResourceManager.GetString("mw_menu_Widget", resourceCulture);
             }
         }
         

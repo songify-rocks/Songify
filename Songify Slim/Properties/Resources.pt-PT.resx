@@ -177,13 +177,13 @@
   <data name="mw_menu_Exit" xml:space="preserve">
     <value>Saída</value>
   </data>
-  <data name="mw_menu_File" xml:space="preserve">
+  <data name="menu.file" xml:space="preserve">
     <value>Arquivo</value>
   </data>
-  <data name="mw_menu_Help" xml:space="preserve">
+  <data name="menu.help" xml:space="preserve">
     <value>Ajuda</value>
   </data>
-  <data name="mw_menu_Help_About" xml:space="preserve">
+  <data name="menu.help.about" xml:space="preserve">
     <value>Sobre</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
@@ -207,13 +207,13 @@
   <data name="mw_menu_Queue_Window" xml:space="preserve">
     <value>Janela de fila</value>
   </data>
-  <data name="mw_menu_Settings" xml:space="preserve">
+  <data name="menu.settings" xml:space="preserve">
     <value>Configurações</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
     <value>Apoie-nos</value>
   </data>
-  <data name="mw_menu_Widget" xml:space="preserve">
+  <data name="menu.widget" xml:space="preserve">
     <value>Ferramenta</value>
   </data>
   <data name="sw_Appearance_Color" xml:space="preserve">
@@ -393,7 +393,7 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>A recompensa "{name}" foi criada.</value>
   </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
+  <data name="menu.patchnotes" xml:space="preserve">
     <value>Notas de atualização</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
@@ -936,7 +936,7 @@
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Pedidos de músicas gratuitas</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+  <data name="menu.help.logfolder" xml:space="preserve">
     <value>Pasta de registro</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

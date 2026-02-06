@@ -223,6 +223,7 @@
     <Compile Include="Util\Configuration\ListStringOrObjectConverter.cs" />
     <Compile Include="Util\Configuration\SongBlacklistConverter .cs" />
     <Compile Include="Util\General\DurationHelper.cs" />
+    <Compile Include="Util\i18n\Loc.cs" />
     <Compile Include="Util\General\PipeMessenger.cs" />
     <Compile Include="Util\General\ServiceToolTip.cs" />
     <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
@@ -323,9 +324,6 @@
     <Compile Include="Views\Window_Blacklist.xaml.cs">
       <DependentUpon>Window_Blacklist.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Window_Botresponse.xaml.cs">
-      <DependentUpon>Window_Botresponse.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Window_CloudImportPreview.xaml.cs">
       <DependentUpon>Window_CloudImportPreview.xaml</DependentUpon>
     </Compile>
@@ -422,10 +420,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_Blacklist.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Botresponse.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

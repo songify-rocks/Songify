@@ -548,12 +548,6 @@ namespace Songify_Slim.Views
             if (tb.ContextMenu != null) tb.ContextMenu.IsOpen = false;
         }
 
-        private void Btn_Botresponse_Click(object sender, RoutedEventArgs e)
-        {
-            WindowBotresponse wBr = new();
-            wBr.Show();
-        }
-
         private void Btn_ExportConfig_Click(object sender, RoutedEventArgs e)
         {
             // calls confighandler

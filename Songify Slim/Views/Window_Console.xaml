@@ -9,7 +9,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    Title="{x:Static properties:Resources.mw_menu_Console}"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
+    Title="{i18n:Loc mw_menu_Console}"
     Width="285"
     Height="285"
     MinHeight="285"
@@ -35,7 +36,6 @@
                 <TextBlock Foreground="#DDDDDD" Text="{Binding Text}" />
             </Border>
         </ControlTemplate>
-
     </Window.Resources>
 
     <mah:MetroWindow.LeftWindowCommands>
@@ -71,7 +71,6 @@
                 x:Name="btnMetrics"
                 Click="BtnMetrics_OnClick"
                 Content="API Metrics" />
-
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <TabControl>
@@ -92,7 +91,6 @@
                         </Style>
                     </RichTextBox.Resources>
                 </RichTextBox>
-
             </Grid>
         </TabItem>
         <TabItem x:Name="TiMetrics">
@@ -125,9 +123,7 @@
                             Header="Requests / min" />
                     </DataGrid.Columns>
                 </DataGrid>
-
             </Grid>
-
         </TabItem>
         <TabItem x:Name="TiGraph">
             <Grid>
@@ -149,5 +145,4 @@
             </Grid>
         </TabItem>
     </TabControl>
-
 </mah:MetroWindow>

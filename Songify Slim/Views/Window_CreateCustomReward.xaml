@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     Title="Create Custom Reward"
     Width="484"
     Height="250"
@@ -37,7 +38,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{x:Static properties:Resources.crw_RewardTitle}" />
+                    Content="{i18n:Loc crw_RewardTitle}" />
                 <TextBox
                     x:Name="TbRewardName"
                     Grid.Row="0"
@@ -49,7 +50,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{x:Static properties:Resources.crw_RewardPrompt}" />
+                    Content="{i18n:Loc crw_RewardPrompt}" />
                 <TextBox
                     x:Name="TbRewardPrompt"
                     Grid.Row="1"
@@ -61,7 +62,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{x:Static properties:Resources.crw_RewardCost}" />
+                    Content="{i18n:Loc crw_RewardCost}" />
                 <controls:NumericUpDown
                     x:Name="NudRewardCost"
                     Grid.Row="2"
@@ -98,7 +99,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     Click="BtnCreateReward_Click"
-                    Content="{x:Static properties:Resources.crw_CreateReward}" />
+                    Content="{i18n:Loc crw_CreateReward}" />
                 <TextBlock
                     x:Name="LblStatus"
                     Grid.Row="5"

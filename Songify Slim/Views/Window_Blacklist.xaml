@@ -11,7 +11,7 @@
     Title="{DynamicResource WinTitle_Blocklist}"
     Width="658"
     Height="506"
-    d:Title="{x:Static local:Resources.WinTitle_Blocklist}"
+    d:Title="{i18n:Loc WinTitle_Blocklist}"
     WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     mc:Ignorable="d">
@@ -427,7 +427,7 @@
                 Margin="0,0,6,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                d:Content="{x:Static local:Resources.bw_btnAdd}"
+                d:Content="{i18n:Loc bw_btnAdd}"
                 Click="Btn_Add_Click"
                 Content="{DynamicResource bw_btnAdd}"
                 TabIndex="3" />
@@ -439,7 +439,7 @@
                 Padding="5,6"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                d:Content="{x:Static local:Resources.bw_btnClear}"
+                d:Content="{i18n:Loc bw_btnClear}"
                 Click="Btn_Clear_Click"
                 Content="{DynamicResource bw_btnClear}"
                 Grid.IsSharedSizeScope="True"
@@ -457,9 +457,9 @@
             SelectedIndex="0"
             SelectionChanged="Cbx_Type_SelectionChanged"
             TabIndex="2">
-            <ComboBoxItem d:Content="{x:Static local:Resources.bw_cbArtist}" Content="{DynamicResource bw_cbArtist}" />
-            <ComboBoxItem d:Content="{x:Static local:Resources.bw_cbUser}" Content="{DynamicResource bw_cbUser}" />
-            <ComboBoxItem d:Content="{x:Static local:Resources.s_Song}" Content="{DynamicResource s_Song}" />
+            <ComboBoxItem d:Content="{i18n:Loc bw_cbArtist}" Content="{DynamicResource bw_cbArtist}" />
+            <ComboBoxItem d:Content="{i18n:Loc bw_cbUser}" Content="{DynamicResource bw_cbUser}" />
+            <ComboBoxItem d:Content="{i18n:Loc s_Song}" Content="{DynamicResource s_Song}" />
         </ComboBox>
         <ListBox
             x:Name="ListView_Blacklist"
@@ -471,7 +471,7 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        d:Header="{i18n:Loc bw_menu_Delete}"
                         Click="MenuItem_Click"
                         Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
@@ -487,7 +487,7 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        d:Header="{i18n:Loc bw_menu_Delete}"
                         Click="MenuItem_Click"
                         Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
@@ -505,7 +505,7 @@
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem
-                        d:Header="{x:Static local:Resources.bw_menu_Delete}"
+                        d:Header="{i18n:Loc bw_menu_Delete}"
                         Click="MenuItem_Click"
                         Header="{DynamicResource bw_menu_Delete}" />
                 </ContextMenu>
@@ -516,19 +516,19 @@
             Grid.Column="0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
-            d:Content="{x:Static local:Resources.bw_lblBlockedArtists}"
+            d:Content="{i18n:Loc bw_lblBlockedArtists}"
             Content="{DynamicResource bw_lblBlockedArtists}" />
         <Label
             Grid.Row="1"
             Grid.Column="1"
             VerticalAlignment="Top"
-            d:Content="{x:Static local:Resources.bw_lblBlockedUsers}"
+            d:Content="{i18n:Loc bw_lblBlockedUsers}"
             Content="{DynamicResource bw_lblBlockedUsers}" />
         <Label
             Grid.Row="1"
             Grid.Column="2"
             VerticalAlignment="Top"
-            d:Content="{x:Static local:Resources.bw_lblBlockedSongs}"
+            d:Content="{i18n:Loc bw_lblBlockedSongs}"
             Content="{DynamicResource bw_lblBlockedSongs}" />
         <ContentControl
             x:Name="cc_Content"

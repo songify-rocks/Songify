@@ -1106,12 +1106,6 @@ namespace Songify_Slim.Views
             await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
         }
 
-        private void Mi_TW_BotResponses_Click(object sender, RoutedEventArgs e)
-        {
-            WindowBotresponse wBr = new();
-            wBr.Show();
-        }
-
         private void MinimizeToSysTray()
         {
             // if the setting is set, hide window

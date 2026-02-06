@@ -9,10 +9,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:util="clr-namespace:Songify_Slim.Util"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     Title="{DynamicResource WinTitle_Queue}"
     Width="600"
     Height="444"
-    d:Title="{x:Static properties:Resources.WinTitle_Queue}"
+    d:Title="{i18n:Loc WinTitle_Queue}"
     Loaded="MetroWindow_Loaded"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="Manual"
@@ -74,7 +75,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    d:Text="{x:Static properties:Resources.WinQueue_NowPlaying}"
+                    d:Text="{i18n:Loc WinQueue_NowPlaying}"
                     Text="{DynamicResource WinQueue_NowPlaying}" />
             </Border>
             <Border
@@ -86,7 +87,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    d:Text="{x:Static properties:Resources.WinQueue_SongRequest}"
+                    d:Text="{i18n:Loc WinQueue_SongRequest}"
                     Text="{DynamicResource WinQueue_SongRequest}" />
             </Border>
             <Border
@@ -98,7 +99,7 @@
                 <TextBlock
                     Margin="6,0"
                     VerticalAlignment="Center"
-                    d:Text="{x:Static properties:Resources.WinQueue_Skipping}"
+                    d:Text="{i18n:Loc WinQueue_Skipping}"
                     Text="{DynamicResource WinQueue_Skipping}" />
             </Border>
         </StackPanel>
@@ -114,7 +115,7 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Click="BtnClearQueue_Click"
-                Content="{x:Static properties:Resources.mw_menu_Queue_Clear}" />
+                Content="{i18n:Loc mw_menu_Queue_Clear}" />
             <Expander
                 x:Name="DropDownCols"
                 Width="150"
@@ -130,42 +131,42 @@
                         x:Name="CheckColQueueID"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.Window_Queue_QueueId}"
+                        Content="{i18n:Loc Window_Queue_QueueId}"
                         Tag="0"
                         Unchecked="ColVisChecked" />
                     <CheckBox
                         x:Name="CheckColArtist"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.bw_cbArtist}"
+                        Content="{i18n:Loc bw_cbArtist}"
                         Tag="1"
                         Unchecked="ColVisChecked" />
                     <CheckBox
                         x:Name="CheckColTitle"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.crw_RewardTitle}"
+                        Content="{i18n:Loc crw_RewardTitle}"
                         Tag="2"
                         Unchecked="ColVisChecked" />
                     <CheckBox
                         x:Name="CheckColLength"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.s_Length}"
+                        Content="{i18n:Loc s_Length}"
                         Tag="3"
                         Unchecked="ColVisChecked" />
                     <CheckBox
                         x:Name="CheckColRequester"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.s_Requester}"
+                        Content="{i18n:Loc s_Requester}"
                         Tag="4"
                         Unchecked="ColVisChecked" />
                     <CheckBox
                         x:Name="CheckColAction"
                         Margin="3"
                         Checked="ColVisChecked"
-                        Content="{x:Static properties:Resources.WinQueue_Actions}"
+                        Content="{i18n:Loc WinQueue_Actions}"
                         Tag="5"
                         Unchecked="ColVisChecked" />
                 </StackPanel>
@@ -244,34 +245,34 @@
                 <DataGridTextColumn
                     x:Name="ColArtist"
                     Width="*"
-                    d:Header="{x:Static properties:Resources.bw_cbArtist}"
+                    d:Header="{i18n:Loc bw_cbArtist}"
                     Binding="{Binding Path=Artist}"
                     Header="{DynamicResource bw_cbArtist}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColTitle"
                     Width="*"
-                    d:Header="{x:Static properties:Resources.crw_RewardTitle}"
+                    d:Header="{i18n:Loc crw_RewardTitle}"
                     Binding="{Binding Path=Title}"
                     Header="{DynamicResource crw_RewardTitle}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColLength"
                     Width="*"
-                    d:Header="{x:Static properties:Resources.s_Length}"
+                    d:Header="{i18n:Loc s_Length}"
                     Binding="{Binding Path=Length}"
                     Header="{DynamicResource s_Length}"
                     Visibility="Visible" />
                 <DataGridTextColumn
                     x:Name="ColRequester"
                     Width="*"
-                    d:Header="{x:Static properties:Resources.s_Requester}"
+                    d:Header="{i18n:Loc s_Requester}"
                     Binding="{Binding Path=Requester}"
                     Header="{DynamicResource s_Requester}"
                     Visibility="Visible" />
                 <DataGridTemplateColumn
                     x:Name="colDeleteButton"
-                    d:Header="{x:Static properties:Resources.WinQueue_Actions}"
+                    d:Header="{i18n:Loc WinQueue_Actions}"
                     Header="{DynamicResource WinQueue_Actions}"
                     Visibility="Visible">
                     <DataGridTemplateColumn.CellTemplate>

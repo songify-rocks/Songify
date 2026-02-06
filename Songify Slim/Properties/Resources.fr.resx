@@ -177,13 +177,13 @@
   <data name="mw_menu_Exit" xml:space="preserve">
     <value>Sortir</value>
   </data>
-  <data name="mw_menu_File" xml:space="preserve">
+  <data name="menu.file" xml:space="preserve">
     <value>Fichier</value>
   </data>
-  <data name="mw_menu_Help" xml:space="preserve">
+  <data name="menu.help" xml:space="preserve">
     <value>Aide</value>
   </data>
-  <data name="mw_menu_Help_About" xml:space="preserve">
+  <data name="menu.help.about" xml:space="preserve">
     <value>À propos</value>
   </data>
   <data name="mw_menu_History" xml:space="preserve">
@@ -207,13 +207,13 @@
   <data name="mw_menu_Queue_Window" xml:space="preserve">
     <value>Fenêtre de la file d'attente</value>
   </data>
-  <data name="mw_menu_Settings" xml:space="preserve">
+  <data name="menu.settings" xml:space="preserve">
     <value>Paramètres</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
     <value>Soutenez-nous</value>
   </data>
-  <data name="mw_menu_Widget" xml:space="preserve">
+  <data name="menu.widget" xml:space="preserve">
     <value>Widget</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
@@ -394,7 +394,7 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>La récompense "{name}" a été créée.</value>
   </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
+  <data name="menu.patchnotes" xml:space="preserve">
     <value>Notes de mise à jour</value>
   </data>
   <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
@@ -940,7 +940,7 @@
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Demandes de chansons gratuites</value>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+  <data name="menu.help.logfolder" xml:space="preserve">
     <value>Dossier journal</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

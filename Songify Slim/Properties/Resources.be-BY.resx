@@ -181,15 +181,15 @@
     <value>Выйсці</value>
     <comment>Menu content for "Exit"</comment>
   </data>
-  <data name="mw_menu_File" xml:space="preserve">
+  <data name="menu.file" xml:space="preserve">
     <value>Файл</value>
     <comment>Menu content for "File"</comment>
   </data>
-  <data name="mw_menu_Help" xml:space="preserve">
+  <data name="menu.help" xml:space="preserve">
     <value>Даведка</value>
     <comment>Menu content for "Help"</comment>
   </data>
-  <data name="mw_menu_Help_About" xml:space="preserve">
+  <data name="menu.help.about" xml:space="preserve">
     <value>Аб праграме</value>
     <comment>Menu content for "About"</comment>
   </data>
@@ -217,7 +217,7 @@
     <value>Чарга ў акне</value>
     <comment>Menu content for "Queue Window"</comment>
   </data>
-  <data name="mw_menu_Settings" xml:space="preserve">
+  <data name="menu.settings" xml:space="preserve">
     <value>Налады</value>
     <comment>Menu content for "Settings"</comment>
   </data>
@@ -225,7 +225,7 @@
     <value>Падтрымаць нас</value>
     <comment>Menu content for "Support Us" (unused)</comment>
   </data>
-  <data name="mw_menu_Widget" xml:space="preserve">
+  <data name="menu.widget" xml:space="preserve">
     <value>Віджэт</value>
     <comment>Menu content for "Widget"</comment>
   </data>
@@ -433,11 +433,11 @@
     <value>Узнагарода "{name}" створана.</value>
     <comment>Label content for "The reward "{name}" has been created."</comment>
   </data>
-  <data name="mw_menu_PatchNotes" xml:space="preserve">
+  <data name="menu.patchnotes" xml:space="preserve">
     <value>Апісанне змен</value>
     <comment>MenuItem content for "Patch notes"</comment>
   </data>
-  <data name="mw_menu_Help_LogFolder" xml:space="preserve">
+  <data name="menu.help.logfolder" xml:space="preserve">
     <value>Папка журналаў</value>
     <comment>MenuItem content for "Log Folder"</comment>
   </data>
