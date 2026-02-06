@@ -249,45 +249,64 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private static Task _eventSubWebsocketClient_ChannelPollEnd(object sender, ChannelPollEndArgs args)
         {
-            Debug.WriteLine(args);
             ChannelPollEnd pollEvent = args.Notification.Payload.Event;
-            if (pollEvent.Status.ToUpper() == "ARCHIVED" || pollEvent.Status.ToUpper() == "TERMINATED" || pollEvent.Id != GlobalObjects.CurrentSkipPoll.Id)
+
+            // Ignore irrelevant/ended polls
+            if (pollEvent.Status.ToUpper() == "ARCHIVED"
+                || pollEvent.Status.ToUpper() == "TERMINATED"
+                || pollEvent.Id != GlobalObjects.CurrentSkipPoll.Id)
                 return Task.CompletedTask;
 
             GlobalObjects.CurrentSkipPoll.IsActive = false;
 
-            // Go through all the choices and find the winning one, compare with Settings.TwitchPollSettings.Choices to find the matching one
-            PollChoice winningChoice = pollEvent.Choices.OrderByDescending(c => c.Votes).FirstOrDefault();
-            if (winningChoice == null) return Task.CompletedTask;
-
+            // The choice that should trigger the action (e.g. "Skip")
             string matchedChoice = Settings.TwitchPollSettings.WinningChoice;
-            if (matchedChoice != null)
+            if (string.IsNullOrWhiteSpace(matchedChoice))
+                return Task.CompletedTask;
+
+            // Normalize votes (treat null as 0)
+            var choices = pollEvent.Choices
+                .Select(c => new
+                {
+                    Choice = c,
+                    Votes = c.Votes ?? 0
+                })
+                .ToList();
+
+            if (choices.Count == 0)
+                return Task.CompletedTask;
+
+            int totalVotes = choices.Sum(c => c.Votes);
+            int maxVotes = choices.Max(c => c.Votes);
+
+            // Find all top choices (tie detection)
+            var topChoices = choices.Where(c => c.Votes == maxVotes).ToList();
+
+            // Strict rule: must be exactly one winner, and it must be matchedChoice
+            if (topChoices.Count != 1)
+                return Task.CompletedTask;
+
+            PollChoice winningChoice = topChoices[0].Choice;
+
+            if (!string.Equals(winningChoice.Title, matchedChoice, StringComparison.Ordinal))
+                return Task.CompletedTask;
+
+            // Get votes for matchedChoice (for percentage output)
+            int matchedVotes = choices
+                .FirstOrDefault(c => string.Equals(c.Choice.Title, matchedChoice, StringComparison.Ordinal))
+                ?.Votes ?? 0;
+
+            double winPercentage = 0;
+            double losePercentage = 0;
+
+            if (totalVotes > 0)
             {
-                // Go over the choices and get the percentage and count of votes
-                List<Tuple<string, int>> choiceVotes = (from choice in pollEvent.Choices let votes = choice.Votes ?? 0 select new Tuple<string, int>(choice.Title, votes)).ToList();
-
-                int totalVotes = choiceVotes.Sum(c => c.Item2);
-
-                // Get the percentage of the matchedChoice
-                double winPercentage = 0;
-                double losePercentage = 0;
-                int matchedVotes = choiceVotes.FirstOrDefault(c => c.Item1 == matchedChoice)?.Item2 ?? 0;
-                if (totalVotes > 0)
-                {
-                    winPercentage = (double)matchedVotes / totalVotes * 100;
-                }
-                if (winPercentage > 0)
-                {
-                    winPercentage = Math.Round(winPercentage, 2);
-                }
-                losePercentage = 100 - winPercentage;
-
-                if (matchedChoice == winningChoice.Title)
-                {
-                    // Execute skip
-                    TwitchHandler.ExecuteSkipPollChoice(matchedChoice, totalVotes, winPercentage, losePercentage);
-                }
+                winPercentage = Math.Round((double)matchedVotes / totalVotes * 100, 2);
+                losePercentage = Math.Round(100 - winPercentage, 2);
             }
+
+            // Execute skip (only reached when matchedChoice is the sole winner)
+            TwitchHandler.ExecuteSkipPollChoice(matchedChoice, totalVotes, winPercentage, losePercentage);
 
             return Task.CompletedTask;
         }
