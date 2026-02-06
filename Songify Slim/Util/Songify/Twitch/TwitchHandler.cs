@@ -1205,10 +1205,10 @@ public static class TwitchHandler
                         {
                             if (window.GetType() != typeof(MainWindow))
                                 continue;
-                            ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.IndianRed;
-                            ((MainWindow)window).IconTwitchAPI.Kind =
+                            ((MainWindow)window).IconTwitchApi.Foreground = Brushes.IndianRed;
+                            ((MainWindow)window).IconTwitchApi.Kind =
                                 PackIconBoxIconsKind.BrandsTwitch;
-                            ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
+                            ((MainWindow)window).MiTwitchApi.IsEnabled = false;
                             MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
                                 "Twitch Account Issues",
                                 "Your Twitch Account token has expired. Please login again with Twitch",
@@ -1265,9 +1265,9 @@ public static class TwitchHandler
                     {
                         if (window.GetType() != typeof(MainWindow))
                             continue;
-                        ((MainWindow)window).IconTwitchAPI.Foreground = Brushes.GreenYellow;
+                        ((MainWindow)window).IconTwitchApi.Foreground = Brushes.GreenYellow;
                         //((MainWindow)window).IconTwitchAPI.Kind = PackIconBoxIconsKind.LogosTwitch;
-                        ((MainWindow)window).mi_TwitchAPI.IsEnabled = false;
+                        ((MainWindow)window).MiTwitchApi.IsEnabled = false;
 
                         Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
                     }
@@ -2331,8 +2331,8 @@ public static class TwitchHandler
                     // API icon to red when main reset; bot icon to red when bot reset
                     if (account == Enums.TwitchAccount.Main)
                     {
-                        mw.IconTwitchAPI.Foreground = Brushes.IndianRed;
-                        mw.mi_TwitchAPI.IsEnabled = false;
+                        mw.IconTwitchApi.Foreground = Brushes.IndianRed;
+                        mw.MiTwitchApi.IsEnabled = false;
                     }
                     else
                     {
@@ -2340,8 +2340,7 @@ public static class TwitchHandler
                     }
 
                     // Reflect chat disconnect availability
-                    mw.mi_TwitchConnect.IsEnabled = true;
-                    mw.mi_TwitchDisconnect.IsEnabled = false;
+                    mw.MiTwitchConnect.IsEnabled = true;
                     mw.LblStatus.Content = "Twitch credentials cleared.";
                 }
             });
@@ -3965,7 +3964,6 @@ public static class TwitchHandler
         {
             Logger.Log(LogLevel.Info, LogSource.Twitch, $"Refunded Channel Points to {updateRedemptionStatus.Data[0].UserName}");
         }
-
     }
 
     public static async Task StartSkipPoll(string redemptionId, string rewardId)
@@ -4013,14 +4011,17 @@ public static class TwitchHandler
                 case Enums.PlayerType.Spotify:
                     await SpotifyApiHandler.SkipSong();
                     break;
+
                 case Enums.PlayerType.Pear:
                     await PearApi.Next();
                     break;
+
                 case Enums.PlayerType.WindowsPlayback:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.BrowserCompanion:
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

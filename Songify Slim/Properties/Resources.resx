@@ -185,11 +185,11 @@
     <value>English</value>
     <comment>Language name for "English"</comment>
   </data>
-  <data name="mw_menu_Blacklist" xml:space="preserve">
+  <data name="menu.song_requests.block_list" xml:space="preserve">
     <value>Blocklist</value>
     <comment>Menu content for "Blocklist"</comment>
   </data>
-  <data name="mw_menu_Connect" xml:space="preserve">
+  <data name="menu.twitch.connect" xml:space="preserve">
     <value>(Re)Connect</value>
     <comment>Menu content for "Connect"</comment>
   </data>
@@ -197,7 +197,7 @@
     <value>Disconnect</value>
     <comment>Menu content for "Disconnect"</comment>
   </data>
-  <data name="mw_menu_Exit" xml:space="preserve">
+  <data name="menu.file.exit" xml:space="preserve">
     <value>Exit</value>
     <comment>Menu content for "Exit"</comment>
   </data>
@@ -205,7 +205,7 @@
     <value>File</value>
     <comment>Menu content for "File"</comment>
   </data>
-  <data name="menu.help" xml:space="preserve">
+  <data name="menu.file.help" xml:space="preserve">
     <value>Help</value>
     <comment>Menu content for "Help"</comment>
   </data>
@@ -213,15 +213,15 @@
     <value>About</value>
     <comment>Menu content for "About"</comment>
   </data>
-  <data name="mw_menu_History" xml:space="preserve">
+  <data name="menu.history" xml:space="preserve">
     <value>History</value>
     <comment>Menu content for "History"</comment>
   </data>
-  <data name="mw_menu_History_Browser" xml:space="preserve">
+  <data name="menu.history.browser" xml:space="preserve">
     <value>History Browser</value>
     <comment>Menu content for "History Browser"</comment>
   </data>
-  <data name="mw_menu_History_Window" xml:space="preserve">
+  <data name="menu.history.window" xml:space="preserve">
     <value>History Window</value>
     <comment>Menu content for "History Window"</comment>
   </data>
@@ -229,19 +229,19 @@
     <value>Queue</value>
     <comment>Menu content for "Queue"</comment>
   </data>
-  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+  <data name="menu.song_requests.queue_browser" xml:space="preserve">
     <value>Queue Browser</value>
     <comment>Menu content for "Queue Browser"</comment>
   </data>
-  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+  <data name="menu.song_requests.clear_queue" xml:space="preserve">
     <value>Clear Queue</value>
     <comment>Menu content for "Clear Queue"</comment>
   </data>
-  <data name="mw_menu_Queue_Window" xml:space="preserve">
+  <data name="menu.song_requests.queue_window" xml:space="preserve">
     <value>Queue Window</value>
     <comment>Menu content for "Queue Window"</comment>
   </data>
-  <data name="menu.settings" xml:space="preserve">
+  <data name="menu.file.settings" xml:space="preserve">
     <value>Settings</value>
     <comment>Menu content for "Settings"</comment>
   </data>
@@ -249,7 +249,7 @@
     <value>Support Us</value>
     <comment>Menu content for "Support Us" (unused)</comment>
   </data>
-  <data name="menu.widget" xml:space="preserve">
+  <data name="menu.file.widget" xml:space="preserve">
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
@@ -501,19 +501,19 @@
     <value>The reward "{name}" has been created.</value>
     <comment>Label content for "The reward "{name}" has been created."</comment>
   </data>
-  <data name="menu.patchnotes" xml:space="preserve">
+  <data name="menu.file.patchnotes" xml:space="preserve">
     <value>Patch notes</value>
     <comment>MenuItem content for "Patch notes"</comment>
   </data>
-  <data name="menu.help.logfolder" xml:space="preserve">
+  <data name="menu.help.log_folder" xml:space="preserve">
     <value>Log Folder</value>
     <comment>MenuItem content for "Log Folder"</comment>
   </data>
-  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+  <data name="menu.twitch.login" xml:space="preserve">
     <value>Login with Twitch</value>
     <comment>MenuItem content for "Login with Twitch"</comment>
   </data>
-  <data name="mw_menu_Console" xml:space="preserve">
+  <data name="menu.view.console" xml:space="preserve">
     <value>Console</value>
     <comment>MenuItem content for "Console"</comment>
   </data>
@@ -620,23 +620,23 @@
     <value>Unlimited song requests</value>
     <comment>ToggleSwitch Content for "unlimited song requests"</comment>
   </data>
-  <data name="mw_menu_SongRequests" xml:space="preserve">
+  <data name="menu.song_requests" xml:space="preserve">
     <value>Song Requests</value>
     <comment>Menu Header for "Song Requests"</comment>
   </data>
-  <data name="mw_menu_View" xml:space="preserve">
+  <data name="menu.view" xml:space="preserve">
     <value>View</value>
     <comment>Menu Header for "View"</comment>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+  <data name="cta.support" xml:space="preserve">
     <value>Support us on Ko-Fi!</value>
     <comment>Menu Header for "Buy Us A Coffee"</comment>
   </data>
-  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+  <data name="now_playing.placeholder" xml:space="preserve">
     <value>Artist - Title</value>
     <comment>Textblock placeholder "Artist - Title"</comment>
   </data>
-  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+  <data name="menu.twitch.check_online_status" xml:space="preserve">
     <value>Check online status</value>
     <comment>MenuItem Header fro "Check Online Status" in Twitch</comment>
   </data>
@@ -880,7 +880,7 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Ignore Broadcaster / Moderator check</value>
   </data>
-  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+  <data name="menu" xml:space="preserve">
     <value>Check For Updates</value>
   </data>
   <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
@@ -1129,5 +1129,21 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Enable / Disable Song Requests (disables them in App and also tries to pause the Reward)</value>
+  </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Songify Folder</value>
+    <comment>Menu content for "Songify Folder"</comment>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Check for Updates</value>
+    <comment>Menu content for "Check For Updates</comment>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>User List</value>
+    <comment>Menu content for "User List"</comment>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>Web Server URL</value>
+    <comment>Menu content for "Web Server URL"</comment>
   </data>
 </root>

@@ -120,7 +120,7 @@
   <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
     <value>URL van de afspeellijst</value>
   </data>
-  <data name="menu.settings" xml:space="preserve">
+  <data name="menu.file.settings" xml:space="preserve">
     <value>Instellingen</value>
     <comment>Menu content for "Settings"</comment>
   </data>
@@ -128,7 +128,7 @@
     <value>Support ons</value>
     <comment>Menu content for "Support Us" (unused)</comment>
   </data>
-  <data name="menu.widget" xml:space="preserve">
+  <data name="menu.file.widget" xml:space="preserve">
     <value>Widget</value>
     <comment>Menu content for "Widget"</comment>
   </data>
@@ -192,7 +192,7 @@
     <value>Engels</value>
     <comment>Language name for "English"</comment>
   </data>
-  <data name="mw_menu_Blacklist" xml:space="preserve">
+  <data name="menu.song_requests.block_list" xml:space="preserve">
     <value>Blokkeerlijst</value>
     <comment>Menu content for "Blocklist"</comment>
   </data>
@@ -200,7 +200,7 @@
     <value>Verbreken</value>
     <comment>Menu content for "Disconnect"</comment>
   </data>
-  <data name="mw_menu_Exit" xml:space="preserve">
+  <data name="menu.file.exit" xml:space="preserve">
     <value>Afsluiten</value>
     <comment>Menu content for "Exit"</comment>
   </data>
@@ -208,7 +208,7 @@
     <value>Bestand</value>
     <comment>Menu content for "File"</comment>
   </data>
-  <data name="menu.help" xml:space="preserve">
+  <data name="menu.file.help" xml:space="preserve">
     <value>Hulp</value>
     <comment>Menu content for "Help"</comment>
   </data>
@@ -216,7 +216,7 @@
     <value>Over</value>
     <comment>Menu content for "About"</comment>
   </data>
-  <data name="mw_menu_History_Browser" xml:space="preserve">
+  <data name="menu.history.browser" xml:space="preserve">
     <value>Geschiedenis Verkenner</value>
     <comment>Menu content for "History Browser"</comment>
   </data>
@@ -224,11 +224,11 @@
     <value>Wachtrij</value>
     <comment>Menu content for "Queue"</comment>
   </data>
-  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+  <data name="menu.song_requests.queue_browser" xml:space="preserve">
     <value>Wachtrij Verkenner</value>
     <comment>Menu content for "Queue Browser"</comment>
   </data>
-  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+  <data name="menu.song_requests.clear_queue" xml:space="preserve">
     <value>Wachtrij leegmaken</value>
     <comment>Menu content for "Clear Queue"</comment>
   </data>
@@ -343,19 +343,19 @@
     <value>Artiest</value>
     <comment>Combobox item content for "Artist"</comment>
   </data>
-  <data name="mw_menu_Connect" xml:space="preserve">
+  <data name="menu.twitch.connect" xml:space="preserve">
     <value>(Opnieuw) verbinden</value>
     <comment>Menu content for "Connect"</comment>
   </data>
-  <data name="mw_menu_History" xml:space="preserve">
+  <data name="menu.history" xml:space="preserve">
     <value>Geschiedenis</value>
     <comment>Menu content for "History"</comment>
   </data>
-  <data name="mw_menu_History_Window" xml:space="preserve">
+  <data name="menu.history.window" xml:space="preserve">
     <value>Geschiedenis Scherm</value>
     <comment>Menu content for "History Window"</comment>
   </data>
-  <data name="mw_menu_Queue_Window" xml:space="preserve">
+  <data name="menu.song_requests.queue_window" xml:space="preserve">
     <value>Wachtrij Scherm</value>
     <comment>Menu content for "Queue Window"</comment>
   </data>
@@ -531,13 +531,13 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>De beloning "{name}" is aangemaakt.</value>
   </data>
-  <data name="menu.patchnotes" xml:space="preserve">
+  <data name="menu.file.patchnotes" xml:space="preserve">
     <value>Patch-notities</value>
   </data>
-  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+  <data name="menu.twitch.login" xml:space="preserve">
     <value>Inloggen met Twitch</value>
   </data>
-  <data name="mw_menu_Console" xml:space="preserve">
+  <data name="menu.view.console" xml:space="preserve">
     <value>Troosten</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
@@ -624,19 +624,19 @@
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
     <value>Onbeperkt aantal liedjesverzoeken</value>
   </data>
-  <data name="mw_menu_SongRequests" xml:space="preserve">
+  <data name="menu.song_requests" xml:space="preserve">
     <value>Liedverzoeken</value>
   </data>
-  <data name="mw_menu_View" xml:space="preserve">
+  <data name="menu.view" xml:space="preserve">
     <value>Weergave</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+  <data name="cta.support" xml:space="preserve">
     <value>Steun ons op Ko-Fi!</value>
   </data>
-  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+  <data name="now_playing.placeholder" xml:space="preserve">
     <value>Kunstenaar - Titel</value>
   </data>
-  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+  <data name="menu.twitch.check_online_status" xml:space="preserve">
     <value>Controleer online status</value>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
@@ -831,7 +831,7 @@
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Negeer de controle van de omroep/moderator</value>
   </data>
-  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+  <data name="menu" xml:space="preserve">
     <value>Controleer op updates</value>
   </data>
   <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
@@ -990,7 +990,7 @@
   <data name="Param_SongFormat_Desc" xml:space="preserve">
     <value>{Artist - Title}</value>
   </data>
-  <data name="menu.help.logfolder" xml:space="preserve">
+  <data name="menu.help.log_folder" xml:space="preserve">
     <value>Logboekmap</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

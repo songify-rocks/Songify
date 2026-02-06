@@ -122,7 +122,7 @@ namespace Songify_Slim.Util.General
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                             {
                                 main.StopCanvas();
                             }));
@@ -148,7 +148,7 @@ namespace Songify_Slim.Util.General
                             }
                             catch (Exception ex)
                             {
-                                                            }
+                            }
 
                         try
                         {
@@ -156,7 +156,7 @@ namespace Songify_Slim.Util.General
                         }
                         catch (Exception ex)
                         {
-                                                    }
+                        }
                         _isWriting = false;
                     };
 
@@ -171,7 +171,7 @@ namespace Songify_Slim.Util.General
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                    main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
                         main.SetCanvas(canvasPath);
                     }));

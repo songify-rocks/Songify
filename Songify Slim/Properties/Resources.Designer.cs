@@ -619,6 +619,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Support us on Ko-Fi!.
+        /// </summary>
+        public static string cta_support {
+            get {
+                return ResourceManager.GetString("cta.support", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Belarusian.
         /// </summary>
         public static string lang_beBY {
@@ -718,6 +727,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check For Updates.
+        /// </summary>
+        public static string menu {
+            get {
+                return ResourceManager.GetString("menu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
         public static string menu_file {
@@ -727,11 +745,56 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check for Updates.
+        /// </summary>
+        public static string menu_file_check_for_updates {
+            get {
+                return ResourceManager.GetString("menu.file.check_for_updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exit.
+        /// </summary>
+        public static string menu_file_exit {
+            get {
+                return ResourceManager.GetString("menu.file.exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
-        public static string menu_help {
+        public static string menu_file_help {
             get {
-                return ResourceManager.GetString("menu.help", resourceCulture);
+                return ResourceManager.GetString("menu.file.help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patch notes.
+        /// </summary>
+        public static string menu_file_patchnotes {
+            get {
+                return ResourceManager.GetString("menu.file.patchnotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string menu_file_settings {
+            get {
+                return ResourceManager.GetString("menu.file.settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Widget.
+        /// </summary>
+        public static string menu_file_widget {
+            get {
+                return ResourceManager.GetString("menu.file.widget", resourceCulture);
             }
         }
         
@@ -745,38 +808,155 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Songify Folder.
+        /// </summary>
+        public static string menu_help_app_folder {
+            get {
+                return ResourceManager.GetString("menu.help.app_folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Log Folder.
         /// </summary>
-        public static string menu_help_logfolder {
+        public static string menu_help_log_folder {
             get {
-                return ResourceManager.GetString("menu.help.logfolder", resourceCulture);
+                return ResourceManager.GetString("menu.help.log_folder", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Patch notes.
+        ///   Looks up a localized string similar to History.
         /// </summary>
-        public static string menu_patchnotes {
+        public static string menu_history {
             get {
-                return ResourceManager.GetString("menu.patchnotes", resourceCulture);
+                return ResourceManager.GetString("menu.history", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Settings.
+        ///   Looks up a localized string similar to History Browser.
         /// </summary>
-        public static string menu_settings {
+        public static string menu_history_browser {
             get {
-                return ResourceManager.GetString("menu.settings", resourceCulture);
+                return ResourceManager.GetString("menu.history.browser", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Widget.
+        ///   Looks up a localized string similar to History Window.
         /// </summary>
-        public static string menu_widget {
+        public static string menu_history_window {
             get {
-                return ResourceManager.GetString("menu.widget", resourceCulture);
+                return ResourceManager.GetString("menu.history.window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Requests.
+        /// </summary>
+        public static string menu_song_requests {
+            get {
+                return ResourceManager.GetString("menu.song_requests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocklist.
+        /// </summary>
+        public static string menu_song_requests_block_list {
+            get {
+                return ResourceManager.GetString("menu.song_requests.block_list", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Queue.
+        /// </summary>
+        public static string menu_song_requests_clear_queue {
+            get {
+                return ResourceManager.GetString("menu.song_requests.clear_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue Browser.
+        /// </summary>
+        public static string menu_song_requests_queue_browser {
+            get {
+                return ResourceManager.GetString("menu.song_requests.queue_browser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue Window.
+        /// </summary>
+        public static string menu_song_requests_queue_window {
+            get {
+                return ResourceManager.GetString("menu.song_requests.queue_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check online status.
+        /// </summary>
+        public static string menu_twitch_check_online_status {
+            get {
+                return ResourceManager.GetString("menu.twitch.check_online_status", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Re)Connect.
+        /// </summary>
+        public static string menu_twitch_connect {
+            get {
+                return ResourceManager.GetString("menu.twitch.connect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login with Twitch.
+        /// </summary>
+        public static string menu_twitch_login {
+            get {
+                return ResourceManager.GetString("menu.twitch.login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View.
+        /// </summary>
+        public static string menu_view {
+            get {
+                return ResourceManager.GetString("menu.view", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Console.
+        /// </summary>
+        public static string menu_view_console {
+            get {
+                return ResourceManager.GetString("menu.view.console", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User List.
+        /// </summary>
+        public static string menu_view_user_list {
+            get {
+                return ResourceManager.GetString("menu.view.user_list", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web Server URL.
+        /// </summary>
+        public static string menu_view_webserver_url {
+            get {
+                return ResourceManager.GetString("menu.view.webserver_url", resourceCulture);
             }
         }
         
@@ -835,60 +1015,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Artist - Title.
-        /// </summary>
-        public static string mw_LiveOutputPlaceholder {
-            get {
-                return ResourceManager.GetString("mw_LiveOutputPlaceholder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Blocklist.
-        /// </summary>
-        public static string mw_menu_Blacklist {
-            get {
-                return ResourceManager.GetString("mw_menu_Blacklist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Support us on Ko-Fi!.
-        /// </summary>
-        public static string mw_menu_BuyUsACoffee {
-            get {
-                return ResourceManager.GetString("mw_menu_BuyUsACoffee", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Check For Updates.
-        /// </summary>
-        public static string mw_menu_CheckUpdates {
-            get {
-                return ResourceManager.GetString("mw_menu_CheckUpdates", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (Re)Connect.
-        /// </summary>
-        public static string mw_menu_Connect {
-            get {
-                return ResourceManager.GetString("mw_menu_Connect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Console.
-        /// </summary>
-        public static string mw_menu_Console {
-            get {
-                return ResourceManager.GetString("mw_menu_Console", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Disconnect.
         /// </summary>
         public static string mw_menu_Disconnect {
@@ -898,83 +1024,11 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exit.
-        /// </summary>
-        public static string mw_menu_Exit {
-            get {
-                return ResourceManager.GetString("mw_menu_Exit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to History.
-        /// </summary>
-        public static string mw_menu_History {
-            get {
-                return ResourceManager.GetString("mw_menu_History", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to History Browser.
-        /// </summary>
-        public static string mw_menu_History_Browser {
-            get {
-                return ResourceManager.GetString("mw_menu_History_Browser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to History Window.
-        /// </summary>
-        public static string mw_menu_History_Window {
-            get {
-                return ResourceManager.GetString("mw_menu_History_Window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Queue.
         /// </summary>
         public static string mw_menu_Queue {
             get {
                 return ResourceManager.GetString("mw_menu_Queue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Queue Browser.
-        /// </summary>
-        public static string mw_menu_Queue_Browser {
-            get {
-                return ResourceManager.GetString("mw_menu_Queue_Browser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear Queue.
-        /// </summary>
-        public static string mw_menu_Queue_Clear {
-            get {
-                return ResourceManager.GetString("mw_menu_Queue_Clear", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Queue Window.
-        /// </summary>
-        public static string mw_menu_Queue_Window {
-            get {
-                return ResourceManager.GetString("mw_menu_Queue_Window", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song Requests.
-        /// </summary>
-        public static string mw_menu_SongRequests {
-            get {
-                return ResourceManager.GetString("mw_menu_SongRequests", resourceCulture);
             }
         }
         
@@ -997,15 +1051,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check online status.
-        /// </summary>
-        public static string mw_menu_Twitch_CheckOnlineStatus {
-            get {
-                return ResourceManager.GetString("mw_menu_Twitch_CheckOnlineStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Doesn&apos;t work?.
         /// </summary>
         public static string mw_menu_Twitch_dw {
@@ -1024,29 +1069,20 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login with Twitch.
-        /// </summary>
-        public static string mw_menu_Twitch_TwitchLogin {
-            get {
-                return ResourceManager.GetString("mw_menu_Twitch_TwitchLogin", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View.
-        /// </summary>
-        public static string mw_menu_View {
-            get {
-                return ResourceManager.GetString("mw_menu_View", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The widget only works if &quot;Upload Song Info&quot; is enabled. You can find this option under Settings -&gt; Output. Do you want to activate it now?.
         /// </summary>
         public static string mw_menu_Widget_disclaimer {
             get {
                 return ResourceManager.GetString("mw_menu_Widget_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist - Title.
+        /// </summary>
+        public static string now_playing_placeholder {
+            get {
+                return ResourceManager.GetString("now_playing.placeholder", resourceCulture);
             }
         }
         

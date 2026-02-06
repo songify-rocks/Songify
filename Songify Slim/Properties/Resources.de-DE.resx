@@ -165,55 +165,55 @@
   <data name="lang_en" xml:space="preserve">
     <value>Englisch</value>
   </data>
-  <data name="mw_menu_Blacklist" xml:space="preserve">
+  <data name="menu.song_requests.block_list" xml:space="preserve">
     <value>Blockliste</value>
   </data>
-  <data name="mw_menu_Connect" xml:space="preserve">
+  <data name="menu.twitch.connect" xml:space="preserve">
     <value>(Wieder)Verbinden</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Trennen</value>
   </data>
-  <data name="mw_menu_Exit" xml:space="preserve">
+  <data name="menu.file.exit" xml:space="preserve">
     <value>Beenden</value>
   </data>
   <data name="menu.file" xml:space="preserve">
     <value>Datei</value>
   </data>
-  <data name="menu.help" xml:space="preserve">
+  <data name="menu.file.help" xml:space="preserve">
     <value>Hilfe</value>
   </data>
   <data name="menu.help.about" xml:space="preserve">
     <value>Über</value>
   </data>
-  <data name="mw_menu_History" xml:space="preserve">
+  <data name="menu.history" xml:space="preserve">
     <value>Historie</value>
   </data>
-  <data name="mw_menu_History_Browser" xml:space="preserve">
+  <data name="menu.history.browser" xml:space="preserve">
     <value>Historie Browser</value>
   </data>
-  <data name="mw_menu_History_Window" xml:space="preserve">
+  <data name="menu.history.window" xml:space="preserve">
     <value>Historiefenster</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Warteschlange</value>
   </data>
-  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+  <data name="menu.song_requests.queue_browser" xml:space="preserve">
     <value>Warteschlange - Browser</value>
   </data>
-  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+  <data name="menu.song_requests.clear_queue" xml:space="preserve">
     <value>Warteschlange leeren</value>
   </data>
-  <data name="mw_menu_Queue_Window" xml:space="preserve">
+  <data name="menu.song_requests.queue_window" xml:space="preserve">
     <value>Warteschlange - Fenster</value>
   </data>
-  <data name="menu.settings" xml:space="preserve">
+  <data name="menu.file.settings" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
     <value>Unterstütze Uns</value>
   </data>
-  <data name="menu.widget" xml:space="preserve">
+  <data name="menu.file.widget" xml:space="preserve">
     <value>Widget</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
@@ -391,13 +391,13 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>Die Belohnung "{name}" wurde erstellt.</value>
   </data>
-  <data name="menu.patchnotes" xml:space="preserve">
+  <data name="menu.file.patchnotes" xml:space="preserve">
     <value>Update Informationen</value>
   </data>
-  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+  <data name="menu.twitch.login" xml:space="preserve">
     <value>Twitch Login</value>
   </data>
-  <data name="mw_menu_Console" xml:space="preserve">
+  <data name="menu.view.console" xml:space="preserve">
     <value>Konsole</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
@@ -478,16 +478,16 @@
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
     <value>unbegrenzte Songwünsche</value>
   </data>
-  <data name="mw_menu_SongRequests" xml:space="preserve">
+  <data name="menu.song_requests" xml:space="preserve">
     <value>Songwünsche</value>
   </data>
-  <data name="mw_menu_View" xml:space="preserve">
+  <data name="menu.view" xml:space="preserve">
     <value>Anzeige</value>
   </data>
-  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+  <data name="now_playing.placeholder" xml:space="preserve">
     <value>Künstler - Titel</value>
   </data>
-  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+  <data name="menu.twitch.check_online_status" xml:space="preserve">
     <value>Live-Status prüfen</value>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
@@ -679,13 +679,13 @@
   <data name="lang_br" xml:space="preserve">
     <value>Brasilianisches Portugiesisch</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+  <data name="cta.support" xml:space="preserve">
     <value>Unterstütz uns auf Ko-Fi!</value>
   </data>
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Broadcaster-/Moderator-Check ignorieren</value>
   </data>
-  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+  <data name="menu" xml:space="preserve">
     <value>Nach Updates suchen</value>
   </data>
   <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
@@ -937,7 +937,7 @@
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Kostenlose Songwünsche</value>
   </data>
-  <data name="menu.help.logfolder" xml:space="preserve">
+  <data name="menu.help.log_folder" xml:space="preserve">
     <value>Log Ordner</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

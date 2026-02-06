@@ -188,9 +188,9 @@ namespace Songify_Slim.Views
                     Name = Util.General.EnumHelper.GetDescription(p)
                 });
 
-            cbx_Source.ItemsSource = sourceBoxItems;
-            cbx_Source.DisplayMemberPath = "Name";
-            cbx_Source.SelectedValuePath = "Value";
+            CbxSource.ItemsSource = sourceBoxItems;
+            CbxSource.DisplayMemberPath = "Name";
+            CbxSource.SelectedValuePath = "Value";
         }
 
         private void BtnAboutClick(object sender, RoutedEventArgs e)
@@ -297,7 +297,7 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
 
-            if (cbx_Source.SelectedValue is PlayerType selected)
+            if (CbxSource.SelectedValue is PlayerType selected)
             {
                 _selectedSource = selected;
                 Settings.Player = selected;
@@ -305,12 +305,12 @@ namespace Songify_Slim.Views
 
             SetFetchTimer();
 
-            img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            ImgCover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
             {
                 switch (Settings.Player)
                 {
                     case PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback when Settings.DownloadCover:
-                        img_cover.Visibility = Visibility.Visible;
+                        ImgCover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
                         //if (Settings.Player == PlayerType.YtmDesktop)
@@ -319,7 +319,7 @@ namespace Songify_Slim.Views
                         break;
 
                     default:
-                        img_cover.Visibility = Visibility.Collapsed;
+                        ImgCover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
                         break;
                 }
@@ -568,13 +568,13 @@ namespace Songify_Slim.Views
             {
                 PnlMotds.Children.Clear();
                 Badge.Badge = null!;
-                badgeIcon.Kind = PackIconBootstrapIconsKind.Bell;
+                BadgeIcon.Kind = PackIconBootstrapIconsKind.Bell;
                 return;
             }
 
             SetUnreadBadge();
 
-            badgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
+            BadgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
 
             if (PsAs.Any(motd => motd.Severity == "High"))
             {
@@ -759,19 +759,19 @@ namespace Songify_Slim.Views
             GlobalObjects.AppVersion = $"{v.Major}.{v.Minor}.{v.Build}";
 
             // set the cbx index to the correct source
-            cbx_Source.SelectedValue = Settings.Player;
-            if (cbx_Source.SelectedValue is PlayerType selected)
+            CbxSource.SelectedValue = Settings.Player;
+            if (CbxSource.SelectedValue is PlayerType selected)
             {
                 _selectedSource = selected;
             }
-            cbx_Source.SelectionChanged += Cbx_Source_SelectionChanged;
+            CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             LblCopyright.Content = App.IsBeta ? "Songify v1.8.0 RC2 Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
-            tbFontSize.Text = Settings.Fontsize.ToString();
+            TbFontSize.Text = Settings.Fontsize.ToString();
             TxtblockLiveoutput.FontSize = Settings.Fontsize;
         }
 
@@ -784,19 +784,19 @@ namespace Songify_Slim.Views
                 else
                     await SpotifyApiHandler.Auth();
 
-                img_cover.Visibility = Visibility.Visible;
+                ImgCover.Visibility = Visibility.Visible;
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
             }
 
-            img_cover.Visibility = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
+            ImgCover.Visibility = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
         {
-            img_cover.Visibility = Visibility.Collapsed;
+            ImgCover.Visibility = Visibility.Collapsed;
             CoverCanvas.Visibility = Visibility.Visible;
             string newUri = url.Replace("\"", "");
             Uri uri = new(newUri);
@@ -1015,7 +1015,7 @@ namespace Songify_Slim.Views
 
         private void SetIconColors()
         {
-            IconTwitchAPI.Foreground = Brushes.IndianRed;
+            IconTwitchApi.Foreground = Brushes.IndianRed;
             IconTwitchBot.Foreground = Brushes.IndianRed;
             IconWebSpotify.Foreground = Brushes.IndianRed;
             IconWebServer.Foreground = Brushes.Gray;
@@ -1123,7 +1123,7 @@ namespace Songify_Slim.Views
 
                 try
                 {
-                    await img_cover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                    await ImgCover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
                         Visibility vis = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback && Settings.DownloadCover
                             ? Visibility.Visible
@@ -1133,8 +1133,8 @@ namespace Songify_Slim.Views
                             ? 500
                             : (int)Width - 6;
 
-                        if (img_cover.Visibility != vis)
-                            img_cover.Visibility = vis;
+                        if (ImgCover.Visibility != vis)
+                            ImgCover.Visibility = vis;
                         if (GrdCover.Visibility != vis)
                             GrdCover.Visibility = vis;
                         if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
@@ -1285,7 +1285,7 @@ namespace Songify_Slim.Views
                         GrdCover.Visibility = Visibility.Visible;
                         CoverCanvas.Visibility = Visibility.Visible;
                     }
-                    img_cover.Visibility = Visibility.Collapsed;
+                    ImgCover.Visibility = Visibility.Collapsed;
 
                     Logger.Info(LogSource.Cover, "COVER: Set successfully");
                     break;
@@ -1314,7 +1314,7 @@ namespace Songify_Slim.Views
                         image.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
                         image.UriSource = new Uri(coverPath);
                         image.EndInit();
-                        img_cover.Source = image;
+                        ImgCover.Source = image;
                     }
                     catch (Exception)
                     {
@@ -1329,12 +1329,12 @@ namespace Songify_Slim.Views
                          || Settings.Player == PlayerType.WindowsPlayback)
                         && Settings.DownloadCover)
                     {
-                        img_cover.Visibility = Visibility.Visible;
+                        ImgCover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                     }
                     else
                     {
-                        img_cover.Visibility = Visibility.Collapsed;
+                        ImgCover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
                     }
                     CoverCanvas.Visibility = Visibility.Collapsed;
@@ -1384,7 +1384,7 @@ namespace Songify_Slim.Views
         private async void Mi_TwitchCheckOnlineStatus_OnClick(object sender, RoutedEventArgs e)
         {
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-            mi_TwitchCheckOnlineStatus.Header = $"{Properties.Resources.mw_menu_Twitch_CheckOnlineStatus} ({(Settings.IsLive ? "Live" : "Offline")})";
+            MiTwitchCheckOnlineStatus.Header = $"{Properties.Resources.menu_twitch_check_online_status} ({(Settings.IsLive ? "Live" : "Offline")})";
             LblStatus.Content = Settings.IsLive ? "Stream is Up!" : "Stream is offline.";
             Logger.Info(LogSource.Twitch, $"Stream is {(Settings.IsLive ? "Live" : "Offline")}");
         }
@@ -1400,7 +1400,7 @@ namespace Songify_Slim.Views
             int fontSize = MathUtils.Clamp(Settings.Fontsize + 2, 2, 72);
             Settings.Fontsize = fontSize;
             TxtblockLiveoutput.FontSize = fontSize;
-            tbFontSize.Text = fontSize.ToString();
+            TbFontSize.Text = fontSize.ToString();
         }
 
         private void BtnFontSizeDown_Click(object sender, RoutedEventArgs e)
@@ -1408,7 +1408,7 @@ namespace Songify_Slim.Views
             int fontSize = MathUtils.Clamp(Settings.Fontsize - 2, 2, 72);
             Settings.Fontsize = fontSize;
             TxtblockLiveoutput.FontSize = fontSize;
-            tbFontSize.Text = fontSize.ToString();
+            TbFontSize.Text = fontSize.ToString();
         }
 
         public void SetTextPreview(string replace)
@@ -1553,7 +1553,7 @@ namespace Songify_Slim.Views
                         subs = await TwitchApiHelper.GetEventSubscriptions();
                         rows =
                         [
-                            ("Status", IconTwitchAPI.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
+                            ("Status", IconTwitchApi.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
                             ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
                             ("EventSubs", string.Join("\n", subs.Where(s=> s.Status == "enabled").Select(s => s.Type)))
                         ];

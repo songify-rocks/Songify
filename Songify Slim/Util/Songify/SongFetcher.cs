@@ -259,7 +259,7 @@ namespace Songify_Slim.Util.Songify
             Application.Current.Dispatcher.Invoke(() =>
             {
                 MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.img_cover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
                     main.SetTextPreview(output);
                 }));

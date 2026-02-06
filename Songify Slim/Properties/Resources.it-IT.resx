@@ -165,55 +165,55 @@
   <data name="lang_en" xml:space="preserve">
     <value>Inglese</value>
   </data>
-  <data name="mw_menu_Blacklist" xml:space="preserve">
+  <data name="menu.song_requests.block_list" xml:space="preserve">
     <value>Lista di Bloccati</value>
   </data>
-  <data name="mw_menu_Connect" xml:space="preserve">
+  <data name="menu.twitch.connect" xml:space="preserve">
     <value>(Ri)connettersi</value>
   </data>
   <data name="mw_menu_Disconnect" xml:space="preserve">
     <value>Disconnetti</value>
   </data>
-  <data name="mw_menu_Exit" xml:space="preserve">
+  <data name="menu.file.exit" xml:space="preserve">
     <value>Uscita</value>
   </data>
   <data name="menu.file" xml:space="preserve">
     <value>File</value>
   </data>
-  <data name="menu.help" xml:space="preserve">
+  <data name="menu.file.help" xml:space="preserve">
     <value>Aiuto</value>
   </data>
   <data name="menu.help.about" xml:space="preserve">
     <value>Di</value>
   </data>
-  <data name="mw_menu_History" xml:space="preserve">
+  <data name="menu.history" xml:space="preserve">
     <value>Storia</value>
   </data>
-  <data name="mw_menu_History_Browser" xml:space="preserve">
+  <data name="menu.history.browser" xml:space="preserve">
     <value>Navigatore della cronologia</value>
   </data>
-  <data name="mw_menu_History_Window" xml:space="preserve">
+  <data name="menu.history.window" xml:space="preserve">
     <value>Finestra della cronologia</value>
   </data>
   <data name="mw_menu_Queue" xml:space="preserve">
     <value>Coda</value>
   </data>
-  <data name="mw_menu_Queue_Browser" xml:space="preserve">
+  <data name="menu.song_requests.queue_browser" xml:space="preserve">
     <value>Browser della coda</value>
   </data>
-  <data name="mw_menu_Queue_Clear" xml:space="preserve">
+  <data name="menu.song_requests.clear_queue" xml:space="preserve">
     <value>Cancella coda</value>
   </data>
-  <data name="mw_menu_Queue_Window" xml:space="preserve">
+  <data name="menu.song_requests.queue_window" xml:space="preserve">
     <value>Finestra della coda</value>
   </data>
-  <data name="menu.settings" xml:space="preserve">
+  <data name="menu.file.settings" xml:space="preserve">
     <value>Impostazioni</value>
   </data>
   <data name="mw_menu_Support" xml:space="preserve">
     <value>Supportaci</value>
   </data>
-  <data name="menu.widget" xml:space="preserve">
+  <data name="menu.file.widget" xml:space="preserve">
     <value>Aggeggio</value>
   </data>
   <data name="sw_Appearance_Color" xml:space="preserve">
@@ -393,13 +393,13 @@
   <data name="crw_CreateRewardSuccess" xml:space="preserve">
     <value>Il premio "{name}" è stato creato.</value>
   </data>
-  <data name="menu.patchnotes" xml:space="preserve">
+  <data name="menu.file.patchnotes" xml:space="preserve">
     <value>Note sulla patch</value>
   </data>
-  <data name="mw_menu_Twitch_TwitchLogin" xml:space="preserve">
+  <data name="menu.twitch.login" xml:space="preserve">
     <value>Accedi con Twitch</value>
   </data>
-  <data name="mw_menu_Console" xml:space="preserve">
+  <data name="menu.view.console" xml:space="preserve">
     <value>Consolle</value>
   </data>
   <data name="brw_cmd_skip" xml:space="preserve">
@@ -480,16 +480,16 @@
   <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
     <value>richieste di brani illimitate</value>
   </data>
-  <data name="mw_menu_SongRequests" xml:space="preserve">
+  <data name="menu.song_requests" xml:space="preserve">
     <value>Richieste di brani</value>
   </data>
-  <data name="mw_menu_View" xml:space="preserve">
+  <data name="menu.view" xml:space="preserve">
     <value>Visualizzazione</value>
   </data>
-  <data name="mw_LiveOutputPlaceholder" xml:space="preserve">
+  <data name="now_playing.placeholder" xml:space="preserve">
     <value>Artista - Titolo</value>
   </data>
-  <data name="mw_menu_Twitch_CheckOnlineStatus" xml:space="preserve">
+  <data name="menu.twitch.check_online_status" xml:space="preserve">
     <value>Controlla lo stato online</value>
   </data>
   <data name="WinTitle_Queue" xml:space="preserve">
@@ -678,13 +678,13 @@
   <data name="lang_br" xml:space="preserve">
     <value>Portoghese Brasiliano</value>
   </data>
-  <data name="mw_menu_BuyUsACoffee" xml:space="preserve">
+  <data name="cta.support" xml:space="preserve">
     <value>Sostienici su Ko-Fi!</value>
   </data>
   <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
     <value>Ignora il controllo dell'emittente/moderatore</value>
   </data>
-  <data name="mw_menu_CheckUpdates" xml:space="preserve">
+  <data name="menu" xml:space="preserve">
     <value>Controlla gli aggiornamenti</value>
   </data>
   <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
@@ -936,7 +936,7 @@
   <data name="Sw_Integration_RefundAlways" xml:space="preserve">
     <value>Richieste di brani gratuiti</value>
   </data>
-  <data name="menu.help.logfolder" xml:space="preserve">
+  <data name="menu.help.log_folder" xml:space="preserve">
     <value>Cartella di registro</value>
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">

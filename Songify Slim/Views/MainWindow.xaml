@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
+    xmlns:i18N="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Songify"
@@ -133,7 +133,7 @@
     <controls:MetroWindow.RightWindowCommands>
         <controls:WindowCommands ShowSeparators="False">
             <Button
-                x:Name="btnFontSizeDown"
+                x:Name="BtnFontSizeDown"
                 Height="26"
                 Padding="5,5,5,5"
                 Click="BtnFontSizeDown_Click"
@@ -146,7 +146,7 @@
                     Kind="FormatFontSizeDecrease" />
             </Button>
             <Button
-                x:Name="btnFontSizeUp"
+                x:Name="BtnFontSizeUp"
                 Height="26"
                 Padding="5,5,5,5"
                 Click="BtnFontSizeUp_Click"
@@ -159,7 +159,7 @@
                     Kind="FormatFontSizeIncrease" />
             </Button>
             <TextBlock
-                x:Name="tbFontSize"
+                x:Name="TbFontSize"
                 Margin="3,0,12,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
@@ -269,117 +269,119 @@
             Padding="0"
             VerticalAlignment="Top"
             Background="Transparent">
-            <MenuItem d:Header="{i18n:Loc menu.file}" Header="{DynamicResource menu.file}">
+            <MenuItem d:Header="{i18N:Loc menu.file}" Header="{DynamicResource menu.file}">
                 <MenuItem
-                    d:Header="{i18n:Loc menu.settings}"
+                    d:Header="{i18N:Loc menu.file.settings}"
                     Click="BtnSettings_Click"
-                    Header="{DynamicResource menu.settings}" />
+                    Header="{DynamicResource menu.file.settings}" />
                 <MenuItem
-                    d:Header="{i18n:Loc menu.widget}"
+                    d:Header="{i18N:Loc menu.file.widget}"
                     Click="BtnWidget_Click"
-                    Header="{DynamicResource menu.widget}" />
+                    Header="{DynamicResource menu.file.widget}" />
                 <MenuItem
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    d:Header="{i18n:Loc menu.patchnotes}"
+                    d:Header="{i18N:Loc menu.file.patchnotes}"
                     Click="BtnPatchNotes_Click"
-                    Header="{DynamicResource menu.patchnotes}" />
-                <MenuItem d:Header="{i18n:Loc menu.help}" Header="{DynamicResource menu.help}">
+                    Header="{DynamicResource menu.file.patchnotes}" />
+                <MenuItem d:Header="{i18N:Loc menu.help}" Header="{DynamicResource menu.file.help}">
                     <MenuItem Click="BtnFAQ_Click" Header="FAQ" />
                     <MenuItem Click="BtnGitHub_Click" Header="GitHub" />
                     <MenuItem Click="BtnDiscord_Click" Header="Discord" />
                     <MenuItem
-                        d:Header="{i18n:Loc menu.help.logfolder}"
+                        d:Header="{i18N:Loc menu.help.log_folder}"
                         Click="BtnLogFolderClick"
-                        Header="{DynamicResource menu.help.logfolder}" />
-                    <MenuItem Click="BtnAppFolderClick" Header="Songify Folder" />
+                        Header="{DynamicResource menu.help.log_folder}" />
                     <MenuItem
-                        d:Header="{i18n:Loc menu.help.about}"
+                        d:Header="{i18N:Loc menu.help.app_folder}"
+                        Click="BtnAppFolderClick"
+                        Header="{DynamicResource menu.help.app_folder}" />
+                    <MenuItem
+                        d:Header="{i18N:Loc menu.help.about}"
                         Click="BtnAboutClick"
                         Header="{DynamicResource menu.help.about}" />
                 </MenuItem>
                 <MenuItem
-                    x:Name="mi_Update"
-                    d:Header="{i18n:Loc mw_menu_CheckUpdates}"
+                    x:Name="MiUpdate"
+                    d:Header="{i18N:Loc menu.file.check_for_updates}"
                     Click="Mi_Update_OnClick"
-                    Header="{DynamicResource mw_menu_CheckUpdates}" />
+                    Header="{DynamicResource menu.file.check_for_updates}" />
                 <MenuItem
-                    x:Name="mi_Exit"
-                    d:Header="{i18n:Loc mw_menu_Exit}"
+                    x:Name="MiExit"
+                    d:Header="{i18N:Loc menu.file.exit}"
                     Click="Mi_Exit_Click"
-                    Header="{DynamicResource mw_menu_Exit}" />
+                    Header="{DynamicResource menu.file.exit}" />
             </MenuItem>
             <MenuItem
                 Header="Twitch"
                 IsTabStop="False"
                 ToolTip="Connect to Twitch">
                 <MenuItem
-                    x:Name="mi_TwitchAPI"
-                    d:Header="{i18n:Loc mw_menu_Twitch_TwitchLogin}"
+                    x:Name="MiTwitchApi"
+                    d:Header="{i18N:Loc menu.twitch.login}"
                     Click="Mi_TwitchAPI_Click"
-                    Header="{DynamicResource mw_menu_Twitch_TwitchLogin}" />
+                    Header="{DynamicResource menu.twitch.login}" />
                 <MenuItem
-                    x:Name="mi_TwitchConnect"
-                    d:Header="{i18n:Loc mw_menu_Connect}"
+                    x:Name="MiTwitchConnect"
+                    d:Header="{i18N:Loc menu.twitch.connect}"
                     Click="BtnTwitch_Click"
-                    Header="{DynamicResource mw_menu_Connect}"
+                    Header="{DynamicResource menu.twitch.connect}"
                     Tag="Connect" />
                 <MenuItem
-                    x:Name="mi_TwitchDisconnect"
-                    d:Header="{i18n:Loc mw_menu_Disconnect}"
-                    Click="BtnTwitch_Click"
-                    Header="{DynamicResource mw_menu_Disconnect}"
-                    IsEnabled="False"
-                    Tag="Disconnect"
-                    Visibility="Collapsed" />
-                <MenuItem
-                    x:Name="mi_TwitchCheckOnlineStatus"
-                    d:Header="{i18n:Loc mw_menu_Twitch_CheckOnlineStatus}"
+                    x:Name="MiTwitchCheckOnlineStatus"
+                    d:Header="{i18N:Loc menu.twitch.check_online_status}"
                     Click="Mi_TwitchCheckOnlineStatus_OnClick"
-                    Header="{DynamicResource mw_menu_Twitch_CheckOnlineStatus}" />
+                    Header="{DynamicResource menu.twitch.check_online_status}" />
             </MenuItem>
-            <MenuItem d:Header="{i18n:Loc mw_menu_SongRequests}" Header="{DynamicResource mw_menu_SongRequests}">
+            <MenuItem d:Header="{i18N:Loc menu.menu.song_requests}" Header="{DynamicResource menu.menu.song_requests}">
                 <MenuItem
-                    x:Name="mi_Queue"
-                    d:Header="{i18n:Loc mw_menu_Queue_Window}"
+                    x:Name="MiQueue"
+                    d:Header="{i18N:Loc menu.song_requests.queue_window}"
                     Click="Mi_Queue_Click"
-                    Header="{DynamicResource mw_menu_Queue_Window}"
+                    Header="{DynamicResource menu.song_requests.queue_window}"
                     Tag="Window" />
                 <MenuItem
-                    d:Header="{i18n:Loc mw_menu_Queue_Browser}"
+                    d:Header="{i18N:Loc menu.song_requests.}"
                     Click="Mi_Queue_Click"
-                    Header="{DynamicResource mw_menu_Queue_Browser}"
+                    Header="{DynamicResource menu.song_requests.}"
                     Tag="Browser" />
                 <MenuItem
-                    x:Name="mi_QueueClear"
-                    d:Header="{i18n:Loc mw_menu_Queue_Clear}"
+                    x:Name="MiQueueClear"
+                    d:Header="{i18N:Loc menu.song_requests.clear_queue}"
                     Click="Mi_QueueClear_Click"
-                    Header="{DynamicResource mw_menu_Queue_Clear}" />
+                    Header="{DynamicResource menu.song_requests.clear_queue}" />
                 <MenuItem
-                    x:Name="mi_Blacklist"
-                    d:Header="{i18n:Loc mw_menu_Blacklist}"
+                    x:Name="MiBlacklist"
+                    d:Header="{i18N:Loc menu.song_requests.block_list}"
                     Click="Mi_Blacklist_Click"
-                    Header="{DynamicResource mw_menu_Blacklist}" />
+                    Header="{DynamicResource menu.song_requests.block_list}" />
             </MenuItem>
-            <MenuItem d:Header="{i18n:Loc mw_menu_History}" Header="{DynamicResource mw_menu_History}">
+            <MenuItem d:Header="{i18N:Loc menu.history}" Header="{DynamicResource menu.history}">
                 <MenuItem
-                    d:Header="{i18n:Loc mw_menu_History_Window}"
+                    d:Header="{i18N:Loc menu.history.window}"
                     Click="BtnHistory_Click"
-                    Header="{DynamicResource mw_menu_History_Window}"
+                    Header="{DynamicResource menu.history.window}"
                     Tag="Window" />
                 <MenuItem
-                    d:Header="{i18n:Loc mw_menu_History_Browser}"
+                    d:Header="{i18N:Loc menu.history.browser}"
                     Click="BtnHistory_Click"
-                    Header="{DynamicResource mw_menu_History_Browser}"
+                    Header="{DynamicResource menu.history.browser}"
                     Tag="Browser" />
             </MenuItem>
-            <MenuItem d:Header="{i18n:Loc mw_menu_View}" Header="{DynamicResource mw_menu_View}">
+            <MenuItem d:Header="{i18N:Loc menu.view}" Header="{DynamicResource menu.view}">
                 <MenuItem
-                    d:Header="{i18n:Loc mw_menu_Console}"
+                    d:Header="{i18N:Loc menu.view.console}"
                     Click="BtnMenuViewConsole_Click"
-                    Header="{DynamicResource mw_menu_Console}" />
-                <MenuItem Click="BtnMenuViewUserList_Click" Header="Viewer list" />
-                <MenuItem Click="BtnWebServerUrl_Click" Header="Web Server URL" />
+                    Header="{DynamicResource menu.view.console}" />
+
+                <MenuItem
+                    d:Header="{i18N:Loc menu.view.user_list}"
+                    Click="BtnMenuViewUserList_Click"
+                    Header="{DynamicResource menu.view.user_list}" />
+                <MenuItem
+                    d:Header="{i18N:Loc menu.view.webserver_url}"
+                    Click="BtnWebServerUrl_Click"
+                    Header="{DynamicResource menu.view.webserver_url}" />
             </MenuItem>
         </Menu>
         <StackPanel
@@ -389,7 +391,7 @@
             HorizontalAlignment="Right"
             Orientation="Horizontal">
             <ComboBox
-                x:Name="cbx_Source"
+                x:Name="CbxSource"
                 Width="116"
                 Padding="2"
                 HorizontalAlignment="Right"
@@ -414,7 +416,7 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <iconPacks:BootstrapIcons
-                                x:Name="badgeIcon"
+                                x:Name="BadgeIcon"
                                 Width="12"
                                 Height="12"
                                 Kind="BellFill"
@@ -515,7 +517,7 @@
                     <RectangleGeometry Rect="0,0,175,175" />
                 </Grid.Clip>
                 <Image
-                    x:Name="img_cover"
+                    x:Name="ImgCover"
                     Margin="10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -547,9 +549,9 @@
                     Padding="10"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    d:Text="{i18n:Loc mw_LiveOutputPlaceholder}"
+                    d:Text="{i18N:Loc now_playing.placeholder}"
                     SnapsToDevicePixels="True"
-                    Text="{DynamicResource mw_LiveOutputPlaceholder}"
+                    Text="{DynamicResource now_playing.placeholder}"
                     TextOptions.TextFormattingMode="Display"
                     TextWrapping="Wrap"
                     UseLayoutRounding="True" />
@@ -600,8 +602,8 @@
                         <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
                         <TextBlock
                             VerticalAlignment="Center"
-                            d:Text="{i18n:Loc mw_menu_BuyUsACoffee}"
-                            Text="{DynamicResource mw_menu_BuyUsACoffee}" />
+                            d:Text="{i18N:Loc cta.support}"
+                            Text="{DynamicResource  cta.support}" />
                     </StackPanel>
                     <Border.RenderTransform>
                         <TransformGroup>
@@ -632,7 +634,7 @@
             </Button.Content>
         </Button>
         <DockPanel
-            x:Name="sb_Main"
+            x:Name="SbMain"
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
@@ -689,7 +691,7 @@
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
                                 <iconPacks:PackIconBoxIcons
-                                    x:Name="IconTwitchAPI"
+                                    x:Name="IconTwitchApi"
                                     Width="14"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
