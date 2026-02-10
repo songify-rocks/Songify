@@ -333,7 +333,7 @@
                     Click="Mi_TwitchCheckOnlineStatus_OnClick"
                     Header="{DynamicResource menu.twitch.check_online_status}" />
             </MenuItem>
-            <MenuItem d:Header="{i18N:Loc menu.menu.song_requests}" Header="{DynamicResource menu.menu.song_requests}">
+            <MenuItem d:Header="{i18N:Loc menu.song_requests}" Header="{DynamicResource menu.song_requests}">
                 <MenuItem
                     x:Name="MiQueue"
                     d:Header="{i18N:Loc menu.song_requests.queue_window}"
@@ -341,9 +341,9 @@
                     Header="{DynamicResource menu.song_requests.queue_window}"
                     Tag="Window" />
                 <MenuItem
-                    d:Header="{i18N:Loc menu.song_requests.}"
+                    d:Header="{i18N:Loc menu.song_requests.queue_browser}"
                     Click="Mi_Queue_Click"
-                    Header="{DynamicResource menu.song_requests.}"
+                    Header="{DynamicResource menu.song_requests.queue_browser}"
                     Tag="Browser" />
                 <MenuItem
                     x:Name="MiQueueClear"

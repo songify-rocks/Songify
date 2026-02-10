@@ -258,6 +258,7 @@
     <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
     <Compile Include="Util\Songify\WebTitleFetcher.cs" />
     <Compile Include="Util\Spotify\ApiCallMeter.cs" />
+    <Compile Include="Util\Spotify\SpotifyApi.cs" />
     <Compile Include="Util\Youtube\Pear\PearWebSocketClient.cs" />
     <Compile Include="Util\Youtube\Pear\QueueParser.cs" />
     <Compile Include="Util\Youtube\Pear\YTHCHSearchParser.cs" />

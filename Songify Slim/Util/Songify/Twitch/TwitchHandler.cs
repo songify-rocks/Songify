@@ -181,13 +181,13 @@ public static class TwitchHandler
                 return;
             }
 
-            if (track.AvailableMarkets.Count > 0)
-                if (IsTrackUnavailable(track, e, out response))
-                {
-                    await SendChatMessage(response);
-                    await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
-                    return;
-                }
+            //if (track.AvailableMarkets.Count > 0)
+            //    if (IsTrackUnavailable(track, e, out response))
+            //    {
+            //        await SendChatMessage(response);
+            //        await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
+            //        return;
+            //    }
 
             if (IsArtistBlacklisted(track, e, out response))
             {
@@ -3852,7 +3852,7 @@ public static class TwitchHandler
             return (false, null, "No song found.");
 
         if (IsTrackExplicit(track, null, out string msg)) return (false, null, msg);
-        if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
+        //if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
         if (IsArtistBlacklisted(track, null, out msg)) return (false, null, msg);
         if (IsTrackTooLong(track, null, out msg)) return (false, null, msg);
         if (IsTrackAlreadyInQueue(track, null, out msg)) return (false, null, msg);
