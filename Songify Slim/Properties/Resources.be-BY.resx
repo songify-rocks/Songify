@@ -517,7 +517,7 @@
     <comment>TabControl header content for "Accoutns"</comment>
   </data>
   <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
-    <value>Ўзнагароды</value>
+    <value>Узнагароды</value>
     <comment>TabControl header content for  "Rewards"</comment>
   </data>
   <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
@@ -1075,7 +1075,7 @@
     <value>Скапіравана</value>
   </data>
   <data name="sw_ResponseVariables" xml:space="preserve">
-    <value>Зменныя адказу</value>
+    <value>Пераменныя адказу</value>
   </data>
   <data name="lang_beBY" xml:space="preserve">
     <value>Беларуская</value>
@@ -1121,5 +1121,21 @@
   </data>
   <data name="brw_cmd_togglesr" xml:space="preserve">
     <value>Уключыць/адключыць запыты на песні (адключае іх у праграме, а таксама спрабуе прыпыніць узнагароду)</value>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Праверыць наяўнасць абнаўленняў</value>
+    <comment>Menu content for "Check For Updates</comment>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>Спіс карыстальнікаў</value>
+    <comment>Menu content for "User List"</comment>
+  </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Папка Songify</value>
+    <comment>Menu content for "Songify Folder"</comment>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>Web Server URL</value>
+    <comment>Menu content for "Web Server URL"</comment>
   </data>
 </root>
