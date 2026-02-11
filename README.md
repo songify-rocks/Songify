@@ -101,6 +101,29 @@ Don’t let your music be an afterthought—make it the centerpiece of your stre
 
 ---
 
+### 📝 For Developers: Patch Notes Generation
+
+Songify includes automated tools for generating release notes from git commit history.
+
+**Quick Start:**
+```powershell
+# Generate patch notes since the last tag
+.\GeneratePatchNotes.ps1
+```
+
+The tool automatically:
+- Detects the latest version tag
+- Extracts commits since that tag
+- Categorizes changes by type (features, fixes, refactoring, etc.)
+- Generates formatted markdown output
+
+**GitHub Actions:**
+You can also use the automated workflow from the Actions tab to generate patch notes and optionally create draft releases.
+
+📖 [Full Documentation](PATCH_NOTES_README.md)
+
+---
+
 ### Powered by
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
