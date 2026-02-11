@@ -169,7 +169,7 @@ namespace Songify_Slim.Util.Spotify
                         //mw.IconWebSpotify.Kind = PackIconBoxIconsKind.LogosSpotify;
                     }
 
-                    await EnsurePlaylistCacheAsync(null, true);
+                    await EnsurePlaylistCacheAsync(true);
                 });
             }
         }
@@ -241,7 +241,7 @@ namespace Songify_Slim.Util.Spotify
                     }
                 }));
 
-            await EnsurePlaylistCacheAsync(null, true);
+            await EnsurePlaylistCacheAsync(true);
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()
@@ -1196,13 +1196,15 @@ namespace Songify_Slim.Util.Spotify
             return best;
         }
 
-        public static async Task EnsurePlaylistCacheAsync(Window_Settings windowSettings = null, bool force = false)
+        public static async Task EnsurePlaylistCacheAsync(bool force = false)
         {
             if (Client == null)
                 return;
 
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
-                Settings.SpotifyPlaylistId == "-1")
+            if (SpotifyApi == null)
+                return;
+
+            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) || Settings.SpotifyPlaylistId == "-1")
                 return;
 
             // Fast path: already initialized
@@ -1213,70 +1215,89 @@ namespace Songify_Slim.Util.Spotify
             {
                 if (_playlistCacheInitialized && !force)
                     return;
-                _playlistCacheInitialized = true; // mark as initialized; actual fill happens below
+
+                _playlistCacheInitialized = true;
             }
 
-            if (windowSettings != null)
-            {
-                windowSettings.TbGridLoading.Text = "Caching Playlist: 0";
-                windowSettings.GridLoading.Visibility = Visibility.Visible;
-            }
+
 
             Stopwatch sw = new();
-
             Logger.Info(LogSource.Spotify, "Started caching playlist");
-            sw.Reset();
-            sw.Start();
+            sw.Restart();
+
             try
             {
-                _playlistTrackIds.Clear();
+                string playlistId = Settings.SpotifyPlaylistId;
 
-                // Basic pagination – adapt to your SpotifyAPI-NET overloads
-                Paging<PlaylistTrack<IPlayableItem>> page = await ApiCallMeter.RunAsync("Playlists.GetItems",
-                    () => Client.Playlists.GetItems(Settings.SpotifyPlaylistId),
-                    softLimitPerminute);
+                // Optional: skip work when snapshot did not change
+                // Find cached snapshot for this playlist
+                string cachedSnapshot = null;
+                SpotifyPlaylistCache cached = Settings.SpotifyPlaylistCache?.FirstOrDefault(p => p.Id == playlistId);
+                if (cached != null && !string.IsNullOrEmpty(cached.SnapshotId))
+                    cachedSnapshot = cached.SnapshotId;
 
-                int counter = 0;
-
-                while (page?.Items is { Count: > 0 })
+                // If not forcing, we can do a lightweight meta call first and bail out early
+                if (!force && cachedSnapshot != null)
                 {
-                    foreach (PlaylistTrack<IPlayableItem> item in page.Items)
+                    SpotifyPlaylistCache metaOnly = await SpotifyApi.GetPlaylistMetaAsync(playlistId);
+                    if (metaOnly != null && metaOnly.SnapshotId == cachedSnapshot)
                     {
-                        if (item.Track is FullTrack fullTrack && !string.IsNullOrEmpty(fullTrack.Id))
-                            _playlistTrackIds.Add(fullTrack.Id);
-
-                        counter++;
-                        if (windowSettings == null) continue;
-                        if (counter % 25 == 0) // update UI every 25 items
+                        // Rebuild in-memory hashset from cached YAML, no API calls for items
+                        lock (_playlistLock)
                         {
-                            await windowSettings.Dispatcher.InvokeAsync(() =>
+                            _playlistTrackIds.Clear();
+                            foreach (var it in cached.Items)
                             {
-                                windowSettings.TbGridLoading.Text =
-                                    $"Caching Playlist: {_playlistTrackIds.Count}";
-                            }, DispatcherPriority.Background);
+                                if (!string.IsNullOrEmpty(it.TrackId))
+                                    _playlistTrackIds.Add(it.TrackId);
+                            }
                         }
+
+                        Logger.Info(LogSource.Spotify, "Playlist snapshot unchanged, reused cached items");
+                        return;
                     }
-
-                    if (page.Next == null)
-                        break;
-
-                    page = await ApiCallMeter.RunAsync("Client.NextPage", () => Client.NextPage(page), softLimitPerminute);
                 }
+
+                // Full fetch: playlist metadata + all items
+                // If you want progress, use page-by-page fetch instead (see below).
+                SpotifyPlaylistCache fresh = await SpotifyApi.GetPlaylistWithItemsAsync(playlistId);
+
+                if (fresh == null)
+                {
+                    Logger.Log(LogLevel.Warning, LogSource.Spotify, "Playlist fetch returned null");
+                    return;
+                }
+
+                // Update in-memory set
+                lock (_playlistLock)
+                {
+                    _playlistTrackIds.Clear();
+                    foreach (SpotifyPlaylistItem it in fresh.Items)
+                    {
+                        if (!string.IsNullOrEmpty(it.TrackId))
+                            _playlistTrackIds.Add(it.TrackId);
+                    }
+                }
+
+                // Persist YAML cache: only keep this single playlist entry
+                if (Settings.SpotifyPlaylistCache == null)
+                    Settings.SpotifyPlaylistCache = new List<SpotifyPlaylistCache>();
+
+                Settings.SpotifyPlaylistCache.RemoveAll(p => p.Id == playlistId);
+                Settings.SpotifyPlaylistCache.Add(fresh);
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Spotify, "Error initializing playlist cache", ex);
-                // If you want, you can set _playlistCacheInitialized = false here to retry later
+
+                // If you want retry behavior, uncomment:
+                // lock (_playlistLock) { _playlistCacheInitialized = false; }
             }
             finally
             {
                 sw.Stop();
-                Logger.Info(LogSource.Spotify, $"Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.Seconds}s)");
-                if (windowSettings != null)
-                {
-                    windowSettings.TbGridLoading.Text = "Getting things ready";
-                    windowSettings.GridLoading.Visibility = Visibility.Collapsed;
-                }
+                Logger.Info(LogSource.Spotify,
+                    $"Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.TotalSeconds:0.0}s)");
             }
         }
     }

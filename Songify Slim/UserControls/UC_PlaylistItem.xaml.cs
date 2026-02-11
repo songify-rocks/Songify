@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Songify_Slim.Models.Spotify;
 
 namespace Songify_Slim.UserControls
 {
@@ -11,8 +12,9 @@ namespace Songify_Slim.UserControls
     /// </summary>
     public partial class UcPlaylistItem
     {
-        public FullPlaylist Playlist;
-        public UcPlaylistItem(FullPlaylist playlist)
+        public SpotifyPlaylistCache Playlist;
+
+        public UcPlaylistItem(SpotifyPlaylistCache playlist)
         {
             InitializeComponent();
             Playlist = playlist;
@@ -24,11 +26,10 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
-
             TbPlaylistName.Text = playlist.Name;
             if (playlist.Images == null) return;
             if (playlist.Images.Count != 0)
-                PlaylistImage.Source = new BitmapImage(new Uri(playlist.Images.First().Url));
+                PlaylistImage.Source = new BitmapImage(new Uri(playlist.Images.First()));
         }
     }
 }

@@ -289,7 +289,7 @@ namespace Songify_Slim.Util.General
                                 Settings.SpotifyPlaylistId == "-1")
                             {
                                 isLikedSongsPlaylist = true;
-                                List<bool> x = await SpotifyApiHandler.CheckLibrary(ids);
+                                List<bool> x = await SpotifyApiHandler.SpotifyApi.CheckSavedTracksAsync(ids);
                                 if (x != null)
                                     for (int i = 0; i < ids.Count; i++)
                                     {
@@ -298,7 +298,6 @@ namespace Songify_Slim.Util.General
                             }
                             else
                             {
-                                isLikedSongsPlaylist = false;
                                 await LoadLikedPlaylistTracks();
                             }
                         }

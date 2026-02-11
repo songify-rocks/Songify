@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Songify_Slim.Models.Blocklist;
+using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
@@ -565,7 +566,7 @@ namespace Songify_Slim.Util.Configuration
             set => SetSpotifyDeviceId(value);
         }
 
-        public static List<FullPlaylist> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
+        public static List<SpotifyPlaylistCache> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
 
         public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
 
@@ -1706,7 +1707,7 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.SpotifyCredentials.DeviceId;
         }
 
-        private static List<FullPlaylist> GetSpotifyPlaylistCache()
+        private static List<SpotifyPlaylistCache> GetSpotifyPlaylistCache()
         {
             return CurrentConfig.SpotifyCredentials.PlaylistCache;
         }
@@ -2515,7 +2516,7 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
         }
 
-        private static void SetSpotifyPlaylistCache(List<FullPlaylist> value)
+        private static void SetSpotifyPlaylistCache(List<SpotifyPlaylistCache> value)
         {
             CurrentConfig.SpotifyCredentials.PlaylistCache = value;
             ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);

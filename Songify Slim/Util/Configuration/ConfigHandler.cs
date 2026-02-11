@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Models.Blocklist;
+using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
@@ -352,7 +353,7 @@ namespace Songify_Slim.Util.Configuration
             path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                .WithTypeConverter(new SingleStringToListConverter())
+                //.WithTypeConverter(new SingleStringToListConverter())
                 .WithTypeConverter(new PlayerTypeYamlConverter())
                 .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
                 .WithTypeConverter(new ListStringOrObjectConverter<BlockedUser>(s => new BlockedUser { Username = s }))
@@ -660,7 +661,7 @@ namespace Songify_Slim.Util.Configuration
         public string ClientId { get; set; } = "";
         public string ClientSecret { get; set; } = "";
         public PrivateUser Profile { get; set; } = new();
-        public List<FullPlaylist> PlaylistCache { get; set; } = [];
+        public List<SpotifyPlaylistCache> PlaylistCache { get; set; } = new();
         public string RedirectUri { get; set; } = "localhost";
     }
 

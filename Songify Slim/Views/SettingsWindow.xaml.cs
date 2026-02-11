@@ -5,6 +5,7 @@ using MahApps.Metro.IconPacks;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
@@ -39,6 +40,7 @@ using System.Windows.Navigation;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
+using Windows.Media.Playlists;
 using YamlDotNet.Core.Tokens;
 using static Songify_Slim.App;
 using Application = System.Windows.Application;
@@ -1320,7 +1322,7 @@ namespace Songify_Slim.Views
             if (item.Playlist.Id == Settings.SpotifyPlaylistId)
                 return;
             Settings.SpotifyPlaylistId = item.Playlist.Id;
-            await SpotifyApiHandler.EnsurePlaylistCacheAsync(this, true);
+            await SpotifyApiHandler.EnsurePlaylistCacheAsync(true);
         }
 
         private async void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1421,34 +1423,22 @@ namespace Songify_Slim.Views
 
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                         {
-                            Content = new UcPlaylistItem(new FullPlaylist
+                            Content = new UcPlaylistItem(new SpotifyPlaylistCache()
                             {
-                                Collaborative = false,
-                                ExternalUrls = null,
-                                Href = null,
                                 Id = "-1",
-                                Images =
-                                [
-                                    new Image()
-                                    {
-                                        Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png", Width = 640,
-                                        Height = 640
-                                    }
-                                ],
+                                Images = ["https://misc.scdn.co/liked-songs/liked-songs-640.png"],
+                                Items = [],
                                 Name = "Liked Songs",
-                                Owner = null,
-                                Public = false,
+                                Owner = Settings.SpotifyProfile.DisplayName,
                                 SnapshotId = null,
-                                Tracks = null,
-                                Type = null,
-                                Uri = null
+                                Url = null
                             })
                         });
 
                         Paging<FullPlaylist> playlists =
                             await SpotifyApiHandler.GetUserPlaylists();
                         if (playlists == null) return;
-                        List<FullPlaylist> playlistCache = [];
+                        List<SpotifyPlaylistCache> playlistCache = [];
                         CbSpotifyPlaylist.SelectionChanged -= Cb_SpotifyPlaylist_SelectionChanged;
 
                         foreach (FullPlaylist playlist in playlists.Items
@@ -1456,11 +1446,21 @@ namespace Songify_Slim.Views
                                          playlist?.Owner?.Id != null &&
                                          playlist.Owner.Id == GlobalObjects.SpotifyProfile?.Id))
                         {
+                            SpotifyPlaylistCache cache = new SpotifyPlaylistCache
+                            {
+                                Id = playlist.Id,
+                                Name = playlist.Name,
+                                Owner = playlist.Owner?.DisplayName,
+                                Url = playlist.Uri,
+                                SnapshotId = playlist.SnapshotId,
+                                Images = [playlist.Images?.First().Url],
+                                Items = null
+                            };
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem
-                            { Content = new UcPlaylistItem(playlist) });
+                            { Content = new UcPlaylistItem(cache) });
                             CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
-                            { Content = new UcPlaylistItem(playlist) });
-                            playlistCache.Add(playlist);
+                            { Content = new UcPlaylistItem(cache) });
+                            playlistCache.Add(cache);
                             Thread.Sleep(100);
                         }
 
@@ -1490,30 +1490,18 @@ namespace Songify_Slim.Views
                         CbSpotifySongLimitPlaylist.Items.Clear();
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                         {
-                            Content = new UcPlaylistItem(new FullPlaylist
+                            Content = new UcPlaylistItem(new SpotifyPlaylistCache
                             {
-                                Collaborative = false,
-                                ExternalUrls = null,
-                                Href = null,
                                 Id = "-1",
-                                Images =
-                                [
-                                    new Image
-                                    {
-                                        Url = "https://misc.scdn.co/liked-songs/liked-songs-640.png", Width = 640,
-                                        Height = 640
-                                    }
-                                ],
                                 Name = "Liked Songs",
                                 Owner = null,
-                                Public = false,
+                                Url = null,
                                 SnapshotId = null,
-                                Tracks = null,
-                                Type = null,
-                                Uri = null
+                                Images = ["https://misc.scdn.co/liked-songs/liked-songs-640.png"],
+                                Items = null
                             })
                         });
-                        foreach (FullPlaylist playlist in Settings.SpotifyPlaylistCache)
+                        foreach (SpotifyPlaylistCache playlist in Settings.SpotifyPlaylistCache)
                         {
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
                             CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
