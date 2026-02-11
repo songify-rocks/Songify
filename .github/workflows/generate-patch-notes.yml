@@ -1,0 +1,80 @@
+name: Generate Patch Notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      output_file:
+        description: 'Output file name'
+        required: false
+        default: 'PATCHNOTES.md'
+      create_release_draft:
+        description: 'Create a draft GitHub release'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  generate-patch-notes:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+          
+      - name: Fetch all tags
+        run: git fetch --tags
+        
+      - name: Generate patch notes
+        id: generate
+        shell: pwsh
+        run: |
+          $outputFile = "${{ github.event.inputs.output_file }}"
+          if ([string]::IsNullOrEmpty($outputFile)) {
+            $outputFile = "PATCHNOTES.md"
+          }
+          
+          Write-Host "Generating patch notes to: $outputFile"
+          .\GeneratePatchNotes.ps1 -OutputFile $outputFile
+          
+          # Set output for next steps
+          $content = Get-Content $outputFile -Raw
+          echo "PATCH_NOTES<<EOF" >> $env:GITHUB_OUTPUT
+          echo "$content" >> $env:GITHUB_OUTPUT
+          echo "EOF" >> $env:GITHUB_OUTPUT
+          
+          # Get latest tag
+          $latestTag = git describe --tags --abbrev=0 2>$null
+          if ($latestTag) {
+            echo "latest_tag=$latestTag" >> $env:GITHUB_OUTPUT
+          }
+          
+      - name: Upload patch notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: patch-notes
+          path: ${{ github.event.inputs.output_file || 'PATCHNOTES.md' }}
+          
+      - name: Create draft release
+        if: ${{ github.event.inputs.create_release_draft == 'true' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.generate.outputs.latest_tag }}-next
+          release_name: Release ${{ steps.generate.outputs.latest_tag }}-next
+          body: ${{ steps.generate.outputs.PATCH_NOTES }}
+          draft: true
+          prerelease: false
+          
+      - name: Display summary
+        shell: pwsh
+        run: |
+          Write-Host "✅ Patch notes generated successfully!" -ForegroundColor Green
+          Write-Host ""
+          Write-Host "📋 You can download the patch notes from the workflow artifacts."
+          Write-Host ""
+          if ("${{ github.event.inputs.create_release_draft }}" -eq "true") {
+            Write-Host "📦 A draft release has been created."
+          }
