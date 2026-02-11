@@ -288,3 +288,6 @@ __pycache__/
 *.xsd.cs
 /Songify-Core
 /Songify.Premium
+
+# Generated patch notes
+PATCHNOTES.md
