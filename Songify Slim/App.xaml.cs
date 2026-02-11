@@ -35,7 +35,7 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
-        public static bool IsBeta = true;
+        public static bool IsBeta = false;
         private const string PipeName = "SongifyPipe";
         private const string FolderName = "Songify.Rocks";
 
