@@ -16,7 +16,9 @@ on:
 jobs:
   generate-patch-notes:
     runs-on: windows-latest
-    
+    permissions:
+      contents: write  # Required for creating releases and pushing artifacts
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
