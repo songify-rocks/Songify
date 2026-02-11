@@ -58,15 +58,18 @@ jobs:
           
       - name: Create draft release
         if: ${{ github.event.inputs.create_release_draft == 'true' }}
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.generate.outputs.latest_tag }}-next
-          release_name: Release ${{ steps.generate.outputs.latest_tag }}-next
-          body: ${{ steps.generate.outputs.PATCH_NOTES }}
-          draft: true
-          prerelease: false
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.generate.outputs.latest_tag }}-next"
+          $title = "Release $tag"
+          $body = @"
+          ${{ steps.generate.outputs.PATCH_NOTES }}
+          "@
+          
+          # Create draft release using GitHub CLI
+          gh release create "$tag" --draft --title "$title" --notes "$body"
           
       - name: Display summary
         shell: pwsh
