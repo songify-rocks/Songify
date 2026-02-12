@@ -563,12 +563,9 @@ namespace Songify_Slim.Util.Spotify
                     }
                 }
 
-                // Not in playlist -> add via SpotifyAPI-NET (still supported)
-                PlaylistAddItemsRequest request = new(new List<string> { $"spotify:track:{trackId}" });
-
                 await ApiCallMeter.RunAsync(
                     "Playlists.AddItems",
-                    () => Client.Playlists.AddItems(Settings.SpotifyPlaylistId, request),
+                    () => SpotifyApi.AddItemsToPlaylistAsync(Settings.SpotifyPlaylistId, [trackId]),
                     softLimitPerminute
                 );
 
@@ -1218,8 +1215,6 @@ namespace Songify_Slim.Util.Spotify
 
                 _playlistCacheInitialized = true;
             }
-
-
 
             Stopwatch sw = new();
             Logger.Info(LogSource.Spotify, "Started caching playlist");

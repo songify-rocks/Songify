@@ -43,6 +43,74 @@ namespace Songify_Slim.Util.Spotify
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
+        public async Task<string> AddItemsToPlaylistAsync(
+    string playlistId,
+    IEnumerable<string> trackIdsOrUris,
+    int? position = null,
+    bool inputsAreUris = false)
+        {
+            if (string.IsNullOrWhiteSpace(playlistId))
+                throw new ArgumentException("playlistId is required", nameof(playlistId));
+
+            if (trackIdsOrUris == null)
+                throw new ArgumentNullException(nameof(trackIdsOrUris));
+
+            List<string> list = trackIdsOrUris
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToList();
+
+            if (list.Count == 0)
+                return null;
+
+            // Spotify accepts up to 100 URIs per request
+            if (list.Count > 100)
+                list = list.Take(100).ToList();
+
+            List<string> uris = inputsAreUris
+                ? list
+                : list.Select(id => id.StartsWith("spotify:", StringComparison.OrdinalIgnoreCase)
+                    ? id
+                    : $"spotify:track:{id}")
+                    .ToList();
+
+            JObject body = new()
+            {
+                ["uris"] = new JArray(uris)
+            };
+
+            if (position.HasValue)
+                body["position"] = position.Value;
+
+            using StringContent content = new(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
+
+            string url = $"playlists/{Uri.EscapeDataString(playlistId)}/items";
+
+            using HttpResponseMessage resp =
+                await SendAsync(() => _http.PostAsync(url, content)).ConfigureAwait(false);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                string error = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                    $"AddItemsToPlaylist failed: {(int)resp.StatusCode} {resp.ReasonPhrase} {error}");
+                return null;
+            }
+
+            string json = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            // Response: { "snapshot_id": "..." }
+            try
+            {
+                SpotifySnapshotResponse snapshot = JsonConvert.DeserializeObject<SpotifySnapshotResponse>(json);
+                return snapshot?.SnapshotId;
+            }
+            catch
+            {
+                // If Spotify returns empty body in some cases, still treat as success
+                return null;
+            }
+        }
+
         public async Task<bool?> PlaylistContainsTrackAsync(string playlistId, string trackId, int pageSize = 100)
         {
             if (string.IsNullOrWhiteSpace(playlistId))
@@ -116,7 +184,7 @@ namespace Songify_Slim.Util.Spotify
             string json = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
             JObject meta = JObject.Parse(json);
 
-            var playlist = new SpotifyPlaylistCache
+            SpotifyPlaylistCache playlist = new()
             {
                 Id = (string)meta["id"] ?? playlistId,
                 Name = (string)meta["name"] ?? "",
@@ -325,7 +393,7 @@ namespace Songify_Slim.Util.Spotify
             string metaJson = await metaResp.Content.ReadAsStringAsync().ConfigureAwait(false);
             JObject meta = JObject.Parse(metaJson);
 
-            var playlist = new SpotifyPlaylistCache
+            SpotifyPlaylistCache playlist = new()
             {
                 Id = (string)meta["id"] ?? playlistId,
                 Name = (string)meta["name"] ?? "",
@@ -392,7 +460,7 @@ namespace Songify_Slim.Util.Spotify
                     if (track == null || track.Type == JTokenType.Null)
                         continue;
 
-                    var pi = new SpotifyPlaylistItem
+                    SpotifyPlaylistItem pi = new()
                     {
                         AddedAt = (string)entry["added_at"] ?? "",
                         IsLocal = (bool?)entry["is_local"] ?? false,
