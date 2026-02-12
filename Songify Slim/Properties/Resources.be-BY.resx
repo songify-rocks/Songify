@@ -961,7 +961,7 @@
     <value>Заблакаваныя песні</value>
   </data>
   <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
-    <value>Узроўні карыстальніка (Каманда)</value>
+    <value>Узр. карыст. (Каманда)</value>
   </data>
   <data name="s_Viewer" xml:space="preserve">
     <value>Глядач</value>
@@ -976,7 +976,7 @@
     <value>Мадэратар</value>
   </data>
   <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
-    <value>Узроўні карыстальніка (Узнагарода)</value>
+    <value>Узр. карыст. (Узнагарода)</value>
   </data>
   <data name="s_Follower" xml:space="preserve">
     <value>Паслядоўнік</value>
