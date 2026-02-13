@@ -1,92 +1,91 @@
 # 💎 Songify Premium
 
-Songify Premium unlocks additional features that enhance your streaming setup and help support ongoing development.
+Songify Premium adds optional features to enhance your streaming setup and to support ongoing development.
 
-Premium is activated via **Ko-Fi membership** on the official Songify website.
+Songify will always remain free.  
+Premium only adds features - it never removes or limits existing functionality.
 
-Songify will always remain free to use.  
-Premium expands functionality, it does not remove free features.
+Premium is activated by linking your Ko-Fi membership to your Songify account.
 
 ---
 
-# ☁️ Cloud Sync
+## 🔗 How to activate Premium
+
+1. Become a member on Ko-Fi (any tier)
+2. Visit the [Songify website](https://songify.rocks)
+3. Log in to your account
+4. Open your account page (click your profile in the top right)
+5. Click **Link Ko-Fi**
+6. Enter the same email address you used on Ko-Fi
+7. Generate your secure Songify token
+8. Add the token to Songify
+
+Premium unlocks automatically after successful validation.
+
+---
+
+## ☁️ Cloud Sync
 
 Sync your settings securely across multiple machines.
 
 ### Features
 
-- Sync local settings to the cloud
-- Compare cloud vs. local configurations
-- Seamless multi-device setup
-- Easier migration between PCs
+- Sync your local settings to the cloud
+- Compare cloud and local configurations
+- Seamless multi-device usage and migration between PCs
 
 ---
 
-# 🔐 Secure Token System
+## 🧩 Premium Widgets
 
-Premium features use a secure token system.
+Widgets can be previewed directly on the [Songify website](https://songify.rocks/widgets/).
+
+---
+
+## 🆓 Free Widgets
+
+Songify continues to offer free widgets for all users, including:
+
+- Basic Now Playing widgets
+- Basic queue display
+- [Widget Generator](https://widget.songify.rocks) 
+
+---
+
+## 🔐 Secure token system
+
+Premium features and Cloud Sync use a secure token-based authentication system.
 
 ### How it works
 
-1. After Premium validation on the website, you generate a **secret Songify Token**
+1. After your Premium access is validated on the website, you generate a **secret Songify token**
 2. The token is shown **only once**
-3. If lost, it must be rotated (a new token must be generated)
+3. If the token is lost, it must be rotated (a new token has to be generated)
 4. The token can be added to Songify in two ways:
-   - Manually:  
-     `Settings → System → Songify Token`
-   - Automatically:  
-     Click **"Import to Songify"** on the website (uses deep-link import)
+   - Manually  
+     `Settings -> System -> Songify Token`
+   - Automatically  
+     Click **Import to Songify** on the website (deep-link import)
 
-The token acts as your secure authentication key for Premium features and Cloud Sync.
+The token is used to authenticate access to Premium features and Cloud Sync.
 
 ---
 
-# 🔐 Privacy & Validation
+## 🔐 Privacy and validation
 
 Premium validation is designed with privacy in mind.
 
 - Songify receives Ko-Fi membership confirmations via secure webhooks
-- Memberships (starting from the lowest tier) are considered
-- The email address from Ko-Fi is stored **encrypted**
-- The email entered on the Songify website is encrypted using the same method
+- All Ko-Fi tiers are supported
+- Both the Ko-Fi email address and the email entered on the Songify website are stored encrypted using the same method
 - Only encrypted values are compared
-- No plaintext email addresses are stored in our system
+- No plaintext email addresses are stored in the system
 
-Your email is used **only** to validate Premium access.
-
----
-
-# 🧩 Premium Widgets
-
-Premium users get access to enhanced widgets which can be previews on 
+Your email address is used only to validate your Premium access.
 
 ---
 
-# 🆓 Free Widgets
-
-Songify continues to offer free widgets, including:
-
-- Basic Now Playing
-- Basic Queue Display
-- Core overlay functionality
-
-Premium enhances customization and flexibility, it does not restrict core functionality.
-
----
-
-# 🔗 How to Activate Premium
-
-1. Become a member on Ko-Fi (starting from the lowest tier)
-2. Visit the official Songify website
-3. Enter the same email address used on Ko-Fi
-4. Generate your secure Songify Token
-5. Add the token to Songify
-
-Premium unlocks automatically after validation.
-
----
-
-# ❤️ Support the Project
+## ❤️ Support the project
 
 Songify is independently developed and maintained.
 
@@ -97,4 +96,4 @@ Premium memberships help fund:
 - Website hosting
 - API integrations
 
-Thank you to everyone supporting the project.
+Thank you to everyone who supports Songify and helps keep the project alive.
