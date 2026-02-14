@@ -1022,22 +1022,22 @@ namespace Songify_Slim.Util.Songify
                 string normalized = album.Url.Replace("\\", "/");
                 album.Url = "file:///" + normalized;
             }
-
             var userInfo = new
             {
                 TwitchUser = new
                 {
-                    Settings.TwitchUser.Id,
-                    Settings.TwitchUser.Login,
-                    Settings.TwitchUser.BroadcasterType
+                    Id = Settings.TwitchUser?.Id ?? "",
+                    Login = Settings.TwitchUser?.Login ?? "",
+                    BroadcasterType = Settings.TwitchUser?.BroadcasterType ?? ""
                 },
                 SpotifyUser = new
                 {
-                    Settings.SpotifyProfile.Id,
-                    Settings.SpotifyProfile.DisplayName,
-                    Settings.SpotifyProfile.Product
+                    Id = Settings.SpotifyProfile?.Id ?? "",
+                    DisplayName = Settings.SpotifyProfile?.DisplayName ?? "",
+                    Product = Settings.SpotifyProfile?.Product ?? ""
                 }
             };
+
 
             var songifyInfo = new
             {
