@@ -1,8 +1,11 @@
-﻿using MahApps.Metro.Controls;
+﻿using FuzzySharp;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Newtonsoft.Json.Linq;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Spotify;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
@@ -20,9 +23,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using FuzzySharp;
-using Songify_Slim.Models.Spotify;
-using Songify_Slim.Util.Configuration;
+using Windows.Media.Playlists;
 using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.General.Enums.PlaybackAction;
 using static System.Net.WebRequestMethods;
@@ -37,7 +38,8 @@ namespace Songify_Slim.Util.Spotify
         private const string BaseUrl = "https://auth.overcode.tv";
         private static EmbedIOAuthServer _server;
         public static SpotifyClient Client;
-        public static SpotifyApi SpotifyApi = new(() => Settings.SpotifyAccessToken, null);
+
+        //public static SpotifyApi SpotifyApi = new(() => Settings.SpotifyAccessToken, null);
         private static int softLimitPerminute = 60;
 
         private static readonly Timer AuthTimer = new()
@@ -147,7 +149,7 @@ namespace Songify_Slim.Util.Spotify
             );
 
             Client = new SpotifyClient(config);
-            SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
+            //SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
 
             // 4) Marshal any UI/DispatcherTimer work to the UI thread
             Application app = Application.Current;
@@ -168,8 +170,6 @@ namespace Songify_Slim.Util.Spotify
                         mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
                         //mw.IconWebSpotify.Kind = PackIconBoxIconsKind.LogosSpotify;
                     }
-
-                    await EnsurePlaylistCacheAsync(true);
                 });
             }
         }
@@ -199,7 +199,7 @@ namespace Songify_Slim.Util.Spotify
             Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
 
             Client = new SpotifyClient(config);
-            SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
+            //SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
             if (!AuthTimer.Enabled)
             {
                 AuthTimer.Start();
@@ -240,8 +240,6 @@ namespace Songify_Slim.Util.Spotify
                         Logger.LogExc(ex);
                     }
                 }));
-
-            await EnsurePlaylistCacheAsync(true);
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()
@@ -386,10 +384,11 @@ namespace Songify_Slim.Util.Spotify
                         await Task.Delay(1000);
                         try
                         {
-                            await Client.Player.AddToQueue(new PlayerAddToQueueRequest(songUri)
-                            {
-                                DeviceId = Settings.SpotifyDeviceId
-                            });
+                            await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
+                                new PlayerAddToQueueRequest(songUri)
+                                {
+                                    DeviceId = Settings.SpotifyDeviceId
+                                }), softLimitPerMinute: softLimitPerminute);
                             return true;
                         }
                         catch (APIException retryEx)
@@ -517,65 +516,31 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 // No playlist configured -> save to library (new Spotify endpoint: PUT /me/library)
-                if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) || Settings.SpotifyPlaylistId == "-1")
+                if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId) ||
+                    Settings.SpotifyPlaylistId.PlaylistId == "-1")
                 {
-                    if (SpotifyApi == null)
-                    {
-                        Logger.Error(LogSource.Spotify, "SpotifyRaw not initialized, cannot save to library");
-                        return true;
-                    }
-
-                    bool ok = await SpotifyApi.SaveToLibraryAsync([$"spotify:track:{trackId}"]);
-                    return !ok; // keep your existing semantics: false = success, true = error
+                    bool response = await ApiCallMeter.RunAsync("Library.SaveItems",
+                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest([trackId])),
+                        softLimitPerMinute: softLimitPerminute);
+                    return !response; // keep your existing semantics: false = success, true = error
                 }
 
                 // Make sure cache is filled once (try SpotifyAPI-NET first, fallback to raw if it breaks)
                 try
                 {
-                    await EnsurePlaylistCacheAsync();
+                    SnapshotResponse response = await ApiCallMeter.RunAsync("Playlists.AddPlaylistItems",
+                        () => Client.Playlists.AddPlaylistItems(Settings.SpotifyPlaylistId.PlaylistId,
+                            new PlaylistAddItemsRequest([trackId])), softLimitPerMinute: softLimitPerminute);
+                    if (response.SnapshotId == Settings.SpotifyPlaylistId.Snapshot) return true;
+                    Settings.SpotifyPlaylistId.Snapshot = response.SnapshotId;
+                    Settings.SpotifyPlaylistId = Settings.SpotifyPlaylistId;
+                    return false;
                 }
                 catch (Exception cacheEx)
                 {
-                    Logger.Log(LogLevel.Warning, LogSource.Spotify, "EnsurePlaylistCacheAsync failed, falling back to raw playlist fetch", cacheEx);
-
-                    if (SpotifyApi == null)
-                    {
-                        Logger.Error(LogSource.Spotify, "SpotifyRaw not initialized, cannot fetch playlist items");
-                        return true;
-                    }
-
-                    List<string> ids = await SpotifyApi.GetPlaylistTrackIdsPagedAsync(Settings.SpotifyPlaylistId);
-
-                    lock (_playlistLock)
-                    {
-                        _playlistTrackIds.Clear();
-                        foreach (string id in ids)
-                            _playlistTrackIds.Add(id);
-                    }
+                    Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                        "EnsurePlaylistCacheAsync failed, falling back to raw playlist fetch", cacheEx);
                 }
-
-                lock (_playlistLock)
-                {
-                    if (_playlistTrackIds.Contains(trackId))
-                    {
-                        // Already in playlist
-                        return true;
-                    }
-                }
-
-                await ApiCallMeter.RunAsync(
-                    "Playlists.AddItems",
-                    () => SpotifyApi.AddItemsToPlaylistAsync(Settings.SpotifyPlaylistId, [trackId]),
-                    softLimitPerminute
-                );
-
-                // Update cache
-                lock (_playlistLock)
-                {
-                    _playlistTrackIds.Add(trackId);
-                }
-
-                return false;
             }
             catch (Exception ex)
             {
@@ -627,6 +592,7 @@ namespace Songify_Slim.Util.Spotify
             //    Logger.Error(LogSource.Spotify, "Error adding song to playlist", ex);
             //    return true;
             //}
+            return true;
         }
 
         public static async Task SkipSong()
@@ -1193,106 +1159,17 @@ namespace Songify_Slim.Util.Spotify
             return best;
         }
 
-        public static async Task EnsurePlaylistCacheAsync(bool force = false)
+        public static async Task<List<bool>> CheckSavedTracksAsync(List<string> ids)
         {
-            if (Client == null)
-                return;
-
-            if (SpotifyApi == null)
-                return;
-
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) || Settings.SpotifyPlaylistId == "-1")
-                return;
-
-            // Fast path: already initialized
-            if (_playlistCacheInitialized && !force)
-                return;
-
-            lock (_playlistLock)
-            {
-                if (_playlistCacheInitialized && !force)
-                    return;
-
-                _playlistCacheInitialized = true;
-            }
-
-            Stopwatch sw = new();
-            Logger.Info(LogSource.Spotify, "Started caching playlist");
-            sw.Restart();
-
             try
             {
-                string playlistId = Settings.SpotifyPlaylistId;
-
-                // Optional: skip work when snapshot did not change
-                // Find cached snapshot for this playlist
-                string cachedSnapshot = null;
-                SpotifyPlaylistCache cached = Settings.SpotifyPlaylistCache?.FirstOrDefault(p => p.Id == playlistId);
-                if (cached != null && !string.IsNullOrEmpty(cached.SnapshotId))
-                    cachedSnapshot = cached.SnapshotId;
-
-                // If not forcing, we can do a lightweight meta call first and bail out early
-                if (!force && cachedSnapshot != null)
-                {
-                    SpotifyPlaylistCache metaOnly = await SpotifyApi.GetPlaylistMetaAsync(playlistId);
-                    if (metaOnly != null && metaOnly.SnapshotId == cachedSnapshot)
-                    {
-                        // Rebuild in-memory hashset from cached YAML, no API calls for items
-                        lock (_playlistLock)
-                        {
-                            _playlistTrackIds.Clear();
-                            foreach (var it in cached.Items)
-                            {
-                                if (!string.IsNullOrEmpty(it.TrackId))
-                                    _playlistTrackIds.Add(it.TrackId);
-                            }
-                        }
-
-                        Logger.Info(LogSource.Spotify, "Playlist snapshot unchanged, reused cached items");
-                        return;
-                    }
-                }
-
-                // Full fetch: playlist metadata + all items
-                // If you want progress, use page-by-page fetch instead (see below).
-                SpotifyPlaylistCache fresh = await SpotifyApi.GetPlaylistWithItemsAsync(playlistId);
-
-                if (fresh == null)
-                {
-                    Logger.Log(LogLevel.Warning, LogSource.Spotify, "Playlist fetch returned null");
-                    return;
-                }
-
-                // Update in-memory set
-                lock (_playlistLock)
-                {
-                    _playlistTrackIds.Clear();
-                    foreach (SpotifyPlaylistItem it in fresh.Items)
-                    {
-                        if (!string.IsNullOrEmpty(it.TrackId))
-                            _playlistTrackIds.Add(it.TrackId);
-                    }
-                }
-
-                // Persist YAML cache: only keep this single playlist entry
-                if (Settings.SpotifyPlaylistCache == null)
-                    Settings.SpotifyPlaylistCache = new List<SpotifyPlaylistCache>();
-
-                Settings.SpotifyPlaylistCache.RemoveAll(p => p.Id == playlistId);
-                Settings.SpotifyPlaylistCache.Add(fresh);
+                List<bool> x = await ApiCallMeter.RunAsync("Player.ResumePlayback", () => Client.Library.CheckItems(new LibraryCheckItemsRequest(ids)), softLimitPerminute);
+                return x;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Logger.Error(LogSource.Spotify, "Error initializing playlist cache", ex);
-
-                // If you want retry behavior, uncomment:
-                // lock (_playlistLock) { _playlistCacheInitialized = false; }
-            }
-            finally
-            {
-                sw.Stop();
-                Logger.Info(LogSource.Spotify,
-                    $"Finished caching playlist ({_playlistTrackIds.Count} tracks in {sw.Elapsed.TotalSeconds:0.0}s)");
+                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error checking if IDs are already in Library.");
+                return null;
             }
         }
     }

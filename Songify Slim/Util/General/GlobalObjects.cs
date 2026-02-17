@@ -285,11 +285,11 @@ namespace Songify_Slim.Util.General
 
                         try
                         {
-                            if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
-                                Settings.SpotifyPlaylistId == "-1")
+                            if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId) ||
+                                Settings.SpotifyPlaylistId.PlaylistId == "-1")
                             {
                                 isLikedSongsPlaylist = true;
-                                List<bool> x = await SpotifyApiHandler.SpotifyApi.CheckSavedTracksAsync(ids);
+                                List<bool> x = await SpotifyApiHandler.CheckSavedTracksAsync(ids);
                                 if (x != null)
                                     for (int i = 0; i < ids.Count; i++)
                                     {
@@ -495,7 +495,7 @@ namespace Songify_Slim.Util.General
                 return false;
             }
 
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
             {
                 return false;
             }
@@ -513,7 +513,7 @@ namespace Songify_Slim.Util.General
 
         private static async Task LoadLikedPlaylistTracks()
         {
-            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+            if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
             {
                 return;
             }
@@ -522,7 +522,7 @@ namespace Songify_Slim.Util.General
             Paging<PlaylistTrack<IPlayableItem>> tracks;
             do
             {
-                tracks = await SpotifyApiHandler.GetPlaylistTracks(Settings.SpotifyPlaylistId);
+                tracks = await SpotifyApiHandler.GetPlaylistTracks(Settings.SpotifyPlaylistId.PlaylistId);
                 if (tracks.Items != null) LikedPlaylistTracks.AddRange(tracks.Items);
             } while (tracks.Next != null);
         }

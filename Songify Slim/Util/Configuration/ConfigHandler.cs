@@ -354,6 +354,7 @@ namespace Songify_Slim.Util.Configuration
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 //.WithTypeConverter(new SingleStringToListConverter())
+                .WithTypeConverter(new PlaylistSnapshotYamlConverter())
                 .WithTypeConverter(new PlayerTypeYamlConverter())
                 .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
                 .WithTypeConverter(new ListStringOrObjectConverter<BlockedUser>(s => new BlockedUser { Username = s }))
@@ -417,8 +418,8 @@ namespace Songify_Slim.Util.Configuration
                                     if (!existingCommand.CustomProperties.ContainsKey("SkipCount"))
                                     {
                                         existingCommand.CustomProperties["SkipCount"] =
-                                            defaultCommand.CustomProperties.ContainsKey("SkipCount")
-                                                ? defaultCommand.CustomProperties["SkipCount"]
+                                            defaultCommand.CustomProperties.TryGetValue("SkipCount", out object customProperty)
+                                                ? customProperty
                                                 : 5;
                                     }
                                 }
@@ -428,8 +429,8 @@ namespace Songify_Slim.Util.Configuration
                                     if (!existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
                                     {
                                         existingCommand.CustomProperties["VolumeSetResponse"] =
-                                            defaultCommand.CustomProperties.ContainsKey("VolumeSetResponse")
-                                                ? defaultCommand.CustomProperties["VolumeSetResponse"]
+                                            defaultCommand.CustomProperties.TryGetValue("VolumeSetResponse", out object customProperty)
+                                                ? customProperty
                                                 : "Volume set to {vol}%.";
                                     }
                                 }
@@ -869,7 +870,7 @@ namespace Songify_Slim.Util.Configuration
         public string OutputString2 { get; set; } = "{artist} - {title} {extra}";
         public string RequesterPrefix { get; set; } = "Requested by ";
         public string RewardGoalSong { get; set; } = "";
-        public string SpotifyPlaylistId { get; set; } = "";
+        public PlaylistSnapshot SpotifyPlaylistId { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public string Theme { get; set; } = "Dark";
         public string TwRewardGoalRewardId { get; set; } = "";

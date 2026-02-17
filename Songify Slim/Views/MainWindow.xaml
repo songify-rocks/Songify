@@ -603,7 +603,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             d:Text="{i18N:Loc cta.support}"
-                            Text="{DynamicResource  cta.support}" />
+                            Text="{DynamicResource cta.support}" />
                     </StackPanel>
                     <Border.RenderTransform>
                         <TransformGroup>
@@ -732,6 +732,10 @@
                         Grid.Column="1"
                         HorizontalAlignment="Stretch"
                         LastChildFill="False">
+                        <StatusBarItem Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API TOTAL: {0} rpm}" />
+                        </StatusBarItem>
+
                         <StatusBarItem
                             x:Name="LblStatus"
                             Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"

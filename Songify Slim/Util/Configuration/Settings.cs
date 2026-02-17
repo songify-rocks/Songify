@@ -568,7 +568,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static List<SpotifyPlaylistCache> SpotifyPlaylistCache { get => GetSpotifyPlaylistCache(); set => SetSpotifyPlaylistCache(value); }
 
-        public static string SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
+        public static PlaylistSnapshot SpotifyPlaylistId { get => GetSpotifyPlaylistId(); set => SetSpotifyPlaylistId(value); }
 
         public static PrivateUser SpotifyProfile { get => GetSpotifyProfile(); set => SetSpotifyProfile(value); }
 
@@ -1712,7 +1712,7 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.SpotifyCredentials.PlaylistCache;
         }
 
-        private static string GetSpotifyPlaylistId()
+        private static PlaylistSnapshot GetSpotifyPlaylistId()
         {
             return CurrentConfig.AppConfig.SpotifyPlaylistId;
         }
@@ -2522,7 +2522,7 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
         }
 
-        private static void SetSpotifyPlaylistId(string value)
+        private static void SetSpotifyPlaylistId(PlaylistSnapshot value)
         {
             CurrentConfig.AppConfig.SpotifyPlaylistId = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);

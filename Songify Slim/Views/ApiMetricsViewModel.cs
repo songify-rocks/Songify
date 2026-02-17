@@ -11,6 +11,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
+using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Views;
 
@@ -41,11 +43,31 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly Dictionary<string, LineSeries> _seriesByKey = new();
     private const int Capacity = 60; // last 60 seconds
+    private readonly EventHandler _tickHandler;
+
+    private int _totalRequestsPerMinute;
+
+    public int TotalRequestsPerMinute
+    {
+        get => _totalRequestsPerMinute;
+        private set { _totalRequestsPerMinute = value; OnPropertyChanged(); }
+    }
+
+    private bool _showTotalInStatusbar;
+
+    public bool ShowTotalInStatusbar
+    {
+        get => _showTotalInStatusbar;
+        set { _showTotalInStatusbar = value; OnPropertyChanged(); }
+    }
 
     public ApiMetricsViewModel()
     {
-        _timer.Tick += (_, __) => Refresh();
+        _tickHandler = (_, __) => Refresh();
+        _timer.Tick += _tickHandler;
         _timer.Start();
+
+        UpdateStatusbarVisibility();
     }
 
     private static PlotModel CreatePlotModel()
@@ -126,6 +148,15 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
 
     private void Refresh()
     {
+        bool isSpotify = Settings.Player == PlayerType.Spotify;
+        ShowTotalInStatusbar = isSpotify;
+
+        if (!isSpotify)
+        {
+            TotalRequestsPerMinute = 0;
+            return; // skip doing ApiCallMeter work
+        }
+
         // ---- table rows ----
         IDictionary<string, int> snapshot = ApiCallMeter.GetAllCountsPerMinute(); // Dictionary<string,int>
 
@@ -140,6 +171,8 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
                 Rows.RemoveAt(i);
 
         int total = snapshot.Values.Sum();
+        TotalRequestsPerMinute = total;
+
         ApiMetricsRow totalRow = Rows.FirstOrDefault(r => r.Key == "TOTAL");
         if (totalRow == null) Rows.Add(new ApiMetricsRow { Key = "TOTAL", RequestsPerMinute = total });
         else totalRow.RequestsPerMinute = total;
@@ -197,10 +230,15 @@ public sealed class ApiMetricsViewModel : INotifyPropertyChanged, IDisposable
     private OxyColor NextSeriesColor() =>
         SeriesColors[_seriesColorIndex++ % SeriesColors.Length];
 
+    private void UpdateStatusbarVisibility()
+    {
+        ShowTotalInStatusbar = Settings.Player == PlayerType.Spotify;
+    }
+
     public void Dispose()
     {
         _timer.Stop();
-        _timer.Tick -= (_, __) => Refresh();
+        _timer.Tick -= _tickHandler;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

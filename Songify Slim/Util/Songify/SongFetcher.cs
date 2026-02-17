@@ -494,7 +494,7 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
                     {
                         //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await QueueService.CleanupServerQueueAsync();
@@ -1037,7 +1037,6 @@ namespace Songify_Slim.Util.Songify
                     Product = Settings.SpotifyProfile?.Product ?? ""
                 }
             };
-
 
             var songifyInfo = new
             {

@@ -1319,10 +1319,13 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item) return;
-            if (item.Playlist.Id == Settings.SpotifyPlaylistId)
+            if (item.Playlist.Id == Settings.SpotifyPlaylistId.PlaylistId)
                 return;
-            Settings.SpotifyPlaylistId = item.Playlist.Id;
-            await SpotifyApiHandler.EnsurePlaylistCacheAsync(true);
+            Settings.SpotifyPlaylistId = new PlaylistSnapshot
+            {
+                PlaylistId = item.Playlist.Id,
+                Snapshot = item.Playlist.SnapshotId
+            };
         }
 
         private async void CbAccountSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1467,11 +1470,11 @@ namespace Songify_Slim.Views
                         CbSpotifyPlaylist.SelectionChanged += Cb_SpotifyPlaylist_SelectionChanged;
                         Settings.SpotifyPlaylistCache = playlistCache;
 
-                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
                             CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>()
                                 .FirstOrDefault(item =>
                                     ((UcPlaylistItem)item.Content).Playlist != null &&
-                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId.PlaylistId);
                         if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
                             CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items
                                 .Cast<ComboBoxItem>().FirstOrDefault(item =>
@@ -1508,11 +1511,11 @@ namespace Songify_Slim.Views
                             { Content = new UcPlaylistItem(playlist) });
                         }
 
-                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId))
+                        if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
                             CbSpotifyPlaylist.SelectedItem = CbSpotifyPlaylist.Items.Cast<ComboBoxItem>()
                                 .FirstOrDefault(item =>
                                     ((UcPlaylistItem)item.Content).Playlist != null &&
-                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId);
+                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifyPlaylistId.PlaylistId);
                         if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
                             CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items
                                 .Cast<ComboBoxItem>().FirstOrDefault(item =>

@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    Title="{DynamicResource menu.view.console}"
+    Title="{i18n:Loc menu.view.console}"
     Width="285"
     Height="285"
     MinHeight="285"

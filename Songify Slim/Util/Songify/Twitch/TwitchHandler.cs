@@ -1903,7 +1903,7 @@ public static class TwitchHandler
             }
         }
 
-        if (string.IsNullOrWhiteSpace(Settings.SpotifyPlaylistId))
+        if (string.IsNullOrWhiteSpace(Settings.SpotifyPlaylistId.PlaylistId))
         {
             await SendChatMessage("No playlist has been specified. Go to Settings -> Spotify and select the playlist you want to use.");
             return;
@@ -2762,23 +2762,30 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task<Tuple<bool, SpotifyPlaylistCache>> CheckIsSongAllowed(
-        string trackId,
+    private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
         string spotifySongLimitPlaylist)
     {
-        // Get playlist meta (name, images, snapshot) so you can show context to the user
-        SpotifyPlaylistCache playlist = await SpotifyApiHandler.SpotifyApi.GetPlaylistMetaAsync(spotifySongLimitPlaylist);
-        if (playlist == null)
-            Debug.WriteLine("");
-        //return new Tuple<bool, SpotifyPlaylistCache>(false, null);
+        FullPlaylist playlist = await SpotifyApiHandler.GetPlaylist(spotifySongLimitPlaylist);
+        Paging<PlaylistTrack<IPlayableItem>> tracks = await SpotifyApiHandler.GetPlaylistTracks(spotifySongLimitPlaylist);
+        while (tracks is { Items: not null })
+        {
+            // Check if any track matches the given ID
+            if (tracks.Items.Any(t => t.Track.Type == ItemType.Track && ((FullTrack)t.Track).Id == trackId))
+            {
+                return new Tuple<bool, FullPlaylist>(true, playlist);
+            }
 
-        bool? contains = await SpotifyApiHandler.SpotifyApi.PlaylistContainsTrackAsync(spotifySongLimitPlaylist, trackId);
+            // Check if there are more pages, if not, exit the loop
+            if (tracks.Next == null)
+            {
+                break;
+            }
 
-        // If contains is null, request failed. Decide how you want to treat that:
-        // I will treat it as "not allowed" to be safe.
-        bool allowed = contains == true;
+            // Fetch the next page of tracks
+            //tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
+        }
 
-        return new Tuple<bool, SpotifyPlaylistCache>(allowed, playlist);
+        return new Tuple<bool, FullPlaylist>(false, playlist);
     }
 
     private static bool CheckLiveStatus()
@@ -3363,7 +3370,7 @@ public static class TwitchHandler
     private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
     {
         string response = string.Empty;
-        Tuple<bool, SpotifyPlaylistCache> isAllowedSong =
+        Tuple<bool, FullPlaylist> isAllowedSong =
             await CheckIsSongAllowed(trackId, Settings.SpotifySongLimitPlaylist);
         if (isAllowedSong.Item1) return Tuple.Create(true, response);
         response = Settings.BotRespPlaylist;

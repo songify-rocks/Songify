@@ -5,16 +5,16 @@
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
-    Title="{DynamicResource mw_menu_Settings}"
+    Title="{DynamicResource menu.file.settings}"
     Width="860"
     Height="490"
     MinHeight="400"
-    d:Title="{i18n:Loc mw_menu_Settings}"
+    d:Title="{i18n:Loc menu.file.settings}"
     Closing="MetroWindow_Closing"
     Loaded="SettingsWindow_Loaded"
     LocationChanged="MetroWindow_LocationChanged"
@@ -862,10 +862,12 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Button.Style>
-                                            <iconPacks:ForkAwesome
-                                                Width="15"
-                                                Height="15"
-                                                Kind="SignOut" />
+                                            <Button.Content>
+                                                <iconPacks:ForkAwesome
+                                                    Width="15"
+                                                    Height="15"
+                                                    Kind="SignOut" />
+                                            </Button.Content>
                                         </Button>
                                         <Button
                                             x:Name="BtnTwitchRefreshMain"
@@ -890,7 +892,7 @@
                                             <iconPacks:ForkAwesome
                                                 Width="15"
                                                 Height="15"
-                                                Kind="Refresh" />
+                                                Kind="SignOut" />
                                         </Button>
                                     </Grid>
                                 </StackPanel>
@@ -1019,8 +1021,8 @@
                                             <iconPacks:ForkAwesome Kind="Twitch" />
                                             <TextBlock
                                                 Margin="6,0,0,0"
-                                                d:Text="{DynamicResource mw_menu_Twitch_TwitchLogin}"
-                                                Text="{DynamicResource mw_menu_Twitch_TwitchLogin}" />
+                                                d:Text="{i18n:Loc menu.twitch.login}"
+                                                Text="{i18n:Loc menu.twitch.login}" />
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
@@ -1051,8 +1053,8 @@
                                             <iconPacks:ForkAwesome Kind="Twitch" />
                                             <TextBlock
                                                 Margin="6,0,0,0"
-                                                d:Text="{DynamicResource mw_menu_Twitch_TwitchLogin}"
-                                                Text="{DynamicResource mw_menu_Twitch_TwitchLogin}" />
+                                                d:Text="{i18n:Loc menu.twitch.login}"
+                                                Text="{i18n:Loc menu.twitch.login}" />
                                         </StackPanel>
                                     </Button.Content>
                                 </Button>
