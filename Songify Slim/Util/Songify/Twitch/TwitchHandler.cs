@@ -1161,6 +1161,7 @@ public static class TwitchHandler
     {
         GetUsersResponse users;
         User user;
+        List<string> missingItems;
         switch (twitchAccount)
         {
             #region Main
@@ -1224,12 +1225,9 @@ public static class TwitchHandler
 
                 DateTime tokenExpiryDate = DateTime.Now.AddSeconds(TokenCheck.ExpiresIn);
 
-                List<string> missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
+                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
 
-                if (!missingItems.Any())
-                {
-                }
-                else
+                if (missingItems.Any())
                 {
                     MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
                         "Missing Twitch Scopes",
@@ -1348,6 +1346,26 @@ public static class TwitchHandler
                 }
 
                 DateTime botTokenExpiryDate = DateTime.Now.AddSeconds(BotTokenCheck.ExpiresIn);
+
+                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
+
+                if (missingItems.Any())
+                {
+                    MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
+                        "Missing Twitch Scopes",
+                        $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
+                        MessageDialogStyle.AffirmativeAndNegative,
+                        new MetroDialogSettings
+                        { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                    if (msgResult == MessageDialogResult.Affirmative)
+                    {
+                        Settings.TwitchUser = null;
+                        Settings.TwitchAccessToken = "";
+                        TwitchApi = null;
+                        ApiConnect(Enums.TwitchAccount.Bot);
+                        return;
+                    }
+                }
 
                 Settings.BotAccessTokenExpiryDate = botTokenExpiryDate;
 
