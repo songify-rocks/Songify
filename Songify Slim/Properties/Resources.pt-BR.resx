@@ -945,4 +945,19 @@
   <data name="crw_RewardPrompt" xml:space="preserve">
     <value>Descrição</value>
   </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Pasta Songify</value>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Verifique se há atualizações</value>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>Lista de usuários</value>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>URL do servidor web</value>
+  </data>
+  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+    <value>Ouça os comandos do chat compartilhado.</value>
+  </data>
 </root>

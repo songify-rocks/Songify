@@ -1138,4 +1138,7 @@
     <value>Web Server URL</value>
     <comment>Menu content for "Web Server URL"</comment>
   </data>
+  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+    <value>Праслухоўванне каманд чата з агульнага чата</value>
+  </data>
 </root>

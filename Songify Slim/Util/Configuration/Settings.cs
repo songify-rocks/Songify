@@ -27,6 +27,19 @@ namespace Songify_Slim.Util.Configuration
             set => SetTwRewardSkipPoll(value);
         }
 
+        public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
+
+        private static void SetSharedChatEnabled(bool value)
+        {
+            CurrentConfig.AppConfig.SharedChatEnabled = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetSharedChatEnabled()
+        {
+            return CurrentConfig.AppConfig.SharedChatEnabled;
+        }
+
         private static void SetTwRewardSkipPoll(List<string> value)
         {
             CurrentConfig.AppConfig.TwRewardSkipPoll = value;
@@ -1175,6 +1188,7 @@ namespace Songify_Slim.Util.Configuration
                 YoutubeApiKey = GetYoutubeApiKey(),
                 TwitchPollSettings = GetTwitchPollSettings(),
                 TwRewardSkipPoll = GetTwRewardSkipPoll(),
+                SharedChatEnabled = GetSharedChatEnabled(),
             };
 
             TwitchCommands twitchCommands = new()

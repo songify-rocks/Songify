@@ -1754,6 +1754,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Listen to chat commands from shared chat.
+        /// </summary>
+        public static string Sw_Integration_StreamSharedChat {
+            get {
+                return ResourceManager.GetString("Sw_Integration_StreamSharedChat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twitch account.
         /// </summary>
         public static string sw_Integration_Twitch {

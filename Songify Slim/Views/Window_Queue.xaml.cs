@@ -99,6 +99,8 @@ namespace Songify_Slim.Views
             dgv_Queue.FontSize = fSize;
             _timer.IsEnabled = true;
 
+            DgvReqlist.ItemsSource = GlobalObjects.ReqList;
+
             if (!Settings.SpotifyControlVisible)
             {
                 BorderPlayerControls.Visibility = Visibility.Collapsed;
@@ -442,6 +444,15 @@ namespace Songify_Slim.Views
                 { Kind = PackIconBootstrapIconsKind.ChevronDown };
                 Settings.SpotifyControlVisible = true;
             }
+        }
+
+        private void ReqlistDelete_OnClick(object sender, RoutedEventArgs e)
+        {
+            // This deletes the selected requestobject
+            if (DgvReqlist.SelectedItem == null)
+                return;
+            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            GlobalObjects.ReqList.Remove(req);
         }
     }
 }

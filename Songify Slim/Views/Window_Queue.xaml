@@ -4,12 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     Title="{DynamicResource WinTitle_Queue}"
     Width="600"
     Height="444"
@@ -56,368 +56,438 @@
         </controls:WindowCommands>
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <StackPanel
-            Grid.Row="0"
-            Margin="6,10,0,0"
-            HorizontalAlignment="Left"
-            Orientation="Horizontal">
-            <Border
-                Width="auto"
-                Height="25"
-                Margin="3"
-                Background="SteelBlue"
-                CornerRadius="3">
-                <TextBlock
-                    Margin="6,0"
-                    VerticalAlignment="Center"
-                    d:Text="{i18n:Loc WinQueue_NowPlaying}"
-                    Text="{DynamicResource WinQueue_NowPlaying}" />
-            </Border>
-            <Border
-                Width="auto"
-                Height="25"
-                Margin="3"
-                Background="SeaGreen"
-                CornerRadius="3">
-                <TextBlock
-                    Margin="6,0"
-                    VerticalAlignment="Center"
-                    d:Text="{i18n:Loc WinQueue_SongRequest}"
-                    Text="{DynamicResource WinQueue_SongRequest}" />
-            </Border>
-            <Border
-                Width="auto"
-                Height="25"
-                Margin="3"
-                Background="IndianRed"
-                CornerRadius="3">
-                <TextBlock
-                    Margin="6,0"
-                    VerticalAlignment="Center"
-                    d:Text="{i18n:Loc WinQueue_Skipping}"
-                    Text="{DynamicResource WinQueue_Skipping}" />
-            </Border>
-        </StackPanel>
-        <StackPanel
-            Grid.Row="0"
-            Grid.RowSpan="2"
-            HorizontalAlignment="Right"
-            Orientation="Horizontal"
-            ZIndex="10001">
-            <Button
-                x:Name="BtnClearQueue"
-                Margin="0,10,6,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Click="BtnClearQueue_Click"
-                Content="{i18n:Loc mw_menu_Queue_Clear}" />
-            <Expander
-                x:Name="DropDownCols"
-                Width="150"
-                Margin="0,10,10,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Panel.ZIndex="6"
-                d:Header="{DynamicResource s_Columns}"
-                Background="{StaticResource MahApps.Brushes.Control.Background}"
-                Header="{DynamicResource s_Columns}">
-                <StackPanel x:Name="stackCols" Orientation="Vertical">
-                    <CheckBox
-                        x:Name="CheckColQueueID"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc Window_Queue_QueueId}"
-                        Tag="0"
-                        Unchecked="ColVisChecked" />
-                    <CheckBox
-                        x:Name="CheckColArtist"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc bw_cbArtist}"
-                        Tag="1"
-                        Unchecked="ColVisChecked" />
-                    <CheckBox
-                        x:Name="CheckColTitle"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc crw_RewardTitle}"
-                        Tag="2"
-                        Unchecked="ColVisChecked" />
-                    <CheckBox
-                        x:Name="CheckColLength"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc s_Length}"
-                        Tag="3"
-                        Unchecked="ColVisChecked" />
-                    <CheckBox
-                        x:Name="CheckColRequester"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc s_Requester}"
-                        Tag="4"
-                        Unchecked="ColVisChecked" />
-                    <CheckBox
-                        x:Name="CheckColAction"
-                        Margin="3"
-                        Checked="ColVisChecked"
-                        Content="{i18n:Loc WinQueue_Actions}"
-                        Tag="5"
-                        Unchecked="ColVisChecked" />
-                </StackPanel>
-            </Expander>
-        </StackPanel>
-
-        <DataGrid
-            x:Name="dgv_Queue"
-            Grid.Row="1"
-            Margin="10,10,10,10"
-            AddingNewItem="Dgv_Queue_AddingNewItem"
-            AutoGenerateColumns="False"
-            BeginningEdit="Dgv_Queue_BeginningEdit"
-            CanUserAddRows="False"
-            CanUserSortColumns="False"
-            DataContext=""
-            EnableColumnVirtualization="False"
-            EnableRowVirtualization="False"
-            HorizontalScrollBarVisibility="Disabled"
-            SelectionMode="Single"
-            SelectionUnit="FullRow"
-            SourceUpdated="Dgv_Queue_OnSourceUpdated">
-            <DataGrid.Resources>
-                <Style BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" TargetType="DataGridColumnHeader">
-                    <Setter Property="Padding" Value="8" />
-                </Style>
-                <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->
-                <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
-                    <!--<Setter Property="Foreground" Value="Black" />-->
-                    <Style.Triggers>
-                        <!--  When the row is selected, change the background and foreground  -->
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </Trigger>
-                        <!--  When the mouse hovers over a row, change the background and foreground  -->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="False" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </MultiTrigger>
-                    </Style.Triggers>
-                </Style>
-                <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
-                    <!--<Setter Property="Foreground" Value="White" />-->
-                    <Style.Triggers>
-                        <!--  When the row is selected, change the background and foreground  -->
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent4}" />
-                        </Trigger>
-                        <!--  When the mouse hovers over a row, change the background and foreground  -->
-                        <MultiTrigger>
-                            <MultiTrigger.Conditions>
-                                <Condition Property="IsSelected" Value="False" />
-                                <Condition Property="IsMouseOver" Value="True" />
-                            </MultiTrigger.Conditions>
-                            <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
-                        </MultiTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
-                </ContextMenu>
-            </DataGrid.ContextMenu>
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    x:Name="ColQueueId"
-                    Width="*"
-                    Binding="{Binding Path=Queueid}"
-                    Header="Queue ID"
-                    Visibility="Visible" />
-                <DataGridTextColumn
-                    x:Name="ColArtist"
-                    Width="*"
-                    d:Header="{i18n:Loc bw_cbArtist}"
-                    Binding="{Binding Path=Artist}"
-                    Header="{DynamicResource bw_cbArtist}"
-                    Visibility="Visible" />
-                <DataGridTextColumn
-                    x:Name="ColTitle"
-                    Width="*"
-                    d:Header="{i18n:Loc crw_RewardTitle}"
-                    Binding="{Binding Path=Title}"
-                    Header="{DynamicResource crw_RewardTitle}"
-                    Visibility="Visible" />
-                <DataGridTextColumn
-                    x:Name="ColLength"
-                    Width="*"
-                    d:Header="{i18n:Loc s_Length}"
-                    Binding="{Binding Path=Length}"
-                    Header="{DynamicResource s_Length}"
-                    Visibility="Visible" />
-                <DataGridTextColumn
-                    x:Name="ColRequester"
-                    Width="*"
-                    d:Header="{i18n:Loc s_Requester}"
-                    Binding="{Binding Path=Requester}"
-                    Header="{DynamicResource s_Requester}"
-                    Visibility="Visible" />
-                <DataGridTemplateColumn
-                    x:Name="colDeleteButton"
-                    d:Header="{i18n:Loc WinQueue_Actions}"
-                    Header="{DynamicResource WinQueue_Actions}"
-                    Visibility="Visible">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Click="DgvButtonSkip_Click" ToolTip="Skip Song">
-                                    <Button.Style>
-                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
-                                            <Style.Triggers>
-                                                <!--  Only show if Playertype is Spotify  -->
-                                                <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
-                                                    <Setter Property="IsEnabled" Value="True" />
-                                                </DataTrigger>
-                                                <!--  Hide if Requester is 'Skipping...'  -->
-                                                <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                            <Setter Property="IsEnabled" Value="False" />
-                                        </Style>
-                                    </Button.Style>
-                                    <Button.Content>
-                                        <iconPacks:BootstrapIcons Kind="DashCircle" />
-                                    </Button.Content>
-                                </Button>
-                                <Button
-                                    Click="DgvButtonAddToFav_Click"
-                                    Tag="like"
-                                    ToolTip="Add to favorite playlist">
-                                    <Button.Style>
-                                        <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
-                                            <Setter Property="IsEnabled" Value="False" />
-
-                                            <Style.Triggers>
-                                                <!--  Show only if Playertype is Spotify  -->
-                                                <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
-                                                    <Setter Property="IsEnabled" Value="True" />
-                                                </DataTrigger>
-                                                <!--  Hide if Requester is 'Skipping...'  -->
-                                                <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
+        <TabControl>
+            <TabItem Header="Queue">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel
+                        Grid.Row="0"
+                        Margin="6,10,0,0"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                        <Border
+                            Width="auto"
+                            Height="25"
+                            Margin="3"
+                            Background="SteelBlue"
+                            CornerRadius="3">
+                            <TextBlock
+                                Margin="6,0"
+                                VerticalAlignment="Center"
+                                d:Text="{i18n:Loc WinQueue_NowPlaying}"
+                                Text="{DynamicResource WinQueue_NowPlaying}" />
+                        </Border>
+                        <Border
+                            Width="auto"
+                            Height="25"
+                            Margin="3"
+                            Background="SeaGreen"
+                            CornerRadius="3">
+                            <TextBlock
+                                Margin="6,0"
+                                VerticalAlignment="Center"
+                                d:Text="{i18n:Loc WinQueue_SongRequest}"
+                                Text="{DynamicResource WinQueue_SongRequest}" />
+                        </Border>
+                        <Border
+                            Width="auto"
+                            Height="25"
+                            Margin="3"
+                            Background="IndianRed"
+                            CornerRadius="3">
+                            <TextBlock
+                                Margin="6,0"
+                                VerticalAlignment="Center"
+                                d:Text="{i18n:Loc WinQueue_Skipping}"
+                                Text="{DynamicResource WinQueue_Skipping}" />
+                        </Border>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="0"
+                        Grid.RowSpan="2"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        ZIndex="10001">
+                        <Button
+                            x:Name="BtnClearQueue"
+                            Margin="0,10,6,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Click="BtnClearQueue_Click"
+                            Content="{i18n:Loc mw_menu_Queue_Clear}" />
+                        <Expander
+                            x:Name="DropDownCols"
+                            Width="150"
+                            Margin="0,10,10,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Panel.ZIndex="6"
+                            d:Header="{DynamicResource s_Columns}"
+                            Background="{StaticResource MahApps.Brushes.Control.Background}"
+                            Header="{DynamicResource s_Columns}">
+                            <StackPanel x:Name="stackCols" Orientation="Vertical">
+                                <CheckBox
+                                    x:Name="CheckColQueueID"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc Window_Queue_QueueId}"
+                                    Tag="0"
+                                    Unchecked="ColVisChecked" />
+                                <CheckBox
+                                    x:Name="CheckColArtist"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc bw_cbArtist}"
+                                    Tag="1"
+                                    Unchecked="ColVisChecked" />
+                                <CheckBox
+                                    x:Name="CheckColTitle"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc crw_RewardTitle}"
+                                    Tag="2"
+                                    Unchecked="ColVisChecked" />
+                                <CheckBox
+                                    x:Name="CheckColLength"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc s_Length}"
+                                    Tag="3"
+                                    Unchecked="ColVisChecked" />
+                                <CheckBox
+                                    x:Name="CheckColRequester"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc s_Requester}"
+                                    Tag="4"
+                                    Unchecked="ColVisChecked" />
+                                <CheckBox
+                                    x:Name="CheckColAction"
+                                    Margin="3"
+                                    Checked="ColVisChecked"
+                                    Content="{i18n:Loc WinQueue_Actions}"
+                                    Tag="5"
+                                    Unchecked="ColVisChecked" />
                             </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-            <DataGrid.RowStyle>
-                <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="LightGray" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
-                            <Setter Property="Background" Value="IndianRed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Requester}" Value="Spotify">
-                            <Setter Property="Background" Value="Transparent" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Requester}" Value="YouTube">
-                            <Setter Property="Background" Value="Transparent" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Played}" Value="-1">
-                            <Setter Property="Background" Value="SteelBlue" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                    <Setter Property="Background" Value="SeaGreen" />
-                </Style>
-            </DataGrid.RowStyle>
-        </DataGrid>
-        <Grid
-            Grid.Row="2"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            ZIndex="5">
-            <Button
-                x:Name="BtnPlayerControlsVisibility"
-                Padding="0"
-                Click="BtnPlayerControlsVisibility_OnClick"
-                Style="{StaticResource MahApps.Styles.Button.WindowCommands}"
-                ToolTip="Show / Hide Spotify Controls">
-                <Button.Content>
-                    <iconPacks:BootstrapIcons Kind="ChevronDown" />
-                </Button.Content>
-            </Button>
-        </Grid>
-        <Border
-            x:Name="BorderPlayerControls"
-            Grid.Row="2"
-            Margin="6,0,6,6"
-            Padding="0,3"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Bottom"
-            Background="{DynamicResource MahApps.Brushes.Control.Background}"
-            BorderThickness="1,1,1,1"
-            CornerRadius="25">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
-                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
-                            <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <Button
-                    x:Name="BtnBack"
-                    Click="BtnBack_OnClick"
-                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
-                    <Button.Content>
-                        <iconPacks:BootstrapIcons Kind="SkipStartFill" />
-                    </Button.Content>
-                </Button>
-                <Button
-                    x:Name="BtnPlayPause"
-                    Width="40"
-                    Height="40"
-                    Click="BtnPlayPause_OnClick"
-                    Style="{DynamicResource MahApps.Styles.Button.Circle}">
-                    <Button.Content>
-                        <Grid Margin="3,0,0,0">
-                            <iconPacks:BootstrapIcons Kind="PlayFill" />
-                        </Grid>
-                    </Button.Content>
-                </Button>
-                <Button
-                    x:Name="BtnNext"
-                    Click="BtnNext_OnClick"
-                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
-                    <Button.Content>
-                        <iconPacks:BootstrapIcons Kind="SkipEndFill" />
-                    </Button.Content>
-                </Button>
-            </StackPanel>
-        </Border>
+                        </Expander>
+                    </StackPanel>
+
+                    <DataGrid
+                        x:Name="dgv_Queue"
+                        Grid.Row="1"
+                        Margin="10,10,10,10"
+                        AddingNewItem="Dgv_Queue_AddingNewItem"
+                        AutoGenerateColumns="False"
+                        BeginningEdit="Dgv_Queue_BeginningEdit"
+                        CanUserAddRows="False"
+                        CanUserSortColumns="False"
+                        DataContext=""
+                        EnableColumnVirtualization="False"
+                        EnableRowVirtualization="False"
+                        HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow"
+                        SourceUpdated="Dgv_Queue_OnSourceUpdated">
+                        <DataGrid.Resources>
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridColumnHeader}" TargetType="DataGridColumnHeader">
+                                <Setter Property="Padding" Value="8" />
+                            </Style>
+                            <!--  Change the style of DataGridRow to set the Foreground for the selected and hover states  -->
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridCell}" TargetType="DataGridCell">
+                                <!--<Setter Property="Foreground" Value="Black" />-->
+                                <Style.Triggers>
+                                    <!--  When the row is selected, change the background and foreground  -->
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                    </Trigger>
+                                    <!--  When the mouse hovers over a row, change the background and foreground  -->
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="False" />
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                    </MultiTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
+                                <!--<Setter Property="Foreground" Value="White" />-->
+                                <Style.Triggers>
+                                    <!--  When the row is selected, change the background and foreground  -->
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent4}" />
+                                    </Trigger>
+                                    <!--  When the mouse hovers over a row, change the background and foreground  -->
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsSelected" Value="False" />
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                                    </MultiTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                x:Name="ColQueueId"
+                                Width="*"
+                                Binding="{Binding Path=Queueid}"
+                                Header="Queue ID"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                x:Name="ColArtist"
+                                Width="*"
+                                d:Header="{i18n:Loc bw_cbArtist}"
+                                Binding="{Binding Path=Artist}"
+                                Header="{DynamicResource bw_cbArtist}"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                x:Name="ColTitle"
+                                Width="*"
+                                d:Header="{i18n:Loc crw_RewardTitle}"
+                                Binding="{Binding Path=Title}"
+                                Header="{DynamicResource crw_RewardTitle}"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                x:Name="ColLength"
+                                Width="*"
+                                d:Header="{i18n:Loc s_Length}"
+                                Binding="{Binding Path=Length}"
+                                Header="{DynamicResource s_Length}"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                x:Name="ColRequester"
+                                Width="*"
+                                d:Header="{i18n:Loc s_Requester}"
+                                Binding="{Binding Path=Requester}"
+                                Header="{DynamicResource s_Requester}"
+                                Visibility="Visible" />
+                            <DataGridTemplateColumn
+                                x:Name="colDeleteButton"
+                                d:Header="{i18n:Loc WinQueue_Actions}"
+                                Header="{DynamicResource WinQueue_Actions}"
+                                Visibility="Visible">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Click="DgvButtonSkip_Click" ToolTip="Skip Song">
+                                                <Button.Style>
+                                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                                        <Style.Triggers>
+                                                            <!--  Only show if Playertype is Spotify  -->
+                                                            <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <!--  Hide if Requester is 'Skipping...'  -->
+                                                            <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                        <Setter Property="IsEnabled" Value="False" />
+                                                    </Style>
+                                                </Button.Style>
+                                                <Button.Content>
+                                                    <iconPacks:BootstrapIcons Kind="DashCircle" />
+                                                </Button.Content>
+                                            </Button>
+                                            <Button
+                                                Click="DgvButtonAddToFav_Click"
+                                                Tag="like"
+                                                ToolTip="Add to favorite playlist">
+                                                <Button.Style>
+                                                    <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                                                        <Setter Property="IsEnabled" Value="False" />
+
+                                                        <Style.Triggers>
+                                                            <!--  Show only if Playertype is Spotify  -->
+                                                            <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <!--  Hide if Requester is 'Skipping...'  -->
+                                                            <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="LightGray" />
+                                    </Trigger>
+                                    <DataTrigger Binding="{Binding Requester}" Value="Skipping...">
+                                        <Setter Property="Background" Value="IndianRed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Requester}" Value="Spotify">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Requester}" Value="YouTube">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Played}" Value="-1">
+                                        <Setter Property="Background" Value="SteelBlue" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Background" Value="SeaGreen" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
+                    <Grid
+                        Grid.Row="2"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        ZIndex="5">
+                        <Button
+                            x:Name="BtnPlayerControlsVisibility"
+                            Padding="0"
+                            Click="BtnPlayerControlsVisibility_OnClick"
+                            Style="{StaticResource MahApps.Styles.Button.WindowCommands}"
+                            ToolTip="Show / Hide Spotify Controls">
+                            <Button.Content>
+                                <iconPacks:BootstrapIcons Kind="ChevronDown" />
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                    <Border
+                        x:Name="BorderPlayerControls"
+                        Grid.Row="2"
+                        Margin="6,0,6,6"
+                        Padding="0,3"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Bottom"
+                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
+                        BorderThickness="1,1,1,1"
+                        CornerRadius="25">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Button
+                                x:Name="BtnBack"
+                                Click="BtnBack_OnClick"
+                                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
+                                <Button.Content>
+                                    <iconPacks:BootstrapIcons Kind="SkipStartFill" />
+                                </Button.Content>
+                            </Button>
+                            <Button
+                                x:Name="BtnPlayPause"
+                                Width="40"
+                                Height="40"
+                                Click="BtnPlayPause_OnClick"
+                                Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                                <Button.Content>
+                                    <Grid Margin="3,0,0,0">
+                                        <iconPacks:BootstrapIcons Kind="PlayFill" />
+                                    </Grid>
+                                </Button.Content>
+                            </Button>
+                            <Button
+                                x:Name="BtnNext"
+                                Click="BtnNext_OnClick"
+                                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
+                                <Button.Content>
+                                    <iconPacks:BootstrapIcons Kind="SkipEndFill" />
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Requestlist">
+                <Grid Margin="6">
+                    <DataGrid
+                        x:Name="DgvReqlist"
+                        AutoGenerateColumns="False"
+                        BeginningEdit="Dgv_Queue_BeginningEdit"
+                        CanUserAddRows="False"
+                        CanUserSortColumns="False"
+                        DataContext=""
+                        EnableColumnVirtualization="False"
+                        EnableRowVirtualization="False"
+                        HorizontalScrollBarVisibility="Disabled"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Trackid}"
+                                Header="Track ID"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Artist}"
+                                Header="{DynamicResource bw_cbArtist}"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Title}"
+                                Header="title"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Played}"
+                                Header="Played"
+                                Visibility="Visible" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Path=Requester}"
+                                Header="Requester"
+                                Visibility="Visible" />
+                            <DataGridTemplateColumn
+                                d:Header="{i18n:Loc WinQueue_Actions}"
+                                Header="{DynamicResource WinQueue_Actions}"
+                                Visibility="Visible">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="ReqlistDelete_OnClick" ToolTip="Delete">
+                                            <Button.Style>
+                                                <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button" />
+                                            </Button.Style>
+                                            <Button.Content>
+                                                <iconPacks:BootstrapIcons Kind="Trash3Fill" />
+                                            </Button.Content>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Skiplist" Visibility="Collapsed" />
+        </TabControl>
+
     </Grid>
+
 </controls:MetroWindow>

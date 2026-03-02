@@ -468,16 +468,16 @@ namespace Songify_Slim.Util.Spotify
                 {
                     string artists = string.Join(", ", item.Track.Artists.Select(a => a.Name));
 
-                    Logger.Trace(LogSource.Spotify, $"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
+                    //Logger.Trace(LogSource.Spotify, $"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
 
                     // Log each interpretation's score
                     foreach (ParsedQuery pq in interpretations)
                     {
                         int interpScore = ScoreTrackForInterpretation(item.Track, pq);
 
-                        Logger.Trace(LogSource.Spotify, $"      -> [{pq.SourceHint}] " +
-                                                        $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
-                                                        $"Score={interpScore}");
+                        //Logger.Trace(LogSource.Spotify, $"      -> [{pq.SourceHint}] " +
+                        //                                $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
+                        //                                $"Score={interpScore}");
                     }
 
                     rank++;
@@ -715,23 +715,6 @@ namespace Songify_Slim.Util.Spotify
             {
                 return await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
                     () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                return null;
-            }
-        }
-
-        public static async Task<List<bool>> CheckLibrary(List<string> tracks)
-        {
-            if (Client == null)
-                return null;
-            try
-            {
-                List<bool> response = await ApiCallMeter.RunAsync("Library.GetTracks",
-                    () => Client.Library.CheckTracks(new LibraryCheckTracksRequest(tracks)), softLimitPerminute);
-                return response;
             }
             catch (Exception ex)
             {
@@ -1161,9 +1144,10 @@ namespace Songify_Slim.Util.Spotify
 
         public static async Task<List<bool>> CheckSavedTracksAsync(List<string> ids)
         {
+            List<string> uris = ids.Select(EnsureTrackUri).ToList();
             try
             {
-                List<bool> x = await ApiCallMeter.RunAsync("Player.ResumePlayback", () => Client.Library.CheckItems(new LibraryCheckItemsRequest(ids)), softLimitPerminute);
+                List<bool> x = await ApiCallMeter.RunAsync("Library.CheckItems", () => Client.Library.CheckItems(new LibraryCheckItemsRequest(uris)), softLimitPerminute);
                 return x;
             }
             catch (Exception e)
@@ -1171,6 +1155,17 @@ namespace Songify_Slim.Util.Spotify
                 Logger.Log(LogLevel.Error, LogSource.Spotify, "Error checking if IDs are already in Library.");
                 return null;
             }
+        }
+
+        public static string EnsureTrackUri(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return value;
+
+            // Already a URI
+            return value.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase)
+                ? value
+                : $"spotify:track:{value}";
         }
     }
 }

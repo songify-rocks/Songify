@@ -949,4 +949,19 @@
   <data name="crw_RewardPrompt" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Dossier Songify</value>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Vérifier les mises à jour</value>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>Liste des utilisateurs</value>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>URL du serveur Web</value>
+  </data>
+  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+    <value>Écouter les commandes de chat depuis une conversation partagée</value>
+  </data>
 </root>

@@ -889,6 +889,7 @@ namespace Songify_Slim.Util.Configuration
         public string YoutubeApiKey { get; set; }
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];
+        public bool SharedChatEnabled { get; set; } = false;
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;

@@ -999,4 +999,19 @@
   <data name="crw_RewardPrompt" xml:space="preserve">
     <value>Beschrijving</value>
   </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Songify-map</value>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Controleer op updates</value>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>Gebruikerslijst</value>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>Webserver-URL</value>
+  </data>
+  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+    <value>Luister naar chatopdrachten uit gedeelde chats.</value>
+  </data>
 </root>

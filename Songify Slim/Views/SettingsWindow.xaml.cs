@@ -186,6 +186,7 @@ namespace Songify_Slim.Views
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
             //TxtbxRewardId.Text = Settings.TwRewardId;
+            TglSharedChat.IsOn = Settings.SharedChatEnabled;
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
             PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
@@ -2194,6 +2195,13 @@ namespace Songify_Slim.Views
                 int seconds = totalSeconds % 60;
                 TextBlockPollDuration.Text = $"({minutes:D2}m {seconds:D2}s)";
             }
+        }
+
+        private void Tgl_SharedChat_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+            Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsOn;
         }
     }
 }

@@ -946,4 +946,19 @@
   <data name="crw_RewardPrompt" xml:space="preserve">
     <value>Beschreibung</value>
   </data>
+  <data name="menu.help.app_folder" xml:space="preserve">
+    <value>Songify-Ordner</value>
+  </data>
+  <data name="menu.file.check_for_updates" xml:space="preserve">
+    <value>Auf Aktualisierungen prüfen</value>
+  </data>
+  <data name="menu.view.user_list" xml:space="preserve">
+    <value>Benutzerliste</value>
+  </data>
+  <data name="menu.view.webserver_url" xml:space="preserve">
+    <value>Webserver-URL</value>
+  </data>
+  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+    <value>Chatbefehle aus dem geteiltem Chat ausführen.</value>
+  </data>
 </root>

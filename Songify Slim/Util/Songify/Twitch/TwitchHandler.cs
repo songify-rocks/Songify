@@ -93,8 +93,12 @@ public static class TwitchHandler
 
     public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
+        Stopwatch sw = new();
+
         try
         {
+            sw.Start();
+
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 await SendChatMessage("No song found.");
@@ -312,6 +316,11 @@ public static class TwitchHandler
         catch (Exception ex)
         {
             Logger.LogExc(ex);
+        }
+        finally
+        {
+            sw.Stop();
+            Logger.Info(LogSource.Twitch, $"AddSong execution time: {sw.ElapsedMilliseconds} ms");
         }
     }
 
@@ -1208,7 +1217,7 @@ public static class TwitchHandler
                                 continue;
                             ((MainWindow)window).IconTwitchApi.Foreground = Brushes.IndianRed;
                             ((MainWindow)window).IconTwitchApi.Kind =
-                                PackIconBoxIconsKind.BrandsTwitch;
+                                PackIconBoxIconsKind.SolidCircle;
                             ((MainWindow)window).MiTwitchApi.IsEnabled = false;
                             MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
                                 "Twitch Account Issues",

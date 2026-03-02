@@ -773,6 +773,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -1246,6 +1247,24 @@
                                         VerticalAlignment="Center"
                                         d:Text="{i18n:Loc Sw_Integration_StreamNotLifeNotification}"
                                         Text="{DynamicResource Sw_Integration_StreamNotLifeNotification}"
+                                        TextWrapping="Wrap" />
+                                </controls:ToggleSwitch.Content>
+                            </controls:ToggleSwitch>
+                            <controls:ToggleSwitch
+                                x:Name="TglSharedChat"
+                                Height="32"
+                                Margin="0,4,0,4"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top"
+                                VerticalContentAlignment="Center"
+                                Toggled="Tgl_SharedChat_Toggled"
+                                ToolTip="This options enables the listening to shared chat, allowing commands to be sent from shared chats.">
+                                <controls:ToggleSwitch.Content>
+                                    <TextBlock
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        d:Text="{i18n:Loc Sw_Integration_StreamSharedChat}"
+                                        Text="{DynamicResource Sw_Integration_StreamSharedChat}"
                                         TextWrapping="Wrap" />
                                 </controls:ToggleSwitch.Content>
                             </controls:ToggleSwitch>

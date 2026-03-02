@@ -583,7 +583,7 @@
       <Version>6.2.1</Version>
     </PackageReference>
     <PackageReference Include="Markdig">
-      <Version>0.41.0</Version>
+      <Version>0.45.0</Version>
     </PackageReference>
     <PackageReference Include="Markdig.Wpf">
       <Version>0.5.0.1</Version>
@@ -631,10 +631,10 @@
       <Version>2.2.0</Version>
     </PackageReference>
     <PackageReference Include="SpotifyAPI.Web">
-      <Version>7.3.0</Version>
+      <Version>7.4.0</Version>
     </PackageReference>
     <PackageReference Include="SpotifyAPI.Web.Auth">
-      <Version>7.3.0</Version>
+      <Version>7.4.0</Version>
     </PackageReference>
     <PackageReference Include="System.AppContext">
       <Version>4.3.0</Version>
@@ -760,13 +760,13 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.Api">
-      <Version>3.10.0-preview-4e0146c</Version>
+      <Version>3.10.2</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.Client">
-      <Version>4.0.0-preview-5ef35d539836f8bcd29bd836a23b9e853020acfa</Version>
+      <Version>4.0.1</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.EventSub.Websockets">
-      <Version>0.7.0-preview.73.af00daa</Version>
+      <Version>0.8.0</Version>
     </PackageReference>
     <PackageReference Include="YamlDotNet">
       <Version>16.3.0</Version>

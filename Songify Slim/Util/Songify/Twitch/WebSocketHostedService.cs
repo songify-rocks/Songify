@@ -16,12 +16,12 @@ using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Helix.Models.EventSub;
+using TwitchLib.EventSub.Core.EventArgs.Channel;
+using TwitchLib.EventSub.Core.EventArgs.Stream;
 using TwitchLib.EventSub.Core.Models.Polls;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
-using TwitchLib.EventSub.Websockets.Core.EventArgs.Channel;
-using TwitchLib.EventSub.Websockets.Core.EventArgs.Stream;
 using LogLevel = Songify_Slim.Util.General.LogLevel;
 
 namespace Songify_Slim.Util.Songify.Twitch
@@ -78,6 +78,24 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             if (!e.IsRequestedReconnect)
             {
+                Dictionary<string, string> condBroadcaster = new()
+                {
+                    ["broadcaster_user_id"] = _userId
+                };
+
+                Dictionary<string, string> condBroadcasterAndUser = new()
+                {
+                    ["broadcaster_user_id"] = _userId,
+                    ["user_id"] = _userId
+                };
+
+                // Only use moderator_user_id on subscription types that explicitly require it.
+                Dictionary<string, string> condBroadcasterAndModerator = new()
+                {
+                    ["broadcaster_user_id"] = _userId,
+                    ["moderator_user_id"] = _userId
+                };
+
                 // subscribe to topics
                 // create condition Dictionary
                 // You need BOTH broadcaster and moderator values or EventSub returns an Error!
@@ -120,23 +138,21 @@ namespace Songify_Slim.Util.Songify.Twitch
             evSubs = evSubs.Where(sub => sub.Status == "enabled").ToList();
             if (evSubs.Any(s => s.Type == "channel.chat.message"))
             {
-                Application.Current.Dispatcher.Invoke((() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    (((MainWindow)Application.Current.MainWindow)!).IconTwitchBot.Foreground = evSubs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
-                }));
+                    ((MainWindow)Application.Current.MainWindow)!.IconTwitchBot.Foreground = evSubs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
+                });
             }
         }
 
-        private async Task OnWebsocketDisconnected(object sender, EventArgs e)
+        private async Task OnWebsocketDisconnected(object sender, WebsocketDisconnectedArgs e)
         {
             _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} disconnected!");
-            Logger.Info(LogSource.Twitch, $"Websocket disconnected...");
-            await TwitchHandler.StartOrRestartAsync();
+            Logger.Log(LogLevel.Info, LogSource.Twitch, "Websocket Disconnected...");
             // Don't do this in production. You should implement a better reconnect strategy with exponential backoff
             while (!await _eventSubWebsocketClient.ReconnectAsync())
             {
                 _logger.LogError("Websocket reconnect failed!");
-                Logger.Error(LogSource.Twitch, $"Websocket reconnect failed!");
                 await Task.Delay(1000);
             }
         }
@@ -149,8 +165,8 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
         {
-            _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
-            Logger.Error(LogSource.Twitch, $"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
+            _logger.LogError("EventSub ErrorOccurred: {Exception}", e.Exception);
+            Logger.Error(LogSource.Twitch, $"EventSub ErrorOccurred: {e.Exception}");
         }
 
         #region Events
@@ -159,7 +175,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             if (!Settings.SrForBits)
                 return;
-            ChannelCheer eventData = args.Notification.Payload.Event;
+            ChannelCheer eventData = args.Payload.Event;
             if (eventData.BroadcasterUserId != Settings.TwitchUser.Id)
                 return;
             _logger.LogInformation($"{eventData.UserName} cheered {eventData.Bits} bits at {eventData.BroadcasterUserName}. Their message was {eventData.Message}");
@@ -190,7 +206,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             return Task.CompletedTask;
         }
 
-        private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
+        private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs streamOfflineArgs)
         {
             Settings.IsLive = false;
             Logger.Info(LogSource.Twitch, "Stream offline");
@@ -199,7 +215,7 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task EventSubWebsocketClientOnChannelPointsCustomRewardRedemptionAdd(object sender, ChannelPointsCustomRewardRedemptionArgs e)
         {
-            ChannelPointsCustomRewardRedemption eventData = e.Notification.Payload.Event;
+            ChannelPointsCustomRewardRedemption eventData = e.Payload.Event;
 
             if (eventData.BroadcasterUserId != Settings.TwitchUser.Id)
                 return;
@@ -235,21 +251,20 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs args)
+        private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs e)
         {
-            ChannelChatMessage chatMsg = args.Notification.Payload.Event;
+            ChannelChatMessage chatMsg = e.Payload.Event;
 
             if (!chatMsg.Message.Text.StartsWith("!"))
                 return Task.CompletedTask;
-            if (chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
-                return Task.CompletedTask;
+            if (!Settings.SharedChatEnabled && chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id) return Task.CompletedTask;
             TwitchHandler.ExecuteChatCommand(chatMsg);
             return Task.CompletedTask;
         }
 
-        private static Task _eventSubWebsocketClient_ChannelPollEnd(object sender, ChannelPollEndArgs args)
+        private static Task _eventSubWebsocketClient_ChannelPollEnd(object sender, ChannelPollEndArgs e)
         {
-            ChannelPollEnd pollEvent = args.Notification.Payload.Event;
+            ChannelPollEnd pollEvent = e.Payload.Event;
 
             // Ignore irrelevant/ended polls
             if (pollEvent.Status.ToUpper() == "ARCHIVED"
@@ -317,9 +332,9 @@ namespace Songify_Slim.Util.Songify.Twitch
             return Task.CompletedTask;
         }
 
-        private static Task _eventSubWebsocketClient_ChannelPollBegin(object sender, ChannelPollBeginArgs args)
+        private static Task _eventSubWebsocketClient_ChannelPollBegin(object sender, ChannelPollBeginArgs e)
         {
-            ChannelPollBegin poll = args.Notification.Payload.Event;
+            ChannelPollBegin poll = e.Payload.Event;
             if (GlobalObjects.CurrentSkipPoll.Id == poll.Id)
             {
                 GlobalObjects.CurrentSkipPoll.IsActive = true;
