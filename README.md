@@ -40,12 +40,10 @@ Songify bridges Spotify and Twitch using their respective APIs to offer seamless
 - Commands to control playback (play, pause, vote skip) or fetch the current song details.
   
 Songify not only works with Spotify but with these players as well:
-  - YouTube
-  - ~Deezer~
   - foobar2000
   - VLC
-  - [Pear Dekstop (formerly known as th-ch youtube music)](https://github.com/th-ch/youtube-music)
-
+  - [Pear Dekstop (formerly known as th-ch youtube music)](https://github.com/th-ch/youtube-music) (with song requests)
+  - Detect anything playing on your PC through the windows Media API
 ---
 
 ### Features
