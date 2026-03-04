@@ -1288,8 +1288,6 @@ namespace Songify_Slim.Views
                         CoverCanvas.Visibility = Visibility.Visible;
                     }
                     ImgCover.Visibility = Visibility.Collapsed;
-
-                    Logger.Info(LogSource.Cover, "COVER: Set successfully");
                     break;
                 }
                 catch (Exception) when (i <= numberOfRetries)
@@ -1341,7 +1339,6 @@ namespace Songify_Slim.Views
                     }
                     CoverCanvas.Visibility = Visibility.Collapsed;
 
-                    Logger.Info(LogSource.Cover, "COVER: Set successfully");
                     break;
                 }
                 catch (Exception) when (i <= numberOfRetries)

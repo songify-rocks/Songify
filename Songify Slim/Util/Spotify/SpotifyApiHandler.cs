@@ -1,4 +1,5 @@
-﻿using FuzzySharp;
+﻿using ControlzEx.Standard;
+using FuzzySharp;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
@@ -61,6 +62,8 @@ namespace Songify_Slim.Util.Spotify
         private static readonly HashSet<string> _playlistTrackIds = [];
         private static bool _playlistCacheInitialized = false;
         private static readonly object _playlistLock = new();
+
+        private static SpotifyOEmbedClient _oEmbedClient = new SpotifyOEmbedClient();
 
         public static async Task Auth()
         {
@@ -872,51 +875,109 @@ namespace Songify_Slim.Util.Spotify
         {
             if (Client == null)
                 return null;
+
             try
             {
-                // Get current playback
-                CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
-                if (playback?.Context?.Type != "playlist" || playback.Context.Uri == null)
+                CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync(
+                    "Player.GetCurrentPlayback",
+                    () => Client.Player.GetCurrentPlayback(),
+                    softLimitPerminute);
+
+                // No playlist context -> clear playlist cache and exit
+                string contextUri = playback?.Context?.Uri;
+                if (!string.Equals(playback?.Context?.Type, "playlist", StringComparison.OrdinalIgnoreCase) ||
+                    string.IsNullOrWhiteSpace(contextUri))
                 {
                     _cachedPlaylistId = null;
                     _cachedPlaylistInfo = null;
                     return null;
                 }
 
-                string playlistId = playback.Context.Uri.Split(':').Last();
+                // Extract playlist id from spotify:playlist:<id>
+                string playlistId = ExtractLastSegment(contextUri, ':');
+                if (string.IsNullOrWhiteSpace(playlistId))
+                {
+                    _cachedPlaylistId = null;
+                    _cachedPlaylistInfo = null;
+                    return null;
+                }
+
+                // Cache hit
                 if (playlistId == _cachedPlaylistId &&
-                    (DateTime.UtcNow - _cachedPlaylistFetchedAt) < PlaylistCacheTtl &&
-                    _cachedPlaylistInfo != null)
+                    _cachedPlaylistInfo != null &&
+                    (DateTime.UtcNow - _cachedPlaylistFetchedAt) < PlaylistCacheTtl)
                 {
-                    return _cachedPlaylistInfo; // Cache hit
+                    return _cachedPlaylistInfo;
                 }
 
-                FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get",
-                    () => Client.Playlists.Get(playlistId), softLimitPerminute);
-                if (playlist == null)
+                string playlistUrl = $"https://open.spotify.com/playlist/{playlistId}";
+
+                PlaylistInfo info = null;
+
+                // First try: official API
+                try
                 {
-                    _cachedPlaylistId = null;
-                    _cachedPlaylistInfo = null;
-                    return null;
+                    FullPlaylist playlist = await ApiCallMeter.RunAsync(
+                        "Playlists.Get",
+                        () => Client.Playlists.Get(playlistId),
+                        softLimitPerminute);
+
+                    if (playlist != null)
+                    {
+                        info = new PlaylistInfo
+                        {
+                            Id = playlist.Id,
+                            Name = playlist.Name,
+                            Owner = playlist.Owner?.DisplayName ?? playlist.Owner?.Id ?? "unknown",
+                            Url = playlist.ExternalUrls != null && playlist.ExternalUrls.TryGetValue("spotify", out string url)
+                                ? url
+                                : playlistUrl
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Only fallback if it's likely an access/scopes/404 case.
+                    // If you have a specific SpotifyAPI exception type available, narrow this catch.
+                    // Otherwise: keep it broad, but don't swallow without fallback.
+                    _ = ex; // optionally log
+                }
+
+                // Fallback: oEmbed (title + thumbnail only)
+                if (info == null)
+                {
+                    SpotifyOEmbedResponse o = await _oEmbedClient.GetAsync(playlistUrl).ConfigureAwait(false);
+                    (string Name, string Owner)? embed = await SpotifyEmbedNextData.TryGetPlaylistNameAndOwnerAsync(playlistId);
+                    info = new PlaylistInfo
+                    {
+                        Id = playlistId,
+                        Name = embed?.Name ?? o?.Title ?? "unknown",
+                        Owner = embed?.Owner ?? "unknown",
+                        Url = $"https://open.spotify.com/playlist/{playlistId}",
+                        Image = o?.ThumbnailUrl
+                    };
                 }
 
                 _cachedPlaylistId = playlistId;
-                _cachedPlaylistInfo = new PlaylistInfo
-                {
-                    Id = playlist.Id,
-                    Name = playlist.Name,
-                    Owner = playlist.Owner?.DisplayName ?? playlist.Owner?.Id ?? "unknown",
-                    Url = playlist.ExternalUrls?["spotify"]
-                };
+                _cachedPlaylistInfo = info;
                 _cachedPlaylistFetchedAt = DateTime.UtcNow;
-                return _cachedPlaylistInfo;
+
+                return info;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
             }
+        }
+
+        private static string ExtractLastSegment(string s, char separator)
+        {
+            if (string.IsNullOrEmpty(s))
+                return null;
+
+            int idx = s.LastIndexOf(separator);
+            return (idx >= 0 && idx < s.Length - 1) ? s.Substring(idx + 1) : s;
         }
 
         public static async Task SetShuffle(bool b)

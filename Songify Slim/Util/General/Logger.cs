@@ -47,16 +47,17 @@ namespace Songify_Slim.Util.General
         private const string FileTimestampFormat = "yyyy-MM-dd HH:mm:ss.fff";
 
         // Used by the WPF console for colors (string-based to stay drop-in compatible)
-        private static readonly Dictionary<string, Color> ColorMappings = new()
+        private static readonly Dictionary<LogSource, Color> ColorMappings = new()
         {
-            { "CORE", Colors.Coral },
-            { "TWITCH", Colors.MediumPurple },
-            { "API", Colors.LightGreen },
-            { "COVER", Colors.Yellow },
-            { "PEAR", Color.FromRgb(255, 0, 51) },
-            { "SONGREQUEST", Color.FromRgb(91, 142, 192) },
-            { "SPOTIFY", Color.FromRgb(30, 215, 96) },
-            { "DEBUG", Colors.DodgerBlue }
+            { LogSource.Core, Colors.Coral },
+            { LogSource.Twitch, Colors.MediumPurple },
+            { LogSource.Api, Colors.LightGreen },
+            { LogSource.Cover, Colors.Yellow },
+            { LogSource.Pear, Color.FromRgb(255, 0, 51) },
+            { LogSource.Songrequest, Color.FromRgb(91, 142, 192) },
+            { LogSource.Spotify, Color.FromRgb(30, 215, 96) },
+            { LogSource.Debug, Colors.DodgerBlue },
+            { LogSource.Other, Colors.DarkCyan }
         };
 
         private static void CreateLogDirectory()
@@ -107,9 +108,9 @@ namespace Songify_Slim.Util.General
             if (exception == null) return;
 
             // Keep your old console output semantics:
-            AppendConsole(exception.Message);
-            AppendConsole(exception.StackTrace);
-            AppendConsole(exception.Source);
+            AppendConsole(exception.Message, LogSource.Other);
+            AppendConsole(exception.StackTrace, LogSource.Other);
+            AppendConsole(exception.Source, LogSource.Other);
 
             // New structured file logging:
             Log(LogLevel.Error, LogSource.Core, exception.Message, exception);
@@ -143,7 +144,12 @@ namespace Songify_Slim.Util.General
         /// </summary>
         public static void Log(LogLevel level, LogSource source, string message, Exception? exception = null)
         {
-            var entryTimestamp = DateTime.Now;
+            if (level == LogLevel.Debug && !Settings.DebugLogging)
+            {
+                return;
+            }
+
+            DateTime entryTimestamp = DateTime.Now;
 
             // Build a "source/level" prefix that also works with your existing console formatter.
             string sourceText = source.ToString().ToUpperInvariant();
@@ -151,7 +157,7 @@ namespace Songify_Slim.Util.General
             string consolePayload = $"[{sourceText}] [{levelText}] {message}";
 
             // Console (uses your existing AppendConsole formatting with time + (1) etc.)
-            AppendConsole(consolePayload);
+            AppendConsole(consolePayload, source);
 
             // File
             WriteToFile(entryTimestamp, level, source, message, exception);
@@ -191,7 +197,7 @@ namespace Songify_Slim.Util.General
 
         // ------------- CONSOLE (FlowDocument) LOGGING -------------
 
-        private static void AppendConsole(string s)
+        private static void AppendConsole(string s, LogSource source)
         {
             if (s == null) return;
 
@@ -235,7 +241,7 @@ namespace Songify_Slim.Util.General
                             {
                                 Text =
                                     $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
-                                Foreground = new SolidColorBrush(GetForegroundColor(s))
+                                Foreground = new SolidColorBrush(GetForegroundColor(source))
                             }
                         }
                     });
@@ -259,17 +265,9 @@ namespace Songify_Slim.Util.General
             }
         }
 
-        private static Color GetForegroundColor(string s)
+        private static Color GetForegroundColor(LogSource source)
         {
-            foreach (KeyValuePair<string, Color> mapping in ColorMappings)
-            {
-                if (s.IndexOf(mapping.Key, StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    return mapping.Value;
-                }
-            }
-
-            return Colors.White; // Default color
+            return ColorMappings.First(o => o.Key == source).Value;
         }
 
         // ------------- HELPER: infer source from message for old API -------------

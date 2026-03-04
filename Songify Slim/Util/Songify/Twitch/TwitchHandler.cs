@@ -132,6 +132,8 @@ public static class TwitchHandler
 
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Found track ID after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+
             if (Settings.LimitSrToPlaylist &&
                 !string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
             {
@@ -184,14 +186,7 @@ public static class TwitchHandler
                 await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsExplicit, e);
                 return;
             }
-
-            //if (track.AvailableMarkets.Count > 0)
-            //    if (IsTrackUnavailable(track, e, out response))
-            //    {
-            //        await SendChatMessage(response);
-            //        await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
-            //        return;
-            //    }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Explicit Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             if (IsArtistBlacklisted(track, e, out response))
             {
@@ -199,6 +194,7 @@ public static class TwitchHandler
                 await CheckAndRefund(source, reward, Enums.RefundCondition.ArtistBlocked, e);
                 return;
             }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Artist Block Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             if (IsTrackTooLong(track, e, out response))
             {
@@ -206,6 +202,7 @@ public static class TwitchHandler
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongTooLong, e);
                 return;
             }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Track too long Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             if (IsTrackAlreadyInQueue(track, e, out response))
             {
@@ -213,6 +210,7 @@ public static class TwitchHandler
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongAlreadyInQueue, e);
                 return;
             }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Already in Queue Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             bool unlimitedSr = false;
             if (user.UserLevels is { Count: > 0 } && user.UserLevels.All(i => i != 7))
@@ -249,12 +247,19 @@ public static class TwitchHandler
                     await CheckAndRefund(source, reward, Enums.RefundCondition.QueueLimitReached, e);
                     return;
                 }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Max Songs Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             if (!Settings.AddSrtoPlaylistOnly)
+            {
                 await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+                Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Queue after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+            }
 
             if (Settings.AddSrToPlaylist)
+            {
                 await SpotifyApiHandler.AddToPlaylist(track.Id);
+                Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Paylist after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+            }
 
             string successResponse = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
             response = CreateSuccessResponse(track, e.DisplayName, successResponse);
@@ -311,6 +316,8 @@ public static class TwitchHandler
 
             response = response.Replace("{ttp}", "");
             SendOrAnnounceMessage(response, cmd);
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Send Chat after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+
             await CheckAndRefund(source, reward, Enums.RefundCondition.OnSuccess, e);
         }
         catch (Exception ex)
@@ -320,7 +327,7 @@ public static class TwitchHandler
         finally
         {
             sw.Stop();
-            Logger.Info(LogSource.Twitch, $"AddSong execution time: {sw.ElapsedMilliseconds} ms");
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"AddSong execution time: {sw.ElapsedMilliseconds} ms");
         }
     }
 
@@ -2199,6 +2206,20 @@ public static class TwitchHandler
             try
             {
                 await TwitchApiHelper.EnableRewards(Settings.TwRewardId, Settings.TwSrReward);
+                TwitchCommand command = Settings.Commands.First(twitchCommand =>
+                    twitchCommand.CommandType == Enums.CommandType.SongRequest);
+                command.IsEnabled = Settings.TwSrReward;
+                Settings.UpdateCommand(command);
+
+                // Re-apply UI settings
+                await Application.Current.Dispatcher.Invoke(async () =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is not Window_Settings settingsWindow) continue;
+                        await settingsWindow.LoadCommands();
+                    }
+                });
 
                 string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
                 {

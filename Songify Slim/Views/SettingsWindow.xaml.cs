@@ -437,7 +437,7 @@ namespace Songify_Slim.Views
             TabCtrl.IsEnabled = true;
         }
 
-        private async Task LoadCommands()
+        public async Task LoadCommands()
         {
             StackCommands.Children.Clear();
             foreach (TwitchCommand command in Settings.Commands.OrderBy(cmd => cmd.CommandType))

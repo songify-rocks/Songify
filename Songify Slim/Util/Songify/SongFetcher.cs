@@ -428,7 +428,7 @@ namespace Songify_Slim.Util.Songify
 
                     // Get Playlist info for current song if available
                     playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
-
+                    songInfo.Playlist = playbackPlaylist;
                     GlobalObjects.CurrentSong = songInfo;
                     _canvasResponse = await CanvasService.GetCanvasAsync(songInfo.SongId);
                     GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
