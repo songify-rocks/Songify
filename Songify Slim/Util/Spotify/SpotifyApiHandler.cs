@@ -76,8 +76,10 @@ namespace Songify_Slim.Util.Spotify
             }
 
             Logger.Info(LogSource.Spotify, "Getting new tokens");
-            _server = new EmbedIOAuthServer(new Uri($"http://{Settings.SpotifyRedirectUri}:4002/auth"), 4002,
+            _server = new EmbedIOAuthServer(new Uri("http://127.0.0.1:4002/auth"), 4002,
                 Assembly.GetExecutingAssembly(), "Songify_Slim.default_site");
+            _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
+            _server.ErrorReceived += OnAuthError; // if available in your version
             await _server.Start();
 
             _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
@@ -107,6 +109,27 @@ namespace Songify_Slim.Util.Spotify
             {
                 Console.WriteLine(@"Unable to open URL, manually open: {0}", uri);
             }
+        }
+
+        private static Task OnAuthError(object sender, string error, string state)
+        {
+            try
+            {
+                Logger.Error(LogSource.Spotify, "Spotify authorization failed.");
+                Logger.Error(LogSource.Spotify, $"OAuth Error: {error}");
+                Logger.Error(LogSource.Spotify, $"State: {state}");
+                Logger.Error(LogSource.Spotify, $"ClientId: {Settings.ClientId}");
+                Logger.Error(LogSource.Spotify, $"RedirectUri: {_server?.BaseUri}");
+
+                Logger.Error(LogSource.Spotify,
+                    "Requested scopes: user-read-playback-state, user-read-private, user-modify-playback-state, playlist-modify-public, playlist-modify-private, playlist-read-private, user-library-modify, user-library-read");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+
+            return Task.CompletedTask;
         }
 
         private static async void AuthTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)

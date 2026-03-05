@@ -76,6 +76,7 @@ namespace Songify_Slim.Util.General
         private static bool _isProcessingQueue;
         public static YoutubeData YoutubeData = null;
         public static List<string> ConnectedEventsubs = [];
+        public static ApiMetricsVm ApiMetrics { get; } = new ApiMetricsVm();
 
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Directory)
             ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)

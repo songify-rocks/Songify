@@ -1,96 +1,189 @@
 ﻿using LiveCharts;
 using LiveCharts.Wpf;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Threading;
+using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Views
 {
-    internal sealed class ApiMetricsVm : IDisposable
+    public sealed class ApiMetricsRow : INotifyPropertyChanged
+    {
+        private string _key;
+        private int _rpm;
+
+        public string Key
+        {
+            get => _key;
+            set { _key = value; OnPropertyChanged(); }
+        }
+
+        public int RequestsPerMinute
+        {
+            get => _rpm;
+            set { _rpm = value; OnPropertyChanged(); }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string p = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
+    }
+
+    public sealed class ApiMetricsVm : INotifyPropertyChanged, IDisposable
     {
         private const int Capacity = 60;
 
-        public SeriesCollection SeriesCollection { get; }
+        // DataGrid
+        public ObservableCollection<ApiMetricsRow> Rows { get; } = new ObservableCollection<ApiMetricsRow>();
 
-        private readonly DispatcherTimer _timer;
-        private readonly Dictionary<string, ChartValues<int>> _seriesValues = new Dictionary<string, ChartValues<int>>();
+        // Chart
+        public SeriesCollection SeriesCollection { get; } = new SeriesCollection();
+
+        private readonly DispatcherTimer _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+
+        private readonly Dictionary<string, ChartValues<int>> _valuesByKey = new Dictionary<string, ChartValues<int>>();
         private readonly Dictionary<string, LineSeries> _seriesByKey = new Dictionary<string, LineSeries>();
 
-        // similar vibe to your Oxy palette
+        private int _totalRequestsPerMinute;
+
+        public int TotalRequestsPerMinute
+        {
+            get => _totalRequestsPerMinute;
+            private set { _totalRequestsPerMinute = value; OnPropertyChanged(); }
+        }
+
+        private bool _showTotalInStatusbar;
+
+        public bool ShowTotalInStatusbar
+        {
+            get => _showTotalInStatusbar;
+            private set { _showTotalInStatusbar = value; OnPropertyChanged(); }
+        }
+
+        // Color palette similar to your OxyPlot palette
         private static readonly Color[] Palette =
-        [
+        {
             Color.FromRgb(156, 220, 254),
             Color.FromRgb(86, 156, 214),
             Color.FromRgb(181, 206, 168),
             Color.FromRgb(197, 134, 192),
             Color.FromRgb(224, 108, 117),
             Color.FromRgb(229, 192, 123)
-        ];
+        };
 
         private int _colorIndex = 0;
 
-        public ApiMetricsVm()
-        {
-            SeriesCollection = [];
-
-            _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-            _timer.Tick += (_, __) => Refresh();
-            _timer.Start();
-        }
-
         private Brush NextStroke()
         {
-            Color c = Palette[_colorIndex++ % Palette.Length];
-            return new SolidColorBrush(c);
+            var c = Palette[_colorIndex++ % Palette.Length];
+            var b = new SolidColorBrush(c);
+            b.Freeze();
+            return b;
+        }
+
+        public ApiMetricsVm()
+        {
+            _timer.Tick += (_, __) => Refresh();
+            _timer.Start();
+
+            // initial state
+            ShowTotalInStatusbar = Settings.Player == PlayerType.Spotify;
         }
 
         private void Refresh()
         {
+            bool isSpotify = Settings.Player == PlayerType.Spotify;
+            ShowTotalInStatusbar = isSpotify;
+
+            if (!isSpotify)
+            {
+                TotalRequestsPerMinute = 0;
+
+                // optional: clear UI when not Spotify
+                // Rows.Clear();
+                // SeriesCollection.Clear();
+                // _seriesByKey.Clear();
+                // _valuesByKey.Clear();
+
+                return;
+            }
+
             IDictionary<string, int> snapshot = ApiCallMeter.GetAllCountsPerMinute();
 
-            // add/update series
-            foreach (KeyValuePair<string, int> kv in snapshot.Where(k => k.Key != "TOTAL"))
-            {
-                if (!_seriesValues.TryGetValue(kv.Key, out ChartValues<int> values))
-                {
-                    values = [];
-                    _seriesValues[kv.Key] = values;
+            // ----- totals -----
+            int total = snapshot.Values.Sum();
+            TotalRequestsPerMinute = total;
 
-                    // optional: prefill so new lines don't "grow in" from nothing
+            // ----- DataGrid rows -----
+            // Update/add endpoint rows (excluding TOTAL row from snapshot, we add our own TOTAL)
+            foreach (var kv in snapshot.Where(k => k.Key != "TOTAL"))
+            {
+                var row = Rows.FirstOrDefault(r => r.Key == kv.Key);
+                if (row == null) Rows.Add(new ApiMetricsRow { Key = kv.Key, RequestsPerMinute = kv.Value });
+                else row.RequestsPerMinute = kv.Value;
+            }
+
+            // Remove vanished endpoint rows
+            for (int i = Rows.Count - 1; i >= 0; i--)
+            {
+                string key = Rows[i].Key;
+                if (key != "TOTAL" && !snapshot.ContainsKey(key))
+                    Rows.RemoveAt(i);
+            }
+
+            // Ensure TOTAL row exists/updated
+            var totalRow = Rows.FirstOrDefault(r => r.Key == "TOTAL");
+            if (totalRow == null) Rows.Add(new ApiMetricsRow { Key = "TOTAL", RequestsPerMinute = total });
+            else totalRow.RequestsPerMinute = total;
+
+            // ----- Chart series -----
+            foreach (var kv in snapshot.Where(k => k.Key != "TOTAL"))
+            {
+                if (!_valuesByKey.TryGetValue(kv.Key, out var values))
+                {
+                    values = new ChartValues<int>();
+                    _valuesByKey[kv.Key] = values;
+
+                    // Prefill so the series starts flat and the chart looks stable immediately
                     for (int i = 0; i < Capacity; i++) values.Add(0);
 
-                    Brush stroke = NextStroke();
-
-                    LineSeries series = new()
+                    var series = new LineSeries
                     {
                         Title = kv.Key,
                         Values = values,
                         PointGeometry = null,
                         LineSmoothness = 0,
                         StrokeThickness = 2,
-                        Fill = Brushes.Transparent
+                        Stroke = NextStroke(),
+                        Fill = Brushes.Transparent,
+                        DataLabels = false,
+                        IsHitTestVisible = true
                     };
 
                     _seriesByKey[kv.Key] = series;
                     SeriesCollection.Add(series);
                 }
 
-                // rolling window update
                 values.Add(kv.Value);
                 if (values.Count > Capacity)
                     values.RemoveAt(0);
             }
 
-            // remove vanished endpoints
-            List<string> goneKeys = _seriesByKey.Keys.Where(k => !snapshot.ContainsKey(k)).ToList();
-            foreach (string key in goneKeys)
+            // Remove vanished series
+            var goneKeys = _seriesByKey.Keys.Where(k => !snapshot.ContainsKey(k)).ToList();
+            foreach (var key in goneKeys)
             {
                 SeriesCollection.Remove(_seriesByKey[key]);
                 _seriesByKey.Remove(key);
-                _seriesValues.Remove(key);
+                _valuesByKey.Remove(key);
             }
         }
 
@@ -98,5 +191,10 @@ namespace Songify_Slim.Views
         {
             _timer.Stop();
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string p = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
     }
 }

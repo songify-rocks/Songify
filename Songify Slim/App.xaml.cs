@@ -65,6 +65,13 @@ namespace Songify_Slim
             }
         }
 
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _mutex?.Dispose();
+            GlobalObjects.ApiMetrics.Dispose();
+            base.OnExit(e);
+        }
+
         public static void BringAllWindowsToFront()
         {
             // Must run on UI thread

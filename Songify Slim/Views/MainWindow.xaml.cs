@@ -84,6 +84,7 @@ namespace Songify_Slim.Views
         public SongFetcher Sf = new();
         public string SongArtist, SongTitle;
         public List<Psa> PsAs;
+        public ApiMetricsVm ApiMetrics => GlobalObjects.ApiMetrics;
 
         #endregion Variables
 
