@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:oxy="http://oxyplot.org/wpf"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
     Title="{i18n:Loc menu.view.console}"
     Width="285"
     Height="285"
@@ -137,11 +138,13 @@
                     HorizontalAlignment="Right"
                     Click="BtnToMetrics_OnClick"
                     Content="Metrics" />
-                <oxy:PlotView
+                <local:ApiChart Grid.Row="1" Margin="10" />
+                <!--<oxy:PlotView
                     Grid.Row="1"
                     Background="Transparent"
                     DefaultTrackerTemplate="{StaticResource DarkTrackerTemplate}"
-                    Model="{Binding PlotModel}" />
+                    IsHitTestVisible="True"
+                    Model="{Binding PlotModel}" />-->
             </Grid>
         </TabItem>
     </TabControl>

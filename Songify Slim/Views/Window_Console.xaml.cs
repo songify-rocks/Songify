@@ -12,12 +12,9 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class WindowConsole
     {
-        private readonly ApiMetricsViewModel _metricsVm = new();
-
         public WindowConsole()
         {
             InitializeComponent();
-            DataContext = _metricsVm; // <-- makes {Binding Rows} work
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
@@ -59,7 +56,6 @@ namespace Songify_Slim.Views
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            _metricsVm.Dispose(); // stop the timer if this window is ever actually closed
         }
 
         private void BtnLog_OnClick(object sender, RoutedEventArgs e)
