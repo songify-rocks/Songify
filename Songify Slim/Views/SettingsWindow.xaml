@@ -2573,7 +2573,9 @@
                             Height="23"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
-                            PasswordChanged="Tb_ClientSecret_PasswordChanged" />
+                            IsEnabled="False"
+                            PasswordChanged="Tb_ClientSecret_PasswordChanged"
+                            Visibility="Collapsed" />
                         <Label
                             Grid.Row="2"
                             Margin="0,0,0,6"
@@ -2585,7 +2587,8 @@
                             Margin="0,0,0,6"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
-                            Content="Client Secret" />
+                            Content="Client Secret"
+                            Visibility="Collapsed" />
 
                         <Label
                             Grid.Row="4"

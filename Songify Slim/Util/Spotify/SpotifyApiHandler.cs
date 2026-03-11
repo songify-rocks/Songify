@@ -1,10 +1,6 @@
-﻿using ControlzEx.Standard;
-using FuzzySharp;
+﻿using FuzzySharp;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.IconPacks;
-using Newtonsoft.Json.Linq;
-using Songify_Slim.Models;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
@@ -13,122 +9,156 @@ using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Windows.Media.Playlists;
 using static Songify_Slim.Util.General.Enums;
 using static Songify_Slim.Util.General.Enums.PlaybackAction;
-using static System.Net.WebRequestMethods;
 using Application = System.Windows.Application;
 using Timer = System.Timers.Timer;
 
 namespace Songify_Slim.Util.Spotify
 {
-    // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler
     {
-        private static string state;
-
-        private const string BaseUrl = "https://auth.overcode.tv";
         private static EmbedIOAuthServer _server;
         public static SpotifyClient Client;
 
-        //public static SpotifyApi SpotifyApi = new(() => Settings.SpotifyAccessToken, null);
         private const int SoftLimitPerminute = 60;
 
         private static readonly Timer AuthTimer = new()
         {
-            Interval = 1000 * 60 * 30,
+            Interval = 1000 * 60 * 10,
         };
-
-        // ---- caching state (in SpotifyApiHandler) ----
-        private static CurrentlyPlayingContext _cachedPlayback;
-
-        private static DateTime _cachedPlaybackAt = DateTime.MinValue;
-        private static readonly TimeSpan PlaybackCacheTtl = TimeSpan.FromSeconds(5);
 
         private static string _cachedPlaylistId;
         private static PlaylistInfo _cachedPlaylistInfo;
         private static DateTime _cachedPlaylistFetchedAt = DateTime.MinValue;
         private static readonly TimeSpan PlaylistCacheTtl = TimeSpan.FromMinutes(10);
 
-        private static readonly HashSet<string> _playlistTrackIds = [];
-        private static bool _playlistCacheInitialized = false;
-        private static readonly object _playlistLock = new();
+        private static readonly SpotifyOEmbedClient OEmbedClient = new();
 
-        private static SpotifyOEmbedClient _oEmbedClient = new SpotifyOEmbedClient();
+        private static string _state;
+        private static string _codeVerifier;
+
+        private static readonly List<string> SpotifyScopes =
+        [
+            Scopes.UserReadPlaybackState,
+            Scopes.UserReadPrivate,
+            Scopes.UserModifyPlaybackState,
+            Scopes.PlaylistModifyPublic,
+            Scopes.PlaylistModifyPrivate,
+            Scopes.PlaylistReadPrivate,
+            Scopes.UserLibraryModify,
+            Scopes.UserLibraryRead
+        ];
 
         public static async Task Auth()
         {
-            AuthTimer.Elapsed += AuthTimer_Elapsed;
-            if (!string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
-            {
-                Logger.Info(LogSource.Spotify, "Refreshing Tokens");
-                await RefreshTokens();
-                return;
-            }
-
-            Logger.Info(LogSource.Spotify, "Getting new tokens");
-            _server = new EmbedIOAuthServer(new Uri("http://127.0.0.1:4002/auth"), 4002,
-                Assembly.GetExecutingAssembly(), "Songify_Slim.default_site");
-            _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
-            _server.ErrorReceived += OnAuthError; // if available in your version
-            await _server.Start();
-
-            LoginRequest request =
-                        new(_server.BaseUri, Settings.ClientId, LoginRequest.ResponseType.Code)
-                        {
-                            Scope = new List<string>
-                            {
-                        Scopes.UserReadPlaybackState,
-                        Scopes.UserReadPrivate,
-                        Scopes.UserModifyPlaybackState,
-                        Scopes.PlaylistModifyPublic,
-                        Scopes.PlaylistModifyPrivate,
-                        Scopes.PlaylistReadPrivate,
-                        Scopes.UserLibraryModify,
-                        Scopes.UserLibraryRead
-                            }
-                        };
-            state = Guid.NewGuid().ToString("N");
-            request.State = state;
-            Logger.Info(LogSource.Spotify, $"OAuth state: {state}");
-            Uri uri = request.ToUri();
-
             try
             {
-                Logger.Info(LogSource.Spotify, $"Auth URL: {uri}");
-                await Task.Delay(1000);
-                BrowserUtil.Open(uri);
+                AuthTimer.Elapsed -= AuthTimer_Elapsed;
+                AuthTimer.Elapsed += AuthTimer_Elapsed;
+
+                if (!string.IsNullOrWhiteSpace(Settings.SpotifyRefreshToken))
+                {
+                    Logger.Info(LogSource.Spotify, "Refreshing tokens");
+                    await RefreshTokens();
+                    return;
+                }
+
+                Logger.Info(LogSource.Spotify, "Getting new tokens");
+                await StartPkceLogin();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Console.WriteLine(@"Unable to open URL, manually open: {0}", uri);
+                Logger.LogExc(ex);
             }
         }
 
-        private static Task OnAuthError(object sender, string error, string state)
+        private static async Task StartPkceLogin()
+        {
+            try
+            {
+                if (_server != null)
+                {
+                    try
+                    {
+                        await _server.Stop();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, LogSource.Spotify, "Unable to stop auth server", ex);
+                    }
+
+                    _server.AuthorizationCodeReceived -= OnAuthorizationCodeReceived;
+                    _server.ErrorReceived -= OnAuthError;
+                    _server = null;
+                }
+
+                _server = new EmbedIOAuthServer(
+                    new Uri("http://127.0.0.1:4002/auth"),
+                    4002,
+                    Assembly.GetExecutingAssembly(),
+                    "Songify_Slim.default_site");
+
+                _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
+                _server.ErrorReceived += OnAuthError;
+
+                await _server.Start();
+
+                (string verifier, string challenge) = PKCEUtil.GenerateCodes();
+                _codeVerifier = verifier;
+                _state = Guid.NewGuid().ToString("N");
+
+                LoginRequest request = new(_server.BaseUri, Settings.ClientId, LoginRequest.ResponseType.Code)
+                {
+                    Scope = SpotifyScopes,
+                    State = _state,
+                    CodeChallengeMethod = "S256",
+                    CodeChallenge = challenge
+                };
+
+                Uri uri = request.ToUri();
+
+                Logger.Debug(LogSource.Spotify, $"OAuth state: {_state}");
+                Logger.Debug(LogSource.Spotify, $"Auth URL: {uri}");
+
+                try
+                {
+                    await Task.Delay(300);
+                    BrowserUtil.Open(uri);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                    Logger.Error(LogSource.Spotify, $"Unable to open browser automatically. Please open manually: {uri}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                throw;
+            }
+        }
+
+        private static Task OnAuthError(object sender, string error, string receivedState)
         {
             try
             {
                 Logger.Error(LogSource.Spotify, "Spotify authorization failed.");
                 Logger.Error(LogSource.Spotify, $"OAuth Error: {error}");
-                Logger.Error(LogSource.Spotify, $"Received State: {state}");
-                Logger.Error(LogSource.Spotify, $"Original State: {state}");
+                Logger.Error(LogSource.Spotify, $"Received State: {receivedState}");
+                Logger.Error(LogSource.Spotify, $"Original State: {_state}");
                 Logger.Error(LogSource.Spotify, $"ClientId: {Settings.ClientId}");
                 Logger.Error(LogSource.Spotify, $"RedirectUri: {_server?.BaseUri}");
-
-                Logger.Error(LogSource.Spotify,
-                    "Requested scopes: user-read-playback-state, user-read-private, user-modify-playback-state, playlist-modify-public, playlist-modify-private, playlist-read-private, user-library-modify, user-library-read");
+                Logger.Error(LogSource.Spotify, $"Requested scopes: {string.Join(", ", SpotifyScopes)}");
             }
             catch (Exception ex)
             {
@@ -142,7 +172,8 @@ namespace Songify_Slim.Util.Spotify
         {
             try
             {
-                await RefreshTokens();
+                if (IsTokenExpiringSoon())
+                    await RefreshTokens();
             }
             catch (Exception ex)
             {
@@ -150,132 +181,185 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
+        private static bool IsTokenExpiringSoon()
+        {
+            try
+            {
+                if (Settings.SpotifyTokenExpiresAt <= 0)
+                    return true;
+
+                long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                long headroom = (long)TimeSpan.FromMinutes(10).TotalMilliseconds;
+
+                return now + headroom >= Settings.SpotifyTokenExpiresAt;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
         private static async Task RefreshTokens()
         {
-            // 1) Get new tokens (background thread is fine)
+            if (string.IsNullOrWhiteSpace(Settings.SpotifyRefreshToken))
+                throw new InvalidOperationException("No Spotify refresh token available.");
+
             OAuthClient oauth = new();
-            TokenSwapRefreshRequest refreshRequest = new(
-                new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
-                Settings.SpotifyRefreshToken
-            );
-            AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
-            // Avoid logging secrets in production:
+            Logger.Info(LogSource.Spotify, "Requesting refreshed PKCE token");
 
-            // 2) Update settings with new tokens
+            PKCETokenResponse refreshResponse =
+                await oauth.RequestToken(new PKCETokenRefreshRequest(Settings.ClientId, Settings.SpotifyRefreshToken));
+
+            if (string.IsNullOrWhiteSpace(refreshResponse.AccessToken))
+                throw new Exception("Spotify returned an empty access token during refresh.");
+
             Settings.SpotifyAccessToken = refreshResponse.AccessToken;
-            if (!string.IsNullOrEmpty(refreshResponse.RefreshToken))
+
+            if (!string.IsNullOrWhiteSpace(refreshResponse.RefreshToken))
                 Settings.SpotifyRefreshToken = refreshResponse.RefreshToken;
 
-            // 3) Build client using the *updated* tokens
-            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault().WithAuthenticator(
-                new AuthorizationCodeAuthenticator(
-                    Settings.ClientId,
-                    Settings.ClientSecret,
-                    new AuthorizationCodeTokenResponse
-                    {
-                        AccessToken = Settings.SpotifyAccessToken,
-                        RefreshToken = Settings.SpotifyRefreshToken
-                    }
-                )
-            );
+            Settings.SpotifyTokenExpiresAt = DateTimeOffset.UtcNow
+                .AddSeconds(refreshResponse.ExpiresIn)
+                .ToUnixTimeMilliseconds();
 
-            Client = new SpotifyClient(config);
-            //SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
-
-            // 4) Marshal any UI/DispatcherTimer work to the UI thread
-            Application app = Application.Current;
-            if (app != null)
-            {
-                await app.Dispatcher.InvokeAsync(async () =>
-                {
-                    // If AuthTimer is a DispatcherTimer, start it on its owning Dispatcher (the UI thread)
-                    if (!AuthTimer.Enabled) // or .Enabled if it's a different timer type
-                        AuthTimer.Start();
-                    GlobalObjects.SpotifyProfile = await GetUser();
-                    Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-                    Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
-                    Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
-
-                    if (app.MainWindow is MainWindow mw)
-                    {
-                        mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
-                        //mw.IconWebSpotify.Kind = PackIconBoxIconsKind.LogosSpotify;
-                    }
-                });
-            }
+            await ApplyAuthenticatedStateAsync(refreshResponse);
         }
 
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
-            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Entered OnAuthorizationCodeReceived");
+            try
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Entered OnAuthorizationCodeReceived");
 
-            OAuthClient oauth = new();
-            TokenSwapTokenRequest tokenRequest = new(
-                new Uri($"{BaseUrl}/swap?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
-                response.Code);
-            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending Access Token request");
-            AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
-            Logger.Info(LogSource.Spotify, $"We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
+                if (response == null)
+                    throw new Exception("AuthorizationCodeResponse was null.");
 
-            TokenSwapRefreshRequest refreshRequest = new(
-                new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
-                tokenResponse.RefreshToken
-            );
-            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending Refresh Token Request");
-            AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
+                if (string.IsNullOrWhiteSpace(response.Code))
+                    throw new Exception("Spotify returned an empty authorization code.");
 
-            Logger.Info(LogSource.Spotify, $"We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
+                if (!string.Equals(response.State, _state, StringComparison.Ordinal))
+                    throw new Exception("Spotify OAuth state mismatch.");
 
+                OAuthClient oauth = new();
+
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending PKCE token request");
+
+                PKCETokenResponse tokenResponse = await oauth.RequestToken(
+                    new PKCETokenRequest(
+                        Settings.ClientId,
+                        response.Code,
+                        new Uri(_server.BaseUri.ToString()),
+                        _codeVerifier
+                    )
+                );
+
+                if (string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
+                    throw new Exception("Spotify returned an empty access token.");
+
+                Settings.SpotifyAccessToken = tokenResponse.AccessToken;
+                Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
+                Settings.SpotifyTokenExpiresAt = DateTimeOffset.UtcNow
+                    .AddSeconds(tokenResponse.ExpiresIn)
+                    .ToUnixTimeMilliseconds();
+
+                await ApplyAuthenticatedStateAsync(tokenResponse);
+
+                Logger.Info(LogSource.Spotify, "Spotify authentication completed successfully.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+            finally
+            {
+                try
+                {
+                    if (_server != null)
+                    {
+                        _server.AuthorizationCodeReceived -= OnAuthorizationCodeReceived;
+                        _server.ErrorReceived -= OnAuthError;
+                        await _server.Stop();
+                        _server = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+            }
+        }
+
+        private static async Task ApplyAuthenticatedStateAsync(PKCETokenResponse tokenResponse)
+        {
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
-                .WithAuthenticator(new AuthorizationCodeAuthenticator(Settings.ClientId,
-                    Settings.ClientSecret, tokenResponse));
-
-            Settings.SpotifyAccessToken = tokenResponse.AccessToken;
-            Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
+                .WithAuthenticator(new PKCEAuthenticator(Settings.ClientId, tokenResponse));
 
             Client = new SpotifyClient(config);
-            //SpotifyApi = new SpotifyApi(getAccessToken: () => Settings.SpotifyAccessToken, refreshToken: null);
+
             if (!AuthTimer.Enabled)
-            {
                 AuthTimer.Start();
-            }
 
-            // We are authenticated!
-            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                new Action(async void () =>
+            Application app = Application.Current;
+            if (app == null)
+                return;
+
+            await app.Dispatcher.InvokeAsync(async () =>
+            {
+                try
                 {
-                    try
+                    foreach (Window window in Application.Current.Windows)
                     {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() == typeof(Window_Settings))
-                                await ((Window_Settings)window).SetControls();
-                        }
+                        if (window is Window_Settings ws)
+                            await ws.SetControls();
+                    }
 
-                        if (Application.Current.MainWindow == null) return;
-                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-                            Brushes.GreenYellow;
-                        //((MainWindow)Application.Current.MainWindow).IconWebSpotify.Kind =
-                        //    PackIconBoxIconsKind.LogosSpotify;
-                        GlobalObjects.SpotifyProfile = await GetUser();
-                        Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
-                        Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
-                        Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
+                    GlobalObjects.SpotifyProfile = await GetUser();
+                    Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
 
-                        if (GlobalObjects.SpotifyProfile.Product == "premium") return;
+                    Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
+                    Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
 
+                    if (app.MainWindow is MainWindow mw)
+                        mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
+
+                    if (GlobalObjects.SpotifyProfile.Product != "premium")
+                    {
                         if (!Settings.HideSpotifyPremiumWarning)
                             await ShowPremiumRequiredDialogAsync();
 
-                        ((MainWindow)Application.Current.MainWindow).IconWebSpotify.Foreground =
-                            Brushes.DarkOrange;
+                        if (app.MainWindow is MainWindow mainWindow)
+                            mainWindow.IconWebSpotify.Foreground = Brushes.DarkOrange;
                     }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                    }
-                }));
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+            }, DispatcherPriority.Normal);
+        }
+
+        public static void LogoutSpotify()
+        {
+            try
+            {
+                Settings.SpotifyAccessToken = null;
+                Settings.SpotifyRefreshToken = null;
+                Settings.SpotifyTokenExpiresAt = 0;
+                Settings.SpotifyProfile = null;
+                GlobalObjects.SpotifyProfile = null;
+                Client = null;
+
+                if (AuthTimer.Enabled)
+                    AuthTimer.Stop();
+
+                if (Application.Current?.MainWindow is MainWindow mw)
+                    mw.IconWebSpotify.Foreground = Brushes.Gray;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()
@@ -332,40 +416,39 @@ namespace Songify_Slim.Util.Spotify
                 string artists = string.Join(", ", track.Artists.Select(a => a.Name));
 
                 // Album images
-                List<Image> albums = track.Album?.Images ?? [];
+                List<Image> albums = track.Album.Images;
 
                 // Progress math
                 double totalSeconds = track.DurationMs / 1000.0;
-                double currentSeconds = (double)playback.ProgressMs / 1000.0;
+                double currentSeconds = playback.ProgressMs / 1000.0;
 
                 int percentage = totalSeconds == 0
                     ? 0
                     : (int)(100 * currentSeconds / totalSeconds);
 
                 // Playlist context (optional)
-                PlaylistInfo playlistInfo = null;
 
-                if (playback.Context?.Uri?.StartsWith("spotify:playlist:") != true)
+                if (!playback.Context.Uri.StartsWith("spotify:playlist:"))
                     return new TrackInfo
                     {
                         Artists = artists,
                         Title = track.Name,
                         Albums = albums.ToList(),
                         SongId = track.Id,
-                        DurationMs = (int)(track.DurationMs - playback.ProgressMs),
+                        DurationMs = track.DurationMs - playback.ProgressMs,
                         IsPlaying = playback.IsPlaying,
                         Url = !string.IsNullOrEmpty(track.Id)
                             ? "https://open.spotify.com/track/" + track.Id
                             : null,
                         DurationPercentage = percentage,
                         DurationTotal = track.DurationMs,
-                        Progress = (int)playback.ProgressMs,
-                        Playlist = playlistInfo,
+                        Progress = playback.ProgressMs,
+                        Playlist = null,
                         FullArtists = track.Artists.ToList()
                     };
                 string playlistId = playback.Context.Uri.Split(':').Last();
 
-                playlistInfo = new PlaylistInfo
+                PlaylistInfo playlistInfo = new()
                 {
                     Id = playlistId,
                     Url = $"https://open.spotify.com/playlist/{playlistId}"
@@ -377,14 +460,14 @@ namespace Songify_Slim.Util.Spotify
                     Title = track.Name,
                     Albums = albums.ToList(),
                     SongId = track.Id,
-                    DurationMs = (int)(track.DurationMs - playback.ProgressMs),
+                    DurationMs = track.DurationMs - playback.ProgressMs,
                     IsPlaying = playback.IsPlaying,
                     Url = !string.IsNullOrEmpty(track.Id)
                         ? "https://open.spotify.com/track/" + track.Id
                         : null,
                     DurationPercentage = percentage,
                     DurationTotal = track.DurationMs,
-                    Progress = (int)playback.ProgressMs,
+                    Progress = playback.ProgressMs,
                     Playlist = playlistInfo,
                     FullArtists = track.Artists.ToList()
                 };
@@ -489,7 +572,7 @@ namespace Songify_Slim.Util.Spotify
                     () => Client.Search.Item(request),
                     SoftLimitPerminute);
 
-                List<FullTrack> tracks = result.Tracks?.Items?.Take(take).ToList();
+                List<FullTrack> tracks = result.Tracks.Items?.Take(take).ToList();
                 if (tracks == null || tracks.Count == 0)
                     return null;
 
@@ -504,45 +587,12 @@ namespace Songify_Slim.Util.Spotify
                     .OrderByDescending(x => x.Score)
                     .ToList();
 
-                // ---- LOGGING ----
                 Logger.Trace(LogSource.Spotify, $"Search '{query}' - Found {scored.Count} track candidates:");
-                int rank = 1;
-                foreach (var item in scored)
-                {
-                    string artists = string.Join(", ", item.Track.Artists.Select(a => a.Name));
-
-                    //Logger.Trace(LogSource.Spotify, $"  #{rank}: {item.Track.Name} - {artists} | Score: {item.Score}");
-
-                    // Log each interpretation's score
-                    foreach (ParsedQuery pq in interpretations)
-                    {
-                        int interpScore = ScoreTrackForInterpretation(item.Track, pq);
-
-                        //Logger.Trace(LogSource.Spotify, $"      -> [{pq.SourceHint}] " +
-                        //                                $"Title='{pq.TitleCandidate}' Artist='{pq.ArtistCandidate}' " +
-                        //                                $"Score={interpScore}");
-                    }
-
-                    rank++;
-                }
-
-                // -------------------
-
                 var best = scored.First();
 
-                // Optional: inspect these logs to tune threshold later
-                // Logger.LogInfo($"Search '{query}' best match: \"{best.Track.Name}\" " +
-                //                $"by {string.Join(", ", best.Track.Artists.Select(a => a.Name))} (Score {best.Score})");
-
-                if (best.Score < confidenceThreshold)
-                {
-                    // Fallback: if our fuzzy match is weak, use Spotify's first result (what you currently do)
-                    FullTrack fallback = tracks.First();
-                    // Logger.LogInfo($"Score {best.Score} < {confidenceThreshold}, falling back to first result \"{fallback.Name}\"");
-                    return fallback;
-                }
-
-                return best.Track;
+                if (best.Score >= confidenceThreshold) return best.Track;
+                FullTrack fallback = tracks.First();
+                return fallback;
             }
             catch (Exception ex)
             {
@@ -886,31 +936,6 @@ namespace Songify_Slim.Util.Spotify
             return "No device found";
         }
 
-        private static (int? status, string message) TryExtractSpotifyError(string body)
-        {
-            if (string.IsNullOrWhiteSpace(body)) return (null, null);
-            try
-            {
-                JObject jo = JObject.Parse(body);
-                JToken err = jo["error"];
-                if (err == null) return (null, null);
-
-                int? status = err["status"]?.Type switch
-                {
-                    JTokenType.Integer => (int?)err["status"],
-                    JTokenType.String => int.TryParse((string)err["status"], out int n) ? n : (int?)null,
-                    _ => null
-                };
-                string message = (string)(err["message"] ?? jo["error_description"]) ?? "";
-                return (status, message);
-            }
-            catch
-            {
-                // Body wasn’t JSON; ignore
-                return (null, null);
-            }
-        }
-
         public static async Task<PlaylistInfo> GetPlaybackPlaylist()
         {
             if (Client == null)
@@ -924,8 +949,8 @@ namespace Songify_Slim.Util.Spotify
                     SoftLimitPerminute);
 
                 // No playlist context -> clear playlist cache and exit
-                string contextUri = playback?.Context?.Uri;
-                if (!string.Equals(playback?.Context?.Type, "playlist", StringComparison.OrdinalIgnoreCase) ||
+                string contextUri = playback?.Context.Uri;
+                if (!string.Equals(playback?.Context.Type, "playlist", StringComparison.OrdinalIgnoreCase) ||
                     string.IsNullOrWhiteSpace(contextUri))
                 {
                     _cachedPlaylistId = null;
@@ -986,7 +1011,7 @@ namespace Songify_Slim.Util.Spotify
                 // Fallback: oEmbed (title + thumbnail only)
                 if (info == null)
                 {
-                    SpotifyOEmbedResponse o = await _oEmbedClient.GetAsync(playlistUrl).ConfigureAwait(false);
+                    SpotifyOEmbedResponse o = await OEmbedClient.GetAsync(playlistUrl).ConfigureAwait(false);
                     (string Name, string Owner)? embed = await SpotifyEmbedNextData.TryGetPlaylistNameAndOwnerAsync(playlistId);
                     info = new PlaylistInfo
                     {
@@ -1061,8 +1086,8 @@ namespace Songify_Slim.Util.Spotify
         private class ParsedQuery
         {
             public string Raw { get; set; } = "";
-            public string? TitleCandidate { get; set; }
-            public string? ArtistCandidate { get; set; }
+            public string TitleCandidate { get; set; }
+            public string ArtistCandidate { get; set; }
             public string SourceHint { get; set; } = "";
         }
 
@@ -1199,8 +1224,8 @@ namespace Songify_Slim.Util.Spotify
 
         private static int ScoreTrackForInterpretation(FullTrack track, ParsedQuery pq)
         {
-            string title = track.Name ?? "";
-            string artists = string.Join(" ", track.Artists?.Select(a => a.Name ?? "") ?? []);
+            string title = track.Name;
+            string artists = string.Join(" ", track.Artists.Select(a => a.Name));
             string full = $"{title} {artists}";
 
             int titleScore = 0;
@@ -1253,7 +1278,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error checking if IDs are already in Library.");
+                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error checking if IDs are already in Library.", e);
                 return null;
             }
         }

@@ -28,6 +28,18 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
+        public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
+
+        private static void SetSpotifyTokenExpiresAt(long value)
+        {
+            CurrentConfig.SpotifyCredentials.SpotifyTokenExpiresAt = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static long GetSpotifyTokenExpiresAt()
+        {
+            return CurrentConfig.SpotifyCredentials.SpotifyTokenExpiresAt;
+        }
 
         private static void SetSharedChatEnabled(bool value)
         {
@@ -1010,6 +1022,7 @@ namespace Songify_Slim.Util.Configuration
                 PlaylistCache = GetSpotifyPlaylistCache(),
                 Profile = GetSpotifyProfile(),
                 RedirectUri = GetSpotifyRedirectUri(),
+                SpotifyTokenExpiresAt = GetSpotifyTokenExpiresAt(),
                 RefreshToken = GetSpotifyRefreshToken(),
             };
 

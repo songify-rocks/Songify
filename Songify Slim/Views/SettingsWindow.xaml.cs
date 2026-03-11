@@ -610,7 +610,7 @@ namespace Songify_Slim.Views
 
         private async void Btn_spotifyLink_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(Settings.ClientId) || string.IsNullOrEmpty(Settings.ClientSecret))
+            if (string.IsNullOrEmpty(Settings.ClientId))
             {
                 // Shows a message box if the client id or secret is missing
                 MessageDialogResult result = await this.ShowMessageAsync(

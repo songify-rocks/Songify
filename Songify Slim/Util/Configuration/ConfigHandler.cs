@@ -664,6 +664,7 @@ namespace Songify_Slim.Util.Configuration
         public PrivateUser Profile { get; set; } = new();
         public List<SpotifyPlaylistCache> PlaylistCache { get; set; } = new();
         public string RedirectUri { get; set; } = "localhost";
+        public long SpotifyTokenExpiresAt { get; set; }
     }
 
     public class TwitchCredentials

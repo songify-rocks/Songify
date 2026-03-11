@@ -264,6 +264,7 @@
     <Compile Include="Util\Spotify\ApiCallMeter.cs" />
     <Compile Include="Util\Spotify\SpotifyEmbedNextData.cs" />
     <Compile Include="Util\Spotify\SpotifyOEmbedClient.cs" />
+    <Compile Include="Util\Spotify\SpotifyPkceAuthService.cs" />
     <Compile Include="Util\Youtube\Pear\PearWebSocketClient.cs" />
     <Compile Include="Util\Youtube\Pear\QueueParser.cs" />
     <Compile Include="Util\Youtube\Pear\YTHCHSearchParser.cs" />
