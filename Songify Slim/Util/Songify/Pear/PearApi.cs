@@ -199,7 +199,7 @@ namespace Songify_Slim.Util.Songify.Pear
             }
         }
 
-        public static async Task<ApiOk> SetVolumeAsncy(int volume)
+        public static async Task<ApiOk> SetVolumeAsync(int volume)
         {
             var payload = new
             {
@@ -263,6 +263,23 @@ namespace Songify_Slim.Util.Songify.Pear
         public static async Task Previous()
         {
             await _httpClient.PostAsync("previous", null);
+        }
+
+        public static async Task<int> GetIndexAsync(string reqObjTrackid)
+        {
+            List<Song> queue = await GetQueueAsync();
+            int index = queue.FindIndex(s => s.Id == reqObjTrackid);
+            return index;
+        }
+
+        public static async Task<ApiOk> RemoveQueueItem(int index)
+        {
+            HttpResponseMessage result = await _httpClient.DeleteAsync($"queue/{index}");
+
+            return new ApiOk
+            {
+                Ok = result.IsSuccessStatusCode
+            };
         }
     }
 }

@@ -1728,8 +1728,35 @@ public static class TwitchHandler
 
         if (reqObj == null) return;
 
+        switch (Settings.Player)
+        {
+            case Enums.PlayerType.Spotify:
+                GlobalObjects.SkipList.Add(reqObj);
+
+                break;
+
+            case Enums.PlayerType.WindowsPlayback:
+            case Enums.PlayerType.FooBar2000:
+            case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.BrowserCompanion:
+            case Enums.PlayerType.Pear:
+                // Get Index of the request in the pear queue
+                int index = await PearApi.GetIndexAsync(reqObj.Trackid);
+                if (index != -1)
+                {
+                    ApiOk result = await PearApi.RemoveQueueItem(index);
+                    if (!result.Ok)
+                    {
+                        return;
+                    }
+                }
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+
         string tmp = $"{reqObj.Artist} - {reqObj.Title}";
-        GlobalObjects.SkipList.Add(reqObj);
 
         dynamic payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = reqObj.Queueid, };
 
@@ -3833,7 +3860,7 @@ public static class TwitchHandler
         if (split.Length <= 1) return null;
         if (!int.TryParse(split[1], out int volume)) return null;
         int vol = MathUtils.Clamp(volume, 0, 100);
-        ApiOk response = await PearApi.SetVolumeAsncy(vol);
+        ApiOk response = await PearApi.SetVolumeAsync(vol);
         if (!response.Ok)
             return null;
         return vol;
