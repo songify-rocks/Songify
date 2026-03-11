@@ -36,12 +36,14 @@ namespace Songify_Slim.Util.Spotify
     // This class handles everything regarding Spotify-API integration
     public static class SpotifyApiHandler
     {
+        private static string state;
+
         private const string BaseUrl = "https://auth.overcode.tv";
         private static EmbedIOAuthServer _server;
         public static SpotifyClient Client;
 
         //public static SpotifyApi SpotifyApi = new(() => Settings.SpotifyAccessToken, null);
-        private static int softLimitPerminute = 60;
+        private const int SoftLimitPerminute = 60;
 
         private static readonly Timer AuthTimer = new()
         {
@@ -82,13 +84,11 @@ namespace Songify_Slim.Util.Spotify
             _server.ErrorReceived += OnAuthError; // if available in your version
             await _server.Start();
 
-            _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
-
             LoginRequest request =
-                new(_server.BaseUri, Settings.ClientId, LoginRequest.ResponseType.Code)
-                {
-                    Scope = new List<string>
-                    {
+                        new(_server.BaseUri, Settings.ClientId, LoginRequest.ResponseType.Code)
+                        {
+                            Scope = new List<string>
+                            {
                         Scopes.UserReadPlaybackState,
                         Scopes.UserReadPrivate,
                         Scopes.UserModifyPlaybackState,
@@ -97,12 +97,17 @@ namespace Songify_Slim.Util.Spotify
                         Scopes.PlaylistReadPrivate,
                         Scopes.UserLibraryModify,
                         Scopes.UserLibraryRead
-                    }
-                };
+                            }
+                        };
+            state = Guid.NewGuid().ToString("N");
+            request.State = state;
+            Logger.Info(LogSource.Spotify, $"OAuth state: {state}");
             Uri uri = request.ToUri();
 
             try
             {
+                Logger.Info(LogSource.Spotify, $"Auth URL: {uri}");
+                await Task.Delay(1000);
                 BrowserUtil.Open(uri);
             }
             catch (Exception)
@@ -117,7 +122,8 @@ namespace Songify_Slim.Util.Spotify
             {
                 Logger.Error(LogSource.Spotify, "Spotify authorization failed.");
                 Logger.Error(LogSource.Spotify, $"OAuth Error: {error}");
-                Logger.Error(LogSource.Spotify, $"State: {state}");
+                Logger.Error(LogSource.Spotify, $"Received State: {state}");
+                Logger.Error(LogSource.Spotify, $"Original State: {state}");
                 Logger.Error(LogSource.Spotify, $"ClientId: {Settings.ClientId}");
                 Logger.Error(LogSource.Spotify, $"RedirectUri: {_server?.BaseUri}");
 
@@ -202,10 +208,13 @@ namespace Songify_Slim.Util.Spotify
 
         private static async Task OnAuthorizationCodeReceived(object sender, AuthorizationCodeResponse response)
         {
+            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Entered OnAuthorizationCodeReceived");
+
             OAuthClient oauth = new();
             TokenSwapTokenRequest tokenRequest = new(
                 new Uri($"{BaseUrl}/swap?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
                 response.Code);
+            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending Access Token request");
             AuthorizationCodeTokenResponse tokenResponse = await oauth.RequestToken(tokenRequest);
             Logger.Info(LogSource.Spotify, $"We got an access token from server: {tokenResponse.AccessToken.Substring(0, 6)}...");
 
@@ -213,6 +222,7 @@ namespace Songify_Slim.Util.Spotify
                 new Uri($"{BaseUrl}/refresh?id={Settings.ClientId}&secret={Settings.ClientSecret}"),
                 tokenResponse.RefreshToken
             );
+            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending Refresh Token Request");
             AuthorizationCodeRefreshResponse refreshResponse = await oauth.RequestToken(refreshRequest);
 
             Logger.Info(LogSource.Spotify, $"We got a new refreshed access token from server: {refreshResponse.AccessToken.Substring(0, 6)}...");
@@ -294,99 +304,6 @@ namespace Songify_Slim.Util.Spotify
                 Settings.HideSpotifyPremiumWarning = true;
             }
         }
-
-        //public static async Task<TrackInfo> GetSongInfo()
-        //{
-        //    if (Client == null) return null;
-
-        //    try
-        //    {
-        //        // 1) Track/progress (1/sec ok)
-        //        CurrentlyPlaying playback = await ApiCallMeter.RunAsync(
-        //            "Player.GetCurrentlyPlaying",
-        //            () => Client.Player.GetCurrentlyPlaying(
-        //                new PlayerCurrentlyPlayingRequest(PlayerCurrentlyPlayingRequest.AdditionalTypes.Track)
-        //                {
-        //                    Market = "from_token"
-        //                }),
-        //            softLimitPerMinute: 60
-        //        );
-
-        //        if (playback == null || playback.Item is not FullTrack track || playback.ProgressMs == null)
-        //            return null;
-
-        //        // 2) Playback state / device (cache 5s)
-        //        CurrentlyPlayingContext currentPlayback;
-        //        if ((DateTime.UtcNow - _cachedPlaybackAt) > PlaybackCacheTtl || _cachedPlayback == null)
-        //        {
-        //            try
-        //            {
-        //                currentPlayback = await ApiCallMeter.RunAsync(
-        //                    "Player.GetCurrentPlayback",
-        //                    () => Client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest
-        //                    { Market = "from_token" }),
-        //                    softLimitPerMinute: 12 // ~ once per 5s
-        //                );
-        //            }
-        //            catch (APIException apiEx) when ((int)apiEx.Response.StatusCode is 404 or 204)
-        //            {
-        //                currentPlayback = null;
-        //            }
-
-        //            _cachedPlayback = currentPlayback;
-        //            _cachedPlaybackAt = DateTime.UtcNow;
-        //        }
-        //        else
-        //        {
-        //            currentPlayback = _cachedPlayback;
-        //        }
-
-        //        if (currentPlayback?.Device?.Id != null &&
-        //            Settings.SpotifyDeviceId != currentPlayback.Device.Id)
-        //        {
-        //            Settings.SpotifyDeviceId = currentPlayback.Device.Id;
-        //        }
-
-        //        // 3) Artists / progress math
-        //        string artists = string.Join(", ", track.Artists.Select(a => a.Name));
-        //        List<Image> albums = track.Album?.Images ?? [];
-        //        double totalSeconds = track.DurationMs / 1000.0;
-        //        double currentSeconds = (double)playback.ProgressMs / 1000.0;
-        //        int percentage = totalSeconds == 0 ? 0 : (int)(100 * currentSeconds / totalSeconds);
-
-        //        // 4) Playlist context (only when ID changes; cache 10 min)
-        //        PlaylistInfo playlistInfo = null;
-
-        //        return new TrackInfo
-        //        {
-        //            Artists = artists,
-        //            Title = track.Name,
-        //            Albums = albums.ToList(),
-        //            SongId = track.Id,
-        //            DurationMs = (int)(track.DurationMs - playback.ProgressMs),
-        //            IsPlaying = playback.IsPlaying,
-        //            Url = "https://open.spotify.com/track/" + track.Id,
-        //            DurationPercentage = percentage,
-        //            DurationTotal = track.DurationMs,
-        //            Progress = (int)playback.ProgressMs,
-        //            Playlist = playlistInfo,
-        //            FullArtists = track.Artists.ToList()
-        //        };
-        //    }
-        //    catch (APIException apiEx)
-        //    {
-        //        Logger.Error(LogSource.Spotify, "Couldn't fetch song info");
-        //        Logger.Error(LogSource.Spotify, $"Spotify API error", apiEx);
-        //        if (!string.IsNullOrEmpty((string)(apiEx.Response?.Body)))
-        //            Logger.Error(LogSource.Spotify, (string)apiEx.Response.Body);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Error(LogSource.Spotify, "Couldn't fetch song info (unexpected)", ex);
-        //    }
-
-        //    return null;
-        //}
 
         public static async Task<TrackInfo> GetSongInfo()
         {
@@ -498,7 +415,7 @@ namespace Songify_Slim.Util.Spotify
                     new PlayerAddToQueueRequest(songUri)
                     {
                         DeviceId = Settings.SpotifyDeviceId
-                    }), softLimitPerMinute: softLimitPerminute);
+                    }), softLimitPerMinute: SoftLimitPerminute);
                 return true;
             }
             catch (APIException ex)
@@ -514,7 +431,7 @@ namespace Songify_Slim.Util.Spotify
                                 new PlayerAddToQueueRequest(songUri)
                                 {
                                     DeviceId = Settings.SpotifyDeviceId
-                                }), softLimitPerMinute: softLimitPerminute);
+                                }), softLimitPerMinute: SoftLimitPerminute);
                             return true;
                         }
                         catch (APIException retryEx)
@@ -540,7 +457,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id), softLimitPerminute);
+                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id), SoftLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -570,7 +487,7 @@ namespace Songify_Slim.Util.Spotify
                 SearchResponse result = await ApiCallMeter.RunAsync(
                     "Search.Item",
                     () => Client.Search.Item(request),
-                    softLimitPerminute);
+                    SoftLimitPerminute);
 
                 List<FullTrack> tracks = result.Tracks?.Items?.Take(take).ToList();
                 if (tracks == null || tracks.Count == 0)
@@ -647,7 +564,7 @@ namespace Songify_Slim.Util.Spotify
                 {
                     bool response = await ApiCallMeter.RunAsync("Library.SaveItems",
                         () => Client.Library.SaveItems(new LibrarySaveItemsRequest([trackId])),
-                        softLimitPerMinute: softLimitPerminute);
+                        softLimitPerMinute: SoftLimitPerminute);
                     return !response; // keep your existing semantics: false = success, true = error
                 }
 
@@ -656,7 +573,7 @@ namespace Songify_Slim.Util.Spotify
                 {
                     SnapshotResponse response = await ApiCallMeter.RunAsync("Playlists.AddPlaylistItems",
                         () => Client.Playlists.AddPlaylistItems(Settings.SpotifyPlaylistId.PlaylistId,
-                            new PlaylistAddItemsRequest([trackId])), softLimitPerMinute: softLimitPerminute);
+                            new PlaylistAddItemsRequest([trackId])), softLimitPerMinute: SoftLimitPerminute);
                     if (response.SnapshotId == Settings.SpotifyPlaylistId.Snapshot) return true;
                     Settings.SpotifyPlaylistId.Snapshot = response.SnapshotId;
                     Settings.SpotifyPlaylistId = Settings.SpotifyPlaylistId;
@@ -727,7 +644,7 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(), softLimitPerminute);
+                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(), SoftLimitPerminute);
             }
             catch (Exception)
             {
@@ -742,7 +659,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 return await ApiCallMeter.RunAsync("Player.GetQueue", () => Client.Player.GetQueue(),
-                    softLimitPerminute);
+                    SoftLimitPerminute);
             }
             catch (Exception)
             {
@@ -757,7 +674,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 await ApiCallMeter.RunAsync("Player.SkipPrevius", () => Client.Player.SkipPrevious(),
-                    softLimitPerminute);
+                    SoftLimitPerminute);
             }
             catch (Exception)
             {
@@ -774,7 +691,7 @@ namespace Songify_Slim.Util.Spotify
                 await ApiCallMeter.RunAsync("Player.SeekTo", () => Client.Player.SeekTo(new PlayerSeekToRequest(0)
                 {
                     DeviceId = Settings.SpotifyDeviceId
-                }), softLimitPerminute);
+                }), SoftLimitPerminute);
             }
             catch (Exception)
             {
@@ -789,7 +706,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
+                    () => Client.Player.GetCurrentPlayback(), SoftLimitPerminute);
 
                 bool isPlaying = playback is { IsPlaying: true };
 
@@ -805,7 +722,7 @@ namespace Songify_Slim.Util.Spotify
                             Client.Player.PausePlayback(new PlayerPausePlaybackRequest
                             {
                                 DeviceId = Settings.SpotifyDeviceId
-                            }), softLimitPerminute);
+                            }), SoftLimitPerminute);
                         return false;
 
                     case Play when !isPlaying:
@@ -813,7 +730,7 @@ namespace Songify_Slim.Util.Spotify
                             Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
                             {
                                 DeviceId = Settings.SpotifyDeviceId
-                            }), softLimitPerminute);
+                            }), SoftLimitPerminute);
                         return true;
                     // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                     case Toggle:
@@ -840,7 +757,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 return await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(), softLimitPerminute);
+                    () => Client.Player.GetCurrentPlayback(), SoftLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -856,7 +773,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Paging<PlaylistTrack<IPlayableItem>> tracks = await ApiCallMeter.RunAsync("Playlists.GetItems",
-                    () => Client.Playlists.GetItems(playlistId), softLimitPerminute);
+                    () => Client.Playlists.GetItems(playlistId), SoftLimitPerminute);
                 return tracks;
             }
             catch (Exception ex)
@@ -873,7 +790,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get",
-                    () => Client.Playlists.Get(spotifyPlaylistId), softLimitPerminute);
+                    () => Client.Playlists.Get(spotifyPlaylistId), SoftLimitPerminute);
                 return playlist;
             }
             catch (Exception ex)
@@ -890,7 +807,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 return await ApiCallMeter.RunAsync("Player.SetVolune",
-                    () => Client.Player.SetVolume(new PlayerVolumeRequest(vol)), softLimitPerminute);
+                    () => Client.Player.SetVolume(new PlayerVolumeRequest(vol)), SoftLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -907,7 +824,7 @@ namespace Songify_Slim.Util.Spotify
             {
                 SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 5 };
                 SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request),
-                    softLimitPerminute);
+                    SoftLimitPerminute);
                 return result.Artists.Items;
             }
             catch (Exception ex)
@@ -924,7 +841,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 PrivateUser user = await ApiCallMeter.RunAsync("UserProfile.Current",
-                    () => Client.UserProfile.Current(), softLimitPerminute);
+                    () => Client.UserProfile.Current(), SoftLimitPerminute);
                 return user;
             }
             catch (Exception ex)
@@ -941,7 +858,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Paging<FullPlaylist> playlists = await ApiCallMeter.RunAsync("Playlists.CurrentUsers",
-                    () => Client.Playlists.CurrentUsers(), softLimitPerminute);
+                    () => Client.Playlists.CurrentUsers(), SoftLimitPerminute);
                 return playlists;
             }
             catch (Exception ex)
@@ -958,7 +875,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 DeviceResponse x = await ApiCallMeter.RunAsync("Player.GetAvailableDevices",
-                    () => Client.Player.GetAvailableDevices(), softLimitPerminute);
+                    () => Client.Player.GetAvailableDevices(), SoftLimitPerminute);
                 return x.Devices.FirstOrDefault(d => d.IsActive)?.Name;
             }
             catch (Exception e)
@@ -1004,7 +921,7 @@ namespace Songify_Slim.Util.Spotify
                 CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",
                     () => Client.Player.GetCurrentPlayback(),
-                    softLimitPerminute);
+                    SoftLimitPerminute);
 
                 // No playlist context -> clear playlist cache and exit
                 string contextUri = playback?.Context?.Uri;
@@ -1043,7 +960,7 @@ namespace Songify_Slim.Util.Spotify
                     FullPlaylist playlist = await ApiCallMeter.RunAsync(
                         "Playlists.Get",
                         () => Client.Playlists.Get(playlistId),
-                        softLimitPerminute);
+                        SoftLimitPerminute);
 
                     if (playlist != null)
                     {
@@ -1113,7 +1030,7 @@ namespace Songify_Slim.Util.Spotify
                     new PlayerShuffleRequest(b)
                     {
                         DeviceId = Settings.SpotifyDeviceId
-                    }), softLimitPerminute);
+                    }), SoftLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -1133,7 +1050,7 @@ namespace Songify_Slim.Util.Spotify
                         DeviceId = Settings.SpotifyDeviceId,
                         ContextUri = playlistId.Contains("spotify:playlist") ? playlistId : "spotify:playlist:" + playlistId,
                         PositionMs = 0
-                    }), softLimitPerminute);
+                    }), SoftLimitPerminute);
             }
             catch (Exception ex)
             {
@@ -1331,7 +1248,7 @@ namespace Songify_Slim.Util.Spotify
             List<string> uris = ids.Select(EnsureTrackUri).ToList();
             try
             {
-                List<bool> x = await ApiCallMeter.RunAsync("Library.CheckItems", () => Client.Library.CheckItems(new LibraryCheckItemsRequest(uris)), softLimitPerminute);
+                List<bool> x = await ApiCallMeter.RunAsync("Library.CheckItems", () => Client.Library.CheckItems(new LibraryCheckItemsRequest(uris)), SoftLimitPerminute);
                 return x;
             }
             catch (Exception e)

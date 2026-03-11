@@ -2,8 +2,11 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Songify_Slim.Util.General;
+using SpotifyAPI.Web;
 
 namespace Songify_Slim.Util.Spotify;
 
@@ -57,7 +60,7 @@ public static class ApiCallMeter
         Counter c = _perKey.GetOrAdd(key, _ => new Counter());
 
         // Soft pre-throttle (optional)
-        if (softLimitPerMinute is int limit && limit > 0)
+        if (softLimitPerMinute is { } limit and > 0)
         {
             // Busy-wait in short sleeps until we're below the soft limit
             while (c.CountLastMinute() >= limit)
@@ -73,45 +76,23 @@ public static class ApiCallMeter
         {
             return await action();
         }
-        catch (SpotifyAPI.Web.APIException apiEx) when ((int)apiEx.Response?.StatusCode == 429)
+        catch (APITooManyRequestsException tooManyRequestsEx)
         {
-            // Respect Retry-After if present
-            int retryAfterSeconds = TryParseRetryAfterSeconds(apiEx) ?? 1; // default small backoff
-            await Task.Delay(TimeSpan.FromSeconds(retryAfterSeconds), ct);
-            // Try exactly once more (you can expand to Polly if you like)
+            TimeSpan retryAfter = tooManyRequestsEx.RetryAfter > TimeSpan.Zero
+                ? tooManyRequestsEx.RetryAfter
+                : TimeSpan.FromSeconds(1);
+
+            Logger.Log(
+                LogLevel.Warning,
+                LogSource.Spotify,
+                $"API call for key '{key}' was rate-limited. Handling 429 Retry-After {retryAfter.TotalSeconds}s");
+
+            await Task.Delay(retryAfter, ct);
             c.MarkNow();
             return await action();
         }
     }
 
-    public static async Task RunAsync(
-        string key,
-        Func<Task> action,
-        int? softLimitPerMinute = null,
-        CancellationToken ct = default)
-        => await RunAsync<object>(key, async () => { await action(); return null; }, softLimitPerMinute, ct);
-
-    public static int GetCountPerMinute(string key)
-        => _perKey.TryGetValue(key, out Counter c) ? c.CountLastMinute() : 0;
-
     public static IDictionary<string, int> GetAllCountsPerMinute()
         => _perKey.ToDictionary(kv => kv.Key, kv => kv.Value.CountLastMinute());
-
-    public static IReadOnlyList<string> Keys() => _perKey.Keys.ToArray();
-
-    private static int? TryParseRetryAfterSeconds(SpotifyAPI.Web.APIException ex)
-    {
-        try
-        {
-            // SpotifyAPI.Web exposes headers through ex.Response?.Headers (string→IEnumerable<string>) in recent versions.
-            IReadOnlyDictionary<string, string> headers = ex.Response?.Headers;
-            if (headers != null && headers.TryGetValue("Retry-After", out string values))
-            {
-                char v = values.FirstOrDefault();
-                if (int.TryParse(v.ToString(), out int s)) return s;
-            }
-        }
-        catch { /* ignore */ }
-        return null;
-    }
 }
