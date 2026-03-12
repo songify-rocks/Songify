@@ -876,7 +876,7 @@ public static class TwitchHandler
             IsBroadcaster = false
         };
 
-        AddSong(await GetTrackIdFromInput(userInput), user, Enums.SongRequestSource.Reward, existingUser);
+        await AddSong(await GetTrackIdFromInput(userInput), user, Enums.SongRequestSource.Reward, existingUser);
     }
 
     public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
@@ -1980,6 +1980,7 @@ public static class TwitchHandler
 
             string response = cmd.Response;
             response = response.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
+            response = response.Replace("{playlist}", Settings.SpotifyPlaylistCache.Find(o => o.Id == Settings.SpotifyPlaylistId.PlaylistId).Name);
 
             SendOrAnnounceMessage(response, cmd);
         }
@@ -3648,41 +3649,6 @@ public static class TwitchHandler
         return false;
     }
 
-    private static bool IsTrackUnavailable(FullTrack track, TwitchRequestUser e, out string response)
-    {
-        response = string.Empty;
-
-        if (track.AvailableMarkets.Any(s => s == Settings.SpotifyProfile.Country))
-        {
-            Logger.Log(LogLevel.Info, LogSource.Spotify, $"User Country {Settings.SpotifyProfile.Country} | Available Markets for Track {track.Name}({track.Uri}): {string.Join(", ", track.AvailableMarkets)}");
-            return false;
-        }
-        try
-        {
-            if (track.IsPlayable)
-            {
-                return false;
-            }
-
-            response = Settings.BotRespUnavailable;
-            response = response.Replace("{user}", e.DisplayName);
-            response = response.Replace("{artist}", "");
-            response = response.Replace("{title}", "");
-            response = response.Replace("{maxreq}", "");
-            response = response.Replace("{errormsg}", "");
-            response = response.Replace("{song}", "");
-
-            response = CleanFormatString(response);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Unavailable", ex);
-        }
-
-        return false;
-    }
-
     private static bool IsUserAllowed(List<int> allowedUserLevels, TwitchCommandParams cmdParams, bool messageIsBroadcaster, TwitchCommand cmd, string chatterId)
     {
         if (messageIsBroadcaster)
@@ -3812,9 +3778,17 @@ public static class TwitchHandler
     {
         try
         {
-            SendChatMessageResponse chatResponse = await TwitchApi.Helix.Chat.SendChatMessage(Settings.TwitchUser.Id,
-                Settings.TwitchChatAccount.Id, message,
-                accessToken: Settings.TwitchChatAccount.Token.Replace("oauth:", ""));
+            SendChatMessageResponse chatResponse = await TwitchApi.Helix.Chat.SendChatMessage(new
+                    SendChatMessageRequest
+            {
+                BroadcasterId = Settings.TwitchChatAccount.Id,
+                SenderId = Settings.TwitchChatAccount.Id,
+                Message = message,
+                ReplyParentMessageId = null,
+                ForSourceOnly = true
+            }, Settings.TwitchChatAccount.Token.Replace("oauth:", "")
+            );
+
             ChatMessageInfo msgInfo = chatResponse.Data[0];
             if (msgInfo.IsSent)
                 Logger.Info(LogSource.Twitch, $"Twitch Chat: Sent: {message}");

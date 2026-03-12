@@ -331,6 +331,8 @@ namespace Songify_Slim.Util.Spotify
                         if (app.MainWindow is MainWindow mainWindow)
                             mainWindow.IconWebSpotify.Foreground = Brushes.DarkOrange;
                     }
+
+                    ApiCallMeter.ReleaseRateLimit();
                 }
                 catch (Exception ex)
                 {
@@ -601,10 +603,67 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
+
+        public static List<string> EnsureTrackUris(IEnumerable<string> ids)
+        {
+            List<string> result = [];
+
+            foreach (string value in ids)
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    continue;
+
+                string v = value.Trim();
+
+                // Already a Spotify URI
+                if (v.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(v);
+                    continue;
+                }
+
+                // Spotify URL
+                if (v.Contains("open.spotify.com/track"))
+                {
+                    try
+                    {
+                        Uri uri = new(v);
+
+                        string[] segments = uri.AbsolutePath
+                            .Split(['/'], StringSplitOptions.RemoveEmptyEntries);
+
+                        if (segments.Length >= 2 && segments[0].Equals("track", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string id = segments[1];
+
+                            int qIndex = id.IndexOf('?');
+                            if (qIndex > 0)
+                                id = id.Substring(0, qIndex);
+
+                            result.Add("spotify:track:" + id);
+                            continue;
+                        }
+                    }
+                    catch
+                    {
+                        // ignore malformed URLs
+                    }
+                }
+
+                // Assume raw ID
+                result.Add("spotify:track:" + v);
+            }
+
+            return result;
+        }
+
+
         public static async Task<bool> AddToPlaylist(string trackId)
         {
             if (Client == null)
                 return false;
+
+            List<string> uris = EnsureTrackUris([trackId]);
 
             try
             {
@@ -613,7 +672,7 @@ namespace Songify_Slim.Util.Spotify
                     Settings.SpotifyPlaylistId.PlaylistId == "-1")
                 {
                     bool response = await ApiCallMeter.RunAsync("Library.SaveItems",
-                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest([trackId])),
+                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest(uris)),
                         softLimitPerMinute: SoftLimitPerminute);
                     return !response; // keep your existing semantics: false = success, true = error
                 }
@@ -623,7 +682,7 @@ namespace Songify_Slim.Util.Spotify
                 {
                     SnapshotResponse response = await ApiCallMeter.RunAsync("Playlists.AddPlaylistItems",
                         () => Client.Playlists.AddPlaylistItems(Settings.SpotifyPlaylistId.PlaylistId,
-                            new PlaylistAddItemsRequest([trackId])), softLimitPerMinute: SoftLimitPerminute);
+                            new PlaylistAddItemsRequest(uris)), softLimitPerMinute: SoftLimitPerminute);
                     if (response.SnapshotId == Settings.SpotifyPlaylistId.Snapshot) return true;
                     Settings.SpotifyPlaylistId.Snapshot = response.SnapshotId;
                     Settings.SpotifyPlaylistId = Settings.SpotifyPlaylistId;

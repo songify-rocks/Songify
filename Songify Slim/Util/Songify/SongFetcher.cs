@@ -1134,6 +1134,8 @@ namespace Songify_Slim.Util.Songify
                 ]
             };
 
+            GlobalObjects.Canvas = null;
+
             await UpdateWebServerResponse(t);
 
             if (fetchCounter >= 5)

@@ -279,7 +279,12 @@ namespace Songify_Slim.Views
 
                 try
                 {
-                    profile = await SpotifyApiHandler.GetUser(); // <-- used to crash here
+                    if (Settings.SpotifyProfile == null)
+                        profile = await SpotifyApiHandler.GetUser(); // <-- used to crash here
+                    else
+                    {
+                        profile = Settings.SpotifyProfile;
+                    }
                 }
                 catch (Exception ex) // Optional: catch specific SpotifyAPI exceptions if you have them
                 {

@@ -13,6 +13,8 @@ namespace Songify_Slim.Util.Spotify;
 public static class ApiCallMeter
 {
     private static readonly TimeSpan Window = TimeSpan.FromMinutes(1);
+    private static DateTimeOffset? _globalRetryUntil;
+    private static readonly object RetryLock = new();
 
     private sealed class Counter
     {
@@ -51,6 +53,7 @@ public static class ApiCallMeter
     /// Mark + execute + surface 429 Retry-After automatically.
     /// Optionally soft-throttle if you set softLimitPerMinute.
     /// </summary>
+
     public static async Task<T> RunAsync<T>(
         string key,
         Func<Task<T>> action,
@@ -59,38 +62,126 @@ public static class ApiCallMeter
     {
         Counter c = _perKey.GetOrAdd(key, _ => new Counter());
 
-        // Soft pre-throttle (optional)
-        if (softLimitPerMinute is { } limit and > 0)
+        while (true)
         {
-            // Busy-wait in short sleeps until we're below the soft limit
-            while (c.CountLastMinute() >= limit)
+            ct.ThrowIfCancellationRequested();
+
+            // Global retry-after gate
+            while (true)
             {
                 ct.ThrowIfCancellationRequested();
-                await Task.Delay(200, ct);
+
+                DateTimeOffset? retryUntil;
+                lock (RetryLock)
+                {
+                    retryUntil = _globalRetryUntil;
+                }
+
+                if (retryUntil is null || retryUntil <= DateTimeOffset.UtcNow)
+                    break;
+
+                TimeSpan wait = retryUntil.Value - DateTimeOffset.UtcNow;
+                if (wait < TimeSpan.FromMilliseconds(200))
+                    wait = TimeSpan.FromMilliseconds(200);
+
+                Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                    $"Global Spotify cooldown active, waiting {wait.TotalMilliseconds:0} ms");
+
+                await Task.Delay(wait, ct);
+            }
+
+            // Soft pre-throttle
+            if (softLimitPerMinute is { } limit and > 0)
+            {
+                while (c.CountLastMinute() >= limit)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(200, ct);
+                }
+            }
+
+            c.MarkNow();
+
+            try
+            {
+                return await action();
+            }
+            catch (APITooManyRequestsException ex)
+            {
+                int retrySeconds = GetRetryAfterSeconds(ex);
+                DateTimeOffset retryUntil = DateTimeOffset.UtcNow.AddSeconds(retrySeconds);
+
+                lock (RetryLock)
+                {
+                    if (_globalRetryUntil == null || retryUntil > _globalRetryUntil.Value)
+                        _globalRetryUntil = retryUntil;
+                }
+
+                if (retrySeconds > 300)
+                {
+                    Logger.Log(LogLevel.Error, LogSource.Spotify,
+                        $"Spotify daily quota exceeded. Retry after {TimeSpan.FromSeconds(retrySeconds):hh:mm:ss}");
+                }
+                else
+                {
+                    Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                        $"Spotify rate limit hit for '{key}'. Global cooldown for {retrySeconds}s");
+                }
+
+                // Loop continues and all requests will respect the cooldown
+            }
+        }
+    }
+
+    public static void ReleaseRateLimit()
+    {
+        lock (RetryLock)
+        {
+            _globalRetryUntil = null;
+        }
+
+        Logger.Log(LogLevel.Info, LogSource.Spotify,
+            "Spotify rate limit lock released");
+    }
+
+    public static bool IsRateLimited(out TimeSpan remaining)
+    {
+        lock (RetryLock)
+        {
+            if (_globalRetryUntil is null)
+            {
+                remaining = TimeSpan.Zero;
+                return false;
+            }
+
+            remaining = _globalRetryUntil.Value - DateTimeOffset.UtcNow;
+
+            if (remaining <= TimeSpan.Zero)
+            {
+                _globalRetryUntil = null;
+                remaining = TimeSpan.Zero;
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    private static int GetRetryAfterSeconds(APITooManyRequestsException ex)
+    {
+        if (ex.Response?.Headers != null)
+        {
+            foreach (KeyValuePair<string, string> h in ex.Response.Headers)
+            {
+                if (string.Equals(h.Key, "Retry-After", StringComparison.OrdinalIgnoreCase) &&
+                    int.TryParse(h.Value, out int parsed))
+                {
+                    return Math.Max(parsed, 1);
+                }
             }
         }
 
-        c.MarkNow();
-
-        try
-        {
-            return await action();
-        }
-        catch (APITooManyRequestsException tooManyRequestsEx)
-        {
-            TimeSpan retryAfter = tooManyRequestsEx.RetryAfter > TimeSpan.Zero
-                ? tooManyRequestsEx.RetryAfter
-                : TimeSpan.FromSeconds(1);
-
-            Logger.Log(
-                LogLevel.Warning,
-                LogSource.Spotify,
-                $"API call for key '{key}' was rate-limited. Handling 429 Retry-After {retryAfter.TotalSeconds}s");
-
-            await Task.Delay(retryAfter, ct);
-            c.MarkNow();
-            return await action();
-        }
+        return 1;
     }
 
     public static IDictionary<string, int> GetAllCountsPerMinute()
