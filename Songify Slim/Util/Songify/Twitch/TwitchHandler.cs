@@ -3781,11 +3781,11 @@ public static class TwitchHandler
             SendChatMessageResponse chatResponse = await TwitchApi.Helix.Chat.SendChatMessage(new
                     SendChatMessageRequest
             {
-                BroadcasterId = Settings.TwitchChatAccount.Id,
+                BroadcasterId = Settings.TwitchUser.Id,
                 SenderId = Settings.TwitchChatAccount.Id,
                 Message = message,
                 ReplyParentMessageId = null,
-                ForSourceOnly = true
+                ForSourceOnly = null
             }, Settings.TwitchChatAccount.Token.Replace("oauth:", "")
             );
 

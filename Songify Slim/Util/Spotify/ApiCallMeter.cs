@@ -130,7 +130,28 @@ public static class ApiCallMeter
 
                 // Loop continues and all requests will respect the cooldown
             }
+            catch (APIUnauthorizedException ex)
+            {
+                Logger.Error(LogSource.Spotify, $"Spotify unauthorized on '{key}'. Access token may be invalid or expired.");
+            }
+            catch (APIException ex)
+            {
+
+                if (key == "Playlists.Get" && ex.Message == "Resource not found")
+                    Logger.Error(LogSource.Spotify, $"Spotify API: Can't get public playlist Info");
+                else 
+                    Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {ex.Message}");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Spotify, $"Unexpected error on Spotify request '{key}'.");
+                Logger.LogExc(ex);
+                break;
+            }
         }
+
+        return default;
     }
 
     public static void ReleaseRateLimit()

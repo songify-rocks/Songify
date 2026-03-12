@@ -894,7 +894,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Paging<PlaylistTrack<IPlayableItem>> tracks = await ApiCallMeter.RunAsync("Playlists.GetItems",
-                    () => Client.Playlists.GetItems(playlistId), SoftLimitPerminute);
+                    () => Client.Playlists.GetPlaylistItems(playlistId), SoftLimitPerminute);
                 return tracks;
             }
             catch (Exception ex)
@@ -1045,7 +1045,6 @@ namespace Songify_Slim.Util.Spotify
                 {
                     return _cachedPlaylistInfo;
                 }
-
                 string playlistUrl = $"https://open.spotify.com/playlist/{playlistId}";
 
                 PlaylistInfo info = null;
