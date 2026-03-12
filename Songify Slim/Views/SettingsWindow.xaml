@@ -2368,6 +2368,16 @@
                                             ValueChanged="NudBits_OnValueChanged" />
                                     </StackPanel>
                                 </DockPanel>
+                                <DockPanel Margin="0,6,0,0">
+                                    <TextBlock VerticalAlignment="Center" Text="Bits Keyword (SR will only get triggered if that keyword is in the bits message)" />
+                                    <TextBox
+                                        x:Name="TbBitsKeyword"
+                                        Width="150"
+                                        Height="28"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        TextChanged="TbBitsKeyword_OnTextChanged" />
+                                </DockPanel>
                             </StackPanel>
                         </StackPanel>
                     </Grid>

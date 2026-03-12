@@ -191,6 +191,7 @@ namespace Songify_Slim.Views
             PasswordBox.Password = Settings.SongifyApiKey;
             PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
             NudBits.Value = Settings.MinimumBitsForSr;
+            TbBitsKeyword.Text = Settings.SrForBitsKeyWord;
             TxtbxTwChannel.Text = Settings.TwChannel;
             TxtbxTwOAuth.Password = Settings.TwOAuth;
             TxtbxTwUser.Text = Settings.TwAcc;
@@ -635,8 +636,7 @@ namespace Songify_Slim.Views
             // Shows a message box if the client id or secret is missing
             Settings.SpotifyRedirectUri = "127.0.0.1";
 
-            // Links Spotify
-            Settings.SpotifyRefreshToken = "";
+            SpotifyApiHandler.ResetSpotifyAuthState();
             try
             {
                 await SpotifyApiHandler.Auth();
@@ -2207,6 +2207,12 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (!IsLoaded) return;
+            Settings.SrForBitsKeyWord = ((TextBox)sender).Text;
         }
     }
 }

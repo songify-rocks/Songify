@@ -59,6 +59,20 @@ namespace Songify_Slim.Util.Spotify
             Scopes.UserLibraryRead
         ];
 
+        public static void ResetSpotifyAuthState()
+        {
+            Settings.SpotifyAccessToken = "";
+            Settings.SpotifyRefreshToken = "";
+            Settings.SpotifyTokenExpiresAt = 0;
+            Settings.SpotifyProfile = null;
+
+            GlobalObjects.SpotifyProfile = null;
+            Client = null;
+
+            if (AuthTimer.Enabled)
+                AuthTimer.Stop();
+        }
+
         public static async Task Auth()
         {
             try
@@ -603,7 +617,6 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-
         public static List<string> EnsureTrackUris(IEnumerable<string> ids)
         {
             List<string> result = [];
@@ -656,7 +669,6 @@ namespace Songify_Slim.Util.Spotify
 
             return result;
         }
-
 
         public static async Task<bool> AddToPlaylist(string trackId)
         {

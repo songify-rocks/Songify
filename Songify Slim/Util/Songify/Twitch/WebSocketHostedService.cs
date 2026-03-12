@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using Windows.UI.Xaml.Controls.Primitives;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Views;
 using Swan.Formatters;
@@ -180,22 +181,40 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             _logger.LogInformation($"{eventData.UserName} cheered {eventData.Bits} bits at {eventData.BroadcasterUserName}. Their message was {eventData.Message}");
             // Handle the cheer event here, e.g., update UI or notify users
+
             if (eventData.Bits >= Settings.MinimumBitsForSr)
             {
                 string input = eventData.Message;
-                string pattern = @"\bcheer\w*?\d+\b";
-                // Replace all matches with an empty string
-                string result = Regex.Replace(input, pattern, "", RegexOptions.IgnoreCase);
+                string keyword = Settings.SrForBitsKeyWord;
 
-                // Optionally, replace double spaces with single spaces (since you might get extra spaces)
-                result = Regex.Replace(result, @"\s+", " ").Trim();
+                bool keywordMatches =
+                    string.IsNullOrWhiteSpace(keyword) ||
+                    input.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0;
 
-                await TwitchHandler.HandleBitsSongRequest(
-                    userId: eventData.UserId,
-                    userName: eventData.UserName,
-                    userInput: result,
-                    channel: eventData.BroadcasterUserLogin
-                );
+                if (keywordMatches)
+                {
+                    const string pattern = @"\bcheer\w*?\d+\b";
+                    string result = Regex.Replace(input, pattern, "", RegexOptions.IgnoreCase);
+
+                    // Optional: also remove the keyword from the final request text
+                    if (!string.IsNullOrWhiteSpace(keyword))
+                    {
+                        result = Regex.Replace(
+                            result,
+                            Regex.Escape(keyword),
+                            "",
+                            RegexOptions.IgnoreCase);
+                    }
+
+                    result = Regex.Replace(result, @"\s+", " ").Trim();
+
+                    await TwitchHandler.HandleBitsSongRequest(
+                        userId: eventData.UserId,
+                        userName: eventData.UserName,
+                        userInput: result,
+                        channel: eventData.BroadcasterUserLogin
+                    );
+                }
             }
         }
 

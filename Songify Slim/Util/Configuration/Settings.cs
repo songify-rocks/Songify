@@ -29,6 +29,18 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
         public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
+        public static string SrForBitsKeyWord { get => GetSrForBitsKeyWord(); set => SetSrForBitsKeyWord(value); }
+
+        private static void SetSrForBitsKeyWord(string value)
+        {
+            CurrentConfig.AppConfig.SrForBitsKeyWord = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetSrForBitsKeyWord()
+        {
+            return CurrentConfig.AppConfig.SrForBitsKeyWord;
+        }
 
         private static void SetSpotifyTokenExpiresAt(long value)
         {
@@ -1202,6 +1214,7 @@ namespace Songify_Slim.Util.Configuration
                 TwitchPollSettings = GetTwitchPollSettings(),
                 TwRewardSkipPoll = GetTwRewardSkipPoll(),
                 SharedChatEnabled = GetSharedChatEnabled(),
+                SrForBitsKeyWord = GetSrForBitsKeyWord(),
             };
 
             TwitchCommands twitchCommands = new()

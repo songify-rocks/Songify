@@ -891,6 +891,7 @@ namespace Songify_Slim.Util.Configuration
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
+        public string SrForBitsKeyWord { get; set; }
 
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
