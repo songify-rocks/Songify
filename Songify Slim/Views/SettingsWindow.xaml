@@ -2408,7 +2408,7 @@
                             Grid.Row="1"
                             Padding="6"
                             HorizontalAlignment="Left"
-                            Text="Rightclick on a command to adjust who can use it." />
+                            Text="Right-click on a command to adjust who can use it." />
                         <controls:ToggleSwitch
                             x:Name="TglsLongBadgeNames"
                             Grid.Row="0"

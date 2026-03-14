@@ -10,12 +10,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Windows.UI.Xaml.Controls.Primitives;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Views;
-using Swan.Formatters;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
+using TwitchLib.Api.Core.Exceptions;
 using TwitchLib.Api.Helix.Models.EventSub;
 using TwitchLib.EventSub.Core.EventArgs.Channel;
 using TwitchLib.EventSub.Core.EventArgs.Stream;
@@ -23,7 +22,6 @@ using TwitchLib.EventSub.Core.Models.Polls;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
-using LogLevel = Songify_Slim.Util.General.LogLevel;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -34,17 +32,22 @@ namespace Songify_Slim.Util.Songify.Twitch
         private readonly TwitchAPI _twitchApi = new();
         private readonly string _userId = Settings.TwitchUser.Id;
 
-        public WebsocketHostedService(ILogger<WebsocketHostedService> logger, EventSubWebsocketClient eventSubWebsocketClient)
+        private readonly SemaphoreSlim _subscriptionSyncLock = new(1, 1);
+        private volatile bool _isStopping;
+        private volatile bool _started;
+
+        public WebsocketHostedService(
+            ILogger<WebsocketHostedService> logger,
+            EventSubWebsocketClient eventSubWebsocketClient)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-
             _eventSubWebsocketClient = eventSubWebsocketClient ?? throw new ArgumentNullException(nameof(eventSubWebsocketClient));
+
             _eventSubWebsocketClient.WebsocketConnected += OnWebsocketConnected;
             _eventSubWebsocketClient.WebsocketDisconnected += OnWebsocketDisconnected;
             _eventSubWebsocketClient.WebsocketReconnected += OnWebsocketReconnected;
             _eventSubWebsocketClient.ErrorOccurred += OnErrorOccurred;
 
-            //_eventSubWebsocketClient.ChannelFollow += OnChannelFollow;
             _eventSubWebsocketClient.ChannelPointsCustomRewardRedemptionAdd += EventSubWebsocketClientOnChannelPointsCustomRewardRedemptionAdd;
             _eventSubWebsocketClient.StreamOffline += EventSubWebsocketClientOnStreamOffline;
             _eventSubWebsocketClient.StreamOnline += EventSubWebsocketClientOnStreamOnline;
@@ -54,31 +57,79 @@ namespace Songify_Slim.Util.Songify.Twitch
             _eventSubWebsocketClient.ChannelPollProgress += EventSubWebsocketClientOnChannelPollProgress;
             _eventSubWebsocketClient.ChannelPollEnd += _eventSubWebsocketClient_ChannelPollEnd;
 
-            // Get ClientId and ClientSecret by register an Application here: https://dev.twitch.tv/console/apps
-            // https://dev.twitch.tv/docs/authentication/register-app/
             _twitchApi.Settings.ClientId = TwitchHandler.ClientId;
-            // Get Application Token with Client credentials grant flow.
-            // https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#client-credentials-grant-flow
             _twitchApi.Settings.AccessToken = Settings.TwitchAccessToken;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            if (_started)
+            {
+                Logger.Info(LogSource.Twitch, "EventSub StartAsync skipped: already started.");
+                return;
+            }
+
+            _started = true;
+            _isStopping = false;
+
+            Logger.Info(LogSource.Twitch, "EventSub connecting...");
             await _eventSubWebsocketClient.ConnectAsync();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            await _eventSubWebsocketClient.DisconnectAsync();
+            _isStopping = true;
+            Logger.Info(LogSource.Twitch, "EventSub stopping...");
+
+            try
+            {
+                await _eventSubWebsocketClient.DisconnectAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Twitch, "EventSub disconnect failed", ex);
+            }
+
+            _started = false;
         }
 
         private async Task OnWebsocketConnected(object sender, WebsocketConnectedArgs e)
         {
-            _logger.LogInformation($"Websocket {_eventSubWebsocketClient.SessionId} connected!");
-            Logger.Info(LogSource.Twitch, $"EventSub connected. ({_eventSubWebsocketClient.SessionId})");
+            string currentSessionId = _eventSubWebsocketClient.SessionId;
 
-            if (!e.IsRequestedReconnect)
+            _logger.LogInformation("Websocket {SessionId} connected. RequestedReconnect={RequestedReconnect}",
+                currentSessionId, e.IsRequestedReconnect);
+            Logger.Info(LogSource.Twitch,
+                $"EventSub connected. Session={currentSessionId}, RequestedReconnect={e.IsRequestedReconnect}");
+
+            await SyncSubscriptionsForCurrentSession(currentSessionId);
+
+            await UpdateUiIndicatorSafe();
+        }
+
+        private async Task SyncSubscriptionsForCurrentSession(string currentSessionId)
+        {
+            if (string.IsNullOrWhiteSpace(currentSessionId))
             {
+                Logger.Error(LogSource.Twitch, "EventSub sync skipped: session id is null or empty.");
+                return;
+            }
+
+            await _subscriptionSyncLock.WaitAsync();
+            try
+            {
+                Logger.Debug(LogSource.Twitch, $"EventSub sync start for session {currentSessionId}");
+
+                List<EventSubSubscription> existing = await GetEventSubscriptionsSafe();
+                if (existing == null)
+                    existing = new List<EventSubSubscription>();
+
+                LogExistingSubscriptionOverview(existing, currentSessionId);
+
+                await DeleteStaleWebsocketSubscriptions(existing, currentSessionId);
+
+                existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
+
                 Dictionary<string, string> condBroadcaster = new()
                 {
                     ["broadcaster_user_id"] = _userId
@@ -90,84 +141,333 @@ namespace Songify_Slim.Util.Songify.Twitch
                     ["user_id"] = _userId
                 };
 
-                // Only use moderator_user_id on subscription types that explicitly require it.
                 Dictionary<string, string> condBroadcasterAndModerator = new()
                 {
                     ["broadcaster_user_id"] = _userId,
                     ["moderator_user_id"] = _userId
                 };
 
-                // subscribe to topics
-                // create condition Dictionary
-                // You need BOTH broadcaster and moderator values or EventSub returns an Error!
-                Dictionary<string, string> conditionBm = new() { { "broadcaster_user_id", _userId }, { "moderator_user_id", _userId } };
-                Dictionary<string, string> conditionBu = new() { { "broadcaster_user_id", _userId }, { "user_id", _userId } };
-                // Create and send EventSubscription
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.channel_points_custom_reward_redemption.add", "1", conditionBm, EventSubTransportMethod.Websocket,
-                _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                // Use the smallest valid condition set per subscription type.
+                await EnsureSubscription(existing,
+                    type: "channel.channel_points_custom_reward_redemption.add",
+                    version: "1",
+                    condition: condBroadcasterAndModerator,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.cheer", "1", conditionBm, EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "channel.cheer",
+                    version: "1",
+                    condition: condBroadcasterAndModerator,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.online", "1", conditionBm, EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "stream.online",
+                    version: "1",
+                    condition: condBroadcaster,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("stream.offline", "1", conditionBm, EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "stream.offline",
+                    version: "1",
+                    condition: condBroadcaster,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.chat.message", "1", conditionBu,
-                    EventSubTransportMethod.Websocket, _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "channel.chat.message",
+                    version: "1",
+                    condition: condBroadcasterAndUser,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.begin", "1", conditionBm,
-                    EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "channel.poll.begin",
+                    version: "1",
+                    condition: condBroadcasterAndModerator,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.progress", "1", conditionBm,
-                    EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "channel.poll.progress",
+                    version: "1",
+                    condition: condBroadcasterAndModerator,
+                    currentSessionId: currentSessionId);
 
-                await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync("channel.poll.end", "1", conditionBm,
-                    EventSubTransportMethod.Websocket,
-                    _eventSubWebsocketClient.SessionId, accessToken: Settings.TwitchAccessToken);
+                await EnsureSubscription(existing,
+                    type: "channel.poll.end",
+                    version: "1",
+                    condition: condBroadcasterAndModerator,
+                    currentSessionId: currentSessionId);
 
-                // If you want to get Events for special Events you need to additionally add the AccessToken of the ChannelOwner to the request.
-                // https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/
+                Logger.Info(LogSource.Twitch, $"EventSub sync complete for session {currentSessionId}");
+            }
+            catch (TooManyRequestsException ex)
+            {
+                _logger.LogError(ex, "EventSub sync failed due to Twitch rate or transport limits.");
+                Logger.Error(LogSource.Twitch, "EventSub sync failed due to Twitch rate or transport limits", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "EventSub sync failed.");
+                Logger.Error(LogSource.Twitch, "EventSub sync failed", ex);
+            }
+            finally
+            {
+                _subscriptionSyncLock.Release();
+            }
+        }
+
+        private async Task<List<EventSubSubscription>> GetEventSubscriptionsSafe()
+        {
+            try
+            {
+                List<EventSubSubscription> subs = await TwitchApiHelper.GetEventSubscriptions();
+                return subs ?? new List<EventSubSubscription>();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Twitch, "Failed to get EventSub subscriptions", ex);
+                return new List<EventSubSubscription>();
+            }
+        }
+
+        private void LogExistingSubscriptionOverview(List<EventSubSubscription> existing, string currentSessionId)
+        {
+            List<EventSubSubscription> enabledWebsocketSubs = existing
+                .Where(IsEnabledWebsocketSubscription)
+                .ToList();
+
+            List<string> sessionIds = enabledWebsocketSubs
+                .Select(s => GetTransportSessionId(s))
+                .Where(id => !string.IsNullOrWhiteSpace(id))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            Logger.Info(LogSource.Twitch,
+                $"EventSub subscriptions: total={existing.Count}, enabledWebsocket={enabledWebsocketSubs.Count}, distinctSessions={sessionIds.Count}, currentSession={currentSessionId}");
+
+            foreach (EventSubSubscription sub in enabledWebsocketSubs)
+            {
+                Logger.Debug(LogSource.Twitch,
+                    $"EventSub existing sub: id={sub.Id}, type={sub.Type}, version={sub.Version}, status={sub.Status}, session={GetTransportSessionId(sub)}");
+            }
+        }
+
+        private async Task DeleteStaleWebsocketSubscriptions(List<EventSubSubscription> existing, string currentSessionId)
+        {
+            List<EventSubSubscription> staleSubs = existing
+                .Where(s =>
+                    IsEnabledWebsocketSubscription(s) &&
+                    !string.Equals(GetTransportSessionId(s), currentSessionId, StringComparison.Ordinal))
+                .ToList();
+
+            if (staleSubs.Count == 0)
+            {
+                Logger.Debug(LogSource.Twitch, "EventSub cleanup: no stale websocket subscriptions found.");
+                return;
             }
 
-            // Update UI
-            List<EventSubSubscription> evSubs = await TwitchApiHelper.GetEventSubscriptions();
-            evSubs = evSubs.Where(sub => sub.Status == "enabled").ToList();
-            if (evSubs.Any(s => s.Type == "channel.chat.message"))
+            Logger.Info(LogSource.Twitch,
+                $"EventSub cleanup: deleting {staleSubs.Count} stale websocket subscription(s).");
+
+            foreach (EventSubSubscription stale in staleSubs)
             {
+                try
+                {
+                    Logger.Debug(LogSource.Twitch,
+                        $"Deleting stale EventSub subscription: id={stale.Id}, type={stale.Type}, oldSession={GetTransportSessionId(stale)}");
+
+                    await _twitchApi.Helix.EventSub.DeleteEventSubSubscriptionAsync(
+                        stale.Id,
+                        accessToken: Settings.TwitchAccessToken);
+
+                    await Task.Delay(150);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Twitch,
+                        $"Failed to delete stale EventSub subscription {stale.Id} ({stale.Type})", ex);
+                }
+            }
+        }
+
+        private async Task EnsureSubscription(
+            List<EventSubSubscription> existing,
+            string type,
+            string version,
+            Dictionary<string, string> condition,
+            string currentSessionId)
+        {
+            bool alreadyExists = existing.Any(s =>
+                IsEnabledWebsocketSubscription(s) &&
+                string.Equals(s.Type, type, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(s.Version, version, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(GetTransportSessionId(s), currentSessionId, StringComparison.Ordinal) &&
+                SubscriptionConditionsMatch(s, condition));
+
+            if (alreadyExists)
+            {
+                Logger.Debug(LogSource.Twitch,
+                    $"EventSub ensure: already exists for current session. type={type}, version={version}");
+                return;
+            }
+
+            Logger.Info(LogSource.Twitch,
+                $"EventSub ensure: creating missing subscription. type={type}, version={version}, session={currentSessionId}");
+
+            await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
+                type,
+                version,
+                condition,
+                EventSubTransportMethod.Websocket,
+                currentSessionId,
+                accessToken: Settings.TwitchAccessToken);
+        }
+
+        private static bool IsEnabledWebsocketSubscription(EventSubSubscription sub)
+        {
+            if (sub == null)
+                return false;
+
+            if (!string.Equals(sub.Status, "enabled", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            string method = GetTransportMethod(sub);
+            return string.Equals(method, "websocket", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GetTransportMethod(EventSubSubscription sub)
+        {
+            try
+            {
+                return sub?.Transport?.Method;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string GetTransportSessionId(EventSubSubscription sub)
+        {
+            try
+            {
+                return sub?.Transport?.SessionId;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool SubscriptionConditionsMatch(
+            EventSubSubscription subscription,
+            Dictionary<string, string> expected)
+        {
+            if (subscription == null || expected == null)
+                return false;
+
+            try
+            {
+                object conditionObj = subscription.Condition;
+                if (conditionObj == null)
+                    return false;
+
+                Dictionary<string, string> actual = conditionObj
+                    .GetType()
+                    .GetProperties()
+                    .ToDictionary(
+                        p => p.Name,
+                        p => p.GetValue(conditionObj)?.ToString(),
+                        StringComparer.OrdinalIgnoreCase);
+
+                foreach (KeyValuePair<string, string> kv in expected)
+                {
+                    if (!actual.TryGetValue(kv.Key, out string actualValue))
+                        return false;
+
+                    if (!string.Equals(actualValue, kv.Value, StringComparison.Ordinal))
+                        return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private async Task UpdateUiIndicatorSafe()
+        {
+            try
+            {
+                List<EventSubSubscription> evSubs = await GetEventSubscriptionsSafe();
+                evSubs = evSubs.Where(sub => string.Equals(sub.Status, "enabled", StringComparison.OrdinalIgnoreCase)).ToList();
+
+                bool chatEnabled = evSubs.Any(s => string.Equals(s.Type, "channel.chat.message", StringComparison.OrdinalIgnoreCase));
+
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ((MainWindow)Application.Current.MainWindow)!.IconTwitchBot.Foreground = evSubs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
+                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+                    if (mainWindow?.IconTwitchBot != null)
+                        mainWindow.IconTwitchBot.Foreground = chatEnabled ? Brushes.GreenYellow : Brushes.IndianRed;
                 });
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Twitch, "Failed to update EventSub UI state", ex);
             }
         }
 
         private async Task OnWebsocketDisconnected(object sender, WebsocketDisconnectedArgs e)
         {
-            _logger.LogError($"Websocket {_eventSubWebsocketClient.SessionId} disconnected!");
-            Logger.Log(LogLevel.Info, LogSource.Twitch, "Websocket Disconnected...");
-            // Don't do this in production. You should implement a better reconnect strategy with exponential backoff
-            while (!await _eventSubWebsocketClient.ReconnectAsync())
+            _logger.LogError("Websocket {SessionId} disconnected!", _eventSubWebsocketClient.SessionId);
+            Logger.Info(LogSource.Twitch, "EventSub websocket disconnected.");
+
+            if (_isStopping)
             {
-                _logger.LogError("Websocket reconnect failed!");
-                await Task.Delay(1000);
+                Logger.Info(LogSource.Twitch, "EventSub disconnect during shutdown. Reconnect skipped.");
+                return;
+            }
+
+            int attempt = 0;
+            int delayMs = 1000;
+
+            while (!_isStopping)
+            {
+                attempt++;
+
+                try
+                {
+                    Logger.Info(LogSource.Twitch, $"EventSub reconnect attempt {attempt}");
+
+                    bool ok = await _eventSubWebsocketClient.ReconnectAsync();
+                    if (ok)
+                    {
+                        Logger.Info(LogSource.Twitch, $"EventSub reconnect succeeded on attempt {attempt}");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Twitch, $"EventSub reconnect attempt {attempt} failed", ex);
+                }
+
+                await Task.Delay(delayMs);
+                delayMs = Math.Min(delayMs * 2, 30000);
             }
         }
 
-        private async Task OnWebsocketReconnected(object sender, EventArgs e)
+        private Task OnWebsocketReconnected(object sender, EventArgs e)
         {
-            _logger.LogWarning($"Websocket {_eventSubWebsocketClient.SessionId} reconnected");
-            Logger.Error(LogSource.Twitch, $"Websocket {_eventSubWebsocketClient.SessionId} - Error occurred!");
+            _logger.LogWarning("Websocket {SessionId} reconnected", _eventSubWebsocketClient.SessionId);
+            Logger.Info(LogSource.Twitch, $"EventSub websocket reconnected. Session={_eventSubWebsocketClient.SessionId}");
+            return Task.CompletedTask;
         }
 
-        private async Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
+        private Task OnErrorOccurred(object sender, ErrorOccuredArgs e)
         {
             _logger.LogError("EventSub ErrorOccurred: {Exception}", e.Exception);
             Logger.Error(LogSource.Twitch, $"EventSub ErrorOccurred: {e.Exception}");
+            return Task.CompletedTask;
         }
 
         #region Events
@@ -176,11 +476,13 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             if (!Settings.SrForBits)
                 return;
+
             ChannelCheer eventData = args.Payload.Event;
             if (eventData.BroadcasterUserId != Settings.TwitchUser.Id)
                 return;
-            _logger.LogInformation($"{eventData.UserName} cheered {eventData.Bits} bits at {eventData.BroadcasterUserName}. Their message was {eventData.Message}");
-            // Handle the cheer event here, e.g., update UI or notify users
+
+            _logger.LogInformation("{UserName} cheered {Bits} bits at {Broadcaster}. Their message was {Message}",
+                eventData.UserName, eventData.Bits, eventData.BroadcasterUserName, eventData.Message);
 
             if (eventData.Bits >= Settings.MinimumBitsForSr)
             {
@@ -196,7 +498,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                     const string pattern = @"\bcheer\w*?\d+\b";
                     string result = Regex.Replace(input, pattern, "", RegexOptions.IgnoreCase);
 
-                    // Optional: also remove the keyword from the final request text
                     if (!string.IsNullOrWhiteSpace(keyword))
                     {
                         result = Regex.Replace(
@@ -225,7 +526,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             return Task.CompletedTask;
         }
 
-        private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs streamOfflineArgs)
+        private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
         {
             Settings.IsLive = false;
             Logger.Info(LogSource.Twitch, "Stream offline");
@@ -239,14 +540,14 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (eventData.BroadcasterUserId != Settings.TwitchUser.Id)
                 return;
 
-            Logger.Log(LogLevel.Info, LogSource.Twitch, $"{eventData.UserName} redeemed {eventData.Reward.Title}");
+            Logger.Info(LogSource.Twitch, $"{eventData.UserName} redeemed {eventData.Reward.Title}");
+
             if (Settings.TwRewardId.Any(id => id == eventData.Reward.Id) &&
                 Settings.TwSrReward)
             {
                 await TwitchHandler.RunTwitchUserSync();
                 Logger.Info(LogSource.Twitch, $"Redeem: {eventData.Reward.Title} by {eventData.UserName}");
 
-                // Handle Song Request Command
                 await TwitchHandler.HandleChannelPointSongRequst(
                     isBroadcaster: eventData.UserId == eventData.BroadcasterUserId,
                     userId: eventData.UserId,
@@ -259,15 +560,10 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             if (Settings.TwRewardSkipId.Any(id => id == eventData.Reward.Id))
-            {
-                // Handle Skip Reward
                 await TwitchHandler.HandleSkipReward();
-            }
 
             if (Settings.TwRewardSkipPoll.Any(id => id == eventData.Reward.Id))
-            {
                 await TwitchHandler.StartSkipPoll(eventData.Id, eventData.Reward.Id);
-            }
         }
 
         private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs e)
@@ -276,7 +572,12 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             if (!chatMsg.Message.Text.StartsWith("!"))
                 return Task.CompletedTask;
-            if (!Settings.SharedChatEnabled && chatMsg.SourceBroadcasterUserId != null && chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id) return Task.CompletedTask;
+
+            if (!Settings.SharedChatEnabled &&
+                chatMsg.SourceBroadcasterUserId != null &&
+                chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
+                return Task.CompletedTask;
+
             TwitchHandler.ExecuteChatCommand(chatMsg);
             return Task.CompletedTask;
         }
@@ -285,7 +586,6 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             ChannelPollEnd pollEvent = e.Payload.Event;
 
-            // Ignore irrelevant/ended polls
             if (pollEvent.Status.ToUpper() == "ARCHIVED"
                 || pollEvent.Status.ToUpper() == "TERMINATED"
                 || pollEvent.Id != GlobalObjects.CurrentSkipPoll.Id)
@@ -293,12 +593,10 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             GlobalObjects.CurrentSkipPoll.IsActive = false;
 
-            // The choice that should trigger the action (e.g. "Skip")
             string matchedChoice = Settings.TwitchPollSettings.WinningChoice;
             if (string.IsNullOrWhiteSpace(matchedChoice))
                 return Task.CompletedTask;
 
-            // Normalize votes (treat null as 0)
             var choices = pollEvent.Choices
                 .Select(c => new
                 {
@@ -313,10 +611,8 @@ namespace Songify_Slim.Util.Songify.Twitch
             int totalVotes = choices.Sum(c => c.Votes);
             int maxVotes = choices.Max(c => c.Votes);
 
-            // Find all top choices (tie detection)
             var topChoices = choices.Where(c => c.Votes == maxVotes).ToList();
 
-            // Strict rule: must be exactly one winner, and it must be matchedChoice
             if (topChoices.Count != 1)
                 return Task.CompletedTask;
 
@@ -325,7 +621,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (!string.Equals(winningChoice.Title, matchedChoice, StringComparison.Ordinal))
                 return Task.CompletedTask;
 
-            // Get votes for matchedChoice (for percentage output)
             int matchedVotes = choices
                 .FirstOrDefault(c => string.Equals(c.Choice.Title, matchedChoice, StringComparison.Ordinal))
                 ?.Votes ?? 0;
@@ -339,9 +634,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 losePercentage = Math.Round(100 - winPercentage, 2);
             }
 
-            // Execute skip (only reached when matchedChoice is the sole winner)
             TwitchHandler.ExecuteSkipPollChoice(matchedChoice, totalVotes, winPercentage, losePercentage);
-
             return Task.CompletedTask;
         }
 
@@ -355,12 +648,11 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             ChannelPollBegin poll = e.Payload.Event;
             if (GlobalObjects.CurrentSkipPoll.Id == poll.Id)
-            {
                 GlobalObjects.CurrentSkipPoll.IsActive = true;
-            }
+
             return Task.CompletedTask;
         }
 
-        #endregion Events
+        #endregion
     }
 }

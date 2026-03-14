@@ -86,13 +86,14 @@ namespace Songify_Slim.Util.Spotify
                     await RefreshTokens();
                     return;
                 }
-
+                if (string.IsNullOrEmpty(Settings.ClientId)) return;
                 Logger.Info(LogSource.Spotify, "Getting new tokens");
                 await StartPkceLogin();
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+                Settings.SpotifyRefreshToken = string.Empty;
             }
         }
 
@@ -407,98 +408,173 @@ namespace Songify_Slim.Util.Spotify
 
         public static async Task<TrackInfo> GetSongInfo()
         {
-            if (Client == null) return null;
+            var client = Client;
+            if (client?.Player == null)
+            {
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 0: client or client.Player is null");
+                return null;
+            }
+
+            CurrentlyPlayingContext playback = null;
+            FullTrack track = null;
 
             try
             {
-                CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync(
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 1: before API call");
+
+                playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest
+                    () => client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest
                     {
                         Market = "from_token"
                     }),
                     softLimitPerMinute: 60
                 );
 
-                if (playback is not { Item: FullTrack track })
-                    return null;
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 2: API call returned");
 
-                if (Settings.SpotifyDeviceId != playback.Device.Id)
+                if (playback == null)
                 {
-                    Settings.SpotifyDeviceId = playback.Device.Id;
+                    Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 2a: playback is null");
+                    return null;
                 }
 
-                // Artists
-                string artists = string.Join(", ", track.Artists.Select(a => a.Name));
+                if (playback.Item == null)
+                {
+                    Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 2b: playback.Item is null");
+                    return null;
+                }
 
-                // Album images
-                List<Image> albums = track.Album.Images;
+                track = playback.Item as FullTrack;
 
-                // Progress math
-                double totalSeconds = track.DurationMs / 1000.0;
-                double currentSeconds = playback.ProgressMs / 1000.0;
+                if (track == null)
+                {
+                    Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 2c: playback.Item is not FullTrack");
+                    return null;
+                }
 
-                int percentage = totalSeconds == 0
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 3: track obtained");
+
+                string deviceId = playback.Device?.Id;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 4: before deviceId update");
+
+                if (!string.IsNullOrWhiteSpace(deviceId) && Settings.SpotifyDeviceId != deviceId)
+                    Settings.SpotifyDeviceId = deviceId;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 5: deviceId processed");
+
+                string artists = track.Artists != null
+                    ? string.Join(", ", track.Artists.Where(a => a != null).Select(a => a.Name).Where(n => !string.IsNullOrWhiteSpace(n)))
+                    : string.Empty;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 6: artists parsed");
+
+                List<Image> albums = track.Album?.Images?.ToList();
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 7: album images processed");
+
+                int durationMs = track.DurationMs;
+                int progressMs = playback.ProgressMs;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 8: duration/progress read");
+
+                if (progressMs < 0)
+                    progressMs = 0;
+
+                if (progressMs > durationMs && durationMs > 0)
+                    progressMs = durationMs;
+
+                double totalSeconds = durationMs / 1000.0;
+                double currentSeconds = progressMs / 1000.0;
+
+                int percentage = totalSeconds <= 0
                     ? 0
                     : (int)(100 * currentSeconds / totalSeconds);
 
-                // Playlist context (optional)
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 9: percentage calculated");
 
-                if (!playback.Context.Uri.StartsWith("spotify:playlist:"))
-                    return new TrackInfo
-                    {
-                        Artists = artists,
-                        Title = track.Name,
-                        Albums = albums.ToList(),
-                        SongId = track.Id,
-                        DurationMs = track.DurationMs - playback.ProgressMs,
-                        IsPlaying = playback.IsPlaying,
-                        Url = !string.IsNullOrEmpty(track.Id)
-                            ? "https://open.spotify.com/track/" + track.Id
-                            : null,
-                        DurationPercentage = percentage,
-                        DurationTotal = track.DurationMs,
-                        Progress = playback.ProgressMs,
-                        Playlist = null,
-                        FullArtists = track.Artists.ToList()
-                    };
-                string playlistId = playback.Context.Uri.Split(':').Last();
+                string trackId = track.Id;
 
-                PlaylistInfo playlistInfo = new()
+                string trackUrl = !string.IsNullOrWhiteSpace(trackId)
+                    ? "https://open.spotify.com/track/" + trackId
+                    : null;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 10: track URL created");
+
+                PlaylistInfo playlistInfo = null;
+                string contextUri = playback.Context?.Uri;
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 11: context uri read");
+
+                if (!string.IsNullOrWhiteSpace(contextUri) &&
+                    contextUri.StartsWith("spotify:playlist:", StringComparison.OrdinalIgnoreCase))
                 {
-                    Id = playlistId,
-                    Url = $"https://open.spotify.com/playlist/{playlistId}"
-                };
+                    string[] parts = contextUri.Split(':');
+                    string playlistId = parts.Length > 0 ? parts[parts.Length - 1] : null;
+
+                    if (!string.IsNullOrWhiteSpace(playlistId))
+                    {
+                        playlistInfo = new PlaylistInfo
+                        {
+                            Id = playlistId,
+                            Url = $"https://open.spotify.com/playlist/{playlistId}"
+                        };
+                    }
+                }
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 12: playlist info processed");
+
+                Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 13: creating TrackInfo");
 
                 return new TrackInfo
                 {
                     Artists = artists,
                     Title = track.Name,
-                    Albums = albums.ToList(),
-                    SongId = track.Id,
-                    DurationMs = track.DurationMs - playback.ProgressMs,
+                    Albums = albums,
+                    SongId = trackId,
+                    DurationMs = Math.Max(0, durationMs - progressMs),
                     IsPlaying = playback.IsPlaying,
-                    Url = !string.IsNullOrEmpty(track.Id)
-                        ? "https://open.spotify.com/track/" + track.Id
-                        : null,
+                    Url = trackUrl,
                     DurationPercentage = percentage,
-                    DurationTotal = track.DurationMs,
-                    Progress = playback.ProgressMs,
+                    DurationTotal = durationMs,
+                    Progress = progressMs,
                     Playlist = playlistInfo,
-                    FullArtists = track.Artists.ToList()
+                    FullArtists = track.Artists?.Where(a => a != null).ToList() ?? new List<SimpleArtist>()
                 };
+            }
+            catch (NullReferenceException ex)
+            {
+                Logger.Error(LogSource.Spotify, "NullReferenceException in GetSongInfo");
+                Logger.Error(LogSource.Spotify, ex.ToString());
+
+                Logger.Error(
+                    LogSource.Spotify,
+                    "State snapshot: " +
+                    "ClientNull=" + (client == null) + ", " +
+                    "ClientPlayerNull=" + (client?.Player == null) + ", " +
+                    "PlaybackNull=" + (playback == null) + ", " +
+                    "PlaybackItemNull=" + (playback?.Item == null) + ", " +
+                    "PlaybackDeviceNull=" + (playback?.Device == null) + ", " +
+                    "PlaybackContextNull=" + (playback?.Context == null) + ", " +
+                    "TrackNull=" + (track == null) + ", " +
+                    "TrackAlbumNull=" + (track?.Album == null) + ", " +
+                    "TrackArtistsNull=" + (track?.Artists == null)
+                );
             }
             catch (APIException apiEx)
             {
                 Logger.Error(LogSource.Spotify, "Couldn't fetch song info");
-                Logger.Error(LogSource.Spotify, $"Spotify API error", apiEx);
+                Logger.Error(LogSource.Spotify, apiEx.ToString());
 
-                if (!string.IsNullOrEmpty((string)(apiEx.Response?.Body)))
-                    Logger.Error(LogSource.Spotify, (string)apiEx.Response.Body);
+                object responseBody = apiEx.Response?.Body;
+                if (responseBody != null)
+                    Logger.Error(LogSource.Spotify, responseBody.ToString());
             }
             catch (Exception ex)
             {
-                Logger.Error(LogSource.Spotify, "Couldn't fetch song info (unexpected)", ex);
+                Logger.Error(LogSource.Spotify, "Couldn't fetch song info (unexpected)");
+                Logger.Error(LogSource.Spotify, ex.ToString());
             }
 
             return null;
@@ -519,25 +595,23 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException ex)
             {
-                if (ex.Response != null && (int)ex.Response.StatusCode == 503)
+                if (ex.Response == null || (int)ex.Response.StatusCode != 503) return false;
+                for (int i = 0; i < 5; i++)
                 {
-                    for (int i = 0; i < 5; i++)
+                    await Task.Delay(1000);
+                    try
                     {
-                        await Task.Delay(1000);
-                        try
-                        {
-                            await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
-                                new PlayerAddToQueueRequest(songUri)
-                                {
-                                    DeviceId = Settings.SpotifyDeviceId
-                                }), softLimitPerMinute: SoftLimitPerminute);
-                            return true;
-                        }
-                        catch (APIException retryEx)
-                        {
-                            if (retryEx.Response != null && (int)retryEx.Response.StatusCode != 503)
-                                break;
-                        }
+                        await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
+                            new PlayerAddToQueueRequest(songUri)
+                            {
+                                DeviceId = Settings.SpotifyDeviceId
+                            }), softLimitPerMinute: SoftLimitPerminute);
+                        return true;
+                    }
+                    catch (APIException retryEx)
+                    {
+                        if (retryEx.Response != null && (int)retryEx.Response.StatusCode != 503)
+                            break;
                     }
                 }
 
