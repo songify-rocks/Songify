@@ -18,6 +18,7 @@ namespace Songify_Slim.UserControls
         {
             InitializeComponent();
             Playlist = playlist;
+
             if (playlist == null)
             {
                 TbPlaylistName.Text = "";
@@ -26,10 +27,18 @@ namespace Songify_Slim.UserControls
                 return;
             }
 
-            TbPlaylistName.Text = playlist.Name;
-            if (playlist.Images == null) return;
-            if (playlist.Images.Count != 0)
-                PlaylistImage.Source = new BitmapImage(new Uri(playlist.Images.First()));
+            TbPlaylistName.Text = playlist.Name ?? "";
+
+            string firstImage = playlist.Images?.FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(firstImage))
+            {
+                PlaylistImage.Source = null;
+                return;
+            }
+
+            PlaylistImage.Source = Uri.TryCreate(firstImage, UriKind.Absolute, out Uri imageUri) ? new BitmapImage(imageUri) : null;
         }
+
     }
 }

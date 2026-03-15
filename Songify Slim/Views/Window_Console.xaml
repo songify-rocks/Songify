@@ -85,12 +85,12 @@
                     BorderThickness="0"
                     IsReadOnly="True"
                     TextChanged="richTextBox_TextChanged">
-                    <RichTextBox.Resources>
+                    <!--<RichTextBox.Resources>
                         <Style TargetType="{x:Type Paragraph}">
                             <Setter Property="Margin" Value="0" />
                             <Setter Property="Padding" Value="0,0,15,0" />
                         </Style>
-                    </RichTextBox.Resources>
+                    </RichTextBox.Resources>-->
                 </RichTextBox>
             </Grid>
         </TabItem>

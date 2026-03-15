@@ -234,6 +234,7 @@ namespace Songify_Slim.Util.General
                     // Add new paragraph
                     GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph
                     {
+                        TextAlignment = TextAlignment.Left,
                         Margin = new Thickness(0),
                         Inlines =
                         {
