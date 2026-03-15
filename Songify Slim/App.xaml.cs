@@ -313,22 +313,6 @@ namespace Songify_Slim
 
             string exePath = Assembly.GetEntryAssembly()?.Location;
 
-            //AddFirewallException(appName, exePath);
-
-            // Override the Markdig CodeStyleKey at runtime
-            if (Current.Resources.Contains(Markdig.Wpf.Styles.CodeStyleKey))
-            {
-                Style newStyle = new(typeof(Run));
-
-                newStyle.Setters.Add(new Setter(TextElement.ForegroundProperty, new SolidColorBrush(Colors.White)));
-                newStyle.Setters.Add(new Setter(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Black)));
-                newStyle.Setters.Add(new Setter(TextElement.FontFamilyProperty, new FontFamily("Consolas")));
-                newStyle.Setters.Add(new Setter(TextElement.FontSizeProperty, 14.0));
-
-                // Override the existing Markdig Code Style
-                Current.Resources[Markdig.Wpf.Styles.CodeStyleKey] = newStyle;
-            }
-
             // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
             CultureInfo defaultCulture = CultureInfo.CurrentUICulture;
             // Or for a fixed default, for example:

@@ -1,26 +1,14 @@
-﻿using Markdig;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.Wpf;
+﻿using Microsoft.Web.WebView2.Core;
 using Songify_Slim.Util.General;
-using Songify_Slim.Util.Songify;
-using Songify_Slim.Util.Songify.APIs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Http;
-using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Xaml;
-using Windows.UI.Xaml.Controls;
 using Color = System.Drawing.Color;
-using ComboBox = System.Windows.Controls.ComboBox;
 using SelectionChangedEventArgs = System.Windows.Controls.SelectionChangedEventArgs;
 
 namespace Songify_Slim.Views
