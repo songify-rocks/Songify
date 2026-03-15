@@ -2043,17 +2043,26 @@ public static class TwitchHandler
             return;
         }
 
-        TimeSpan cooldown = TimeSpan.FromSeconds(Settings.TwSrPerUserCooldown); // Set your cooldown time here
+        TimeSpan cooldown = TimeSpan.FromSeconds(Settings.TwSrPerUserCooldown);
         if (!cmdParams.ExistingUser.IsCooldownExpired(cooldown))
         {
-            // Inform user about the cooldown
-            if (cmdParams.ExistingUser.LastCommandTime == null) return;
-            TimeSpan remaining = cooldown - (DateTime.Now - cmdParams.ExistingUser.LastCommandTime.Value);
-            Logger.Info(LogSource.Twitch, $"{cmdParams.ExistingUser.DisplayName} is on cooldown. ({remaining.Seconds} more seconds)");
-            // if remaining is more than 1 minute format to mm:ss, else to ss
-            string time = remaining.Minutes >= 1
-                ? $"{remaining.Minutes} minute{(remaining.Minutes > 1 ? "s" : "")} {remaining.Seconds} seconds"
-                : $"{remaining.Seconds} seconds";
+            if (cmdParams.ExistingUser.LastCommandTime == null)
+                return;
+
+            TimeSpan remaining = cooldown - (DateTime.UtcNow - cmdParams.ExistingUser.LastCommandTime.Value);
+
+            if (remaining < TimeSpan.Zero)
+                remaining = TimeSpan.Zero;
+
+            int totalSeconds = (int)Math.Ceiling(remaining.TotalSeconds);
+
+            Logger.Info(
+                LogSource.Twitch,
+                $"{cmdParams.ExistingUser.DisplayName} is on cooldown. ({totalSeconds} more seconds)");
+
+            string time = totalSeconds >= 60
+                ? $"{totalSeconds / 60} minute{(totalSeconds / 60 != 1 ? "s" : "")} {totalSeconds % 60} seconds"
+                : $"{totalSeconds} seconds";
 
             string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
@@ -2065,9 +2074,11 @@ public static class TwitchHandler
                 Req = GlobalObjects.Requester,
                 Cd = time
             }, Settings.BotRespUserCooldown);
+
             await SendChatMessage(response);
             return;
         }
+
 
         // if onCooldown skips
         if (_onCooldown)
@@ -4254,8 +4265,9 @@ public class TwitchUser : INotifyPropertyChanged
         if (LastCommandTime == null)
             return true;
 
-        return DateTime.Now - LastCommandTime.Value > cooldown;
+        return DateTime.UtcNow - LastCommandTime.Value > cooldown;
     }
+
 
     public void Update(
         string username,
@@ -4277,7 +4289,7 @@ public class TwitchUser : INotifyPropertyChanged
 
     public void UpdateCommandTime(bool reset = false)
     {
-        LastCommandTime = reset ? (DateTime?)null : DateTime.Now;
+        LastCommandTime = reset ? (DateTime?)null : DateTime.UtcNow;
     }
 
     protected void OnPropertyChanged(string propertyName)

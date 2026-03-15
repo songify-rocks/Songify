@@ -26,6 +26,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Views.WPF_UI;
 
 namespace Songify_Slim
 {
@@ -463,6 +464,13 @@ namespace Songify_Slim
                     ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
+
+            //Win_Main main2 = new()
+            //{
+            //    Icon = IsBeta
+            //        ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
+            //        : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
+            //};
 
             try
             {
