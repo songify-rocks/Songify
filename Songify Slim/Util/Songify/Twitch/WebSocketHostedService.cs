@@ -84,6 +84,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             try
             {
                 await _eventSubWebsocketClient.DisconnectAsync();
+                await ResetEventSubSubscriptions();
             }
             catch (Exception ex)
             {
@@ -118,15 +119,33 @@ namespace Songify_Slim.Util.Songify.Twitch
             await _subscriptionSyncLock.WaitAsync();
             try
             {
+                if (!IsCurrentSessionStillValid(currentSessionId))
+                {
+                    Logger.Info(LogSource.Twitch,
+                        $"EventSub sync aborted before start because session changed. Expected={currentSessionId}, Current={_eventSubWebsocketClient.SessionId}");
+                    return;
+                }
+
                 Logger.Debug(LogSource.Twitch, $"EventSub sync start for session {currentSessionId}");
 
-                List<EventSubSubscription> existing = await GetEventSubscriptionsSafe();
-                if (existing == null)
-                    existing = new List<EventSubSubscription>();
+                List<EventSubSubscription> existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
+
+                if (!IsCurrentSessionStillValid(currentSessionId))
+                {
+                    Logger.Info(LogSource.Twitch,
+                        $"EventSub sync aborted after fetching subscriptions because session changed. Expected={currentSessionId}, Current={_eventSubWebsocketClient.SessionId}");
+                    return;
+                }
 
                 LogExistingSubscriptionOverview(existing, currentSessionId);
-
                 await DeleteStaleWebsocketSubscriptions(existing, currentSessionId);
+
+                if (!IsCurrentSessionStillValid(currentSessionId))
+                {
+                    Logger.Info(LogSource.Twitch,
+                        $"EventSub sync aborted after cleanup because session changed. Expected={currentSessionId}, Current={_eventSubWebsocketClient.SessionId}");
+                    return;
+                }
 
                 existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
 
@@ -147,66 +166,16 @@ namespace Songify_Slim.Util.Songify.Twitch
                     ["moderator_user_id"] = _userId
                 };
 
-                // Use the smallest valid condition set per subscription type.
-                await EnsureSubscription(existing,
-                    type: "channel.channel_points_custom_reward_redemption.add",
-                    version: "1",
-                    condition: condBroadcasterAndModerator,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "channel.cheer",
-                    version: "1",
-                    condition: condBroadcasterAndModerator,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "stream.online",
-                    version: "1",
-                    condition: condBroadcaster,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "stream.offline",
-                    version: "1",
-                    condition: condBroadcaster,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "channel.chat.message",
-                    version: "1",
-                    condition: condBroadcasterAndUser,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "channel.poll.begin",
-                    version: "1",
-                    condition: condBroadcasterAndModerator,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "channel.poll.progress",
-                    version: "1",
-                    condition: condBroadcasterAndModerator,
-                    currentSessionId: currentSessionId);
-
-                await EnsureSubscription(existing,
-                    type: "channel.poll.end",
-                    version: "1",
-                    condition: condBroadcasterAndModerator,
-                    currentSessionId: currentSessionId);
+                await EnsureSubscription(existing, "channel.channel_points_custom_reward_redemption.add", "1", condBroadcasterAndModerator, currentSessionId);
+                await EnsureSubscription(existing, "channel.cheer", "1", condBroadcasterAndModerator, currentSessionId);
+                await EnsureSubscription(existing, "stream.online", "1", condBroadcaster, currentSessionId);
+                await EnsureSubscription(existing, "stream.offline", "1", condBroadcaster, currentSessionId);
+                await EnsureSubscription(existing, "channel.chat.message", "1", condBroadcasterAndUser, currentSessionId);
+                await EnsureSubscription(existing, "channel.poll.begin", "1", condBroadcasterAndModerator, currentSessionId);
+                await EnsureSubscription(existing, "channel.poll.progress", "1", condBroadcasterAndModerator, currentSessionId);
+                await EnsureSubscription(existing, "channel.poll.end", "1", condBroadcasterAndModerator, currentSessionId);
 
                 Logger.Info(LogSource.Twitch, $"EventSub sync complete for session {currentSessionId}");
-            }
-            catch (TooManyRequestsException ex)
-            {
-                _logger.LogError(ex, "EventSub sync failed due to Twitch rate or transport limits.");
-                Logger.Error(LogSource.Twitch, "EventSub sync failed due to Twitch rate or transport limits", ex);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "EventSub sync failed.");
-                Logger.Error(LogSource.Twitch, "EventSub sync failed", ex);
             }
             finally
             {
@@ -214,7 +183,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private async Task<List<EventSubSubscription>> GetEventSubscriptionsSafe()
+        private static async Task<List<EventSubSubscription>> GetEventSubscriptionsSafe()
         {
             try
             {
@@ -228,7 +197,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private void LogExistingSubscriptionOverview(List<EventSubSubscription> existing, string currentSessionId)
+        private static void LogExistingSubscriptionOverview(List<EventSubSubscription> existing, string currentSessionId)
         {
             List<EventSubSubscription> enabledWebsocketSubs = existing
                 .Where(IsEnabledWebsocketSubscription)
@@ -252,9 +221,22 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task DeleteStaleWebsocketSubscriptions(List<EventSubSubscription> existing, string currentSessionId)
         {
+            string[] managedTypes =
+            {
+                "channel.channel_points_custom_reward_redemption.add",
+                "channel.cheer",
+                "stream.online",
+                "stream.offline",
+                "channel.chat.message",
+                "channel.poll.begin",
+                "channel.poll.progress",
+                "channel.poll.end"
+            };
+
             List<EventSubSubscription> staleSubs = existing
                 .Where(s =>
-                    IsEnabledWebsocketSubscription(s) &&
+                    IsWebsocketSubscription(s) &&
+                    managedTypes.Contains(s.Type, StringComparer.OrdinalIgnoreCase) &&
                     !string.Equals(GetTransportSessionId(s), currentSessionId, StringComparison.Ordinal))
                 .ToList();
 
@@ -272,7 +254,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 try
                 {
                     Logger.Debug(LogSource.Twitch,
-                        $"Deleting stale EventSub subscription: id={stale.Id}, type={stale.Type}, oldSession={GetTransportSessionId(stale)}");
+                        $"Deleting stale EventSub subscription: id={stale.Id}, type={stale.Type}, status={stale.Status}, oldSession={GetTransportSessionId(stale)}");
 
                     await _twitchApi.Helix.EventSub.DeleteEventSubSubscriptionAsync(
                         stale.Id,
@@ -287,6 +269,40 @@ namespace Songify_Slim.Util.Songify.Twitch
                 }
             }
         }
+
+        public async Task ResetEventSubSubscriptions()
+        {
+            List<EventSubSubscription> existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
+
+            string[] managedTypes =
+            {
+                "channel.channel_points_custom_reward_redemption.add",
+                "channel.cheer",
+                "stream.online",
+                "stream.offline",
+                "channel.chat.message",
+                "channel.poll.begin",
+                "channel.poll.progress",
+                "channel.poll.end"
+            };
+
+            foreach (var sub in existing.Where(s =>
+                         IsWebsocketSubscription(s) &&
+                         managedTypes.Contains(s.Type, StringComparer.OrdinalIgnoreCase)))
+            {
+                try
+                {
+                    await _twitchApi.Helix.EventSub.DeleteEventSubSubscriptionAsync(
+                        sub.Id,
+                        accessToken: Settings.TwitchAccessToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Twitch, $"Failed to delete EventSub subscription {sub.Id}", ex);
+                }
+            }
+        }
+
 
         private async Task EnsureSubscription(
             List<EventSubSubscription> existing,
@@ -309,7 +325,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 return;
             }
 
-            Logger.Info(LogSource.Twitch,
+            Logger.Debug(LogSource.Twitch,
                 $"EventSub ensure: creating missing subscription. type={type}, version={version}, session={currentSessionId}");
 
             await _twitchApi.Helix.EventSub.CreateEventSubSubscriptionAsync(
@@ -395,7 +411,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-        private async Task UpdateUiIndicatorSafe()
+        private static async Task UpdateUiIndicatorSafe()
         {
             try
             {
@@ -469,6 +485,23 @@ namespace Songify_Slim.Util.Songify.Twitch
             Logger.Error(LogSource.Twitch, $"EventSub ErrorOccurred: {e.Exception}");
             return Task.CompletedTask;
         }
+
+        private bool IsCurrentSessionStillValid(string expectedSessionId)
+        {
+            string currentSessionId = _eventSubWebsocketClient.SessionId;
+            return !string.IsNullOrWhiteSpace(expectedSessionId) &&
+                   string.Equals(currentSessionId, expectedSessionId, StringComparison.Ordinal);
+        }
+
+        private static bool IsWebsocketSubscription(EventSubSubscription sub)
+        {
+            if (sub == null)
+                return false;
+
+            return string.Equals(GetTransportMethod(sub), "websocket", StringComparison.OrdinalIgnoreCase);
+        }
+
+
 
         #region Events
 
@@ -653,6 +686,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             return Task.CompletedTask;
         }
 
-        #endregion
+        #endregion Events
     }
 }
