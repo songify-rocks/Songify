@@ -102,7 +102,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         {
             if (string.IsNullOrEmpty(ApplicationDetails.RedirectUri))
             {
-                Console.WriteLine(@"URI may not be empty!");
+                Logger.Warning(LogSource.Twitch, "RedirectUri may not be empty.");
                 return;
             }
 
@@ -113,6 +113,8 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     _redirectListener.Prefixes.Add(ApplicationDetails.RedirectUri);
                     _redirectListener.Start();
                     _redirectListener.BeginGetContext(IncomingTwitchRequest, _redirectListener);
+
+                    Logger.Info(LogSource.Twitch, $"Started Twitch redirect listener on {ApplicationDetails.RedirectUri}");
                 }
 
                 if (!_fetchListener.IsListening)
@@ -120,6 +122,8 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                     _fetchListener.Prefixes.Add(ApplicationDetails.FetchUri);
                     _fetchListener.Start();
                     _fetchListener.BeginGetContext(IncommingLocalRequest, _fetchListener);
+
+                    Logger.Info(LogSource.Twitch, $"Started Twitch fetch listener on {ApplicationDetails.FetchUri}");
                 }
             }
             catch (Exception e)
@@ -157,6 +161,8 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// </summary>
         private void IncomingTwitchRequest(IAsyncResult result)
         {
+            Logger.Info(LogSource.Twitch, "Incoming Twitch redirect request received.");
+
             HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
             HttpListenerResponse httpResponse = httpContext.Response;
@@ -298,7 +304,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
                   <script>
                     // Wait for logo to load before starting animations
                     window.addEventListener('load', function() {
-                      const songifyLogo = document.querySelector('img[src*="songify.overcode"]');
+                      const songifyLogo = document.querySelector('img[src*="logo.png"]');
 
                       function startAnimations() {
                         document.querySelector('.content').classList.add('animate');
