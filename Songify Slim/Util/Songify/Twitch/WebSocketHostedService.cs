@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Songify_Slim.Util.General;
 using System;
@@ -31,6 +31,75 @@ namespace Songify_Slim.Util.Songify.Twitch
         private readonly EventSubWebsocketClient _eventSubWebsocketClient;
         private readonly TwitchAPI _twitchApi = new();
         private readonly string _userId = Settings.TwitchUser.Id;
+
+        private enum ManagedSubscriptionConditionKind
+        {
+            Broadcaster,
+            BroadcasterAndUser,
+            BroadcasterAndModerator
+        }
+
+        private readonly struct ManagedWebsocketSubscriptionDefinition
+        {
+            public string Type { get; }
+            public string Version { get; }
+            public ManagedSubscriptionConditionKind ConditionKind { get; }
+
+            public ManagedWebsocketSubscriptionDefinition(
+                string type,
+                string version,
+                ManagedSubscriptionConditionKind conditionKind)
+            {
+                Type = type;
+                Version = version;
+                ConditionKind = conditionKind;
+            }
+        }
+
+        private static readonly ManagedWebsocketSubscriptionDefinition[] ManagedWebsocketSubscriptions =
+        {
+            // broadcaster_user_id + moderator_user_id
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.channel_points_custom_reward_redemption.add",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.cheer",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+            // broadcaster_user_id
+            new ManagedWebsocketSubscriptionDefinition(
+                "stream.online",
+                "1",
+                ManagedSubscriptionConditionKind.Broadcaster),
+            new ManagedWebsocketSubscriptionDefinition(
+                "stream.offline",
+                "1",
+                ManagedSubscriptionConditionKind.Broadcaster),
+            // broadcaster_user_id + user_id
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.chat.message",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndUser),
+            // broadcaster_user_id + moderator_user_id
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.poll.begin",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.poll.progress",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.poll.end",
+                "1",
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+        };
+
+        private static readonly HashSet<string> ManagedWebsocketSubscriptionTypes =
+            new HashSet<string>(
+                ManagedWebsocketSubscriptions.Select(d => d.Type),
+                StringComparer.OrdinalIgnoreCase);
 
         private readonly SemaphoreSlim _subscriptionSyncLock = new(1, 1);
         private volatile bool _isStopping;
@@ -103,7 +172,15 @@ namespace Songify_Slim.Util.Songify.Twitch
             Logger.Info(LogSource.Twitch,
                 $"EventSub connected. Session={currentSessionId}, RequestedReconnect={e.IsRequestedReconnect}");
 
-            await SyncSubscriptionsForCurrentSession(currentSessionId);
+            try
+            {
+                await SyncSubscriptionsForCurrentSession(currentSessionId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "EventSub subscription sync failed in OnWebsocketConnected. Session={SessionId}", currentSessionId);
+                Logger.Error(LogSource.Twitch, "EventSub subscription sync failed in OnWebsocketConnected.", ex);
+            }
 
             await UpdateUiIndicatorSafe();
         }
@@ -149,38 +226,51 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
 
-                Dictionary<string, string> condBroadcaster = new()
+                foreach (ManagedWebsocketSubscriptionDefinition sub in ManagedWebsocketSubscriptions)
                 {
-                    ["broadcaster_user_id"] = _userId
-                };
-
-                Dictionary<string, string> condBroadcasterAndUser = new()
-                {
-                    ["broadcaster_user_id"] = _userId,
-                    ["user_id"] = _userId
-                };
-
-                Dictionary<string, string> condBroadcasterAndModerator = new()
-                {
-                    ["broadcaster_user_id"] = _userId,
-                    ["moderator_user_id"] = _userId
-                };
-
-                await EnsureSubscription(existing, "channel.channel_points_custom_reward_redemption.add", "1", condBroadcasterAndModerator, currentSessionId);
-                await EnsureSubscription(existing, "channel.cheer", "1", condBroadcasterAndModerator, currentSessionId);
-                await EnsureSubscription(existing, "stream.online", "1", condBroadcaster, currentSessionId);
-                await EnsureSubscription(existing, "stream.offline", "1", condBroadcaster, currentSessionId);
-                await EnsureSubscription(existing, "channel.chat.message", "1", condBroadcasterAndUser, currentSessionId);
-                await EnsureSubscription(existing, "channel.poll.begin", "1", condBroadcasterAndModerator, currentSessionId);
-                await EnsureSubscription(existing, "channel.poll.progress", "1", condBroadcasterAndModerator, currentSessionId);
-                await EnsureSubscription(existing, "channel.poll.end", "1", condBroadcasterAndModerator, currentSessionId);
+                    Dictionary<string, string> condition = GetManagedSubscriptionCondition(sub.ConditionKind);
+                    await EnsureSubscription(existing, sub.Type, sub.Version, condition, currentSessionId);
+                }
 
                 Logger.Info(LogSource.Twitch, $"EventSub sync complete for session {currentSessionId}");
+            }
+            catch (TooManyRequestsException ex)
+            {
+                _logger.LogWarning(ex, "EventSub sync hit rate limit (429) for session {SessionId}. Subscriptions may be partial.", currentSessionId);
+                Logger.Warning(LogSource.Twitch, "EventSub sync hit rate limit (429). Subscriptions may be partial.", ex);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "EventSub sync failed for session {SessionId}. Subscriptions may be partial.", currentSessionId);
+                Logger.Error(LogSource.Twitch, "EventSub sync failed. Subscriptions may be partial.", ex);
             }
             finally
             {
                 _subscriptionSyncLock.Release();
             }
+        }
+
+        private Dictionary<string, string> GetManagedSubscriptionCondition(ManagedSubscriptionConditionKind conditionKind)
+        {
+            // Condition values depend on the currently-linked Twitch user id.
+            return conditionKind switch
+            {
+                ManagedSubscriptionConditionKind.Broadcaster => new Dictionary<string, string>
+                {
+                    ["broadcaster_user_id"] = _userId
+                },
+                ManagedSubscriptionConditionKind.BroadcasterAndUser => new Dictionary<string, string>
+                {
+                    ["broadcaster_user_id"] = _userId,
+                    ["user_id"] = _userId
+                },
+                ManagedSubscriptionConditionKind.BroadcasterAndModerator => new Dictionary<string, string>
+                {
+                    ["broadcaster_user_id"] = _userId,
+                    ["moderator_user_id"] = _userId
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(conditionKind), conditionKind, null)
+            };
         }
 
         private static async Task<List<EventSubSubscription>> GetEventSubscriptionsSafe()
@@ -221,22 +311,10 @@ namespace Songify_Slim.Util.Songify.Twitch
 
         private async Task DeleteStaleWebsocketSubscriptions(List<EventSubSubscription> existing, string currentSessionId)
         {
-            string[] managedTypes =
-            {
-                "channel.channel_points_custom_reward_redemption.add",
-                "channel.cheer",
-                "stream.online",
-                "stream.offline",
-                "channel.chat.message",
-                "channel.poll.begin",
-                "channel.poll.progress",
-                "channel.poll.end"
-            };
-
             List<EventSubSubscription> staleSubs = existing
                 .Where(s =>
                     IsWebsocketSubscription(s) &&
-                    managedTypes.Contains(s.Type, StringComparer.OrdinalIgnoreCase) &&
+                    ManagedWebsocketSubscriptionTypes.Contains(s.Type) &&
                     !string.Equals(GetTransportSessionId(s), currentSessionId, StringComparison.Ordinal))
                 .ToList();
 
@@ -274,21 +352,9 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             List<EventSubSubscription> existing = await GetEventSubscriptionsSafe() ?? new List<EventSubSubscription>();
 
-            string[] managedTypes =
-            {
-                "channel.channel_points_custom_reward_redemption.add",
-                "channel.cheer",
-                "stream.online",
-                "stream.offline",
-                "channel.chat.message",
-                "channel.poll.begin",
-                "channel.poll.progress",
-                "channel.poll.end"
-            };
-
             foreach (var sub in existing.Where(s =>
                          IsWebsocketSubscription(s) &&
-                         managedTypes.Contains(s.Type, StringComparer.OrdinalIgnoreCase)))
+                         ManagedWebsocketSubscriptionTypes.Contains(s.Type)))
             {
                 try
                 {
