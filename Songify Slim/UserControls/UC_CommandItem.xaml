@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Songify_Slim.UserControls.UC_CommandItem"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,7 @@
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
+    xmlns:i18n="clr-namespace:Songify_Slim"
     x:Name="UserlevelItem"
     VerticalAlignment="Center"
     d:DesignWidth="500"
@@ -48,28 +48,28 @@
                     Tag="-2" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_Requester}"
+                    Header="{DynamicResource s_Requester}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="-1"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_Viewer}"
+                    Header="{DynamicResource s_Viewer}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="0"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_Follower}"
+                    Header="{DynamicResource s_Follower}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="1"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_Subscriber}"
+                    Header="{DynamicResource s_Subscriber}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="2"
@@ -90,14 +90,14 @@
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_VIP}"
+                    Header="{DynamicResource s_VIP}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="5"
                     Unchecked="MenuItemUnchecked" />
                 <MenuItem
                     Checked="MenuItemChecked"
-                    Header="{i18n:Loc s_Moderator}"
+                    Header="{DynamicResource s_Moderator}"
                     IsCheckable="True"
                     StaysOpenOnClick="True"
                     Tag="6"
@@ -289,7 +289,7 @@
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
                     Visibility="Collapsed">
-                    <Label HorizontalAlignment="Right" Content="{i18n:Loc brw_cmd_skipvotecount}" />
+                    <Label HorizontalAlignment="Right" Content="{DynamicResource brw_cmd_skipvotecount}" />
                     <mah:NumericUpDown
                         x:Name="NudSkipVoteCount"
                         Width="98"

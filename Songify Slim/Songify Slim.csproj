@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -224,6 +224,9 @@
       <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
     </Compile>
     <Compile Include="Util\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Util\NotNullToVisibilityConverter.cs" />
+    <Compile Include="Util\RequestBadgeVisibilityConverter.cs" />
+    <Compile Include="Util\UrlToImageSourceConverter.cs" />
     <Compile Include="Util\Configuration\ListStringOrObjectConverter.cs" />
     <Compile Include="Util\Configuration\SongBlacklistConverter .cs" />
     <Compile Include="Util\General\DurationHelper.cs" />
@@ -239,6 +242,9 @@
     <Compile Include="Util\General\IOManager.cs" />
     <Compile Include="Util\General\ListItemVisibilityConverter.cs" />
     <Compile Include="Util\General\MathUtils.cs" />
+    <Compile Include="Util\General\AppStartup.cs" />
+    <Compile Include="Util\General\AppShellBridge.cs" />
+    <Compile Include="Util\General\IAppShell.cs" />
     <Compile Include="Util\General\RegisterFirewall.cs" />
     <Compile Include="Util\General\SingleInstanceHelper.cs" />
     <Compile Include="Util\General\SubtractConverter.cs" />
@@ -246,6 +252,7 @@
     <Compile Include="Util\General\ThirdPartyLibrary.cs" />
     <Compile Include="Util\General\ThumbnailConverter.cs" />
     <Compile Include="Util\General\Utils.cs" />
+    <Compile Include="Util\General\BooleanToCloseFlyoutCommandConverter.cs" />
     <Compile Include="Util\Configuration\ConfigComparer.cs" />
     <Compile Include="Util\Configuration\PlayerTypeYamlConverter.cs" />
     <Compile Include="Util\Configuration\YamlTypeConverters.cs" />
@@ -255,6 +262,7 @@
     <Compile Include="Util\Songify\Pear\PearApi.cs" />
     <Compile Include="Util\Songify\PsaService.cs" />
     <Compile Include="Util\Songify\QueueService.cs" />
+    <Compile Include="Util\Songify\AppFetchService.cs" />
     <Compile Include="Util\Songify\SongifyService.cs" />
     <Compile Include="Util\Songify\Twitch\SharedChatExtensions.cs" />
     <Compile Include="Util\Songify\Twitch\TwitchApiHelper.cs" />
@@ -316,6 +324,40 @@
       <DependentUpon>ApiChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ApiMetricsVm.cs" />
+    <Compile Include="Views\WPFUI\ViewModels\HistoryViewModel.cs" />
+    <Compile Include="Views\WPFUI\ViewModels\QueueWindowViewModel.cs" />
+    <Compile Include="Views\WPFUI\QueueWindow.xaml.cs">
+      <DependentUpon>QueueWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\ShellWindow.xaml.cs">
+      <DependentUpon>ShellWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\OverviewPage.xaml.cs">
+      <DependentUpon>OverviewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\QueuePage.xaml.cs">
+      <DependentUpon>QueuePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\ViewModels\BlocklistViewModel.cs" />
+    <Compile Include="Views\WPFUI\Pages\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\HistoryPage.xaml.cs">
+      <DependentUpon>HistoryPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\BlacklistPage.xaml.cs">
+      <DependentUpon>BlacklistPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\ConsolePage.xaml.cs">
+      <DependentUpon>ConsolePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\UserListPage.xaml.cs">
+      <DependentUpon>UserListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\WPFUI\Pages\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="Views\HistoryWindow.xaml.cs">
       <DependentUpon>HistoryWindow.xaml</DependentUpon>
     </Compile>
@@ -417,6 +459,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Converters.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Resources\Strings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -458,6 +504,46 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Window_Queue.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\QueueWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\ShellWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\OverviewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\QueuePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\HistoryPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\BlacklistPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\ConsolePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\UserListPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WPFUI\Pages\AboutPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -10,119 +10,118 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.Spotify
+namespace Songify_Slim.Util.Spotify;
+
+public sealed class SpotifyPkceLoginResult
 {
-    public sealed class SpotifyPkceLoginResult
+    public PKCETokenResponse TokenResponse { get; set; }
+    public SpotifyClient SpotifyClient { get; set; }
+}
+
+public sealed class SpotifyPkceAuthService
+{
+    private readonly string _clientId;
+    private readonly string _redirectUri;
+    private readonly string _callbackPrefix;
+
+    private string _verifier;
+    private string _state;
+
+    public SpotifyPkceAuthService(string clientId, string redirectUri = "http://127.0.0.1:4002/auth")
     {
-        public PKCETokenResponse TokenResponse { get; set; }
-        public SpotifyClient SpotifyClient { get; set; }
+        _clientId = clientId ?? throw new ArgumentNullException(nameof(clientId));
+        _redirectUri = redirectUri ?? throw new ArgumentNullException(nameof(redirectUri));
+
+        // HttpListener prefix must end with a slash
+        _callbackPrefix = _redirectUri.EndsWith("/")
+            ? _redirectUri
+            : _redirectUri + "/";
     }
 
-    public sealed class SpotifyPkceAuthService
+    public async Task<SpotifyPkceLoginResult> LoginAsync(string[] scopes, CancellationToken cancellationToken = default)
     {
-        private readonly string _clientId;
-        private readonly string _redirectUri;
-        private readonly string _callbackPrefix;
+        (string verifier, string challenge) = PKCEUtil.GenerateCodes();
+        _verifier = verifier;
+        _state = Guid.NewGuid().ToString("N");
 
-        private string _verifier;
-        private string _state;
-
-        public SpotifyPkceAuthService(string clientId, string redirectUri = "http://127.0.0.1:4002/auth")
+        LoginRequest loginRequest = new(
+            new Uri(_redirectUri),
+            _clientId,
+            LoginRequest.ResponseType.Code)
         {
-            _clientId = clientId ?? throw new ArgumentNullException(nameof(clientId));
-            _redirectUri = redirectUri ?? throw new ArgumentNullException(nameof(redirectUri));
+            CodeChallengeMethod = "S256",
+            CodeChallenge = challenge,
+            Scope = scopes,
+            State = _state
+        };
 
-            // HttpListener prefix must end with a slash
-            _callbackPrefix = _redirectUri.EndsWith("/")
-                ? _redirectUri
-                : _redirectUri + "/";
-        }
+        using HttpListener http = new();
+        http.Prefixes.Add(_callbackPrefix);
+        http.Start();
 
-        public async Task<SpotifyPkceLoginResult> LoginAsync(string[] scopes, CancellationToken cancellationToken = default)
+        Process.Start(new ProcessStartInfo
         {
-            (string verifier, string challenge) = PKCEUtil.GenerateCodes();
-            _verifier = verifier;
-            _state = Guid.NewGuid().ToString("N");
+            FileName = loginRequest.ToUri().ToString(),
+            UseShellExecute = true
+        });
 
-            LoginRequest loginRequest = new(
-                new Uri(_redirectUri),
-                _clientId,
-                LoginRequest.ResponseType.Code)
-            {
-                CodeChallengeMethod = "S256",
-                CodeChallenge = challenge,
-                Scope = scopes,
-                State = _state
-            };
+        HttpListenerContext context = await http.GetContextAsync().ConfigureAwait(false);
 
-            using HttpListener http = new();
-            http.Prefixes.Add(_callbackPrefix);
-            http.Start();
+        NameValueCollection query = context.Request.QueryString;
+        string code = query["code"];
+        string state = query["state"];
+        string error = query["error"];
 
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = loginRequest.ToUri().ToString(),
-                UseShellExecute = true
-            });
+        await RespondToBrowserAsync(context.Response, error).ConfigureAwait(false);
 
-            HttpListenerContext context = await http.GetContextAsync().ConfigureAwait(false);
+        if (!string.IsNullOrWhiteSpace(error))
+            throw new Exception("Spotify authorization failed: " + error);
 
-            NameValueCollection query = context.Request.QueryString;
-            string code = query["code"];
-            string state = query["state"];
-            string error = query["error"];
+        if (string.IsNullOrWhiteSpace(code))
+            throw new Exception("Spotify authorization code missing from callback.");
 
-            await RespondToBrowserAsync(context.Response, error).ConfigureAwait(false);
+        if (!string.Equals(state, _state, StringComparison.Ordinal))
+            throw new Exception("Invalid OAuth state.");
 
-            if (!string.IsNullOrWhiteSpace(error))
-                throw new Exception("Spotify authorization failed: " + error);
+        PKCETokenResponse tokenResponse = await new OAuthClient().RequestToken(
+            new PKCETokenRequest(_clientId, code, new Uri(_redirectUri), _verifier), cancellationToken).ConfigureAwait(false);
 
-            if (string.IsNullOrWhiteSpace(code))
-                throw new Exception("Spotify authorization code missing from callback.");
+        PKCEAuthenticator authenticator = new(_clientId, tokenResponse);
 
-            if (!string.Equals(state, _state, StringComparison.Ordinal))
-                throw new Exception("Invalid OAuth state.");
+        SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
+            .WithAuthenticator(authenticator);
 
-            PKCETokenResponse tokenResponse = await new OAuthClient().RequestToken(
-                new PKCETokenRequest(_clientId, code, new Uri(_redirectUri), _verifier), cancellationToken).ConfigureAwait(false);
+        SpotifyClient spotify = new(config);
 
-            PKCEAuthenticator authenticator = new(_clientId, tokenResponse);
-
-            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
-                .WithAuthenticator(authenticator);
-
-            SpotifyClient spotify = new(config);
-
-            return new SpotifyPkceLoginResult
-            {
-                TokenResponse = tokenResponse,
-                SpotifyClient = spotify
-            };
-        }
-
-        public async Task<PKCETokenResponse> RefreshAsync(string refreshToken)
+        return new SpotifyPkceLoginResult
         {
-            if (string.IsNullOrWhiteSpace(refreshToken))
-                throw new ArgumentNullException(nameof(refreshToken));
+            TokenResponse = tokenResponse,
+            SpotifyClient = spotify
+        };
+    }
 
-            return await new OAuthClient().RequestToken(
-                new PKCETokenRefreshRequest(_clientId, refreshToken)
-            ).ConfigureAwait(false);
-        }
+    public async Task<PKCETokenResponse> RefreshAsync(string refreshToken)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+            throw new ArgumentNullException(nameof(refreshToken));
 
-        private static async Task RespondToBrowserAsync(HttpListenerResponse response, string error)
-        {
-            string html = string.IsNullOrWhiteSpace(error)
-                ? "<html><body><h2>Spotify login completed.</h2><p>You can close this window now.</p></body></html>"
-                : "<html><body><h2>Spotify login failed.</h2><p>You can close this window now.</p></body></html>";
+        return await new OAuthClient().RequestToken(
+            new PKCETokenRefreshRequest(_clientId, refreshToken)
+        ).ConfigureAwait(false);
+    }
 
-            byte[] buffer = Encoding.UTF8.GetBytes(html);
-            response.ContentType = "text/html; charset=utf-8";
-            response.ContentLength64 = buffer.Length;
-            response.StatusCode = 200;
+    private static async Task RespondToBrowserAsync(HttpListenerResponse response, string error)
+    {
+        string html = string.IsNullOrWhiteSpace(error)
+            ? "<html><body><h2>Spotify login completed.</h2><p>You can close this window now.</p></body></html>"
+            : "<html><body><h2>Spotify login failed.</h2><p>You can close this window now.</p></body></html>";
 
-            using Stream output = response.OutputStream;
-            await output.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-        }
+        byte[] buffer = Encoding.UTF8.GetBytes(html);
+        response.ContentType = "text/html; charset=utf-8";
+        response.ContentLength64 = buffer.Length;
+        response.StatusCode = 200;
+
+        using Stream output = response.OutputStream;
+        await output.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
     }
 }

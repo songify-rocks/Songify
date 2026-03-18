@@ -15,18 +15,17 @@ using Songify_Slim.Models;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.UserControls;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Interaction logic for Window_UniversalDialog.xaml
+/// </summary>
+public partial class WindowUniversalDialog
 {
-    /// <summary>
-    /// Interaction logic for Window_UniversalDialog.xaml
-    /// </summary>
-    public partial class WindowUniversalDialog
+    public WindowUniversalDialog(Psa psa, string title)
     {
-        public WindowUniversalDialog(Psa psa, string title)
-        {
-            InitializeComponent();
-            Title = title;
-            ContentControl.Content = new PsaControl(psa, true);
-        }
+        InitializeComponent();
+        Title = title;
+        ContentControl.Content = new PsaControl(psa, true);
     }
 }

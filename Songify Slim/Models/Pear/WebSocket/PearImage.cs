@@ -5,11 +5,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Models.Pear.WebSocket
+namespace Songify_Slim.Models.Pear.WebSocket;
+
+public class PearImage
 {
-    public class PearImage
-    {
-        [JsonPropertyName("isMacTemplateImage")]
-        public bool IsMacTemplateImage { get; set; }
-    }
+    [JsonPropertyName("isMacTemplateImage")]
+    public bool IsMacTemplateImage { get; set; }
 }

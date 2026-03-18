@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -480,7 +480,7 @@ public static class TwitchHandler
                 }
                 if (!shownInSettings)
                 {
-                    (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Resources.msgbx_BotAccount,
+                    Util.General.AppShellBridge.Current?.ShowMessageAsync(Resources.msgbx_BotAccount,
                         Resources.msgbx_UseAsBotAccount.Replace("{account}",
                             account == Enums.TwitchAccount.Main
                                 ? Settings.TwitchUser.DisplayName
@@ -597,11 +597,7 @@ public static class TwitchHandler
             {
                 Application.Current?.Dispatcher?.Invoke(() =>
                 {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is MainWindow mw)
-                            mw.LblStatus.Content = "Please fill in Twitch credentials.";
-                    }
+                    Util.General.AppShellBridge.Current?.SetStatusText("Please fill in Twitch credentials.");
                 });
                 return;
             }
@@ -1218,15 +1214,11 @@ public static class TwitchHandler
                     GlobalObjects.TwitchUserTokenExpired = true;
                     await Application.Current.Dispatcher.Invoke(async () =>
                     {
-                        foreach (Window window in Application.Current.Windows)
+                        var shell = Util.General.AppShellBridge.Current;
+                        if (shell != null)
                         {
-                            if (window.GetType() != typeof(MainWindow))
-                                continue;
-                            ((MainWindow)window).IconTwitchApi.Foreground = Brushes.IndianRed;
-                            ((MainWindow)window).IconTwitchApi.Kind =
-                                PackIconBoxIconsKind.SolidCircle;
-                            ((MainWindow)window).MiTwitchApi.IsEnabled = false;
-                            MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
+                            shell.SetTwitchApiState(Util.General.ConnectionIndicatorState.Error);
+                            MessageDialogResult msgResult = await shell.ShowMessageAsync(
                                 "Twitch Account Issues",
                                 "Your Twitch Account token has expired. Please login again with Twitch",
                                 MessageDialogStyle.AffirmativeAndNegative,
@@ -1239,25 +1231,32 @@ public static class TwitchHandler
                     return;
                 }
 
-                DateTime tokenExpiryDate = DateTime.Now.AddSeconds(TokenCheck.ExpiresIn);
+                DateTime tokenExpiryDate = DateTime.UtcNow.AddSeconds(TokenCheck.ExpiresIn);
 
-                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
+                List<string> grantedScopes = TokenCheck?.Scopes ?? new List<string>();
+                missingItems = Scopes.GetScopes()
+                    .Where(item => !grantedScopes.Contains(item))
+                    .ToList();
 
                 if (missingItems.Any())
                 {
-                    MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
-                        "Missing Twitch Scopes",
-                        $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
-                        MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings
-                        { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
-                    if (msgResult == MessageDialogResult.Affirmative)
+                    var shell = Util.General.AppShellBridge.Current;
+                    if (shell != null)
                     {
-                        Settings.TwitchUser = null;
-                        Settings.TwitchAccessToken = "";
-                        TwitchApi = null;
-                        ApiConnect(Enums.TwitchAccount.Main);
-                        return;
+                        MessageDialogResult msgResult = await shell.ShowMessageAsync(
+                            "Missing Twitch Scopes",
+                            $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
+                            MessageDialogStyle.AffirmativeAndNegative,
+                            new MetroDialogSettings
+                            { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
+                        if (msgResult == MessageDialogResult.Affirmative)
+                        {
+                            Settings.TwitchUser = null;
+                            Settings.TwitchAccessToken = "";
+                            TwitchApi = null;
+                            ApiConnect(Enums.TwitchAccount.Main);
+                            return;
+                        }
                     }
                 }
 
@@ -1275,16 +1274,8 @@ public static class TwitchHandler
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window.GetType() != typeof(MainWindow))
-                            continue;
-                        ((MainWindow)window).IconTwitchApi.Foreground = Brushes.GreenYellow;
-                        //((MainWindow)window).IconTwitchAPI.Kind = PackIconBoxIconsKind.LogosTwitch;
-                        ((MainWindow)window).MiTwitchApi.IsEnabled = false;
-
-                        Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
-                    }
+                    Util.General.AppShellBridge.Current?.SetTwitchApiState(Util.General.ConnectionIndicatorState.Connected);
+                    Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
                 });
 
                 Settings.TwitchUser = user;
@@ -1344,11 +1335,10 @@ public static class TwitchHandler
                     GlobalObjects.TwitchBotTokenExpired = true;
                     await Application.Current.Dispatcher.Invoke(async () =>
                     {
-                        foreach (Window window in Application.Current.Windows)
+                        var shell = Util.General.AppShellBridge.Current;
+                        if (shell != null)
                         {
-                            if (window.GetType() != typeof(MainWindow))
-                                continue;
-                            MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
+                            MessageDialogResult msgResult = await shell.ShowMessageAsync(
                                 "Twitch Account Issues",
                                 "Your Twitch Bot Account token has expired. Please login again with Twitch",
                                 MessageDialogStyle.AffirmativeAndNegative,
@@ -1361,25 +1351,30 @@ public static class TwitchHandler
                     return;
                 }
 
-                DateTime botTokenExpiryDate = DateTime.Now.AddSeconds(BotTokenCheck.ExpiresIn);
+                DateTime botTokenExpiryDate = DateTime.UtcNow.AddSeconds(BotTokenCheck.ExpiresIn);
 
-                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
-
+                List<string> grantedBotScopes = BotTokenCheck?.Scopes ?? new List<string>();
+                missingItems = Scopes.GetScopes()
+                    .Where(item => !grantedBotScopes.Contains(item))
+                    .ToList();
                 if (missingItems.Any())
                 {
-                    MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
-                        "Missing Twitch Scopes",
-                        $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
-                        MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings
-                        { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
-                    if (msgResult == MessageDialogResult.Affirmative)
+                    var shell = Util.General.AppShellBridge.Current;
+                    if (shell != null)
                     {
-                        Settings.TwitchUser = null;
-                        Settings.TwitchAccessToken = "";
-                        TwitchApi = null;
-                        ApiConnect(Enums.TwitchAccount.Bot);
-                        return;
+                        MessageDialogResult msgResult = await shell.ShowMessageAsync(
+                            "Missing Twitch Scopes",
+                            $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
+                            MessageDialogStyle.AffirmativeAndNegative,
+                            new MetroDialogSettings
+                            { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
+                        if (msgResult == MessageDialogResult.Affirmative)
+                        {
+                            Settings.TwitchBotUser = null;
+                            Settings.TwitchBotToken = "";
+                            _twitchApiBot = null;
+                            ApiConnect(Enums.TwitchAccount.Bot);
+                        }
                     }
                 }
 
@@ -2079,7 +2074,6 @@ public static class TwitchHandler
             return;
         }
 
-
         // if onCooldown skips
         if (_onCooldown)
         {
@@ -2411,25 +2405,13 @@ public static class TwitchHandler
             // Update UI hints
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is not MainWindow mw) continue;
-
-                    // API icon to red when main reset; bot icon to red when bot reset
-                    if (account == Enums.TwitchAccount.Main)
-                    {
-                        mw.IconTwitchApi.Foreground = Brushes.IndianRed;
-                        mw.MiTwitchApi.IsEnabled = false;
-                    }
-                    else
-                    {
-                        mw.IconTwitchBot.Foreground = Brushes.IndianRed;
-                    }
-
-                    // Reflect chat disconnect availability
-                    mw.MiTwitchConnect.IsEnabled = true;
-                    mw.LblStatus.Content = "Twitch credentials cleared.";
-                }
+                var shell = Util.General.AppShellBridge.Current;
+                if (shell == null) return;
+                if (account == Enums.TwitchAccount.Main)
+                    shell.SetTwitchApiState(Util.General.ConnectionIndicatorState.Error);
+                else
+                    shell.SetTwitchBotState(Util.General.ConnectionIndicatorState.Error);
+                shell.SetStatusText("Twitch credentials cleared.");
             });
 
             Logger.Info(LogSource.Twitch, $"Cleared {(account == Enums.TwitchAccount.Main ? "main" : "bot")} account credentials.");
@@ -3176,14 +3158,7 @@ public static class TwitchHandler
         string song = "";
         Application.Current.Dispatcher.Invoke(() =>
         {
-            MainWindow mainWindow = Application.Current.Windows
-                .OfType<MainWindow>()
-                .FirstOrDefault();
-
-            if (mainWindow != null)
-            {
-                song = $"{mainWindow.SongArtist} - {mainWindow.SongTitle}";
-            }
+            song = Util.General.AppShellBridge.Current?.GetCurrentSongDisplayString() ?? "";
         });
         return song;
     }
@@ -4267,7 +4242,6 @@ public class TwitchUser : INotifyPropertyChanged
 
         return DateTime.UtcNow - LastCommandTime.Value > cooldown;
     }
-
 
     public void Update(
         string username,

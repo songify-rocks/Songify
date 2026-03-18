@@ -1,8 +1,7 @@
-﻿namespace Songify_Slim.Models.WebSocket
+﻿namespace Songify_Slim.Models.WebSocket;
+
+public class QueueAddData
 {
-    public class QueueAddData
-    {
-        public string Track { get; set; }
-        public string Requester { get; set; } = "WebSocket";
-    }
+    public string Track { get; set; }
+    public string Requester { get; set; } = "WebSocket";
 }

@@ -5,11 +5,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Models.Pear.WebSocket
+namespace Songify_Slim.Models.Pear.WebSocket;
+
+public class PositionChangedMessage : PearMessage
 {
-    public class PositionChangedMessage : PearMessage
-    {
-        [JsonPropertyName("position")]
-        public double Position { get; set; }
-    }
+    [JsonPropertyName("position")]
+    public double Position { get; set; }
 }

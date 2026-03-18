@@ -17,71 +17,70 @@ using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Interaction logic for Window_ManualTwitchLogin.xaml
+/// </summary>
+public partial class WindowManualTwitchLogin
 {
-    /// <summary>
-    /// Interaction logic for Window_ManualTwitchLogin.xaml
-    /// </summary>
-    public partial class WindowManualTwitchLogin
+    private readonly Enums.TwitchAccount _accountType;
+
+    public WindowManualTwitchLogin(Enums.TwitchAccount accountType)
     {
-        private readonly Enums.TwitchAccount _accountType;
-
-        public WindowManualTwitchLogin(Enums.TwitchAccount accountType)
+        InitializeComponent();
+        _accountType = accountType;
+        Title = accountType switch
         {
-            InitializeComponent();
-            _accountType = accountType;
-            Title = accountType switch
+            Enums.TwitchAccount.Main => "Twitch Account Linking: MAIN ACCOUNT",
+            Enums.TwitchAccount.Bot => "Twitch Account Linking: BOT ACCOUNT",
+            _ => Title
+        };
+    }
+
+    private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
+    {
+        System.Diagnostics.Process.Start("https://v2.songify.rocks/auth/alt2/");
+    }
+
+    private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(TextBoxTwitchCode.Password))
+            return;
+        IsEnabled = false;
+        try
+        {
+            switch (_accountType)
             {
-                Enums.TwitchAccount.Main => "Twitch Account Linking: MAIN ACCOUNT",
-                Enums.TwitchAccount.Bot => "Twitch Account Linking: BOT ACCOUNT",
-                _ => Title
-            };
+                case Enums.TwitchAccount.Main:
+                    Settings.TwitchAccessToken = TextBoxTwitchCode.Password;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+                    break;
+
+                case Enums.TwitchAccount.Bot:
+                    Settings.TwitchBotToken = TextBoxTwitchCode.Password;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+                    break;
+
+                default:
+                    break;
+            }
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.GetType() != typeof(Window_Settings)) continue;
+                await ((Window_Settings)window).SetControls();
+                await ((Window_Settings)window).ResetTwitchConnection();
+            }
         }
-
-        private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
+        catch (Exception exception)
         {
-            System.Diagnostics.Process.Start("https://v2.songify.rocks/auth/alt2/");
+            Console.WriteLine(exception);
+            throw;
         }
-
-        private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)
+        finally
         {
-            if (string.IsNullOrEmpty(TextBoxTwitchCode.Password))
-                return;
-            IsEnabled = false;
-            try
-            {
-                switch (_accountType)
-                {
-                    case Enums.TwitchAccount.Main:
-                        Settings.TwitchAccessToken = TextBoxTwitchCode.Password;
-                        await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
-                        break;
-
-                    case Enums.TwitchAccount.Bot:
-                        Settings.TwitchBotToken = TextBoxTwitchCode.Password;
-                        await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(Window_Settings)) continue;
-                    await ((Window_Settings)window).SetControls();
-                    await ((Window_Settings)window).ResetTwitchConnection();
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-            finally
-            {
-                Close();
-            }
+            Close();
         }
     }
 }

@@ -3,52 +3,51 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Slim.Util.General;
+
+internal class TaskQueue
 {
-    internal class TaskQueue
+    private readonly ConcurrentQueue<Func<Task>> _tasks = new();
+    private readonly SemaphoreSlim _signal = new(0);
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private bool _isProcessing = false;
+
+    public TaskQueue()
     {
-        private readonly ConcurrentQueue<Func<Task>> _tasks = new();
-        private readonly SemaphoreSlim _signal = new(0);
-        private readonly CancellationTokenSource _cancellationTokenSource = new();
-        private bool _isProcessing = false;
+        Task.Run(async () => await ProcessQueueAsync(_cancellationTokenSource.Token));
+    }
 
-        public TaskQueue()
+    public void Enqueue(Func<Task> taskGenerator)
+    {
+        if (taskGenerator == null) throw new ArgumentNullException(nameof(taskGenerator));
+
+        _tasks.Enqueue(taskGenerator);
+        if (!_isProcessing)
         {
-            Task.Run(async () => await ProcessQueueAsync(_cancellationTokenSource.Token));
+            _signal.Release();
         }
+    }
 
-        public void Enqueue(Func<Task> taskGenerator)
+    private async Task ProcessQueueAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
         {
-            if (taskGenerator == null) throw new ArgumentNullException(nameof(taskGenerator));
+            await _signal.WaitAsync(cancellationToken);
 
-            _tasks.Enqueue(taskGenerator);
-            if (!_isProcessing)
+            while (_tasks.TryDequeue(out Func<Task> taskGenerator))
             {
-                _signal.Release();
-            }
-        }
-
-        private async Task ProcessQueueAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await _signal.WaitAsync(cancellationToken);
-
-                while (_tasks.TryDequeue(out Func<Task> taskGenerator))
+                _isProcessing = true;
+                try
                 {
-                    _isProcessing = true;
-                    try
-                    {
-                        Task task = taskGenerator.Invoke();
-                        await task;
-                    }
-                    catch
-                    {
-                        // Log or handle exceptions
-                    }
+                    Task task = taskGenerator.Invoke();
+                    await task;
                 }
-                _isProcessing = false;
+                catch
+                {
+                    // Log or handle exceptions
+                }
             }
+            _isProcessing = false;
         }
     }
 }

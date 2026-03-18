@@ -7,22 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Slim.Util.General;
+
+internal class SingleInstanceHelper
 {
-    internal class SingleInstanceHelper
+    public static void NotifyFirstInstance(string[] args)
     {
-        public static void NotifyFirstInstance(string[] args)
+        try
         {
-            try
-            {
-                // Forward URL if present; otherwise send a simple SHOW command
-                string msg = args.Length > 1 ? args[1] : "SHOW";
-                PipeMessenger.SendToExistingInstance(msg);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(LogSource.Core, "Error in SingleInstanceHelper.", e);
-            }
+            // Forward URL if present; otherwise send a simple SHOW command
+            string msg = args.Length > 1 ? args[1] : "SHOW";
+            PipeMessenger.SendToExistingInstance(msg);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(LogSource.Core, "Error in SingleInstanceHelper.", e);
         }
     }
 }

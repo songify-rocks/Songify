@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Slim.Util.General;
+
+internal static class Utils
 {
-    internal static class Utils
+    public static bool IsDefault<T>(T value)
     {
-        public static bool IsDefault<T>(T value)
-        {
-            return EqualityComparer<T>.Default.Equals(value, default);
-        }
+        return EqualityComparer<T>.Default.Equals(value, default);
     }
 }

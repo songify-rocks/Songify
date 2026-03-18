@@ -6,18 +6,17 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Util.General
+namespace Songify_Slim.Util.General;
+
+public static class EnumHelper
 {
-   public static class EnumHelper
+    public static string GetDescription(Enum value)
     {
-        public static string GetDescription(Enum value)
-        {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
+        FieldInfo fi = value.GetType().GetField(value.ToString());
 
-            if (fi?.GetCustomAttribute(typeof(DescriptionAttribute)) is DescriptionAttribute attr)
-                return attr.Description;
+        if (fi?.GetCustomAttribute(typeof(DescriptionAttribute)) is DescriptionAttribute attr)
+            return attr.Description;
 
-            return value.ToString();
-        }
+        return value.ToString();
     }
 }

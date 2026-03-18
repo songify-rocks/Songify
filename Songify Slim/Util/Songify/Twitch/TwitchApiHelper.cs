@@ -16,171 +16,170 @@ using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
-namespace Songify_Slim.Util.Songify.Twitch
+namespace Songify_Slim.Util.Songify.Twitch;
+
+internal class TwitchApiHelper
 {
-    internal class TwitchApiHelper
+    public static async Task<List<Subscription>> GetAllSubscribersAsync()
     {
-        public static async Task<List<Subscription>> GetAllSubscribersAsync()
+        List<Subscription> allSubscribers = [];
+        string pagination = null;
+
+        do
         {
-            List<Subscription> allSubscribers = [];
-            string pagination = null;
-
-            do
-            {
-                // Get Subscriber status for the user and determine if they are t1 t2 or t3
-                GetBroadcasterSubscriptionsResponse subscriptionsResponse =
-                    await TwitchHandler.TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(
-                        Settings.TwitchUser.Id,
-                        100,
-                        pagination,
-                        Settings.TwitchAccessToken);
-                if (subscriptionsResponse?.Data != null)
-                {
-                    allSubscribers.AddRange(subscriptionsResponse.Data);
-                }
-
-                pagination = subscriptionsResponse?.Pagination?.Cursor;
-            } while (!string.IsNullOrEmpty(pagination));
-
-            return allSubscribers;
-        }
-
-        public static async Task<List<Chatter>> GetAllChattersAsync()
-        {
-            List<Chatter> allChatters = [];
-            string pagination = null;
-
-            do
-            {
-                // Fetch a page of chatters
-                GetChattersResponse chattersResponse = await TwitchHandler.TwitchApi.Helix.Chat.GetChattersAsync(
-                    Settings.TwitchUser.Id,
+            // Get Subscriber status for the user and determine if they are t1 t2 or t3
+            GetBroadcasterSubscriptionsResponse subscriptionsResponse =
+                await TwitchHandler.TwitchApi.Helix.Subscriptions.GetBroadcasterSubscriptionsAsync(
                     Settings.TwitchUser.Id,
                     100,
                     pagination,
                     Settings.TwitchAccessToken);
-
-                // Add chatters from the current page to the list
-                if (chattersResponse?.Data != null)
-                {
-                    allChatters.AddRange(chattersResponse.Data);
-                }
-
-                // Update the pagination token for the next page
-                pagination = chattersResponse?.Pagination?.Cursor;
-            } while (!string.IsNullOrEmpty(pagination));
-
-            return allChatters;
-        }
-
-        public static async Task<List<Moderator>> GetAllModeratorsAsync()
-        {
-            List<Moderator> allModerators = [];
-            string pagination = null;
-
-            do
+            if (subscriptionsResponse?.Data != null)
             {
-                // Fetch a page of chatters
-                GetModeratorsResponse moderatorsResponse = await TwitchHandler.TwitchApi.Helix.Moderation.GetModeratorsAsync(
-                    Settings.TwitchUser.Id,
-                    null,
-                    100,
-                    pagination,
-                    Settings.TwitchAccessToken);
+                allSubscribers.AddRange(subscriptionsResponse.Data);
+            }
 
-                // Add chatters from the current page to the list
-                if (moderatorsResponse?.Data != null)
-                {
-                    allModerators.AddRange(moderatorsResponse.Data);
-                }
+            pagination = subscriptionsResponse?.Pagination?.Cursor;
+        } while (!string.IsNullOrEmpty(pagination));
 
-                // Update the pagination token for the next page
-                pagination = moderatorsResponse?.Pagination?.Cursor;
-            } while (!string.IsNullOrEmpty(pagination));
+        return allSubscribers;
+    }
 
-            return allModerators;
-        }
+    public static async Task<List<Chatter>> GetAllChattersAsync()
+    {
+        List<Chatter> allChatters = [];
+        string pagination = null;
 
-        public static async Task<List<ChannelVIPsResponseModel>> GetAllVipsAsync()
+        do
         {
-            List<ChannelVIPsResponseModel> allVips = [];
-            string pagination = null;
-
-            do
-            {
-                // Fetch a page of chatters
-                GetChannelVIPsResponse vipsResponse = await TwitchHandler.TwitchApi.Helix.Channels.GetVIPsAsync(
-                    Settings.TwitchUser.Id,
-                    null,
-                    100,
-                    pagination,
-                    Settings.TwitchAccessToken);
-
-                // Add chatters from the current page to the list
-                if (vipsResponse?.Data != null)
-                {
-                    allVips.AddRange(vipsResponse.Data);
-                }
-
-                // Update the pagination token for the next page
-                pagination = vipsResponse?.Pagination?.Cursor;
-            } while (!string.IsNullOrEmpty(pagination));
-
-            return allVips;
-        }
-
-        public static async Task<User[]> GetTwitchUsersAsync(List<string> users)
-        {
-            GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.TwitchAccessToken);
-            return x.Users.Length > 0 ? x.Users : [];
-        }
-
-        public static async Task<List<EventSubSubscription>> GetEventSubscriptions()
-        {
-            GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
+            // Fetch a page of chatters
+            GetChattersResponse chattersResponse = await TwitchHandler.TwitchApi.Helix.Chat.GetChattersAsync(
+                Settings.TwitchUser.Id,
+                Settings.TwitchUser.Id,
+                100,
+                pagination,
                 Settings.TwitchAccessToken);
-            return x.Subscriptions.ToList();
+
+            // Add chatters from the current page to the list
+            if (chattersResponse?.Data != null)
+            {
+                allChatters.AddRange(chattersResponse.Data);
+            }
+
+            // Update the pagination token for the next page
+            pagination = chattersResponse?.Pagination?.Cursor;
+        } while (!string.IsNullOrEmpty(pagination));
+
+        return allChatters;
+    }
+
+    public static async Task<List<Moderator>> GetAllModeratorsAsync()
+    {
+        List<Moderator> allModerators = [];
+        string pagination = null;
+
+        do
+        {
+            // Fetch a page of chatters
+            GetModeratorsResponse moderatorsResponse = await TwitchHandler.TwitchApi.Helix.Moderation.GetModeratorsAsync(
+                Settings.TwitchUser.Id,
+                null,
+                100,
+                pagination,
+                Settings.TwitchAccessToken);
+
+            // Add chatters from the current page to the list
+            if (moderatorsResponse?.Data != null)
+            {
+                allModerators.AddRange(moderatorsResponse.Data);
+            }
+
+            // Update the pagination token for the next page
+            pagination = moderatorsResponse?.Pagination?.Cursor;
+        } while (!string.IsNullOrEmpty(pagination));
+
+        return allModerators;
+    }
+
+    public static async Task<List<ChannelVIPsResponseModel>> GetAllVipsAsync()
+    {
+        List<ChannelVIPsResponseModel> allVips = [];
+        string pagination = null;
+
+        do
+        {
+            // Fetch a page of chatters
+            GetChannelVIPsResponse vipsResponse = await TwitchHandler.TwitchApi.Helix.Channels.GetVIPsAsync(
+                Settings.TwitchUser.Id,
+                null,
+                100,
+                pagination,
+                Settings.TwitchAccessToken);
+
+            // Add chatters from the current page to the list
+            if (vipsResponse?.Data != null)
+            {
+                allVips.AddRange(vipsResponse.Data);
+            }
+
+            // Update the pagination token for the next page
+            pagination = vipsResponse?.Pagination?.Cursor;
+        } while (!string.IsNullOrEmpty(pagination));
+
+        return allVips;
+    }
+
+    public static async Task<User[]> GetTwitchUsersAsync(List<string> users)
+    {
+        GetUsersResponse x = await TwitchHandler.TwitchApi.Helix.Users.GetUsersAsync(null, users, Settings.TwitchAccessToken);
+        return x.Users.Length > 0 ? x.Users : [];
+    }
+
+    public static async Task<List<EventSubSubscription>> GetEventSubscriptions()
+    {
+        GetEventSubSubscriptionsResponse x = await TwitchHandler.TwitchApi.Helix.EventSub.GetEventSubSubscriptionsAsync(null, null, null, null, null,
+            Settings.TwitchAccessToken);
+        return x.Subscriptions.ToList();
+    }
+
+    public static async Task<List<CustomReward>> GetChannelRewards(bool b)
+    {
+        GetCustomRewardsResponse rewardsResponse = null;
+        try
+        {
+            rewardsResponse =
+                await TwitchHandler.TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.TwitchChannelId, null,
+                    b);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
 
-        public static async Task<List<CustomReward>> GetChannelRewards(bool b)
+        return rewardsResponse?.Data.ToList();
+    }
+
+    public static async Task EnableRewards(List<string> twRewardId, bool isEnabled)
+    {
+        UpdateCustomRewardRequest rewardUpdate = new()
         {
-            GetCustomRewardsResponse rewardsResponse = null;
+            IsPaused = !isEnabled
+        };
+
+        foreach (string s in twRewardId)
+        {
             try
             {
-                rewardsResponse =
-                    await TwitchHandler.TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(Settings.TwitchChannelId, null,
-                        b);
+                UpdateCustomRewardResponse result = await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, s,
+                    rewardUpdate, Settings.TwitchAccessToken);
+                if (result.Data[0].IsPaused == !isEnabled)
+                {
+                    Logger.Log(LogLevel.Info, LogSource.Twitch, $"Reward {result.Data[0].Title} has been {(!isEnabled ? "paused" : "enabled")}.");
+                }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-            }
-
-            return rewardsResponse?.Data.ToList();
-        }
-
-        public static async Task EnableRewards(List<string> twRewardId, bool isEnabled)
-        {
-            UpdateCustomRewardRequest rewardUpdate = new()
-            {
-                IsPaused = !isEnabled
-            };
-
-            foreach (string s in twRewardId)
-            {
-                try
-                {
-                    UpdateCustomRewardResponse result = await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, s,
-                        rewardUpdate, Settings.TwitchAccessToken);
-                    if (result.Data[0].IsPaused == !isEnabled)
-                    {
-                        Logger.Log(LogLevel.Info, LogSource.Twitch, $"Reward {result.Data[0].Title} has been {(!isEnabled ? "paused" : "enabled")}.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(LogLevel.Error, LogSource.Twitch, "Error updating reward");
-                }
+                Logger.Log(LogLevel.Error, LogSource.Twitch, "Error updating reward");
             }
         }
     }

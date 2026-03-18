@@ -5,11 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Songify_Slim.Models.Spotify
+namespace Songify_Slim.Models.Spotify;
+
+public sealed class SpotifySnapshotResponse
 {
-    public sealed class SpotifySnapshotResponse
-    {
-        [JsonProperty("snapshot_id")]
-        public string SnapshotId { get; set; }
-    }
+    [JsonProperty("snapshot_id")]
+    public string SnapshotId { get; set; }
 }

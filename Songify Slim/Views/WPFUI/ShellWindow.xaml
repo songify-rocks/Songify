@@ -1,0 +1,162 @@
+<ui:FluentWindow
+    x:Class="Songify_Slim.Views.WPFUI.ShellWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:Songify_Slim.Views.WPFUI.Pages"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
+    Title="Songify"
+    Width="800"
+    Height="500"
+    MinWidth="800"
+    MinHeight="500"
+    Closing="ShellWindow_Closing"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    ExtendsContentIntoTitleBar="True"
+    Loaded="ShellWindow_Loaded"
+    WindowBackdropType="Mica"
+    mc:Ignorable="d">
+    <ui:FluentWindow.Resources>
+        <ResourceDictionary>
+            <util:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        </ResourceDictionary>
+    </ui:FluentWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="28" />
+        </Grid.RowDefinitions>
+        <ui:TitleBar Title="Songify" CloseClicked="TitleBar_OnCloseClicked" />
+        <ui:NavigationView
+            x:Name="RootNavigationView"
+            Grid.Row="1"
+            ClipToBounds="True"
+            IsBackButtonVisible="Collapsed"
+            IsPaneOpen="False"
+            OpenPaneLength="150"
+            PaneDisplayMode="LeftMinimal"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.PanningMode="None"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ui:NavigationView.Resources>
+                <!--  SymbolIcon: Filled when parent NavigationViewItem is selected, otherwise not filled  -->
+                <Style TargetType="ui:SymbolIcon">
+                    <Setter Property="Filled" Value="False" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" Value="True">
+                            <Setter Property="Filled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ui:NavigationView.Resources>
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem
+                    Content="Overview"
+                    TargetPageTag="overview"
+                    TargetPageType="{x:Type pages:OverviewPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Home48" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="Queue"
+                    TargetPageTag="queue"
+                    TargetPageType="{x:Type pages:QueuePage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="MusicNote224" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="History"
+                    TargetPageTag="history"
+                    TargetPageType="{x:Type pages:HistoryPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="History48" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="Block list"
+                    TargetPageTag="blacklist"
+                    TargetPageType="{x:Type pages:BlacklistPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="ShieldDismiss24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem
+                    Content="User list"
+                    TargetPageTag="userlist"
+                    TargetPageType="{x:Type pages:UserListPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="People48" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem
+                    Content="Settings"
+                    TargetPageTag="settings"
+                    TargetPageType="{x:Type pages:SettingsPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Settings48" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="Console"
+                    TargetPageTag="console"
+                    TargetPageType="{x:Type pages:ConsolePage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="CodeBlock28" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="About"
+                    TargetPageTag="about"
+                    TargetPageType="{x:Type pages:AboutPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="Info24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.FooterMenuItems>
+        </ui:NavigationView>
+        <!--  Status bar: always visible at bottom  -->
+        <Border
+            Grid.Row="2"
+            Padding="12,0,16,0"
+            VerticalAlignment="Stretch"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        x:Name="TxtStatusApi"
+                        Margin="0,0,16,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API: {0} rpm}"
+                        Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </StackPanel>
+                <TextBlock
+                    x:Name="LblCopyright"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{Binding StatusBarVersion}" />
+            </Grid>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

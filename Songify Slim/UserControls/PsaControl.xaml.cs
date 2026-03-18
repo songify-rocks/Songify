@@ -21,202 +21,201 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Songify_Slim.UserControls
-{
-    /// <summary>
-    /// Interaction logic for PsaControl.xaml
-    /// </summary>
-    public partial class PsaControl : UserControl
-    {
-        public Psa Psa;
+namespace Songify_Slim.UserControls;
 
-        private readonly PackIconMaterial _readIcon = new()
+/// <summary>
+/// Interaction logic for PsaControl.xaml
+/// </summary>
+public partial class PsaControl : UserControl
+{
+    public Psa Psa;
+
+    private readonly PackIconMaterial _readIcon = new()
+    {
+        Kind = PackIconMaterialKind.Check,
+        Width = 12,
+        Height = 12,
+        VerticalAlignment = VerticalAlignment.Center
+    };
+
+    public PsaControl(Psa psa, bool byPassLimit = false)
+    {
+        InitializeComponent();
+        Psa = psa;
+        TbAuthor.Text = Psa.Author;
+        TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
+        TbSeverity.Text = Psa.Severity;
+
+        string message = IoManager.InterpretEscapeCharacters(Psa.MessageText);
+        // Instead of TbMessage.Text = message;
+        SetTextWithHyperlinks(TbMessage, message);
+
+        if (!byPassLimit)
+            DisplayMessageWithReadMore(message);
+
+        Brush severitybrush = Psa.Severity switch
         {
-            Kind = PackIconMaterialKind.Check,
-            Width = 12,
-            Height = 12,
-            VerticalAlignment = VerticalAlignment.Center
+            "Low" => Brushes.ForestGreen,
+            "Medium" => Brushes.DarkOrange,
+            "High" => Brushes.IndianRed,
+            _ => throw new ArgumentOutOfRangeException()
         };
 
-        public PsaControl(Psa psa, bool byPassLimit = false)
+        BorderSeverity.BorderBrush = severitybrush;
+        BorderSeverity.Background = severitybrush;
+
+        if (Psa.Severity == "High")
         {
-            InitializeComponent();
-            Psa = psa;
-            TbAuthor.Text = Psa.Author;
-            TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
-            TbSeverity.Text = Psa.Severity;
-
-            string message = IoManager.InterpretEscapeCharacters(Psa.MessageText);
-            // Instead of TbMessage.Text = message;
-            SetTextWithHyperlinks(TbMessage, message);
-
-            if (!byPassLimit)
-                DisplayMessageWithReadMore(message);
-
-            Brush severitybrush = Psa.Severity switch
-            {
-                "Low" => Brushes.ForestGreen,
-                "Medium" => Brushes.DarkOrange,
-                "High" => Brushes.IndianRed,
-                _ => throw new ArgumentOutOfRangeException()
-            };
-
-            BorderSeverity.BorderBrush = severitybrush;
-            BorderSeverity.Background = severitybrush;
-
-            if (Psa.Severity == "High")
-            {
-                BorderMotd.BorderBrush = severitybrush;
-            }
-
-            if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
-            {
-                btnRead.Content = _readIcon;
-            }
+            BorderMotd.BorderBrush = severitybrush;
         }
 
-        private static readonly Regex UrlRegex = new Regex(
-    @"(?<url>(https?://[^\s<>()]+)|(\bwww\.[^\s<>()]+))",
-    RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        private void SetTextWithHyperlinks(TextBlock tb, string text)
+        if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
         {
-            tb.Inlines.Clear();
+            btnRead.Content = _readIcon;
+        }
+    }
 
-            if (string.IsNullOrEmpty(text))
-                return;
+    private static readonly Regex UrlRegex = new Regex(
+        @"(?<url>(https?://[^\s<>()]+)|(\bwww\.[^\s<>()]+))",
+        RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            int lastIndex = 0;
+    private void SetTextWithHyperlinks(TextBlock tb, string text)
+    {
+        tb.Inlines.Clear();
 
-            foreach (Match m in UrlRegex.Matches(text))
+        if (string.IsNullOrEmpty(text))
+            return;
+
+        int lastIndex = 0;
+
+        foreach (Match m in UrlRegex.Matches(text))
+        {
+            // Add text before the link
+            if (m.Index > lastIndex)
+                AddRunsWithLineBreaks(tb, text.Substring(lastIndex, m.Index - lastIndex));
+
+            var raw = m.Groups["url"].Value;
+            var uriString = raw.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+                ? raw
+                : "https://" + raw;
+
+            if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
             {
-                // Add text before the link
-                if (m.Index > lastIndex)
-                    AddRunsWithLineBreaks(tb, text.Substring(lastIndex, m.Index - lastIndex));
-
-                var raw = m.Groups["url"].Value;
-                var uriString = raw.StartsWith("http", StringComparison.OrdinalIgnoreCase)
-                    ? raw
-                    : "https://" + raw;
-
-                if (Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
+                var link = new Hyperlink(new Run(raw))
                 {
-                    var link = new Hyperlink(new Run(raw))
-                    {
-                        NavigateUri = uri,
-                        ToolTip = uri.ToString()
-                    };
-
-                    // Optional: you can style links here if you want
-                    // link.TextDecorations = null;
-
-                    tb.Inlines.Add(link);
-                }
-                else
-                {
-                    // Fallback if parsing fails
-                    tb.Inlines.Add(new Run(raw));
-                }
-
-                lastIndex = m.Index + m.Length;
-            }
-
-            // Add remaining text after last link
-            if (lastIndex < text.Length)
-                AddRunsWithLineBreaks(tb, text.Substring(lastIndex));
-        }
-
-        private static void AddRunsWithLineBreaks(TextBlock tb, string chunk)
-        {
-            // Preserve line breaks in TextBlock
-            var parts = chunk.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
-            for (int i = 0; i < parts.Length; i++)
-            {
-                if (i > 0) tb.Inlines.Add(new LineBreak());
-                if (parts[i].Length > 0) tb.Inlines.Add(new Run(parts[i]));
-            }
-        }
-
-        private void TbMessage_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
-                e.Handled = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Could not open link:\n{e.Uri}\n\n{ex.Message}", "Songify", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void DisplayMessageWithReadMore(string message)
-        {
-            const int maxLength = 150;
-
-            // Clear existing inlines to avoid duplication
-            TbMessage.Inlines.Clear();
-
-            // Check if the message exceeds 200 characters
-            if (message.Length > maxLength)
-            {
-                // Display the first 200 characters followed by "..."
-                string truncatedMessage = message.Substring(0, maxLength) + "... ";
-
-                // Add the truncated message to the TextBlock
-                TbMessage.Inlines.Add(new Run(truncatedMessage));
-
-                // Attempt to find the MahApps accent brush resource
-                // Check if the brush is found and apply it
-                Brush accentBrush = (Brush)TryFindResource("MahApps.Brushes.Accent") ?? Brushes.DodgerBlue;
-
-                // Create a "Read More" Hyperlink
-                Hyperlink readMoreLink = new(new Run("read more"))
-                {
-                    Foreground = accentBrush, // Optional: Style to look like a hyperlink
-                    TextDecorations = null // Optional: Remove underline if needed
+                    NavigateUri = uri,
+                    ToolTip = uri.ToString()
                 };
 
-                // Handle the Click event for the Hyperlink
-                readMoreLink.Click += (sender, e) => OpenFullMessageWindow();
+                // Optional: you can style links here if you want
+                // link.TextDecorations = null;
 
-                // Add the Hyperlink to the TextBlock
-                TbMessage.Inlines.Add(readMoreLink);
+                tb.Inlines.Add(link);
             }
             else
             {
-                // If the message is 200 characters or less, display it all
-                TbMessage.Text = message;
+                // Fallback if parsing fails
+                tb.Inlines.Add(new Run(raw));
             }
+
+            lastIndex = m.Index + m.Length;
         }
 
-        private void OpenFullMessageWindow()
+        // Add remaining text after last link
+        if (lastIndex < text.Length)
+            AddRunsWithLineBreaks(tb, text.Substring(lastIndex));
+    }
+
+    private static void AddRunsWithLineBreaks(TextBlock tb, string chunk)
+    {
+        // Preserve line breaks in TextBlock
+        var parts = chunk.Split(new[] { "\r\n", "\n", "\r" }, StringSplitOptions.None);
+        for (int i = 0; i < parts.Length; i++)
         {
-            // Create a new window to display the full message
-            WindowUniversalDialog messageWindow = new(Psa, "Notification")
+            if (i > 0) tb.Inlines.Add(new LineBreak());
+            if (parts[i].Length > 0) tb.Inlines.Add(new Run(parts[i]));
+        }
+    }
+
+    private void TbMessage_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            e.Handled = true;
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Could not open link:\n{e.Uri}\n\n{ex.Message}", "Songify", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void DisplayMessageWithReadMore(string message)
+    {
+        const int maxLength = 150;
+
+        // Clear existing inlines to avoid duplication
+        TbMessage.Inlines.Clear();
+
+        // Check if the message exceeds 200 characters
+        if (message.Length > maxLength)
+        {
+            // Display the first 200 characters followed by "..."
+            string truncatedMessage = message.Substring(0, maxLength) + "... ";
+
+            // Add the truncated message to the TextBlock
+            TbMessage.Inlines.Add(new Run(truncatedMessage));
+
+            // Attempt to find the MahApps accent brush resource
+            // Check if the brush is found and apply it
+            Brush accentBrush = (Brush)TryFindResource("MahApps.Brushes.Accent") ?? Brushes.DodgerBlue;
+
+            // Create a "Read More" Hyperlink
+            Hyperlink readMoreLink = new(new Run("read more"))
             {
-                Owner = Application.Current.MainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                FontSize = 14
+                Foreground = accentBrush, // Optional: Style to look like a hyperlink
+                TextDecorations = null // Optional: Remove underline if needed
             };
-            messageWindow.Show();
+
+            // Handle the Click event for the Hyperlink
+            readMoreLink.Click += (sender, e) => OpenFullMessageWindow();
+
+            // Add the Hyperlink to the TextBlock
+            TbMessage.Inlines.Add(readMoreLink);
         }
-
-        private void BtnRead_OnClick(object sender, RoutedEventArgs e)
+        else
         {
-            btnRead.Content = _readIcon;
-            List<int> readNotificationIds = Settings.ReadNotificationIds;
-            if (readNotificationIds != null && readNotificationIds.Contains(Psa.Id))
-                return;
-            readNotificationIds ??= [];
-            readNotificationIds.Add(Psa.Id);
-            Settings.ReadNotificationIds = readNotificationIds;
+            // If the message is 200 characters or less, display it all
+            TbMessage.Text = message;
+        }
+    }
 
-            Window mainWin = Application.Current.MainWindow;
-            if (mainWin is MainWindow mainWindow)
-            {
-                mainWindow.SetUnreadBadge();
-            }
+    private void OpenFullMessageWindow()
+    {
+        // Create a new window to display the full message
+        WindowUniversalDialog messageWindow = new(Psa, "Notification")
+        {
+            Owner = Application.Current.MainWindow,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            FontSize = 14
+        };
+        messageWindow.Show();
+    }
+
+    private void BtnRead_OnClick(object sender, RoutedEventArgs e)
+    {
+        btnRead.Content = _readIcon;
+        List<int> readNotificationIds = Settings.ReadNotificationIds;
+        if (readNotificationIds != null && readNotificationIds.Contains(Psa.Id))
+            return;
+        readNotificationIds ??= [];
+        readNotificationIds.Add(Psa.Id);
+        Settings.ReadNotificationIds = readNotificationIds;
+
+        Window mainWin = Application.Current.MainWindow;
+        if (mainWin is MainWindow mainWindow)
+        {
+            mainWindow.SetUnreadBadge();
         }
     }
 }

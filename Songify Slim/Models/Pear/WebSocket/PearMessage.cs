@@ -5,11 +5,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Songify_Slim.Models.Pear.WebSocket
+namespace Songify_Slim.Models.Pear.WebSocket;
+
+public abstract class PearMessage
 {
-    public abstract class PearMessage
-    {
-        [JsonPropertyName("type")]
-        public string Type { get; set; } = string.Empty;
-    }
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
 }

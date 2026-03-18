@@ -10,80 +10,79 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Interaction logic for Window_CreateCustomReward.xaml
+/// </summary>
+public partial class WindowCreateCustomReward
 {
-    /// <summary>
-    /// Interaction logic for Window_CreateCustomReward.xaml
-    /// </summary>
-    public partial class WindowCreateCustomReward
+    public WindowCreateCustomReward()
     {
-        public WindowCreateCustomReward()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public async Task<CreateCustomRewardsResponse> CreateReward(string name, string prompt, int cost)
+    public async Task<CreateCustomRewardsResponse> CreateReward(string name, string prompt, int cost)
+    {
+        CreateCustomRewardsResponse response;
+        try
         {
-            CreateCustomRewardsResponse response;
-            try
-            {
-                response = await TwitchHandler.TwitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
-                   new CreateCustomRewardsRequest
-                   {
-                       Title = name,
-                       Prompt = prompt,
-                       Cost = cost,
-                       IsEnabled = true,
-                       BackgroundColor = "#1ed760",
-                       IsUserInputRequired = TglUserInputRequired.IsOn,
-                       IsMaxPerStreamEnabled = false,
-                       MaxPerStream = null,
-                       IsMaxPerUserPerStreamEnabled = false,
-                       MaxPerUserPerStream = null,
-                       IsGlobalCooldownEnabled = false,
-                       GlobalCooldownSeconds = null,
-                       ShouldRedemptionsSkipRequestQueue = false
-                   }, Settings.TwitchAccessToken);
-            }
-            catch (Exception)
-            {
-                LblStatus.Foreground = Brushes.Red;
-                LblStatus.Text = Properties.Resources.crw_CreateRewardError;
-                return null;
-            }
-            LblStatus.Foreground = Brushes.ForestGreen;
-            LblStatus.Text = Properties.Resources.crw_CreateRewardSuccess.Replace("{name}", name);
-            Process.Start("https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards");
-            return response;
-        }
-
-        private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(TbRewardName.Text) || string.IsNullOrWhiteSpace(TbRewardPrompt.Text) || NudRewardCost.Value == null)
-                    return;
-
-                CreateCustomRewardsResponse response = await CreateReward(TbRewardName.Text, TbRewardPrompt.Text, (int)NudRewardCost.Value);
-                if (response == null)
+            response = await TwitchHandler.TwitchApi.Helix.ChannelPoints.CreateCustomRewardsAsync(Settings.TwitchChannelId,
+                new CreateCustomRewardsRequest
                 {
-                    LblStatus.Foreground = Brushes.Red;
-                    LblStatus.Text = "Unable to create Reward.";
-                    return;
-                }
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(Window_Settings))
-                    {
-                        Settings.TwRewardId.Add(response.Data[0].Id);
-                        Settings.TwRewardId = Settings.TwRewardId;
-                        await ((Window_Settings)window).LoadRewards();
-                    }
-            }
-            catch (Exception ex)
+                    Title = name,
+                    Prompt = prompt,
+                    Cost = cost,
+                    IsEnabled = true,
+                    BackgroundColor = "#1ed760",
+                    IsUserInputRequired = TglUserInputRequired.IsOn,
+                    IsMaxPerStreamEnabled = false,
+                    MaxPerStream = null,
+                    IsMaxPerUserPerStreamEnabled = false,
+                    MaxPerUserPerStream = null,
+                    IsGlobalCooldownEnabled = false,
+                    GlobalCooldownSeconds = null,
+                    ShouldRedemptionsSkipRequestQueue = false
+                }, Settings.TwitchAccessToken);
+        }
+        catch (Exception)
+        {
+            LblStatus.Foreground = Brushes.Red;
+            LblStatus.Text = Properties.Resources.crw_CreateRewardError;
+            return null;
+        }
+        LblStatus.Foreground = Brushes.ForestGreen;
+        LblStatus.Text = Properties.Resources.crw_CreateRewardSuccess.Replace("{name}", name);
+        Process.Start("https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards");
+        return response;
+    }
+
+    private async void BtnCreateReward_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(TbRewardName.Text) || string.IsNullOrWhiteSpace(TbRewardPrompt.Text) || NudRewardCost.Value == null)
+                return;
+
+            CreateCustomRewardsResponse response = await CreateReward(TbRewardName.Text, TbRewardPrompt.Text, (int)NudRewardCost.Value);
+            if (response == null)
             {
                 LblStatus.Foreground = Brushes.Red;
-                LblStatus.Text = Properties.Resources.crw_CreateRewardError + " " + ex.Message;
+                LblStatus.Text = "Unable to create Reward.";
+                return;
             }
+            foreach (Window window in Application.Current.Windows)
+                if (window.GetType() == typeof(Window_Settings))
+                {
+                    Settings.TwRewardId.Add(response.Data[0].Id);
+                    Settings.TwRewardId = Settings.TwRewardId;
+                    await ((Window_Settings)window).LoadRewards();
+                }
+        }
+        catch (Exception ex)
+        {
+            LblStatus.Foreground = Brushes.Red;
+            LblStatus.Text = Properties.Resources.crw_CreateRewardError + " " + ex.Message;
         }
     }
 }

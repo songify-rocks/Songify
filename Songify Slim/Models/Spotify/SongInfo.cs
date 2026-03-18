@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using SpotifyAPI.Web;
 
-namespace Songify_Slim.Models.Spotify
+namespace Songify_Slim.Models.Spotify;
+
+public class SongInfo
 {
-    public class SongInfo
-    {
-        public string Artist { get; set; }
-        public string Title { get; set; }
-        public string Extra { get; set; }
-        public List<Image> Albums { get; set; }
-        public string Url { get; set; }
-    }
+    public string Artist { get; set; }
+    public string Title { get; set; }
+    public string Extra { get; set; }
+    public List<Image> Albums { get; set; }
+    public string Url { get; set; }
 }

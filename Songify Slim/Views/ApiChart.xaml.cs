@@ -15,17 +15,16 @@ using System.Windows.Shapes;
 using LiveCharts;
 using LiveCharts.Wpf;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Interaction logic for ApiChart.xaml
+/// </summary>
+public partial class ApiChart : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ApiChart.xaml
-    /// </summary>
-    public partial class ApiChart : UserControl
+    public ApiChart()
     {
-        public ApiChart()
-        {
-            InitializeComponent();
-            DataContext = new ApiMetricsVm();
-        }
+        InitializeComponent();
+        DataContext = new ApiMetricsVm();
     }
 }

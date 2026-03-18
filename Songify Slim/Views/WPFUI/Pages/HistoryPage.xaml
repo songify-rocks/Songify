@@ -1,0 +1,129 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.HistoryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="History"
+    ScrollViewer.CanContentScroll="False"
+    mc:Ignorable="d">
+    <Grid Margin="24" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="120" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!--  Toolbar: Save toggle, Upload toggle, Copy URL, Refresh  -->
+        <StackPanel
+            Grid.Row="0"
+            Margin="0,0,0,16"
+            Orientation="Horizontal">
+            <ui:ToggleSwitch
+                x:Name="TglSave"
+                Margin="0,0,12,0"
+                Content="{Binding SaveToggleContent}"
+                IsChecked="{Binding SaveHistory, Mode=TwoWay}"
+                ToolTip="Save history locally" />
+            <ui:ToggleSwitch
+                x:Name="TglUpload"
+                Margin="0,0,12,0"
+                Content="{Binding UploadToggleContent}"
+                IsChecked="{Binding UploadHistory, Mode=TwoWay}"
+                ToolTip="Upload history" />
+            <ui:Button
+                Margin="0,0,12,0"
+                Appearance="Secondary"
+                Command="{Binding CopyHistoryUrlCommand}"
+                Content="Copy history URL"
+                ToolTip="Copy the history URL." />
+            <ui:Button
+                Appearance="Secondary"
+                Command="{Binding RefreshCommand}"
+                Content="Refresh"
+                ToolTip="Reload history file" />
+        </StackPanel>
+        <!--  Main: left = date list, right = songs grid  -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="160" />
+                <ColumnDefinition Width="*" MinWidth="200" />
+            </Grid.ColumnDefinitions>
+            <!--  Date list (left)  -->
+            <ui:Card
+                Grid.Column="0"
+                Margin="0,0,12,0"
+                Padding="0"
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top">
+                <ListBox
+                    x:Name="LbxHistory"
+                    Padding="8"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding DateList}"
+                    SelectedItem="{Binding SelectedDate, Mode=TwoWay}">
+                    <ListBox.ContextMenu>
+                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Command="{Binding DeleteDateCommand}" Header="Delete" />
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                </ListBox>
+            </ui:Card>
+            <!--  Songs grid (right)  -->
+            <ui:Card
+                Grid.Column="1"
+                Padding="0"
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top">
+                <DataGrid
+                    x:Name="DgvHistorySongs"
+                    AutoGenerateColumns="False"
+                    CanUserAddRows="False"
+                    CanUserDeleteRows="False"
+                    CanUserReorderColumns="False"
+                    CanUserResizeColumns="True"
+                    CanUserSortColumns="False"
+                    HeadersVisibility="Column"
+                    ItemsSource="{Binding Songs}"
+                    SelectedItem="{Binding SelectedSong, Mode=TwoWay}"
+                    SelectionMode="Single">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            x:Name="ColTime"
+                            Width="80"
+                            Binding="{Binding Time}"
+                            Header="Time"
+                            IsReadOnly="True" />
+                        <DataGridTextColumn
+                            x:Name="ColName"
+                            Width="*"
+                            Binding="{Binding Name}"
+                            Header="Name"
+                            IsReadOnly="True" />
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                            <MenuItem Command="{Binding DeleteSongCommand}" Header="Delete" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </ui:Card>
+        </Grid>
+        <!--  Status  -->
+        <Border
+            Grid.Row="2"
+            Margin="0,12,0,0"
+            Padding="0,6,0,0"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <TextBlock
+                x:Name="LblStatus"
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{Binding StatusMessage}" />
+        </Border>
+    </Grid>
+</Page>

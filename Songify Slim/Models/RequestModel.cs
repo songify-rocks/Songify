@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+using System.Windows.Media;
+using Newtonsoft.Json;
 using Songify_Slim.Models.Twitch;
+using Songify_Slim.Util;
 using Songify_Slim.Util.General;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 
@@ -31,8 +33,21 @@ public class RequestObject
     [JsonIgnore] // ignore this field during JSON deserialization
     public int Played { get; set; }
 
+    private string _albumcover;
+
     [JsonProperty("albumcover")]
-    public string Albumcover { get; set; }
+    public string Albumcover
+    {
+        get => _albumcover;
+        set
+        {
+            _albumcover = value;
+            AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(value);
+        }
+    }
+
+    [JsonIgnore]
+    public ImageSource AlbumcoverImageSource { get; private set; }
 
     [JsonProperty("playerType")]
     public string PlayerType { get; set; }

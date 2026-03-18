@@ -1,0 +1,170 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.BlacklistPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:viewModels="clr-namespace:Songify_Slim.Views.WPFUI.ViewModels"
+    Title="Block list">
+    <Page.DataContext>
+        <viewModels:BlocklistViewModel />
+    </Page.DataContext>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="Block list" />
+        </Grid>
+
+        <ui:Card
+            Grid.Row="1"
+            Padding="16"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Top">
+            <TabControl Background="Transparent">
+                <TabItem Header="Artists">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Margin="0,0,12,0" Text="{Binding NewArtistName, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:Button
+                                Grid.Column="1"
+                                Appearance="Primary"
+                                Command="{Binding AddArtistCommand}"
+                                Content="Add" />
+                        </Grid>
+
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Artists}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Display}" />
+                                        <ui:Button
+                                            Grid.Column="1"
+                                            Appearance="Secondary"
+                                            Command="{Binding DataContext.RemoveArtistCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Remove" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <ui:Button
+                            Grid.Row="2"
+                            Margin="0,12,0,0"
+                            Appearance="Secondary"
+                            Command="{Binding ClearArtistsCommand}"
+                            Content="Clear artists" />
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Users">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Margin="0,0,12,0" Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:Button
+                                Grid.Column="1"
+                                Appearance="Primary"
+                                Command="{Binding AddUserCommand}"
+                                Content="Add" />
+                        </Grid>
+
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Users}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Display}" />
+                                        <ui:Button
+                                            Grid.Column="1"
+                                            Appearance="Secondary"
+                                            Command="{Binding DataContext.RemoveUserCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Remove" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <ui:Button
+                            Grid.Row="2"
+                            Margin="0,12,0,0"
+                            Appearance="Secondary"
+                            Command="{Binding ClearUsersCommand}"
+                            Content="Clear users" />
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Songs">
+                    <Grid Margin="0,12,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <ListBox Grid.Row="0" ItemsSource="{Binding Songs}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding Display}" />
+                                        <ui:Button
+                                            Grid.Column="1"
+                                            Appearance="Secondary"
+                                            Command="{Binding DataContext.RemoveSongCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Content="Remove" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <ui:Button
+                            Grid.Row="1"
+                            Margin="0,12,0,0"
+                            Appearance="Secondary"
+                            Command="{Binding ClearSongsCommand}"
+                            Content="Clear songs" />
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </ui:Card>
+    </Grid>
+</Page>

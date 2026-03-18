@@ -34,11 +34,7 @@
                 </wpf:Axis>
             </wpf:CartesianChart.AxisY>
             <wpf:CartesianChart.DataTooltip>
-                <wpf:DefaultTooltip
-                    Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                    BorderBrush="{DynamicResource MahApps.Brushes.Control.Border}"
-                    BorderThickness="2"
-                    SelectionMode="OnlySender" />
+                <wpf:DefaultTooltip BorderThickness="2" SelectionMode="OnlySender" />
             </wpf:CartesianChart.DataTooltip>
         </wpf:CartesianChart>
     </Grid>
