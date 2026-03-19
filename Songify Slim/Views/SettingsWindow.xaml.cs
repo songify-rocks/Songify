@@ -71,6 +71,8 @@ namespace Songify_Slim.Views
         private Window_ResponseParams _wRp;
         private bool _showPassword = false;
         private bool _showYoutubeApikey = false;
+        private bool _isSettingControls;
+        private BitmapImage? _defaultSongifyProfileImage;
 
         private Dictionary<string, string> _supportedLanguages = new()
         {
@@ -119,53 +121,149 @@ namespace Songify_Slim.Views
 
         public async Task SetControls()
         {
-            GridLoading.Visibility = Visibility.Visible;
-            TabCtrl.IsEnabled = false;
+            if (_isSettingControls)
+                return;
 
-            // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
+            var sw = Stopwatch.StartNew();
+
+            _isSettingControls = true;
+            SetLoadingState(true);
+
+            try
+            {
+                await Task.Yield();
+                LogStep(sw, "Start");
+
+                EnsureSettingsDefaults();
+                LogStep(sw, "EnsureSettingsDefaults");
+
+                await LoadCommands();
+                LogStep(sw, "LoadCommands");
+
+                InitializeUserLevelComboboxes();
+                LogStep(sw, "InitializeUserLevelComboboxes");
+
+                ApplyPollSettings();
+                LogStep(sw, "ApplyPollSettings");
+
+                ApplyGeneralSettings();
+                LogStep(sw, "ApplyGeneralSettings");
+
+                InitializePortComboboxes();
+                LogStep(sw, "InitializePortComboboxes");
+
+                InitializeBotResponsesControl();
+                LogStep(sw, "InitializeBotResponsesControl");
+
+                ApplyUserLevelCheckboxes();
+                LogStep(sw, "ApplyUserLevelCheckboxes");
+
+                GenerateRefundConditionToggles();
+                LogStep(sw, "GenerateRefundConditionToggles");
+
+                await LoadSpotifySectionAsync();
+                LogStep(sw, "LoadSpotifySectionAsync");
+
+                ApplyLanguageSettings();
+                LogStep(sw, "ApplyLanguageSettings");
+
+                ApplyTwitchAccountsUi();
+                LogStep(sw, "ApplyTwitchAccountsUi");
+
+                await LoadRewardsSectionAsync();
+                LogStep(sw, "LoadRewardsSectionAsync");
+
+                ApplyRefundConditions();
+                LogStep(sw, "ApplyRefundConditions");
+
+                ThemeHandler.ApplyTheme();
+                LogStep(sw, "ApplyTheme");
+
+                LogStep(sw, "END");
+            }
+            catch (Exception e)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Core, "Error in Setting controls.", e);
+            }
+            finally
+            {
+                SetLoadingState(false);
+                _isSettingControls = false;
+            }
+        }
+
+        private void LogStep(Stopwatch sw, string step)
+        {
+            Logger.Log(LogLevel.Debug, LogSource.Core,
+                $"[SetControls] {step,-30} | {sw.ElapsedMilliseconds,6} ms");
+        }
+
+        private void SetLoadingState(bool isLoading)
+        {
+            GridLoading.Visibility = isLoading ? Visibility.Visible : Visibility.Collapsed;
+            TabCtrl.IsEnabled = !isLoading;
+        }
+
+        private void EnsureSettingsDefaults()
+        {
+            Settings.TwitchPollSettings ??= new TwitchPollSettings();
+            Settings.UserLevelsCommand ??= [];
+            Settings.UserLevelsReward ??= [];
+            Settings.UnlimitedSrUserlevelsCommand ??= [];
+            Settings.UnlimitedSrUserlevelsReward ??= [];
+        }
+
+        private async Task InitializeCommandsAsync()
+        {
+            await LoadCommands();
+        }
+
+        private void InitializeUserLevelComboboxes()
+        {
             CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
+
             CbxUserLevels.Items.Clear();
             CbxUserLevelsMaxReq.Items.Clear();
+
             Array values = Enum.GetValues(typeof(Enums.TwitchUserLevels));
             foreach (object value in values)
             {
-                switch (value.ToString())
-                {
-                    case "Broadcaster":
-                        continue;
-                    default:
-                        CbxUserLevels.Items.Add(value);
-                        CbxUserLevelsMaxReq.Items.Add(value);
-                        break;
-                }
+                if (value.ToString() == "Broadcaster")
+                    continue;
+
+                CbxUserLevels.Items.Add(value);
+                CbxUserLevelsMaxReq.Items.Add(value);
             }
-            Settings.TwitchPollSettings ??= new TwitchPollSettings();
 
-            await LoadCommands();
+            if (CbxUserLevelsMaxReq.Items.Count > 0)
+                CbxUserLevelsMaxReq.SelectedIndex = 0;
 
+            CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
+        }
+
+        private void ApplyPollSettings()
+        {
             TextBoxPollTitle.Text = Settings.TwitchPollSettings.Title;
             TextBoxPollAnswer1.Text = Settings.TwitchPollSettings.Choices.First();
             TextBoxPollAnswer2.Text = Settings.TwitchPollSettings.Choices.Last();
             ToggleSwitchPollAdditionalVotes.IsOn = Settings.TwitchPollSettings.AdditionalVotesEnabled;
             NumericUpDownPollChannelPointsPerVote.Value = Settings.TwitchPollSettings.ChannelPointsPerVote;
             NumericUpDownPollDuration.Value = Settings.TwitchPollSettings.Duration;
-            if ((string)RadioButtonPollAnswer1.Content == Settings.TwitchPollSettings.Choices.First())
-            {
-                RadioButtonPollAnswer1.IsChecked = true;
-            }
-            else if ((string)RadioButtonPollAnswer2.Content == Settings.TwitchPollSettings.Choices.Last())
-            {
-                RadioButtonPollAnswer2.IsChecked = true;
-            }
 
+            if ((string)RadioButtonPollAnswer1.Content == Settings.TwitchPollSettings.Choices.First())
+                RadioButtonPollAnswer1.IsChecked = true;
+            else if ((string)RadioButtonPollAnswer2.Content == Settings.TwitchPollSettings.Choices.Last())
+                RadioButtonPollAnswer2.IsChecked = true;
+        }
+
+        private void ApplyGeneralSettings()
+        {
             NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
-            CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
-            if (CbxUserLevelsMaxReq.Items.Count > 0)
-                CbxUserLevelsMaxReq.SelectedIndex = 0;
-            // Sets all the controls from settings
             ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
+
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
+
             ChbxAutoClear.IsOn = Settings.AutoClearQueue;
             ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
             ChbxTwReward.IsOn = Settings.TwSrReward;
@@ -173,7 +271,6 @@ namespace Songify_Slim.Views
             ChbxCover.IsOn = Settings.DownloadCover;
             TglCanvas.IsOn = Settings.DownloadCanvas;
             CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
-            //ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
             ChbxMinimizeSystray.IsOn = Settings.Systray;
             ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
@@ -191,7 +288,6 @@ namespace Songify_Slim.Views
             TglswSpotify.IsOn = true;
             TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
-            //TxtbxRewardId.Text = Settings.TwRewardId;
             TglSharedChat.IsOn = Settings.SharedChatEnabled;
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
@@ -211,38 +307,50 @@ namespace Songify_Slim.Views
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
-            BtnWebserverStart.Content = GlobalObjects.WebServer.Run
-                ? Properties.Resources.window_settings_webserver_stop
-                : Properties.Resources.window_settings_webserver_start;
             ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
             Tglsw_BitsForSr.IsOn = Settings.SrForBits;
             TglInformChat.IsOn = Settings.ChatLiveStatus;
             TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
             Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
-            ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
-            ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
-            ComboboxRedirectPort.Items.Clear();
-            ComboboxfetchPort.Items.Clear();
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
-            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
-            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
-            ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
-            ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
-            ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
-            ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
-            Cctrl.Content = new UcBotResponses();
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
             TglDebugLogging.IsOn = Settings.DebugLogging;
-            Settings.UserLevelsCommand ??= [];
-            Settings.UserLevelsReward ??= [];
-
-            Settings.UnlimitedSrUserlevelsCommand ??= [];
-            Settings.UnlimitedSrUserlevelsReward ??= [];
-
             TglOnlySkipNonSrRewards.IsOn = Settings.SkipOnlyNonSrSongs;
+            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
+            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
 
+            BtnWebserverStart.Content = GlobalObjects.WebServer.Run
+                ? Properties.Resources.window_settings_webserver_stop
+                : Properties.Resources.window_settings_webserver_start;
+        }
+
+        private void InitializePortComboboxes()
+        {
+            ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
+
+            ComboboxRedirectPort.Items.Clear();
+            ComboboxfetchPort.Items.Clear();
+
+            ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
+            ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
+
+            ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
+            ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
+
+            ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
+            ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
+        }
+
+        private void InitializeBotResponsesControl()
+        {
+            Cctrl.Content = new UcBotResponses();
+        }
+
+        private void ApplyUserLevelCheckboxes()
+        {
             ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
             ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
             ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
@@ -274,92 +382,95 @@ namespace Songify_Slim.Views
             ChckUnlimitedRewardSubT3.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(4);
             ChckUnlimitedRewardVip.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(5);
             ChckUnlimitedRewardMod.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(6);
+        }
 
-            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
-            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
-
+        private void GenerateDynamicSections()
+        {
             GenerateRefundConditionToggles();
+        }
 
-            if (SpotifyApiHandler.Client != null)
+        private async Task LoadSpotifySectionAsync()
+        {
+            if (SpotifyApiHandler.Client == null)
+                return;
+
+            PrivateUser? profile = null;
+
+            try
             {
-                PrivateUser? profile = null;
+                profile = Settings.SpotifyProfile ?? await SpotifyApiHandler.GetUser();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
 
-                try
+            if (profile == null)
+            {
+                ImgSpotifyProfile.ImageSource = null;
+                ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+                return;
+            }
+
+            LblSpotifyAcc.Content =
+                $"{Properties.Resources.window_settings_integration_spotify_linked} {profile.DisplayName ?? "(unknown)"}";
+
+            try
+            {
+                if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
                 {
-                    if (Settings.SpotifyProfile == null)
-                        profile = await SpotifyApiHandler.GetUser(); // <-- used to crash here
-                    else
-                    {
-                        profile = Settings.SpotifyProfile;
-                    }
-                }
-                catch (Exception ex) // Optional: catch specific SpotifyAPI exceptions if you have them
-                {
-                    Logger.LogExc(ex);
-                }
+                    BitmapImage bitmap = new();
+                    bitmap.BeginInit();
+                    bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+                    bitmap.EndInit();
 
-                if (profile != null)
-                {
-                    // Safe: DisplayName can be null as well
-                    LblSpotifyAcc.Content = $"{Properties.Resources.window_settings_integration_spotify_linked} {profile.DisplayName ?? "(unknown)"}";
-
-                    try
-                    {
-                        if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
-                        {
-                            BitmapImage bitmap = new();
-                            bitmap.BeginInit();
-                            bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
-                            bitmap.EndInit();
-                            ImgSpotifyProfile.ImageSource = bitmap;
-                            ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            ImgSpotifyProfile.ImageSource = null;
-                            ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                        ImgSpotifyProfile.ImageSource = null;
-                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
-                    }
-
-                    try
-                    {
-                        await LoadSpotifyPlaylists();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogExc(ex);
-                        // keep UI alive even if playlists fail
-                    }
+                    ImgSpotifyProfile.ImageSource = bitmap;
+                    ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
-                    // Graceful fallback when Spotify is unavailable / blocked / auth expired
                     ImgSpotifyProfile.ImageSource = null;
                     ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                ImgSpotifyProfile.ImageSource = null;
+                ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+            }
 
-            ThemeHandler.ApplyTheme();
-            CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
-            CbxLanguage.ItemsSource = _supportedLanguages;
-            CbxLanguage.SelectedValue = Settings.Language;
+            try
+            {
+                await LoadSpotifyPlaylists();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
 
-            CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
+        private void ApplyTwitchAccountsUi()
+        {
             CbAccountSelection.SelectionChanged -= CbAccountSelection_SelectionChanged;
             CbAccountSelection.Items.Clear();
+
+            ApplyMainTwitchAccountUi();
+            ApplyBotTwitchAccountUi();
+            SelectCurrentAccount();
+
+            CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
+        }
+
+        private void ApplyMainTwitchAccountUi()
+        {
             if (Settings.TwitchUser != null)
             {
                 BtnTwitchLogout.Visibility = Visibility.Visible;
                 BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
-                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0,
-                    BtnLogInTwitchAlt);
-                //TxtbxTwChannel.Text = Settings.TwitchUser.Login;
+
+                UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0, BtnLogInTwitchAlt);
+
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UcAccountItem(Settings.TwitchUser.Login, Settings.TwitchAccessToken)
@@ -370,30 +481,23 @@ namespace Songify_Slim.Views
                 BtnLogInTwitch.Visibility = Visibility.Visible;
                 BtnLogInTwitchAlt.Visibility = Visibility.Visible;
                 LblMainExpiry.Visibility = Visibility.Collapsed;
-                Icon icon = LoadSongifyIcon();
-                Bitmap bitmap = icon.ToBitmap();
-                MemoryStream ms = new();
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                ms.Position = 0;
-                BitmapImage bitmapImage = new();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = ms;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                ImgTwitchProfile.ImageSource = bitmapImage;
-
                 BtnTwitchLogout.Visibility = Visibility.Collapsed;
                 BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
-
                 LblTwitchName.Content = "Main Account:";
-            }
 
+                ImgTwitchProfile.ImageSource = GetDefaultSongifyProfileImage();
+            }
+        }
+
+        private void ApplyBotTwitchAccountUi()
+        {
             if (Settings.TwitchBotUser != null)
             {
-                BtnTwitchBotLogout.Visibility = Visibility.Visible;
-                BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
-                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1,
-                    BtnLogInTwitchAltBot);
+                BtnTwitchLogout.Visibility = Visibility.Visible;
+                BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
+
+                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 0, BtnLogInTwitchAltBot);
+
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
                     Content = new UcAccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
@@ -404,50 +508,445 @@ namespace Songify_Slim.Views
                 BtnLogInTwitchBot.Visibility = Visibility.Visible;
                 BtnLogInTwitchAltBot.Visibility = Visibility.Visible;
                 LblBotExpiry.Visibility = Visibility.Collapsed;
-                Icon icon = LoadSongifyIcon();
-                Bitmap bitmap = icon.ToBitmap();
-                MemoryStream ms = new();
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                ms.Position = 0;
-                BitmapImage bitmapImage = new();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = ms;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                ImgTwitchBotProfile.ImageSource = bitmapImage;
-
                 BtnTwitchBotLogout.Visibility = Visibility.Collapsed;
                 BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
+                LblTwitchBotName.Content = "Main Account:";
 
-                LblTwitchBotName.Content = "Bot Account:";
+                ImgTwitchProfile.ImageSource = GetDefaultSongifyProfileImage();
+            }
+        }
+
+        private BitmapImage GetDefaultSongifyProfileImage()
+        {
+            if (_defaultSongifyProfileImage != null)
+                return _defaultSongifyProfileImage;
+
+            using Icon icon = LoadSongifyIcon();
+            using Bitmap bitmap = icon.ToBitmap();
+            using MemoryStream ms = new();
+
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            ms.Position = 0;
+
+            BitmapImage bitmapImage = new();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = ms;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
+            _defaultSongifyProfileImage = bitmapImage;
+            return _defaultSongifyProfileImage;
+        }
+
+        private void SelectCurrentAccount()
+        {
+            if (string.IsNullOrEmpty(Settings.TwAcc))
+            {
+                if (CbAccountSelection.Items.Count > 0)
+                    CbAccountSelection.SelectedIndex = 0;
+
+                return;
             }
 
-            if (string.IsNullOrEmpty(Settings.TwAcc))
-                CbAccountSelection.SelectedIndex = 0;
-            else
-                CbAccountSelection.SelectedItem = CbAccountSelection.Items.Cast<ComboBoxItem>().FirstOrDefault(item =>
+            CbAccountSelection.SelectedItem = CbAccountSelection.Items
+                .Cast<ComboBoxItem>()
+                .FirstOrDefault(item =>
                     ((UcAccountItem)item.Content).Username != null &&
                     ((UcAccountItem)item.Content).Username == Settings.TwAcc);
-            CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
-            if (TwitchHandler.TwitchApi != null)
-                await LoadRewards();
+        }
 
-            if (Settings.RefundConditons == null) return;
+        private async Task LoadRewardsSectionAsync()
+        {
+            if (TwitchHandler.TwitchApi == null)
+                return;
+
+            await LoadRewards();
+        }
+
+        private void ApplyRefundConditions()
+        {
+            if (Settings.RefundConditons == null)
+                return;
+
             foreach (int condition in Settings.RefundConditons)
             {
                 foreach (UIElement child in GrdTwitchReward.Children)
                 {
-                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund") &&
-                        box.Tag.ToString() == condition.ToString())
+                    if (child is CheckBox box &&
+                        box.Name.StartsWith("ChkRefund") &&
+                        box.Tag?.ToString() == condition.ToString())
                     {
                         box.IsChecked = true;
                     }
                 }
             }
-
-            GridLoading.Visibility = Visibility.Collapsed;
-            TabCtrl.IsEnabled = true;
         }
+
+        private void ApplyTheme()
+        {
+            ThemeHandler.ApplyTheme();
+        }
+
+        private void ApplyLanguageSettings()
+        {
+            CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
+            CbxLanguage.ItemsSource = _supportedLanguages;
+            CbxLanguage.SelectedValue = Settings.Language;
+            CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
+        }
+
+        private void SetChecked(CheckBox box, List<int> values, int level)
+        {
+            box.IsChecked = values.Contains(level);
+        }
+
+        //public async Task SetControls()
+        //{
+        //    if (_isSettingControls)
+        //        return;
+
+        //    _isSettingControls = true;
+        //    GridLoading.Visibility = Visibility.Visible;
+        //    TabCtrl.IsEnabled = false;
+        //    try
+        //    {
+        //        await Task.Yield();
+        //        // Add TwitchHandler.TwitchUserLevels values to the combobox CbxUserLevels
+        //        CbxUserLevelsMaxReq.SelectionChanged -= CbxUserLevelsMaxReq_SelectionChanged;
+        //        CbxUserLevels.Items.Clear();
+        //        CbxUserLevelsMaxReq.Items.Clear();
+        //        Array values = Enum.GetValues(typeof(Enums.TwitchUserLevels));
+        //        foreach (object value in values)
+        //        {
+        //            switch (value.ToString())
+        //            {
+        //                case "Broadcaster":
+        //                    continue;
+        //                default:
+        //                    CbxUserLevels.Items.Add(value);
+        //                    CbxUserLevelsMaxReq.Items.Add(value);
+        //                    break;
+        //            }
+        //        }
+        //        Settings.TwitchPollSettings ??= new TwitchPollSettings();
+
+        //        await LoadCommands();
+
+        //        TextBoxPollTitle.Text = Settings.TwitchPollSettings.Title;
+        //        TextBoxPollAnswer1.Text = Settings.TwitchPollSettings.Choices.First();
+        //        TextBoxPollAnswer2.Text = Settings.TwitchPollSettings.Choices.Last();
+        //        ToggleSwitchPollAdditionalVotes.IsOn = Settings.TwitchPollSettings.AdditionalVotesEnabled;
+        //        NumericUpDownPollChannelPointsPerVote.Value = Settings.TwitchPollSettings.ChannelPointsPerVote;
+        //        NumericUpDownPollDuration.Value = Settings.TwitchPollSettings.Duration;
+        //        if ((string)RadioButtonPollAnswer1.Content == Settings.TwitchPollSettings.Choices.First())
+        //        {
+        //            RadioButtonPollAnswer1.IsChecked = true;
+        //        }
+        //        else if ((string)RadioButtonPollAnswer2.Content == Settings.TwitchPollSettings.Choices.Last())
+        //        {
+        //            RadioButtonPollAnswer2.IsChecked = true;
+        //        }
+
+        //        NudMaxReq.Value = Settings.TwSrMaxReqEveryone;
+        //        CbxUserLevelsMaxReq.SelectionChanged += CbxUserLevelsMaxReq_SelectionChanged;
+        //        if (CbxUserLevelsMaxReq.Items.Count > 0)
+        //            CbxUserLevelsMaxReq.SelectedIndex = 0;
+        //        // Sets all the controls from settings
+        //        ThemeToggleSwitch.IsOn = Settings.Theme == "BaseDark" || Settings.Theme == "Dark";
+        //        if (!string.IsNullOrEmpty(Settings.Directory))
+        //            TxtbxOutputdirectory.Text = Settings.Directory;
+        //        ChbxAutoClear.IsOn = Settings.AutoClearQueue;
+        //        ChbxTwAutoconnect.IsOn = Settings.TwAutoConnect;
+        //        ChbxTwReward.IsOn = Settings.TwSrReward;
+        //        ChbxAutostart.IsOn = Settings.Autostart;
+        //        ChbxCover.IsOn = Settings.DownloadCover;
+        //        TglCanvas.IsOn = Settings.DownloadCanvas;
+        //        CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
+        //        //ChbxCustomPause.IsOn = Settings.CustomPauseTextEnabled;
+        //        ChbxMinimizeSystray.IsOn = Settings.Systray;
+        //        ChbxOpenQueueOnStartup.IsOn = Settings.OpenQueueOnStartup;
+        //        ChbxSpaces.IsChecked = Settings.AppendSpaces;
+        //        ChbxSpacesSplitFiles.IsChecked = Settings.AppendSpacesSplitFiles;
+        //        ChbxSplit.IsOn = Settings.SplitOutput;
+        //        ChbxUpload.IsOn = Settings.Upload;
+        //        NudSpaces.Value = Settings.SpaceCount;
+        //        NudChrome.Value = Settings.ChromeFetchRate;
+        //        NudCooldown.Value = Settings.TwSrCooldown;
+        //        NudCooldownPerUser.Value = Settings.TwSrPerUserCooldown;
+        //        NudMaxlength.Value = Settings.MaxSongLength;
+        //        TbClientId.Text = Settings.ClientId;
+        //        TbClientSecret.Password = Settings.ClientSecret;
+        //        TglAnnounceInChat.IsOn = Settings.AnnounceInChat;
+        //        TglswSpotify.IsOn = true;
+        //        TglUseDefaultBrowser.IsOn = Settings.UseDefaultBrowser;
+        //        Tglsw_OnlyAddToPlaylist.IsOn = Settings.AddSrtoPlaylistOnly;
+        //        //TxtbxRewardId.Text = Settings.TwRewardId;
+        //        TglSharedChat.IsOn = Settings.SharedChatEnabled;
+        //        TextBox.Text = Settings.SongifyApiKey;
+        //        PasswordBox.Password = Settings.SongifyApiKey;
+        //        PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
+        //        NudBits.Value = Settings.MinimumBitsForSr;
+        //        TbBitsKeyword.Text = Settings.SrForBitsKeyWord;
+        //        TxtbxTwChannel.Text = Settings.TwChannel;
+        //        TxtbxTwOAuth.Password = Settings.TwOAuth;
+        //        TxtbxTwUser.Text = Settings.TwAcc;
+        //        TxtbxCustompausetext.Text = Settings.CustomPauseText;
+        //        TxtbxOutputformat.Text = Settings.OutputString;
+        //        TxtbxOutputformat2.Text = Settings.OutputString2;
+        //        CbxUserLevels.SelectedIndex = Settings.TwSrUserLevel == -1 ? 0 : Settings.TwSrUserLevel;
+        //        NudServerPort.Value = Settings.WebServerPort;
+        //        tgl_KeepCover.IsOn = Settings.KeepAlbumCover;
+        //        TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
+        //        TglBetaUpdates.IsOn = Settings.BetaUpdates;
+        //        TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
+        //        TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
+        //        BtnWebserverStart.Content = GlobalObjects.WebServer.Run
+        //            ? Properties.Resources.window_settings_webserver_stop
+        //            : Properties.Resources.window_settings_webserver_start;
+        //        ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
+        //        Tglsw_BitsForSr.IsOn = Settings.SrForBits;
+        //        TglInformChat.IsOn = Settings.ChatLiveStatus;
+        //        TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
+        //        Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
+        //        ComboboxRedirectPort.SelectionChanged -= ComboboxRedirectPort_SelectionChanged;
+        //        ComboboxfetchPort.SelectionChanged -= ComboboxfetchPort_SelectionChanged;
+        //        ComboboxRedirectPort.Items.Clear();
+        //        ComboboxfetchPort.Items.Clear();
+        //        NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
+        //        TbRequesterPrefix.Text = Settings.RequesterPrefix;
+        //        ApplicationDetails.RedirectPorts.ForEach(i => ComboboxRedirectPort.Items.Add(i));
+        //        ApplicationDetails.FetchPorts.ForEach(i => ComboboxfetchPort.Items.Add(i));
+        //        ComboboxRedirectPort.SelectionChanged += ComboboxRedirectPort_SelectionChanged;
+        //        ComboboxfetchPort.SelectionChanged += ComboboxfetchPort_SelectionChanged;
+        //        ComboboxRedirectPort.SelectedItem = Settings.TwitchRedirectPort;
+        //        ComboboxfetchPort.SelectedItem = Settings.TwitchFetchPort;
+        //        Cctrl.Content = new UcBotResponses();
+        //        TglDonationReminder.IsOn = Settings.DonationReminder;
+        //        TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
+        //        TglDebugLogging.IsOn = Settings.DebugLogging;
+        //        Settings.UserLevelsCommand ??= [];
+        //        Settings.UserLevelsReward ??= [];
+
+        //        Settings.UnlimitedSrUserlevelsCommand ??= [];
+        //        Settings.UnlimitedSrUserlevelsReward ??= [];
+
+        //        TglOnlySkipNonSrRewards.IsOn = Settings.SkipOnlyNonSrSongs;
+
+        //        ChckUlCommandViewer.IsChecked = Settings.UserLevelsCommand.Contains(0);
+        //        ChckUlCommandFollower.IsChecked = Settings.UserLevelsCommand.Contains(1);
+        //        ChckUlCommandSub.IsChecked = Settings.UserLevelsCommand.Contains(2);
+        //        ChckUlCommandSubT2.IsChecked = Settings.UserLevelsCommand.Contains(3);
+        //        ChckUlCommandSubT3.IsChecked = Settings.UserLevelsCommand.Contains(4);
+        //        ChckUlCommandVip.IsChecked = Settings.UserLevelsCommand.Contains(5);
+        //        ChckUlCommandMod.IsChecked = Settings.UserLevelsCommand.Contains(6);
+
+        //        ChckUlRewardViewer.IsChecked = Settings.UserLevelsReward.Contains(0);
+        //        ChckUlRewardFollower.IsChecked = Settings.UserLevelsReward.Contains(1);
+        //        ChckUlRewardSub.IsChecked = Settings.UserLevelsReward.Contains(2);
+        //        ChckUlRewardSubT2.IsChecked = Settings.UserLevelsReward.Contains(3);
+        //        ChckUlRewardSubT3.IsChecked = Settings.UserLevelsReward.Contains(4);
+        //        ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(5);
+        //        ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(6);
+
+        //        ChckUnlimitedCommandViewer.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(0);
+        //        ChckUnlimitedCommandFollower.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(1);
+        //        ChckUnlimitedCommandSub.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(2);
+        //        ChckUnlimitedCommandSubT2.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(3);
+        //        ChckUnlimitedCommandSubT3.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(4);
+        //        ChckUnlimitedCommandVip.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(5);
+        //        ChckUnlimitedCommandMod.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(6);
+
+        //        ChckUnlimitedRewardViewer.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(0);
+        //        ChckUnlimitedRewardFollower.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(1);
+        //        ChckUnlimitedRewardSub.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(2);
+        //        ChckUnlimitedRewardSubT2.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(3);
+        //        ChckUnlimitedRewardSubT3.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(4);
+        //        ChckUnlimitedRewardVip.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(5);
+        //        ChckUnlimitedRewardMod.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(6);
+
+        //        TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
+        //        CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
+
+        //        GenerateRefundConditionToggles();
+
+        //        if (SpotifyApiHandler.Client != null)
+        //        {
+        //            PrivateUser? profile = null;
+
+        //            try
+        //            {
+        //                if (Settings.SpotifyProfile == null)
+        //                    profile = await SpotifyApiHandler.GetUser(); // <-- used to crash here
+        //                else
+        //                {
+        //                    profile = Settings.SpotifyProfile;
+        //                }
+        //            }
+        //            catch (Exception ex) // Optional: catch specific SpotifyAPI exceptions if you have them
+        //            {
+        //                Logger.LogExc(ex);
+        //            }
+
+        //            if (profile != null)
+        //            {
+        //                // Safe: DisplayName can be null as well
+        //                LblSpotifyAcc.Content = $"{Properties.Resources.window_settings_integration_spotify_linked} {profile.DisplayName ?? "(unknown)"}";
+
+        //                try
+        //                {
+        //                    if (profile.Images is { Count: > 0 } && !string.IsNullOrEmpty(profile.Images[0].Url))
+        //                    {
+        //                        BitmapImage bitmap = new();
+        //                        bitmap.BeginInit();
+        //                        bitmap.UriSource = new Uri(profile.Images[0].Url, UriKind.Absolute);
+        //                        bitmap.EndInit();
+        //                        ImgSpotifyProfile.ImageSource = bitmap;
+        //                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Collapsed;
+        //                    }
+        //                    else
+        //                    {
+        //                        ImgSpotifyProfile.ImageSource = null;
+        //                        ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+        //                    }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Logger.LogExc(ex);
+        //                    ImgSpotifyProfile.ImageSource = null;
+        //                    ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+        //                }
+
+        //                try
+        //                {
+        //                    await LoadSpotifyPlaylists();
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Logger.LogExc(ex);
+        //                    // keep UI alive even if playlists fail
+        //                }
+        //            }
+        //            else
+        //            {
+        //                // Graceful fallback when Spotify is unavailable / blocked / auth expired
+        //                ImgSpotifyProfile.ImageSource = null;
+        //                ImgSpotifyProfilePlaceholder.Visibility = Visibility.Visible;
+        //            }
+        //        }
+
+        //        ThemeHandler.ApplyTheme();
+        //        CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
+        //        CbxLanguage.ItemsSource = _supportedLanguages;
+        //        CbxLanguage.SelectedValue = Settings.Language;
+
+        //        CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
+        //        CbAccountSelection.SelectionChanged -= CbAccountSelection_SelectionChanged;
+        //        CbAccountSelection.Items.Clear();
+        //        if (Settings.TwitchUser != null)
+        //        {
+        //            BtnTwitchLogout.Visibility = Visibility.Visible;
+        //            BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
+        //            UpdateTwitchUserUi(Settings.TwitchUser, ImgTwitchProfile, LblTwitchName, BtnLogInTwitch, 0,
+        //                BtnLogInTwitchAlt);
+        //            //TxtbxTwChannel.Text = Settings.TwitchUser.Login;
+        //            CbAccountSelection.Items.Add(new ComboBoxItem
+        //            {
+        //                Content = new UcAccountItem(Settings.TwitchUser.Login, Settings.TwitchAccessToken)
+        //            });
+        //        }
+        //        else
+        //        {
+        //            BtnLogInTwitch.Visibility = Visibility.Visible;
+        //            BtnLogInTwitchAlt.Visibility = Visibility.Visible;
+        //            LblMainExpiry.Visibility = Visibility.Collapsed;
+        //            Icon icon = LoadSongifyIcon();
+        //            Bitmap bitmap = icon.ToBitmap();
+        //            MemoryStream ms = new();
+        //            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        //            ms.Position = 0;
+        //            BitmapImage bitmapImage = new();
+        //            bitmapImage.BeginInit();
+        //            bitmapImage.StreamSource = ms;
+        //            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        //            bitmapImage.EndInit();
+        //            ImgTwitchProfile.ImageSource = bitmapImage;
+
+        //            BtnTwitchLogout.Visibility = Visibility.Collapsed;
+        //            BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
+
+        //            LblTwitchName.Content = "Main Account:";
+        //        }
+
+        //        if (Settings.TwitchBotUser != null)
+        //        {
+        //            BtnTwitchBotLogout.Visibility = Visibility.Visible;
+        //            BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
+        //            UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1,
+        //                BtnLogInTwitchAltBot);
+        //            CbAccountSelection.Items.Add(new ComboBoxItem
+        //            {
+        //                Content = new UcAccountItem(Settings.TwitchBotUser.Login, Settings.TwitchBotToken)
+        //            });
+        //        }
+        //        else
+        //        {
+        //            BtnLogInTwitchBot.Visibility = Visibility.Visible;
+        //            BtnLogInTwitchAltBot.Visibility = Visibility.Visible;
+        //            LblBotExpiry.Visibility = Visibility.Collapsed;
+        //            Icon icon = LoadSongifyIcon();
+        //            Bitmap bitmap = icon.ToBitmap();
+        //            MemoryStream ms = new();
+        //            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+        //            ms.Position = 0;
+        //            BitmapImage bitmapImage = new();
+        //            bitmapImage.BeginInit();
+        //            bitmapImage.StreamSource = ms;
+        //            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+        //            bitmapImage.EndInit();
+        //            ImgTwitchBotProfile.ImageSource = bitmapImage;
+
+        //            BtnTwitchBotLogout.Visibility = Visibility.Collapsed;
+        //            BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
+
+        //            LblTwitchBotName.Content = "Bot Account:";
+        //        }
+
+        //        if (string.IsNullOrEmpty(Settings.TwAcc))
+        //            CbAccountSelection.SelectedIndex = 0;
+        //        else
+        //            CbAccountSelection.SelectedItem = CbAccountSelection.Items.Cast<ComboBoxItem>().FirstOrDefault(item =>
+        //                ((UcAccountItem)item.Content).Username != null &&
+        //                ((UcAccountItem)item.Content).Username == Settings.TwAcc);
+        //        CbAccountSelection.SelectionChanged += CbAccountSelection_SelectionChanged;
+        //        if (TwitchHandler.TwitchApi != null)
+        //            await LoadRewards();
+
+        //        if (Settings.RefundConditons != null)
+        //            foreach (int condition in Settings.RefundConditons)
+        //            {
+        //                foreach (UIElement child in GrdTwitchReward.Children)
+        //                {
+        //                    if (child is CheckBox box && box.Name.StartsWith("ChkRefund") &&
+        //                        box.Tag.ToString() == condition.ToString())
+        //                    {
+        //                        box.IsChecked = true;
+        //                    }
+        //                }
+        //            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Logger.Log(LogLevel.Error, LogSource.Core, "Error in Setting controls.", e);
+        //    }
+        //    finally
+        //    {
+        //        GridLoading.Visibility = Visibility.Collapsed;
+        //        TabCtrl.IsEnabled = true;
+        //        _isSettingControls = false;
+
+        //    }
+        //}
 
         public async Task LoadCommands()
         {
@@ -899,7 +1398,7 @@ namespace Songify_Slim.Views
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Sets the source (Spotify, BrowserCompanion, Nightbot)
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 // This prevents that the selected is always 0 (initialize components)
                 return;
 
@@ -911,7 +1410,7 @@ namespace Songify_Slim.Views
             // Sets command cooldown
             if (NudCooldown.Value == null)
                 return;
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.TwSrCooldown = (int)NudCooldown.Value;
             if (!NudCooldown.Value.HasValue) return;
@@ -1073,7 +1572,7 @@ namespace Songify_Slim.Views
 
         private void TxtbxOutputformat_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             // write custom output format to settings
             if (TxtbxOutputformat.Text == Settings.OutputString)
@@ -1084,7 +1583,7 @@ namespace Songify_Slim.Views
 
         private void TxtbxOutputformat2_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if (TxtbxOutputformat2.Text == Settings.OutputString2)
                 return;
@@ -1098,7 +1597,7 @@ namespace Songify_Slim.Views
 
         private void CbxUserLevelsMaxReq_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
 
             NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
@@ -1218,7 +1717,7 @@ namespace Songify_Slim.Views
 
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
             int? value = (int?)((NumericUpDown)sender).Value;
             if (value == null) return;
             NudServerPort.ValueChanged -= NudServerPort_ValueChanged;
@@ -1328,7 +1827,7 @@ namespace Songify_Slim.Views
 
         private async void Cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item) return;
             if (item.Playlist.Id == Settings.SpotifyPlaylistId.PlaylistId)
@@ -1344,7 +1843,7 @@ namespace Songify_Slim.Views
         {
             try
             {
-                if (!IsLoaded)
+                if (!IsLoaded || _isSettingControls)
                     return;
                 await ResetTwitchConnection();
             }
@@ -1553,7 +2052,7 @@ namespace Songify_Slim.Views
 
         private void CbSpotifySongLimitPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
                 return;
@@ -1577,7 +2076,7 @@ namespace Songify_Slim.Views
 
         private async void TglDonationReminder_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if (Settings.DonationReminder == ((ToggleSwitch)sender).IsOn)
                 return;
@@ -1624,7 +2123,7 @@ namespace Songify_Slim.Views
 
         private void CbPauseOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if ((Enums.PauseOptions)CbPauseOptions.SelectedIndex == Settings.PauseOption)
                 return;
@@ -1641,7 +2140,7 @@ namespace Songify_Slim.Views
         private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender,
             RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if (!NudCooldownPerUser.Value.HasValue) return;
             Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
@@ -1653,14 +2152,14 @@ namespace Songify_Slim.Views
 
         private void Tgl_KeepCover_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.KeepAlbumCover = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TglCanvas_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
@@ -1765,7 +2264,7 @@ namespace Songify_Slim.Views
 
         private void CbxSpotifyRedirectUri_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.SpotifyRedirectUri = ((ComboBox)sender).SelectedIndex switch
             {
@@ -1788,7 +2287,7 @@ namespace Songify_Slim.Views
 
         private void NudBits_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
             if (!NudBits.Value.HasValue) return;
             Settings.MinimumBitsForSr = (int)NudBits.Value;
             string imageName = GetImageNameForValue((int)NudBits.Value);
@@ -1810,14 +2309,14 @@ namespace Songify_Slim.Views
 
         private void PwbSongifyToken_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.SongifyApiKey = ((PasswordBox)sender).Password;
         }
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if (TextBox.Text != PasswordBox.Password)
                 Settings.SongifyApiKey = PasswordBox.Password;
@@ -1851,7 +2350,7 @@ namespace Songify_Slim.Views
 
         private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
 
             // Only update if not a pure visibility toggle
@@ -1923,7 +2422,7 @@ namespace Songify_Slim.Views
 
         private void RefundCondition_Toggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
 
             if (sender is not ToggleSwitch { Tag: Enums.RefundCondition conditionValue } toggle) return;
             List<Enums.RefundCondition> current = Settings.RefundConditons;
@@ -2075,21 +2574,21 @@ namespace Songify_Slim.Views
 
         private void TglOnlySkipNonSrRewards_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsOn;
         }
 
         private void Tglsw_BitsForSr_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.SrForBits = ((ToggleSwitch)sender).IsOn;
         }
 
         private void NudSpotifyFetchRate_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             if (!NudSpotifyFetchRate.Value.HasValue) return;
             Settings.SpotifyFetchRate = (int)NudSpotifyFetchRate.Value;
@@ -2102,14 +2601,14 @@ namespace Songify_Slim.Views
 
         private void TglDebugLogging_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.DebugLogging = ((ToggleSwitch)sender).IsOn;
         }
 
         private void PasswordBox_YoutubeApiKey_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.YoutubeApiKey = PasswordBox_YoutubeApiKey.Password;
         }
@@ -2147,14 +2646,14 @@ namespace Songify_Slim.Views
 
         private void TextBoxPollTitle_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
             Settings.TwitchPollSettings.Title = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
         }
 
         private void TextBoxPollAnswer1_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
 
             Settings.TwitchPollSettings.Choices[0] = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2162,7 +2661,7 @@ namespace Songify_Slim.Views
 
         private void TextBoxPollAnswer2_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
 
             Settings.TwitchPollSettings.Choices[1] = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2170,7 +2669,7 @@ namespace Songify_Slim.Views
 
         private void ToggleSwitchPollAdditionalVotes_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
 
             Settings.TwitchPollSettings.AdditionalVotesEnabled = ((ToggleSwitch)sender).IsOn;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2178,7 +2677,7 @@ namespace Songify_Slim.Views
 
         private void NumericUpDownPollChannelPointsPerVote_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
 
             double? value = ((NumericUpDown)sender).Value;
             if (value == null)
@@ -2189,7 +2688,7 @@ namespace Songify_Slim.Views
 
         private void RadioButtonPollAnswer1_OnChecked(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
             Settings.TwitchPollSettings.WinningChoice = ((RadioButton)sender).Content.ToString();
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
         }
@@ -2210,14 +2709,14 @@ namespace Songify_Slim.Views
 
         private void Tgl_SharedChat_Toggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            if (!IsLoaded || _isSettingControls) return;
             Settings.SrForBitsKeyWord = ((TextBox)sender).Text;
         }
     }
