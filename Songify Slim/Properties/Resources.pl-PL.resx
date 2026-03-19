@@ -17,16 +17,6 @@
     <resheader name="version">2.0</resheader>
     <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
     <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
     There are any number of "resheader" rows that contain simple 
     name/value pairs.
     
@@ -117,847 +107,1336 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="brw_ArtistBlocked" xml:space="preserve">
+  <data name="window_botresponses_artist_blocked" xml:space="preserve">
     <value>Artysta jest zablokowany</value>
   </data>
-  <data name="brw_FetchError" xml:space="preserve">
+  <data name="window_botresponses_fetch_error" xml:space="preserve">
     <value>Błąd podczas pobierania danych utworu</value>
   </data>
-  <data name="brw_Header" xml:space="preserve">
+  <data name="window_botresponses_header" xml:space="preserve">
     <value>Skonfiguruj odpowiedzi botów dla następujących scenariuszy:</value>
   </data>
-  <data name="brw_MaxSongs" xml:space="preserve">
+  <data name="window_botresponses_max_songs" xml:space="preserve">
     <value>Maksymalna liczba utworów w kolejce</value>
   </data>
-  <data name="brw_NoSong" xml:space="preserve">
+  <data name="window_botresponses_no_song" xml:space="preserve">
     <value>Nie określono żadnego utworu (puste żądanie)</value>
   </data>
-  <data name="brw_SongInQueue" xml:space="preserve">
+  <data name="window_botresponses_song_in_queue" xml:space="preserve">
     <value>Piosenka już w kolejce</value>
   </data>
-  <data name="brw_SongTooLong" xml:space="preserve">
+  <data name="window_botresponses_song_too_long" xml:space="preserve">
     <value>Piosenka za długa</value>
   </data>
-  <data name="bw_btnAdd" xml:space="preserve">
+  <data name="window_blocklist_add" xml:space="preserve">
     <value>Dodaj</value>
   </data>
-  <data name="bw_btnClear" xml:space="preserve">
+  <data name="window_blocklist_clear" xml:space="preserve">
     <value>Wyczyść</value>
   </data>
-  <data name="bw_cbArtist" xml:space="preserve">
+  <data name="window_blocklist_artist" xml:space="preserve">
     <value>Artysta</value>
   </data>
-  <data name="bw_cbUser" xml:space="preserve">
+  <data name="window_blocklist_user" xml:space="preserve">
     <value>Użytkownik</value>
   </data>
-  <data name="bw_lblBlockedArtists" xml:space="preserve">
+  <data name="window_blocklist_blocked_artists" xml:space="preserve">
     <value>Zablokowani artyści</value>
   </data>
-  <data name="bw_lblBlockedUsers" xml:space="preserve">
+  <data name="window_blocklist_blocked_users" xml:space="preserve">
     <value>Zablokowani użytkownicy</value>
   </data>
-  <data name="bw_menu_Delete" xml:space="preserve">
+  <data name="window_blocklist_delete" xml:space="preserve">
     <value>Usuń</value>
   </data>
-  <data name="lang_deDE" xml:space="preserve">
+  <data name="language_de" xml:space="preserve">
     <value>Niemiecki</value>
   </data>
-  <data name="lang_en" xml:space="preserve">
+  <data name="language_en" xml:space="preserve">
     <value>Angielski</value>
   </data>
-  <data name="menu.song_requests.block_list" xml:space="preserve">
+  <data name="menu_song_requests_block_list" xml:space="preserve">
     <value>Lista zablokowanych</value>
   </data>
-  <data name="menu.twitch.connect" xml:space="preserve">
+  <data name="menu_twitch_connect" xml:space="preserve">
     <value>(Na nowo połączyć</value>
   </data>
-  <data name="mw_menu_Disconnect" xml:space="preserve">
+  <data name="menu_disconnect" xml:space="preserve">
     <value>Rozłącz się</value>
   </data>
-  <data name="menu.file.exit" xml:space="preserve">
+  <data name="menu_file_exit" xml:space="preserve">
     <value>Wyjdź</value>
   </data>
-  <data name="menu.file" xml:space="preserve">
+  <data name="menu_file" xml:space="preserve">
     <value>Plik</value>
   </data>
-  <data name="menu.file.help" xml:space="preserve">
+  <data name="menu_file_help" xml:space="preserve">
     <value>Pomoc</value>
   </data>
-  <data name="menu.help.about" xml:space="preserve">
+  <data name="menu_help_about" xml:space="preserve">
     <value>O</value>
   </data>
-  <data name="menu.history" xml:space="preserve">
+  <data name="menu_history" xml:space="preserve">
     <value>Historia</value>
   </data>
-  <data name="menu.history.browser" xml:space="preserve">
+  <data name="menu_history_browser" xml:space="preserve">
     <value>Przeglądarka historii</value>
   </data>
-  <data name="menu.history.window" xml:space="preserve">
+  <data name="menu_history_window" xml:space="preserve">
     <value>Okno historii</value>
   </data>
-  <data name="mw_menu_Queue" xml:space="preserve">
+  <data name="menu_queue" xml:space="preserve">
     <value>Kolejka</value>
   </data>
-  <data name="menu.song_requests.queue_browser" xml:space="preserve">
+  <data name="menu_song_requests_queue_browser" xml:space="preserve">
     <value>Przeglądarka kolejek</value>
   </data>
-  <data name="menu.song_requests.clear_queue" xml:space="preserve">
+  <data name="menu_song_requests_clear_queue" xml:space="preserve">
     <value>Wyczyść kolejkę</value>
   </data>
-  <data name="menu.song_requests.queue_window" xml:space="preserve">
+  <data name="menu_song_requests_queue_window" xml:space="preserve">
     <value>Okno kolejki</value>
   </data>
-  <data name="menu.file.settings" xml:space="preserve">
+  <data name="menu_file_settings" xml:space="preserve">
     <value>Ustawienia</value>
   </data>
-  <data name="mw_menu_Support" xml:space="preserve">
+  <data name="menu_support" xml:space="preserve">
     <value>Wesprzyj nas</value>
   </data>
-  <data name="menu.file.widget" xml:space="preserve">
+  <data name="menu_file_widget" xml:space="preserve">
     <value>Widżet</value>
   </data>
-  <data name="sw_Appearance_Color" xml:space="preserve">
+  <data name="window_settings_appearance_color" xml:space="preserve">
     <value>Kolor:</value>
   </data>
-  <data name="sw_Appearance_ThemeDark" xml:space="preserve">
+  <data name="window_settings_appearance_theme_dark" xml:space="preserve">
     <value>Ciemny motyw</value>
   </data>
-  <data name="sw_Appearance_ThemeLight" xml:space="preserve">
+  <data name="window_settings_appearance_theme_light" xml:space="preserve">
     <value>Jasny motyw</value>
   </data>
-  <data name="sw_Config_Export" xml:space="preserve">
+  <data name="window_settings_config_export" xml:space="preserve">
     <value>EKSPORT KONFIGURACJI</value>
   </data>
-  <data name="sw_Config_Import" xml:space="preserve">
+  <data name="window_settings_config_import" xml:space="preserve">
     <value>IMPORTUJ KONFIG</value>
   </data>
-  <data name="sw_Integration_Autoconnect" xml:space="preserve">
+  <data name="window_settings_integration_autoconnect" xml:space="preserve">
     <value>automatyczne polączenie</value>
   </data>
-  <data name="sw_Integration_btnLink" xml:space="preserve">
+  <data name="window_settings_integration_link" xml:space="preserve">
     <value>POŁĄCZYĆ</value>
   </data>
-  <data name="sw_Integration_ConfigureResponses" xml:space="preserve">
+  <data name="window_settings_integration_configure_responses" xml:space="preserve">
     <value>Skonfiguruj odpowiedzi i polecenia botów</value>
   </data>
-  <data name="sw_Integration_NBWatermark" xml:space="preserve">
+  <data name="window_settings_integration_nb_watermark" xml:space="preserve">
     <value>NB Nazwa użytkownika (nazwa użytkownika Twitch)</value>
   </data>
-  <data name="sw_Integration_SpotifyLinked" xml:space="preserve">
+  <data name="window_settings_integration_spotify_linked" xml:space="preserve">
     <value>Połączone konto:</value>
   </data>
-  <data name="sw_Integration_TwitchChWatermark" xml:space="preserve">
+  <data name="window_settings_integration_twitch_channel" xml:space="preserve">
     <value>Kanał, do którego chcesz dołączyć</value>
   </data>
-  <data name="sw_SpotifySR_ChannelPoints" xml:space="preserve">
+  <data name="window_settings_spotify_sr_channel_points" xml:space="preserve">
     <value>Nazwa nagrody za punkty kanału</value>
   </data>
-  <data name="sw_SpotifySR_ClearQ" xml:space="preserve">
+  <data name="window_settings_spotify_sr_clear_queue" xml:space="preserve">
     <value>Wyczyść kolejkę przy starcie</value>
   </data>
-  <data name="sw_SpotifySR_MaxLength" xml:space="preserve">
+  <data name="window_settings_spotify_sr_max_length" xml:space="preserve">
     <value>Maksymalna długość utworu (w minutach)</value>
   </data>
-  <data name="sw_SpotifySR_MaxReq" xml:space="preserve">
+  <data name="window_settings_spotify_sr_max_req" xml:space="preserve">
     <value>Maksymalna liczba żądań na użytkownika</value>
   </data>
-  <data name="sw_SpotifySR_MessageLogging" xml:space="preserve">
+  <data name="window_settings_spotify_sr_message_logging" xml:space="preserve">
     <value>Włącz rejestrowanie wiadomości</value>
   </data>
-  <data name="sw_SpotifySR_SRReward" xml:space="preserve">
+  <data name="window_settings_spotify_sr_reward" xml:space="preserve">
     <value>Włącz SR (nagrody za kanał)</value>
   </data>
-  <data name="sw_tcOutput_AddSpaces" xml:space="preserve">
+  <data name="window_settings_output_add_spaces" xml:space="preserve">
     <value>Dodawaj spacje</value>
   </data>
-  <data name="sw_tcOutput_Directory" xml:space="preserve">
+  <data name="window_settings_output_directory" xml:space="preserve">
     <value>Katalog wyjściowy</value>
   </data>
-  <data name="sw_tcOutput_DownloadAlbum" xml:space="preserve">
+  <data name="window_settings_output_download_album" xml:space="preserve">
     <value>Pobierz okładkę albumu (działa tylko z API)</value>
   </data>
-  <data name="sw_tcOutput_Format" xml:space="preserve">
+  <data name="window_settings_output_format" xml:space="preserve">
     <value>Format wyjściowy (plik tekstowy i widget)</value>
   </data>
-  <data name="sw_tcOutput_PauseText" xml:space="preserve">
+  <data name="window_settings_output_pause_text" xml:space="preserve">
     <value>Brak odtwarzania muzyki</value>
   </data>
-  <data name="sw_tcOutput_PauseWatermark" xml:space="preserve">
+  <data name="window_settings_output_pause_watermark" xml:space="preserve">
     <value>Niestandardowy tekst pauzy (pusty dla pustego pliku tekstowego)</value>
   </data>
-  <data name="sw_tcOutput_SplitArtist" xml:space="preserve">
+  <data name="window_settings_output_split_artist" xml:space="preserve">
     <value>Podziel artystę, tytuł i zgłaszającego</value>
   </data>
-  <data name="sw_tcOutput_UploadSongInfo" xml:space="preserve">
+  <data name="window_settings_output_upload_song_info" xml:space="preserve">
     <value>Prześlij informacje o utworze</value>
   </data>
-  <data name="sw_tcSpotify_SaveButton" xml:space="preserve">
+  <data name="window_settings_spotify_save" xml:space="preserve">
     <value>Ratować</value>
   </data>
-  <data name="sw_tcSpotify_UseOwnApp" xml:space="preserve">
+  <data name="window_settings_spotify_use_own_app" xml:space="preserve">
     <value>Użyj własnego identyfikatora aplikacji</value>
   </data>
-  <data name="sw_tcSystem_Autostart" xml:space="preserve">
+  <data name="window_settings_system_autostart" xml:space="preserve">
     <value>Autostart z Windowsem</value>
   </data>
-  <data name="sw_tcSystem_Behavior" xml:space="preserve">
+  <data name="window_settings_system_behavior" xml:space="preserve">
     <value>Zachowanie</value>
   </data>
-  <data name="sw_tcSystem_CheckButton" xml:space="preserve">
+  <data name="window_settings_system_check_updates" xml:space="preserve">
     <value>SPRAWDŹ AKTUALIZACJE</value>
   </data>
-  <data name="sw_tcSystem_ChromeFetchRate" xml:space="preserve">
+  <data name="window_settings_system_chrome_fetch_rate" xml:space="preserve">
     <value>Szybkość pobierania Chrome (sekundy)</value>
   </data>
-  <data name="sw_tcSystem_Minimize" xml:space="preserve">
+  <data name="window_settings_system_minimize" xml:space="preserve">
     <value>Minimalizuj do zasobnika systemowego</value>
   </data>
-  <data name="sw_tcSystem_SendAnonData" xml:space="preserve">
+  <data name="window_settings_system_send_anon_data" xml:space="preserve">
     <value>Przesyłaj anonimowe dane</value>
   </data>
-  <data name="sw_tcSystem_Telemetry" xml:space="preserve">
+  <data name="window_settings_system_telemetry" xml:space="preserve">
     <value>Telemetria</value>
   </data>
-  <data name="sw_tc_Appearance" xml:space="preserve">
+  <data name="window_settings_tab_appearance" xml:space="preserve">
     <value>Wygląd</value>
   </data>
-  <data name="sw_tc_Config" xml:space="preserve">
+  <data name="window_settings_tab_config" xml:space="preserve">
     <value>Konfig</value>
   </data>
-  <data name="sw_tc_Integration" xml:space="preserve">
+  <data name="window_settings_tab_integration" xml:space="preserve">
     <value>Twitch</value>
   </data>
-  <data name="sw_tc_Output" xml:space="preserve">
+  <data name="window_settings_tab_output" xml:space="preserve">
     <value>Wyjście</value>
   </data>
-  <data name="sw_tc_System" xml:space="preserve">
+  <data name="window_settings_tab_system" xml:space="preserve">
     <value>System</value>
   </data>
-  <data name="lang_ru" xml:space="preserve">
+  <data name="language_ru" xml:space="preserve">
     <value>Rosyjski</value>
   </data>
-  <data name="sw_tcSpotify_UseSongifyApp" xml:space="preserve">
+  <data name="window_settings_spotify_use_songify_app" xml:space="preserve">
     <value>Użyj Songify AppID</value>
   </data>
-  <data name="mw_menu_Twitch_Bot" xml:space="preserve">
+  <data name="menu_twitch_bot" xml:space="preserve">
     <value>Konfiguracja bota</value>
   </data>
-  <data name="lang_es" xml:space="preserve">
+  <data name="language_es" xml:space="preserve">
     <value>hiszpański</value>
   </data>
-  <data name="lang_fr" xml:space="preserve">
+  <data name="language_fr" xml:space="preserve">
     <value>Francuski</value>
   </data>
-  <data name="sw_tcSystem_translated" xml:space="preserve">
+  <data name="window_settings_system_translated" xml:space="preserve">
     <value>(przetłumaczone przy użyciu DeepL)</value>
   </data>
-  <data name="brw_cmd_next" xml:space="preserve">
+  <data name="window_botresponses_cmd_next" xml:space="preserve">
     <value>Wyświetla następny utwór w kolejce</value>
   </data>
-  <data name="brw_cmd_off" xml:space="preserve">
+  <data name="window_botresponses_cmd_off" xml:space="preserve">
     <value>Wyłączony</value>
   </data>
-  <data name="brw_cmd_on" xml:space="preserve">
+  <data name="window_botresponses_cmd_on" xml:space="preserve">
     <value>NA</value>
   </data>
-  <data name="brw_cmd_pos" xml:space="preserve">
+  <data name="window_botresponses_cmd_pos" xml:space="preserve">
     <value>Wyświetla pozycję w kolejce żądań utworów użytkowników</value>
   </data>
-  <data name="brw_cmd_song" xml:space="preserve">
+  <data name="window_botresponses_cmd_song" xml:space="preserve">
     <value>Wyświetla bieżący utwór</value>
   </data>
-  <data name="brw_cmd_description" xml:space="preserve">
+  <data name="window_botresponses_cmd_description" xml:space="preserve">
     <value>Opis</value>
   </data>
-  <data name="brw_cmd_enabled" xml:space="preserve">
+  <data name="window_botresponses_cmd_enabled" xml:space="preserve">
     <value>Włączony</value>
   </data>
-  <data name="brw_cmd_trigger" xml:space="preserve">
+  <data name="window_botresponses_cmd_trigger" xml:space="preserve">
     <value>Spust</value>
   </data>
-  <data name="sw_tcOutput_Format2" xml:space="preserve">
+  <data name="window_settings_output_format_chat" xml:space="preserve">
     <value>Format wyjściowy (czat na Twitchu)</value>
   </data>
-  <data name="crw_CreateReward" xml:space="preserve">
+  <data name="window_createreward_create" xml:space="preserve">
     <value>Utwórz nagrodę</value>
   </data>
-  <data name="crw_RewardTitle" xml:space="preserve">
+  <data name="window_createreward_title" xml:space="preserve">
     <value>Tytuł</value>
   </data>
-  <data name="crw_RewardCost" xml:space="preserve">
+  <data name="window_createreward_cost" xml:space="preserve">
     <value>Koszt</value>
   </data>
-  <data name="crw_CreateRewardError" xml:space="preserve">
+  <data name="window_createreward_error" xml:space="preserve">
     <value>Wystąpił problem podczas tworzenia nagrody. Upewnij się, że nie masz już nagrody o tej samej nazwie.</value>
   </data>
-  <data name="crw_CreateRewardSuccess" xml:space="preserve">
+  <data name="window_createreward_success" xml:space="preserve">
     <value>Nagroda „{name}” została utworzona.</value>
   </data>
-  <data name="menu.file.patchnotes" xml:space="preserve">
+  <data name="menu_file_patchnotes" xml:space="preserve">
     <value>Opis zmian</value>
   </data>
-  <data name="menu.twitch.login" xml:space="preserve">
+  <data name="menu_twitch_login" xml:space="preserve">
     <value>Zaloguj się za pomocą Twitcha</value>
   </data>
-  <data name="menu.view.console" xml:space="preserve">
+  <data name="menu_view_console" xml:space="preserve">
     <value>Konsola</value>
   </data>
-  <data name="brw_cmd_skip" xml:space="preserve">
+  <data name="window_botresponses_cmd_skip" xml:space="preserve">
     <value>Pomija bieżący utwór</value>
   </data>
-  <data name="brw_cmd_skipvote" xml:space="preserve">
+  <data name="window_botresponses_cmd_skipvote" xml:space="preserve">
     <value>Rozpoczyna głosowanie za pominięciem bieżącego utworu</value>
   </data>
-  <data name="brw_cmd_skipvotecount" xml:space="preserve">
+  <data name="window_botresponses_cmd_skipvotecount" xml:space="preserve">
     <value>Potrzebna liczba głosów</value>
   </data>
-  <data name="sw_WebServer_Port" xml:space="preserve">
+  <data name="window_settings_webserver_port" xml:space="preserve">
     <value>Port serwera WWW</value>
   </data>
-  <data name="sw_WebServer_StartWebServer" xml:space="preserve">
+  <data name="window_settings_webserver_start" xml:space="preserve">
     <value>Uruchom serwer WWW</value>
   </data>
-  <data name="sw_WebServer_OpenWebsite" xml:space="preserve">
+  <data name="window_settings_webserver_open_website" xml:space="preserve">
     <value>Otwórz stronę internetową</value>
   </data>
-  <data name="Sw_System_Privacy" xml:space="preserve">
+  <data name="window_settings_system_privacy" xml:space="preserve">
     <value>Ukryj nazwy kont i zdjęcia profilowe</value>
   </data>
-  <data name="Sw_System_OpenQueueOnStartup" xml:space="preserve">
+  <data name="window_settings_system_open_queue_on_startup" xml:space="preserve">
     <value>Otwórz okno kolejki podczas uruchamiania</value>
   </data>
-  <data name="Sw_Integration_OnlyWorkWhenLive" xml:space="preserve">
+  <data name="window_settings_integration_only_when_live" xml:space="preserve">
     <value>Ogranicz aktywność Twitcha, aby działała tylko wtedy, gdy transmisja jest na żywo (wymagane jest logowanie na Twitchu)</value>
   </data>
-  <data name="Sw_Integration_ManageRewards" xml:space="preserve">
+  <data name="window_settings_integration_manage_rewards" xml:space="preserve">
     <value>Zarządzaj nagrodami</value>
   </data>
-  <data name="Sw_Integration_MaxSrUser" xml:space="preserve">
+  <data name="window_settings_integration_max_sr_user" xml:space="preserve">
     <value>Maks. SR / Użytkownik (w zależności od poziomu użytkownika)</value>
   </data>
-  <data name="Sw_Integration_RefundOn" xml:space="preserve">
+  <data name="window_settings_integration_refund_when" xml:space="preserve">
     <value>Zwrot pieniędzy, kiedy</value>
   </data>
-  <data name="Sw_Integration_RefundUserLevelLow" xml:space="preserve">
+  <data name="window_settings_integration_refund_user_level_low" xml:space="preserve">
     <value>Poziom użytkownika jest zbyt niski</value>
   </data>
-  <data name="Sw_Integration_RefundUSerBlocked" xml:space="preserve">
+  <data name="window_settings_integration_refund_user_blocked" xml:space="preserve">
     <value>Użytkownik ma zablokowany dostęp do SR</value>
   </data>
-  <data name="Sw_Integration_RefundSpotifyNotConnected" xml:space="preserve">
+  <data name="window_settings_integration_refund_spotify_not_connected" xml:space="preserve">
     <value>Spotify nie jest połączone</value>
   </data>
-  <data name="Sw_Integration_RefundSongNotAvailable" xml:space="preserve">
+  <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Utwór nie jest dostępny w regionie</value>
   </data>
-  <data name="Sw_Integration_RefundArtistBlocked" xml:space="preserve">
+  <data name="window_settings_integration_refund_artist_blocked" xml:space="preserve">
     <value>Utwór zawiera zablokowanych wykonawców</value>
   </data>
-  <data name="Sw_Integration_RefundSongTooLong" xml:space="preserve">
+  <data name="window_settings_integration_refund_song_too_long" xml:space="preserve">
     <value>Czas trwania utworu jest zbyt długi</value>
   </data>
-  <data name="Sw_Integration_RefundSongAlreadyInQueue" xml:space="preserve">
+  <data name="window_settings_integration_refund_song_already_in_queue" xml:space="preserve">
     <value>Piosenka jest już w kolejce</value>
   </data>
-  <data name="Sw_Integration_RefundNoSongFound" xml:space="preserve">
+  <data name="window_settings_integration_refund_no_song_found" xml:space="preserve">
     <value>Nie znaleziono żadnego utworu</value>
   </data>
-  <data name="Sw_Integration_RefundSongAdded" xml:space="preserve">
+  <data name="window_settings_integration_refund_song_added" xml:space="preserve">
     <value>Utwór został dodany do kolejki</value>
   </data>
-  <data name="Sw_Integtation_Tc_Accounts" xml:space="preserve">
+  <data name="window_settings_tab_accounts" xml:space="preserve">
     <value>Konta</value>
   </data>
-  <data name="Sw_Integtation_Tc_Rewards" xml:space="preserve">
+  <data name="window_settings_tab_rewards" xml:space="preserve">
     <value>Nagrody</value>
   </data>
-  <data name="Sw_Integtation_Tc_SongRequests" xml:space="preserve">
+  <data name="window_settings_tab_song_requests" xml:space="preserve">
     <value>Prośby o piosenkę</value>
   </data>
-  <data name="mw_menu_Twitch_TwitchLoggedIn" xml:space="preserve">
+  <data name="menu_twitch_logged_in" xml:space="preserve">
     <value>Zalogowałem się za pomocą Twitcha</value>
   </data>
-  <data name="Sw_SpotifySR_UnlimitedSRs" xml:space="preserve">
+  <data name="window_settings_spotify_sr_unlimited" xml:space="preserve">
     <value>Nielimitowane prośby o utwory</value>
   </data>
-  <data name="menu.song_requests" xml:space="preserve">
+  <data name="menu_song_requests" xml:space="preserve">
     <value>Prośby o piosenkę</value>
   </data>
-  <data name="menu.view" xml:space="preserve">
+  <data name="menu_view" xml:space="preserve">
     <value>Pogląd</value>
   </data>
-  <data name="now_playing.placeholder" xml:space="preserve">
+  <data name="common_now_playing_placeholder" xml:space="preserve">
     <value>Artysta – tytuł</value>
   </data>
-  <data name="menu.twitch.check_online_status" xml:space="preserve">
+  <data name="menu_twitch_check_online_status" xml:space="preserve">
     <value>Sprawdź status online</value>
   </data>
-  <data name="WinTitle_Queue" xml:space="preserve">
+  <data name="window_queue_title" xml:space="preserve">
     <value>Kolejka piosenek</value>
   </data>
-  <data name="s_Length" xml:space="preserve">
+  <data name="common_length" xml:space="preserve">
     <value>Długość</value>
   </data>
-  <data name="s_Requester" xml:space="preserve">
+  <data name="common_requester" xml:space="preserve">
     <value>Osoba żądająca</value>
   </data>
-  <data name="WinTitle_Blocklist" xml:space="preserve">
+  <data name="window_blocklist_title" xml:space="preserve">
     <value>Czarna lista</value>
   </data>
-  <data name="WinTitle_History" xml:space="preserve">
+  <data name="window_history_title" xml:space="preserve">
     <value>Historia utworu</value>
   </data>
-  <data name="Sw_System_PrivacyHeader" xml:space="preserve">
+  <data name="window_settings_system_privacy_header" xml:space="preserve">
     <value>Prywatność</value>
   </data>
-  <data name="sw_tc_WebServer" xml:space="preserve">
+  <data name="window_settings_tab_webserver" xml:space="preserve">
     <value>Serwer internetowy</value>
   </data>
-  <data name="sw_WebServer_AutoStart" xml:space="preserve">
+  <data name="window_settings_webserver_auto_start" xml:space="preserve">
     <value>Automatycznie uruchom serwer WWW</value>
   </data>
-  <data name="sw_Config_ResetConfig" xml:space="preserve">
+  <data name="window_settings_config_reset" xml:space="preserve">
     <value>Zresetuj konfigurację</value>
   </data>
-  <data name="sw_WebServer_StopWebServer" xml:space="preserve">
+  <data name="window_settings_webserver_stop" xml:space="preserve">
     <value>Zatrzymaj serwer WWW</value>
   </data>
-  <data name="sw_Config_GetBetaUpdates" xml:space="preserve">
+  <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Pobierz aktualizacje wersji beta</value>
   </data>
-  <data name="mw_LiveOutputLinkSpotify" xml:space="preserve">
+  <data name="window_main_link_spotify" xml:space="preserve">
     <value>Połącz swoje konto Spotify. Ustawienia -&gt; Spotify</value>
   </data>
-  <data name="s_Save" xml:space="preserve">
+  <data name="common_save" xml:space="preserve">
     <value>Ratować</value>
   </data>
-  <data name="s_Upload" xml:space="preserve">
+  <data name="common_upload" xml:space="preserve">
     <value>Wgrywać</value>
   </data>
-  <data name="s_Name" xml:space="preserve">
+  <data name="common_name" xml:space="preserve">
     <value>Nazwa</value>
   </data>
-  <data name="s_Time" xml:space="preserve">
+  <data name="common_time" xml:space="preserve">
     <value>Czas</value>
   </data>
-  <data name="sw_Twitch_Rewards_CreateNewReward" xml:space="preserve">
+  <data name="window_settings_twitch_create_reward" xml:space="preserve">
     <value>Utwórz nową nagrodę</value>
   </data>
-  <data name="brw_ModSkip" xml:space="preserve">
+  <data name="window_botresponses_mod_skip" xml:space="preserve">
     <value>Nadawca/Moderator/Zgłaszający pominął utwór</value>
   </data>
-  <data name="brw_Pos" xml:space="preserve">
+  <data name="window_botresponses_pos" xml:space="preserve">
     <value>Odpowiedź na polecenie !pos</value>
   </data>
-  <data name="brw_Next" xml:space="preserve">
+  <data name="window_botresponses_next" xml:space="preserve">
     <value>Odpowiedź na polecenie !next</value>
   </data>
-  <data name="WinTitle_BotResponsesCommands" xml:space="preserve">
+  <data name="window_botresponses_title" xml:space="preserve">
     <value>Odpowiedzi i polecenia botów</value>
   </data>
-  <data name="brw_tc_Responses" xml:space="preserve">
+  <data name="window_botresponses_tab_responses" xml:space="preserve">
     <value>Odpowiedzi</value>
   </data>
-  <data name="brw_tc_Commands" xml:space="preserve">
+  <data name="window_botresponses_tab_commands" xml:space="preserve">
     <value>Polecenia</value>
   </data>
-  <data name="brw_VoteSkip" xml:space="preserve">
+  <data name="window_botresponses_vote_skip" xml:space="preserve">
     <value>Użytkownik głosował za pominięciem bieżącego utworu</value>
   </data>
-  <data name="sw_Spotify_RewardSR" xml:space="preserve">
+  <data name="window_settings_spotify_reward_sr" xml:space="preserve">
     <value>Nagroda za prośby o piosenkę</value>
   </data>
-  <data name="sw_Spotify_RewardSkip" xml:space="preserve">
+  <data name="window_settings_spotify_reward_skip" xml:space="preserve">
     <value>Nagroda za pominięcie utworu</value>
   </data>
-  <data name="sw_SpotifySR_SsrMovedToBotConfig" xml:space="preserve">
+  <data name="window_settings_spotify_sr_moved_to_bot_config" xml:space="preserve">
     <value>Komenda !ssr została przeniesiona do konfiguracji bota</value>
   </data>
-  <data name="Sw_Integration_MinUserLevel" xml:space="preserve">
+  <data name="window_settings_integration_min_user_level" xml:space="preserve">
     <value>Minimalny poziom użytkownika wymagany dla SR</value>
   </data>
-  <data name="sw_Integration_Twitch" xml:space="preserve">
+  <data name="window_settings_integration_twitch_account" xml:space="preserve">
     <value>Konto na Twitchu</value>
   </data>
-  <data name="sw_Twitch_LogOut" xml:space="preserve">
+  <data name="window_settings_twitch_logout" xml:space="preserve">
     <value>Wyloguj</value>
   </data>
-  <data name="sw_Integration_RefundDisclaimer" xml:space="preserve">
+  <data name="window_settings_integration_refund_disclaimer" xml:space="preserve">
     <value>Aby móc zwrócić punkty, należy utworzyć nagrodę za pośrednictwem Songify. Wybierz nagrodę, którą możesz zarządzać, lub utwórz nową.</value>
   </data>
-  <data name="msgbx_BotAccount" xml:space="preserve">
+  <data name="dialog_bot_account" xml:space="preserve">
     <value>Konto bota</value>
   </data>
-  <data name="msgbx_UseAsBotAccount" xml:space="preserve">
+  <data name="dialog_use_as_bot_account" xml:space="preserve">
     <value>Pomyślnie powiązano z {account}. Czy chcesz używać tego konta również jako bota na czacie?</value>
   </data>
-  <data name="msgbx_Yes" xml:space="preserve">
+  <data name="dialog_yes" xml:space="preserve">
     <value>Tak</value>
   </data>
-  <data name="msgbx_No" xml:space="preserve">
+  <data name="dialog_no" xml:space="preserve">
     <value>NIE</value>
   </data>
-  <data name="Sw_Integration_StreamNotLifeNotification" xml:space="preserve">
+  <data name="window_settings_integration_stream_not_live_notification" xml:space="preserve">
     <value>Wyślij powiadomienie offline do czatu</value>
   </data>
-  <data name="brw_Song" xml:space="preserve">
+  <data name="window_botresponses_song" xml:space="preserve">
     <value>Odpowiedź na polecenie !song</value>
   </data>
-  <data name="sw_tcSystem_lblLanguage" xml:space="preserve">
+  <data name="window_settings_system_language" xml:space="preserve">
     <value>Język</value>
   </data>
-  <data name="brw_cmd_remove" xml:space="preserve">
+  <data name="window_botresponses_cmd_remove" xml:space="preserve">
     <value>Usuwa najnowszą prośbę użytkownika o utwór.</value>
   </data>
-  <data name="brw_SongLike" xml:space="preserve">
+  <data name="window_botresponses_song_like" xml:space="preserve">
     <value>Odpowiedź na polecenie !songlike</value>
   </data>
-  <data name="brw_cmd_songlike" xml:space="preserve">
+  <data name="window_botresponses_cmd_songlike" xml:space="preserve">
     <value>Dodaje bieżący utwór do listy odtwarzania wybranej w konfiguracji Spotify.</value>
   </data>
-  <data name="sw_SpotifySR_Userlevel_command" xml:space="preserve">
+  <data name="window_settings_spotify_sr_userlevel_command" xml:space="preserve">
     <value>Dozwolone poziomy użytkowników dla polecenia SR</value>
   </data>
-  <data name="sw_SpotifySR_Userlevel_reward" xml:space="preserve">
+  <data name="window_settings_spotify_sr_userlevel_reward" xml:space="preserve">
     <value>Dozwolone poziomy użytkowników dla nagrody SR</value>
   </data>
-  <data name="sw_tcSpotify_SongLikeLabel" xml:space="preserve">
+  <data name="window_settings_spotify_songlike_label" xml:space="preserve">
     <value>Lista odtwarzania ulubionych utworów</value>
   </data>
-  <data name="sw_tcSpotify_SongLikeLabelTooltip" xml:space="preserve">
+  <data name="window_settings_spotify_songlike_tooltip" xml:space="preserve">
     <value>Lista odtwarzania, do której utwory są dodawane po użyciu polecenia !songlike lub z opcją automatycznego dodawania utworów do listy odtwarzania.</value>
   </data>
-  <data name="sw_tc_Spotify_AddSongsToPlaylist" xml:space="preserve">
+  <data name="window_settings_spotify_add_to_playlist" xml:space="preserve">
     <value>Dodaj wszystkie prośby o utwory do listy odtwarzania</value>
   </data>
-  <data name="brw_SongNotFoundInPlaylist" xml:space="preserve">
+  <data name="window_botresponses_song_not_in_playlist" xml:space="preserve">
     <value>Odpowiedź, gdy utwór nie został znaleziony na liście odtwarzania dozwolonych utworów</value>
   </data>
-  <data name="brw_Remove" xml:space="preserve">
+  <data name="window_botresponses_remove" xml:space="preserve">
     <value>Odpowiedź na polecenie !remove</value>
   </data>
-  <data name="lang_pl" xml:space="preserve">
+  <data name="language_pl" xml:space="preserve">
     <value>Polski</value>
   </data>
-  <data name="lang_pt" xml:space="preserve">
+  <data name="language_pt" xml:space="preserve">
     <value>portugalski</value>
   </data>
-  <data name="sw_Integration_ShowCreds" xml:space="preserve">
+  <data name="window_settings_integration_show_creds" xml:space="preserve">
     <value>Pokaż dane uwierzytelniające</value>
   </data>
-  <data name="sw_tc_Spotify_OnlyAllowFromPlaylist" xml:space="preserve">
+  <data name="window_settings_spotify_only_allow_from_playlist" xml:space="preserve">
     <value>Zezwalaj tylko na utwory z tej listy odtwarzania (SR)</value>
   </data>
-  <data name="sw_SpotifySR_BlockAllExplicit" xml:space="preserve">
+  <data name="window_settings_spotify_sr_block_explicit" xml:space="preserve">
     <value>Blokuj wszystkie wulgarne utwory</value>
   </data>
-  <data name="brw_ExplicitSongs" xml:space="preserve">
+  <data name="window_botresponses_explicit_songs" xml:space="preserve">
     <value>Reakcja, gdy zażądano utworu wulgarnego i włączona jest opcja „blokuj utwory wulgarne”</value>
   </data>
-  <data name="sw_tcOutput_RequesterPrefix" xml:space="preserve">
+  <data name="window_settings_output_requester_prefix" xml:space="preserve">
     <value>Przedrostek tekstu osoby żądającej</value>
   </data>
-  <data name="lang_it" xml:space="preserve">
+  <data name="language_it" xml:space="preserve">
     <value>Włoski</value>
   </data>
-  <data name="sw_tcSystem_UseDefaultBrowser" xml:space="preserve">
+  <data name="window_settings_system_use_default_browser" xml:space="preserve">
     <value>Użyj domyślnej przeglądarki internetowej</value>
   </data>
-  <data name="brw_CommandOnCooldown" xml:space="preserve">
+  <data name="window_botresponses_command_on_cooldown" xml:space="preserve">
     <value>Reakcja, gdy komenda sr jest w trakcie odnowienia</value>
   </data>
-  <data name="brw_NoTrackFound" xml:space="preserve">
+  <data name="window_botresponses_no_track_found" xml:space="preserve">
     <value>Odpowiedź, gdy nie znaleziono żadnego utworu</value>
   </data>
-  <data name="brw_cmd_vol" xml:space="preserve">
+  <data name="window_botresponses_cmd_vol" xml:space="preserve">
     <value>Zwraca bieżącą głośność lub ustawia ją. '!tom [0-100]'</value>
   </data>
-  <data name="sw_SpotifySR_SRCommand" xml:space="preserve">
+  <data name="window_settings_spotify_sr_command" xml:space="preserve">
     <value>Polecenie umożliwiające zgłaszanie żądań utworów. (Polecenie + Link Spotify lub Artysta - Tytuł)</value>
   </data>
-  <data name="lang_br" xml:space="preserve">
+  <data name="language_pt_br" xml:space="preserve">
     <value>brazylijski portugalski</value>
   </data>
-  <data name="cta.support" xml:space="preserve">
+  <data name="cta_support" xml:space="preserve">
     <value>Wesprzyj nas na Ko-Fi!</value>
   </data>
-  <data name="brw_cmd_volIgnoreMod" xml:space="preserve">
+  <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignoruj kontrolę nadawcy/moderatora</value>
   </data>
-  <data name="menu" xml:space="preserve">
+  <data name="menu_check_for_updates" xml:space="preserve">
     <value>Sprawdź aktualizacje</value>
   </data>
-  <data name="sw_tcOutput_ApplyToSplitFilesToo" xml:space="preserve">
+  <data name="window_settings_output_apply_to_split_files" xml:space="preserve">
     <value>Zastosuj również do podzielonych plików</value>
   </data>
-  <data name="sw_tcOutput_onPause_DoNothing" xml:space="preserve">
+  <data name="window_settings_output_on_pause_do_nothing" xml:space="preserve">
     <value>Nie rób nic</value>
   </data>
-  <data name="sw_tcOutput_onPause_UseCustomPauseText" xml:space="preserve">
+  <data name="window_settings_output_on_pause_custom_text" xml:space="preserve">
     <value>Użyj niestandardowego tekstu wstrzymanej piosenki</value>
   </data>
-  <data name="sw_tcOutput_onPause_ClearAllOutput" xml:space="preserve">
+  <data name="window_settings_output_on_pause_clear_all" xml:space="preserve">
     <value>Wyczyść wszystkie dane wyjściowe</value>
   </data>
-  <data name="sw_rewards_ClickReminder" xml:space="preserve">
+  <data name="window_settings_rewards_click_reminder" xml:space="preserve">
     <value>Kliknij tutaj po wybraniu nagrody</value>
   </data>
-  <data name="sw_rewards_enabledRewards" xml:space="preserve">
+  <data name="window_settings_rewards_enabled" xml:space="preserve">
     <value>Włączono nagrody za prośby o piosenki</value>
   </data>
-  <data name="brw_cmd_QueueReturn" xml:space="preserve">
+  <data name="window_botresponses_cmd_queue_return" xml:space="preserve">
     <value>Zwraca pierwsze 5 utworów z bieżącej kolejki odtwarzania</value>
   </data>
-  <data name="sw_SpotifySR_CommandCD" xml:space="preserve">
+  <data name="window_settings_spotify_sr_command_cd" xml:space="preserve">
     <value>Czas odnowienia globalnego polecenia (sekundy)</value>
   </data>
-  <data name="sw_SpotifySR_CommandCDUser" xml:space="preserve">
+  <data name="window_settings_spotify_sr_command_cd_user" xml:space="preserve">
     <value>Czas odnowienia komendy SR (na użytkownika)</value>
   </data>
-  <data name="brw_CommandOnUserCooldown" xml:space="preserve">
+  <data name="window_botresponses_command_on_user_cooldown" xml:space="preserve">
     <value>Odpowiedź, gdy użytkownik jest w cooldownie (cooldown dla użytkownika dla komendy żądania utworu)</value>
   </data>
-  <data name="Sw_System_DisableDonationReminder" xml:space="preserve">
+  <data name="window_settings_system_disable_donation_reminder" xml:space="preserve">
     <value>Wyłącz przypomnienie o darowiznach</value>
   </data>
-  <data name="sw_tcOutput_DownloadCanvas" xml:space="preserve">
+  <data name="window_settings_output_download_canvas" xml:space="preserve">
     <value>Użyj Canvas, jeśli jest dostępny</value>
   </data>
-  <data name="WinQueue_NowPlaying" xml:space="preserve">
+  <data name="window_queue_now_playing" xml:space="preserve">
     <value>Teraz odtwarzane</value>
   </data>
-  <data name="WinQueue_SongRequest" xml:space="preserve">
+  <data name="window_queue_song_request" xml:space="preserve">
     <value>Prośba o piosenkę</value>
   </data>
-  <data name="WinQueue_Skipping" xml:space="preserve">
+  <data name="window_queue_skipping" xml:space="preserve">
     <value>Skaczący</value>
   </data>
-  <data name="WinQueue_Actions" xml:space="preserve">
+  <data name="window_queue_actions" xml:space="preserve">
     <value>Akcje</value>
   </data>
-  <data name="sw_YTMDesktop_disclaimer" xml:space="preserve">
+  <data name="window_settings_ytm_disclaimer" xml:space="preserve">
     <value>Porównaj kody między Songify i odtwarzaczem YouTube Music Desktop. Zaakceptuj prośbę o integrację tylko wtedy, gdy kody się zgadzają!</value>
   </data>
-  <data name="mw_menu_Twitch_dw" xml:space="preserve">
+  <data name="menu_twitch_doesnt_work" xml:space="preserve">
     <value>Nie działa?</value>
   </data>
-  <data name="sw_tcOutput_pause" xml:space="preserve">
+  <data name="window_settings_output_pause" xml:space="preserve">
     <value>Co robić podczas pauzy?</value>
   </data>
-  <data name="mw_menu_Widget_disclaimer" xml:space="preserve">
+  <data name="window_main_widget_disclaimer" xml:space="preserve">
     <value>Widżet działa tylko wtedy, gdy włączona jest opcja „Prześlij informacje o utworze”. Tę opcję znajdziesz w Ustawieniach -&gt; Wyjście. Czy chcesz ją teraz aktywować?</value>
   </data>
-  <data name="s_Connected" xml:space="preserve">
+  <data name="common_connected" xml:space="preserve">
     <value>Połączony</value>
   </data>
-  <data name="s_Disconnected" xml:space="preserve">
+  <data name="common_disconnected" xml:space="preserve">
     <value>Bezładny</value>
   </data>
-  <data name="Window_Queue_QueueId" xml:space="preserve">
+  <data name="window_queue_queue_id" xml:space="preserve">
     <value>Identyfikator kolejki</value>
   </data>
-  <data name="mw_clearQueueDisclaimer" xml:space="preserve">
+  <data name="window_queue_clear_disclaimer" xml:space="preserve">
     <value>Czy na pewno chcesz opróżnić kolejkę?</value>
   </data>
-  <data name="s_Warning" xml:space="preserve">
+  <data name="common_warning" xml:space="preserve">
     <value>Ostrzeżenie</value>
   </data>
-  <data name="s_Song" xml:space="preserve">
+  <data name="common_song" xml:space="preserve">
     <value>Piosenka</value>
   </data>
-  <data name="bw_lblBlockedSongs" xml:space="preserve">
+  <data name="window_blocklist_blocked_songs" xml:space="preserve">
     <value>Zablokowane piosenki</value>
   </data>
-  <data name="sw_SpotifySr_UserLevelsCommand" xml:space="preserve">
+  <data name="window_settings_spotify_sr_user_levels_command" xml:space="preserve">
     <value>Poziomy użytkownika (polecenie)</value>
   </data>
-  <data name="s_Viewer" xml:space="preserve">
+  <data name="common_viewer" xml:space="preserve">
     <value>Widz</value>
   </data>
-  <data name="s_Follower" xml:space="preserve">
+  <data name="common_follower" xml:space="preserve">
     <value>Obserwujący</value>
   </data>
-  <data name="s_Subscriber" xml:space="preserve">
+  <data name="common_subscriber" xml:space="preserve">
     <value>Subskrybent</value>
   </data>
-  <data name="s_VIP" xml:space="preserve">
+  <data name="common_vip" xml:space="preserve">
     <value>VIP</value>
   </data>
-  <data name="s_Moderator" xml:space="preserve">
+  <data name="common_moderator" xml:space="preserve">
     <value>Moderator</value>
   </data>
-  <data name="sw_SpotifySr_UserLevelsReward" xml:space="preserve">
+  <data name="window_settings_spotify_sr_user_levels_reward" xml:space="preserve">
     <value>Poziomy użytkownika (nagroda)</value>
   </data>
-  <data name="UC_BotResponses_CommandResponses" xml:space="preserve">
+  <data name="window_botresponses_command_responses" xml:space="preserve">
     <value>Odpowiedzi na polecenia</value>
   </data>
-  <data name="UC_BotResponses_SongRequestResponses" xml:space="preserve">
+  <data name="window_botresponses_song_request_responses" xml:space="preserve">
     <value>Odpowiedzi na prośby o piosenkę</value>
   </data>
-  <data name="s_TrackAdded" xml:space="preserve">
+  <data name="common_track_added" xml:space="preserve">
     <value>Utwór został dodany do kolejki.</value>
   </data>
-  <data name="s_FillClientIdAndSecret" xml:space="preserve">
+  <data name="common_fill_client_id_secret" xml:space="preserve">
     <value>Proszę wprowadzić identyfikator klienta Spotify i klucz tajny</value>
   </data>
-  <data name="s_OK" xml:space="preserve">
+  <data name="common_ok" xml:space="preserve">
     <value>OK</value>
   </data>
-  <data name="brw_UserLevelTooLowCommand" xml:space="preserve">
+  <data name="window_botresponses_user_level_too_low_command" xml:space="preserve">
     <value>Poziom użytkownika jest zbyt niski dla polecenia !ssr</value>
   </data>
-  <data name="brw_UserLevelTooLowReward" xml:space="preserve">
+  <data name="window_botresponses_user_level_too_low_reward" xml:space="preserve">
     <value>Poziom użytkownika jest zbyt niski, aby otrzymać nagrodę za prośbę o piosenkę</value>
   </data>
-  <data name="sw_tcCommands_ShowUserLevelBadges" xml:space="preserve">
+  <data name="window_settings_commands_show_user_level_badges" xml:space="preserve">
     <value>Pokaż odznaki poziomu użytkownika</value>
   </data>
-  <data name="s_Columns" xml:space="preserve">
+  <data name="common_columns" xml:space="preserve">
     <value>Kolumny</value>
   </data>
-  <data name="brw_cmd_play" xml:space="preserve">
+  <data name="window_botresponses_cmd_play" xml:space="preserve">
     <value>Wznawia bieżące odtwarzanie.</value>
   </data>
-  <data name="brw_cmd_queue" xml:space="preserve">
+  <data name="window_botresponses_cmd_queue" xml:space="preserve">
     <value>Zwraca pierwsze 5 utworów z bieżącej kolejki odtwarzania</value>
   </data>
-  <data name="brw_cmd_pause" xml:space="preserve">
+  <data name="window_botresponses_cmd_pause" xml:space="preserve">
     <value>Wstrzymuje bieżące odtwarzanie.</value>
   </data>
-  <data name="brw_cmd_commands" xml:space="preserve">
+  <data name="window_botresponses_cmd_commands" xml:space="preserve">
     <value>Zwraca wszystkie aktywne polecenia Songify.</value>
   </data>
-  <data name="Param_User_Desc" xml:space="preserve">
+  <data name="param_user_description" xml:space="preserve">
     <value>Użytkownik, który uruchomił polecenie lub nagrodę kanałową</value>
   </data>
-  <data name="Param_Requester_Desc" xml:space="preserve">
+  <data name="param_requester_description" xml:space="preserve">
     <value>Osoba prosząca o aktualną piosenkę</value>
   </data>
-  <data name="Param_ConditionalText_Desc" xml:space="preserve">
+  <data name="param_conditional_text_description" xml:space="preserve">
     <value>Tekst wewnątrz '{{' i '}}' zostanie opublikowany tylko wtedy, gdy bieżąca piosenka jest prośbą o piosenkę</value>
   </data>
-  <data name="Param_Artist_Desc" xml:space="preserve">
+  <data name="param_artist_description" xml:space="preserve">
     <value>Artyści dla aktualnej piosenki lub prośby o piosenkę</value>
   </data>
-  <data name="Param_SingleArtist_Desc" xml:space="preserve">
+  <data name="param_single_artist_description" xml:space="preserve">
     <value>Główny artysta dla aktualnej piosenki lub prośby o piosenkę</value>
   </data>
-  <data name="Param_ErrorMessage_Desc" xml:space="preserve">
+  <data name="param_error_message_description" xml:space="preserve">
     <value>Komunikat o błędzie w przypadku wystąpienia błędu</value>
   </data>
-  <data name="Param_MaxLength_Desc" xml:space="preserve">
+  <data name="param_max_length_description" xml:space="preserve">
     <value>Maksymalna długość utworu w minutach</value>
   </data>
-  <data name="Param_MaxRequests_Desc" xml:space="preserve">
+  <data name="param_max_requests_description" xml:space="preserve">
     <value>Maksymalna liczba żądań na użytkownika</value>
   </data>
-  <data name="Param_SongFormat_Desc" xml:space="preserve">
+  <data name="param_song_format_description" xml:space="preserve">
     <value>{Artist} - {Title}</value>
   </data>
-  <data name="Param_PlaylistName_Desc" xml:space="preserve">
+  <data name="param_playlist_name_description" xml:space="preserve">
     <value>Nazwa listy odtwarzania</value>
   </data>
-  <data name="Param_PlaylistUrl_Desc" xml:space="preserve">
+  <data name="param_playlist_url_description" xml:space="preserve">
     <value>Adres URL listy odtwarzania</value>
   </data>
-  <data name="Param_SongList_Desc" xml:space="preserve">
+  <data name="param_song_list_description" xml:space="preserve">
     <value>Tylko dla polecenia !pos tworzy listę utworów, które użytkownik ma w kolejce, wraz z ich pozycją</value>
   </data>
-  <data name="Param_Votes_Desc" xml:space="preserve">
+  <data name="param_votes_description" xml:space="preserve">
     <value>Liczba głosów na pominięcie głosów/łącznie</value>
   </data>
-  <data name="Param_Cooldown_Desc" xml:space="preserve">
+  <data name="param_cooldown_description" xml:space="preserve">
     <value>Czas odnowienia w sekundach (dla globalnego cd i cd użytkownika)</value>
   </data>
-  <data name="Param_Url_Desc" xml:space="preserve">
+  <data name="param_url_description" xml:space="preserve">
     <value>Adres URL utworu Spotify</value>
   </data>
-  <data name="Param_Queue_Desc" xml:space="preserve">
+  <data name="param_queue_description" xml:space="preserve">
     <value>Następne 5 piosenek w kolejce</value>
   </data>
-  <data name="Param_Commands_Desc" xml:space="preserve">
+  <data name="param_commands_description" xml:space="preserve">
     <value>Lista wszystkich aktywnych poleceń</value>
   </data>
-  <data name="s_Copied" xml:space="preserve">
+  <data name="common_copied" xml:space="preserve">
     <value>Skopiowano</value>
   </data>
-  <data name="sw_ResponseVariables" xml:space="preserve">
+  <data name="window_settings_response_variables" xml:space="preserve">
     <value>Zmienne odpowiedzi</value>
   </data>
-  <data name="lang_beBY" xml:space="preserve">
+  <data name="language_be" xml:space="preserve">
     <value>Białoruski</value>
   </data>
-  <data name="Param_Userlevel_Desc" xml:space="preserve">
+  <data name="param_userlevel_description" xml:space="preserve">
     <value>Poziom użytkownika (obserwujący, subskrybent itp.)</value>
   </data>
-  <data name="Sw_intergration_AutoAnnounce" xml:space="preserve">
+  <data name="window_settings_integration_auto_announce" xml:space="preserve">
     <value>Automatyczne ogłaszanie piosenki na czacie (używa odpowiedzi !song)</value>
   </data>
-  <data name="Param_TimeToPlay_Desc" xml:space="preserve">
+  <data name="param_time_to_play_description" xml:space="preserve">
     <value>Czas w mm:ss, o którym nastąpi odtworzenie żądanej piosenki.</value>
   </data>
-  <data name="brw_Success" xml:space="preserve">
+  <data name="window_botresponses_success" xml:space="preserve">
     <value>Piosenka została pomyślnie dodana (polecenie i nagroda)</value>
   </data>
-  <data name="brw_cmd_bansong" xml:space="preserve">
+  <data name="window_botresponses_cmd_bansong" xml:space="preserve">
     <value>Dodaje bieżący utwór do czarnej listy i pomija go.</value>
   </data>
-  <data name="brw_SongBlocked" xml:space="preserve">
+  <data name="window_botresponses_song_blocked" xml:space="preserve">
     <value>Piosenka jest zablokowana</value>
   </data>
-  <data name="sw_SpotifySR_AddOnlyToPlaylist" xml:space="preserve">
+  <data name="window_settings_spotify_sr_add_only_to_playlist" xml:space="preserve">
     <value>Dodaj prośby tylko do wybranej listy odtwarzania</value>
   </data>
-  <data name="sw_SpotifySR_EnableSrForBits" xml:space="preserve">
+  <data name="window_settings_spotify_sr_enable_for_bits" xml:space="preserve">
     <value>Włącz żądania piosenek dla Bits</value>
   </data>
-  <data name="Sw_Integration_RefundTrackIsExplicit" xml:space="preserve">
+  <data name="window_settings_integration_refund_track_explicit" xml:space="preserve">
     <value>Utwór jest wyraźny</value>
   </data>
-  <data name="Sw_Integration_RefundQueueLimitReached" xml:space="preserve">
+  <data name="window_settings_integration_refund_queue_limit" xml:space="preserve">
     <value>Użytkownik osiągnął maksymalny limit kolejki</value>
   </data>
-  <data name="Sw_Integration_RefundSongBlocked" xml:space="preserve">
+  <data name="window_settings_integration_refund_song_blocked" xml:space="preserve">
     <value>Piosenka jest zablokowana</value>
   </data>
-  <data name="brw_Refund" xml:space="preserve">
+  <data name="window_botresponses_refund" xml:space="preserve">
     <value>Odpowiedź w przypadku zwrotu punktów kanałowych. (puste pole oznacza brak odpowiedzi)</value>
   </data>
-  <data name="Param_RefundReason_Desc" xml:space="preserve">
+  <data name="param_refund_reason_description" xml:space="preserve">
     <value>Powód zwrotu środków.</value>
   </data>
-  <data name="lang_nl" xml:space="preserve">
+  <data name="language_nl" xml:space="preserve">
     <value>Holenderski</value>
   </data>
-  <data name="sw_Twitch_Rewards_DisableSkipForRequests" xml:space="preserve">
+  <data name="window_settings_twitch_disable_skip_for_requests" xml:space="preserve">
     <value>Wyłącz funkcję pomijania nagród za prośby o piosenkę</value>
   </data>
-  <data name="Sw_Integration_RefundAlways" xml:space="preserve">
+  <data name="window_settings_integration_refund_always" xml:space="preserve">
     <value>Bezpłatne prośby o piosenki</value>
   </data>
-  <data name="menu.help.log_folder" xml:space="preserve">
+  <data name="menu_help_log_folder" xml:space="preserve">
     <value>Folder dziennika</value>
   </data>
-  <data name="brw_cmd_togglesr" xml:space="preserve">
+  <data name="window_botresponses_cmd_togglesr" xml:space="preserve">
     <value>Włącz/Wyłącz prośby o piosenkę (wyłącza je w aplikacji i próbuje wstrzymać nagrodę)</value>
   </data>
-  <data name="crw_RewardPrompt" xml:space="preserve">
+  <data name="window_createreward_prompt" xml:space="preserve">
     <value>Opis</value>
   </data>
-  <data name="menu.help.app_folder" xml:space="preserve">
+  <data name="menu_help_app_folder" xml:space="preserve">
     <value>Folder Songify</value>
   </data>
-  <data name="menu.file.check_for_updates" xml:space="preserve">
+  <data name="menu_file_check_for_updates" xml:space="preserve">
     <value>Sprawdź aktualizacje</value>
   </data>
-  <data name="menu.view.user_list" xml:space="preserve">
+  <data name="menu_view_user_list" xml:space="preserve">
     <value>Lista użytkowników</value>
   </data>
-  <data name="menu.view.webserver_url" xml:space="preserve">
+  <data name="menu_view_webserver_url" xml:space="preserve">
     <value>Adres URL serwera WWW</value>
   </data>
-  <data name="Sw_Integration_StreamSharedChat" xml:space="preserve">
+  <data name="window_settings_integration_stream_shared_chat" xml:space="preserve">
     <value>Słuchaj poleceń czatu z udostępnionego czatu</value>
+  </data>
+  <data name="common_delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="common_close" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="common_add" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="common_cancel" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
+  <data name="common_artist" xml:space="preserve">
+    <value>Wykonawca</value>
+  </data>
+  <data name="common_title" xml:space="preserve">
+    <value>Tytuł</value>
+  </data>
+  <data name="common_id" xml:space="preserve">
+    <value>Id</value>
+  </data>
+  <data name="common_column_number" xml:space="preserve">
+    <value>#</value>
+  </data>
+  <data name="common_beta" xml:space="preserve">
+    <value>BETA</value>
+  </data>
+  <data name="common_close_x" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="window_queue_tab_queue" xml:space="preserve">
+    <value>Kolejka</value>
+  </data>
+  <data name="window_queue_tab_requestlist" xml:space="preserve">
+    <value>Lista próśb</value>
+  </data>
+  <data name="window_queue_tab_skiplist" xml:space="preserve">
+    <value>Lista pominięć</value>
+  </data>
+  <data name="window_queue_skip_song" xml:space="preserve">
+    <value>Pomiń utwór</value>
+  </data>
+  <data name="window_queue_add_to_favorite_playlist" xml:space="preserve">
+    <value>Dodaj do playlisty ulubionych</value>
+  </data>
+  <data name="window_queue_show_hide_spotify_controls" xml:space="preserve">
+    <value>Pokaż/ukryj sterowanie Spotify</value>
+  </data>
+  <data name="window_queue_track_id" xml:space="preserve">
+    <value>ID utworu</value>
+  </data>
+  <data name="window_queue_played" xml:space="preserve">
+    <value>Odtworzono</value>
+  </data>
+  <data name="window_createreward_user_input_required" xml:space="preserve">
+    <value>Wymagane dane użytkownika</value>
+  </data>
+  <data name="window_console_detach_attach" xml:space="preserve">
+    <value>Odłącz / przypnij konsolę</value>
+  </data>
+  <data name="window_console_clear" xml:space="preserve">
+    <value>Wyczyść konsolę</value>
+  </data>
+  <data name="window_console_log" xml:space="preserve">
+    <value>Dziennik</value>
+  </data>
+  <data name="window_console_api_metrics" xml:space="preserve">
+    <value>Metryki API</value>
+  </data>
+  <data name="window_console_graph" xml:space="preserve">
+    <value>Wykres</value>
+  </data>
+  <data name="window_console_endpoint" xml:space="preserve">
+    <value>Punkt końcowy</value>
+  </data>
+  <data name="window_console_requests_per_min" xml:space="preserve">
+    <value>Żądania / min</value>
+  </data>
+  <data name="window_console_metrics" xml:space="preserve">
+    <value>Metryki</value>
+  </data>
+  <data name="window_blocklist_select_artist" xml:space="preserve">
+    <value>Wybierz wykonawcę</value>
+  </data>
+  <data name="window_blocklist_multiple_artists_match" xml:space="preserve">
+    <value>Wiele wykonawców pasuje do wyszukiwania. Wybierz jednego do zablokowania.</value>
+  </data>
+  <data name="window_blocklist_block_selected" xml:space="preserve">
+    <value>Zablokuj wybrane</value>
+  </data>
+  <data name="window_blocklist_resolve_artist_id" xml:space="preserve">
+    <value>Rozwiąż ID wykonawcy</value>
+  </data>
+  <data name="window_blocklist_skip" xml:space="preserve">
+    <value>Pomiń</value>
+  </data>
+  <data name="window_blocklist_use_selected" xml:space="preserve">
+    <value>Użyj wybranych</value>
+  </data>
+  <data name="window_blocklist_description" xml:space="preserve">
+    <value>Blokuj wykonawców, utwory lub użytkowników dla próśb. Wykonawcy i utwory działają tylko ze Spotify!</value>
+  </data>
+  <data name="window_blocklist_refresh_ids" xml:space="preserve">
+    <value>Odśwież ID</value>
+  </data>
+  <data name="window_blocklist_remove_all" xml:space="preserve">
+    <value>Usuń wszystkie</value>
+  </data>
+  <data name="window_blocklist_tab_artists" xml:space="preserve">
+    <value>Wykonawcy</value>
+  </data>
+  <data name="window_blocklist_tab_songs" xml:space="preserve">
+    <value>Utwory</value>
+  </data>
+  <data name="window_blocklist_tab_users" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="window_blocklist_refresh_user_ids" xml:space="preserve">
+    <value>Odśwież ID użytkowników</value>
+  </data>
+  <data name="window_blocklist_search_multi_select" xml:space="preserve">
+    <value>Wyszukiwanie zwróciło więcej niż jednego wykonawcę. Wybierz jednego lub więcej do zablokowania.</value>
+  </data>
+  <data name="window_blocklist_add_selected" xml:space="preserve">
+    <value>Dodaj wybrane</value>
+  </data>
+  <data name="window_settings_getting_ready" xml:space="preserve">
+    <value>Przygotowywanie</value>
+  </data>
+  <data name="window_settings_enable_debug_logging" xml:space="preserve">
+    <value>Włącz rejestrowanie debugowania</value>
+  </data>
+  <data name="window_settings_songify_api_token" xml:space="preserve">
+    <value>Token API Songify</value>
+  </data>
+  <data name="window_settings_copy_to_clipboard" xml:space="preserve">
+    <value>Kopiuj do schowka</value>
+  </data>
+  <data name="window_settings_extra" xml:space="preserve">
+    <value>Dodatkowe</value>
+  </data>
+  <data name="window_settings_url" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="window_settings_new_line" xml:space="preserve">
+    <value>Nowa linia</value>
+  </data>
+  <data name="window_settings_keep_album_cover" xml:space="preserve">
+    <value>Zachowaj okładkę albumu</value>
+  </data>
+  <data name="window_settings_copy_song_url" xml:space="preserve">
+    <value>Kopiuj URL utworu</value>
+  </data>
+  <data name="window_settings_expires_on" xml:space="preserve">
+    <value>Wygasa</value>
+  </data>
+  <data name="window_settings_twitch_bot" xml:space="preserve">
+    <value>Bot Twitch</value>
+  </data>
+  <data name="window_settings_chat_account" xml:space="preserve">
+    <value>Konto czatu</value>
+  </data>
+  <data name="window_settings_account_name" xml:space="preserve">
+    <value>Nazwa konta</value>
+  </data>
+  <data name="window_settings_oauth_token" xml:space="preserve">
+    <value>Token oAuth</value>
+  </data>
+  <data name="window_settings_oauth_token_tooltip" xml:space="preserve">
+    <value>Kliknij tutaj, aby uzyskać token oAuth.</value>
+  </data>
+  <data name="window_settings_channel_to_join" xml:space="preserve">
+    <value>Kanał do dołączenia</value>
+  </data>
+  <data name="window_settings_offline_cancelled_tooltip" xml:space="preserve">
+    <value>Gdy włączone, w czacie zostanie wysłana wiadomość, gdy akcja została anulowana z powodu offline.</value>
+  </data>
+  <data name="window_settings_shared_chat_tooltip" xml:space="preserve">
+    <value>Ta opcja włącza nasłuchiwanie współdzielonego czatu, dzięki czemu można wysyłać polecenia z współdzielonych czatów.</value>
+  </data>
+  <data name="window_settings_create_new_reward" xml:space="preserve">
+    <value>Utwórz nową nagrodę</value>
+  </data>
+  <data name="window_settings_reload_rewards_tooltip" xml:space="preserve">
+    <value>Przeładuj nagrody</value>
+  </data>
+  <data name="window_settings_tab_channel_rewards" xml:space="preserve">
+    <value>Nagrody kanału</value>
+  </data>
+  <data name="window_settings_tab_refund_conditions" xml:space="preserve">
+    <value>Warunki zwrotu</value>
+  </data>
+  <data name="window_settings_refund_conditions_info" xml:space="preserve">
+    <value>Aby móc zwracać punkty, nagroda musi być utworzona przez Songify!</value>
+  </data>
+  <data name="window_settings_poll_setup_hint" xml:space="preserve">
+    <value>Skonfiguruj system głosowania pomijania</value>
+  </data>
+  <data name="window_settings_poll_title" xml:space="preserve">
+    <value>Tytuł ankiety</value>
+  </data>
+  <data name="window_settings_answer_1" xml:space="preserve">
+    <value>Odpowiedź 1</value>
+  </data>
+  <data name="window_settings_answer_2" xml:space="preserve">
+    <value>Odpowiedź 2</value>
+  </data>
+  <data name="window_settings_allow_additional_votes" xml:space="preserve">
+    <value>Zezwól na dodatkowe głosy</value>
+  </data>
+  <data name="window_settings_channel_points_per_vote" xml:space="preserve">
+    <value>Punkty kanału za głos</value>
+  </data>
+  <data name="window_settings_duration" xml:space="preserve">
+    <value>Czas trwania</value>
+  </data>
+  <data name="window_settings_seconds" xml:space="preserve">
+    <value>Sekundy</value>
+  </data>
+  <data name="window_settings_skip_when_answer_wins" xml:space="preserve">
+    <value>Pomiń, gdy ta odpowiedź wygra</value>
+  </data>
+  <data name="window_settings_edit_commands_hint" xml:space="preserve">
+    <value>Edytuj polecenia klikając wyzwalacz</value>
+  </data>
+  <data name="window_settings_right_click_command_hint" xml:space="preserve">
+    <value>Kliknij prawym przyciskiem polecenie, aby ustawić, kto może z niego korzystać.</value>
+  </data>
+  <data name="window_settings_long_badge_names" xml:space="preserve">
+    <value>Długie nazwy odznak</value>
+  </data>
+  <data name="window_settings_preview" xml:space="preserve">
+    <value>Podgląd:</value>
+  </data>
+  <data name="window_settings_client_id" xml:space="preserve">
+    <value>Identyfikator klienta</value>
+  </data>
+  <data name="window_settings_client_secret" xml:space="preserve">
+    <value>Wpis tajny</value>
+  </data>
+  <data name="window_settings_spotify_fetch_rate" xml:space="preserve">
+    <value>Interwał odpytywania Spotify (sekundy)</value>
+  </data>
+  <data name="window_settings_youtube_api_key" xml:space="preserve">
+    <value>Klucz API YouTube</value>
+  </data>
+  <data name="window_settings_test_api" xml:space="preserve">
+    <value>Testuj API</value>
+  </data>
+  <data name="window_settings_twitch_auth_ports" xml:space="preserve">
+    <value>Porty auth Twitch</value>
+  </data>
+  <data name="window_settings_redirect_port" xml:space="preserve">
+    <value>Port przekierowania:</value>
+  </data>
+  <data name="window_settings_fetch_port" xml:space="preserve">
+    <value>Port odpytywania:</value>
+  </data>
+  <data name="window_settings_credentials_disclaimer" xml:space="preserve">
+    <value>Nie przechowujemy danych logowania Twitch i Spotify! Przy przywracaniu z chmury musisz ponownie zalogować się do Twitch i Spotify.</value>
+  </data>
+  <data name="window_settings_save_cloud" xml:space="preserve">
+    <value>Zapisz ustawienia w chmurze</value>
+  </data>
+  <data name="window_settings_restore_cloud" xml:space="preserve">
+    <value>Przywróć ustawienia z chmury</value>
+  </data>
+  <data name="window_main_title" xml:space="preserve">
+    <value>Songify</value>
+  </data>
+  <data name="window_main_support_kofi" xml:space="preserve">
+    <value>Wesprzyj nas na Ko-Fi</value>
+  </data>
+  <data name="menu_faq" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="menu_github" xml:space="preserve">
+    <value>GitHub</value>
+  </data>
+  <data name="menu_discord" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="menu_twitch" xml:space="preserve">
+    <value>Twitch</value>
+  </data>
+  <data name="menu_twitch_connect_tooltip" xml:space="preserve">
+    <value>Połącz z Twitch</value>
+  </data>
+  <data name="menu_notifications" xml:space="preserve">
+    <value>Powiadomienia</value>
+  </data>
+  <data name="common_mark_all_read" xml:space="preserve">
+    <value>Oznacz wszystkie jako przeczytane</value>
+  </data>
+  <data name="window_main_pubsub_disabled" xml:space="preserve">
+    <value>PubSub zostało wyłączone z powodu błędów</value>
+  </data>
+  <data name="window_main_copyright" xml:space="preserve">
+    <value>Songify v1.1.1-RC1 Copyright ©</value>
+  </data>
+  <data name="window_history_copy_url_tooltip" xml:space="preserve">
+    <value>Kopiuj URL historii</value>
+  </data>
+  <data name="window_apichart_seconds_rolling" xml:space="preserve">
+    <value>Sekundy (ruchome)</value>
+  </data>
+  <data name="window_apichart_requests_per_min" xml:space="preserve">
+    <value>Żądania / min</value>
+  </data>
+  <data name="window_patchnotes_title" xml:space="preserve">
+    <value>Informacje o wersji</value>
+  </data>
+  <data name="window_patchnotes_changes" xml:space="preserve">
+    <value>Zmiany</value>
+  </data>
+  <data name="window_about_title" xml:space="preserve">
+    <value>O programie</value>
+  </data>
+  <data name="window_about_third_party" xml:space="preserve">
+    <value>Biblioteki innych firm</value>
+  </data>
+  <data name="window_about_licenses" xml:space="preserve">
+    <value>Licencje bibliotek innych firm</value>
+  </data>
+  <data name="window_about_libraries_intro" xml:space="preserve">
+    <value>Songify Slim korzysta z następujących bibliotek open source.</value>
+  </data>
+  <data name="window_about_license_notice" xml:space="preserve">
+    <value>Wszystkie wymienione biblioteki pozostają własnością ich autorów i są używane zgodnie z ich licencjami.</value>
+  </data>
+  <data name="window_about_license_label" xml:space="preserve">
+    <value>Licencja: </value>
+  </data>
+  <data name="window_about_gpl_notice" xml:space="preserve">
+    <value>Ten projekt jest projektem hobbystycznym i jest objęty licencją GNU General Public License v3.0.</value>
+  </data>
+  <data name="window_about_discord_invite" xml:space="preserve">
+    <value>Jeśli chcesz wesprzeć projekt, dołącz do nas na Discord!</value>
+  </data>
+  <data name="window_about_thank_you" xml:space="preserve">
+    <value>Dziękujemy</value>
+  </data>
+  <data name="window_userlist_title" xml:space="preserve">
+    <value>Lista widzów</value>
+  </data>
+  <data name="window_userlist_sr" xml:space="preserve">
+    <value>SR</value>
+  </data>
+  <data name="window_userlist_name" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="window_userlist_user_levels" xml:space="preserve">
+    <value>Poziomy użytkownika</value>
+  </data>
+  <data name="window_userlist_sub_tier" xml:space="preserve">
+    <value>Poziom subskrypcji</value>
+  </data>
+  <data name="window_cloudimport_title" xml:space="preserve">
+    <value>Importer ustawień z chmury</value>
+  </data>
+  <data name="window_cloudimport_intro" xml:space="preserve">
+    <value>Za chwilę zaimportujesz ustawienia z chmury.</value>
+  </data>
+  <data name="window_cloudimport_import" xml:space="preserve">
+    <value>Importuj</value>
+  </data>
+  <data name="window_manualtwitch_title" xml:space="preserve">
+    <value>Połączenie konta Twitch</value>
+  </data>
+  <data name="window_manualtwitch_instructions" xml:space="preserve">
+    <value>Jak zalogować się do Twitch:</value>
+  </data>
+  <data name="window_manualtwitch_step1" xml:space="preserve">
+    <value>1) Kliknij ten przycisk, aby otworzyć stronę logowania Twitch:</value>
+  </data>
+  <data name="window_manualtwitch_open_login" xml:space="preserve">
+    <value>Otwórz stronę logowania Twitch</value>
+  </data>
+  <data name="window_manualtwitch_step2" xml:space="preserve">
+    <value>2) Wklej kod otrzymany ze strony:</value>
+  </data>
+  <data name="window_manualtwitch_step3" xml:space="preserve">
+    <value>3) Kliknij ten przycisk, aby połączyć konto z Songify:</value>
+  </data>
+  <data name="window_manualtwitch_link" xml:space="preserve">
+    <value>POŁĄCZ</value>
+  </data>
+  <data name="window_universaldialog_title" xml:space="preserve">
+    <value>Okno dialogowe</value>
+  </data>
+  <data name="uc_command_allowed_users" xml:space="preserve">
+    <value>Dozwoleni użytkownicy</value>
+  </data>
+  <data name="uc_command_all" xml:space="preserve">
+    <value>Wszyscy</value>
+  </data>
+  <data name="uc_command_add_users" xml:space="preserve">
+    <value>Dodaj użytkowników</value>
+  </data>
+  <data name="uc_command_add_aliases" xml:space="preserve">
+    <value>Dodaj aliasy</value>
+  </data>
+  <data name="uc_command_announcement" xml:space="preserve">
+    <value>Ogłoszenie</value>
+  </data>
+  <data name="uc_command_announce" xml:space="preserve">
+    <value>Ogłoś</value>
+  </data>
+  <data name="uc_command_color" xml:space="preserve">
+    <value>Kolor</value>
+  </data>
+  <data name="uc_command_color_blue" xml:space="preserve">
+    <value>niebieski</value>
+  </data>
+  <data name="uc_command_color_green" xml:space="preserve">
+    <value>zielony</value>
+  </data>
+  <data name="uc_command_color_orange" xml:space="preserve">
+    <value>pomarańczowy</value>
+  </data>
+  <data name="uc_command_color_purple" xml:space="preserve">
+    <value>fioletowy</value>
+  </data>
+  <data name="uc_command_color_primary" xml:space="preserve">
+    <value>Główny</value>
+  </data>
+  <data name="uc_reward_created_by_songify" xml:space="preserve">
+    <value>Utworzono przez Songify</value>
+  </data>
+  <data name="uc_reward_song_request" xml:space="preserve">
+    <value>Prośba o utwór</value>
+  </data>
+  <data name="uc_reward_skip_song" xml:space="preserve">
+    <value>Pomiń utwór</value>
+  </data>
+  <data name="uc_reward_start_skip_poll" xml:space="preserve">
+    <value>Uruchom głosowanie pominięcia</value>
+  </data>
+  <data name="uc_psa_mark_as_read" xml:space="preserve">
+    <value>Oznacz jako przeczytane</value>
+  </data>
+  <data name="uc_reward_managed_by_songify" xml:space="preserve">
+    <value>Może być zarządzana przez Songify.</value>
+  </data>
+  <data name="common_browse" xml:space="preserve">
+    <value>...</value>
+  </data>
+  <data name="common_help" xml:space="preserve">
+    <value>?</value>
+  </data>
+  <data name="window_settings_tab_spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="window_settings_tab_youtube" xml:space="preserve">
+    <value>YouTube</value>
+  </data>
+  <data name="window_settings_tab_songrequest" xml:space="preserve">
+    <value>Prośba o utwór</value>
+  </data>
+  <data name="window_settings_only_add_to_playlist" xml:space="preserve">
+    <value>Dodawaj prośby tylko do wybranej playlisty</value>
+  </data>
+  <data name="window_settings_tab_polls" xml:space="preserve">
+    <value>Ankiety</value>
+  </data>
+  <data name="window_settings_time_placeholder" xml:space="preserve">
+    <value>(00:00)</value>
+  </data>
+  <data name="window_responseparams_title" xml:space="preserve">
+    <value>Parametry odpowiedzi</value>
+  </data>
+  <data name="window_settings_preview_placeholder" xml:space="preserve">
+    <value>ContentControl</value>
+  </data>
+  <data name="menu_queue_clear" xml:space="preserve">
+    <value>Wyczyść kolejkę</value>
+  </data>
+  <data name="window_settings_subscriber_t2" xml:space="preserve">
+    <value>Abonent T2</value>
+  </data>
+  <data name="window_settings_subscriber_t3" xml:space="preserve">
+    <value>Abonent T3</value>
+  </data>
+  <data name="window_settings_sync_to_all_levels_tooltip" xml:space="preserve">
+    <value>Synchronizuj ze wszystkimi poziomami użytkownika</value>
+  </data>
+  <data name="window_settings_bits_keyword_hint" xml:space="preserve">
+    <value>Słowo kluczowe bitów (SR zostanie uruchomione tylko wtedy, gdy to słowo kluczowe znajdzie się w wiadomości bitów)</value>
   </data>
 </root>

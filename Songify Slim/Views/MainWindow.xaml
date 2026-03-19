@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,10 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
-    xmlns:i18N="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="Songify"
+    Title="{DynamicResource window_main_title}"
     Width="600"
     Height="285"
     MinWidth="600"
@@ -124,7 +123,7 @@
                     Background="Transparent"
                     BorderBrush="{x:Null}"
                     Command="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToCloseFlyoutCommandConverter}}"
-                    Content="x"
+                    Content="{DynamicResource common_close}"
                     Foreground="{DynamicResource MahApps.Brushes.FlyoutTitleForeground}" />
             </Grid>
         </ControlTemplate>
@@ -185,7 +184,7 @@
                     FontSize="15"
                     FontWeight="Bold"
                     Foreground="White"
-                    Text="BETA" />
+                    Text="{DynamicResource common_beta}" />
             </Border>
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
@@ -219,7 +218,7 @@
                 Background="{x:Null}"
                 BorderBrush="{x:Null}"
                 Click="BtnDisclaimerClose_Click"
-                Content="X"
+                Content="{DynamicResource common_close_x}"
                 Visibility="Collapsed" />
             <StackPanel
                 HorizontalAlignment="Center"
@@ -250,7 +249,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Kind="Buymeacoffee" />
-                            <TextBlock FontSize="18" Text="Support us on Ko-Fi" />
+                            <TextBlock FontSize="18" Text="{DynamicResource window_main_support_kofi}" />
                         </StackPanel>
                     </Button.Content>
                 </Button>
@@ -269,119 +268,119 @@
             Padding="0"
             VerticalAlignment="Top"
             Background="Transparent">
-            <MenuItem d:Header="{i18N:Loc menu.file}" Header="{DynamicResource menu.file}">
+            <MenuItem d:Header="{DynamicResource menu_file}" Header="{DynamicResource menu_file}">
                 <MenuItem
-                    d:Header="{i18N:Loc menu.file.settings}"
+                    d:Header="{DynamicResource menu_file_settings}"
                     Click="BtnSettings_Click"
-                    Header="{DynamicResource menu.file.settings}" />
+                    Header="{DynamicResource menu_file_settings}" />
                 <MenuItem
-                    d:Header="{i18N:Loc menu.file.widget}"
+                    d:Header="{DynamicResource menu_file_widget}"
                     Click="BtnWidget_Click"
-                    Header="{DynamicResource menu.file.widget}" />
+                    Header="{DynamicResource menu_file_widget}" />
                 <MenuItem
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
-                    d:Header="{i18N:Loc menu.file.patchnotes}"
+                    d:Header="{DynamicResource menu_file_patchnotes}"
                     Click="BtnPatchNotes_Click"
-                    Header="{DynamicResource menu.file.patchnotes}" />
-                <MenuItem d:Header="{i18N:Loc menu.help}" Header="{DynamicResource menu.file.help}">
-                    <MenuItem Click="BtnFAQ_Click" Header="FAQ" />
-                    <MenuItem Click="BtnGitHub_Click" Header="GitHub" />
-                    <MenuItem Click="BtnDiscord_Click" Header="Discord" />
+                    Header="{DynamicResource menu_file_patchnotes}" />
+                <MenuItem d:Header="{DynamicResource menu.help}" Header="{DynamicResource menu_file_help}">
+                    <MenuItem Click="BtnFAQ_Click" Header="{DynamicResource menu_faq}" />
+                    <MenuItem Click="BtnGitHub_Click" Header="{DynamicResource menu_github}" />
+                    <MenuItem Click="BtnDiscord_Click" Header="{DynamicResource menu_discord}" />
                     <MenuItem
-                        d:Header="{i18N:Loc menu.help.log_folder}"
+                        d:Header="{DynamicResource menu_help_log_folder}"
                         Click="BtnLogFolderClick"
-                        Header="{DynamicResource menu.help.log_folder}" />
+                        Header="{DynamicResource menu_help_log_folder}" />
                     <MenuItem
-                        d:Header="{i18N:Loc menu.help.app_folder}"
+                        d:Header="{DynamicResource menu_help_app_folder}"
                         Click="BtnAppFolderClick"
-                        Header="{DynamicResource menu.help.app_folder}" />
+                        Header="{DynamicResource menu_help_app_folder}" />
                     <MenuItem
-                        d:Header="{i18N:Loc menu.help.about}"
+                        d:Header="{DynamicResource menu_help_about}"
                         Click="BtnAboutClick"
-                        Header="{DynamicResource menu.help.about}" />
+                        Header="{DynamicResource menu_help_about}" />
                 </MenuItem>
                 <MenuItem
                     x:Name="MiUpdate"
-                    d:Header="{i18N:Loc menu.file.check_for_updates}"
+                    d:Header="{DynamicResource menu_file_check_for_updates}"
                     Click="Mi_Update_OnClick"
-                    Header="{DynamicResource menu.file.check_for_updates}" />
+                    Header="{DynamicResource menu_file_check_for_updates}" />
                 <MenuItem
                     x:Name="MiExit"
-                    d:Header="{i18N:Loc menu.file.exit}"
+                    d:Header="{DynamicResource menu_file_exit}"
                     Click="Mi_Exit_Click"
-                    Header="{DynamicResource menu.file.exit}" />
+                    Header="{DynamicResource menu_file_exit}" />
             </MenuItem>
             <MenuItem
-                Header="Twitch"
+                Header="{DynamicResource menu_twitch}"
                 IsTabStop="False"
-                ToolTip="Connect to Twitch">
+                ToolTip="{DynamicResource menu_twitch_connect_tooltip}">
                 <MenuItem
                     x:Name="MiTwitchApi"
-                    d:Header="{i18N:Loc menu.twitch.login}"
+                    d:Header="{DynamicResource menu_twitch_login}"
                     Click="Mi_TwitchAPI_Click"
-                    Header="{DynamicResource menu.twitch.login}" />
+                    Header="{DynamicResource menu_twitch_login}" />
                 <MenuItem
                     x:Name="MiTwitchConnect"
-                    d:Header="{i18N:Loc menu.twitch.connect}"
+                    d:Header="{DynamicResource menu_twitch_connect}"
                     Click="BtnTwitch_Click"
-                    Header="{DynamicResource menu.twitch.connect}"
+                    Header="{DynamicResource menu_twitch_connect}"
                     Tag="Connect" />
                 <MenuItem
                     x:Name="MiTwitchCheckOnlineStatus"
-                    d:Header="{i18N:Loc menu.twitch.check_online_status}"
+                    d:Header="{DynamicResource menu_twitch_check_online_status}"
                     Click="Mi_TwitchCheckOnlineStatus_OnClick"
-                    Header="{DynamicResource menu.twitch.check_online_status}" />
+                    Header="{DynamicResource menu_twitch_check_online_status}" />
             </MenuItem>
-            <MenuItem d:Header="{i18N:Loc menu.song_requests}" Header="{DynamicResource menu.song_requests}">
+            <MenuItem d:Header="{DynamicResource menu_song_requests}" Header="{DynamicResource menu_song_requests}">
                 <MenuItem
                     x:Name="MiQueue"
-                    d:Header="{i18N:Loc menu.song_requests.queue_window}"
+                    d:Header="{DynamicResource menu_song_requests_queue_window}"
                     Click="Mi_Queue_Click"
-                    Header="{DynamicResource menu.song_requests.queue_window}"
+                    Header="{DynamicResource menu_song_requests_queue_window}"
                     Tag="Window" />
                 <MenuItem
-                    d:Header="{i18N:Loc menu.song_requests.queue_browser}"
+                    d:Header="{DynamicResource menu_song_requests_queue_browser}"
                     Click="Mi_Queue_Click"
-                    Header="{DynamicResource menu.song_requests.queue_browser}"
+                    Header="{DynamicResource menu_song_requests_queue_browser}"
                     Tag="Browser" />
                 <MenuItem
                     x:Name="MiQueueClear"
-                    d:Header="{i18N:Loc menu.song_requests.clear_queue}"
+                    d:Header="{DynamicResource menu_song_requests_clear_queue}"
                     Click="Mi_QueueClear_Click"
-                    Header="{DynamicResource menu.song_requests.clear_queue}" />
+                    Header="{DynamicResource menu_song_requests_clear_queue}" />
                 <MenuItem
                     x:Name="MiBlacklist"
-                    d:Header="{i18N:Loc menu.song_requests.block_list}"
+                    d:Header="{DynamicResource menu_song_requests_block_list}"
                     Click="Mi_Blacklist_Click"
-                    Header="{DynamicResource menu.song_requests.block_list}" />
+                    Header="{DynamicResource menu_song_requests_block_list}" />
             </MenuItem>
-            <MenuItem d:Header="{i18N:Loc menu.history}" Header="{DynamicResource menu.history}">
+            <MenuItem d:Header="{DynamicResource menu_history}" Header="{DynamicResource menu_history}">
                 <MenuItem
-                    d:Header="{i18N:Loc menu.history.window}"
+                    d:Header="{DynamicResource menu_history_window}"
                     Click="BtnHistory_Click"
-                    Header="{DynamicResource menu.history.window}"
+                    Header="{DynamicResource menu_history_window}"
                     Tag="Window" />
                 <MenuItem
-                    d:Header="{i18N:Loc menu.history.browser}"
+                    d:Header="{DynamicResource menu_history_browser}"
                     Click="BtnHistory_Click"
-                    Header="{DynamicResource menu.history.browser}"
+                    Header="{DynamicResource menu_history_browser}"
                     Tag="Browser" />
             </MenuItem>
-            <MenuItem d:Header="{i18N:Loc menu.view}" Header="{DynamicResource menu.view}">
+            <MenuItem d:Header="{DynamicResource menu_view}" Header="{DynamicResource menu_view}">
                 <MenuItem
-                    d:Header="{i18N:Loc menu.view.console}"
+                    d:Header="{DynamicResource menu_view_console}"
                     Click="BtnMenuViewConsole_Click"
-                    Header="{DynamicResource menu.view.console}" />
+                    Header="{DynamicResource menu_view_console}" />
 
                 <MenuItem
-                    d:Header="{i18N:Loc menu.view.user_list}"
+                    d:Header="{DynamicResource menu_view_user_list}"
                     Click="BtnMenuViewUserList_Click"
-                    Header="{DynamicResource menu.view.user_list}" />
+                    Header="{DynamicResource menu_view_user_list}" />
                 <MenuItem
-                    d:Header="{i18N:Loc menu.view.webserver_url}"
+                    d:Header="{DynamicResource menu_view_webserver_url}"
                     Click="BtnWebServerUrl_Click"
-                    Header="{DynamicResource menu.view.webserver_url}" />
+                    Header="{DynamicResource menu_view_webserver_url}" />
             </MenuItem>
         </Menu>
         <StackPanel
@@ -439,7 +438,7 @@
                 x:Name="FlyMotd"
                 Width="{Binding ElementName=MainWindow, Path=ActualWidth}"
                 Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                Header="Notifications"
+                Header="{DynamicResource menu_notifications}"
                 IsOpen="False"
                 Position="Right">
                 <controls:Flyout.HeaderTemplate>
@@ -462,7 +461,7 @@
                                     Margin="10,0"
                                     Click="BtnFlyOutAllread_OnClick"
                                     Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
-                                    ToolTip="Mark All As Read"
+                                    ToolTip="{DynamicResource common_mark_all_read}"
                                     Visibility="Hidden">
                                     <Button.Content>
                                         <iconPacks:Material
@@ -549,9 +548,9 @@
                     Padding="10"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    d:Text="{i18N:Loc now_playing.placeholder}"
+                    d:Text="{DynamicResource common_now_playing_placeholder}"
                     SnapsToDevicePixels="True"
-                    Text="{DynamicResource now_playing.placeholder}"
+                    Text="{DynamicResource common_now_playing_placeholder}"
                     TextOptions.TextFormattingMode="Display"
                     TextWrapping="Wrap"
                     UseLayoutRounding="True" />
@@ -576,7 +575,7 @@
                     </TransformGroup>
                 </iconPacks:PackIconForkAwesome.RenderTransform>
             </iconPacks:PackIconForkAwesome>
-            <Label Content="PubSub has been disabled due to bugs" />
+            <Label Content="{DynamicResource window_main_pubsub_disabled}" />
         </StackPanel>
         <Button
             x:Name="BtnSupport"
@@ -602,8 +601,8 @@
                         <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
                         <TextBlock
                             VerticalAlignment="Center"
-                            d:Text="{i18N:Loc cta.support}"
-                            Text="{DynamicResource cta.support}" />
+                            d:Text="{DynamicResource cta_support}"
+                            Text="{DynamicResource cta_support}" />
                     </StackPanel>
                     <Border.RenderTransform>
                         <TransformGroup>
@@ -751,7 +750,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <StatusBarItem
                                     x:Name="LblCopyright"
-                                    Content="Songify v1.1.1-RC1 Copyright ©"
+                                    Content="{DynamicResource window_main_copyright}"
                                     Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
                                 <StatusBarItem
                                     x:Name="LblCopyrightLink"

@@ -1,4 +1,4 @@
-﻿using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -48,11 +48,11 @@ namespace Songify_Slim.Views
             catch (Exception)
             {
                 LblStatus.Foreground = Brushes.Red;
-                LblStatus.Text = Properties.Resources.crw_CreateRewardError;
+                LblStatus.Text = Properties.Resources.window_createreward_error;
                 return null;
             }
             LblStatus.Foreground = Brushes.ForestGreen;
-            LblStatus.Text = Properties.Resources.crw_CreateRewardSuccess.Replace("{name}", name);
+            LblStatus.Text = Properties.Resources.window_createreward_success.Replace("{name}", name);
             Process.Start("https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards");
             return response;
         }
@@ -82,7 +82,7 @@ namespace Songify_Slim.Views
             catch (Exception ex)
             {
                 LblStatus.Foreground = Brushes.Red;
-                LblStatus.Text = Properties.Resources.crw_CreateRewardError + " " + ex.Message;
+                LblStatus.Text = Properties.Resources.window_createreward_error + " " + ex.Message;
             }
         }
     }

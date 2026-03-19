@@ -61,560 +61,308 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Artist is blocked.
-        /// </summary>
-        public static string brw_ArtistBlocked {
-            get {
-                return ResourceManager.GetString("brw_ArtistBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Adds the current song to the blocklist and skips it..
-        /// </summary>
-        public static string brw_cmd_bansong {
-            get {
-                return ResourceManager.GetString("brw_cmd_bansong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Returns all active Songify commands..
-        /// </summary>
-        public static string brw_cmd_commands {
-            get {
-                return ResourceManager.GetString("brw_cmd_commands", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Description.
-        /// </summary>
-        public static string brw_cmd_description {
-            get {
-                return ResourceManager.GetString("brw_cmd_description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enabled.
-        /// </summary>
-        public static string brw_cmd_enabled {
-            get {
-                return ResourceManager.GetString("brw_cmd_enabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the next song in queue.
-        /// </summary>
-        public static string brw_cmd_next {
-            get {
-                return ResourceManager.GetString("brw_cmd_next", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Off.
-        /// </summary>
-        public static string brw_cmd_off {
-            get {
-                return ResourceManager.GetString("brw_cmd_off", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to On.
-        /// </summary>
-        public static string brw_cmd_on {
-            get {
-                return ResourceManager.GetString("brw_cmd_on", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pauses the current playback..
-        /// </summary>
-        public static string brw_cmd_pause {
-            get {
-                return ResourceManager.GetString("brw_cmd_pause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Resumes the current playback..
-        /// </summary>
-        public static string brw_cmd_play {
-            get {
-                return ResourceManager.GetString("brw_cmd_play", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
-        /// </summary>
-        public static string brw_cmd_pos {
-            get {
-                return ResourceManager.GetString("brw_cmd_pos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
-        /// </summary>
-        public static string brw_cmd_queue {
-            get {
-                return ResourceManager.GetString("brw_cmd_queue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
-        /// </summary>
-        public static string brw_cmd_QueueReturn {
-            get {
-                return ResourceManager.GetString("brw_cmd_QueueReturn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Removes the latest song request of the user..
-        /// </summary>
-        public static string brw_cmd_remove {
-            get {
-                return ResourceManager.GetString("brw_cmd_remove", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skips the current song.
-        /// </summary>
-        public static string brw_cmd_skip {
-            get {
-                return ResourceManager.GetString("brw_cmd_skip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Starts a vote to skip the current song.
-        /// </summary>
-        public static string brw_cmd_skipvote {
-            get {
-                return ResourceManager.GetString("brw_cmd_skipvote", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Number of votes needed.
-        /// </summary>
-        public static string brw_cmd_skipvotecount {
-            get {
-                return ResourceManager.GetString("brw_cmd_skipvotecount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the current song.
-        /// </summary>
-        public static string brw_cmd_song {
-            get {
-                return ResourceManager.GetString("brw_cmd_song", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config..
-        /// </summary>
-        public static string brw_cmd_songlike {
-            get {
-                return ResourceManager.GetString("brw_cmd_songlike", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable / Disable Song Requests (disables them in App and also tries to pause the Reward).
-        /// </summary>
-        public static string brw_cmd_togglesr {
-            get {
-                return ResourceManager.GetString("brw_cmd_togglesr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Trigger.
-        /// </summary>
-        public static string brw_cmd_trigger {
-            get {
-                return ResourceManager.GetString("brw_cmd_trigger", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Returns the current volume or sets it. &apos;!vol [0-100]&apos;.
-        /// </summary>
-        public static string brw_cmd_vol {
-            get {
-                return ResourceManager.GetString("brw_cmd_vol", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ignore Broadcaster / Moderator check.
-        /// </summary>
-        public static string brw_cmd_volIgnoreMod {
-            get {
-                return ResourceManager.GetString("brw_cmd_volIgnoreMod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when the sr command is on cooldown.
-        /// </summary>
-        public static string brw_CommandOnCooldown {
-            get {
-                return ResourceManager.GetString("brw_CommandOnCooldown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when the User is on cooldown (per user sr command cooldown).
-        /// </summary>
-        public static string brw_CommandOnUserCooldown {
-            get {
-                return ResourceManager.GetString("brw_CommandOnUserCooldown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when an explicit song has been requested and &apos;block explicit songs&apos; is turned on.
-        /// </summary>
-        public static string brw_ExplicitSongs {
-            get {
-                return ResourceManager.GetString("brw_ExplicitSongs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error fetching songdata.
-        /// </summary>
-        public static string brw_FetchError {
-            get {
-                return ResourceManager.GetString("brw_FetchError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure the bot responses for the following scenarios:.
-        /// </summary>
-        public static string brw_Header {
-            get {
-                return ResourceManager.GetString("brw_Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max songs in queue.
-        /// </summary>
-        public static string brw_MaxSongs {
-            get {
-                return ResourceManager.GetString("brw_MaxSongs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Broadcaster / Moderator / Requester skipped the song.
-        /// </summary>
-        public static string brw_ModSkip {
-            get {
-                return ResourceManager.GetString("brw_ModSkip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response for !next command.
-        /// </summary>
-        public static string brw_Next {
-            get {
-                return ResourceManager.GetString("brw_Next", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No song has been specified (empty request).
-        /// </summary>
-        public static string brw_NoSong {
-            get {
-                return ResourceManager.GetString("brw_NoSong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when no track was found.
-        /// </summary>
-        public static string brw_NoTrackFound {
-            get {
-                return ResourceManager.GetString("brw_NoTrackFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response for !pos command.
-        /// </summary>
-        public static string brw_Pos {
-            get {
-                return ResourceManager.GetString("brw_Pos", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when channel points have been refunded. (empty for no response).
-        /// </summary>
-        public static string brw_Refund {
-            get {
-                return ResourceManager.GetString("brw_Refund", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response for !remove command.
-        /// </summary>
-        public static string brw_Remove {
-            get {
-                return ResourceManager.GetString("brw_Remove", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response for !song command.
-        /// </summary>
-        public static string brw_Song {
-            get {
-                return ResourceManager.GetString("brw_Song", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song is blocked.
-        /// </summary>
-        public static string brw_SongBlocked {
-            get {
-                return ResourceManager.GetString("brw_SongBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song already in queue.
-        /// </summary>
-        public static string brw_SongInQueue {
-            get {
-                return ResourceManager.GetString("brw_SongInQueue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response for !songlike command.
-        /// </summary>
-        public static string brw_SongLike {
-            get {
-                return ResourceManager.GetString("brw_SongLike", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response when the song was not found in the allowed songs playlist.
-        /// </summary>
-        public static string brw_SongNotFoundInPlaylist {
-            get {
-                return ResourceManager.GetString("brw_SongNotFoundInPlaylist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song too long.
-        /// </summary>
-        public static string brw_SongTooLong {
-            get {
-                return ResourceManager.GetString("brw_SongTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song added successfully (command &amp; reward).
-        /// </summary>
-        public static string brw_Success {
-            get {
-                return ResourceManager.GetString("brw_Success", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Commands.
-        /// </summary>
-        public static string brw_tc_Commands {
-            get {
-                return ResourceManager.GetString("brw_tc_Commands", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Responses.
-        /// </summary>
-        public static string brw_tc_Responses {
-            get {
-                return ResourceManager.GetString("brw_tc_Responses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Userlevel is too low for !ssr command.
-        /// </summary>
-        public static string brw_UserLevelTooLowCommand {
-            get {
-                return ResourceManager.GetString("brw_UserLevelTooLowCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Userlevel is too low for song request reward.
-        /// </summary>
-        public static string brw_UserLevelTooLowReward {
-            get {
-                return ResourceManager.GetString("brw_UserLevelTooLowReward", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User voted to skip the current song.
-        /// </summary>
-        public static string brw_VoteSkip {
-            get {
-                return ResourceManager.GetString("brw_VoteSkip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
-        public static string bw_btnAdd {
+        public static string common_add {
             get {
-                return ResourceManager.GetString("bw_btnAdd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear.
-        /// </summary>
-        public static string bw_btnClear {
-            get {
-                return ResourceManager.GetString("bw_btnClear", resourceCulture);
+                return ResourceManager.GetString("common_add", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Artist.
         /// </summary>
-        public static string bw_cbArtist {
+        public static string common_artist {
             get {
-                return ResourceManager.GetString("bw_cbArtist", resourceCulture);
+                return ResourceManager.GetString("common_artist", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User.
+        ///   Looks up a localized string similar to BETA.
         /// </summary>
-        public static string bw_cbUser {
+        public static string common_beta {
             get {
-                return ResourceManager.GetString("bw_cbUser", resourceCulture);
+                return ResourceManager.GetString("common_beta", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blocked Artists.
+        ///   Looks up a localized string similar to ....
         /// </summary>
-        public static string bw_lblBlockedArtists {
+        public static string common_browse {
             get {
-                return ResourceManager.GetString("bw_lblBlockedArtists", resourceCulture);
+                return ResourceManager.GetString("common_browse", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blocked Songs.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        public static string bw_lblBlockedSongs {
+        public static string common_cancel {
             get {
-                return ResourceManager.GetString("bw_lblBlockedSongs", resourceCulture);
+                return ResourceManager.GetString("common_cancel", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Blocked Users.
+        ///   Looks up a localized string similar to Close.
         /// </summary>
-        public static string bw_lblBlockedUsers {
+        public static string common_close {
             get {
-                return ResourceManager.GetString("bw_lblBlockedUsers", resourceCulture);
+                return ResourceManager.GetString("common_close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X.
+        /// </summary>
+        public static string common_close_x {
+            get {
+                return ResourceManager.GetString("common_close_x", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to #.
+        /// </summary>
+        public static string common_column_number {
+            get {
+                return ResourceManager.GetString("common_column_number", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Columns.
+        /// </summary>
+        public static string common_columns {
+            get {
+                return ResourceManager.GetString("common_columns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connected.
+        /// </summary>
+        public static string common_connected {
+            get {
+                return ResourceManager.GetString("common_connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copied.
+        /// </summary>
+        public static string common_copied {
+            get {
+                return ResourceManager.GetString("common_copied", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Delete.
         /// </summary>
-        public static string bw_menu_Delete {
+        public static string common_delete {
             get {
-                return ResourceManager.GetString("bw_menu_Delete", resourceCulture);
+                return ResourceManager.GetString("common_delete", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create reward.
+        ///   Looks up a localized string similar to Disconnected.
         /// </summary>
-        public static string crw_CreateReward {
+        public static string common_disconnected {
             get {
-                return ResourceManager.GetString("crw_CreateReward", resourceCulture);
+                return ResourceManager.GetString("common_disconnected", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an issue creating the reward. Make sure you don&apos;t have a reward with the same name already..
+        ///   Looks up a localized string similar to Please enter the Spotify client ID and Secret.
         /// </summary>
-        public static string crw_CreateRewardError {
+        public static string common_fill_client_id_secret {
             get {
-                return ResourceManager.GetString("crw_CreateRewardError", resourceCulture);
+                return ResourceManager.GetString("common_fill_client_id_secret", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The reward &quot;{name}&quot; has been created..
+        ///   Looks up a localized string similar to Follower.
         /// </summary>
-        public static string crw_CreateRewardSuccess {
+        public static string common_follower {
             get {
-                return ResourceManager.GetString("crw_CreateRewardSuccess", resourceCulture);
+                return ResourceManager.GetString("common_follower", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cost.
+        ///   Looks up a localized string similar to ?.
         /// </summary>
-        public static string crw_RewardCost {
+        public static string common_help {
             get {
-                return ResourceManager.GetString("crw_RewardCost", resourceCulture);
+                return ResourceManager.GetString("common_help", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Description.
+        ///   Looks up a localized string similar to Id.
         /// </summary>
-        public static string crw_RewardPrompt {
+        public static string common_id {
             get {
-                return ResourceManager.GetString("crw_RewardPrompt", resourceCulture);
+                return ResourceManager.GetString("common_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Length.
+        /// </summary>
+        public static string common_length {
+            get {
+                return ResourceManager.GetString("common_length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mark All As Read.
+        /// </summary>
+        public static string common_mark_all_read {
+            get {
+                return ResourceManager.GetString("common_mark_all_read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moderator.
+        /// </summary>
+        public static string common_moderator {
+            get {
+                return ResourceManager.GetString("common_moderator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string common_name {
+            get {
+                return ResourceManager.GetString("common_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist - Title.
+        /// </summary>
+        public static string common_now_playing_placeholder {
+            get {
+                return ResourceManager.GetString("common_now_playing_placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string common_ok {
+            get {
+                return ResourceManager.GetString("common_ok", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requester.
+        /// </summary>
+        public static string common_requester {
+            get {
+                return ResourceManager.GetString("common_requester", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string common_save {
+            get {
+                return ResourceManager.GetString("common_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song.
+        /// </summary>
+        public static string common_song {
+            get {
+                return ResourceManager.GetString("common_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscriber.
+        /// </summary>
+        public static string common_subscriber {
+            get {
+                return ResourceManager.GetString("common_subscriber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string common_time {
+            get {
+                return ResourceManager.GetString("common_time", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Title.
         /// </summary>
-        public static string crw_RewardTitle {
+        public static string common_title {
             get {
-                return ResourceManager.GetString("crw_RewardTitle", resourceCulture);
+                return ResourceManager.GetString("common_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track has been added to the queue..
+        /// </summary>
+        public static string common_track_added {
+            get {
+                return ResourceManager.GetString("common_track_added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload.
+        /// </summary>
+        public static string common_upload {
+            get {
+                return ResourceManager.GetString("common_upload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewer.
+        /// </summary>
+        public static string common_viewer {
+            get {
+                return ResourceManager.GetString("common_viewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VIP.
+        /// </summary>
+        public static string common_vip {
+            get {
+                return ResourceManager.GetString("common_vip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string common_warning {
+            get {
+                return ResourceManager.GetString("common_warning", resourceCulture);
             }
         }
         
@@ -623,115 +371,178 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string cta_support {
             get {
-                return ResourceManager.GetString("cta.support", resourceCulture);
+                return ResourceManager.GetString("cta_support", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot Account.
+        /// </summary>
+        public static string dialog_bot_account {
+            get {
+                return ResourceManager.GetString("dialog_bot_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string dialog_no {
+            get {
+                return ResourceManager.GetString("dialog_no", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully linked to {account}. Would you also like to use this account as the chat bot?.
+        /// </summary>
+        public static string dialog_use_as_bot_account {
+            get {
+                return ResourceManager.GetString("dialog_use_as_bot_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string dialog_yes {
+            get {
+                return ResourceManager.GetString("dialog_yes", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Belarusian.
         /// </summary>
-        public static string lang_beBY {
+        public static string language_be {
             get {
-                return ResourceManager.GetString("lang_beBY", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Brazilian Portuguese.
-        /// </summary>
-        public static string lang_br {
-            get {
-                return ResourceManager.GetString("lang_br", resourceCulture);
+                return ResourceManager.GetString("language_be", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to German.
         /// </summary>
-        public static string lang_deDE {
+        public static string language_de {
             get {
-                return ResourceManager.GetString("lang_deDE", resourceCulture);
+                return ResourceManager.GetString("language_de", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to English.
         /// </summary>
-        public static string lang_en {
+        public static string language_en {
             get {
-                return ResourceManager.GetString("lang_en", resourceCulture);
+                return ResourceManager.GetString("language_en", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Spanish.
         /// </summary>
-        public static string lang_es {
+        public static string language_es {
             get {
-                return ResourceManager.GetString("lang_es", resourceCulture);
+                return ResourceManager.GetString("language_es", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to French.
         /// </summary>
-        public static string lang_fr {
+        public static string language_fr {
             get {
-                return ResourceManager.GetString("lang_fr", resourceCulture);
+                return ResourceManager.GetString("language_fr", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Italian.
         /// </summary>
-        public static string lang_it {
+        public static string language_it {
             get {
-                return ResourceManager.GetString("lang_it", resourceCulture);
+                return ResourceManager.GetString("language_it", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Dutch.
         /// </summary>
-        public static string lang_nl {
+        public static string language_nl {
             get {
-                return ResourceManager.GetString("lang_nl", resourceCulture);
+                return ResourceManager.GetString("language_nl", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Polish.
         /// </summary>
-        public static string lang_pl {
+        public static string language_pl {
             get {
-                return ResourceManager.GetString("lang_pl", resourceCulture);
+                return ResourceManager.GetString("language_pl", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Portuguese.
         /// </summary>
-        public static string lang_pt {
+        public static string language_pt {
             get {
-                return ResourceManager.GetString("lang_pt", resourceCulture);
+                return ResourceManager.GetString("language_pt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Brazilian Portuguese.
+        /// </summary>
+        public static string language_pt_br {
+            get {
+                return ResourceManager.GetString("language_pt_br", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Russian.
         /// </summary>
-        public static string lang_ru {
+        public static string language_ru {
             get {
-                return ResourceManager.GetString("lang_ru", resourceCulture);
+                return ResourceManager.GetString("language_ru", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Check For Updates.
         /// </summary>
-        public static string menu {
+        public static string menu_check_for_updates {
             get {
-                return ResourceManager.GetString("menu", resourceCulture);
+                return ResourceManager.GetString("menu_check_for_updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect.
+        /// </summary>
+        public static string menu_disconnect {
+            get {
+                return ResourceManager.GetString("menu_disconnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord.
+        /// </summary>
+        public static string menu_discord {
+            get {
+                return ResourceManager.GetString("menu_discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FAQ.
+        /// </summary>
+        public static string menu_faq {
+            get {
+                return ResourceManager.GetString("menu_faq", resourceCulture);
             }
         }
         
@@ -740,7 +551,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file {
             get {
-                return ResourceManager.GetString("menu.file", resourceCulture);
+                return ResourceManager.GetString("menu_file", resourceCulture);
             }
         }
         
@@ -749,7 +560,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_check_for_updates {
             get {
-                return ResourceManager.GetString("menu.file.check_for_updates", resourceCulture);
+                return ResourceManager.GetString("menu_file_check_for_updates", resourceCulture);
             }
         }
         
@@ -758,7 +569,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_exit {
             get {
-                return ResourceManager.GetString("menu.file.exit", resourceCulture);
+                return ResourceManager.GetString("menu_file_exit", resourceCulture);
             }
         }
         
@@ -767,7 +578,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_help {
             get {
-                return ResourceManager.GetString("menu.file.help", resourceCulture);
+                return ResourceManager.GetString("menu_file_help", resourceCulture);
             }
         }
         
@@ -776,7 +587,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_patchnotes {
             get {
-                return ResourceManager.GetString("menu.file.patchnotes", resourceCulture);
+                return ResourceManager.GetString("menu_file_patchnotes", resourceCulture);
             }
         }
         
@@ -785,7 +596,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_settings {
             get {
-                return ResourceManager.GetString("menu.file.settings", resourceCulture);
+                return ResourceManager.GetString("menu_file_settings", resourceCulture);
             }
         }
         
@@ -794,7 +605,16 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_file_widget {
             get {
-                return ResourceManager.GetString("menu.file.widget", resourceCulture);
+                return ResourceManager.GetString("menu_file_widget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GitHub.
+        /// </summary>
+        public static string menu_github {
+            get {
+                return ResourceManager.GetString("menu_github", resourceCulture);
             }
         }
         
@@ -803,7 +623,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_help_about {
             get {
-                return ResourceManager.GetString("menu.help.about", resourceCulture);
+                return ResourceManager.GetString("menu_help_about", resourceCulture);
             }
         }
         
@@ -812,7 +632,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_help_app_folder {
             get {
-                return ResourceManager.GetString("menu.help.app_folder", resourceCulture);
+                return ResourceManager.GetString("menu_help_app_folder", resourceCulture);
             }
         }
         
@@ -821,7 +641,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_help_log_folder {
             get {
-                return ResourceManager.GetString("menu.help.log_folder", resourceCulture);
+                return ResourceManager.GetString("menu_help_log_folder", resourceCulture);
             }
         }
         
@@ -830,7 +650,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_history {
             get {
-                return ResourceManager.GetString("menu.history", resourceCulture);
+                return ResourceManager.GetString("menu_history", resourceCulture);
             }
         }
         
@@ -839,7 +659,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_history_browser {
             get {
-                return ResourceManager.GetString("menu.history.browser", resourceCulture);
+                return ResourceManager.GetString("menu_history_browser", resourceCulture);
             }
         }
         
@@ -848,7 +668,34 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_history_window {
             get {
-                return ResourceManager.GetString("menu.history.window", resourceCulture);
+                return ResourceManager.GetString("menu_history_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notifications.
+        /// </summary>
+        public static string menu_notifications {
+            get {
+                return ResourceManager.GetString("menu_notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue.
+        /// </summary>
+        public static string menu_queue {
+            get {
+                return ResourceManager.GetString("menu_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Queue.
+        /// </summary>
+        public static string menu_queue_clear {
+            get {
+                return ResourceManager.GetString("menu_queue_clear", resourceCulture);
             }
         }
         
@@ -857,7 +704,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_song_requests {
             get {
-                return ResourceManager.GetString("menu.song_requests", resourceCulture);
+                return ResourceManager.GetString("menu_song_requests", resourceCulture);
             }
         }
         
@@ -866,7 +713,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_song_requests_block_list {
             get {
-                return ResourceManager.GetString("menu.song_requests.block_list", resourceCulture);
+                return ResourceManager.GetString("menu_song_requests_block_list", resourceCulture);
             }
         }
         
@@ -875,7 +722,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_song_requests_clear_queue {
             get {
-                return ResourceManager.GetString("menu.song_requests.clear_queue", resourceCulture);
+                return ResourceManager.GetString("menu_song_requests_clear_queue", resourceCulture);
             }
         }
         
@@ -884,7 +731,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_song_requests_queue_browser {
             get {
-                return ResourceManager.GetString("menu.song_requests.queue_browser", resourceCulture);
+                return ResourceManager.GetString("menu_song_requests_queue_browser", resourceCulture);
             }
         }
         
@@ -893,7 +740,34 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_song_requests_queue_window {
             get {
-                return ResourceManager.GetString("menu.song_requests.queue_window", resourceCulture);
+                return ResourceManager.GetString("menu_song_requests_queue_window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support Us.
+        /// </summary>
+        public static string menu_support {
+            get {
+                return ResourceManager.GetString("menu_support", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch.
+        /// </summary>
+        public static string menu_twitch {
+            get {
+                return ResourceManager.GetString("menu_twitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot config.
+        /// </summary>
+        public static string menu_twitch_bot {
+            get {
+                return ResourceManager.GetString("menu_twitch_bot", resourceCulture);
             }
         }
         
@@ -902,7 +776,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_twitch_check_online_status {
             get {
-                return ResourceManager.GetString("menu.twitch.check_online_status", resourceCulture);
+                return ResourceManager.GetString("menu_twitch_check_online_status", resourceCulture);
             }
         }
         
@@ -911,7 +785,34 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_twitch_connect {
             get {
-                return ResourceManager.GetString("menu.twitch.connect", resourceCulture);
+                return ResourceManager.GetString("menu_twitch_connect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect to Twitch.
+        /// </summary>
+        public static string menu_twitch_connect_tooltip {
+            get {
+                return ResourceManager.GetString("menu_twitch_connect_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Doesn&apos;t work?.
+        /// </summary>
+        public static string menu_twitch_doesnt_work {
+            get {
+                return ResourceManager.GetString("menu_twitch_doesnt_work", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logged in with Twitch.
+        /// </summary>
+        public static string menu_twitch_logged_in {
+            get {
+                return ResourceManager.GetString("menu_twitch_logged_in", resourceCulture);
             }
         }
         
@@ -920,7 +821,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_twitch_login {
             get {
-                return ResourceManager.GetString("menu.twitch.login", resourceCulture);
+                return ResourceManager.GetString("menu_twitch_login", resourceCulture);
             }
         }
         
@@ -929,7 +830,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_view {
             get {
-                return ResourceManager.GetString("menu.view", resourceCulture);
+                return ResourceManager.GetString("menu_view", resourceCulture);
             }
         }
         
@@ -938,7 +839,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_view_console {
             get {
-                return ResourceManager.GetString("menu.view.console", resourceCulture);
+                return ResourceManager.GetString("menu_view_console", resourceCulture);
             }
         }
         
@@ -947,7 +848,7 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_view_user_list {
             get {
-                return ResourceManager.GetString("menu.view.user_list", resourceCulture);
+                return ResourceManager.GetString("menu_view_user_list", resourceCulture);
             }
         }
         
@@ -956,1646 +857,3202 @@ namespace Songify_Slim.Properties {
         /// </summary>
         public static string menu_view_webserver_url {
             get {
-                return ResourceManager.GetString("menu.view.webserver_url", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bot Account.
-        /// </summary>
-        public static string msgbx_BotAccount {
-            get {
-                return ResourceManager.GetString("msgbx_BotAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No.
-        /// </summary>
-        public static string msgbx_No {
-            get {
-                return ResourceManager.GetString("msgbx_No", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Successfully linked to {account}. Would you also like to use this account as the chat bot?.
-        /// </summary>
-        public static string msgbx_UseAsBotAccount {
-            get {
-                return ResourceManager.GetString("msgbx_UseAsBotAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Yes.
-        /// </summary>
-        public static string msgbx_Yes {
-            get {
-                return ResourceManager.GetString("msgbx_Yes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you really want to clear the queue?.
-        /// </summary>
-        public static string mw_clearQueueDisclaimer {
-            get {
-                return ResourceManager.GetString("mw_clearQueueDisclaimer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
-        /// </summary>
-        public static string mw_LiveOutputLinkSpotify {
-            get {
-                return ResourceManager.GetString("mw_LiveOutputLinkSpotify", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disconnect.
-        /// </summary>
-        public static string mw_menu_Disconnect {
-            get {
-                return ResourceManager.GetString("mw_menu_Disconnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Queue.
-        /// </summary>
-        public static string mw_menu_Queue {
-            get {
-                return ResourceManager.GetString("mw_menu_Queue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Support Us.
-        /// </summary>
-        public static string mw_menu_Support {
-            get {
-                return ResourceManager.GetString("mw_menu_Support", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bot config.
-        /// </summary>
-        public static string mw_menu_Twitch_Bot {
-            get {
-                return ResourceManager.GetString("mw_menu_Twitch_Bot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Doesn&apos;t work?.
-        /// </summary>
-        public static string mw_menu_Twitch_dw {
-            get {
-                return ResourceManager.GetString("mw_menu_Twitch_dw", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Logged in with Twitch.
-        /// </summary>
-        public static string mw_menu_Twitch_TwitchLoggedIn {
-            get {
-                return ResourceManager.GetString("mw_menu_Twitch_TwitchLoggedIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The widget only works if &quot;Upload Song Info&quot; is enabled. You can find this option under Settings -&gt; Output. Do you want to activate it now?.
-        /// </summary>
-        public static string mw_menu_Widget_disclaimer {
-            get {
-                return ResourceManager.GetString("mw_menu_Widget_disclaimer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Artist - Title.
-        /// </summary>
-        public static string now_playing_placeholder {
-            get {
-                return ResourceManager.GetString("now_playing.placeholder", resourceCulture);
+                return ResourceManager.GetString("menu_view_webserver_url", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Artists for the current song or song request.
         /// </summary>
-        public static string Param_Artist_Desc {
+        public static string param_artist_description {
             get {
-                return ResourceManager.GetString("Param_Artist_Desc", resourceCulture);
+                return ResourceManager.GetString("param_artist_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to List of all active commands.
         /// </summary>
-        public static string Param_Commands_Desc {
+        public static string param_commands_description {
             get {
-                return ResourceManager.GetString("Param_Commands_Desc", resourceCulture);
+                return ResourceManager.GetString("param_commands_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The text inside of &apos;{{&apos; and &apos;}}&apos; will only be posted if the current song is a song request.
         /// </summary>
-        public static string Param_ConditionalText_Desc {
+        public static string param_conditional_text_description {
             get {
-                return ResourceManager.GetString("Param_ConditionalText_Desc", resourceCulture);
+                return ResourceManager.GetString("param_conditional_text_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The cooldown in seconds (for global cd and user cd).
         /// </summary>
-        public static string Param_Cooldown_Desc {
+        public static string param_cooldown_description {
             get {
-                return ResourceManager.GetString("Param_Cooldown_Desc", resourceCulture);
+                return ResourceManager.GetString("param_cooldown_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Error message if an error occurs.
         /// </summary>
-        public static string Param_ErrorMessage_Desc {
+        public static string param_error_message_description {
             get {
-                return ResourceManager.GetString("Param_ErrorMessage_Desc", resourceCulture);
+                return ResourceManager.GetString("param_error_message_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Max song length in minutes.
         /// </summary>
-        public static string Param_MaxLength_Desc {
+        public static string param_max_length_description {
             get {
-                return ResourceManager.GetString("Param_MaxLength_Desc", resourceCulture);
+                return ResourceManager.GetString("param_max_length_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Max requests per user.
         /// </summary>
-        public static string Param_MaxRequests_Desc {
+        public static string param_max_requests_description {
             get {
-                return ResourceManager.GetString("Param_MaxRequests_Desc", resourceCulture);
+                return ResourceManager.GetString("param_max_requests_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Name of the playlist.
         /// </summary>
-        public static string Param_PlaylistName_Desc {
+        public static string param_playlist_name_description {
             get {
-                return ResourceManager.GetString("Param_PlaylistName_Desc", resourceCulture);
+                return ResourceManager.GetString("param_playlist_name_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to URL of the playlist.
         /// </summary>
-        public static string Param_PlaylistUrl_Desc {
+        public static string param_playlist_url_description {
             get {
-                return ResourceManager.GetString("Param_PlaylistUrl_Desc", resourceCulture);
+                return ResourceManager.GetString("param_playlist_url_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Next 5 songs in the queue.
         /// </summary>
-        public static string Param_Queue_Desc {
+        public static string param_queue_description {
             get {
-                return ResourceManager.GetString("Param_Queue_Desc", resourceCulture);
+                return ResourceManager.GetString("param_queue_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The reason why the redemption got refunded..
         /// </summary>
-        public static string Param_RefundReason_Desc {
+        public static string param_refund_reason_description {
             get {
-                return ResourceManager.GetString("Param_RefundReason_Desc", resourceCulture);
+                return ResourceManager.GetString("param_refund_reason_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The requester of the current song.
         /// </summary>
-        public static string Param_Requester_Desc {
+        public static string param_requester_description {
             get {
-                return ResourceManager.GetString("Param_Requester_Desc", resourceCulture);
+                return ResourceManager.GetString("param_requester_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Main artist for the current song or song request.
         /// </summary>
-        public static string Param_SingleArtist_Desc {
+        public static string param_single_artist_description {
             get {
-                return ResourceManager.GetString("Param_SingleArtist_Desc", resourceCulture);
+                return ResourceManager.GetString("param_single_artist_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {Artist} - {Title}.
         /// </summary>
-        public static string Param_SongFormat_Desc {
+        public static string param_song_format_description {
             get {
-                return ResourceManager.GetString("Param_SongFormat_Desc", resourceCulture);
+                return ResourceManager.GetString("param_song_format_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to For !pos command only, creates a list of songs that the user has in the queue with their position.
         /// </summary>
-        public static string Param_SongList_Desc {
+        public static string param_song_list_description {
             get {
-                return ResourceManager.GetString("Param_SongList_Desc", resourceCulture);
+                return ResourceManager.GetString("param_song_list_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The time in mm:ss when the song request will play..
         /// </summary>
-        public static string Param_TimeToPlay_Desc {
+        public static string param_time_to_play_description {
             get {
-                return ResourceManager.GetString("Param_TimeToPlay_Desc", resourceCulture);
+                return ResourceManager.GetString("param_time_to_play_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Spotify song URL.
         /// </summary>
-        public static string Param_Url_Desc {
+        public static string param_url_description {
             get {
-                return ResourceManager.GetString("Param_Url_Desc", resourceCulture);
+                return ResourceManager.GetString("param_url_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The user who triggered the command or channel reward.
         /// </summary>
-        public static string Param_User_Desc {
+        public static string param_user_description {
             get {
-                return ResourceManager.GetString("Param_User_Desc", resourceCulture);
+                return ResourceManager.GetString("param_user_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The users userlevel (Folower, Subscriber etc).
         /// </summary>
-        public static string Param_Userlevel_Desc {
+        public static string param_userlevel_description {
             get {
-                return ResourceManager.GetString("Param_Userlevel_Desc", resourceCulture);
+                return ResourceManager.GetString("param_userlevel_description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Number of votes for voteskip votes/total.
         /// </summary>
-        public static string Param_Votes_Desc {
+        public static string param_votes_description {
             get {
-                return ResourceManager.GetString("Param_Votes_Desc", resourceCulture);
+                return ResourceManager.GetString("param_votes_description", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Columns.
+        ///   Looks up a localized string similar to Add Aliases.
         /// </summary>
-        public static string s_Columns {
+        public static string uc_command_add_aliases {
             get {
-                return ResourceManager.GetString("s_Columns", resourceCulture);
+                return ResourceManager.GetString("uc_command_add_aliases", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected.
+        ///   Looks up a localized string similar to Add Users.
         /// </summary>
-        public static string s_Connected {
+        public static string uc_command_add_users {
             get {
-                return ResourceManager.GetString("s_Connected", resourceCulture);
+                return ResourceManager.GetString("uc_command_add_users", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copied.
+        ///   Looks up a localized string similar to All.
         /// </summary>
-        public static string s_Copied {
+        public static string uc_command_all {
             get {
-                return ResourceManager.GetString("s_Copied", resourceCulture);
+                return ResourceManager.GetString("uc_command_all", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disconnected.
+        ///   Looks up a localized string similar to Allowed Users.
         /// </summary>
-        public static string s_Disconnected {
+        public static string uc_command_allowed_users {
             get {
-                return ResourceManager.GetString("s_Disconnected", resourceCulture);
+                return ResourceManager.GetString("uc_command_allowed_users", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please enter the Spotify client ID and Secret.
+        ///   Looks up a localized string similar to Announce.
         /// </summary>
-        public static string s_FillClientIdAndSecret {
+        public static string uc_command_announce {
             get {
-                return ResourceManager.GetString("s_FillClientIdAndSecret", resourceCulture);
+                return ResourceManager.GetString("uc_command_announce", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Follower.
+        ///   Looks up a localized string similar to Announcement.
         /// </summary>
-        public static string s_Follower {
+        public static string uc_command_announcement {
             get {
-                return ResourceManager.GetString("s_Follower", resourceCulture);
+                return ResourceManager.GetString("uc_command_announcement", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Length.
+        ///   Looks up a localized string similar to Color.
         /// </summary>
-        public static string s_Length {
+        public static string uc_command_color {
             get {
-                return ResourceManager.GetString("s_Length", resourceCulture);
+                return ResourceManager.GetString("uc_command_color", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Moderator.
+        ///   Looks up a localized string similar to blue.
         /// </summary>
-        public static string s_Moderator {
+        public static string uc_command_color_blue {
             get {
-                return ResourceManager.GetString("s_Moderator", resourceCulture);
+                return ResourceManager.GetString("uc_command_color_blue", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Name.
+        ///   Looks up a localized string similar to green.
         /// </summary>
-        public static string s_Name {
+        public static string uc_command_color_green {
             get {
-                return ResourceManager.GetString("s_Name", resourceCulture);
+                return ResourceManager.GetString("uc_command_color_green", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to OK.
+        ///   Looks up a localized string similar to orange.
         /// </summary>
-        public static string s_OK {
+        public static string uc_command_color_orange {
             get {
-                return ResourceManager.GetString("s_OK", resourceCulture);
+                return ResourceManager.GetString("uc_command_color_orange", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Requester.
+        ///   Looks up a localized string similar to primary.
         /// </summary>
-        public static string s_Requester {
+        public static string uc_command_color_primary {
             get {
-                return ResourceManager.GetString("s_Requester", resourceCulture);
+                return ResourceManager.GetString("uc_command_color_primary", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to purple.
         /// </summary>
-        public static string s_Save {
+        public static string uc_command_color_purple {
             get {
-                return ResourceManager.GetString("s_Save", resourceCulture);
+                return ResourceManager.GetString("uc_command_color_purple", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Song.
+        ///   Looks up a localized string similar to Mark As Read.
         /// </summary>
-        public static string s_Song {
+        public static string uc_psa_mark_as_read {
             get {
-                return ResourceManager.GetString("s_Song", resourceCulture);
+                return ResourceManager.GetString("uc_psa_mark_as_read", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscriber.
+        ///   Looks up a localized string similar to Created by Songify.
         /// </summary>
-        public static string s_Subscriber {
+        public static string uc_reward_created_by_songify {
             get {
-                return ResourceManager.GetString("s_Subscriber", resourceCulture);
+                return ResourceManager.GetString("uc_reward_created_by_songify", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time.
+        ///   Looks up a localized string similar to Can be managed from Songify..
         /// </summary>
-        public static string s_Time {
+        public static string uc_reward_managed_by_songify {
             get {
-                return ResourceManager.GetString("s_Time", resourceCulture);
+                return ResourceManager.GetString("uc_reward_managed_by_songify", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Track has been added to the queue..
+        ///   Looks up a localized string similar to Skip Song.
         /// </summary>
-        public static string s_TrackAdded {
+        public static string uc_reward_skip_song {
             get {
-                return ResourceManager.GetString("s_TrackAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload.
-        /// </summary>
-        public static string s_Upload {
-            get {
-                return ResourceManager.GetString("s_Upload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Viewer.
-        /// </summary>
-        public static string s_Viewer {
-            get {
-                return ResourceManager.GetString("s_Viewer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to VIP.
-        /// </summary>
-        public static string s_VIP {
-            get {
-                return ResourceManager.GetString("s_VIP", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string s_Warning {
-            get {
-                return ResourceManager.GetString("s_Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
-        /// </summary>
-        public static System.Drawing.Icon songify {
-            get {
-                object obj = ResourceManager.GetObject("songify", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color:.
-        /// </summary>
-        public static string sw_Appearance_Color {
-            get {
-                return ResourceManager.GetString("sw_Appearance_Color", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dark Theme.
-        /// </summary>
-        public static string sw_Appearance_ThemeDark {
-            get {
-                return ResourceManager.GetString("sw_Appearance_ThemeDark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Light Theme.
-        /// </summary>
-        public static string sw_Appearance_ThemeLight {
-            get {
-                return ResourceManager.GetString("sw_Appearance_ThemeLight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to EXPORT CONFIG.
-        /// </summary>
-        public static string sw_Config_Export {
-            get {
-                return ResourceManager.GetString("sw_Config_Export", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Get beta updates.
-        /// </summary>
-        public static string sw_Config_GetBetaUpdates {
-            get {
-                return ResourceManager.GetString("sw_Config_GetBetaUpdates", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to IMPORT CONFIG.
-        /// </summary>
-        public static string sw_Config_Import {
-            get {
-                return ResourceManager.GetString("sw_Config_Import", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset config.
-        /// </summary>
-        public static string sw_Config_ResetConfig {
-            get {
-                return ResourceManager.GetString("sw_Config_ResetConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Autoconnect.
-        /// </summary>
-        public static string sw_Integration_Autoconnect {
-            get {
-                return ResourceManager.GetString("sw_Integration_Autoconnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to LINK.
-        /// </summary>
-        public static string sw_Integration_btnLink {
-            get {
-                return ResourceManager.GetString("sw_Integration_btnLink", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure bot responses &amp; commands.
-        /// </summary>
-        public static string sw_Integration_ConfigureResponses {
-            get {
-                return ResourceManager.GetString("sw_Integration_ConfigureResponses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage rewards.
-        /// </summary>
-        public static string Sw_Integration_ManageRewards {
-            get {
-                return ResourceManager.GetString("Sw_Integration_ManageRewards", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max SR / User (based on user level).
-        /// </summary>
-        public static string Sw_Integration_MaxSrUser {
-            get {
-                return ResourceManager.GetString("Sw_Integration_MaxSrUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimum user level required for SR.
-        /// </summary>
-        public static string Sw_Integration_MinUserLevel {
-            get {
-                return ResourceManager.GetString("Sw_Integration_MinUserLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to NB Username (Twitch Username).
-        /// </summary>
-        public static string sw_Integration_NBWatermark {
-            get {
-                return ResourceManager.GetString("sw_Integration_NBWatermark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Limit Twitch activity to only work when stream is live (needs Twitch login).
-        /// </summary>
-        public static string Sw_Integration_OnlyWorkWhenLive {
-            get {
-                return ResourceManager.GetString("Sw_Integration_OnlyWorkWhenLive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Free Song Requests.
-        /// </summary>
-        public static string Sw_Integration_RefundAlways {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundAlways", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song contains blocked artist(s).
-        /// </summary>
-        public static string Sw_Integration_RefundArtistBlocked {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundArtistBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one..
-        /// </summary>
-        public static string sw_Integration_RefundDisclaimer {
-            get {
-                return ResourceManager.GetString("sw_Integration_RefundDisclaimer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No song was found.
-        /// </summary>
-        public static string Sw_Integration_RefundNoSongFound {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundNoSongFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refund when.
-        /// </summary>
-        public static string Sw_Integration_RefundOn {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundOn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User reached max queue limit.
-        /// </summary>
-        public static string Sw_Integration_RefundQueueLimitReached {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundQueueLimitReached", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song has been added to the queue.
-        /// </summary>
-        public static string Sw_Integration_RefundSongAdded {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSongAdded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song is already in queue.
-        /// </summary>
-        public static string Sw_Integration_RefundSongAlreadyInQueue {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSongAlreadyInQueue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song is blocked.
-        /// </summary>
-        public static string Sw_Integration_RefundSongBlocked {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSongBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song is not available in region.
-        /// </summary>
-        public static string Sw_Integration_RefundSongNotAvailable {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSongNotAvailable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song duration is too long.
-        /// </summary>
-        public static string Sw_Integration_RefundSongTooLong {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSongTooLong", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Spotify is not connected.
-        /// </summary>
-        public static string Sw_Integration_RefundSpotifyNotConnected {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundSpotifyNotConnected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Track is explicit.
-        /// </summary>
-        public static string Sw_Integration_RefundTrackIsExplicit {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundTrackIsExplicit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User is blocked from SR.
-        /// </summary>
-        public static string Sw_Integration_RefundUSerBlocked {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundUSerBlocked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User level is too low.
-        /// </summary>
-        public static string Sw_Integration_RefundUserLevelLow {
-            get {
-                return ResourceManager.GetString("Sw_Integration_RefundUserLevelLow", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Credentials.
-        /// </summary>
-        public static string sw_Integration_ShowCreds {
-            get {
-                return ResourceManager.GetString("sw_Integration_ShowCreds", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Linked account:.
-        /// </summary>
-        public static string sw_Integration_SpotifyLinked {
-            get {
-                return ResourceManager.GetString("sw_Integration_SpotifyLinked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Send offline notification to chat.
-        /// </summary>
-        public static string Sw_Integration_StreamNotLifeNotification {
-            get {
-                return ResourceManager.GetString("Sw_Integration_StreamNotLifeNotification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Listen to chat commands from shared chat.
-        /// </summary>
-        public static string Sw_Integration_StreamSharedChat {
-            get {
-                return ResourceManager.GetString("Sw_Integration_StreamSharedChat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Twitch account.
-        /// </summary>
-        public static string sw_Integration_Twitch {
-            get {
-                return ResourceManager.GetString("sw_Integration_Twitch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Channel to join.
-        /// </summary>
-        public static string sw_Integration_TwitchChWatermark {
-            get {
-                return ResourceManager.GetString("sw_Integration_TwitchChWatermark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Accounts.
-        /// </summary>
-        public static string Sw_Integtation_Tc_Accounts {
-            get {
-                return ResourceManager.GetString("Sw_Integtation_Tc_Accounts", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rewards.
-        /// </summary>
-        public static string Sw_Integtation_Tc_Rewards {
-            get {
-                return ResourceManager.GetString("Sw_Integtation_Tc_Rewards", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song Requests.
-        /// </summary>
-        public static string Sw_Integtation_Tc_SongRequests {
-            get {
-                return ResourceManager.GetString("Sw_Integtation_Tc_SongRequests", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatically announce song to chat (uses the !song response).
-        /// </summary>
-        public static string Sw_intergration_AutoAnnounce {
-            get {
-                return ResourceManager.GetString("Sw_intergration_AutoAnnounce", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Response Variables.
-        /// </summary>
-        public static string sw_ResponseVariables {
-            get {
-                return ResourceManager.GetString("sw_ResponseVariables", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Click here after selecting the reward.
-        /// </summary>
-        public static string sw_rewards_ClickReminder {
-            get {
-                return ResourceManager.GetString("sw_rewards_ClickReminder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enabled Rewards for Songrequests.
-        /// </summary>
-        public static string sw_rewards_enabledRewards {
-            get {
-                return ResourceManager.GetString("sw_rewards_enabledRewards", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reward for Song Skip.
-        /// </summary>
-        public static string sw_Spotify_RewardSkip {
-            get {
-                return ResourceManager.GetString("sw_Spotify_RewardSkip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reward for Song Requests.
-        /// </summary>
-        public static string sw_Spotify_RewardSR {
-            get {
-                return ResourceManager.GetString("sw_Spotify_RewardSR", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add requests only to the selected playlist.
-        /// </summary>
-        public static string sw_SpotifySR_AddOnlyToPlaylist {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_AddOnlyToPlaylist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Block all explicit songs.
-        /// </summary>
-        public static string sw_SpotifySR_BlockAllExplicit {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_BlockAllExplicit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Channel points reward id.
-        /// </summary>
-        public static string sw_SpotifySR_ChannelPoints {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_ChannelPoints", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear queue on startup.
-        /// </summary>
-        public static string sw_SpotifySR_ClearQ {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_ClearQ", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Global command cooldown (seconds).
-        /// </summary>
-        public static string sw_SpotifySR_CommandCD {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_CommandCD", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to SR Command Cooldown (per user).
-        /// </summary>
-        public static string sw_SpotifySR_CommandCDUser {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_CommandCDUser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable Song Requests for Bits.
-        /// </summary>
-        public static string sw_SpotifySR_EnableSrForBits {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_EnableSrForBits", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max song length (in minutes).
-        /// </summary>
-        public static string sw_SpotifySR_MaxLength {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_MaxLength", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Max requests per user.
-        /// </summary>
-        public static string sw_SpotifySR_MaxReq {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_MaxReq", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable message logging.
-        /// </summary>
-        public static string sw_SpotifySR_MessageLogging {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_MessageLogging", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command for making song requests. (Command + Spotify Link or Artist - Title).
-        /// </summary>
-        public static string sw_SpotifySR_SRCommand {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_SRCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable SR (Channel Rewards).
-        /// </summary>
-        public static string sw_SpotifySR_SRReward {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_SRReward", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to !ssr command moved to bot config.
-        /// </summary>
-        public static string sw_SpotifySR_SsrMovedToBotConfig {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_SsrMovedToBotConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unlimited song requests.
-        /// </summary>
-        public static string Sw_SpotifySR_UnlimitedSRs {
-            get {
-                return ResourceManager.GetString("Sw_SpotifySR_UnlimitedSRs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allowed user levels for SR command.
-        /// </summary>
-        public static string sw_SpotifySR_Userlevel_command {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_Userlevel_command", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allowed user levels for SR reward.
-        /// </summary>
-        public static string sw_SpotifySR_Userlevel_reward {
-            get {
-                return ResourceManager.GetString("sw_SpotifySR_Userlevel_reward", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User Levels (Command).
-        /// </summary>
-        public static string sw_SpotifySr_UserLevelsCommand {
-            get {
-                return ResourceManager.GetString("sw_SpotifySr_UserLevelsCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User Levels (Reward).
-        /// </summary>
-        public static string sw_SpotifySr_UserLevelsReward {
-            get {
-                return ResourceManager.GetString("sw_SpotifySr_UserLevelsReward", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disable donation reminder.
-        /// </summary>
-        public static string Sw_System_DisableDonationReminder {
-            get {
-                return ResourceManager.GetString("Sw_System_DisableDonationReminder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open queue window on startup.
-        /// </summary>
-        public static string Sw_System_OpenQueueOnStartup {
-            get {
-                return ResourceManager.GetString("Sw_System_OpenQueueOnStartup", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide account names and profile pictures.
-        /// </summary>
-        public static string Sw_System_Privacy {
-            get {
-                return ResourceManager.GetString("Sw_System_Privacy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Privacy.
-        /// </summary>
-        public static string Sw_System_PrivacyHeader {
-            get {
-                return ResourceManager.GetString("Sw_System_PrivacyHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Appearance.
-        /// </summary>
-        public static string sw_tc_Appearance {
-            get {
-                return ResourceManager.GetString("sw_tc_Appearance", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Config.
-        /// </summary>
-        public static string sw_tc_Config {
-            get {
-                return ResourceManager.GetString("sw_tc_Config", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Twitch.
-        /// </summary>
-        public static string sw_tc_Integration {
-            get {
-                return ResourceManager.GetString("sw_tc_Integration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output.
-        /// </summary>
-        public static string sw_tc_Output {
-            get {
-                return ResourceManager.GetString("sw_tc_Output", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add all song requests to the playlist.
-        /// </summary>
-        public static string sw_tc_Spotify_AddSongsToPlaylist {
-            get {
-                return ResourceManager.GetString("sw_tc_Spotify_AddSongsToPlaylist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allow only songs from this playlist (SR).
-        /// </summary>
-        public static string sw_tc_Spotify_OnlyAllowFromPlaylist {
-            get {
-                return ResourceManager.GetString("sw_tc_Spotify_OnlyAllowFromPlaylist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to System.
-        /// </summary>
-        public static string sw_tc_System {
-            get {
-                return ResourceManager.GetString("sw_tc_System", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Web server.
-        /// </summary>
-        public static string sw_tc_WebServer {
-            get {
-                return ResourceManager.GetString("sw_tc_WebServer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show user level badges.
-        /// </summary>
-        public static string sw_tcCommands_ShowUserLevelBadges {
-            get {
-                return ResourceManager.GetString("sw_tcCommands_ShowUserLevelBadges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Append spaces.
-        /// </summary>
-        public static string sw_tcOutput_AddSpaces {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_AddSpaces", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Apply to split files too.
-        /// </summary>
-        public static string sw_tcOutput_ApplyToSplitFilesToo {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_ApplyToSplitFilesToo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output directory.
-        /// </summary>
-        public static string sw_tcOutput_Directory {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_Directory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download album cover (only works with API).
-        /// </summary>
-        public static string sw_tcOutput_DownloadAlbum {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_DownloadAlbum", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Canvas if available.
-        /// </summary>
-        public static string sw_tcOutput_DownloadCanvas {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_DownloadCanvas", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output format (Text file &amp; Widget).
-        /// </summary>
-        public static string sw_tcOutput_Format {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_Format", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Output format (Twitch Chat).
-        /// </summary>
-        public static string sw_tcOutput_Format2 {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_Format2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear All Output.
-        /// </summary>
-        public static string sw_tcOutput_onPause_ClearAllOutput {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_onPause_ClearAllOutput", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do Nothing.
-        /// </summary>
-        public static string sw_tcOutput_onPause_DoNothing {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_onPause_DoNothing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Custom Pause Text.
-        /// </summary>
-        public static string sw_tcOutput_onPause_UseCustomPauseText {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_onPause_UseCustomPauseText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to What to do on pause?.
-        /// </summary>
-        public static string sw_tcOutput_pause {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_pause", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Pause text.
-        /// </summary>
-        public static string sw_tcOutput_PauseText {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_PauseText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom pause text (blank for empty text file).
-        /// </summary>
-        public static string sw_tcOutput_PauseWatermark {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_PauseWatermark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Requester text prefix.
-        /// </summary>
-        public static string sw_tcOutput_RequesterPrefix {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_RequesterPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Split artist, title and requester.
-        /// </summary>
-        public static string sw_tcOutput_SplitArtist {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_SplitArtist", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Upload song info.
-        /// </summary>
-        public static string sw_tcOutput_UploadSongInfo {
-            get {
-                return ResourceManager.GetString("sw_tcOutput_UploadSongInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save.
-        /// </summary>
-        public static string sw_tcSpotify_SaveButton {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_SaveButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Liked Songs Playlist.
-        /// </summary>
-        public static string sw_tcSpotify_SongLikeLabel {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_SongLikeLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The playlist that songs get added when using the !songlike command or with the option to automatically add songs to the playlist..
-        /// </summary>
-        public static string sw_tcSpotify_SongLikeLabelTooltip {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_SongLikeLabelTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use own Spotify app.
-        /// </summary>
-        public static string sw_tcSpotify_UseOwnApp {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_UseOwnApp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Songify&apos;s Spotify app.
-        /// </summary>
-        public static string sw_tcSpotify_UseSongifyApp {
-            get {
-                return ResourceManager.GetString("sw_tcSpotify_UseSongifyApp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Autostart with windows.
-        /// </summary>
-        public static string sw_tcSystem_Autostart {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_Autostart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Behavior.
-        /// </summary>
-        public static string sw_tcSystem_Behavior {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_Behavior", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to CHECK FOR UPDATES.
-        /// </summary>
-        public static string sw_tcSystem_CheckButton {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_CheckButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Chrome fetch rate (seconds).
-        /// </summary>
-        public static string sw_tcSystem_ChromeFetchRate {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_ChromeFetchRate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Language.
-        /// </summary>
-        public static string sw_tcSystem_lblLanguage {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_lblLanguage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Minimize to system tray.
-        /// </summary>
-        public static string sw_tcSystem_Minimize {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_Minimize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Send anonymous data.
-        /// </summary>
-        public static string sw_tcSystem_SendAnonData {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_SendAnonData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Telemetry.
-        /// </summary>
-        public static string sw_tcSystem_Telemetry {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_Telemetry", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (translated using DeepL).
-        /// </summary>
-        public static string sw_tcSystem_translated {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_translated", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use default web browser.
-        /// </summary>
-        public static string sw_tcSystem_UseDefaultBrowser {
-            get {
-                return ResourceManager.GetString("sw_tcSystem_UseDefaultBrowser", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Logout.
-        /// </summary>
-        public static string sw_Twitch_LogOut {
-            get {
-                return ResourceManager.GetString("sw_Twitch_LogOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create new reward.
-        /// </summary>
-        public static string sw_Twitch_Rewards_CreateNewReward {
-            get {
-                return ResourceManager.GetString("sw_Twitch_Rewards_CreateNewReward", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disable Skip-Reward for Song Requests.
-        /// </summary>
-        public static string sw_Twitch_Rewards_DisableSkipForRequests {
-            get {
-                return ResourceManager.GetString("sw_Twitch_Rewards_DisableSkipForRequests", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatically start the web server.
-        /// </summary>
-        public static string sw_WebServer_AutoStart {
-            get {
-                return ResourceManager.GetString("sw_WebServer_AutoStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open website.
-        /// </summary>
-        public static string sw_WebServer_OpenWebsite {
-            get {
-                return ResourceManager.GetString("sw_WebServer_OpenWebsite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Web server port.
-        /// </summary>
-        public static string sw_WebServer_Port {
-            get {
-                return ResourceManager.GetString("sw_WebServer_Port", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Start web server.
-        /// </summary>
-        public static string sw_WebServer_StartWebServer {
-            get {
-                return ResourceManager.GetString("sw_WebServer_StartWebServer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stop web server.
-        /// </summary>
-        public static string sw_WebServer_StopWebServer {
-            get {
-                return ResourceManager.GetString("sw_WebServer_StopWebServer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Compare the codes between Songify and the YouTube Music Desktop player. Only accept the integration request if the codes match!.
-        /// </summary>
-        public static string sw_YTMDesktop_disclaimer {
-            get {
-                return ResourceManager.GetString("sw_YTMDesktop_disclaimer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Command Responses.
-        /// </summary>
-        public static string UC_BotResponses_CommandResponses {
-            get {
-                return ResourceManager.GetString("UC_BotResponses_CommandResponses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Song Request Responses.
-        /// </summary>
-        public static string UC_BotResponses_SongRequestResponses {
-            get {
-                return ResourceManager.GetString("UC_BotResponses_SongRequestResponses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to QueueId.
-        /// </summary>
-        public static string Window_Queue_QueueId {
-            get {
-                return ResourceManager.GetString("Window_Queue_QueueId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Actions.
-        /// </summary>
-        public static string WinQueue_Actions {
-            get {
-                return ResourceManager.GetString("WinQueue_Actions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Now Playing.
-        /// </summary>
-        public static string WinQueue_NowPlaying {
-            get {
-                return ResourceManager.GetString("WinQueue_NowPlaying", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Skipping.
-        /// </summary>
-        public static string WinQueue_Skipping {
-            get {
-                return ResourceManager.GetString("WinQueue_Skipping", resourceCulture);
+                return ResourceManager.GetString("uc_reward_skip_song", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Song Request.
         /// </summary>
-        public static string WinQueue_SongRequest {
+        public static string uc_reward_song_request {
             get {
-                return ResourceManager.GetString("WinQueue_SongRequest", resourceCulture);
+                return ResourceManager.GetString("uc_reward_song_request", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Skip Poll.
+        /// </summary>
+        public static string uc_reward_start_skip_poll {
+            get {
+                return ResourceManager.GetString("uc_reward_start_skip_poll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If you want to support this project feel free to hang out with us on Discord!.
+        /// </summary>
+        public static string window_about_discord_invite {
+            get {
+                return ResourceManager.GetString("window_about_discord_invite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This Project is a free time project and licensed under the GNU General Public License v3.0..
+        /// </summary>
+        public static string window_about_gpl_notice {
+            get {
+                return ResourceManager.GetString("window_about_gpl_notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Songify Slim makes use of the following open-source libraries..
+        /// </summary>
+        public static string window_about_libraries_intro {
+            get {
+                return ResourceManager.GetString("window_about_libraries_intro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License: .
+        /// </summary>
+        public static string window_about_license_label {
+            get {
+                return ResourceManager.GetString("window_about_license_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All listed libraries remain the property of their respective authors and are used in accordance with their licenses..
+        /// </summary>
+        public static string window_about_license_notice {
+            get {
+                return ResourceManager.GetString("window_about_license_notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third-Party Libraries Licenses.
+        /// </summary>
+        public static string window_about_licenses {
+            get {
+                return ResourceManager.GetString("window_about_licenses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thank You.
+        /// </summary>
+        public static string window_about_thank_you {
+            get {
+                return ResourceManager.GetString("window_about_thank_you", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third Party Libraries.
+        /// </summary>
+        public static string window_about_third_party {
+            get {
+                return ResourceManager.GetString("window_about_third_party", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string window_about_title {
+            get {
+                return ResourceManager.GetString("window_about_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to requests / min.
+        /// </summary>
+        public static string window_apichart_requests_per_min {
+            get {
+                return ResourceManager.GetString("window_apichart_requests_per_min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds (rolling).
+        /// </summary>
+        public static string window_apichart_seconds_rolling {
+            get {
+                return ResourceManager.GetString("window_apichart_seconds_rolling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add.
+        /// </summary>
+        public static string window_blocklist_add {
+            get {
+                return ResourceManager.GetString("window_blocklist_add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add selected.
+        /// </summary>
+        public static string window_blocklist_add_selected {
+            get {
+                return ResourceManager.GetString("window_blocklist_add_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist.
+        /// </summary>
+        public static string window_blocklist_artist {
+            get {
+                return ResourceManager.GetString("window_blocklist_artist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block selected.
+        /// </summary>
+        public static string window_blocklist_block_selected {
+            get {
+                return ResourceManager.GetString("window_blocklist_block_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked Artists.
+        /// </summary>
+        public static string window_blocklist_blocked_artists {
+            get {
+                return ResourceManager.GetString("window_blocklist_blocked_artists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked Songs.
+        /// </summary>
+        public static string window_blocklist_blocked_songs {
+            get {
+                return ResourceManager.GetString("window_blocklist_blocked_songs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blocked Users.
+        /// </summary>
+        public static string window_blocklist_blocked_users {
+            get {
+                return ResourceManager.GetString("window_blocklist_blocked_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string window_blocklist_clear {
+            get {
+                return ResourceManager.GetString("window_blocklist_clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string window_blocklist_delete {
+            get {
+                return ResourceManager.GetString("window_blocklist_delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block artists, songs, or users from being requested. Artist and Songs only work for Spotify!.
+        /// </summary>
+        public static string window_blocklist_description {
+            get {
+                return ResourceManager.GetString("window_blocklist_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multiple artists matched your search. Select one to block..
+        /// </summary>
+        public static string window_blocklist_multiple_artists_match {
+            get {
+                return ResourceManager.GetString("window_blocklist_multiple_artists_match", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh IDs.
+        /// </summary>
+        public static string window_blocklist_refresh_ids {
+            get {
+                return ResourceManager.GetString("window_blocklist_refresh_ids", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh user ids.
+        /// </summary>
+        public static string window_blocklist_refresh_user_ids {
+            get {
+                return ResourceManager.GetString("window_blocklist_refresh_user_ids", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all.
+        /// </summary>
+        public static string window_blocklist_remove_all {
+            get {
+                return ResourceManager.GetString("window_blocklist_remove_all", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolve artist ID.
+        /// </summary>
+        public static string window_blocklist_resolve_artist_id {
+            get {
+                return ResourceManager.GetString("window_blocklist_resolve_artist_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The search returned more than one artist. Select one or more to block..
+        /// </summary>
+        public static string window_blocklist_search_multi_select {
+            get {
+                return ResourceManager.GetString("window_blocklist_search_multi_select", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Artist.
+        /// </summary>
+        public static string window_blocklist_select_artist {
+            get {
+                return ResourceManager.GetString("window_blocklist_select_artist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip.
+        /// </summary>
+        public static string window_blocklist_skip {
+            get {
+                return ResourceManager.GetString("window_blocklist_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artists.
+        /// </summary>
+        public static string window_blocklist_tab_artists {
+            get {
+                return ResourceManager.GetString("window_blocklist_tab_artists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Songs.
+        /// </summary>
+        public static string window_blocklist_tab_songs {
+            get {
+                return ResourceManager.GetString("window_blocklist_tab_songs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string window_blocklist_tab_users {
+            get {
+                return ResourceManager.GetString("window_blocklist_tab_users", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Blocklist.
         /// </summary>
-        public static string WinTitle_Blocklist {
+        public static string window_blocklist_title {
             get {
-                return ResourceManager.GetString("WinTitle_Blocklist", resourceCulture);
+                return ResourceManager.GetString("window_blocklist_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use selected.
+        /// </summary>
+        public static string window_blocklist_use_selected {
+            get {
+                return ResourceManager.GetString("window_blocklist_use_selected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string window_blocklist_user {
+            get {
+                return ResourceManager.GetString("window_blocklist_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Artist is blocked.
+        /// </summary>
+        public static string window_botresponses_artist_blocked {
+            get {
+                return ResourceManager.GetString("window_botresponses_artist_blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds the current song to the blocklist and skips it..
+        /// </summary>
+        public static string window_botresponses_cmd_bansong {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_bansong", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns all active Songify commands..
+        /// </summary>
+        public static string window_botresponses_cmd_commands {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_commands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string window_botresponses_cmd_description {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string window_botresponses_cmd_enabled {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the next song in queue.
+        /// </summary>
+        public static string window_botresponses_cmd_next {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string window_botresponses_cmd_off {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string window_botresponses_cmd_on {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_on", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pauses the current playback..
+        /// </summary>
+        public static string window_botresponses_cmd_pause {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resumes the current playback..
+        /// </summary>
+        public static string window_botresponses_cmd_play {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_play", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
+        /// </summary>
+        public static string window_botresponses_cmd_pos {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_pos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
+        /// </summary>
+        public static string window_botresponses_cmd_queue {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the first 5 songs of the current playback queue.
+        /// </summary>
+        public static string window_botresponses_cmd_queue_return {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_queue_return", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removes the latest song request of the user..
+        /// </summary>
+        public static string window_botresponses_cmd_remove {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skips the current song.
+        /// </summary>
+        public static string window_botresponses_cmd_skip {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starts a vote to skip the current song.
+        /// </summary>
+        public static string window_botresponses_cmd_skipvote {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_skipvote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of votes needed.
+        /// </summary>
+        public static string window_botresponses_cmd_skipvotecount {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_skipvotecount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Displays the current song.
+        /// </summary>
+        public static string window_botresponses_cmd_song {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adds the current song to the playlist selected in Spotify config..
+        /// </summary>
+        public static string window_botresponses_cmd_songlike {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_songlike", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable / Disable Song Requests (disables them in App and also tries to pause the Reward).
+        /// </summary>
+        public static string window_botresponses_cmd_togglesr {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_togglesr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trigger.
+        /// </summary>
+        public static string window_botresponses_cmd_trigger {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_trigger", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Returns the current volume or sets it. &apos;!vol [0-100]&apos;.
+        /// </summary>
+        public static string window_botresponses_cmd_vol {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_vol", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore Broadcaster / Moderator check.
+        /// </summary>
+        public static string window_botresponses_cmd_vol_ignore_mod {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_vol_ignore_mod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when the sr command is on cooldown.
+        /// </summary>
+        public static string window_botresponses_command_on_cooldown {
+            get {
+                return ResourceManager.GetString("window_botresponses_command_on_cooldown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when the User is on cooldown (per user sr command cooldown).
+        /// </summary>
+        public static string window_botresponses_command_on_user_cooldown {
+            get {
+                return ResourceManager.GetString("window_botresponses_command_on_user_cooldown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command Responses.
+        /// </summary>
+        public static string window_botresponses_command_responses {
+            get {
+                return ResourceManager.GetString("window_botresponses_command_responses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when an explicit song has been requested and &apos;block explicit songs&apos; is turned on.
+        /// </summary>
+        public static string window_botresponses_explicit_songs {
+            get {
+                return ResourceManager.GetString("window_botresponses_explicit_songs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error fetching songdata.
+        /// </summary>
+        public static string window_botresponses_fetch_error {
+            get {
+                return ResourceManager.GetString("window_botresponses_fetch_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure the bot responses for the following scenarios:.
+        /// </summary>
+        public static string window_botresponses_header {
+            get {
+                return ResourceManager.GetString("window_botresponses_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max songs in queue.
+        /// </summary>
+        public static string window_botresponses_max_songs {
+            get {
+                return ResourceManager.GetString("window_botresponses_max_songs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Broadcaster / Moderator / Requester skipped the song.
+        /// </summary>
+        public static string window_botresponses_mod_skip {
+            get {
+                return ResourceManager.GetString("window_botresponses_mod_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !next command.
+        /// </summary>
+        public static string window_botresponses_next {
+            get {
+                return ResourceManager.GetString("window_botresponses_next", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No song has been specified (empty request).
+        /// </summary>
+        public static string window_botresponses_no_song {
+            get {
+                return ResourceManager.GetString("window_botresponses_no_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when no track was found.
+        /// </summary>
+        public static string window_botresponses_no_track_found {
+            get {
+                return ResourceManager.GetString("window_botresponses_no_track_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !pos command.
+        /// </summary>
+        public static string window_botresponses_pos {
+            get {
+                return ResourceManager.GetString("window_botresponses_pos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when channel points have been refunded. (empty for no response).
+        /// </summary>
+        public static string window_botresponses_refund {
+            get {
+                return ResourceManager.GetString("window_botresponses_refund", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !remove command.
+        /// </summary>
+        public static string window_botresponses_remove {
+            get {
+                return ResourceManager.GetString("window_botresponses_remove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !song command.
+        /// </summary>
+        public static string window_botresponses_song {
+            get {
+                return ResourceManager.GetString("window_botresponses_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is blocked.
+        /// </summary>
+        public static string window_botresponses_song_blocked {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song already in queue.
+        /// </summary>
+        public static string window_botresponses_song_in_queue {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_in_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response for !songlike command.
+        /// </summary>
+        public static string window_botresponses_song_like {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_like", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response when the song was not found in the allowed songs playlist.
+        /// </summary>
+        public static string window_botresponses_song_not_in_playlist {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_not_in_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Request Responses.
+        /// </summary>
+        public static string window_botresponses_song_request_responses {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_request_responses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song too long.
+        /// </summary>
+        public static string window_botresponses_song_too_long {
+            get {
+                return ResourceManager.GetString("window_botresponses_song_too_long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song added successfully (command &amp; reward).
+        /// </summary>
+        public static string window_botresponses_success {
+            get {
+                return ResourceManager.GetString("window_botresponses_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commands.
+        /// </summary>
+        public static string window_botresponses_tab_commands {
+            get {
+                return ResourceManager.GetString("window_botresponses_tab_commands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Responses.
+        /// </summary>
+        public static string window_botresponses_tab_responses {
+            get {
+                return ResourceManager.GetString("window_botresponses_tab_responses", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Bot Responses &amp; Commands.
         /// </summary>
-        public static string WinTitle_BotResponsesCommands {
+        public static string window_botresponses_title {
             get {
-                return ResourceManager.GetString("WinTitle_BotResponsesCommands", resourceCulture);
+                return ResourceManager.GetString("window_botresponses_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Userlevel is too low for !ssr command.
+        /// </summary>
+        public static string window_botresponses_user_level_too_low_command {
+            get {
+                return ResourceManager.GetString("window_botresponses_user_level_too_low_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Userlevel is too low for song request reward.
+        /// </summary>
+        public static string window_botresponses_user_level_too_low_reward {
+            get {
+                return ResourceManager.GetString("window_botresponses_user_level_too_low_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User voted to skip the current song.
+        /// </summary>
+        public static string window_botresponses_vote_skip {
+            get {
+                return ResourceManager.GetString("window_botresponses_vote_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string window_cloudimport_import {
+            get {
+                return ResourceManager.GetString("window_cloudimport_import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;re about to import settings from the cloud..
+        /// </summary>
+        public static string window_cloudimport_intro {
+            get {
+                return ResourceManager.GetString("window_cloudimport_intro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Settings Importer.
+        /// </summary>
+        public static string window_cloudimport_title {
+            get {
+                return ResourceManager.GetString("window_cloudimport_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Metrics.
+        /// </summary>
+        public static string window_console_api_metrics {
+            get {
+                return ResourceManager.GetString("window_console_api_metrics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear Console.
+        /// </summary>
+        public static string window_console_clear {
+            get {
+                return ResourceManager.GetString("window_console_clear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detach / Attach Console.
+        /// </summary>
+        public static string window_console_detach_attach {
+            get {
+                return ResourceManager.GetString("window_console_detach_attach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Endpoint.
+        /// </summary>
+        public static string window_console_endpoint {
+            get {
+                return ResourceManager.GetString("window_console_endpoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph.
+        /// </summary>
+        public static string window_console_graph {
+            get {
+                return ResourceManager.GetString("window_console_graph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log.
+        /// </summary>
+        public static string window_console_log {
+            get {
+                return ResourceManager.GetString("window_console_log", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Metrics.
+        /// </summary>
+        public static string window_console_metrics {
+            get {
+                return ResourceManager.GetString("window_console_metrics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requests / min.
+        /// </summary>
+        public static string window_console_requests_per_min {
+            get {
+                return ResourceManager.GetString("window_console_requests_per_min", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cost.
+        /// </summary>
+        public static string window_createreward_cost {
+            get {
+                return ResourceManager.GetString("window_createreward_cost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create reward.
+        /// </summary>
+        public static string window_createreward_create {
+            get {
+                return ResourceManager.GetString("window_createreward_create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an issue creating the reward. Make sure you don&apos;t have a reward with the same name already..
+        /// </summary>
+        public static string window_createreward_error {
+            get {
+                return ResourceManager.GetString("window_createreward_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string window_createreward_prompt {
+            get {
+                return ResourceManager.GetString("window_createreward_prompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The reward &quot;{name}&quot; has been created..
+        /// </summary>
+        public static string window_createreward_success {
+            get {
+                return ResourceManager.GetString("window_createreward_success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string window_createreward_title {
+            get {
+                return ResourceManager.GetString("window_createreward_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Input Required.
+        /// </summary>
+        public static string window_createreward_user_input_required {
+            get {
+                return ResourceManager.GetString("window_createreward_user_input_required", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy the history URL..
+        /// </summary>
+        public static string window_history_copy_url_tooltip {
+            get {
+                return ResourceManager.GetString("window_history_copy_url_tooltip", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Song history.
         /// </summary>
-        public static string WinTitle_History {
+        public static string window_history_title {
             get {
-                return ResourceManager.GetString("WinTitle_History", resourceCulture);
+                return ResourceManager.GetString("window_history_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Songify v1.1.1-RC1 Copyright ©.
+        /// </summary>
+        public static string window_main_copyright {
+            get {
+                return ResourceManager.GetString("window_main_copyright", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
+        /// </summary>
+        public static string window_main_link_spotify {
+            get {
+                return ResourceManager.GetString("window_main_link_spotify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PubSub has been disabled due to bugs.
+        /// </summary>
+        public static string window_main_pubsub_disabled {
+            get {
+                return ResourceManager.GetString("window_main_pubsub_disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Support us on Ko-Fi.
+        /// </summary>
+        public static string window_main_support_kofi {
+            get {
+                return ResourceManager.GetString("window_main_support_kofi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Songify.
+        /// </summary>
+        public static string window_main_title {
+            get {
+                return ResourceManager.GetString("window_main_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The widget only works if &quot;Upload Song Info&quot; is enabled. You can find this option under Settings -&gt; Output. Do you want to activate it now?.
+        /// </summary>
+        public static string window_main_widget_disclaimer {
+            get {
+                return ResourceManager.GetString("window_main_widget_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To login with Twitch follow the instructions below:.
+        /// </summary>
+        public static string window_manualtwitch_instructions {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_instructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LINK.
+        /// </summary>
+        public static string window_manualtwitch_link {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Twitch Login Page.
+        /// </summary>
+        public static string window_manualtwitch_open_login {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_open_login", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1) Click this button to open the Twitch Login page:.
+        /// </summary>
+        public static string window_manualtwitch_step1 {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_step1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2) Paste the code you received from the website:.
+        /// </summary>
+        public static string window_manualtwitch_step2 {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_step2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3) Click this button to link your account with Songify:.
+        /// </summary>
+        public static string window_manualtwitch_step3 {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_step3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch Account Linking.
+        /// </summary>
+        public static string window_manualtwitch_title {
+            get {
+                return ResourceManager.GetString("window_manualtwitch_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes.
+        /// </summary>
+        public static string window_patchnotes_changes {
+            get {
+                return ResourceManager.GetString("window_patchnotes_changes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Patch Notes.
+        /// </summary>
+        public static string window_patchnotes_title {
+            get {
+                return ResourceManager.GetString("window_patchnotes_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Actions.
+        /// </summary>
+        public static string window_queue_actions {
+            get {
+                return ResourceManager.GetString("window_queue_actions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add to favorite playlist.
+        /// </summary>
+        public static string window_queue_add_to_favorite_playlist {
+            get {
+                return ResourceManager.GetString("window_queue_add_to_favorite_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do you really want to clear the queue?.
+        /// </summary>
+        public static string window_queue_clear_disclaimer {
+            get {
+                return ResourceManager.GetString("window_queue_clear_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now Playing.
+        /// </summary>
+        public static string window_queue_now_playing {
+            get {
+                return ResourceManager.GetString("window_queue_now_playing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Played.
+        /// </summary>
+        public static string window_queue_played {
+            get {
+                return ResourceManager.GetString("window_queue_played", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue ID.
+        /// </summary>
+        public static string window_queue_queue_id {
+            get {
+                return ResourceManager.GetString("window_queue_queue_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show / Hide Spotify Controls.
+        /// </summary>
+        public static string window_queue_show_hide_spotify_controls {
+            get {
+                return ResourceManager.GetString("window_queue_show_hide_spotify_controls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip Song.
+        /// </summary>
+        public static string window_queue_skip_song {
+            get {
+                return ResourceManager.GetString("window_queue_skip_song", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skipping.
+        /// </summary>
+        public static string window_queue_skipping {
+            get {
+                return ResourceManager.GetString("window_queue_skipping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Request.
+        /// </summary>
+        public static string window_queue_song_request {
+            get {
+                return ResourceManager.GetString("window_queue_song_request", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Queue.
+        /// </summary>
+        public static string window_queue_tab_queue {
+            get {
+                return ResourceManager.GetString("window_queue_tab_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requestlist.
+        /// </summary>
+        public static string window_queue_tab_requestlist {
+            get {
+                return ResourceManager.GetString("window_queue_tab_requestlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skiplist.
+        /// </summary>
+        public static string window_queue_tab_skiplist {
+            get {
+                return ResourceManager.GetString("window_queue_tab_skiplist", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Song queue.
         /// </summary>
-        public static string WinTitle_Queue {
+        public static string window_queue_title {
             get {
-                return ResourceManager.GetString("WinTitle_Queue", resourceCulture);
+                return ResourceManager.GetString("window_queue_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track ID.
+        /// </summary>
+        public static string window_queue_track_id {
+            get {
+                return ResourceManager.GetString("window_queue_track_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response Parameters.
+        /// </summary>
+        public static string window_responseparams_title {
+            get {
+                return ResourceManager.GetString("window_responseparams_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account name.
+        /// </summary>
+        public static string window_settings_account_name {
+            get {
+                return ResourceManager.GetString("window_settings_account_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Additional Votes.
+        /// </summary>
+        public static string window_settings_allow_additional_votes {
+            get {
+                return ResourceManager.GetString("window_settings_allow_additional_votes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer 1.
+        /// </summary>
+        public static string window_settings_answer_1 {
+            get {
+                return ResourceManager.GetString("window_settings_answer_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer 2.
+        /// </summary>
+        public static string window_settings_answer_2 {
+            get {
+                return ResourceManager.GetString("window_settings_answer_2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Color:.
+        /// </summary>
+        public static string window_settings_appearance_color {
+            get {
+                return ResourceManager.GetString("window_settings_appearance_color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dark Theme.
+        /// </summary>
+        public static string window_settings_appearance_theme_dark {
+            get {
+                return ResourceManager.GetString("window_settings_appearance_theme_dark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Light Theme.
+        /// </summary>
+        public static string window_settings_appearance_theme_light {
+            get {
+                return ResourceManager.GetString("window_settings_appearance_theme_light", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bits Keyword (SR will only get triggered if that keyword is in the bits message).
+        /// </summary>
+        public static string window_settings_bits_keyword_hint {
+            get {
+                return ResourceManager.GetString("window_settings_bits_keyword_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel points per Vote.
+        /// </summary>
+        public static string window_settings_channel_points_per_vote {
+            get {
+                return ResourceManager.GetString("window_settings_channel_points_per_vote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel to join.
+        /// </summary>
+        public static string window_settings_channel_to_join {
+            get {
+                return ResourceManager.GetString("window_settings_channel_to_join", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chat Account.
+        /// </summary>
+        public static string window_settings_chat_account {
+            get {
+                return ResourceManager.GetString("window_settings_chat_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client ID.
+        /// </summary>
+        public static string window_settings_client_id {
+            get {
+                return ResourceManager.GetString("window_settings_client_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client Secret.
+        /// </summary>
+        public static string window_settings_client_secret {
+            get {
+                return ResourceManager.GetString("window_settings_client_secret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show user level badges.
+        /// </summary>
+        public static string window_settings_commands_show_user_level_badges {
+            get {
+                return ResourceManager.GetString("window_settings_commands_show_user_level_badges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get beta updates.
+        /// </summary>
+        public static string window_settings_config_beta_updates {
+            get {
+                return ResourceManager.GetString("window_settings_config_beta_updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EXPORT CONFIG.
+        /// </summary>
+        public static string window_settings_config_export {
+            get {
+                return ResourceManager.GetString("window_settings_config_export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IMPORT CONFIG.
+        /// </summary>
+        public static string window_settings_config_import {
+            get {
+                return ResourceManager.GetString("window_settings_config_import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset config.
+        /// </summary>
+        public static string window_settings_config_reset {
+            get {
+                return ResourceManager.GetString("window_settings_config_reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy song url.
+        /// </summary>
+        public static string window_settings_copy_song_url {
+            get {
+                return ResourceManager.GetString("window_settings_copy_song_url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to Clipboard.
+        /// </summary>
+        public static string window_settings_copy_to_clipboard {
+            get {
+                return ResourceManager.GetString("window_settings_copy_to_clipboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new Reward.
+        /// </summary>
+        public static string window_settings_create_new_reward {
+            get {
+                return ResourceManager.GetString("window_settings_create_new_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We do not store Twitch and Spotify credentials! In case of restoring a cloud backup you have to re-login with Twitch and Spotify.
+        /// </summary>
+        public static string window_settings_credentials_disclaimer {
+            get {
+                return ResourceManager.GetString("window_settings_credentials_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duration.
+        /// </summary>
+        public static string window_settings_duration {
+            get {
+                return ResourceManager.GetString("window_settings_duration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit commands by clicking on the trigger.
+        /// </summary>
+        public static string window_settings_edit_commands_hint {
+            get {
+                return ResourceManager.GetString("window_settings_edit_commands_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Debug Logging.
+        /// </summary>
+        public static string window_settings_enable_debug_logging {
+            get {
+                return ResourceManager.GetString("window_settings_enable_debug_logging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expires on.
+        /// </summary>
+        public static string window_settings_expires_on {
+            get {
+                return ResourceManager.GetString("window_settings_expires_on", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extra.
+        /// </summary>
+        public static string window_settings_extra {
+            get {
+                return ResourceManager.GetString("window_settings_extra", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fetch Port:.
+        /// </summary>
+        public static string window_settings_fetch_port {
+            get {
+                return ResourceManager.GetString("window_settings_fetch_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting things ready.
+        /// </summary>
+        public static string window_settings_getting_ready {
+            get {
+                return ResourceManager.GetString("window_settings_getting_ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically announce song to chat (uses the !song response).
+        /// </summary>
+        public static string window_settings_integration_auto_announce {
+            get {
+                return ResourceManager.GetString("window_settings_integration_auto_announce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autoconnect.
+        /// </summary>
+        public static string window_settings_integration_autoconnect {
+            get {
+                return ResourceManager.GetString("window_settings_integration_autoconnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure bot responses &amp; commands.
+        /// </summary>
+        public static string window_settings_integration_configure_responses {
+            get {
+                return ResourceManager.GetString("window_settings_integration_configure_responses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LINK.
+        /// </summary>
+        public static string window_settings_integration_link {
+            get {
+                return ResourceManager.GetString("window_settings_integration_link", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage rewards.
+        /// </summary>
+        public static string window_settings_integration_manage_rewards {
+            get {
+                return ResourceManager.GetString("window_settings_integration_manage_rewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max SR / User (based on user level).
+        /// </summary>
+        public static string window_settings_integration_max_sr_user {
+            get {
+                return ResourceManager.GetString("window_settings_integration_max_sr_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum user level required for SR.
+        /// </summary>
+        public static string window_settings_integration_min_user_level {
+            get {
+                return ResourceManager.GetString("window_settings_integration_min_user_level", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NB Username (Twitch Username).
+        /// </summary>
+        public static string window_settings_integration_nb_watermark {
+            get {
+                return ResourceManager.GetString("window_settings_integration_nb_watermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit Twitch activity to only work when stream is live (needs Twitch login).
+        /// </summary>
+        public static string window_settings_integration_only_when_live {
+            get {
+                return ResourceManager.GetString("window_settings_integration_only_when_live", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free Song Requests.
+        /// </summary>
+        public static string window_settings_integration_refund_always {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_always", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song contains blocked artist(s).
+        /// </summary>
+        public static string window_settings_integration_refund_artist_blocked {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_artist_blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to be able to refund points, the reward has to be created through Songify. Select a reward that is manageable or create a new one..
+        /// </summary>
+        public static string window_settings_integration_refund_disclaimer {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No song was found.
+        /// </summary>
+        public static string window_settings_integration_refund_no_song_found {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_no_song_found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User reached max queue limit.
+        /// </summary>
+        public static string window_settings_integration_refund_queue_limit {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_queue_limit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song has been added to the queue.
+        /// </summary>
+        public static string window_settings_integration_refund_song_added {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_song_added", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is already in queue.
+        /// </summary>
+        public static string window_settings_integration_refund_song_already_in_queue {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_song_already_in_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is blocked.
+        /// </summary>
+        public static string window_settings_integration_refund_song_blocked {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_song_blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song is not available in region.
+        /// </summary>
+        public static string window_settings_integration_refund_song_not_available {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_song_not_available", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song duration is too long.
+        /// </summary>
+        public static string window_settings_integration_refund_song_too_long {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_song_too_long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify is not connected.
+        /// </summary>
+        public static string window_settings_integration_refund_spotify_not_connected {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_spotify_not_connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track is explicit.
+        /// </summary>
+        public static string window_settings_integration_refund_track_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_track_explicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User is blocked from SR.
+        /// </summary>
+        public static string window_settings_integration_refund_user_blocked {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_user_blocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User level is too low.
+        /// </summary>
+        public static string window_settings_integration_refund_user_level_low {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_user_level_low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refund when.
+        /// </summary>
+        public static string window_settings_integration_refund_when {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_when", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Credentials.
+        /// </summary>
+        public static string window_settings_integration_show_creds {
+            get {
+                return ResourceManager.GetString("window_settings_integration_show_creds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Linked account:.
+        /// </summary>
+        public static string window_settings_integration_spotify_linked {
+            get {
+                return ResourceManager.GetString("window_settings_integration_spotify_linked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send offline notification to chat.
+        /// </summary>
+        public static string window_settings_integration_stream_not_live_notification {
+            get {
+                return ResourceManager.GetString("window_settings_integration_stream_not_live_notification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Listen to chat commands from shared chat.
+        /// </summary>
+        public static string window_settings_integration_stream_shared_chat {
+            get {
+                return ResourceManager.GetString("window_settings_integration_stream_shared_chat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch account.
+        /// </summary>
+        public static string window_settings_integration_twitch_account {
+            get {
+                return ResourceManager.GetString("window_settings_integration_twitch_account", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel to join.
+        /// </summary>
+        public static string window_settings_integration_twitch_channel {
+            get {
+                return ResourceManager.GetString("window_settings_integration_twitch_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep album cover.
+        /// </summary>
+        public static string window_settings_keep_album_cover {
+            get {
+                return ResourceManager.GetString("window_settings_keep_album_cover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Long badge names.
+        /// </summary>
+        public static string window_settings_long_badge_names {
+            get {
+                return ResourceManager.GetString("window_settings_long_badge_names", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Line.
+        /// </summary>
+        public static string window_settings_new_line {
+            get {
+                return ResourceManager.GetString("window_settings_new_line", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to oAuth Token.
+        /// </summary>
+        public static string window_settings_oauth_token {
+            get {
+                return ResourceManager.GetString("window_settings_oauth_token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to get the oAuth token..
+        /// </summary>
+        public static string window_settings_oauth_token_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_oauth_token_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabling this will send a message to chat if an action has been cancelled due to the stream being offline..
+        /// </summary>
+        public static string window_settings_offline_cancelled_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_offline_cancelled_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only add requests to the selected playlist.
+        /// </summary>
+        public static string window_settings_only_add_to_playlist {
+            get {
+                return ResourceManager.GetString("window_settings_only_add_to_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Append spaces.
+        /// </summary>
+        public static string window_settings_output_add_spaces {
+            get {
+                return ResourceManager.GetString("window_settings_output_add_spaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apply to split files too.
+        /// </summary>
+        public static string window_settings_output_apply_to_split_files {
+            get {
+                return ResourceManager.GetString("window_settings_output_apply_to_split_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output directory.
+        /// </summary>
+        public static string window_settings_output_directory {
+            get {
+                return ResourceManager.GetString("window_settings_output_directory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download album cover (only works with API).
+        /// </summary>
+        public static string window_settings_output_download_album {
+            get {
+                return ResourceManager.GetString("window_settings_output_download_album", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Canvas if available.
+        /// </summary>
+        public static string window_settings_output_download_canvas {
+            get {
+                return ResourceManager.GetString("window_settings_output_download_canvas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output format (Text file &amp; Widget).
+        /// </summary>
+        public static string window_settings_output_format {
+            get {
+                return ResourceManager.GetString("window_settings_output_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output format (Twitch Chat).
+        /// </summary>
+        public static string window_settings_output_format_chat {
+            get {
+                return ResourceManager.GetString("window_settings_output_format_chat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear All Output.
+        /// </summary>
+        public static string window_settings_output_on_pause_clear_all {
+            get {
+                return ResourceManager.GetString("window_settings_output_on_pause_clear_all", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Custom Pause Text.
+        /// </summary>
+        public static string window_settings_output_on_pause_custom_text {
+            get {
+                return ResourceManager.GetString("window_settings_output_on_pause_custom_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do Nothing.
+        /// </summary>
+        public static string window_settings_output_on_pause_do_nothing {
+            get {
+                return ResourceManager.GetString("window_settings_output_on_pause_do_nothing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What to do on pause?.
+        /// </summary>
+        public static string window_settings_output_pause {
+            get {
+                return ResourceManager.GetString("window_settings_output_pause", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause text.
+        /// </summary>
+        public static string window_settings_output_pause_text {
+            get {
+                return ResourceManager.GetString("window_settings_output_pause_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom pause text (blank for empty text file).
+        /// </summary>
+        public static string window_settings_output_pause_watermark {
+            get {
+                return ResourceManager.GetString("window_settings_output_pause_watermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requester text prefix.
+        /// </summary>
+        public static string window_settings_output_requester_prefix {
+            get {
+                return ResourceManager.GetString("window_settings_output_requester_prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Split artist, title and requester.
+        /// </summary>
+        public static string window_settings_output_split_artist {
+            get {
+                return ResourceManager.GetString("window_settings_output_split_artist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload song info.
+        /// </summary>
+        public static string window_settings_output_upload_song_info {
+            get {
+                return ResourceManager.GetString("window_settings_output_upload_song_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup the poll system for skip votes.
+        /// </summary>
+        public static string window_settings_poll_setup_hint {
+            get {
+                return ResourceManager.GetString("window_settings_poll_setup_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Poll Title.
+        /// </summary>
+        public static string window_settings_poll_title {
+            get {
+                return ResourceManager.GetString("window_settings_poll_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview:.
+        /// </summary>
+        public static string window_settings_preview {
+            get {
+                return ResourceManager.GetString("window_settings_preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ContentControl.
+        /// </summary>
+        public static string window_settings_preview_placeholder {
+            get {
+                return ResourceManager.GetString("window_settings_preview_placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect Port:.
+        /// </summary>
+        public static string window_settings_redirect_port {
+            get {
+                return ResourceManager.GetString("window_settings_redirect_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To be able to refund points the Reward has to be created through Songify!.
+        /// </summary>
+        public static string window_settings_refund_conditions_info {
+            get {
+                return ResourceManager.GetString("window_settings_refund_conditions_info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reload Rewards.
+        /// </summary>
+        public static string window_settings_reload_rewards_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_reload_rewards_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Response Variables.
+        /// </summary>
+        public static string window_settings_response_variables {
+            get {
+                return ResourceManager.GetString("window_settings_response_variables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore Cloud Settings.
+        /// </summary>
+        public static string window_settings_restore_cloud {
+            get {
+                return ResourceManager.GetString("window_settings_restore_cloud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here after selecting the reward.
+        /// </summary>
+        public static string window_settings_rewards_click_reminder {
+            get {
+                return ResourceManager.GetString("window_settings_rewards_click_reminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled Rewards for Songrequests.
+        /// </summary>
+        public static string window_settings_rewards_enabled {
+            get {
+                return ResourceManager.GetString("window_settings_rewards_enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Right-click on a command to adjust who can use it..
+        /// </summary>
+        public static string window_settings_right_click_command_hint {
+            get {
+                return ResourceManager.GetString("window_settings_right_click_command_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save Cloud Settings.
+        /// </summary>
+        public static string window_settings_save_cloud {
+            get {
+                return ResourceManager.GetString("window_settings_save_cloud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seconds.
+        /// </summary>
+        public static string window_settings_seconds {
+            get {
+                return ResourceManager.GetString("window_settings_seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This options enables the listening to shared chat, allowing commands to be sent from shared chats..
+        /// </summary>
+        public static string window_settings_shared_chat_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_shared_chat_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip when this answer wins.
+        /// </summary>
+        public static string window_settings_skip_when_answer_wins {
+            get {
+                return ResourceManager.GetString("window_settings_skip_when_answer_wins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Songify API Token.
+        /// </summary>
+        public static string window_settings_songify_api_token {
+            get {
+                return ResourceManager.GetString("window_settings_songify_api_token", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add all song requests to the playlist.
+        /// </summary>
+        public static string window_settings_spotify_add_to_playlist {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_add_to_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify fetch rate (seconds).
+        /// </summary>
+        public static string window_settings_spotify_fetch_rate {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_fetch_rate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow only songs from this playlist (SR).
+        /// </summary>
+        public static string window_settings_spotify_only_allow_from_playlist {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_only_allow_from_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reward for Song Skip.
+        /// </summary>
+        public static string window_settings_spotify_reward_skip {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_reward_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reward for Song Requests.
+        /// </summary>
+        public static string window_settings_spotify_reward_sr {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_reward_sr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string window_settings_spotify_save {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Liked Songs Playlist.
+        /// </summary>
+        public static string window_settings_spotify_songlike_label {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_songlike_label", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The playlist that songs get added when using the !songlike command or with the option to automatically add songs to the playlist..
+        /// </summary>
+        public static string window_settings_spotify_songlike_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_songlike_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add requests only to the selected playlist.
+        /// </summary>
+        public static string window_settings_spotify_sr_add_only_to_playlist {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_add_only_to_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Block all explicit songs.
+        /// </summary>
+        public static string window_settings_spotify_sr_block_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_block_explicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel points reward id.
+        /// </summary>
+        public static string window_settings_spotify_sr_channel_points {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_channel_points", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear queue on startup.
+        /// </summary>
+        public static string window_settings_spotify_sr_clear_queue {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_clear_queue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command for making song requests. (Command + Spotify Link or Artist - Title).
+        /// </summary>
+        public static string window_settings_spotify_sr_command {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global command cooldown (seconds).
+        /// </summary>
+        public static string window_settings_spotify_sr_command_cd {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_command_cd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SR Command Cooldown (per user).
+        /// </summary>
+        public static string window_settings_spotify_sr_command_cd_user {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_command_cd_user", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable Song Requests for Bits.
+        /// </summary>
+        public static string window_settings_spotify_sr_enable_for_bits {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_enable_for_bits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max song length (in minutes).
+        /// </summary>
+        public static string window_settings_spotify_sr_max_length {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_max_length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max requests per user.
+        /// </summary>
+        public static string window_settings_spotify_sr_max_req {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_max_req", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable message logging.
+        /// </summary>
+        public static string window_settings_spotify_sr_message_logging {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_message_logging", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to !ssr command moved to bot config.
+        /// </summary>
+        public static string window_settings_spotify_sr_moved_to_bot_config {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_moved_to_bot_config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable SR (Channel Rewards).
+        /// </summary>
+        public static string window_settings_spotify_sr_reward {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlimited song requests.
+        /// </summary>
+        public static string window_settings_spotify_sr_unlimited {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_unlimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Levels (Command).
+        /// </summary>
+        public static string window_settings_spotify_sr_user_levels_command {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_user_levels_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User Levels (Reward).
+        /// </summary>
+        public static string window_settings_spotify_sr_user_levels_reward {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_user_levels_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels for SR command.
+        /// </summary>
+        public static string window_settings_spotify_sr_userlevel_command {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_userlevel_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels for SR reward.
+        /// </summary>
+        public static string window_settings_spotify_sr_userlevel_reward {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_userlevel_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use own Spotify app.
+        /// </summary>
+        public static string window_settings_spotify_use_own_app {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_use_own_app", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Songify&apos;s Spotify app.
+        /// </summary>
+        public static string window_settings_spotify_use_songify_app {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_use_songify_app", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscriber T2.
+        /// </summary>
+        public static string window_settings_subscriber_t2 {
+            get {
+                return ResourceManager.GetString("window_settings_subscriber_t2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscriber T3.
+        /// </summary>
+        public static string window_settings_subscriber_t3 {
+            get {
+                return ResourceManager.GetString("window_settings_subscriber_t3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sync to all user levels.
+        /// </summary>
+        public static string window_settings_sync_to_all_levels_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_sync_to_all_levels_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Autostart with windows.
+        /// </summary>
+        public static string window_settings_system_autostart {
+            get {
+                return ResourceManager.GetString("window_settings_system_autostart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Behavior.
+        /// </summary>
+        public static string window_settings_system_behavior {
+            get {
+                return ResourceManager.GetString("window_settings_system_behavior", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CHECK FOR UPDATES.
+        /// </summary>
+        public static string window_settings_system_check_updates {
+            get {
+                return ResourceManager.GetString("window_settings_system_check_updates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chrome fetch rate (seconds).
+        /// </summary>
+        public static string window_settings_system_chrome_fetch_rate {
+            get {
+                return ResourceManager.GetString("window_settings_system_chrome_fetch_rate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable donation reminder.
+        /// </summary>
+        public static string window_settings_system_disable_donation_reminder {
+            get {
+                return ResourceManager.GetString("window_settings_system_disable_donation_reminder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string window_settings_system_language {
+            get {
+                return ResourceManager.GetString("window_settings_system_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimize to system tray.
+        /// </summary>
+        public static string window_settings_system_minimize {
+            get {
+                return ResourceManager.GetString("window_settings_system_minimize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open queue window on startup.
+        /// </summary>
+        public static string window_settings_system_open_queue_on_startup {
+            get {
+                return ResourceManager.GetString("window_settings_system_open_queue_on_startup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide account names and profile pictures.
+        /// </summary>
+        public static string window_settings_system_privacy {
+            get {
+                return ResourceManager.GetString("window_settings_system_privacy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Privacy.
+        /// </summary>
+        public static string window_settings_system_privacy_header {
+            get {
+                return ResourceManager.GetString("window_settings_system_privacy_header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Send anonymous data.
+        /// </summary>
+        public static string window_settings_system_send_anon_data {
+            get {
+                return ResourceManager.GetString("window_settings_system_send_anon_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Telemetry.
+        /// </summary>
+        public static string window_settings_system_telemetry {
+            get {
+                return ResourceManager.GetString("window_settings_system_telemetry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (translated using DeepL).
+        /// </summary>
+        public static string window_settings_system_translated {
+            get {
+                return ResourceManager.GetString("window_settings_system_translated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use default web browser.
+        /// </summary>
+        public static string window_settings_system_use_default_browser {
+            get {
+                return ResourceManager.GetString("window_settings_system_use_default_browser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Accounts.
+        /// </summary>
+        public static string window_settings_tab_accounts {
+            get {
+                return ResourceManager.GetString("window_settings_tab_accounts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Appearance.
+        /// </summary>
+        public static string window_settings_tab_appearance {
+            get {
+                return ResourceManager.GetString("window_settings_tab_appearance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Channel Rewards.
+        /// </summary>
+        public static string window_settings_tab_channel_rewards {
+            get {
+                return ResourceManager.GetString("window_settings_tab_channel_rewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Config.
+        /// </summary>
+        public static string window_settings_tab_config {
+            get {
+                return ResourceManager.GetString("window_settings_tab_config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch.
+        /// </summary>
+        public static string window_settings_tab_integration {
+            get {
+                return ResourceManager.GetString("window_settings_tab_integration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output.
+        /// </summary>
+        public static string window_settings_tab_output {
+            get {
+                return ResourceManager.GetString("window_settings_tab_output", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Polls.
+        /// </summary>
+        public static string window_settings_tab_polls {
+            get {
+                return ResourceManager.GetString("window_settings_tab_polls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refund Conditions.
+        /// </summary>
+        public static string window_settings_tab_refund_conditions {
+            get {
+                return ResourceManager.GetString("window_settings_tab_refund_conditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rewards.
+        /// </summary>
+        public static string window_settings_tab_rewards {
+            get {
+                return ResourceManager.GetString("window_settings_tab_rewards", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Song Requests.
+        /// </summary>
+        public static string window_settings_tab_song_requests {
+            get {
+                return ResourceManager.GetString("window_settings_tab_song_requests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SongRequest.
+        /// </summary>
+        public static string window_settings_tab_songrequest {
+            get {
+                return ResourceManager.GetString("window_settings_tab_songrequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify.
+        /// </summary>
+        public static string window_settings_tab_spotify {
+            get {
+                return ResourceManager.GetString("window_settings_tab_spotify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to System.
+        /// </summary>
+        public static string window_settings_tab_system {
+            get {
+                return ResourceManager.GetString("window_settings_tab_system", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web server.
+        /// </summary>
+        public static string window_settings_tab_webserver {
+            get {
+                return ResourceManager.GetString("window_settings_tab_webserver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Youtube.
+        /// </summary>
+        public static string window_settings_tab_youtube {
+            get {
+                return ResourceManager.GetString("window_settings_tab_youtube", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test API.
+        /// </summary>
+        public static string window_settings_test_api {
+            get {
+                return ResourceManager.GetString("window_settings_test_api", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (00:00).
+        /// </summary>
+        public static string window_settings_time_placeholder {
+            get {
+                return ResourceManager.GetString("window_settings_time_placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch Auth Ports.
+        /// </summary>
+        public static string window_settings_twitch_auth_ports {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_auth_ports", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch Bot.
+        /// </summary>
+        public static string window_settings_twitch_bot {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_bot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new reward.
+        /// </summary>
+        public static string window_settings_twitch_create_reward {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_create_reward", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable Skip-Reward for Song Requests.
+        /// </summary>
+        public static string window_settings_twitch_disable_skip_for_requests {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_disable_skip_for_requests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logout.
+        /// </summary>
+        public static string window_settings_twitch_logout {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_logout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to URL.
+        /// </summary>
+        public static string window_settings_url {
+            get {
+                return ResourceManager.GetString("window_settings_url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically start the web server.
+        /// </summary>
+        public static string window_settings_webserver_auto_start {
+            get {
+                return ResourceManager.GetString("window_settings_webserver_auto_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open website.
+        /// </summary>
+        public static string window_settings_webserver_open_website {
+            get {
+                return ResourceManager.GetString("window_settings_webserver_open_website", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web server port.
+        /// </summary>
+        public static string window_settings_webserver_port {
+            get {
+                return ResourceManager.GetString("window_settings_webserver_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start web server.
+        /// </summary>
+        public static string window_settings_webserver_start {
+            get {
+                return ResourceManager.GetString("window_settings_webserver_start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop web server.
+        /// </summary>
+        public static string window_settings_webserver_stop {
+            get {
+                return ResourceManager.GetString("window_settings_webserver_stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Youtube API Key.
+        /// </summary>
+        public static string window_settings_youtube_api_key {
+            get {
+                return ResourceManager.GetString("window_settings_youtube_api_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compare the codes between Songify and the YouTube Music Desktop player. Only accept the integration request if the codes match!.
+        /// </summary>
+        public static string window_settings_ytm_disclaimer {
+            get {
+                return ResourceManager.GetString("window_settings_ytm_disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dialog.
+        /// </summary>
+        public static string window_universaldialog_title {
+            get {
+                return ResourceManager.GetString("window_universaldialog_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string window_userlist_name {
+            get {
+                return ResourceManager.GetString("window_userlist_name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SR.
+        /// </summary>
+        public static string window_userlist_sr {
+            get {
+                return ResourceManager.GetString("window_userlist_sr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sub Tier.
+        /// </summary>
+        public static string window_userlist_sub_tier {
+            get {
+                return ResourceManager.GetString("window_userlist_sub_tier", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewerlist.
+        /// </summary>
+        public static string window_userlist_title {
+            get {
+                return ResourceManager.GetString("window_userlist_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User levels.
+        /// </summary>
+        public static string window_userlist_user_levels {
+            get {
+                return ResourceManager.GetString("window_userlist_user_levels", resourceCulture);
             }
         }
     }

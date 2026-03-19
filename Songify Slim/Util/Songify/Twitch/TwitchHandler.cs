@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -90,6 +90,9 @@ public static class TwitchHandler
     public static TwitchAPI TwitchApi;
     public static ValidateAccessTokenResponse BotTokenCheck;
     public static ValidateAccessTokenResponse TokenCheck;
+    private static ImplicitOAuth _activeOAuth;
+    private static string _pendingOAuthState;
+    private static Enums.TwitchAccount? _pendingOAuthAccount;
 
     public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
@@ -404,132 +407,477 @@ public static class TwitchHandler
         }
     }
 
+    private static string GetAccessToken(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main
+            ? Settings.TwitchAccessToken
+            : Settings.TwitchBotToken;
+    }
+
+    private static void SetAccessToken(Enums.TwitchAccount account, string token)
+    {
+        if (account == Enums.TwitchAccount.Main)
+            Settings.TwitchAccessToken = token;
+        else
+            Settings.TwitchBotToken = token;
+    }
+
+    private static User GetLinkedUser(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main
+            ? Settings.TwitchUser
+            : Settings.TwitchBotUser;
+    }
+
+    private static void SetLinkedUser(Enums.TwitchAccount account, User user)
+    {
+        if (account == Enums.TwitchAccount.Main)
+            Settings.TwitchUser = user;
+        else
+            Settings.TwitchBotUser = user;
+    }
+
+    private static TwitchAPI GetApiInstance(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main
+            ? TwitchApi
+            : _twitchApiBot;
+    }
+
+    private static void SetApiInstance(Enums.TwitchAccount account, TwitchAPI api)
+    {
+        if (account == Enums.TwitchAccount.Main)
+            TwitchApi = api;
+        else
+            _twitchApiBot = api;
+    }
+
+    private static ValidateAccessTokenResponse GetTokenCheck(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main
+            ? TokenCheck
+            : BotTokenCheck;
+    }
+
+    private static void SetTokenCheck(Enums.TwitchAccount account, ValidateAccessTokenResponse tokenCheck)
+    {
+        if (account == Enums.TwitchAccount.Main)
+            TokenCheck = tokenCheck;
+        else
+            BotTokenCheck = tokenCheck;
+    }
+
+    private static void SetTokenExpiredFlag(Enums.TwitchAccount account, bool expired)
+    {
+        if (account == Enums.TwitchAccount.Main)
+            GlobalObjects.TwitchUserTokenExpired = expired;
+        else
+            GlobalObjects.TwitchBotTokenExpired = expired;
+    }
+
+    private static string GetLoginButtonText(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main ? "Login (Main)" : "Login (Bot)";
+    }
+
+    private static string GetExpiredTokenMessage(Enums.TwitchAccount account)
+    {
+        return account == Enums.TwitchAccount.Main
+            ? "Your Twitch Account token has expired. Please login again with Twitch"
+            : "Your Twitch Bot Account token has expired. Please login again with Twitch";
+    }
+
+    private static List<string> GetMissingScopes(IEnumerable<string> requiredScopes, IEnumerable<string> grantedScopes)
+    {
+        HashSet<string> granted = new HashSet<string>(
+            grantedScopes ?? Enumerable.Empty<string>(),
+            StringComparer.OrdinalIgnoreCase);
+
+        return (requiredScopes ?? Enumerable.Empty<string>())
+            .Where(scope => !string.IsNullOrWhiteSpace(scope) && !granted.Contains(scope))
+            .ToList();
+    }
+
+    private static async Task<bool> ShowExpiredTokenDialogAndReconnectAsync(Enums.TwitchAccount account)
+    {
+        bool reconnectRequested = false;
+
+        await Application.Current.Dispatcher.Invoke(async () =>
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is not MainWindow mainWindow)
+                    continue;
+
+                if (account == Enums.TwitchAccount.Main)
+                {
+                    mainWindow.IconTwitchApi.Foreground = Brushes.IndianRed;
+                    mainWindow.IconTwitchApi.Kind = PackIconBoxIconsKind.SolidCircle;
+                    mainWindow.MiTwitchApi.IsEnabled = false;
+                }
+
+                MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+                    "Twitch Account Issues",
+                    GetExpiredTokenMessage(account),
+                    MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings
+                    {
+                        AffirmativeButtonText = GetLoginButtonText(account),
+                        NegativeButtonText = "Cancel"
+                    });
+
+                if (msgResult == MessageDialogResult.Affirmative)
+                {
+                    reconnectRequested = true;
+                    ApiConnect(account);
+                }
+
+                break;
+            }
+        });
+
+        return reconnectRequested;
+    }
+
+    private static async Task<bool> HandleMissingScopesAsync(Enums.TwitchAccount account, List<string> missingItems)
+    {
+        if (missingItems == null || !missingItems.Any())
+            return false;
+
+        MainWindow mainWindow = Application.Current?.MainWindow as MainWindow;
+        if (mainWindow == null)
+            return false;
+
+        MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+            "Missing Twitch Scopes",
+            $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved by logging out of Twitch and re-login.\n\nWould you like to logout now?",
+            MessageDialogStyle.AffirmativeAndNegative,
+            new MetroDialogSettings
+            {
+                AffirmativeButtonText = GetLoginButtonText(account),
+                NegativeButtonText = "Cancel"
+            });
+
+        if (msgResult != MessageDialogResult.Affirmative)
+            return false;
+
+        if (account == Enums.TwitchAccount.Main)
+        {
+            Settings.TwitchUser = null;
+            Settings.TwitchAccessToken = "";
+            TwitchApi = null;
+        }
+        else
+        {
+            Settings.TwitchBotUser = null;
+            Settings.TwitchBotToken = "";
+            _twitchApiBot = null;
+        }
+
+        RefreshSelectedChatAccount();
+        ApiConnect(account);
+        return true;
+    }
+
+    private static async Task UpdateMainWindowTwitchApiStateAsync(User user)
+    {
+        await Application.Current.Dispatcher.InvokeAsync(() =>
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is not MainWindow mainWindow)
+                    continue;
+
+                mainWindow.IconTwitchApi.Foreground = Brushes.GreenYellow;
+                mainWindow.MiTwitchApi.IsEnabled = false;
+
+                Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
+            }
+        });
+    }
+
+    public static bool RefreshSelectedChatAccount()
+    {
+        if (Settings.TwitchUser != null &&
+            string.Equals(Settings.TwAcc, Settings.TwitchUser.Login, StringComparison.OrdinalIgnoreCase))
+        {
+            Settings.TwOAuth = $"oauth:{Settings.TwitchAccessToken}";
+            Settings.TwitchChatAccount = new TwitchChatAccount
+            {
+                Id = Settings.TwitchUser.Id,
+                Name = Settings.TwitchUser.Login,
+                Token = Settings.TwOAuth
+            };
+            return true;
+        }
+
+        if (Settings.TwitchBotUser != null &&
+            string.Equals(Settings.TwAcc, Settings.TwitchBotUser.Login, StringComparison.OrdinalIgnoreCase))
+        {
+            Settings.TwOAuth = $"oauth:{Settings.TwitchBotToken}";
+            Settings.TwitchChatAccount = new TwitchChatAccount
+            {
+                Id = Settings.TwitchBotUser.Id,
+                Name = Settings.TwitchBotUser.Login,
+                Token = Settings.TwOAuth
+            };
+            return true;
+        }
+
+        Settings.TwitchChatAccount = null;
+        Logger.Warning(LogSource.Twitch, $"No matching Twitch chat account found for TwAcc='{Settings.TwAcc}'.");
+        return false;
+    }
+
     public static void ApiConnect(Enums.TwitchAccount account)
     {
-        // generate a random int salt
-        Random random = new();
-        int salt = random.Next(1, 1000);
-
-        ImplicitOAuth ioa = new(salt);
-
-        // This event is triggered when the application receives a new token and state from the "RequestClientAuthorization" method.
-        ioa.OnRevcievedValues += async (state, token) =>
+        try
         {
-            if (state != _currentState)
-            {
-                Console.WriteLine(@"State does not match up. Possible CSRF attack or other error.");
-                return;
-            }
-            switch (account)
-            {
-                case Enums.TwitchAccount.Main:
-                    // Don't actually print the user token on screen or to the console.
-                    // Here you should save it where the application can access it whenever it wants to, such as in appdata.
-                    Settings.TwitchAccessToken = token;
-                    break;
+            Random random = new Random();
+            int salt = random.Next(1, 1000);
 
-                case Enums.TwitchAccount.Bot:
-                    // Don't actually print the user token on screen or to the console.
-                    // Here you should save it where the application can access it whenever it wants to, such as in appdata.
-                    Settings.TwitchBotToken = token;
-                    break;
+            _activeOAuth = new ImplicitOAuth(salt);
+            _pendingOAuthAccount = account;
 
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(account), account, null);
-            }
-            await InitializeApi(account);
-            if (string.IsNullOrEmpty(Settings.TwChannel))
-                Settings.TwChannel = Settings.TwitchUser.Login;
-            bool shownInSettings = false;
-            await Application.Current.Dispatcher.Invoke(async () =>
+            _activeOAuth.OnRevcievedValues += async (state, token) =>
             {
-                foreach (Window window in Application.Current.Windows)
+                try
                 {
-                    if (window.GetType() != typeof(Window_Settings)) continue;
-                    await ((Window_Settings)window).ShowMessageAsync(Resources.msgbx_BotAccount,
-                        Resources.msgbx_UseAsBotAccount.Replace("{account}",
-                            account == Enums.TwitchAccount.Main
-                                ? Settings.TwitchUser.DisplayName
-                                : Settings.TwitchBotUser.DisplayName),
-                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
-                        {
-                            AffirmativeButtonText = Resources.msgbx_Yes,
-                            NegativeButtonText = Resources.msgbx_No,
-                            DefaultButtonFocus = MessageDialogResult.Affirmative
-                        }).ContinueWith(x =>
+                    Logger.Info(
+                        LogSource.Twitch,
+                        $"Twitch OAuth callback received. Account={account}, StateMatch={string.Equals(state, _pendingOAuthState, StringComparison.Ordinal)}, TokenEmpty={string.IsNullOrWhiteSpace(token)}");
+
+                    if (!string.Equals(state, _pendingOAuthState, StringComparison.Ordinal))
                     {
-                        if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
-                        Settings.TwOAuth =
-                            $"oauth:{(account == Enums.TwitchAccount.Main ? Settings.TwitchAccessToken : Settings.TwitchBotToken)}";
-                        Settings.TwAcc = account == Enums.TwitchAccount.Main
-                            ? Settings.TwitchUser.Login
-                            : Settings.TwitchBotUser.Login;
+                        Logger.Warning(
+                            LogSource.Twitch,
+                            $"Twitch OAuth state mismatch. Expected='{_pendingOAuthState}', Received='{state}'");
+                        return;
+                    }
 
-                        Settings.TwitchChatAccount = new TwitchChatAccount
-                        {
-                            Id = Settings.TwitchUser.Id,
-                            Name = Settings.TwitchUser.Login,
-                            Token = Settings.TwOAuth
-                        };
+                    if (string.IsNullOrWhiteSpace(token))
+                    {
+                        Logger.Warning(LogSource.Twitch, $"Twitch OAuth returned an empty token for {account}.");
+                        return;
+                    }
 
-                        return Task.CompletedTask;
-                    });
-                    await ((Window_Settings)window).SetControls();
-                    shownInSettings = true;
+                    SetAccessToken(account, token);
+
+                    Logger.Info(
+                        LogSource.Twitch,
+                        $"Stored Twitch token for {account}. TokenLength={token.Length}");
+
+                    ConfigHandler.WriteAllConfig(Settings.Export());
+
+                    await InitializeApi(account);
+                    await RefreshSettingsWindowAsync();
+
+                    if (string.IsNullOrWhiteSpace(Settings.TwChannel) && Settings.TwitchUser != null)
+                        Settings.TwChannel = Settings.TwitchUser.Login;
+
+                    RefreshSelectedChatAccount();
+
+                    ForceDisconnect = true;
+                    ConnectTwitchChatClient();
+
+                    dynamic telemetryPayload = new
+                    {
+                        uuid = Settings.Uuid,
+                        key = Settings.AccessKey,
+                        tst = DateTime.UtcNow.ToUnixEpochDate(),
+                        twitch_id = Settings.TwitchUser?.Id ?? "",
+                        twitch_name = Settings.TwitchUser?.DisplayName ?? "",
+                        vs = GlobalObjects.AppVersion,
+                        playertype = GlobalObjects.GetReadablePlayer(),
+                    };
+
+                    string json = Json.Serialize(telemetryPayload);
+                    await SongifyApi.PostTelemetryAsync(json);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+                finally
+                {
+                    _activeOAuth = null;
+                    _pendingOAuthState = null;
+                    _pendingOAuthAccount = null;
+                }
+            };
+
+            _pendingOAuthState = _activeOAuth.RequestClientAuthorization();
+            _currentState = _pendingOAuthState;
+
+            Logger.Info(
+                LogSource.Twitch,
+                $"Started Twitch OAuth for {account}. State={_pendingOAuthState}");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    private static async Task RefreshSettingsWindowAsync()
+    {
+        if (Application.Current == null)
+            return;
+
+        await Application.Current.Dispatcher.Invoke(async () =>
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is Window_Settings settingsWindow)
+                {
+                    await settingsWindow.SetControls();
                     break;
                 }
-                if (!shownInSettings)
-                {
-                    (Application.Current.MainWindow as MainWindow)?.ShowMessageAsync(Resources.msgbx_BotAccount,
-                        Resources.msgbx_UseAsBotAccount.Replace("{account}",
-                            account == Enums.TwitchAccount.Main
-                                ? Settings.TwitchUser.DisplayName
-                                : Settings.TwitchBotUser.DisplayName),
-                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
-                        {
-                            AffirmativeButtonText = Resources.msgbx_Yes,
-                            NegativeButtonText = Resources.msgbx_No,
-                            DefaultButtonFocus = MessageDialogResult.Affirmative
-                        }).ContinueWith(x =>
-                    {
-                        if (x.Result != MessageDialogResult.Affirmative) return Task.CompletedTask;
-                        Settings.TwOAuth =
-                            $"oauth:{(account == Enums.TwitchAccount.Main ? Settings.TwitchAccessToken : Settings.TwitchBotToken)}";
-                        Settings.TwAcc = account == Enums.TwitchAccount.Main
-                            ? Settings.TwitchUser.Login
-                            : Settings.TwitchBotUser.Login;
+            }
+        });
+    }
 
-                        Settings.TwitchChatAccount = new TwitchChatAccount
-                        {
-                            Id = Settings.TwitchUser.Id,
-                            Name = Settings.TwitchUser.Login,
-                            Token = Settings.TwOAuth
-                        };
-
-                        return Task.CompletedTask;
-                    });
-                }
-                ForceDisconnect = true;
-                ConnectTwitchChatClient();
-                dynamic telemetryPayload = new
-                {
-                    uuid = Settings.Uuid,
-                    key = Settings.AccessKey,
-                    tst = DateTime.Now.ToUnixEpochDate(),
-                    twitch_id = Settings.TwitchUser == null ? "" : Settings.TwitchUser.Id,
-                    twitch_name = Settings.TwitchUser == null
-                        ? ""
-                        : Settings.TwitchUser.DisplayName,
-                    vs = GlobalObjects.AppVersion,
-                    playertype = GlobalObjects.GetReadablePlayer(),
-                };
-                string json = Json.Serialize(telemetryPayload);
-                await SongifyApi.PostTelemetryAsync(json);
-            });
+    public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
+    {
+        TwitchAPI api = new TwitchAPI
+        {
+            Settings =
+        {
+            ClientId = ClientId,
+            AccessToken = GetAccessToken(twitchAccount)
+        }
         };
 
-        // This method initialize the flow of getting the token and returns a temporary random state that we will use to check authenticity.
-        _currentState = ioa.RequestClientAuthorization();
+        SetApiInstance(twitchAccount, api);
+
+        ValidateAccessTokenResponse validatedToken = null;
+
+        try
+        {
+            validatedToken = await api.Auth.ValidateAccessTokenAsync(GetAccessToken(twitchAccount));
+            SetTokenCheck(twitchAccount, validatedToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            Logger.Warning(
+                LogSource.Twitch,
+                "HTTP error occurred during Twitch token validation.",
+                ex
+            );
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(
+                LogSource.Twitch,
+                "Unexpected exception during Twitch token validation.",
+                ex
+            );
+        }
+
+        if (validatedToken == null)
+        {
+            SetTokenExpiredFlag(twitchAccount, true);
+            await ShowExpiredTokenDialogAndReconnectAsync(twitchAccount);
+            return;
+        }
+
+        List<string> missingItems = GetMissingScopes(Scopes.GetScopes(), validatedToken.Scopes);
+        if (await HandleMissingScopesAsync(twitchAccount, missingItems))
+            return;
+
+        DateTime tokenExpiryDate = DateTime.UtcNow.AddSeconds(validatedToken.ExpiresIn);
+
+        if (twitchAccount == Enums.TwitchAccount.Main)
+            Settings.TwitchAccessTokenExpiryDate = tokenExpiryDate;
+        else
+            Settings.BotAccessTokenExpiryDate = tokenExpiryDate;
+
+        SetTokenExpiredFlag(twitchAccount, false);
+
+        _userId = validatedToken.UserId;
+
+        GetUsersResponse users = await api.Helix.Users.GetUsersAsync(
+            new List<string> { _userId },
+            null,
+            GetAccessToken(twitchAccount));
+
+        User user = users?.Users?.FirstOrDefault();
+        if (user == null)
+            return;
+
+        SetLinkedUser(twitchAccount, user);
+
+        if (twitchAccount == Enums.TwitchAccount.Main)
+        {
+            Settings.TwitchChannelId = user.Id;
+            Settings.TwChannel = user.Login;
+
+            await UpdateMainWindowTwitchApiStateAsync(user);
+
+            GetUserChatColorResponse chatColorResponse =
+                await api.Helix.Chat.GetUserChatColorAsync(
+                    new List<string> { user.Id },
+                    Settings.TwitchAccessToken);
+
+            Settings.TwitchUserColor = chatColorResponse?.Data != null && chatColorResponse.Data.Any()
+                ? chatColorResponse.Data[0].Color
+                : "#f8953c";
+
+            ConfigHandler.WriteAllConfig(Settings.Export());
+
+            InitTwitchUserSyncTimer();
+            await RunTwitchUserSync();
+        }
+
+        RefreshSelectedChatAccount();
+
+        if (twitchAccount == Enums.TwitchAccount.Main)
+            _ = TwitchApi != null ? StartOrRestartAsync() : StopAsync();
+    }
+
+    public static void ConnectTwitchChatClient()
+    {
+        try
+        {
+            if (!RefreshSelectedChatAccount())
+            {
+                Logger.Warning(LogSource.Twitch, "No valid chat account (user/bot) available.");
+                return;
+            }
+
+            if (Settings.TwitchChatAccount == null)
+            {
+                Logger.Warning(LogSource.Twitch, "TwitchChatAccount is null.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Settings.TwAcc) ||
+                string.IsNullOrWhiteSpace(Settings.TwOAuth) ||
+                string.IsNullOrWhiteSpace(Settings.TwChannel))
+            {
+                Application.Current?.Dispatcher?.Invoke(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is MainWindow mw)
+                            mw.LblStatus.Content = "Please fill in Twitch credentials.";
+                    }
+                });
+                return;
+            }
+
+            if (CooldownTimer != null) CooldownTimer.Elapsed += CooldownTimer_Elapsed;
+            if (SkipCooldownTimer != null) SkipCooldownTimer.Elapsed += SkipCooldownTimer_Elapsed;
+
+            InitializeCommands(Settings.Commands);
+
+            // your existing connect logic continues here
+            // and should use Settings.TwitchChatAccount
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Couldn't connect to Twitch.", ex);
+        }
     }
 
     public static async Task<bool> CheckStreamIsUp()
@@ -553,69 +901,6 @@ public static class TwitchHandler
         {
             Logger.LogExc(e);
             return false;
-        }
-    }
-
-    public static void ConnectTwitchChatClient()
-    {
-        try
-        {
-            // Pick chat account safely
-            TwitchChatAccount acct;
-
-            if (Settings.TwitchUser != null && Settings.TwAcc == Settings.TwitchUser.Login)
-            {
-                acct = new TwitchChatAccount
-                {
-                    Id = Settings.TwitchUser.Id,
-                    Name = Settings.TwitchUser.Login,
-                    Token = Settings.TwOAuth
-                };
-            }
-            else if (Settings.TwitchBotUser != null)
-            {
-                acct = new TwitchChatAccount
-                {
-                    Id = Settings.TwitchBotUser.Id,
-                    Name = Settings.TwitchBotUser.Login,
-                    Token = Settings.TwOAuth
-                };
-            }
-            else
-            {
-                // neither matches / is present
-                Logger.Warning(LogSource.Twitch, "No valid chat account (user/bot) available.");
-                return;
-            }
-
-            Settings.TwitchChatAccount = acct;
-
-            // Validate required fields BEFORE using them
-            if (string.IsNullOrWhiteSpace(Settings.TwAcc) ||
-                string.IsNullOrWhiteSpace(Settings.TwOAuth) ||
-                string.IsNullOrWhiteSpace(Settings.TwChannel))
-            {
-                Application.Current?.Dispatcher?.Invoke(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is MainWindow mw)
-                            mw.LblStatus.Content = "Please fill in Twitch credentials.";
-                    }
-                });
-                return;
-            }
-
-            // Ensure timers exist before wiring events
-            if (CooldownTimer != null) CooldownTimer.Elapsed += CooldownTimer_Elapsed;
-            if (SkipCooldownTimer != null) SkipCooldownTimer.Elapsed += SkipCooldownTimer_Elapsed;
-
-            // Ensure commands list isn’t null
-            InitializeCommands(Settings.Commands);
-        }
-        catch (Exception ex)
-        {
-            Logger.Error(LogSource.Twitch, "Couldn't connect to Twitch.", ex);
         }
     }
 
@@ -1171,241 +1456,6 @@ public static class TwitchHandler
         _skipCooldown = true;
         SkipCooldownTimer.Start();
         return false;
-    }
-
-    public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
-    {
-        GetUsersResponse users;
-        User user;
-        List<string> missingItems;
-        switch (twitchAccount)
-        {
-            #region Main
-
-            case Enums.TwitchAccount.Main:
-                TwitchApi = new TwitchAPI
-                {
-                    Settings =
-                    {
-                        ClientId = ClientId,
-                        AccessToken = Settings.TwitchAccessToken
-                    }
-                };
-
-                try
-                {
-                    TokenCheck = await TwitchApi.Auth.ValidateAccessTokenAsync(Settings.TwitchAccessToken);
-                }
-                catch (HttpRequestException ex)
-                {
-                    Logger.Warning(
-                        LogSource.Twitch,
-                        "HTTP error occurred during Twitch token validation.",
-                        ex
-                    );
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(
-                        LogSource.Twitch,
-                        "Unexpected exception during Twitch token validation.",
-                        ex
-                    );
-                }
-
-                if (TokenCheck == null)
-                {
-                    GlobalObjects.TwitchUserTokenExpired = true;
-                    await Application.Current.Dispatcher.Invoke(async () =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() != typeof(MainWindow))
-                                continue;
-                            ((MainWindow)window).IconTwitchApi.Foreground = Brushes.IndianRed;
-                            ((MainWindow)window).IconTwitchApi.Kind =
-                                PackIconBoxIconsKind.SolidCircle;
-                            ((MainWindow)window).MiTwitchApi.IsEnabled = false;
-                            MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
-                                "Twitch Account Issues",
-                                "Your Twitch Account token has expired. Please login again with Twitch",
-                                MessageDialogStyle.AffirmativeAndNegative,
-                                new MetroDialogSettings
-                                { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
-                            if (msgResult == MessageDialogResult.Negative) return;
-                            ApiConnect(Enums.TwitchAccount.Main);
-                        }
-                    });
-                    return;
-                }
-
-                DateTime tokenExpiryDate = DateTime.Now.AddSeconds(TokenCheck.ExpiresIn);
-
-                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
-
-                if (missingItems.Any())
-                {
-                    MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
-                        "Missing Twitch Scopes",
-                        $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
-                        MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings
-                        { AffirmativeButtonText = "Login (Main)", NegativeButtonText = "Cancel" });
-                    if (msgResult == MessageDialogResult.Affirmative)
-                    {
-                        Settings.TwitchUser = null;
-                        Settings.TwitchAccessToken = "";
-                        TwitchApi = null;
-                        ApiConnect(Enums.TwitchAccount.Main);
-                        return;
-                    }
-                }
-
-                Settings.TwitchAccessTokenExpiryDate = tokenExpiryDate;
-
-                GlobalObjects.TwitchUserTokenExpired = false;
-                _userId = TokenCheck.UserId;
-
-                users = await TwitchApi.Helix.Users.GetUsersAsync([_userId], null,
-                    Settings.TwitchAccessToken);
-
-                user = users.Users.FirstOrDefault();
-                if (user == null)
-                    return;
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window.GetType() != typeof(MainWindow))
-                            continue;
-                        ((MainWindow)window).IconTwitchApi.Foreground = Brushes.GreenYellow;
-                        //((MainWindow)window).IconTwitchAPI.Kind = PackIconBoxIconsKind.LogosTwitch;
-                        ((MainWindow)window).MiTwitchApi.IsEnabled = false;
-
-                        Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
-                    }
-                });
-
-                Settings.TwitchUser = user;
-                Settings.TwitchChannelId = user.Id;
-                Settings.TwChannel = user.Login;
-
-                // Get User Color:
-                GetUserChatColorResponse chatColorResponse = await TwitchApi.Helix.Chat.GetUserChatColorAsync([user.Id], Settings.TwitchAccessToken);
-                Settings.TwitchUserColor = chatColorResponse.Data.Any() ? chatColorResponse.Data[0].Color : "#f8953c";
-
-                ConfigHandler.WriteAllConfig(Settings.Export());
-                //StreamUpTimer.Tick += StreamUpTimer_Tick;
-                //StreamUpTimer.Start();
-
-                InitTwitchUserSyncTimer();
-                await RunTwitchUserSync();
-
-                break;
-
-            #endregion Main
-
-            #region Bot
-
-            case Enums.TwitchAccount.Bot:
-                _twitchApiBot = new TwitchAPI
-                {
-                    Settings =
-                    {
-                        ClientId = ClientId,
-                        AccessToken = Settings.TwitchBotToken
-                    }
-                };
-
-                try
-                {
-                    BotTokenCheck = await _twitchApiBot.Auth.ValidateAccessTokenAsync(Settings.TwitchBotToken);
-                }
-                catch (HttpRequestException ex)
-                {
-                    Logger.Warning(
-                        LogSource.Twitch,
-                        "HTTP error occurred during Twitch token validation.",
-                        ex
-                    );
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(
-                        LogSource.Twitch,
-                        "Unexpected exception during Twitch token validation.",
-                        ex
-                    );
-                }
-
-                if (BotTokenCheck == null)
-                {
-                    GlobalObjects.TwitchBotTokenExpired = true;
-                    await Application.Current.Dispatcher.Invoke(async () =>
-                    {
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() != typeof(MainWindow))
-                                continue;
-                            MessageDialogResult msgResult = await ((MainWindow)window).ShowMessageAsync(
-                                "Twitch Account Issues",
-                                "Your Twitch Bot Account token has expired. Please login again with Twitch",
-                                MessageDialogStyle.AffirmativeAndNegative,
-                                new MetroDialogSettings
-                                { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
-                            if (msgResult == MessageDialogResult.Negative) return;
-                            ApiConnect(Enums.TwitchAccount.Bot);
-                        }
-                    });
-                    return;
-                }
-
-                DateTime botTokenExpiryDate = DateTime.Now.AddSeconds(BotTokenCheck.ExpiresIn);
-
-                missingItems = Scopes.GetScopes().Where(item => !TokenCheck.Scopes.Contains(item)).ToList();
-
-                if (missingItems.Any())
-                {
-                    MessageDialogResult msgResult = await ((MainWindow)Application.Current.MainWindow).ShowMessageAsync(
-                        "Missing Twitch Scopes",
-                        $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved be logging out of Twitch and re-login.\n\nWould you like to logout now?",
-                        MessageDialogStyle.AffirmativeAndNegative,
-                        new MetroDialogSettings
-                        { AffirmativeButtonText = "Login (Bot)", NegativeButtonText = "Cancel" });
-                    if (msgResult == MessageDialogResult.Affirmative)
-                    {
-                        Settings.TwitchUser = null;
-                        Settings.TwitchAccessToken = "";
-                        TwitchApi = null;
-                        ApiConnect(Enums.TwitchAccount.Bot);
-                        return;
-                    }
-                }
-
-                Settings.BotAccessTokenExpiryDate = botTokenExpiryDate;
-
-                GlobalObjects.TwitchBotTokenExpired = false;
-
-                _userId = BotTokenCheck.UserId;
-
-                users = await _twitchApiBot.Helix.Users.GetUsersAsync([_userId], null,
-                    Settings.TwitchBotToken);
-
-                user = users.Users.FirstOrDefault();
-                if (user == null)
-                    return;
-                Settings.TwitchBotUser = user;
-                break;
-
-            #endregion Bot
-
-            default:
-                throw new ArgumentOutOfRangeException(nameof(twitchAccount), twitchAccount, null);
-        }
-
-        // fire-and-forget is fine; the method itself is concurrency-safe
-        _ = TwitchApi != null ? StartOrRestartAsync() : StopAsync();
     }
 
     public static void InitializeCommands(List<TwitchCommand> commands)
@@ -2078,7 +2128,6 @@ public static class TwitchHandler
             await SendChatMessage(response);
             return;
         }
-
 
         // if onCooldown skips
         if (_onCooldown)
@@ -2986,7 +3035,7 @@ public static class TwitchHandler
 
         //Fix for russia where Spotify is not available
         if (track.Restrictions is { Count: > 0 })
-            return Resources.s_TrackAdded;
+            return Resources.common_track_added;
 
         try
         {
@@ -4267,7 +4316,6 @@ public class TwitchUser : INotifyPropertyChanged
 
         return DateTime.UtcNow - LastCommandTime.Value > cooldown;
     }
-
 
     public void Update(
         string username,

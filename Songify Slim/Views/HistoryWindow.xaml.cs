@@ -1,4 +1,4 @@
-﻿using Songify_Slim.Util.General;
+using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,9 +35,9 @@ namespace Songify_Slim.Views
                 Tglbtn_Save.IsChecked = Settings.SaveHistory;
                 Tglbtn_Upload.IsChecked = Settings.UploadHistory;
 
-                Tglbtn_Save.Content = Settings.SaveHistory ? $"{Properties.Resources.s_Save} ✔️" : $"{Properties.Resources.s_Save} ❌";
+                Tglbtn_Save.Content = Settings.SaveHistory ? $"{Properties.Resources.common_save} ??" : $"{Properties.Resources.common_save} ?";
 
-                Tglbtn_Upload.Content = Settings.UploadHistory ? $"{Properties.Resources.s_Upload} ✔️" : $"{Properties.Resources.s_Upload} ❌";
+                Tglbtn_Upload.Content = Settings.UploadHistory ? $"{Properties.Resources.common_upload} ??" : $"{Properties.Resources.common_upload} ?";
 
                 // listen to changes made to the history.shr file
                 _watcher = new FileSystemWatcher
@@ -206,13 +206,13 @@ namespace Songify_Slim.Views
 
                 if ((bool)Tglbtn_Save.IsChecked)
                 {
-                    Tglbtn_Save.Content = "Save ✔️";
-                    Lbl_Status.Content = "History Save Enabled ✔️";
+                    Tglbtn_Save.Content = "Save ??";
+                    Lbl_Status.Content = "History Save Enabled ??";
                 }
                 else
                 {
-                    Tglbtn_Save.Content = "Save ❌";
-                    Lbl_Status.Content = "History Save Disabled ❌";
+                    Tglbtn_Save.Content = "Save ?";
+                    Lbl_Status.Content = "History Save Disabled ?";
                 }
             }
         }
@@ -228,13 +228,13 @@ namespace Songify_Slim.Views
 
                 if ((bool)Tglbtn_Upload.IsChecked)
                 {
-                    Tglbtn_Upload.Content = "Upload ✔️";
-                    Lbl_Status.Content = "History Upload Enabled ✔️";
+                    Tglbtn_Upload.Content = "Upload ??";
+                    Lbl_Status.Content = "History Upload Enabled ??";
                 }
                 else
                 {
-                    Tglbtn_Upload.Content = "Upload ❌";
-                    Lbl_Status.Content = "History Upload Disabled ❌";
+                    Tglbtn_Upload.Content = "Upload ?";
+                    Lbl_Status.Content = "History Upload Disabled ?";
                 }
             }
         }

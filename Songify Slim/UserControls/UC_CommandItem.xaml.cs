@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -49,63 +49,63 @@ namespace Songify_Slim.UserControls
             {
                 {
                     Enums.CommandType.SongRequest,
-                    Application.Current.TryFindResource("sw_SpotifySR_SRCommand") as string ?? "Fallback SongRequest"
+                    Application.Current.TryFindResource("window_settings_spotify_sr_command") as string ?? "Fallback SongRequest"
                 },
                 {
                     Enums.CommandType.Next,
-                    Application.Current.TryFindResource("brw_cmd_next") as string ?? "Fallback Next"
+                    Application.Current.TryFindResource("window_botresponses_cmd_next") as string ?? "Fallback Next"
                 },
                 {
                     Enums.CommandType.Play,
-                    Application.Current.TryFindResource("brw_cmd_play") as string ?? "Fallback Play"
+                    Application.Current.TryFindResource("window_botresponses_cmd_play") as string ?? "Fallback Play"
                 },
                 {
                     Enums.CommandType.Voteskip,
-                    Application.Current.TryFindResource("brw_cmd_skipvote") as string ?? "Fallback Voteskip"
+                    Application.Current.TryFindResource("window_botresponses_cmd_skipvote") as string ?? "Fallback Voteskip"
                 },
                 {
                     Enums.CommandType.Position,
-                    Application.Current.TryFindResource("brw_cmd_pos") as string ?? "Fallback Position"
+                    Application.Current.TryFindResource("window_botresponses_cmd_pos") as string ?? "Fallback Position"
                 },
                 {
                     Enums.CommandType.Song,
-                    Application.Current.TryFindResource("brw_cmd_song") as string ?? "Fallback Song"
+                    Application.Current.TryFindResource("window_botresponses_cmd_song") as string ?? "Fallback Song"
                 },
                 {
                     Enums.CommandType.Skip,
-                    Application.Current.TryFindResource("brw_cmd_skip") as string ?? "Fallback Skip"
+                    Application.Current.TryFindResource("window_botresponses_cmd_skip") as string ?? "Fallback Skip"
                 },
                 {
                     Enums.CommandType.Remove,
-                    Application.Current.TryFindResource("brw_cmd_remove") as string ?? "Fallback Remove"
+                    Application.Current.TryFindResource("window_botresponses_cmd_remove") as string ?? "Fallback Remove"
                 },
                 {
                     Enums.CommandType.Songlike,
-                    Application.Current.TryFindResource("brw_cmd_songlike") as string ?? "Fallback Songlike"
+                    Application.Current.TryFindResource("window_botresponses_cmd_songlike") as string ?? "Fallback Songlike"
                 },
                 {
                     Enums.CommandType.Volume,
-                    Application.Current.TryFindResource("brw_cmd_vol") as string ?? "Fallback Volume"
+                    Application.Current.TryFindResource("window_botresponses_cmd_vol") as string ?? "Fallback Volume"
                 },
                 {
                     Enums.CommandType.Queue,
-                    Application.Current.TryFindResource("brw_cmd_queue") as string ?? "Fallback Queue"
+                    Application.Current.TryFindResource("window_botresponses_cmd_queue") as string ?? "Fallback Queue"
                 },
                 {
                     Enums.CommandType.Commands,
-                    Application.Current.TryFindResource("brw_cmd_commands") as string ?? "Fallback Commands"
+                    Application.Current.TryFindResource("window_botresponses_cmd_commands") as string ?? "Fallback Commands"
                 },
                 {
                     Enums.CommandType.Pause,
-                    Application.Current.TryFindResource("brw_cmd_pause") as string ?? "Fallback Pause"
+                    Application.Current.TryFindResource("window_botresponses_cmd_pause") as string ?? "Fallback Pause"
                 },
                 {
                     Enums.CommandType.BanSong,
-                    Application.Current.TryFindResource("brw_cmd_bansong") as string ?? "Fallback BanSong"
+                    Application.Current.TryFindResource("window_botresponses_cmd_bansong") as string ?? "Fallback BanSong"
                 },
                 {
                     Enums.CommandType.ToggleSr,
-                    Application.Current.TryFindResource("brw_cmd_togglesr") as string ?? "Fallback BanSong"
+                    Application.Current.TryFindResource("window_botresponses_cmd_togglesr") as string ?? "Fallback BanSong"
                 }
             };
 

@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.WindowPatchnotes"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:wpf1="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
-    Title="Patch Notes"
+    Title="{DynamicResource window_patchnotes_title}"
     Width="800"
     Height="450"
     Loaded="MetroWindow_Loaded"
@@ -34,7 +34,7 @@
             <Label
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Content="Changes" />
+                Content="{DynamicResource window_patchnotes_changes}" />
             <TextBlock Margin="6,0,0,0" VerticalAlignment="Center">
                 <Hyperlink x:Name="Hyperlink" Click="Hyperlink_Click">
                     See all changes on GitHub

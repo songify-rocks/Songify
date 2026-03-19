@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.WindowCreateCustomReward"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,8 +8,7 @@
     xmlns:local="clr-namespace:Songify_Slim"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
-    Title="Create Custom Reward"
+    Title="{DynamicResource window_createreward_title}"
     Width="484"
     Height="250"
     ResizeMode="CanResizeWithGrip"
@@ -38,7 +37,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{i18n:Loc crw_RewardTitle}" />
+                    Content="{DynamicResource window_createreward_title}" />
                 <TextBox
                     x:Name="TbRewardName"
                     Grid.Row="0"
@@ -50,7 +49,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{i18n:Loc crw_RewardPrompt}" />
+                    Content="{DynamicResource window_createreward_prompt}" />
                 <TextBox
                     x:Name="TbRewardPrompt"
                     Grid.Row="1"
@@ -62,7 +61,7 @@
                     Grid.Column="0"
                     Margin="0,5"
                     VerticalAlignment="Center"
-                    Content="{i18n:Loc crw_RewardCost}" />
+                    Content="{DynamicResource window_createreward_cost}" />
                 <controls:NumericUpDown
                     x:Name="NudRewardCost"
                     Grid.Row="2"
@@ -82,7 +81,7 @@
                         Margin="5,0"
                         Padding="0"
                         VerticalAlignment="Center"
-                        Content="User Input Required" />
+                        Content="{DynamicResource window_createreward_user_input_required}" />
                     <controls:ToggleSwitch
                         x:Name="TglUserInputRequired"
                         MinWidth="0"
@@ -99,7 +98,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     Click="BtnCreateReward_Click"
-                    Content="{i18n:Loc crw_CreateReward}" />
+                    Content="{DynamicResource window_createreward_create}" />
                 <TextBlock
                     x:Name="LblStatus"
                     Grid.Row="5"

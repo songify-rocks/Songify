@@ -1,4 +1,4 @@
-﻿using ControlzEx.Theming;
+using ControlzEx.Theming;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
@@ -87,21 +87,27 @@ namespace Songify_Slim.Views
             { "be-BY", "Belarusian" }
         };
 
+        private static Icon LoadSongifyIcon()
+        {
+            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Songify.Resources.songify.ico");
+            return stream != null ? new Icon(stream) : null;
+        }
+
         private static Dictionary<Enums.RefundCondition, string> RefundConditionLabels => new()
         {
-            { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.Sw_Integration_RefundUserLevelLow },
-            { Enums.RefundCondition.UserBlocked, Properties.Resources.Sw_Integration_RefundUSerBlocked },
-            { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.Sw_Integration_RefundSpotifyNotConnected },
-            { Enums.RefundCondition.SongUnavailable, Properties.Resources.Sw_Integration_RefundSongNotAvailable },
-            { Enums.RefundCondition.SongBlocked, Properties.Resources.Sw_Integration_RefundSongBlocked},
-            { Enums.RefundCondition.ArtistBlocked, Properties.Resources.Sw_Integration_RefundArtistBlocked },
-            { Enums.RefundCondition.SongTooLong, Properties.Resources.Sw_Integration_RefundSongTooLong },
-            { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.Sw_Integration_RefundSongAlreadyInQueue },
-            { Enums.RefundCondition.QueueLimitReached, Properties.Resources.Sw_Integration_RefundQueueLimitReached},
-            { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
-            { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
-            { Enums.RefundCondition.TrackIsExplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit},
-            { Enums.RefundCondition.OnSuccess, Properties.Resources.Sw_Integration_RefundAlways },
+            { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.window_settings_integration_refund_user_level_low },
+            { Enums.RefundCondition.UserBlocked, Properties.Resources.window_settings_integration_refund_user_blocked },
+            { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.window_settings_integration_refund_spotify_not_connected },
+            { Enums.RefundCondition.SongUnavailable, Properties.Resources.window_settings_integration_refund_song_not_available },
+            { Enums.RefundCondition.SongBlocked, Properties.Resources.window_settings_integration_refund_song_blocked},
+            { Enums.RefundCondition.ArtistBlocked, Properties.Resources.window_settings_integration_refund_artist_blocked },
+            { Enums.RefundCondition.SongTooLong, Properties.Resources.window_settings_integration_refund_song_too_long },
+            { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.window_settings_integration_refund_song_already_in_queue },
+            { Enums.RefundCondition.QueueLimitReached, Properties.Resources.window_settings_integration_refund_queue_limit},
+            { Enums.RefundCondition.NoSongFound, Properties.Resources.window_settings_integration_refund_no_song_found },
+            { Enums.RefundCondition.SongAddedButError, Properties.Resources.window_settings_integration_refund_song_added },
+            { Enums.RefundCondition.TrackIsExplicit, Properties.Resources.window_settings_integration_refund_track_explicit},
+            { Enums.RefundCondition.OnSuccess, Properties.Resources.window_settings_integration_refund_always },
         };
 
         public Window_Settings()
@@ -206,8 +212,8 @@ namespace Songify_Slim.Views
             TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run
-                ? Properties.Resources.sw_WebServer_StopWebServer
-                : Properties.Resources.sw_WebServer_StartWebServer;
+                ? Properties.Resources.window_settings_webserver_stop
+                : Properties.Resources.window_settings_webserver_start;
             ToggleSwitchUnlimitedSr.IsOn = Settings.TwSrUnlimitedSr;
             Tglsw_BitsForSr.IsOn = Settings.SrForBits;
             TglInformChat.IsOn = Settings.ChatLiveStatus;
@@ -295,7 +301,7 @@ namespace Songify_Slim.Views
                 if (profile != null)
                 {
                     // Safe: DisplayName can be null as well
-                    LblSpotifyAcc.Content = $"{Properties.Resources.sw_Integration_SpotifyLinked} {profile.DisplayName ?? "(unknown)"}";
+                    LblSpotifyAcc.Content = $"{Properties.Resources.window_settings_integration_spotify_linked} {profile.DisplayName ?? "(unknown)"}";
 
                     try
                     {
@@ -364,7 +370,7 @@ namespace Songify_Slim.Views
                 BtnLogInTwitch.Visibility = Visibility.Visible;
                 BtnLogInTwitchAlt.Visibility = Visibility.Visible;
                 LblMainExpiry.Visibility = Visibility.Collapsed;
-                Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
+                Icon icon = LoadSongifyIcon();
                 Bitmap bitmap = icon.ToBitmap();
                 MemoryStream ms = new();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -398,7 +404,7 @@ namespace Songify_Slim.Views
                 BtnLogInTwitchBot.Visibility = Visibility.Visible;
                 BtnLogInTwitchAltBot.Visibility = Visibility.Visible;
                 LblBotExpiry.Visibility = Visibility.Collapsed;
-                Icon icon = Properties.Resources.songify; // Retrieve from Resources.resx
+                Icon icon = LoadSongifyIcon();
                 Bitmap bitmap = icon.ToBitmap();
                 MemoryStream ms = new();
                 bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -621,10 +627,10 @@ namespace Songify_Slim.Views
                 // Shows a message box if the client id or secret is missing
                 MessageDialogResult result = await this.ShowMessageAsync(
                     "Error",
-                    Properties.Resources.s_FillClientIdAndSecret,
+                    Properties.Resources.common_fill_client_id_secret,
                     MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings
                     {
-                        AffirmativeButtonText = Properties.Resources.s_OK,
+                        AffirmativeButtonText = Properties.Resources.common_ok,
                         NegativeButtonText = "How to get Client ID and Secret"
                     });
                 if (result == MessageDialogResult.Negative)
@@ -771,7 +777,7 @@ namespace Songify_Slim.Views
 
             // Find the existing localization dictionary by checking for a known key.
             Collection<ResourceDictionary> dictionaries = Application.Current.Resources.MergedDictionaries;
-            ResourceDictionary localizationDict = dictionaries.FirstOrDefault(dict => dict.Contains("sw_tcSystem_lblLanguage"));
+            ResourceDictionary localizationDict = dictionaries.FirstOrDefault(dict => dict.Contains("window_settings_system_language"));
 
             if (localizationDict != null)
             {
@@ -787,17 +793,17 @@ namespace Songify_Slim.Views
 
             _supportedLanguages = new Dictionary<string, string>
             {
-                { "en", Application.Current.TryFindResource("lang_en") as string ?? "English"},
-                { "nl", Application.Current.TryFindResource("lang_nl") as string ?? "Dutch"},
-                { "de-DE", Application.Current.TryFindResource("lang_deDE") as string ??"German" },
-                { "ru-RU", Application.Current.TryFindResource("lang_ru") as string ??"Russian" },
-                { "es", Application.Current.TryFindResource("lang_es") as string ??"Spanish" },
-                { "fr", Application.Current.TryFindResource("lang_fr") as string ??"French" },
-                { "pl-PL", Application.Current.TryFindResource("lang_pl") as string ??"Polish" },
-                { "pt-PT", Application.Current.TryFindResource("lang_pt") as string ?? "Portuguese" },
-                { "it-IT", Application.Current.TryFindResource("lang_it") as string ??"Italian" },
-                { "pt-BR", Application.Current.TryFindResource("lang_br") as string ??"Brazilian Portuguese" },
-                { "be-BY", Application.Current.TryFindResource("lang_beBY") as string ??"Belarusian" }
+                { "en", Application.Current.TryFindResource("language_en") as string ?? "English"},
+                { "nl", Application.Current.TryFindResource("language_nl") as string ?? "Dutch"},
+                { "de-DE", Application.Current.TryFindResource("language_de") as string ??"German" },
+                { "ru-RU", Application.Current.TryFindResource("language_ru") as string ??"Russian" },
+                { "es", Application.Current.TryFindResource("language_es") as string ??"Spanish" },
+                { "fr", Application.Current.TryFindResource("language_fr") as string ??"French" },
+                { "pl-PL", Application.Current.TryFindResource("language_pl") as string ??"Polish" },
+                { "pt-PT", Application.Current.TryFindResource("language_pt") as string ?? "Portuguese" },
+                { "it-IT", Application.Current.TryFindResource("language_it") as string ??"Italian" },
+                { "pt-BR", Application.Current.TryFindResource("language_pt_br") as string ??"Brazilian Portuguese" },
+                { "be-BY", Application.Current.TryFindResource("language_be") as string ??"Belarusian" }
             };
             CbxLanguage.ItemsSource = _supportedLanguages;
             CbxLanguage.SelectedValue = selectedLanguageCode;
@@ -1206,8 +1212,8 @@ namespace Songify_Slim.Views
                 GlobalObjects.WebServer.StopWebServer();
 
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run
-                ? Properties.Resources.sw_WebServer_StopWebServer
-                : Properties.Resources.sw_WebServer_StartWebServer;
+                ? Properties.Resources.window_settings_webserver_stop
+                : Properties.Resources.window_settings_webserver_start;
         }
 
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -1579,13 +1585,13 @@ namespace Songify_Slim.Views
             Settings.DonationReminder = ((ToggleSwitch)sender).IsOn;
             if (!((ToggleSwitch)sender).IsOn) return;
 
-            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey 👋",
-                "No more donation messages!\n\nRemember, our app stays free and accessible thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ✨",
+            MessageDialogResult msgResult = await this.ShowMessageAsync("Hey ??",
+                "No more donation messages!\n\nRemember, our app stays free and accessible thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ?",
                 MessageDialogStyle.AffirmativeAndNegative,
                 new MetroDialogSettings
                 {
-                    AffirmativeButtonText = "Just Close 😞",
-                    NegativeButtonText = "Open Ko-Fi ❤️"
+                    AffirmativeButtonText = "Just Close ??",
+                    NegativeButtonText = "Open Ko-Fi ??"
                 });
             switch (msgResult)
             {

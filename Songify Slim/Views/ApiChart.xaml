@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Songify_Slim.Views.ApiChart"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -17,13 +17,13 @@
             Series="{Binding SeriesCollection}">
             <wpf:CartesianChart.AxisX>
                 <wpf:Axis
-                    Title="seconds (rolling)"
+                    Title="{DynamicResource window_apichart_seconds_rolling}"
                     MaxValue="59"
                     MinValue="0" />
             </wpf:CartesianChart.AxisX>
 
             <wpf:CartesianChart.AxisY>
-                <wpf:Axis Title="requests / min" MinValue="0">
+                <wpf:Axis Title="{DynamicResource window_apichart_requests_per_min}" MinValue="0">
                     <wpf:Axis.Sections>
                         <wpf:AxisSection
                             Stroke="Orange"

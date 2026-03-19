@@ -1,9 +1,8 @@
-﻿<mah:MetroWindow
+<mah:MetroWindow
     x:Class="Songify_Slim.Views.WindowConsole"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
@@ -11,7 +10,7 @@
     xmlns:oxy="http://oxyplot.org/wpf"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-    Title="{i18n:Loc menu.view.console}"
+    Title="{DynamicResource menu_view_console}"
     Width="285"
     Height="285"
     MinHeight="285"
@@ -44,7 +43,7 @@
             <Button
                 x:Name="BtnAttachDetach"
                 Click="BtnAttachDetach_OnClick"
-                ToolTip="Detach / Attach Console">
+                ToolTip="{DynamicResource window_console_detach_attach}">
                 <iconPacks:PackIconBootstrapIcons
                     x:Name="IconDetach"
                     Width="22"
@@ -54,7 +53,7 @@
             <Button
                 x:Name="BtnClearConsole"
                 Click="BtnClearConsole_OnClick"
-                ToolTip="Clear Console">
+                ToolTip="{DynamicResource window_console_clear}">
                 <iconPacks:PackIconBootstrapIcons
                     Width="22"
                     Height="22"
@@ -67,11 +66,11 @@
             <Button
                 x:Name="btnLog"
                 Click="BtnLog_OnClick"
-                Content="Log" />
+                Content="{DynamicResource window_console_log}" />
             <Button
                 x:Name="btnMetrics"
                 Click="BtnMetrics_OnClick"
-                Content="API Metrics" />
+                Content="{DynamicResource window_console_api_metrics}" />
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <TabControl>
@@ -105,7 +104,7 @@
                     Grid.Row="0"
                     HorizontalAlignment="Right"
                     Click="BtnToGraph_OnClick"
-                    Content="Graph" />
+                    Content="{DynamicResource window_console_graph}" />
                 <DataGrid
                     Grid.Row="1"
                     Margin="8"
@@ -117,11 +116,11 @@
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Key}"
-                            Header="Endpoint" />
+                            Header="{DynamicResource window_console_endpoint}" />
                         <DataGridTextColumn
                             Width="120"
                             Binding="{Binding RequestsPerMinute}"
-                            Header="Requests / min" />
+                            Header="{DynamicResource window_console_requests_per_min}" />
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
@@ -137,7 +136,7 @@
                     Grid.Row="0"
                     HorizontalAlignment="Right"
                     Click="BtnToMetrics_OnClick"
-                    Content="Metrics" />
+                    Content="{DynamicResource window_console_metrics}" />
                 <local:ApiChart Grid.Row="1" Margin="10" />
                 <!--<oxy:PlotView
                     Grid.Row="1"

@@ -1,4 +1,4 @@
-﻿using Songify_Slim.Models;
+using Songify_Slim.Models;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
 using System;
@@ -546,19 +546,19 @@ namespace Songify_Slim.Util.General
         {
             Dictionary<Enums.RefundCondition, string> refundConditionLabels = new()
             {
-                { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.Sw_Integration_RefundUserLevelLow },
-                { Enums.RefundCondition.UserBlocked, Properties.Resources.Sw_Integration_RefundUSerBlocked },
-                { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.Sw_Integration_RefundSpotifyNotConnected },
-                { Enums.RefundCondition.SongUnavailable, Properties.Resources.Sw_Integration_RefundSongNotAvailable },
-                { Enums.RefundCondition.SongBlocked, Properties.Resources.Sw_Integration_RefundSongBlocked },
-                { Enums.RefundCondition.ArtistBlocked, Properties.Resources.Sw_Integration_RefundArtistBlocked },
-                { Enums.RefundCondition.SongTooLong, Properties.Resources.Sw_Integration_RefundSongTooLong },
-                { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.Sw_Integration_RefundSongAlreadyInQueue },
-                { Enums.RefundCondition.QueueLimitReached, Properties.Resources.Sw_Integration_RefundQueueLimitReached },
-                { Enums.RefundCondition.NoSongFound, Properties.Resources.Sw_Integration_RefundNoSongFound },
-                { Enums.RefundCondition.SongAddedButError, Properties.Resources.Sw_Integration_RefundSongAdded },
-                { Enums.RefundCondition.TrackIsExplicit, Properties.Resources.Sw_Integration_RefundTrackIsExplicit },
-                { Enums.RefundCondition.OnSuccess, Properties.Resources.Sw_Integration_RefundAlways },
+                { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.window_settings_integration_refund_user_level_low },
+                { Enums.RefundCondition.UserBlocked, Properties.Resources.window_settings_integration_refund_user_blocked },
+                { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.window_settings_integration_refund_spotify_not_connected },
+                { Enums.RefundCondition.SongUnavailable, Properties.Resources.window_settings_integration_refund_song_not_available },
+                { Enums.RefundCondition.SongBlocked, Properties.Resources.window_settings_integration_refund_song_blocked },
+                { Enums.RefundCondition.ArtistBlocked, Properties.Resources.window_settings_integration_refund_artist_blocked },
+                { Enums.RefundCondition.SongTooLong, Properties.Resources.window_settings_integration_refund_song_too_long },
+                { Enums.RefundCondition.SongAlreadyInQueue, Properties.Resources.window_settings_integration_refund_song_already_in_queue },
+                { Enums.RefundCondition.QueueLimitReached, Properties.Resources.window_settings_integration_refund_queue_limit },
+                { Enums.RefundCondition.NoSongFound, Properties.Resources.window_settings_integration_refund_no_song_found },
+                { Enums.RefundCondition.SongAddedButError, Properties.Resources.window_settings_integration_refund_song_added },
+                { Enums.RefundCondition.TrackIsExplicit, Properties.Resources.window_settings_integration_refund_track_explicit },
+                { Enums.RefundCondition.OnSuccess, Properties.Resources.window_settings_integration_refund_always },
             };
 
             return refundConditionLabels.TryGetValue(condition, out string label)
