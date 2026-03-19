@@ -14,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
@@ -421,14 +422,15 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 1: before API call");
-
+                using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
                 playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",
                     () => client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest
                     {
                         Market = "from_token"
                     }),
-                    softLimitPerMinute: 60
+                    softLimitPerMinute: 60,
+                    cts.Token
                 );
 
                 Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 2: API call returned");
@@ -586,11 +588,12 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
                 await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                     new PlayerAddToQueueRequest(songUri)
                     {
                         DeviceId = Settings.SpotifyDeviceId
-                    }), softLimitPerMinute: SoftLimitPerminute);
+                    }, cts.Token), softLimitPerMinute: SoftLimitPerminute, ct: cts.Token);
                 return true;
             }
             catch (APIException ex)
@@ -630,7 +633,9 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id), SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id, cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception ex)
             {
@@ -656,11 +661,12 @@ namespace Songify_Slim.Util.Spotify
                 {
                     Limit = take
                 };
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
                 SearchResponse result = await ApiCallMeter.RunAsync(
                     "Search.Item",
-                    () => Client.Search.Item(request),
-                    SoftLimitPerminute);
+                    () => Client.Search.Item(request, cts.Token),
+                    SoftLimitPerminute, cts.Token);
 
                 List<FullTrack> tracks = result.Tracks.Items?.Take(take).ToList();
                 if (tracks == null || tracks.Count == 0)
@@ -757,9 +763,11 @@ namespace Songify_Slim.Util.Spotify
                 if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId) ||
                     Settings.SpotifyPlaylistId.PlaylistId == "-1")
                 {
+                    using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                     bool response = await ApiCallMeter.RunAsync("Library.SaveItems",
-                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest(uris)),
-                        softLimitPerMinute: SoftLimitPerminute);
+                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest(uris), cts.Token),
+                        softLimitPerMinute: SoftLimitPerminute, ct: cts.Token);
                     return !response; // keep your existing semantics: false = success, true = error
                 }
 
@@ -839,7 +847,9 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(), SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception)
             {
@@ -853,8 +863,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                return await ApiCallMeter.RunAsync("Player.GetQueue", () => Client.Player.GetQueue(),
-                    SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                return await ApiCallMeter.RunAsync("Player.GetQueue", () => Client.Player.GetQueue(cts.Token),
+                    SoftLimitPerminute, cts.Token);
             }
             catch (Exception)
             {
@@ -868,8 +880,10 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
-                await ApiCallMeter.RunAsync("Player.SkipPrevius", () => Client.Player.SkipPrevious(),
-                    SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                await ApiCallMeter.RunAsync("Player.SkipPrevious", () => Client.Player.SkipPrevious(cts.Token),
+                    SoftLimitPerminute, cts.Token);
             }
             catch (Exception)
             {
@@ -883,10 +897,12 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 await ApiCallMeter.RunAsync("Player.SeekTo", () => Client.Player.SeekTo(new PlayerSeekToRequest(0)
                 {
                     DeviceId = Settings.SpotifyDeviceId
-                }), SoftLimitPerminute);
+                }, cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception)
             {
@@ -900,8 +916,10 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(), SoftLimitPerminute);
+                    () => Client.Player.GetCurrentPlayback(cts.Token), SoftLimitPerminute, cts.Token);
 
                 bool isPlaying = playback is { IsPlaying: true };
 
@@ -917,7 +935,7 @@ namespace Songify_Slim.Util.Spotify
                             Client.Player.PausePlayback(new PlayerPausePlaybackRequest
                             {
                                 DeviceId = Settings.SpotifyDeviceId
-                            }), SoftLimitPerminute);
+                            }, cts.Token), SoftLimitPerminute, cts.Token);
                         return false;
 
                     case Play when !isPlaying:
@@ -925,7 +943,7 @@ namespace Songify_Slim.Util.Spotify
                             Client.Player.ResumePlayback(new PlayerResumePlaybackRequest
                             {
                                 DeviceId = Settings.SpotifyDeviceId
-                            }), SoftLimitPerminute);
+                            }, cts.Token), SoftLimitPerminute, cts.Token);
                         return true;
                     // ReSharper disable once UnreachableSwitchCaseDueToIntegerAnalysis
                     case Toggle:
@@ -951,8 +969,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 return await ApiCallMeter.RunAsync("Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(), SoftLimitPerminute);
+                    () => Client.Player.GetCurrentPlayback(cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception ex)
             {
@@ -967,8 +987,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 Paging<PlaylistTrack<IPlayableItem>> tracks = await ApiCallMeter.RunAsync("Playlists.GetItems",
-                    () => Client.Playlists.GetPlaylistItems(playlistId), SoftLimitPerminute);
+                    () => Client.Playlists.GetPlaylistItems(playlistId, cts.Token), SoftLimitPerminute, cts.Token);
                 return tracks;
             }
             catch (Exception ex)
@@ -984,8 +1006,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get",
-                    () => Client.Playlists.Get(spotifyPlaylistId), SoftLimitPerminute);
+                    () => Client.Playlists.Get(spotifyPlaylistId, cts.Token), SoftLimitPerminute, cts.Token);
                 return playlist;
             }
             catch (Exception ex)
@@ -1001,8 +1025,10 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
-                return await ApiCallMeter.RunAsync("Player.SetVolune",
-                    () => Client.Player.SetVolume(new PlayerVolumeRequest(vol)), SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                return await ApiCallMeter.RunAsync("Player.SetVolume",
+                    () => Client.Player.SetVolume(new PlayerVolumeRequest(vol), cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception ex)
             {
@@ -1018,8 +1044,10 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 5 };
-                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request),
-                    SoftLimitPerminute);
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request, cts.Token),
+                    SoftLimitPerminute, cts.Token);
                 return result.Artists.Items;
             }
             catch (Exception ex)
@@ -1029,15 +1057,25 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        public static async Task<PrivateUser> GetUser()
+        public static async Task<PrivateUser> GetUser(CancellationToken ct = default)
         {
             if (Client == null)
                 return null;
+
             try
             {
-                PrivateUser user = await ApiCallMeter.RunAsync("UserProfile.Current",
-                    () => Client.UserProfile.Current(), SoftLimitPerminute);
+                PrivateUser user = await ApiCallMeter.RunAsync(
+                    "UserProfile.Current",
+                    () => Client.UserProfile.Current(ct),
+                    SoftLimitPerminute,
+                    ct);
+
                 return user;
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.Log(LogLevel.Warning, LogSource.Spotify, "Spotify GetUser was cancelled.");
+                return null;
             }
             catch (Exception ex)
             {
@@ -1052,8 +1090,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 Paging<FullPlaylist> playlists = await ApiCallMeter.RunAsync("Playlists.CurrentUsers",
-                    () => Client.Playlists.CurrentUsers(), SoftLimitPerminute);
+                    () => Client.Playlists.CurrentUsers(cts.Token), SoftLimitPerminute, cts.Token);
                 return playlists;
             }
             catch (Exception ex)
@@ -1069,8 +1109,10 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 DeviceResponse x = await ApiCallMeter.RunAsync("Player.GetAvailableDevices",
-                    () => Client.Player.GetAvailableDevices(), SoftLimitPerminute);
+                    () => Client.Player.GetAvailableDevices(cts.Token), SoftLimitPerminute, cts.Token);
                 return x.Devices.FirstOrDefault(d => d.IsActive)?.Name;
             }
             catch (Exception e)
@@ -1088,10 +1130,12 @@ namespace Songify_Slim.Util.Spotify
 
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 CurrentlyPlayingContext playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",
-                    () => Client.Player.GetCurrentPlayback(),
-                    SoftLimitPerminute);
+                    () => Client.Player.GetCurrentPlayback(cts.Token),
+                    SoftLimitPerminute, cts.Token);
 
                 // No playlist context -> clear playlist cache and exit
                 string contextUri = playback?.Context.Uri;
@@ -1195,11 +1239,13 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 await ApiCallMeter.RunAsync("Player.SetShuffle", () => Client.Player.SetShuffle(
                     new PlayerShuffleRequest(b)
                     {
                         DeviceId = Settings.SpotifyDeviceId
-                    }), SoftLimitPerminute);
+                    }, cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception ex)
             {
@@ -1213,13 +1259,15 @@ namespace Songify_Slim.Util.Spotify
                 return;
             try
             {
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
                 await ApiCallMeter.RunAsync("Player.ResumePlayback", () => Client.Player.ResumePlayback(
                     new PlayerResumePlaybackRequest
                     {
                         DeviceId = Settings.SpotifyDeviceId,
                         ContextUri = playlistId.Contains("spotify:playlist") ? playlistId : "spotify:playlist:" + playlistId,
                         PositionMs = 0
-                    }), SoftLimitPerminute);
+                    }, cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception ex)
             {

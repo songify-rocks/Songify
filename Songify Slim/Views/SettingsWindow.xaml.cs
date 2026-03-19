@@ -91,7 +91,7 @@ namespace Songify_Slim.Views
 
         private static Icon LoadSongifyIcon()
         {
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Songify.Resources.songify.ico");
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Songify.Resources.songify.ico");
             return stream != null ? new Icon(stream) : null;
         }
 
@@ -124,7 +124,7 @@ namespace Songify_Slim.Views
             if (_isSettingControls)
                 return;
 
-            var sw = Stopwatch.StartNew();
+            Stopwatch sw = Stopwatch.StartNew();
 
             _isSettingControls = true;
             SetLoadingState(true);
@@ -194,7 +194,7 @@ namespace Songify_Slim.Views
 
         private void LogStep(Stopwatch sw, string step)
         {
-            Logger.Log(LogLevel.Debug, LogSource.Core,
+            Logger.Log(LogLevel.Info, LogSource.Core,
                 $"[SetControls] {step,-30} | {sw.ElapsedMilliseconds,6} ms");
         }
 
@@ -395,10 +395,10 @@ namespace Songify_Slim.Views
                 return;
 
             PrivateUser? profile = null;
-
             try
             {
-                profile = Settings.SpotifyProfile ?? await SpotifyApiHandler.GetUser();
+                using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                profile = Settings.SpotifyProfile ?? await SpotifyApiHandler.GetUser(cts.Token);
             }
             catch (Exception ex)
             {
@@ -496,7 +496,7 @@ namespace Songify_Slim.Views
                 BtnTwitchLogout.Visibility = Visibility.Visible;
                 BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
 
-                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 0, BtnLogInTwitchAltBot);
+                UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1, BtnLogInTwitchAltBot);
 
                 CbAccountSelection.Items.Add(new ComboBoxItem
                 {
@@ -510,9 +510,9 @@ namespace Songify_Slim.Views
                 LblBotExpiry.Visibility = Visibility.Collapsed;
                 BtnTwitchBotLogout.Visibility = Visibility.Collapsed;
                 BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
-                LblTwitchBotName.Content = "Main Account:";
+                LblTwitchBotName.Content = "Bot Account:";
 
-                ImgTwitchProfile.ImageSource = GetDefaultSongifyProfileImage();
+                ImgTwitchBotProfile.ImageSource = GetDefaultSongifyProfileImage();
             }
         }
 
@@ -521,21 +521,14 @@ namespace Songify_Slim.Views
             if (_defaultSongifyProfileImage != null)
                 return _defaultSongifyProfileImage;
 
-            using Icon icon = LoadSongifyIcon();
-            using Bitmap bitmap = icon.ToBitmap();
-            using MemoryStream ms = new();
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri("pack://application:,,,/Resources/songify.ico", UriKind.Absolute);
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.EndInit();
+            bitmap.Freeze();
 
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            ms.Position = 0;
-
-            BitmapImage bitmapImage = new();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = ms;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-
-            _defaultSongifyProfileImage = bitmapImage;
+            _defaultSongifyProfileImage = bitmap;
             return _defaultSongifyProfileImage;
         }
 
@@ -1929,7 +1922,7 @@ namespace Songify_Slim.Views
                     if (SpotifyApiHandler.Client == null) return;
                     try
                     {
-                        GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.GetUser();
+                        GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.GetUser(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
                         if (GlobalObjects.SpotifyProfile == null) return;
 
                         CbSpotifyPlaylist.Items.Clear();
