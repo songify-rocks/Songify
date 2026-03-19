@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
@@ -154,9 +154,9 @@ namespace Songify_Slim.Views
         private async void BtnClearQueue_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.s_Warning,
-                Properties.Resources.mw_clearQueueDisclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.msgbx_Yes, NegativeButtonText = Properties.Resources.msgbx_No });
+            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.common_warning,
+                Properties.Resources.window_queue_clear_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.dialog_yes, NegativeButtonText = Properties.Resources.dialog_no });
             if (msgResult == MessageDialogResult.Affirmative)
             {
                 //GlobalObjects.ReqList.Clear();

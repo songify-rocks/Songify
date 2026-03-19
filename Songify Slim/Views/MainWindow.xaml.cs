@@ -1,4 +1,4 @@
-ï»¿using AutoUpdaterDotNET;
+using AutoUpdaterDotNET;
 using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Songify_Slim.Models;
@@ -443,7 +443,7 @@ namespace Songify_Slim.Views
                     MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
                     {
                         AffirmativeButtonText = "Open Guide",
-                        NegativeButtonText = Properties.Resources.s_OK,
+                        NegativeButtonText = Properties.Resources.common_ok,
                     }
                 );
                 if (result == MessageDialogResult.Affirmative)
@@ -769,8 +769,8 @@ namespace Songify_Slim.Views
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
-            //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright Â©" : $"Songify v{GlobalObjects.AppVersion} Copyright Â©";
-            LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright Â©" : $"Songify v{GlobalObjects.AppVersion} Copyright Â©";
+            //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             TbFontSize.Text = Settings.Fontsize.ToString();
@@ -782,7 +782,7 @@ namespace Songify_Slim.Views
             try
             {
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
-                    TxtblockLiveoutput.Text = Properties.Resources.mw_LiveOutputLinkSpotify;
+                    TxtblockLiveoutput.Text = Properties.Resources.window_main_link_spotify;
                 else
                     await SpotifyApiHandler.Auth();
 
@@ -1093,9 +1093,9 @@ namespace Songify_Slim.Views
         private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.s_Warning,
-                Properties.Resources.mw_clearQueueDisclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.msgbx_Yes, NegativeButtonText = Properties.Resources.msgbx_No });
+            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.common_warning,
+                Properties.Resources.window_queue_clear_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
+                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.dialog_yes, NegativeButtonText = Properties.Resources.dialog_no });
             if (msgResult != MessageDialogResult.Affirmative) return;
             //GlobalObjects.ReqList.Clear();
             //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
@@ -1542,7 +1542,7 @@ namespace Songify_Slim.Views
                         rows =
                         [
                             ("Status", IconTwitchBot.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
-                            ("Channel", Settings.TwitchUser.DisplayName ?? "â€”"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
                         ];
                         break;
 
@@ -1553,7 +1553,7 @@ namespace Songify_Slim.Views
                         rows =
                         [
                             ("Status", IconTwitchApi.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
-                            ("Channel", Settings.TwitchUser.DisplayName ?? "â€”"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
                             ("EventSubs", string.Join("\n", subs.Where(s=> s.Status == "enabled").Select(s => s.Type)))
                         ];
                         break;

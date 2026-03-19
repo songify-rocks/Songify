@@ -1,19 +1,18 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.WindowQueue"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    Title="{DynamicResource WinTitle_Queue}"
+    Title="{DynamicResource window_queue_title}"
     Width="600"
     Height="444"
-    d:Title="{i18n:Loc WinTitle_Queue}"
+    d:Title="{DynamicResource window_queue_title}"
     Loaded="MetroWindow_Loaded"
     ResizeMode="CanResizeWithGrip"
     WindowStartupLocation="Manual"
@@ -57,7 +56,7 @@
     </controls:MetroWindow.RightWindowCommands>
     <Grid>
         <TabControl>
-            <TabItem Header="Queue">
+            <TabItem Header="{DynamicResource window_queue_tab_queue}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -78,8 +77,8 @@
                             <TextBlock
                                 Margin="6,0"
                                 VerticalAlignment="Center"
-                                d:Text="{i18n:Loc WinQueue_NowPlaying}"
-                                Text="{DynamicResource WinQueue_NowPlaying}" />
+                                d:Text="{DynamicResource window_queue_now_playing}"
+                                Text="{DynamicResource window_queue_now_playing}" />
                         </Border>
                         <Border
                             Width="auto"
@@ -90,8 +89,8 @@
                             <TextBlock
                                 Margin="6,0"
                                 VerticalAlignment="Center"
-                                d:Text="{i18n:Loc WinQueue_SongRequest}"
-                                Text="{DynamicResource WinQueue_SongRequest}" />
+                                d:Text="{DynamicResource window_queue_song_request}"
+                                Text="{DynamicResource window_queue_song_request}" />
                         </Border>
                         <Border
                             Width="auto"
@@ -102,8 +101,8 @@
                             <TextBlock
                                 Margin="6,0"
                                 VerticalAlignment="Center"
-                                d:Text="{i18n:Loc WinQueue_Skipping}"
-                                Text="{DynamicResource WinQueue_Skipping}" />
+                                d:Text="{DynamicResource window_queue_skipping}"
+                                Text="{DynamicResource window_queue_skipping}" />
                         </Border>
                     </StackPanel>
                     <StackPanel
@@ -118,7 +117,7 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Click="BtnClearQueue_Click"
-                            Content="{i18n:Loc mw_menu_Queue_Clear}" />
+                            Content="{DynamicResource menu_queue_clear}" />
                         <Expander
                             x:Name="DropDownCols"
                             Width="150"
@@ -126,50 +125,50 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Panel.ZIndex="6"
-                            d:Header="{DynamicResource s_Columns}"
+                            d:Header="{DynamicResource common_columns}"
                             Background="{StaticResource MahApps.Brushes.Control.Background}"
-                            Header="{DynamicResource s_Columns}">
+                            Header="{DynamicResource common_columns}">
                             <StackPanel x:Name="stackCols" Orientation="Vertical">
                                 <CheckBox
                                     x:Name="CheckColQueueID"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc Window_Queue_QueueId}"
+                                    Content="{DynamicResource window_queue_queue_id}"
                                     Tag="0"
                                     Unchecked="ColVisChecked" />
                                 <CheckBox
                                     x:Name="CheckColArtist"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc bw_cbArtist}"
+                                    Content="{DynamicResource window_blocklist_artist}"
                                     Tag="1"
                                     Unchecked="ColVisChecked" />
                                 <CheckBox
                                     x:Name="CheckColTitle"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc crw_RewardTitle}"
+                                    Content="{DynamicResource window_createreward_title}"
                                     Tag="2"
                                     Unchecked="ColVisChecked" />
                                 <CheckBox
                                     x:Name="CheckColLength"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc s_Length}"
+                                    Content="{DynamicResource common_length}"
                                     Tag="3"
                                     Unchecked="ColVisChecked" />
                                 <CheckBox
                                     x:Name="CheckColRequester"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc s_Requester}"
+                                    Content="{DynamicResource common_requester}"
                                     Tag="4"
                                     Unchecked="ColVisChecked" />
                                 <CheckBox
                                     x:Name="CheckColAction"
                                     Margin="3"
                                     Checked="ColVisChecked"
-                                    Content="{i18n:Loc WinQueue_Actions}"
+                                    Content="{DynamicResource window_queue_actions}"
                                     Tag="5"
                                     Unchecked="ColVisChecked" />
                             </StackPanel>
@@ -235,7 +234,7 @@
                         </DataGrid.Resources>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
+                                <MenuItem Click="DgvItemDelete_Click" Header="{DynamicResource common_delete}" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
@@ -243,45 +242,45 @@
                                 x:Name="ColQueueId"
                                 Width="*"
                                 Binding="{Binding Path=Queueid}"
-                                Header="Queue ID"
+                                Header="{DynamicResource window_queue_queue_id}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 x:Name="ColArtist"
                                 Width="*"
-                                d:Header="{i18n:Loc bw_cbArtist}"
+                                d:Header="{DynamicResource window_blocklist_artist}"
                                 Binding="{Binding Path=Artist}"
-                                Header="{DynamicResource bw_cbArtist}"
+                                Header="{DynamicResource window_blocklist_artist}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 x:Name="ColTitle"
                                 Width="*"
-                                d:Header="{i18n:Loc crw_RewardTitle}"
+                                d:Header="{DynamicResource window_createreward_title}"
                                 Binding="{Binding Path=Title}"
-                                Header="{DynamicResource crw_RewardTitle}"
+                                Header="{DynamicResource window_createreward_title}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 x:Name="ColLength"
                                 Width="*"
-                                d:Header="{i18n:Loc s_Length}"
+                                d:Header="{DynamicResource common_length}"
                                 Binding="{Binding Path=Length}"
-                                Header="{DynamicResource s_Length}"
+                                Header="{DynamicResource common_length}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 x:Name="ColRequester"
                                 Width="*"
-                                d:Header="{i18n:Loc s_Requester}"
+                                d:Header="{DynamicResource common_requester}"
                                 Binding="{Binding Path=Requester}"
-                                Header="{DynamicResource s_Requester}"
+                                Header="{DynamicResource common_requester}"
                                 Visibility="Visible" />
                             <DataGridTemplateColumn
                                 x:Name="colDeleteButton"
-                                d:Header="{i18n:Loc WinQueue_Actions}"
-                                Header="{DynamicResource WinQueue_Actions}"
+                                d:Header="{DynamicResource window_queue_actions}"
+                                Header="{DynamicResource window_queue_actions}"
                                 Visibility="Visible">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Click="DgvButtonSkip_Click" ToolTip="Skip Song">
+                                            <Button Click="DgvButtonSkip_Click" ToolTip="{DynamicResource window_queue_skip_song}">
                                                 <Button.Style>
                                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
                                                         <Style.Triggers>
@@ -304,7 +303,7 @@
                                             <Button
                                                 Click="DgvButtonAddToFav_Click"
                                                 Tag="like"
-                                                ToolTip="Add to favorite playlist">
+                                                ToolTip="{DynamicResource window_queue_add_to_favorite_playlist}">
                                                 <Button.Style>
                                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
                                                         <Setter Property="IsEnabled" Value="False" />
@@ -360,7 +359,7 @@
                             Padding="0"
                             Click="BtnPlayerControlsVisibility_OnClick"
                             Style="{StaticResource MahApps.Styles.Button.WindowCommands}"
-                            ToolTip="Show / Hide Spotify Controls">
+                            ToolTip="{DynamicResource window_queue_show_hide_spotify_controls}">
                             <Button.Content>
                                 <iconPacks:BootstrapIcons Kind="ChevronDown" />
                             </Button.Content>
@@ -424,7 +423,7 @@
                     </Border>
                 </Grid>
             </TabItem>
-            <TabItem Header="Requestlist">
+            <TabItem Header="{DynamicResource window_queue_tab_requestlist}">
                 <Grid Margin="6">
                     <DataGrid
                         x:Name="DgvReqlist"
@@ -442,35 +441,35 @@
                             <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Path=Trackid}"
-                                Header="Track ID"
+                                Header="{DynamicResource window_queue_track_id}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Path=Artist}"
-                                Header="{DynamicResource bw_cbArtist}"
+                                Header="{DynamicResource window_blocklist_artist}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Path=Title}"
-                                Header="title"
+                                Header="{DynamicResource common_title}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Path=Played}"
-                                Header="Played"
+                                Header="{DynamicResource window_queue_played}"
                                 Visibility="Visible" />
                             <DataGridTextColumn
                                 Width="*"
                                 Binding="{Binding Path=Requester}"
-                                Header="Requester"
+                                Header="{DynamicResource common_requester}"
                                 Visibility="Visible" />
                             <DataGridTemplateColumn
-                                d:Header="{i18n:Loc WinQueue_Actions}"
-                                Header="{DynamicResource WinQueue_Actions}"
+                                d:Header="{DynamicResource window_queue_actions}"
+                                Header="{DynamicResource window_queue_actions}"
                                 Visibility="Visible">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Click="ReqlistDelete_OnClick" ToolTip="Delete">
+                                        <Button Click="ReqlistDelete_OnClick" ToolTip="{DynamicResource common_delete}">
                                             <Button.Style>
                                                 <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button" />
                                             </Button.Style>
@@ -485,7 +484,7 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Skiplist" Visibility="Collapsed" />
+            <TabItem Header="{DynamicResource window_queue_tab_skiplist}" Visibility="Collapsed" />
         </TabControl>
 
     </Grid>

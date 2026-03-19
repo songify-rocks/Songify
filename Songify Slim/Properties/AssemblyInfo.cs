@@ -51,6 +51,6 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.6.289.1634")]
 [assembly: AssemblyVersion("1.8.4.0")]
-[assembly: AssemblyFileVersion("1.8.4.0")]
+[assembly: AssemblyFileVersion("1.8.5.0")]
 [assembly: NeutralResourcesLanguage("en")]
 [assembly: Guid("442379e3-32d8-42d1-ab09-cba229672453")]

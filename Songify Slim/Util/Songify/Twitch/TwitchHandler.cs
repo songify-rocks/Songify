@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls.Dialogs;
 using MahApps.Metro.IconPacks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -3035,7 +3035,7 @@ public static class TwitchHandler
 
         //Fix for russia where Spotify is not available
         if (track.Restrictions is { Count: > 0 })
-            return Resources.s_TrackAdded;
+            return Resources.common_track_added;
 
         try
         {

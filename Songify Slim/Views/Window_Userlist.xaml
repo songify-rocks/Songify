@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.WindowUserlist"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
-    Title="Viewerlist"
+    Title="{DynamicResource window_userlist_title}"
     Width="339"
     Height="328"
     mc:Ignorable="d">
@@ -46,7 +46,7 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
-                <DataGridTemplateColumn Width="auto" Header="SR">
+                <DataGridTemplateColumn Width="auto" Header="{DynamicResource window_userlist_sr}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -68,7 +68,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Width="*" Header="Name">
+                <DataGridTemplateColumn Width="*" Header="{DynamicResource window_userlist_name}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel
@@ -109,11 +109,11 @@
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding ReadableUserLevel, Mode=OneWay}"
-                    Header="User levels" />
+                    Header="{DynamicResource window_userlist_user_levels}" />
                 <DataGridTemplateColumn
                     Width="auto"
                     MinWidth="70"
-                    Header="Sub Tier">
+                    Header="{DynamicResource window_userlist_sub_tier}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">

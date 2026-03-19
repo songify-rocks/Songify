@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.HistoryWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,8 +7,7 @@
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
-    xmlns:i18n="clr-namespace:Songify_Slim.Util.i18n"
-    Title="{i18n:Loc WinTitle_History}"
+    Title="{DynamicResource window_history_title}"
     Width="588"
     Height="247.9"
     Closed="MetroWindow_Closed"
@@ -29,7 +28,7 @@
             <Button
                 x:Name="Btn_CpyHistoryURL"
                 Click="Btn_CpyHistoryURL_Click"
-                ToolTip="Copy the history URL.">
+                ToolTip="{DynamicResource window_history_copy_url_tooltip}">
                 <StackPanel Orientation="Horizontal">
                     <iconPacks:PackIconMaterial
                         HorizontalAlignment="Center"
@@ -56,18 +55,18 @@
             SelectionMode="Single">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="DgvItemDelete_Click" Header="Delete" />
+                    <MenuItem Click="DgvItemDelete_Click" Header="{DynamicResource common_delete}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Binding="{Binding Path=Time}"
-                    Header="{i18n:Loc s_Time}"
+                    Header="{DynamicResource common_time}"
                     IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="*"
                     Binding="{Binding Path=Name}"
-                    Header="{i18n:Loc s_Name}"
+                    Header="{DynamicResource common_name}"
                     IsReadOnly="True" />
             </DataGrid.Columns>
         </DataGrid>
@@ -80,7 +79,7 @@
             SelectionChanged="LbxHistory_SelectionChanged">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Click="MenuItemDelete_Click" Header="Delete" />
+                    <MenuItem Click="MenuItemDelete_Click" Header="{DynamicResource common_delete}" />
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

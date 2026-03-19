@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Songify_Slim.UserControls.PsaControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -58,7 +58,7 @@
                     Margin="6,0"
                     Click="BtnRead_OnClick"
                     Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
-                    ToolTip="Mark As Read">
+                    ToolTip="{DynamicResource uc_psa_mark_as_read}">
                     <Button.Content>
                         <iconPacks:Material
                             x:Name="badgeIcon"

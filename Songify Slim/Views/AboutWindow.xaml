@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+<controls:MetroWindow
     x:Class="Songify_Slim.Views.AboutWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="About"
+    Title="{DynamicResource window_about_title}"
     Width="710"
     Height="490"
     MaxWidth="710"
@@ -21,7 +21,7 @@
         <Label
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
-            Content="Third Party Libraries" />
+            Content="{DynamicResource window_about_third_party}" />
 
         <ScrollViewer
             Grid.Column="0"
@@ -32,12 +32,12 @@
                 <TextBlock
                     Margin="0,0,0,8"
                     FontWeight="SemiBold"
-                    Text="Third-Party Libraries Licenses" />
+                    Text="{DynamicResource window_about_licenses}" />
 
-                <TextBlock Text="Songify Slim makes use of the following open-source libraries." TextWrapping="Wrap" />
+                <TextBlock Text="{DynamicResource window_about_libraries_intro}" TextWrapping="Wrap" />
                 <TextBlock
                     Margin="0,0,0,12"
-                    Text="All listed libraries remain the property of their respective authors and are used in accordance with their licenses."
+                    Text="{DynamicResource window_about_license_notice}"
                     TextWrapping="Wrap" />
 
                 <Separator Margin="0,0,0,12" />
@@ -49,7 +49,7 @@
                                 <TextBlock FontWeight="SemiBold" Text="{Binding Name}" />
 
                                 <TextBlock>
-                                    <Run Text="License: " />
+                                    <Run Text="{DynamicResource window_about_license_label}" />
                                     <Run Text="{Binding License}" />
                                 </TextBlock>
 
@@ -71,10 +71,9 @@
                 Margin="30,6"
                 TextAlignment="Center"
                 TextWrapping="Wrap">
-                <Run Text="This Project is a free time project and licensed under the GNU General Public License v3.0." />
+                <Run Text="{DynamicResource window_about_gpl_notice}" />
                 <LineBreak /><Run /><LineBreak />
-                <Run Text="If you want to support this project feel free to" />
-                <Run Text="hang out with us on Discord!" />
+                <Run Text="{DynamicResource window_about_discord_invite}" />
             </TextBlock>
             <StackPanel
                 HorizontalAlignment="Center"
@@ -83,7 +82,7 @@
                 <Label
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Content="Thank You"
+                    Content="{DynamicResource window_about_thank_you}"
                     FontWeight="Bold" />
                 <iconPacks:PackIconBootstrapIcons
                     HorizontalAlignment="Center"
