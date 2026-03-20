@@ -324,20 +324,11 @@ namespace Songify_Slim.Util.Spotify
             {
                 try
                 {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is Window_Settings ws)
-                            await ws.SetControls();
-                    }
-
                     GlobalObjects.SpotifyProfile = await GetUser();
                     Settings.SpotifyProfile = GlobalObjects.SpotifyProfile;
 
                     Logger.Info(LogSource.Spotify, $"Connected Account: {GlobalObjects.SpotifyProfile.DisplayName}");
                     Logger.Info(LogSource.Spotify, $"Account Type: {GlobalObjects.SpotifyProfile.Product}");
-
-                    if (app.MainWindow is MainWindow mw)
-                        mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
 
                     if (GlobalObjects.SpotifyProfile.Product != "premium")
                     {
@@ -349,6 +340,21 @@ namespace Songify_Slim.Util.Spotify
                     }
 
                     ApiCallMeter.ReleaseRateLimit();
+
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        switch (window)
+                        {
+                            case MainWindow mw:
+                                mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
+                                mw.TxtblockLiveoutput.Text = "Spotify linked! Play some music :)";
+                                break;
+
+                            case Window_Settings ws:
+                                await ws.SetControls();
+                                break;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
