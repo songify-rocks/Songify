@@ -422,13 +422,13 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 1: before API call");
-                using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
                 playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",
                     () => client.Player.GetCurrentPlayback(new PlayerCurrentPlaybackRequest
                     {
                         Market = "from_token"
-                    }),
+                    }, cts.Token),
                     softLimitPerMinute: 60,
                     cts.Token
                 );

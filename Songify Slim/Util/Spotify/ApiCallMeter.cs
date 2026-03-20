@@ -136,10 +136,9 @@ public static class ApiCallMeter
             }
             catch (APIException ex)
             {
-
                 if (key == "Playlists.Get" && ex.Message == "Resource not found")
                     Logger.Error(LogSource.Spotify, $"Spotify API: Can't get public playlist Info");
-                else 
+                else
                     Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {ex.Message}");
                 break;
             }

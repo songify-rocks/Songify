@@ -598,8 +598,9 @@ public static class TwitchHandler
 
     public static bool RefreshSelectedChatAccount()
     {
-        if ((Settings.TwitchUser != null &&
-            string.Equals(Settings.TwAcc, Settings.TwitchUser.Login, StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(Settings.TwAcc)))
+        if (Settings.TwitchUser != null &&
+            (string.Equals(Settings.TwAcc, Settings.TwitchUser.Login, StringComparison.OrdinalIgnoreCase) ||
+             string.IsNullOrEmpty(Settings.TwAcc)))
         {
             Settings.TwOAuth = $"oauth:{Settings.TwitchAccessToken}";
             Settings.TwitchChatAccount = new TwitchChatAccount
@@ -705,7 +706,6 @@ public static class TwitchHandler
                     _pendingOAuthState = null;
                     _pendingOAuthAccount = null;
                     await RefreshSettingsWindowAsync();
-
                 }
             };
 

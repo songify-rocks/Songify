@@ -493,8 +493,8 @@ namespace Songify_Slim.Views
         {
             if (Settings.TwitchBotUser != null)
             {
-                BtnTwitchLogout.Visibility = Visibility.Visible;
-                BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
+                BtnTwitchBotLogout.Visibility = Visibility.Visible;
+                BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
 
                 UpdateTwitchUserUi(Settings.TwitchBotUser, ImgTwitchBotProfile, LblTwitchBotName, BtnLogInTwitchBot, 1, BtnLogInTwitchAltBot);
 
@@ -1922,7 +1922,11 @@ namespace Songify_Slim.Views
                     if (SpotifyApiHandler.Client == null) return;
                     try
                     {
-                        GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.GetUser(new CancellationTokenSource(TimeSpan.FromSeconds(5)).Token);
+                        using (CancellationTokenSource cts = new(TimeSpan.FromSeconds(5)))
+                        {
+                            GlobalObjects.SpotifyProfile ??= await SpotifyApiHandler.GetUser(cts.Token);
+                        }
+
                         if (GlobalObjects.SpotifyProfile == null) return;
 
                         CbSpotifyPlaylist.Items.Clear();
