@@ -83,9 +83,10 @@ Translations are managed through [Weblate](https://translate.songify.rocks/proje
 
 Ready to take your stream to the next level? Check out our guides and FAQ to get started:
 
-- [Guide & FAQ](https://github.com/songify-rocks/Songify/wiki)  
-  - [Setting up song requests](https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests)  
-  - [Setting up the widget](https://github.com/songify-rocks/Songify/wiki/Setting-up-the-widget)  
+- [Wiki (GitHub)](https://github.com/songify-rocks/Songify/wiki) — maintained from [`docs/wiki`](docs/wiki) in this repo  
+  - [Getting started](https://github.com/songify-rocks/Songify/wiki/Getting-started)  
+  - [Song requests](https://github.com/songify-rocks/Songify/wiki/Song-requests)  
+  - [Widget and OBS](https://github.com/songify-rocks/Songify/wiki/Widget-and-OBS)  
   - [Troubleshooting](https://github.com/songify-rocks/Songify/wiki/Troubleshooting)  
 
 Don’t let your music be an afterthought—make it the centerpiece of your stream with Songify!
