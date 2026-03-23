@@ -347,7 +347,8 @@ namespace Songify_Slim.Util.Spotify
                         {
                             case MainWindow mw:
                                 mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
-                                mw.TxtblockLiveoutput.Text = "Spotify linked! Play some music :)";
+                                if (mw.TxtblockLiveoutput.Text == "Artist - Title")
+                                    mw.TxtblockLiveoutput.Text = "Play some music :)";
                                 break;
 
                             case Window_Settings ws:
