@@ -1,7 +1,7 @@
 **[Home](Home)**
 
 **Setup**
-- [Getting started](Getting-started)
+- [Getting started](Getting-Started)
 - [Settings reference](Settings-reference)
 - [Spotify setup](Spotify-setup)
 - [Twitch setup](Twitch-setup)

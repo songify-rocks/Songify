@@ -58,4 +58,4 @@ You can add a CI job that pushes to `Songify.wiki` using a stored secret (PAT wi
 
 ## Wiki file names
 
-GitHub maps `Home.md` to the wiki home page. Other pages use the filename without extension in URLs, e.g. `Getting-started.md` → `…/wiki/Getting-started`.
+GitHub maps `Home.md` to the wiki home page. Other pages use the filename without extension in URLs, e.g. `Getting-Started.md` → `…/wiki/Getting-Started`.

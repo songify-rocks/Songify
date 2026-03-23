@@ -12,7 +12,7 @@ The in-app version is shown in the main window. Release history: [GitHub Release
 
 ## Documentation
 
-1. [Getting started](Getting-started)
+1. [Getting started](Getting-Started)
 2. [Settings reference](Settings-reference)
 3. [Spotify setup](Spotify-setup)
 4. [Twitch setup](Twitch-setup)
