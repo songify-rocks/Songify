@@ -3337,6 +3337,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bypass live/TestMode gating.
+        /// </summary>
+        public static string window_settings_spotify_bypass_fetch_gate {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_bypass_fetch_gate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When enabled, Songify fetches Spotify playback even when you are not live and Test Mode is off. May increase Spotify API usage and rate-limit risk..
+        /// </summary>
+        public static string window_settings_spotify_bypass_fetch_gate_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_bypass_fetch_gate_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spotify fetch rate (seconds).
         /// </summary>
         public static string window_settings_spotify_fetch_rate {

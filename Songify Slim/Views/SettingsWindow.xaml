@@ -2494,6 +2494,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <DockPanel
                             x:Name="PnlSpotify"
@@ -2692,6 +2693,27 @@
                             ParsingNumberStyle="Integer"
                             ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                             Value="1" />
+                        <StackPanel
+                            Grid.Row="8"
+                            HorizontalAlignment="Right"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Width="223"
+                                Padding="0,5,5,5"
+                                VerticalAlignment="Center"
+                                d:Text="{DynamicResource window_settings_spotify_bypass_fetch_gate}"
+                                Text="{DynamicResource window_settings_spotify_bypass_fetch_gate}"
+                                TextWrapping="Wrap"
+                                ToolTip="{DynamicResource window_settings_spotify_bypass_fetch_gate_tooltip}" />
+                            <controls:ToggleSwitch
+                                x:Name="TglBypassSpotifyFetchGate"
+                                Width="46"
+                                MinWidth="46"
+                                VerticalAlignment="Center"
+                                OffContent=""
+                                OnContent=""
+                                Toggled="TglBypassSpotifyFetchGate_OnToggled" />
+                        </StackPanel>
                     </Grid>
                 </Border>
             </TabItem>

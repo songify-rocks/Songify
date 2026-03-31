@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
@@ -886,6 +886,10 @@ namespace Songify_Slim.Util.Configuration
         public bool SkipOnlyNonSrSongs { get; set; } = false;
         public bool SrForBits { get; set; } = false;
         public int SpotifyFetchRate { get; set; } = 2;
+        /// <summary>
+        /// When true, Spotify now-playing fetch runs even when not live on Twitch and TestMode is off.
+        /// </summary>
+        public bool BypassSpotifyFetchGate { get; set; }
         public bool DebugLogging { get; set; } = false;
         public string YoutubeApiKey { get; set; }
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();

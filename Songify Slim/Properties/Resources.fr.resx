@@ -1440,4 +1440,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Mot-clé Bits (le SR ne sera déclenché que si ce mot-clé figure dans le message bits)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Contourner le contrôle de mode direct/test</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Lorsqu'elle est activée, Songify récupère les données de lecture Spotify même lorsque vous n'êtes pas en direct et que le mode test est désactivé. Cela peut augmenter l'utilisation de l'API Spotify et le risque de dépassement de la limite de requêtes.</value>
+  </data>
 </root>

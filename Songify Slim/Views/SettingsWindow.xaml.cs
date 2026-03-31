@@ -313,6 +313,7 @@ namespace Songify_Slim.Views
             TglAddToPlaylist.IsOn = Settings.AddSrToPlaylist;
             Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
+            TglBypassSpotifyFetchGate.IsOn = Settings.BypassSpotifyFetchGate;
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
@@ -1902,6 +1903,11 @@ namespace Songify_Slim.Views
         private void TglAddToPlaylist_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.AddSrToPlaylist = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void TglBypassSpotifyFetchGate_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.BypassSpotifyFetchGate = ((ToggleSwitch)sender).IsOn;
         }
 
         private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)

@@ -1621,4 +1621,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Ключавое слова Bits (Запыт будзе спрацоўваць толькі ў тым выпадку, калі гэта ключавое слова ёсць у паведамленні Bits)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Абыход стробавання ў рэжыме рэальнага часу/тэставання</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Калі ўключана, Songify атрымлівае прайграванне Spotify, нават калі вы не вядзеце прамую трансляцыю і тэставы рэжым выключаны. Гэта можа павялічыць выкарыстанне Spotify API і рызыку абмежавання хуткасці.</value>
+  </data>
 </root>

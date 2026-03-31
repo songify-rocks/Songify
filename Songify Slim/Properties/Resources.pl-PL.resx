@@ -1439,4 +1439,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Słowo kluczowe bitów (SR zostanie uruchomione tylko wtedy, gdy to słowo kluczowe znajdzie się w wiadomości bitów)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Omiń bramkowanie na żywo/w trybie testowym</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Po włączeniu, Songify pobiera odtwarzanie ze Spotify, nawet gdy nie jesteś na żywo i tryb testowy jest wyłączony. Może to zwiększyć wykorzystanie interfejsu API Spotify i ryzyko przekroczenia limitu przepustowości.</value>
+  </data>
 </root>

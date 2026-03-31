@@ -1439,4 +1439,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Parola chiave Bits (SR verrà attivato solo se tale parola chiave è presente nel messaggio bits)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Bypassare il gating in modalità live/test</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Quando è attivo, Songify riproduce i contenuti di Spotify anche quando non sei in diretta e la Modalità di test è disattivata. Ciò potrebbe aumentare l'utilizzo delle API di Spotify e il rischio di superare i limiti di frequenza.</value>
+  </data>
 </root>

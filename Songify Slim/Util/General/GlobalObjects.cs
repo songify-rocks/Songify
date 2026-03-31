@@ -84,6 +84,7 @@ namespace Songify_Slim.Util.General
 
         public static SimpleTwitchUser FullRequester { get; set; }
         public static PollItem CurrentSkipPoll { get; set; }
+        public static bool TestMode { get; set; }
 
         public static T FindChild<T>(DependencyObject parent, string childName)
             where T : DependencyObject
