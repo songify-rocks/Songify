@@ -510,9 +510,10 @@ namespace Songify_Slim.Util.Configuration
 
                 StringContent content = new(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
 
-                string url = $"{GlobalObjects.ApiUrl}/user_settings?token={apiToken}";
+                string url = $"{GlobalObjects.ApiUrl}/user_settings";
 
                 using HttpClient http = new();
+                http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
                 HttpResponseMessage response = await http.PostAsync(url, content);
                 switch (response.StatusCode)
                 {
@@ -560,9 +561,11 @@ namespace Songify_Slim.Util.Configuration
         {
             try
             {
-                string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}&token={apiToken}";
+                string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}";
 
                 using HttpClient http = new();
+                http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
+
                 HttpResponseMessage response = await http.GetAsync(url);
 
                 switch (response.StatusCode)
