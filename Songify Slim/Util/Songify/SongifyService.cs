@@ -12,22 +12,10 @@ namespace Songify_Slim.Util.Songify
 {
     internal class SongifyService
     {
-        public static async Task UploadSong(string currSong, string coverUrl = null, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other, string artist = "", string title = "", string requester = "")
+        public static async Task UploadSong(dynamic payload)
         {
             try
             {
-                dynamic payload = new
-                {
-                    uuid = Settings.Uuid,
-                    key = Settings.AccessKey,
-                    song = currSong,
-                    cover = coverUrl,
-                    song_id = GlobalObjects.CurrentSong?.SongId,
-                    playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType),
-                    artist,
-                    title,
-                    requester
-                };
                 await SongifyApi.PostSongAsync(Json.Serialize(payload));
             }
             catch (Exception e)

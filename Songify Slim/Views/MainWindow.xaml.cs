@@ -77,6 +77,7 @@ namespace Songify_Slim.Views
         private int _secondsRemaining = 4;
         private readonly ContextMenu _contextMenu = new();
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
+        private DispatcherTimer _testModeTimer;
         private PlayerType _selectedSource;
         private Timer _timerFetcher = new();
         private WindowConsole _consoleWindow;
@@ -125,6 +126,7 @@ namespace Songify_Slim.Views
             DataContext = this;
         }
 
+
         public static void RegisterInStartup(bool isChecked)
         {
             try
@@ -146,6 +148,7 @@ namespace Songify_Slim.Views
                     {
                         throw new InvalidOperationException("Cannot determine application path.");
                     }
+
                     registryKey.SetValue("Songify", appPath);
                 }
                 else
@@ -311,7 +314,8 @@ namespace Songify_Slim.Views
             {
                 switch (Settings.Player)
                 {
-                    case PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback when Settings.DownloadCover:
+                    case PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear
+                        or PlayerType.WindowsPlayback when Settings.DownloadCover:
                         ImgCover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
                         GlobalObjects.CurrentSong = null;
@@ -367,7 +371,8 @@ namespace Songify_Slim.Views
 
                 case PlayerType.Spotify:
 
-                    await Sf.FetchSpotifyWeb();
+                    if (Settings.IsLive || GlobalObjects.TestMode || Settings.BypassSpotifyFetchGate)
+                        await Sf.FetchSpotifyWeb();
                     break;
 
                 case PlayerType.Pear:
@@ -448,7 +453,7 @@ namespace Songify_Slim.Views
                 );
                 if (result == MessageDialogResult.Affirmative)
                     Process.Start(
-                    "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+                        "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
                 Settings.UseOwnApp = true;
             }
 
@@ -528,7 +533,8 @@ namespace Songify_Slim.Views
                 try
                 {
                     // Create tasks for all URLs
-                    List<Task<HttpResponseMessage>> tasks = urlsToCheck.Select(url => httpClient.GetAsync(url)).ToList();
+                    List<Task<HttpResponseMessage>>
+                        tasks = urlsToCheck.Select(url => httpClient.GetAsync(url)).ToList();
 
                     // Wait for any task to complete successfully
                     Task<HttpResponseMessage> completedTask = await Task.WhenAny(tasks);
@@ -555,10 +561,7 @@ namespace Songify_Slim.Views
         private void SetupMotdTimer()
         {
             _motdTimer.Interval = TimeSpan.FromMinutes(5);
-            _motdTimer.Tick += (o, args) =>
-            {
-                SetPsAs();
-            };
+            _motdTimer.Tick += (o, args) => { SetPsAs(); };
             _motdTimer.Start();
             SetPsAs();
         }
@@ -673,7 +676,9 @@ namespace Songify_Slim.Views
             ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
             GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
             if (!string.IsNullOrEmpty(Settings.Directory))
-                if (!Directory.Exists(Settings.Directory) && MessageBox.Show($"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".", "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
+                if (!Directory.Exists(Settings.Directory) && MessageBox.Show(
+                        $"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".",
+                        "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
                 {
                     Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
                 }
@@ -705,7 +710,8 @@ namespace Songify_Slim.Views
                     }
 
                     // Attempt to find the PSA
-                    Psa psa = PsAs.FirstOrDefault(o => o.Id == intValue) ?? throw new InvalidOperationException($"No PSA found with Id {intValue}.");
+                    Psa psa = PsAs.FirstOrDefault(o => o.Id == intValue) ??
+                              throw new InvalidOperationException($"No PSA found with Id {intValue}.");
 
                     // Create and show the dialog
                     WindowUniversalDialog wUd = new(psa, "Notification");
@@ -766,11 +772,14 @@ namespace Songify_Slim.Views
             {
                 _selectedSource = selected;
             }
+
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
-            LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            LblCopyright.Content = App.IsBeta
+                ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©"
+                : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             TbFontSize.Text = Settings.Fontsize.ToString();
@@ -781,7 +790,8 @@ namespace Songify_Slim.Views
         {
             try
             {
-                if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) && string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
+                if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) &&
+                    string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                     TxtblockLiveoutput.Text = Properties.Resources.window_main_link_spotify;
                 else
                     await SpotifyApiHandler.Auth();
@@ -793,7 +803,11 @@ namespace Songify_Slim.Views
                 Logger.LogExc(e);
             }
 
-            ImgCover.Visibility = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback ? Visibility.Visible : Visibility.Collapsed;
+            ImgCover.Visibility =
+                _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear
+                    or PlayerType.WindowsPlayback
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
         public void PlayVideoFromUrl(string url)
@@ -816,6 +830,7 @@ namespace Songify_Slim.Views
             {
                 TwitchHandler.ConnectTwitchChatClient();
             }
+
             if (Settings.AutoClearQueue)
             {
                 GlobalObjects.ReqList.Clear();
@@ -840,7 +855,9 @@ namespace Songify_Slim.Views
             string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             if (assemblyLocation != null && assemblyLocation.Contains(".zip"))
             {
-                MessageBox.Show("Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Application.Current.Shutdown();
             }
 
@@ -854,7 +871,9 @@ namespace Songify_Slim.Views
             }
             catch (Exception)
             {
-                MessageBox.Show("Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
+                    "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 Application.Current.Shutdown();
             }
         }
@@ -894,17 +913,20 @@ namespace Songify_Slim.Views
                         Logger.Info(LogSource.Twitch, "Stream is NOT live");
                         break;
                 }
+
                 Logger.Info(LogSource.Core, "SetFetchTimer");
                 SetFetchTimer();
                 Logger.Info(LogSource.Core, "SetFetchTimer done");
 
                 if (Settings.UpdateRequired)
                 {
-                    MessageDialogResult result = await this.ShowMessageAsync("Songify just updated", "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog by clicking on File -> Patch Notes", MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
-                    {
-                        AffirmativeButtonText = "Yes",
-                        NegativeButtonText = "No"
-                    });
+                    MessageDialogResult result = await this.ShowMessageAsync("Songify just updated",
+                        "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog by clicking on File -> Patch Notes",
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
+                        {
+                            AffirmativeButtonText = "Yes",
+                            NegativeButtonText = "No"
+                        });
 
                     if (result == MessageDialogResult.Affirmative)
                     {
@@ -970,7 +992,7 @@ namespace Songify_Slim.Views
                             Logger.LogExc(e);
                         }
                     }),
-                    new System.Windows.Forms.MenuItem("Disconnect", void(_, _) =>
+                    new System.Windows.Forms.MenuItem("Disconnect", void (_, _) =>
                     {
                         try
                         {
@@ -1026,10 +1048,13 @@ namespace Songify_Slim.Views
         private static void AutoUpdater_ApplicationExitEvent()
         {
             //Create folder for the current version and export the config to the folder
-            if (!Directory.Exists(GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}"))
-                Directory.CreateDirectory(GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}");
+            if (!Directory.Exists(GlobalObjects.RootDirectory +
+                                  $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}"))
+                Directory.CreateDirectory(GlobalObjects.RootDirectory +
+                                          $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}");
 
-            ConfigHandler.WriteAllConfig(Settings.Export(), GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}", true);
+            ConfigHandler.WriteAllConfig(Settings.Export(),
+                GlobalObjects.RootDirectory + $"/Backup/{GlobalObjects.AppVersion.Replace(".", "_")}", true);
             Settings.UpdateRequired = true;
             Application.Current.Shutdown();
         }
@@ -1049,6 +1074,7 @@ namespace Songify_Slim.Views
                     {
                         MinimizeToSysTray();
                     }
+
                     break;
 
                 case WindowState.Maximized:
@@ -1095,7 +1121,11 @@ namespace Songify_Slim.Views
             // After user confirmation sends a command to the webserver which clears the queue
             MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.common_warning,
                 Properties.Resources.window_queue_clear_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.dialog_yes, NegativeButtonText = Properties.Resources.dialog_no });
+                new MetroDialogSettings
+                {
+                    AffirmativeButtonText = Properties.Resources.dialog_yes,
+                    NegativeButtonText = Properties.Resources.dialog_no
+                });
             if (msgResult != MessageDialogResult.Affirmative) return;
             //GlobalObjects.ReqList.Clear();
             //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
@@ -1127,13 +1157,17 @@ namespace Songify_Slim.Views
                 {
                     await ImgCover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        Visibility vis = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear or PlayerType.WindowsPlayback && Settings.DownloadCover
-                            ? Visibility.Visible
-                            : Visibility.Collapsed;
+                        Visibility vis =
+                            _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear
+                                or PlayerType.WindowsPlayback && Settings.DownloadCover
+                                ? Visibility.Visible
+                                : Visibility.Collapsed;
 
-                        double maxWidth = _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear && Settings.DownloadCover
-                            ? 500
-                            : (int)Width - 6;
+                        double maxWidth =
+                            _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear &&
+                            Settings.DownloadCover
+                                ? 500
+                                : (int)Width - 6;
 
                         if (ImgCover.Visibility != vis)
                             ImgCover.Visibility = vis;
@@ -1287,6 +1321,7 @@ namespace Songify_Slim.Views
                         GrdCover.Visibility = Visibility.Visible;
                         CoverCanvas.Visibility = Visibility.Visible;
                     }
+
                     ImgCover.Visibility = Visibility.Collapsed;
                     break;
                 }
@@ -1337,6 +1372,7 @@ namespace Songify_Slim.Views
                         ImgCover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
                     }
+
                     CoverCanvas.Visibility = Visibility.Collapsed;
 
                     break;
@@ -1383,7 +1419,8 @@ namespace Songify_Slim.Views
         private async void Mi_TwitchCheckOnlineStatus_OnClick(object sender, RoutedEventArgs e)
         {
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-            MiTwitchCheckOnlineStatus.Header = $"{Properties.Resources.menu_twitch_check_online_status} ({(Settings.IsLive ? "Live" : "Offline")})";
+            MiTwitchCheckOnlineStatus.Header =
+                $"{Properties.Resources.menu_twitch_check_online_status} ({(Settings.IsLive ? "Live" : "Offline")})";
             LblStatus.Content = Settings.IsLive ? "Stream is Up!" : "Stream is offline.";
             Logger.Info(LogSource.Twitch, $"Stream is {(Settings.IsLive ? "Live" : "Offline")}");
         }
@@ -1412,10 +1449,8 @@ namespace Songify_Slim.Views
 
         public void SetTextPreview(string replace)
         {
-            TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-            {
-                TxtblockLiveoutput.Text = replace;
-            }));
+            TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal,
+                new Action(() => { TxtblockLiveoutput.Text = replace; }));
         }
 
         private void Mi_Update_OnClick(object sender, RoutedEventArgs e)
@@ -1440,6 +1475,7 @@ namespace Songify_Slim.Views
                     {
                         // Now you can interact with the button
                     }
+
                     break;
                 }
             }
@@ -1464,6 +1500,7 @@ namespace Songify_Slim.Views
             {
                 readIds.Add(motd.Id);
             }
+
             Settings.ReadNotificationIds = readIds;
 
             foreach (UIElement pnlMotdsChild in PnlMotds.Children)
@@ -1476,6 +1513,7 @@ namespace Songify_Slim.Views
                     VerticalAlignment = VerticalAlignment.Center
                 };
             }
+
             Badge.Badge = null!;
         }
 
@@ -1489,8 +1527,8 @@ namespace Songify_Slim.Views
         {
             if (CoverCanvas != null)
             {
-                CoverCanvas.Stop();      // Stop the playback
-                CoverCanvas.Close();     // Close the MediaElement to release resources (optional, see note)
+                CoverCanvas.Stop(); // Stop the playback
+                CoverCanvas.Close(); // Close the MediaElement to release resources (optional, see note)
                 CoverCanvas.Source = null; // Set Source to null to release the file lock
             }
         }
@@ -1538,7 +1576,10 @@ namespace Songify_Slim.Views
                         header = "Twitch Chat Bot";
                         icon.Kind = PackIconBoxIconsKind.BrandsTwitch;
                         subs = await TwitchApiHelper.GetEventSubscriptions();
-                        IconTwitchBot.Foreground = subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled") ? Brushes.GreenYellow : Brushes.IndianRed;
+                        IconTwitchBot.Foreground =
+                            subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled")
+                                ? Brushes.GreenYellow
+                                : Brushes.IndianRed;
                         rows =
                         [
                             ("Status", IconTwitchBot.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
@@ -1554,7 +1595,7 @@ namespace Songify_Slim.Views
                         [
                             ("Status", IconTwitchApi.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
                             ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
-                            ("EventSubs", string.Join("\n", subs.Where(s=> s.Status == "enabled").Select(s => s.Type)))
+                            ("EventSubs", string.Join("\n", subs.Where(s => s.Status == "enabled").Select(s => s.Type)))
                         ];
                         break;
 
@@ -1598,14 +1639,51 @@ namespace Songify_Slim.Views
                     break;
 
                 case "WebServer":
+                {
+                    if (GlobalObjects.WebServer.Run)
                     {
-                        if (GlobalObjects.WebServer.Run)
-                        {
-                            GlobalObjects.WebServer.StopWebServer();
-                        }
-                        else GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
-                        break;
+                        GlobalObjects.WebServer.StopWebServer();
                     }
+                    else GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
+
+                    break;
+                }
+            }
+        }
+
+        private void TglTestMode_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (TglTestMode.IsOn)
+            {
+                // Enable test mode
+                GlobalObjects.TestMode = true;
+
+                // Stop any existing timer
+                _testModeTimer?.Stop();
+
+                _testModeTimer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMinutes(5)
+                };
+
+                _testModeTimer.Tick += (s, args) =>
+                {
+                    _testModeTimer.Stop();
+
+                    // Disable test mode
+                    GlobalObjects.TestMode = false;
+
+                    // Untoggle (this will fire Toggled again)
+                    TglTestMode.IsOn = false;
+                };
+
+                _testModeTimer.Start();
+            }
+            else
+            {
+                // User manually disabled OR timer triggered
+                _testModeTimer?.Stop();
+                GlobalObjects.TestMode = false;
             }
         }
     }

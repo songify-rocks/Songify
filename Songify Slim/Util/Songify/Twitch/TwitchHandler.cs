@@ -369,17 +369,42 @@ public static class TwitchHandler
                         return "That song is already in the queue ";
                     }
 
-                    string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-                    string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+                    // Populate metadata so matching/reordering stays consistent with other Pear request paths.
+                    PearSearch sr;
+                    try
+                    {
+                        sr = string.IsNullOrEmpty(Settings.YoutubeApiKey)
+                            ? await SongifyApi.GetYoutubeData(videoId)
+                            : await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(LogSource.Pear, "Error fetching YouTube metadata for websocket request", ex);
+                        sr = null;
+                    }
+
+                    string title = !string.IsNullOrWhiteSpace(sr?.Title)
+                        ? sr.Title
+                        : await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+
+                    string artists = sr?.Artists is { Count: > 0 }
+                        ? string.Join(", ", sr.Artists.Take(1))
+                        : "";
+
+                    string length = sr?.Duration ?? "";
+
+                    string thumbnail = !string.IsNullOrWhiteSpace(sr?.ThumbnailUrl)
+                        ? sr.ThumbnailUrl
+                        : $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
                     RequestObject req = new()
                     {
                         Uuid = Settings.Uuid,
                         Trackid = videoId,
                         PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                        Artist = "",
+                        Artist = artists,
                         Title = title,
-                        Length = "",
+                        Length = length,
                         Requester = requester,
                         Played = 0,
                         Albumcover = thumbnail

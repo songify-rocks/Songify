@@ -1,3 +1,165 @@
+# 📡 WebSocket: Subscribe to real-time data
+
+Songify provides a WebSocket endpoint that streams live data such as the current track, requester, queue, and user information.
+
+## Endpoint
+
+```
+/ws/data
+```
+
+## How to connect
+
+#### JavaScript (Browser / Node.js)
+
+```javascript
+const ws = new WebSocket("ws://localhost:PORT/ws/data");
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(data);
+};
+```
+
+#### C# example
+
+```csharp
+using System.Net.WebSockets;
+using System.Text;
+
+using var client = new ClientWebSocket();
+await client.ConnectAsync(new Uri("ws://localhost:PORT/ws/data"), CancellationToken.None);
+
+var buffer = new byte[8192];
+
+while (client.State == WebSocketState.Open)
+{
+    var result = await client.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+    var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+    Console.WriteLine(message);
+}
+```
+
+## Response structure
+
+Each message contains the full current state:
+
+```json
+{
+  "UserInfo": {
+    "TwitchUser": {
+      "Id": "string",
+      "Login": "string",
+      "BroadcasterType": "string"
+    },
+    "SpotifyUser": {
+      "Id": "string",
+      "DisplayName": "string",
+      "Product": "string"
+    }
+  },
+  "SongifyInfo": {
+    "Version": "string",
+    "Beta": "boolean"
+  },
+  "Track": {
+    "Data": {
+      "Artists": "string",
+      "Title": "string",
+      "Albums": [
+        {
+          "Height": "integer",
+          "Width": "integer",
+          "Url": "string"
+        }
+      ],
+      "SongId": "string",
+      "DurationMs": "integer",
+      "IsPlaying": "boolean",
+      "Url": "string",
+      "DurationPercentage": "number",
+      "DurationTotal": "integer",
+      "Progress": "integer",
+      "Playlist": "string | null",
+      "FullArtists": [
+        {
+          "ExternalUrls": {
+            "spotify": "string"
+          },
+          "Href": "string",
+          "Id": "string",
+          "Name": "string",
+          "Type": "string",
+          "Uri": "string"
+        }
+      ]
+    },
+    "CanvasUrl": "string",
+    "IsInLikedPlaylist": "boolean",
+    "Requester": {
+      "Name": "string",
+      "ProfilePicture": "string"
+    }
+  },
+  "Queue": {
+    "Count": "integer",
+    "Requests": [
+      {
+        "queueid": "integer",
+        "uuid": "string",
+        "trackid": "string",
+        "artist": "string",
+        "title": "string",
+        "length": "string",
+        "requester": "string",
+        "albumcover": "string",
+        "playerType": "string | null",
+        "IsLiked": "boolean",
+        "FullRequester": {
+          "Id": "string",
+          "DisplayName": "string",
+          "ProfileImageUrl": "string"
+        }
+      }
+    ],
+    "Tracks": [
+      {
+        "queueid": "integer",
+        "uuid": "string",
+        "trackid": "string",
+        "artist": "string",
+        "title": "string",
+        "length": "string",
+        "requester": "string",
+        "albumcover": "string",
+        "playerType": "string | null",
+        "IsLiked": "boolean",
+        "FullRequester": "object | null"
+      }
+    ]
+  }
+}
+```
+
+## Behavior
+
+- The WebSocket pushes updates automatically whenever:
+  - the current track changes
+  - playback state updates
+  - the queue changes
+  - requester info updates
+
+- Each message contains the full state, not partial updates.
+
+## Notes
+
+- Replace `PORT` with your configured Songify WebServer port  
+- Use `ws://` for local connections   
+- No authentication is required unless configured otherwise  
+
+---
+
 # WebSocket Command Reference
 
 This document provides examples of all supported WebSocket commands used to control Songify via a WebSocket connection.

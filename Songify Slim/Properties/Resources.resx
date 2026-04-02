@@ -1443,6 +1443,12 @@
   <data name="window_settings_spotify_fetch_rate" xml:space="preserve">
     <value>Spotify fetch rate (seconds)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Bypass live/TestMode gating</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>When enabled, Songify fetches Spotify playback even when you are not live and Test Mode is off. May increase Spotify API usage and rate-limit risk.</value>
+  </data>
   <data name="window_settings_youtube_api_key" xml:space="preserve">
     <value>Youtube API Key</value>
   </data>

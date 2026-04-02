@@ -1493,4 +1493,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Bits-trefwoord (SR wordt alleen geactiveerd als dat trefwoord in het bits-bericht voorkomt)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Omzeil de live/testmodus-poort</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Wanneer deze functie is ingeschakeld, haalt Songify Spotify-afspeellijsten op, zelfs als je niet live bent en de testmodus is uitgeschakeld. Dit kan het gebruik van de Spotify API verhogen en het risico op overschrijding van de limiet vergroten.</value>
+  </data>
 </root>

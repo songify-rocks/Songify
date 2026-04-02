@@ -1440,4 +1440,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Bits-Schlüsselwort (SR wird nur ausgelöst, wenn dieses Schlüsselwort in der Bits-Nachricht enthalten ist)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Live-/Testmodus-Limitierung umgehen</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Wenn diese Funktion aktiviert ist, ruft Songify Spotify-Wiedergabedaten ab, auch wenn Sie nicht live sind und der Testmodus deaktiviert ist. Dies kann die Nutzung der Spotify-API erhöhen und das Risiko einer Ratenbegrenzung erhöhen.</value>
+  </data>
 </root>

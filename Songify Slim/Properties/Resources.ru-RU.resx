@@ -1440,4 +1440,10 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Ключевое слово Bits (запрос на обслуживание (SR) будет запущен только в том случае, если это ключевое слово присутствует в сообщении Bits)</value>
   </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Обход ограничений режима реального времени/тестового режима</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>При включении этой функции Songify получает воспроизведение Spotify, даже если вы не ведёте трансляцию и тестовый режим отключен. Это может увеличить использование API Spotify и риск превышения лимита запросов.</value>
+  </data>
 </root>

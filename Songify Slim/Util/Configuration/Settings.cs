@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -142,6 +142,7 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
+        public static bool BypassSpotifyFetchGate { get => GetBypassSpotifyFetchGate(); set => SetBypassSpotifyFetchGate(value); }
         public static TwitchChatAccount TwitchChatAccount { get => GetTwitchChatAccount(); set => SetTwitchChatAccount(value); }
 
         private static TwitchChatAccount GetTwitchChatAccount()
@@ -164,6 +165,17 @@ namespace Songify_Slim.Util.Configuration
         private static int GetSpotifyFetchRate()
         {
             return CurrentConfig.AppConfig.SpotifyFetchRate;
+        }
+
+        private static void SetBypassSpotifyFetchGate(bool value)
+        {
+            CurrentConfig.AppConfig.BypassSpotifyFetchGate = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetBypassSpotifyFetchGate()
+        {
+            return CurrentConfig.AppConfig.BypassSpotifyFetchGate;
         }
 
         private static void SetSrForBits(bool value)
@@ -1171,6 +1183,7 @@ namespace Songify_Slim.Util.Configuration
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 SrForBits = GetSrForBits(),
                 SpotifyFetchRate = GetSpotifyFetchRate(),
+                BypassSpotifyFetchGate = GetBypassSpotifyFetchGate(),
                 DebugLogging = GetDebugLogging(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),

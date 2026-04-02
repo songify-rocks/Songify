@@ -108,7 +108,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="window_botresponses_fetch_error" xml:space="preserve">
-    <value>Памылка падчас атрымання інфармацыі аб песні</value>
+    <value>Памылка падчас атрымання інфармацыі пра песню</value>
     <comment>Header for the textbox when an error occurred while fetching song info</comment>
   </data>
   <data name="window_botresponses_max_songs" xml:space="preserve">
@@ -116,7 +116,7 @@
     <comment>Header for the textbox when max amount of songs are reached per suer</comment>
   </data>
   <data name="window_botresponses_no_song" xml:space="preserve">
-    <value>Песня не ўказана (пусты запыт)</value>
+    <value>Песня не вызначана (пусты запыт)</value>
     <comment>Header for the textbox when no song was found</comment>
   </data>
   <data name="window_botresponses_song_in_queue" xml:space="preserve">
@@ -324,7 +324,7 @@
     <comment>(unused)</comment>
   </data>
   <data name="window_settings_tab_appearance" xml:space="preserve">
-    <value>Выгляд</value>
+    <value>Знешні выгляд</value>
     <comment>Label content for "Appearance"</comment>
   </data>
   <data name="window_settings_tab_config" xml:space="preserve">
@@ -349,7 +349,7 @@
 	name for "Russian"</comment>
   </data>
   <data name="window_settings_output_split_artist" xml:space="preserve">
-    <value>Падзяліць выканаўца, назву і нік заказчыка</value>
+    <value>Падзяліць выканаўцу, назву і заказчыка</value>
     <comment>Toggleswitch content for "Split Artist and Title"</comment>
   </data>
   <data name="window_settings_system_check_updates" xml:space="preserve">
@@ -409,7 +409,7 @@
     <comment>Button content for "Create Reward"</comment>
   </data>
   <data name="window_createreward_title" xml:space="preserve">
-    <value>Загаловак</value>
+    <value>Назва</value>
     <comment>Label content for "Title"</comment>
   </data>
   <data name="window_createreward_prompt" xml:space="preserve">
@@ -469,7 +469,7 @@
     <comment>ToggleSwitch content for "open queue window on startup"</comment>
   </data>
   <data name="window_settings_integration_auto_announce" xml:space="preserve">
-    <value>Аўтаматычна аб'яўляць песню ў чаце (выкарыстоўваецца адказ !song)</value>
+    <value>Аўтаматычна аб'яўляць песню ў чаце (выкарыстоўваецца адказ як і ў !song)</value>
     <comment>TollgeSwitch content for "Automatically Announce Song To Chat"</comment>
   </data>
   <data name="window_settings_integration_manage_rewards" xml:space="preserve">
@@ -611,11 +611,11 @@
     <comment>TabControl Header for "Commands" (Bot Responses Window)</comment>
   </data>
   <data name="window_settings_spotify_reward_sr" xml:space="preserve">
-    <value>Узнагарода для запытаў песень</value>
+    <value>Узнагарода для Запытаў песень</value>
     <comment>Label content for "Reward for Song Request"</comment>
   </data>
   <data name="window_settings_spotify_reward_skip" xml:space="preserve">
-    <value>Узнагарода для пропуску песень</value>
+    <value>Узнагарода для Пропуску песень</value>
   </data>
   <data name="window_settings_spotify_sr_moved_to_bot_config" xml:space="preserve">
     <value>Каманда !ssr перанесена ў канфігурацыю бота</value>
@@ -650,7 +650,7 @@
     <comment>The word "No" in a MessageBox Button as in No/Negaitve/Decline</comment>
   </data>
   <data name="window_settings_integration_stream_not_live_notification" xml:space="preserve">
-    <value>Адправіць афлайн-паведамленне ў чат</value>
+    <value>Даслаць афлайн-паведамленне ў чат</value>
     <comment>Header for the ToggleSwtich to send a message to chat if the stream is not live and a command has been used</comment>
   </data>
   <data name="window_botresponses_song" xml:space="preserve">
@@ -673,7 +673,7 @@
     <comment>Comman description</comment>
   </data>
   <data name="window_settings_spotify_sr_userlevel_reward" xml:space="preserve">
-    <value>Дазволеныя ўзроўні карыстальнікаў для ўзнагароды запыту</value>
+    <value>Дазволеныя ўзроўні карыстальнікаў для Запыту-ўзнагароды</value>
   </data>
   <data name="window_settings_spotify_songlike_label" xml:space="preserve">
     <value>Плэй-ліст песень, што спадабаліся</value>
@@ -748,7 +748,7 @@
     <value>Вяртае 5 першых песень з бягучай чаргі прайгравання</value>
   </data>
   <data name="window_settings_spotify_sr_command_cd_user" xml:space="preserve">
-    <value>Перазарадка каманды запыта песні (на карыстальніка)</value>
+    <value>Перазарадка каманды Запыта песні (на карыстальніка)</value>
   </data>
   <data name="window_botresponses_command_on_user_cooldown" xml:space="preserve">
     <value>Адказ, калі карыстальнік знаходзіцца ў стане перазарадкі (асабістая перазарадка для каманды запыта)</value>
@@ -762,7 +762,7 @@
     <comment>Label content for "Command cooldown (seconds)"</comment>
   </data>
   <data name="window_settings_spotify_sr_command" xml:space="preserve">
-    <value>Каманда для запыту песень. (Command + спасылка Spotify альбо Выканаўца - Назва)</value>
+    <value>Каманда для запыту песень. (Каманда + спасылка Spotify альбо Выканаўца - Назва)</value>
     <comment>Toggleswitch content for "Enable SR (Command)"</comment>
   </data>
   <data name="window_settings_system_translated" xml:space="preserve">
@@ -782,7 +782,7 @@
     <comment>Window Title for the History Window</comment>
   </data>
   <data name="dialog_use_as_bot_account" xml:space="preserve">
-    <value>Паспяхова звязаны з {account}. Ці жадаеце выкарыстоўваць гэты ўліковы запіс у якасці чат-бота?</value>
+    <value>Паспяхова звязана з {account}. Ці жадаеце выкарыстоўваць гэты ўліковы запіс у якасці чат-бота?</value>
     <comment>Text that displays after linking to twitch that asks if this accoutn should also be used as the bot account</comment>
   </data>
   <data name="window_settings_spotify_songlike_tooltip" xml:space="preserve">
@@ -865,14 +865,14 @@
     <comment>Label content for "Output Format (Text file &amp; Widget)</comment>
   </data>
   <data name="window_settings_output_format_chat" xml:space="preserve">
-    <value>Фармат вываду (Twitch Чат)</value>
+    <value>Фармат вываду (Чат Twitch)</value>
     <comment>Label content for "Output Format (Twitch Chat)"</comment>
   </data>
   <data name="window_botresponses_cmd_vol" xml:space="preserve">
-    <value>Вяртае альбо задае бягучую гучнасць. '!vol [0-100]' (пр: !vol 50)</value>
+    <value>Вяртае альбо задае бягучую гучнасць. '!vol [0-100]' (ПР: !vol 50)</value>
   </data>
   <data name="window_settings_output_apply_to_split_files" xml:space="preserve">
-    <value>Ужыць для падзеленых файлаў</value>
+    <value>Таксама ўжыць для падзеленых файлаў</value>
     <comment>Append spaves to split files too</comment>
   </data>
   <data name="window_settings_rewards_click_reminder" xml:space="preserve">
@@ -894,7 +894,7 @@
     <comment>Short disclaimer that hides Refund Conditions if the Reward is not managaeable by Songify.</comment>
   </data>
   <data name="window_botresponses_explicit_songs" xml:space="preserve">
-    <value>Адказ, калі была замоўлена нецэнзурная песня падчас уключанай функцыі "Блакаваць усе нецэнзурныя песні"</value>
+    <value>Адказ, калі была заказана нецэнзурная песня падчас уключанай функцыі "Блакаваць усе нецэнзурныя песні"</value>
   </data>
   <data name="window_settings_system_disable_donation_reminder" xml:space="preserve">
     <value>Адключыць напамін аб ахвяраваннях</value>
@@ -1006,7 +1006,7 @@
     <value>Вяртае 5 першых песень з бягучай чаргі прайгравання</value>
   </data>
   <data name="window_botresponses_cmd_pause" xml:space="preserve">
-    <value>Прыпыняе бягучае прайграванне.</value>
+    <value>Спыняе бягучае прайграванне.</value>
   </data>
   <data name="window_botresponses_cmd_commands" xml:space="preserve">
     <value>Вяртае ўсе актыўныя каманды Songify.</value>
@@ -1021,10 +1021,10 @@
     <value>Тэкст унутры '{{' і '}}' будзе апублікаваны, толькі калі бягучая песня з'яўляецца запытам песні</value>
   </data>
   <data name="param_artist_description" xml:space="preserve">
-    <value>Выканаўцы для бягучай песні або запыту на песню</value>
+    <value>Выканаўцы бягучай песні або запыту песню</value>
   </data>
   <data name="param_single_artist_description" xml:space="preserve">
-    <value>Галоўны выканаўца для бягучай песні або запыту на песню</value>
+    <value>Асноўны выканаўца для бягучай песні або запыту на песню</value>
   </data>
   <data name="param_error_message_description" xml:space="preserve">
     <value>Паведамленне пра памылку, калі яна ўзнікла</value>
@@ -1048,7 +1048,7 @@
     <value>Толькі для каманды !pos, стварае спіс песень, якія карыстальнік мае ў чарзе, з іх пазіцыяй</value>
   </data>
   <data name="param_votes_description" xml:space="preserve">
-    <value>Колькасць галасоў за пропуск галасавання галасы/усяго</value>
+    <value>Колькасць галасоў за пропуск галасавання/усяго</value>
   </data>
   <data name="param_cooldown_description" xml:space="preserve">
     <value>Перазарадка ў секундах (глабальная і карыстальніцкая)</value>
@@ -1090,7 +1090,7 @@
     <value>Уключыць запыты песень за Bits</value>
   </data>
   <data name="window_settings_integration_refund_track_explicit" xml:space="preserve">
-    <value>Песня мае нецэнзурнае значэнне</value>
+    <value>Песня нецэнзурная</value>
   </data>
   <data name="window_settings_integration_refund_queue_limit" xml:space="preserve">
     <value>Карыстальнік дасягнуў максімальнага ліміту ў чарзе</value>
@@ -1105,13 +1105,13 @@
     <value>Галандская</value>
   </data>
   <data name="window_settings_twitch_disable_skip_for_requests" xml:space="preserve">
-    <value>Адключыць Узнагароду-Пропуск для запытаў песень</value>
+    <value>Адключыць Узнагароду-Пропуск для Запытаў песень</value>
   </data>
   <data name="window_settings_integration_refund_always" xml:space="preserve">
     <value>Бясплатныя запыты на песні</value>
   </data>
   <data name="window_botresponses_cmd_togglesr" xml:space="preserve">
-    <value>Уключыць/адключыць запыты на песні (адключае іх у праграме, а таксама спрабуе прыпыніць узнагароду)</value>
+    <value>Уключыць/адключыць Запыты песень (адключае іх у праграме, а таксама спрабуе спыніць узнагароду)</value>
   </data>
   <data name="menu_file_check_for_updates" xml:space="preserve">
     <value>Праверыць наяўнасць абнаўленняў</value>
@@ -1126,11 +1126,11 @@
     <comment>Menu content for "Songify Folder"</comment>
   </data>
   <data name="menu_view_webserver_url" xml:space="preserve">
-    <value>Web Server URL</value>
+    <value>URL Вэб-сервер</value>
     <comment>Menu content for "Web Server URL"</comment>
   </data>
   <data name="window_settings_integration_stream_shared_chat" xml:space="preserve">
-    <value>Праслухоўванне каманд чата з агульнага чата</value>
+    <value>Праслухоўванне каманд з абагуленага чата</value>
   </data>
   <data name="common_delete" xml:space="preserve">
     <value>Выдаліць</value>
@@ -1145,7 +1145,7 @@
     <value>Скасаваць</value>
   </data>
   <data name="common_artist" xml:space="preserve">
-    <value>Выканавец</value>
+    <value>Выканаўца</value>
   </data>
   <data name="common_title" xml:space="preserve">
     <value>Назва</value>
@@ -1157,7 +1157,7 @@
     <value>#</value>
   </data>
   <data name="common_beta" xml:space="preserve">
-    <value>BETA</value>
+    <value>БЭТА</value>
   </data>
   <data name="common_close_x" xml:space="preserve">
     <value>X</value>
@@ -1169,19 +1169,19 @@
     <value>Спіс запытаў</value>
   </data>
   <data name="window_queue_tab_skiplist" xml:space="preserve">
-    <value>Спіс прапускаў</value>
+    <value>Спіс пропускаў</value>
   </data>
   <data name="window_queue_skip_song" xml:space="preserve">
-    <value>Прапусціць трэк</value>
+    <value>Прапусціць песню</value>
   </data>
   <data name="window_queue_add_to_favorite_playlist" xml:space="preserve">
-    <value>Дадаць у абраны плейліст</value>
+    <value>Дадаць у плэй-ліст упадабаных</value>
   </data>
   <data name="window_queue_show_hide_spotify_controls" xml:space="preserve">
     <value>Паказаць/схаваць кіраванне Spotify</value>
   </data>
   <data name="window_queue_track_id" xml:space="preserve">
-    <value>ID трэка</value>
+    <value>ID песні</value>
   </data>
   <data name="window_queue_played" xml:space="preserve">
     <value>Прайграна</value>
@@ -1190,7 +1190,7 @@
     <value>Патрабуецца ўвод карыстальніка</value>
   </data>
   <data name="window_console_detach_attach" xml:space="preserve">
-    <value>Адлучыць / прымацаваць кансоль</value>
+    <value>Адмацаваць / прымацаваць кансоль</value>
   </data>
   <data name="window_console_clear" xml:space="preserve">
     <value>Ачысціць кансоль</value>
@@ -1232,19 +1232,19 @@
     <value>Выкарыстоўваць абраныя</value>
   </data>
   <data name="window_blocklist_description" xml:space="preserve">
-    <value>Блакіруйце выканаўцаў, трэкі або карыстальнікаў для запытаў. Выканаўцы і трэкі працуюць толькі са Spotify!</value>
+    <value>Блакіруйце выканаўцаў, песні або карыстальнікаў для запытаў. Выканаўцы і песні працуюць толькі са Spotify!</value>
   </data>
   <data name="window_blocklist_refresh_ids" xml:space="preserve">
     <value>Абнавіць ID</value>
   </data>
   <data name="window_blocklist_remove_all" xml:space="preserve">
-    <value>Выдаліць усе</value>
+    <value>Выдаліць усё</value>
   </data>
   <data name="window_blocklist_tab_artists" xml:space="preserve">
     <value>Выканаўцы</value>
   </data>
   <data name="window_blocklist_tab_songs" xml:space="preserve">
-    <value>Трэкі</value>
+    <value>Песні</value>
   </data>
   <data name="window_blocklist_tab_users" xml:space="preserve">
     <value>Карыстальнікі</value>
@@ -1262,16 +1262,16 @@
     <value>Падрыхтоўка</value>
   </data>
   <data name="window_settings_enable_debug_logging" xml:space="preserve">
-    <value>Уключыць адладачнае пратаколванне</value>
+    <value>Уключыць вядзенне журналу адладкі</value>
   </data>
   <data name="window_settings_songify_api_token" xml:space="preserve">
-    <value>Токен API Songify</value>
+    <value>Songify API Токен</value>
   </data>
   <data name="window_settings_copy_to_clipboard" xml:space="preserve">
-    <value>Капіяваць у буфер абмену</value>
+    <value>Скапіяваць у буфер абмену</value>
   </data>
   <data name="window_settings_extra" xml:space="preserve">
-    <value>Дадаткова</value>
+    <value>Дадатковае</value>
   </data>
   <data name="window_settings_url" xml:space="preserve">
     <value>URL</value>
@@ -1283,25 +1283,25 @@
     <value>Захоўваць вокладку альбома</value>
   </data>
   <data name="window_settings_copy_song_url" xml:space="preserve">
-    <value>Капіяваць URL трэка</value>
+    <value>Скапіяваць URL песні</value>
   </data>
   <data name="window_settings_expires_on" xml:space="preserve">
-    <value>Сканчваецца</value>
+    <value>Заканчваецца</value>
   </data>
   <data name="window_settings_twitch_bot" xml:space="preserve">
-    <value>Бот Twitch</value>
+    <value>Twitch Бот</value>
   </data>
   <data name="window_settings_chat_account" xml:space="preserve">
-    <value>Рахунак чата</value>
+    <value>Ул.запіс чата</value>
   </data>
   <data name="window_settings_account_name" xml:space="preserve">
-    <value>Імя рахунака</value>
+    <value>Імя ўл.запісу</value>
   </data>
   <data name="window_settings_oauth_token" xml:space="preserve">
-    <value>Токен oAuth</value>
+    <value>oAuth Токен</value>
   </data>
   <data name="window_settings_oauth_token_tooltip" xml:space="preserve">
-    <value>Націсніце тут, каб атрымаць токен oAuth.</value>
+    <value>Націсніце тут, каб атрымаць oAuth токен.</value>
   </data>
   <data name="window_settings_channel_to_join" xml:space="preserve">
     <value>Канал для падключэння</value>
@@ -1310,7 +1310,7 @@
     <value>Калі ўключана, у чат будзе адпраўлена паведамленне, калі дзеянне скасавана з-за офлайн-трансляцыі.</value>
   </data>
   <data name="window_settings_shared_chat_tooltip" xml:space="preserve">
-    <value>Гэтая опцыя ўключае праслухоўванне агульнага чата, каб можна было адпраўляць каманды з агульных чатаў.</value>
+    <value>Гэтая опцыя ўключае праслухоўванне абагуленага чата, каб можна было адпраўляць каманды з абагуленых чатаў.</value>
   </data>
   <data name="window_settings_create_new_reward" xml:space="preserve">
     <value>Стварыць новую ўзнагароду</value>
@@ -1325,13 +1325,13 @@
     <value>Умовы вяртання</value>
   </data>
   <data name="window_settings_refund_conditions_info" xml:space="preserve">
-    <value>Каб магчы вяртаць ачкі, узнагарода павінна быць створана праз Songify!</value>
+    <value>Каб было магчыма вяртаць балы, узнагарода павінна быць створана праз Songify!</value>
   </data>
   <data name="window_settings_poll_setup_hint" xml:space="preserve">
-    <value>Наладзьце сістэму галасавання за прапуск</value>
+    <value>Наладзьце сістэму галасавання за пропуск</value>
   </data>
   <data name="window_settings_poll_title" xml:space="preserve">
-    <value>Назва апытання</value>
+    <value>Назва галасавання</value>
   </data>
   <data name="window_settings_answer_1" xml:space="preserve">
     <value>Адказ 1</value>
@@ -1343,7 +1343,7 @@
     <value>Дазволіць дадатковыя галасы</value>
   </data>
   <data name="window_settings_channel_points_per_vote" xml:space="preserve">
-    <value>Ачкі канала за голас</value>
+    <value>Ачкі канала / голас</value>
   </data>
   <data name="window_settings_duration" xml:space="preserve">
     <value>Працягласць</value>
@@ -1352,16 +1352,16 @@
     <value>Секунды</value>
   </data>
   <data name="window_settings_skip_when_answer_wins" xml:space="preserve">
-    <value>Прапускаць, калі перамагае гэты адказ</value>
+    <value>Прапусціць, калі перамагае гэты адказ</value>
   </data>
   <data name="window_settings_edit_commands_hint" xml:space="preserve">
     <value>Рэдагаваць каманды па кліку на трыгер</value>
   </data>
   <data name="window_settings_right_click_command_hint" xml:space="preserve">
-    <value>Пстрыкніце правай кнопкай па камандзе, каб указаць, хто можа яе выкарыстоўваць.</value>
+    <value>Клікні ПКМ па камандзе, каб рэгуляваць, хто можа яе выкарыстоўваць.</value>
   </data>
   <data name="window_settings_long_badge_names" xml:space="preserve">
-    <value>Доўгія назвы значкаў</value>
+    <value>Доўгія назвы значкоў</value>
   </data>
   <data name="window_settings_preview" xml:space="preserve">
     <value>Перадпрагляд:</value>
@@ -1370,28 +1370,28 @@
     <value>ID кліента</value>
   </data>
   <data name="window_settings_client_secret" xml:space="preserve">
-    <value>Сакрет</value>
+    <value>Сакрэт</value>
   </data>
   <data name="window_settings_spotify_fetch_rate" xml:space="preserve">
     <value>Інтэрвал запыту Spotify (секунды)</value>
   </data>
   <data name="window_settings_youtube_api_key" xml:space="preserve">
-    <value>Ключ API YouTube</value>
+    <value>API YouTube Ключ</value>
   </data>
   <data name="window_settings_test_api" xml:space="preserve">
     <value>Тэставаць API</value>
   </data>
   <data name="window_settings_twitch_auth_ports" xml:space="preserve">
-    <value>Порты аўтарызацыі Twitch</value>
+    <value>Парты аўтарызацыі Twitch</value>
   </data>
   <data name="window_settings_redirect_port" xml:space="preserve">
-    <value>Порт перанакіравання:</value>
+    <value>Порт пераадрасацыі:</value>
   </data>
   <data name="window_settings_fetch_port" xml:space="preserve">
     <value>Порт запыту:</value>
   </data>
   <data name="window_settings_credentials_disclaimer" xml:space="preserve">
-    <value>Мы не захоўваем аблічныя даныя Twitch і Spotify! Пры аднаўленні з воблака спатрэбіцца зноў увайсці ў Twitch і Spotify.</value>
+    <value>Мы не захоўваем даныя Twitch і Spotify! Пры аднаўленні з воблака спатрэбіцца зноў увайсці ў Twitch і Spotify</value>
   </data>
   <data name="window_settings_save_cloud" xml:space="preserve">
     <value>Захаваць налады ў воблаку</value>
@@ -1433,7 +1433,7 @@
     <value>Songify v1.1.1-RC1 Copyright ©</value>
   </data>
   <data name="window_history_copy_url_tooltip" xml:space="preserve">
-    <value>Капіяваць URL гісторыі</value>
+    <value>Капіяваць гісторыю URL</value>
   </data>
   <data name="window_apichart_seconds_rolling" xml:space="preserve">
     <value>Секунды (рухомы)</value>
@@ -1442,7 +1442,7 @@
     <value>Запытаў / хв</value>
   </data>
   <data name="window_patchnotes_title" xml:space="preserve">
-    <value>Заўвагі да версіі</value>
+    <value>Апісанне змен</value>
   </data>
   <data name="window_patchnotes_changes" xml:space="preserve">
     <value>Змены</value>
@@ -1478,7 +1478,7 @@
     <value>Спіс гледачоў</value>
   </data>
   <data name="window_userlist_sr" xml:space="preserve">
-    <value>SR</value>
+    <value>Запыт песні</value>
   </data>
   <data name="window_userlist_name" xml:space="preserve">
     <value>Імя</value>
@@ -1490,7 +1490,7 @@
     <value>Узровень падпіскі</value>
   </data>
   <data name="window_cloudimport_title" xml:space="preserve">
-    <value>Імпарт наладаў з воблака</value>
+    <value>Імпарт налад з воблака</value>
   </data>
   <data name="window_cloudimport_intro" xml:space="preserve">
     <value>Зараз будуць імпартаваны налады з воблака.</value>
@@ -1499,10 +1499,10 @@
     <value>Імпартаваць</value>
   </data>
   <data name="window_manualtwitch_title" xml:space="preserve">
-    <value>Прывязка рахунака Twitch</value>
+    <value>Прывязка ўл.запісу Twitch</value>
   </data>
   <data name="window_manualtwitch_instructions" xml:space="preserve">
-    <value>Як увайсці ў Twitch:</value>
+    <value>Як увайсці праз Twitch:</value>
   </data>
   <data name="window_manualtwitch_step1" xml:space="preserve">
     <value>1) Націсніце гэтую кнопку, каб адкрыць старонку ўваходу Twitch:</value>
@@ -1514,7 +1514,7 @@
     <value>2) Устаўце код, атрыманы на сайце:</value>
   </data>
   <data name="window_manualtwitch_step3" xml:space="preserve">
-    <value>3) Націсніце гэтую кнопку, каб прывязаць рахунак да Songify:</value>
+    <value>3) Націсніце гэтую кнопку, каб прывязаць ул.запіс да Songify:</value>
   </data>
   <data name="window_manualtwitch_link" xml:space="preserve">
     <value>ПРЫВЯЗАЦЬ</value>
@@ -1532,7 +1532,7 @@
     <value>Дадаць карыстальнікаў</value>
   </data>
   <data name="uc_command_add_aliases" xml:space="preserve">
-    <value>Дадаць псеўданімы</value>
+    <value>Дадаць мянушкі</value>
   </data>
   <data name="uc_command_announcement" xml:space="preserve">
     <value>Аб'ява</value>
@@ -1562,10 +1562,10 @@
     <value>Створана Songify</value>
   </data>
   <data name="uc_reward_song_request" xml:space="preserve">
-    <value>Запыт трэка</value>
+    <value>Запыт песні</value>
   </data>
   <data name="uc_reward_skip_song" xml:space="preserve">
-    <value>Прапусціць трэк</value>
+    <value>Прапусціць песню</value>
   </data>
   <data name="uc_reward_start_skip_poll" xml:space="preserve">
     <value>Пачаць галасаванне за прапуск</value>
@@ -1589,13 +1589,13 @@
     <value>YouTube</value>
   </data>
   <data name="window_settings_tab_songrequest" xml:space="preserve">
-    <value>Запыт трэка</value>
+    <value>Запыт песні</value>
   </data>
   <data name="window_settings_only_add_to_playlist" xml:space="preserve">
-    <value>Дадаваць запыты толькі ў абраны плейліст</value>
+    <value>Дадаваць запыты толькі ў абраны плэй-ліст</value>
   </data>
   <data name="window_settings_tab_polls" xml:space="preserve">
-    <value>Апытанні</value>
+    <value>Галасаванні</value>
   </data>
   <data name="window_settings_time_placeholder" xml:space="preserve">
     <value>(00:00)</value>
@@ -1610,15 +1610,21 @@
     <value>Ачысціць чаргу</value>
   </data>
   <data name="window_settings_subscriber_t2" xml:space="preserve">
-    <value>Абаненцкі Т2</value>
+    <value>Падпісчык Т2</value>
   </data>
   <data name="window_settings_subscriber_t3" xml:space="preserve">
-    <value>Абаненцкі Т3</value>
+    <value>Падпісчык Т3</value>
   </data>
   <data name="window_settings_sync_to_all_levels_tooltip" xml:space="preserve">
     <value>Сінхранізацыя з усімі ўзроўнямі карыстальнікаў</value>
   </data>
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
-    <value>Ключавое слова Bits (SR будзе спрацоўваць толькі ў тым выпадку, калі гэта ключавое слова ёсць у паведамленні Bits)</value>
+    <value>Ключавое слова Bits (Запыт будзе спрацоўваць толькі ў тым выпадку, калі гэта ключавое слова ёсць у паведамленні Bits)</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
+    <value>Абыход стробавання ў рэжыме рэальнага часу/тэставання</value>
+  </data>
+  <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
+    <value>Калі ўключана, Songify атрымлівае прайграванне Spotify, нават калі вы не вядзеце прамую трансляцыю і тэставы рэжым выключаны. Гэта можа павялічыць выкарыстанне Spotify API і рызыку абмежавання хуткасці.</value>
   </data>
 </root>
