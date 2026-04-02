@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Models.Pear.WebSocket;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.WebSocket;
 using Songify_Slim.Util.Configuration;
@@ -12,6 +13,7 @@ using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.Pear;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
+using SpotifyAPI.Web.Http;
 using Swan.Formatters;
 using System;
 using System.Collections.Generic;
@@ -33,9 +35,9 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
-using Songify_Slim.Models.Pear.WebSocket;
 using Image = SpotifyAPI.Web.Image;
 using JsonDocument = System.Text.Json.JsonDocument;
+using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -65,6 +67,9 @@ namespace Songify_Slim.Util.Songify
 
         private PearSong currentSong = null;
         private TrackInfo tI = null;
+        // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
+        // Track the Pear queue's current item id so we can correlate requests reliably.
+        private string _lastPearQueueCurrentId;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -894,7 +899,32 @@ namespace Songify_Slim.Util.Songify
             // if upload is enabled
             try
             {
-                await SongifyService.UploadSong(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), albumUrl, playerType, songInfo.Artists, songInfo.Title, GlobalObjects.Requester);
+                RequestObject nextTrack = GlobalObjects.QueueTracks.FirstOrDefault(item => item.Trackid != songInfo.SongId);
+
+                dynamic payload = new
+                {
+                    uuid = Settings.Uuid,
+                    key = Settings.AccessKey,
+                    song = currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "),
+                    cover = albumUrl,
+                    song_id = songInfo.SongId,
+                    playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType),
+                    songInfo.Artists,
+                    songInfo.Title,
+                    GlobalObjects.Requester,
+                    next = new
+                    {
+                        queueid = 0,
+                        trackid = nextTrack.Trackid,
+                        artist = nextTrack.Artist,
+                        title = nextTrack.Title,
+                        length = nextTrack.Length,
+                        requester = nextTrack.Requester,
+                        albumcover = nextTrack.Albumcover
+                    }
+                };
+
+                await SongifyService.UploadSong(payload);
             }
             catch (Exception ex)
             {
@@ -1093,8 +1123,36 @@ namespace Songify_Slim.Util.Songify
             PearResponse data = await PearApi.GetNowPlayingAsync();
             if (data == null) return;
 
-            // 1) keep the previous id
-            string prevId = GlobalObjects.CurrentSong?.SongId;
+            // 0) Correlate with Pear queue current item (canonical id)
+            // We prefer the Pear queue's selected item id over now-playing VideoId,
+            // because YouTube can swap the playback id while the queue item remains stable.
+            string queueCurrentId = null;
+            try
+            {
+                List<Song> pearQueue = await PearApi.GetQueueAsync();
+                queueCurrentId = pearQueue?.FirstOrDefault(s => s.IsCurrent)?.Id;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "FetchPear: failed to read Pear queue for correlation", ex);
+            }
+
+            string canonicalId = !string.IsNullOrWhiteSpace(queueCurrentId) ? queueCurrentId : data.VideoId;
+
+            // Correlation logging (helpful for diagnosing YouTube id swaps)
+            if (!string.Equals(queueCurrentId, data.VideoId, StringComparison.Ordinal))
+            {
+                Logger.Info(LogSource.Pear,
+                    $"FetchPear correlation: nowPlayingVideoId='{data.VideoId}', queueCurrentId='{queueCurrentId ?? ""}', canonicalId='{canonicalId}'");
+            }
+
+            // If queue selection changed, the previously-current queue item finished/skipped -> remove that request by id.
+            if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
+                !string.Equals(_lastPearQueueCurrentId, canonicalId, StringComparison.Ordinal))
+            {
+                await RemoveRequestByTrackIdAsync(_lastPearQueueCurrentId);
+            }
+            _lastPearQueueCurrentId = canonicalId;
 
             TrackInfo t = new()
             {
@@ -1104,7 +1162,7 @@ namespace Songify_Slim.Util.Songify
                 [
                     new Image { Url = data.ImageSrc, Width = 0, Height = 0 }
                 ],
-                SongId = data.VideoId,
+                SongId = canonicalId,
                 DurationMs = data.SongDuration * 1000,
                 IsPlaying = !data.IsPaused,
                 Url = data.Url,
@@ -1145,7 +1203,7 @@ namespace Songify_Slim.Util.Songify
             }
 
             // 2) If same song, nothing to do
-            if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == data.VideoId)
+            if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == canonicalId)
                 return;
 
             if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
@@ -1154,18 +1212,47 @@ namespace Songify_Slim.Util.Songify
                 await TwitchHandler.TerminatePoll(GlobalObjects.CurrentSkipPoll);
             }
 
-            // 3) Song changed -> previous finished: mark & remove
-            string prevKey = GlobalObjects.CurrentSong == null
-                ? null
-                : NormalizeKey(GlobalObjects.CurrentSong.Artists, GlobalObjects.CurrentSong.Title);
-
-            if (!string.IsNullOrEmpty(prevKey))
-                MarkPlayedAndRemoveByKey(prevKey);
+            // 3) Song changed -> previous finished: handled via Pear queue correlation above.
+            // Avoid fuzzy removal here to prevent false matches due to YouTube metadata quirks.
 
             // 4) Update current & UI
             GlobalObjects.CurrentSong = t;
             await WriteSongInfo(t, Enums.RequestPlayerType.Youtube);
             await GlobalObjects.QueueUpdateQueueWindow();
+        }
+
+        private static Task RemoveRequestByTrackIdAsync(string trackId)
+        {
+            if (string.IsNullOrWhiteSpace(trackId))
+                return Task.CompletedTask;
+
+            // ReqList is an ObservableCollection; mutate it on the WPF Dispatcher.
+            return Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                lock (_sync)
+                {
+                    int removed = 0;
+
+                    // mark first occurrence
+                    RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == trackId && r.Played == 0);
+                    first?.Played = 1;
+
+                    // remove all occurrences
+                    for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
+                    {
+                        if (GlobalObjects.ReqList[i].Trackid == trackId)
+                        {
+                            GlobalObjects.ReqList.RemoveAt(i);
+                            removed++;
+                        }
+                    }
+
+                    if (removed > 0)
+                    {
+                        Logger.Info(LogSource.Pear, $"FetchPear: removed {removed} request(s) for queueId='{trackId}' from ReqList.");
+                    }
+                }
+            }).Task;
         }
 
         private static readonly object _sync = new();
