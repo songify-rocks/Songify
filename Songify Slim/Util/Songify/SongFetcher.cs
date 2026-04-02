@@ -1048,10 +1048,13 @@ namespace Songify_Slim.Util.Songify
             // Normalize album image URLs
             foreach (Image album in track.Albums)
             {
-                if (string.IsNullOrEmpty(album.Url) || !DriveLetterRegex.IsMatch(album.Url)) continue;
+                if (string.IsNullOrEmpty(album.Url) || !DriveLetterRegex.IsMatch(album.Url))
+                    continue;
+
                 string normalized = album.Url.Replace("\\", "/");
                 album.Url = "file:///" + normalized;
             }
+
             var userInfo = new
             {
                 TwitchUser = new
@@ -1070,47 +1073,42 @@ namespace Songify_Slim.Util.Songify
 
             var songifyInfo = new
             {
-                version = GlobalObjects.AppVersion,
-                beta = App.IsBeta
+                Version = GlobalObjects.AppVersion,
+                Beta = App.IsBeta
             };
 
-            Dictionary<string, object> trackDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(
-                JsonConvert.SerializeObject(track)
-            );
-
-            // Serialize track -> base dictionary
-            string j = JsonConvert.SerializeObject(track); // you can drop Json.Serialize and just use Newtonsoft
-            Dictionary<string, object> dictionary = new()
+            var requester = new
             {
-                // Add your "first dynamics"
-                ["UserInfo"] = userInfo,
-                ["SongifyInfo"] = songifyInfo
+                Name = GlobalObjects.Requester ?? "",
+                ProfilePicture = GlobalObjects.FullRequester?.ProfileImageUrl ?? ""
             };
 
-            if (trackDict != null)
+            var trackData = new
             {
-                foreach (KeyValuePair<string, object> kv in trackDict)
-                    dictionary[kv.Key] = kv.Value;
-            }
+                Data = track,
+                CanvasUrl = GlobalObjects.Canvas != null && GlobalObjects.Canvas.Item1
+                    ? GlobalObjects.Canvas.Item2
+                    : "",
+                IsInLikedPlaylist = GlobalObjects.IsInPlaylist,
+                Requester = requester
+            };
 
-            // Add the rest
-            if (GlobalObjects.Canvas != null)
-                dictionary["CanvasUrl"] = GlobalObjects.Canvas.Item1 ? GlobalObjects.Canvas.Item2 : "";
-            else
-                dictionary["CanvasUrl"] = "";
+            var queueData = new
+            {
+                Count = GlobalObjects.ReqList.Count,
+                Requests = GlobalObjects.ReqList,
+                Tracks = GlobalObjects.QueueTracks
+            };
 
-            dictionary["IsInLikedPlaylist"] = GlobalObjects.IsInPlaylist;
-            dictionary["Requester"] = GlobalObjects.Requester;
-            dictionary["RequesterProfilePic"] = GlobalObjects.FullRequester == null
-                ? ""
-                : GlobalObjects.FullRequester.ProfileImageUrl;
-            dictionary["GoalTotal"] = Settings.RewardGoalAmount;
-            dictionary["GoalCount"] = GlobalObjects.RewardGoalCount;
-            dictionary["QueueCount"] = GlobalObjects.ReqList.Count;
-            dictionary["RequestQueue"] = GlobalObjects.ReqList;
-            dictionary["Queue"] = GlobalObjects.QueueTracks;
+            var payload = new
+            {
+                UserInfo = userInfo,
+                SongifyInfo = songifyInfo,
+                Track = trackData,
+                Queue = queueData
+            };
 
-            string updatedJson = JsonConvert.SerializeObject(dictionary, Formatting.Indented);
+            string updatedJson = JsonConvert.SerializeObject(payload, Formatting.Indented);
             GlobalObjects.ApiResponse = updatedJson;
 
             await GlobalObjects.WebServer.BroadcastToChannelAsync("/ws/data", updatedJson);
