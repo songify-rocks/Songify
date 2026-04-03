@@ -1446,4 +1446,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Lorsqu'elle est activée, Songify récupère les données de lecture Spotify même lorsque vous n'êtes pas en direct et que le mode test est désactivé. Cela peut augmenter l'utilisation de l'API Spotify et le risque de dépassement de la limite de requêtes.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automatique (session actuelle)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Choisissez la session multimédia de l'application à lire parmi celles qui sont actives.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(indisponible)</value>
+  </data>
 </root>

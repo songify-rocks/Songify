@@ -1627,4 +1627,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Калі ўключана, Songify атрымлівае прайграванне Spotify, нават калі вы не вядзеце прамую трансляцыю і тэставы рэжым выключаны. Гэта можа павялічыць выкарыстанне Spotify API і рызыку абмежавання хуткасці.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Аўтаматычна (бягучы сеанс)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Выберыце, медыясеанс якой праграмы чытаць, калі актыўныя некалькі праграм.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(недаступна)</value>
+  </data>
 </root>

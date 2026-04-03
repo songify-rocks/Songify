@@ -2212,6 +2212,33 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatic (current session).
+        /// </summary>
+        public static string window_main_windows_media_session_automatic {
+            get {
+                return ResourceManager.GetString("window_main_windows_media_session_automatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose which app’s media session to read when several are active..
+        /// </summary>
+        public static string window_main_windows_media_session_tooltip {
+            get {
+                return ResourceManager.GetString("window_main_windows_media_session_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (unavailable).
+        /// </summary>
+        public static string window_main_windows_media_session_unavailable {
+            get {
+                return ResourceManager.GetString("window_main_windows_media_session_unavailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To login with Twitch follow the instructions below:.
         /// </summary>
         public static string window_manualtwitch_instructions {

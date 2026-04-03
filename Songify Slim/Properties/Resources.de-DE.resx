@@ -1446,4 +1446,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Wenn diese Funktion aktiviert ist, ruft Songify Spotify-Wiedergabedaten ab, auch wenn Sie nicht live sind und der Testmodus deaktiviert ist. Dies kann die Nutzung der Spotify-API erhöhen und das Risiko einer Ratenbegrenzung erhöhen.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automatisch (aktuelle Sitzung)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Wählen Sie die App-Mediensitzung aus, die gelesen werden soll, wenn mehrere aktiv sind.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(nicht verfügbar)</value>
+  </data>
 </root>

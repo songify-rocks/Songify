@@ -1446,4 +1446,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Cuando está activada, Songify reproduce contenido de Spotify incluso cuando no estás en directo y el modo de prueba está desactivado. Esto puede aumentar el uso de la API de Spotify y el riesgo de superar el límite de solicitudes.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automático (sesión actual)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Cuando haya varias sesiones multimedia activas, elige de qué aplicación quieres leer la sesión.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(indisponible)</value>
+  </data>
 </root>

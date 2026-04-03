@@ -1499,4 +1499,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Wanneer deze functie is ingeschakeld, haalt Songify Spotify-afspeellijsten op, zelfs als je niet live bent en de testmodus is uitgeschakeld. Dit kan het gebruik van de Spotify API verhogen en het risico op overschrijding van de limiet vergroten.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automatisch (huidige sessie)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Kies welke mediasessie van welke app je wilt lezen als er meerdere actief zijn.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(niet beschikbaar)</value>
+  </data>
 </root>

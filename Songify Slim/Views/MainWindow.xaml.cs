@@ -79,6 +79,7 @@ namespace Songify_Slim.Views
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
         private DispatcherTimer _testModeTimer;
         private PlayerType _selectedSource;
+        private bool _syncingWindowsMediaSessionCombo;
         private Timer _timerFetcher = new();
         private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new();
@@ -308,6 +309,11 @@ namespace Songify_Slim.Views
                 Settings.Player = selected;
             }
 
+            UpdateWindowsMediaSessionComboVisibility();
+            UpdateSpotifyTestModeControlsVisibility();
+            if (Settings.Player == PlayerType.WindowsPlayback)
+                _ = RefreshWindowsMediaSessionComboAsync();
+
             SetFetchTimer();
 
             ImgCover.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
@@ -330,6 +336,74 @@ namespace Songify_Slim.Views
                         break;
                 }
             }));
+        }
+
+        private void UpdateWindowsMediaSessionComboVisibility()
+        {
+            StkWindowsMediaSessions.Visibility = Settings.Player == PlayerType.WindowsPlayback
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+        private void UpdateSpotifyTestModeControlsVisibility()
+        {
+            StkSpotifyTestMode.Visibility = Settings.Player == PlayerType.Spotify
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+        private async Task RefreshWindowsMediaSessionComboAsync()
+        {
+            if (Settings.Player != PlayerType.WindowsPlayback)
+                return;
+
+            try
+            {
+                List<WindowsMediaSessionListItem> items = (await Sf.EnumerateWindowsMediaSessionsAsync(
+                    Properties.Resources.window_main_windows_media_session_automatic)).ToList();
+
+                string saved = Settings.WindowsMediaSessionAumid ?? "";
+                if (!string.IsNullOrEmpty(saved) && items.All(x => x.Aumid != saved))
+                {
+                    items.Add(new WindowsMediaSessionListItem
+                    {
+                        Aumid = saved,
+                        DisplayName = SongFetcher.FormatWindowsMediaAumidForDisplay(saved) + " " +
+                                      Properties.Resources.window_main_windows_media_session_unavailable
+                    });
+                }
+
+                _syncingWindowsMediaSessionCombo = true;
+                try
+                {
+                    CbxWindowsMediaSession.ItemsSource = items;
+                    CbxWindowsMediaSession.SelectedValue = items.Any(x => x.Aumid == saved) ? saved : "";
+                }
+                finally
+                {
+                    _syncingWindowsMediaSessionCombo = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        private void CbxWindowsMediaSession_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded || _syncingWindowsMediaSessionCombo)
+                return;
+
+            if (CbxWindowsMediaSession.SelectedValue is string aumid)
+                Settings.WindowsMediaSessionAumid = aumid;
+            else if (CbxWindowsMediaSession.SelectedValue == null)
+                Settings.WindowsMediaSessionAumid = "";
+        }
+
+        private async void CbxWindowsMediaSession_DropDownOpened(object sender, EventArgs e)
+        {
+            await RefreshWindowsMediaSessionComboAsync();
         }
 
         private void FetchTimer(int ms)
@@ -775,11 +849,16 @@ namespace Songify_Slim.Views
 
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
+            UpdateWindowsMediaSessionComboVisibility();
+            UpdateSpotifyTestModeControlsVisibility();
+            if (Settings.Player == PlayerType.WindowsPlayback)
+                _ = RefreshWindowsMediaSessionComboAsync();
+
             // text in the bottom right
-            //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©" : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+            //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ï¿½" : $"Songify v{GlobalObjects.AppVersion} Copyright ï¿½";
             LblCopyright.Content = App.IsBeta
-                ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ©"
-                : $"Songify v{GlobalObjects.AppVersion} Copyright ©";
+                ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright ï¿½"
+                : $"Songify v{GlobalObjects.AppVersion} Copyright ï¿½";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             TbFontSize.Text = Settings.Fontsize.ToString();
@@ -1583,7 +1662,7 @@ namespace Songify_Slim.Views
                         rows =
                         [
                             ("Status", IconTwitchBot.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
-                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "ï¿½"),
                         ];
                         break;
 
@@ -1594,7 +1673,7 @@ namespace Songify_Slim.Views
                         rows =
                         [
                             ("Status", IconTwitchApi.Foreground == Brushes.GreenYellow ? "Connected" : "Disconnected"),
-                            ("Channel", Settings.TwitchUser.DisplayName ?? "—"),
+                            ("Channel", Settings.TwitchUser.DisplayName ?? "ï¿½"),
                             ("EventSubs", string.Join("\n", subs.Where(s => s.Status == "enabled").Select(s => s.Type)))
                         ];
                         break;

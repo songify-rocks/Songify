@@ -1517,6 +1517,18 @@
     <value>Songify v1.1.1-RC1 Copyright ©</value>
     <comment>Context: Copyright line in main window or about area.</comment>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automatic (current session)</value>
+    <comment>Context: First item in Windows Playback API session picker — use the OS active session.</comment>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Choose which app’s media session to read when several are active.</value>
+    <comment>Context: Tooltip on the Windows Playback API session combobox.</comment>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(unavailable)</value>
+    <comment>Context: Suffix when a saved session is not currently reported by the system.</comment>
+  </data>
   <data name="window_history_copy_url_tooltip" xml:space="preserve">
     <value>Copy the history URL.</value>
   </data>

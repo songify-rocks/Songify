@@ -1445,4 +1445,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>Quando ativado, o Songify busca reproduções do Spotify mesmo quando você não está ao vivo e o Modo de Teste está desativado. Isso pode aumentar o uso da API do Spotify e o risco de ultrapassar o limite de requisições.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Automático (sessão atual)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Escolha qual sessão de mídia de qual aplicativo deseja ler quando várias estiverem ativas.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(indisponível)</value>
+  </data>
 </root>

@@ -385,61 +385,96 @@
             </MenuItem>
 
         </Menu>
-        <StackPanel Orientation="Vertical"
-                    Grid.Row="0"
-                    Grid.RowSpan="2"
-                    Grid.Column="1"
-                    Margin="0,3,6,0"
-                    HorizontalAlignment="Right"
-                    >
-            <StackPanel
-        
-            Orientation="Horizontal">
+        <StackPanel
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Margin="0,3,6,0"
+            HorizontalAlignment="Right"
+            Orientation="Vertical">
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
                 <ComboBox
-                x:Name="CbxSource"
-                Width="116"
-                Padding="2"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                DisplayMemberPath="Name"
-                IsTabStop="False"
-                SelectedIndex="0"
-                SelectedValuePath="Value" />
+                    x:Name="CbxSource"
+                    Width="116"
+                    Padding="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    DisplayMemberPath="Name"
+                    IsTabStop="False"
+                    SelectedIndex="0"
+                    SelectedValuePath="Value" />
                 <controls:Badged
-                x:Name="Badge"
-                Margin="12,0,8,0"
-                Badge=""
-                BadgeFontSize="12">
+                    x:Name="Badge"
+                    Margin="12,0,8,0"
+                    Badge=""
+                    BadgeFontSize="12">
                     <Button
-                    Width="26"
-                    Height="26"
-                    Click="BtnMotd_Click"
-                    Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
+                        Width="26"
+                        Height="26"
+                        Click="BtnMotd_Click"
+                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
                         <Button.Content>
                             <StackPanel
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
                                 <iconPacks:BootstrapIcons
-                                x:Name="BadgeIcon"
-                                Width="12"
-                                Height="12"
-                                Kind="BellFill"
-                                Spin="False"
-                                SpinAutoReverse="False" />
+                                    x:Name="BadgeIcon"
+                                    Width="12"
+                                    Height="12"
+                                    Kind="BellFill"
+                                    Spin="False"
+                                    SpinAutoReverse="False" />
                             </StackPanel>
                         </Button.Content>
                     </Button>
                 </controls:Badged>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-
-
-
-                <controls:ToggleSwitch  MinHeight="0" Margin="0" MinWidth="0" Padding="0" x:Name="TglTestMode" Content="Test Mode" ContentDirection="LeftToRight" Toggled="TglTestMode_OnToggled"></controls:ToggleSwitch>
-                <TextBlock VerticalAlignment="Center" Margin="8,0" Text="?" TextDecorations="Underline" ToolTip="To help combat Spotify Rate Limits, Spotify fetching is now limited to either being live on Twitch or enabled Test Mode (disables after 5 minutes)."/>
-
+            <StackPanel
+                x:Name="StkSpotifyTestMode"
+                Margin="0,4,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal"
+                Visibility="Collapsed">
+                <controls:ToggleSwitch
+                    x:Name="TglTestMode"
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="0"
+                    Padding="0"
+                    Content="Test Mode"
+                    ContentDirection="LeftToRight"
+                    Toggled="TglTestMode_OnToggled" />
+                <TextBlock
+                    Margin="8,0"
+                    VerticalAlignment="Center"
+                    Text="?"
+                    TextDecorations="Underline"
+                    ToolTip="To help combat Spotify Rate Limits, Spotify fetching is now limited to either being live on Twitch or enabled Test Mode (disables after 5 minutes)." />
+            </StackPanel>
+            <StackPanel
+                x:Name="StkWindowsMediaSessions"
+                Margin="0,4,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <TextBlock
+                    Margin="6"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="Session" />
+                <ComboBox
+                    x:Name="CbxWindowsMediaSession"
+                    MinWidth="200"
+                    MaxWidth="280"
+                    Padding="2"
+                    VerticalAlignment="Top"
+                    DisplayMemberPath="DisplayName"
+                    DropDownOpened="CbxWindowsMediaSession_DropDownOpened"
+                    IsTabStop="False"
+                    SelectedValuePath="Aumid"
+                    SelectionChanged="CbxWindowsMediaSession_SelectionChanged"
+                    ToolTip="{DynamicResource window_main_windows_media_session_tooltip}" />
             </StackPanel>
         </StackPanel>
 

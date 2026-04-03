@@ -576,6 +576,12 @@ namespace Songify_Slim.Util.Configuration
 
         public static string RequesterPrefix { get => GetRequesterPrefix(); set => SetRequesterPrefix(value); }
 
+        public static string WindowsMediaSessionAumid
+        {
+            get => GetWindowsMediaSessionAumid();
+            set => SetWindowsMediaSessionAumid(value);
+        }
+
         public static int RewardGoalAmount { get => GetRewardGoalAmount(); set => SetRewardGoalAmount(value); }
 
         public static bool SaveHistory
@@ -1705,6 +1711,11 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.RequesterPrefix;
         }
 
+        private static string GetWindowsMediaSessionAumid()
+        {
+            return CurrentConfig.AppConfig.WindowsMediaSessionAumid ?? "";
+        }
+
         private static int GetRewardGoalAmount()
         {
             return CurrentConfig.AppConfig.RewardGoalAmount;
@@ -2512,6 +2523,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetRequesterPrefix(string value)
         {
             CurrentConfig.AppConfig.RequesterPrefix = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWindowsMediaSessionAumid(string value)
+        {
+            CurrentConfig.AppConfig.WindowsMediaSessionAumid = value ?? "";
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

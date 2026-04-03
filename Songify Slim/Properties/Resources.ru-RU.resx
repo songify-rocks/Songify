@@ -1446,4 +1446,13 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>При включении этой функции Songify получает воспроизведение Spotify, даже если вы не ведёте трансляцию и тестовый режим отключен. Это может увеличить использование API Spotify и риск превышения лимита запросов.</value>
   </data>
+  <data name="window_main_windows_media_session_automatic" xml:space="preserve">
+    <value>Автоматически (текущая сессия)</value>
+  </data>
+  <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
+    <value>Выберите, из какого медиа-сессии какого приложения читать, если активно несколько приложений.</value>
+  </data>
+  <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
+    <value>(недоступно)</value>
+  </data>
 </root>

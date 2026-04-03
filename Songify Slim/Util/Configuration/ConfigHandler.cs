@@ -900,6 +900,11 @@ namespace Songify_Slim.Util.Configuration
         public bool SharedChatEnabled { get; set; } = false;
         public string SrForBitsKeyWord { get; set; }
 
+        /// <summary>
+        /// Empty = use OS current SMTC session; otherwise match SourceAppUserModelId from the Windows media session.
+        /// </summary>
+        public string WindowsMediaSessionAumid { get; set; } = "";
+
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
         public int MinimumBitsForSR = 1;

@@ -41,6 +41,12 @@ using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 
 namespace Songify_Slim.Util.Songify
 {
+    public sealed class WindowsMediaSessionListItem
+    {
+        public string Aumid { get; set; }
+        public string DisplayName { get; set; }
+    }
+
     /// <summary>
     ///     This class is for retrieving data of currently playing songs
     /// </summary>
@@ -532,6 +538,71 @@ namespace Songify_Slim.Util.Songify
             await FetchWindowsApiCoreAsync(retried: false);
         }
 
+        /// <summary>
+        /// Lists SMTC sessions for the session picker. Call from the UI thread (same as <see cref="FetchWindowsApi"/>).
+        /// </summary>
+        public Task<IReadOnlyList<WindowsMediaSessionListItem>> EnumerateWindowsMediaSessionsAsync(
+            string automaticOptionDisplayName)
+        {
+            return EnumerateWindowsMediaSessionsCoreAsync(automaticOptionDisplayName);
+        }
+
+        private async Task<IReadOnlyList<WindowsMediaSessionListItem>> EnumerateWindowsMediaSessionsCoreAsync(
+            string automaticOptionDisplayName)
+        {
+            var items = new List<WindowsMediaSessionListItem>
+            {
+                new() { Aumid = "", DisplayName = automaticOptionDisplayName }
+            };
+
+            GlobalSystemMediaTransportControlsSessionManager mgr =
+                await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+            var seen = new HashSet<string>(StringComparer.Ordinal) { "" };
+
+            foreach (GlobalSystemMediaTransportControlsSession session in mgr.GetSessions())
+            {
+                string aumid = session.SourceAppUserModelId ?? "";
+                if (string.IsNullOrEmpty(aumid) || !seen.Add(aumid))
+                    continue;
+
+                items.Add(new WindowsMediaSessionListItem
+                {
+                    Aumid = aumid,
+                    DisplayName = FormatWindowsMediaAumidForDisplay(aumid)
+                });
+            }
+
+            return items;
+        }
+
+        public static string FormatWindowsMediaAumidForDisplay(string aumid)
+        {
+            if (string.IsNullOrEmpty(aumid))
+                return "";
+
+            int bang = aumid.IndexOf('!');
+            if (bang >= 0 && bang < aumid.Length - 1)
+                return aumid.Substring(bang + 1);
+
+            return aumid.Length > 80 ? aumid.Substring(0, 77) + "..." : aumid;
+        }
+
+        private static GlobalSystemMediaTransportControlsSession PickWindowsMediaSession(
+            GlobalSystemMediaTransportControlsSessionManager mgr,
+            string targetAumid)
+        {
+            if (string.IsNullOrWhiteSpace(targetAumid))
+                return mgr.GetCurrentSession();
+
+            foreach (GlobalSystemMediaTransportControlsSession s in mgr.GetSessions())
+            {
+                if (string.Equals(s.SourceAppUserModelId, targetAumid, StringComparison.Ordinal))
+                    return s;
+            }
+
+            return mgr.GetCurrentSession();
+        }
+
         public static async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
         {
             if (thumbRef == null) return null;
@@ -555,7 +626,9 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 GlobalSystemMediaTransportControlsSessionManager mgr = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
-                GlobalSystemMediaTransportControlsSession session = mgr.GetCurrentSession();
+
+                string targetAumid = Settings.WindowsMediaSessionAumid ?? "";
+                GlobalSystemMediaTransportControlsSession session = PickWindowsMediaSession(mgr, targetAumid);
                 if (session == null) { Console.WriteLine("No active media session."); return; }
 
                 GlobalSystemMediaTransportControlsSessionMediaProperties props = await session.TryGetMediaPropertiesAsync();
