@@ -972,7 +972,16 @@ namespace Songify_Slim.Util.Songify
             // if upload is enabled
             try
             {
-                RequestObject nextTrack = GlobalObjects.QueueTracks.FirstOrDefault(item => item.Trackid != songInfo.SongId);
+                int index = GlobalObjects.QueueTracks
+                    .Select((item, i) => new { item, i })
+                    .FirstOrDefault(x => x.item.Trackid == songInfo.SongId)?.i ?? -1;
+
+                RequestObject nextTrack = null;
+
+                if (index >= 0 && index < GlobalObjects.QueueTracks.Count - 1)
+                {
+                    nextTrack = GlobalObjects.QueueTracks[index + 1];
+                }
 
                 dynamic payload = new
                 {
@@ -985,7 +994,7 @@ namespace Songify_Slim.Util.Songify
                     songInfo.Artists,
                     songInfo.Title,
                     GlobalObjects.Requester,
-                    next = new
+                    next = nextTrack != null ? new
                     {
                         queueid = 0,
                         trackid = nextTrack.Trackid,
@@ -994,7 +1003,7 @@ namespace Songify_Slim.Util.Songify
                         length = nextTrack.Length,
                         requester = nextTrack.Requester,
                         albumcover = nextTrack.Albumcover
-                    }
+                    } : null
                 };
 
                 await SongifyService.UploadSong(payload);
@@ -1197,11 +1206,13 @@ namespace Songify_Slim.Util.Songify
             // 0) Correlate with Pear queue current item (canonical id)
             // We prefer the Pear queue's selected item id over now-playing VideoId,
             // because YouTube can swap the playback id while the queue item remains stable.
+            Song queueCurrent = null;
             string queueCurrentId = null;
             try
             {
                 List<Song> pearQueue = await PearApi.GetQueueAsync();
-                queueCurrentId = pearQueue?.FirstOrDefault(s => s.IsCurrent)?.Id;
+                queueCurrent = pearQueue?.FirstOrDefault(s => s.IsCurrent);
+                queueCurrentId = queueCurrent?.Id;
             }
             catch (Exception ex)
             {
@@ -1210,12 +1221,23 @@ namespace Songify_Slim.Util.Songify
 
             string canonicalId = !string.IsNullOrWhiteSpace(queueCurrentId) ? queueCurrentId : data.VideoId;
 
+            // song-info can lag behind the queue when the selection advances; keep SongId in sync with the queue
+            // but take artist/title/cover (and duration when known) from the current queue row so request matching
+            // does not attribute {{req}} to stale now-playing metadata.
+            string displayArtist = !string.IsNullOrWhiteSpace(queueCurrent?.Artist) ? queueCurrent.Artist : data.Artist;
+            string displayTitle = !string.IsNullOrWhiteSpace(queueCurrent?.Title) ? queueCurrent.Title : data.Title;
+            string displayCover = !string.IsNullOrWhiteSpace(queueCurrent?.CoverUrl) ? queueCurrent.CoverUrl : data.ImageSrc;
+
+            int songDurationSec = data.SongDuration;
+            if (queueCurrent != null && queueCurrent.Length > TimeSpan.Zero)
+                songDurationSec = (int)Math.Round(queueCurrent.Length.TotalSeconds);
+
             // Correlation logging (helpful for diagnosing YouTube id swaps)
-            if (!string.Equals(queueCurrentId, data.VideoId, StringComparison.Ordinal))
-            {
-                Logger.Info(LogSource.Pear,
-                    $"FetchPear correlation: nowPlayingVideoId='{data.VideoId}', queueCurrentId='{queueCurrentId ?? ""}', canonicalId='{canonicalId}'");
-            }
+            //if (!string.Equals(queueCurrentId, data.VideoId, StringComparison.Ordinal))
+            //{
+            //    Logger.Info(LogSource.Pear,
+            //        $"FetchPear correlation: nowPlayingVideoId='{data.VideoId}', queueCurrentId='{queueCurrentId ?? ""}', canonicalId='{canonicalId}'");
+            //}
 
             // If queue selection changed, the previously-current queue item finished/skipped -> remove that request by id.
             if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
@@ -1227,19 +1249,19 @@ namespace Songify_Slim.Util.Songify
 
             TrackInfo t = new()
             {
-                Artists = data.Artist,
-                Title = data.Title,
+                Artists = displayArtist,
+                Title = displayTitle,
                 Albums =
                 [
-                    new Image { Url = data.ImageSrc, Width = 0, Height = 0 }
+                    new Image { Url = displayCover, Width = 0, Height = 0 }
                 ],
                 SongId = canonicalId,
-                DurationMs = data.SongDuration * 1000,
+                DurationMs = songDurationSec * 1000,
                 IsPlaying = !data.IsPaused,
                 Url = data.Url,
-                DurationPercentage = (int)(data.SongDuration == 0 ? 0 :
-                    (double)data.ElapsedSeconds / data.SongDuration * 100),
-                DurationTotal = data.SongDuration * 1000,
+                DurationPercentage = (int)(songDurationSec == 0 ? 0 :
+                    Math.Min(100.0, (double)data.ElapsedSeconds / songDurationSec * 100)),
+                DurationTotal = songDurationSec * 1000,
                 Progress = data.ElapsedSeconds * 1000,
                 Playlist = new PlaylistInfo
                 {
@@ -1256,7 +1278,7 @@ namespace Songify_Slim.Util.Songify
                         ExternalUrls = new Dictionary<string, string>(),
                         Href = string.Empty,
                         Id = string.Empty,
-                        Name = data.Artist,
+                        Name = displayArtist,
                         Type = string.Empty,
                         Uri = string.Empty
                     }
