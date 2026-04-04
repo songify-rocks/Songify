@@ -605,6 +605,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException ex)
             {
+                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error Adding song to queue", ex);
                 if (ex.Response == null || (int)ex.Response.StatusCode != 503) return false;
                 for (int i = 0; i < 5; i++)
                 {
@@ -624,7 +625,6 @@ namespace Songify_Slim.Util.Spotify
                             break;
                     }
                 }
-
                 return false;
             }
             catch (Exception ex)

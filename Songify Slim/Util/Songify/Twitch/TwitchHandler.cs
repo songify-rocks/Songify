@@ -254,7 +254,10 @@ public static class TwitchHandler
 
             if (!Settings.AddSrtoPlaylistOnly)
             {
-                await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+                if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId))
+                {
+                    return;
+                }
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Queue after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
             }
 

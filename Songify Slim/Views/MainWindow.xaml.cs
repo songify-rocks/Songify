@@ -445,6 +445,10 @@ namespace Songify_Slim.Views
 
                 case PlayerType.Spotify:
 
+                    // Gating: Spotify Web API is polled on a timer. Without a gate, Songify would keep requesting
+                    // while the user is offline, which burns quota and makes Spotify rate limits / throttling more
+                    // likely. We only poll when live (when overlays usually matter), during Test Mode, or if the
+                    // user explicitly enables bypass in Settings.
                     if (Settings.IsLive || GlobalObjects.TestMode || Settings.BypassSpotifyFetchGate)
                         await Sf.FetchSpotifyWeb();
                     break;

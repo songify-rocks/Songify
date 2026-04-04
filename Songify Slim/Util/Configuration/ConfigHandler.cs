@@ -892,6 +892,10 @@ namespace Songify_Slim.Util.Configuration
         /// <summary>
         /// When true, Spotify now-playing fetch runs even when not live on Twitch and TestMode is off.
         /// </summary>
+        /// <remarks>
+        /// Default gating exists to limit steady Spotify Web API traffic when the stream is offline, reducing
+        /// unnecessary calls and the risk of rate limiting while Songify runs in the background.
+        /// </remarks>
         public bool BypassSpotifyFetchGate { get; set; }
         public bool DebugLogging { get; set; } = false;
         public string YoutubeApiKey { get; set; }
