@@ -883,8 +883,8 @@ namespace Songify_Slim.Views
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright �" : $"Songify v{GlobalObjects.AppVersion} Copyright �";
             LblCopyright.Content = App.IsBeta
-                ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright �"
-                : $"Songify v{GlobalObjects.AppVersion} Copyright �";
+                ? $"Songify v{GlobalObjects.AppVersion} BETA ©"
+                : $"Songify v{GlobalObjects.AppVersion} ©";
             //BetaPanel.Visibility = App.IsBeta ? Visibility.Visible : Visibility.Collapsed;
 
             TbFontSize.Text = Settings.Fontsize.ToString();

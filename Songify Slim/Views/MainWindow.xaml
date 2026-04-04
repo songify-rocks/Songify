@@ -810,7 +810,7 @@
                                     Foreground="{DynamicResource MahApps.Brushes.Control.Background}">
                                     <Hyperlink
                                         FontStyle="Normal"
-                                        NavigateUri="https://songify.overcode.tv"
+                                        NavigateUri="https://songify.rocks"
                                         RequestNavigate="Hyperlink_RequestNavigate">
                                         <Hyperlink.Foreground>
                                             <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}" />
