@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Songify_Slim.Util.General;
@@ -117,29 +117,33 @@ public static class ApiCallMeter
                         _globalRetryUntil = retryUntil;
                 }
 
+                string rateLimitDetails = FormatApiExceptionDetails(ex);
                 if (retrySeconds > 300)
                 {
                     Logger.Log(LogLevel.Error, LogSource.Spotify,
-                        $"Spotify daily quota exceeded. Retry after {TimeSpan.FromSeconds(retrySeconds):hh:mm:ss}");
+                        $"Spotify daily quota exceeded. Retry after {TimeSpan.FromSeconds(retrySeconds):hh:mm:ss}. {rateLimitDetails}");
                 }
                 else
                 {
                     Logger.Log(LogLevel.Warning, LogSource.Spotify,
-                        $"Spotify rate limit hit for '{key}'. Global cooldown for {retrySeconds}s");
+                        $"Spotify rate limit hit for '{key}'. Global cooldown for {retrySeconds}s. {rateLimitDetails}");
                 }
 
                 // Loop continues and all requests will respect the cooldown
             }
             catch (APIUnauthorizedException ex)
             {
-                Logger.Error(LogSource.Spotify, $"Spotify unauthorized on '{key}'. Access token may be invalid or expired.");
+                Logger.Error(LogSource.Spotify,
+                    $"Spotify unauthorized on '{key}'. Access token may be invalid or expired. {FormatApiExceptionDetails(ex)}");
+                break;
             }
             catch (APIException ex)
             {
                 if (key == "Playlists.Get" && ex.Message == "Resource not found")
-                    Logger.Error(LogSource.Spotify, $"Spotify API: Can't get public playlist Info");
+                    Logger.Error(LogSource.Spotify,
+                        $"Spotify API: Can't get public playlist Info. {FormatApiExceptionDetails(ex)}");
                 else
-                    Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {ex.Message}");
+                    Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {FormatApiExceptionDetails(ex)}");
                 break;
             }
             catch (Exception ex)
@@ -185,6 +189,36 @@ public static class ApiCallMeter
 
             return true;
         }
+    }
+
+    /// <summary>
+    /// HTTP status, parsed message, and response body (JSON when possible) for Spotify Web API errors.
+    /// </summary>
+    internal static string FormatApiExceptionDetails(APIException ex)
+    {
+        if (ex == null)
+            return "(null exception)";
+
+        string status = ex.Response != null
+            ? $"{(int)ex.Response.StatusCode} {ex.Response.StatusCode}"
+            : "no response";
+
+        string body;
+        if (ex.Response?.Body != null)
+        {
+            try
+            {
+                body = JsonSerializer.Serialize(ex.Response.Body);
+            }
+            catch
+            {
+                body = ex.Response.Body.ToString();
+            }
+        }
+        else
+            body = "(no body)";
+
+        return $"Status={status}, Message={ex.Message}, Body={body}";
     }
 
     private static int GetRetryAfterSeconds(APITooManyRequestsException ex)

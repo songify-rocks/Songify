@@ -574,11 +574,7 @@ namespace Songify_Slim.Util.Spotify
             catch (APIException apiEx)
             {
                 Logger.Error(LogSource.Spotify, "Couldn't fetch song info");
-                Logger.Error(LogSource.Spotify, apiEx.ToString());
-
-                object responseBody = apiEx.Response?.Body;
-                if (responseBody != null)
-                    Logger.Error(LogSource.Spotify, responseBody.ToString());
+                Logger.Error(LogSource.Spotify, ApiCallMeter.FormatApiExceptionDetails(apiEx));
             }
             catch (Exception ex)
             {

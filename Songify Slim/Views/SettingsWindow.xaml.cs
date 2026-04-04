@@ -194,7 +194,7 @@ namespace Songify_Slim.Views
 
         private void LogStep(Stopwatch sw, string step)
         {
-            Logger.Log(LogLevel.Info, LogSource.Core,
+            Logger.Log(LogLevel.Debug, LogSource.Core,
                 $"[SetControls] {step,-30} | {sw.ElapsedMilliseconds,6} ms");
         }
 
@@ -1908,6 +1908,9 @@ namespace Songify_Slim.Views
         private void TglBypassSpotifyFetchGate_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.BypassSpotifyFetchGate = ((ToggleSwitch)sender).IsOn;
+            MainWindow main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault()
+                ?? (Application.Current.MainWindow as MainWindow);
+            main?.RefreshSpotifyTestModeControlsVisibility();
         }
 
         private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)

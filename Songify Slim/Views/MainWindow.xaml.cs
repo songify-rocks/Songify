@@ -347,9 +347,31 @@ namespace Songify_Slim.Views
 
         private void UpdateSpotifyTestModeControlsVisibility()
         {
-            StkSpotifyTestMode.Visibility = Settings.Player == PlayerType.Spotify
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            bool show = Settings.Player == PlayerType.Spotify && !Settings.BypassSpotifyFetchGate;
+            if (!show)
+            {
+                StkSpotifyTestMode.Visibility = Visibility.Collapsed;
+                _testModeTimer?.Stop();
+                GlobalObjects.TestMode = false;
+                TglTestMode.IsOn = false;
+                return;
+            }
+
+            StkSpotifyTestMode.Visibility = Visibility.Visible;
+        }
+
+        /// <summary>
+        /// Refreshes Test Mode strip visibility (e.g. after bypass gating changes in Settings).
+        /// </summary>
+        public void RefreshSpotifyTestModeControlsVisibility()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(RefreshSpotifyTestModeControlsVisibility);
+                return;
+            }
+
+            UpdateSpotifyTestModeControlsVisibility();
         }
 
         private async Task RefreshWindowsMediaSessionComboAsync()
@@ -1016,7 +1038,9 @@ namespace Songify_Slim.Views
                         OpenPatchNotes();
                     }
 
+                    Settings.BypassSpotifyFetchGate = true;
                     Settings.UpdateRequired = false;
+                    RefreshSpotifyTestModeControlsVisibility();
                 }
             }
             catch (Exception e)
