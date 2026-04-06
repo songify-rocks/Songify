@@ -274,6 +274,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\RequestModel.cs" />
+    <Compile Include="Models\SongUploadPayload.cs" />
     <Compile Include="Models\Spotify\SongInfo.cs" />
     <Compile Include="Models\Spotify\TrackInfo.cs" />
     <Compile Include="Properties\Resources.de-DE.Designer.cs">

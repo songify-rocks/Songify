@@ -1,4 +1,5 @@
-﻿using Songify_Slim.Util.General;
+using Songify_Slim.Models;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
 using Swan.Formatters;
 using System;
@@ -12,7 +13,7 @@ namespace Songify_Slim.Util.Songify
 {
     internal class SongifyService
     {
-        public static async Task UploadSong(dynamic payload)
+        public static async Task UploadSong(SongUploadPayload payload)
         {
             try
             {

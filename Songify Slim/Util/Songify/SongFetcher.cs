@@ -255,7 +255,26 @@ namespace Songify_Slim.Util.Songify
             }
             try
             {
-                await SongifyService.UploadSong(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                string songText = output.Trim().Replace(@"\n", " - ").Replace("  ", " ");
+                string albumUrl = trackinfo.Albums != null && trackinfo.Albums.Count != 0 ? trackinfo.Albums[0].Url : "";
+                string requester = "";
+                if (GlobalObjects.ReqList.Count > 0 && !string.IsNullOrEmpty(trackinfo.SongId))
+                {
+                    RequestObject rqDesktop = GlobalObjects.ReqList.FirstOrDefault(x => x.Trackid == trackinfo.SongId);
+                    if (rqDesktop != null)
+                        requester = rqDesktop.Requester;
+                }
+
+                RequestObject nextDesktop = ResolveNextTrackFromQueue(trackinfo.SongId);
+                await SongifyService.UploadSong(BuildSongUploadPayload(
+                    songText,
+                    albumUrl,
+                    trackinfo.SongId,
+                    trackinfo.Artists,
+                    trackinfo.Title,
+                    requester,
+                    Enums.RequestPlayerType.Other,
+                    nextDesktop));
             }
             catch (Exception ex)
             {
@@ -292,7 +311,15 @@ namespace Songify_Slim.Util.Songify
                         (Settings.PauseOption == Enums.PauseOptions.PauseText))
                         await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
-                    await SongifyService.UploadSong(Settings.CustomPauseText);
+                    await SongifyService.UploadSong(BuildSongUploadPayload(
+                        Settings.CustomPauseText,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        Enums.RequestPlayerType.Other,
+                        null));
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -308,7 +335,15 @@ namespace Songify_Slim.Util.Songify
                     if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
-                    await SongifyService.UploadSong("");
+                    await SongifyService.UploadSong(BuildSongUploadPayload(
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        Enums.RequestPlayerType.Other,
+                        null));
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -770,6 +805,56 @@ namespace Songify_Slim.Util.Songify
             return parts.Select(p => new SimpleArtist { Name = p }).ToList();
         }
 
+        private static RequestObject ResolveNextTrackFromQueue(string songId)
+        {
+            if (string.IsNullOrEmpty(songId)) return null;
+
+            int index = GlobalObjects.QueueTracks
+                .Select((item, i) => new { item, i })
+                .FirstOrDefault(x => x.item.Trackid == songId)?.i ?? -1;
+
+            if (index >= 0 && index < GlobalObjects.QueueTracks.Count - 1)
+                return GlobalObjects.QueueTracks[index + 1];
+
+            return null;
+        }
+
+        private static SongUploadPayload BuildSongUploadPayload(
+            string song,
+            string cover,
+            string songId,
+            string artists,
+            string title,
+            string requester,
+            Enums.RequestPlayerType playerType,
+            RequestObject nextTrack)
+        {
+            return new SongUploadPayload
+            {
+                uuid = Settings.Uuid,
+                key = Settings.AccessKey,
+                song = song,
+                cover = cover,
+                song_id = songId,
+                playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType),
+                Artists = artists,
+                Title = title,
+                Requester = requester,
+                next = nextTrack != null
+                    ? new SongUploadNextPayload
+                    {
+                        queueid = 0,
+                        trackid = nextTrack.Trackid,
+                        artist = nextTrack.Artist,
+                        title = nextTrack.Title,
+                        length = nextTrack.Length,
+                        requester = nextTrack.Requester,
+                        albumcover = nextTrack.Albumcover
+                    }
+                    : null
+            };
+        }
+
         private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
             if (!songInfo.IsPlaying)
@@ -794,7 +879,15 @@ namespace Songify_Slim.Util.Songify
                         }
                         IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
 
-                        await SongifyService.UploadSong(Settings.CustomPauseText);
+                        await SongifyService.UploadSong(BuildSongUploadPayload(
+                            Settings.CustomPauseText,
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            Enums.RequestPlayerType.Other,
+                            null));
 
                         break;
 
@@ -810,7 +903,15 @@ namespace Songify_Slim.Util.Songify
                         }
                         IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                         IoManager.WriteSplitOutput("", "", "");
-                        await SongifyService.UploadSong("");
+                        await SongifyService.UploadSong(BuildSongUploadPayload(
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            "",
+                            Enums.RequestPlayerType.Other,
+                            null));
                         break;
 
                     default:
@@ -972,39 +1073,17 @@ namespace Songify_Slim.Util.Songify
             // if upload is enabled
             try
             {
-                int index = GlobalObjects.QueueTracks
-                    .Select((item, i) => new { item, i })
-                    .FirstOrDefault(x => x.item.Trackid == songInfo.SongId)?.i ?? -1;
+                RequestObject nextTrack = ResolveNextTrackFromQueue(songInfo.SongId);
 
-                RequestObject nextTrack = null;
-
-                if (index >= 0 && index < GlobalObjects.QueueTracks.Count - 1)
-                {
-                    nextTrack = GlobalObjects.QueueTracks[index + 1];
-                }
-
-                dynamic payload = new
-                {
-                    uuid = Settings.Uuid,
-                    key = Settings.AccessKey,
-                    song = currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "),
-                    cover = albumUrl,
-                    song_id = songInfo.SongId,
-                    playertype = Enum.GetName(typeof(Enums.RequestPlayerType), playerType),
+                SongUploadPayload payload = BuildSongUploadPayload(
+                    currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "),
+                    albumUrl,
+                    songInfo.SongId,
                     songInfo.Artists,
                     songInfo.Title,
                     GlobalObjects.Requester,
-                    next = nextTrack != null ? new
-                    {
-                        queueid = 0,
-                        trackid = nextTrack.Trackid,
-                        artist = nextTrack.Artist,
-                        title = nextTrack.Title,
-                        length = nextTrack.Length,
-                        requester = nextTrack.Requester,
-                        albumcover = nextTrack.Albumcover
-                    } : null
-                };
+                    playerType,
+                    nextTrack);
 
                 await SongifyService.UploadSong(payload);
             }
