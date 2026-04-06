@@ -2,20 +2,40 @@
     x:Class="Songify_Slim.Views.Window_ResponseParams"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="{DynamicResource window_responseparams_title}"
     Width="400"
-    Height="450"
+    Height="480"
     Loaded="MetroWindow_Loaded"
     LocationChanged="Window_ResponseParams_OnLocationChanged"
     ResizeMode="NoResize"
     WindowStartupLocation="Manual"
     mc:Ignorable="d">
     <Grid>
-        <ScrollViewer>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBox
+            x:Name="TxtSearch"
+            Grid.Row="0"
+            Margin="8,8,8,0"
+            VerticalContentAlignment="Center"
+            controls:TextBoxHelper.Watermark="{DynamicResource window_responseparams_search_watermark}"
+            TextChanged="TxtSearch_TextChanged" />
+        <Label
+            Grid.Row="1"
+            Margin="6,6"
+            Padding="0"
+            Content="{DynamicResource window_responseparams_hint_click_to_copy}"
+            FontSize="10" />
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <StackPanel x:Name="PnlParams" Orientation="Vertical" />
         </ScrollViewer>
     </Grid>

@@ -1603,6 +1603,12 @@
   <data name="window_responseparams_title" xml:space="preserve">
     <value>Параметры адказу</value>
   </data>
+  <data name="window_responseparams_hint_click_to_copy" xml:space="preserve">
+    <value>Націсніце на параметр, каб скапіяваць яго.</value>
+  </data>
+  <data name="window_responseparams_search_watermark" xml:space="preserve">
+    <value>Пошук параметраў...</value>
+  </data>
   <data name="window_settings_preview_placeholder" xml:space="preserve">
     <value>ContentControl</value>
   </data>

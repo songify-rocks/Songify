@@ -267,10 +267,6 @@ public static class TwitchHandler
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Paylist after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
             }
 
-            string successResponse = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
-            response = CreateSuccessResponse(track, e.DisplayName, successResponse);
-            TwitchCommand cmd = Settings.Commands.First(cmd => cmd.Name == "Song Request");
-
             // this will take the first 4 artists and join their names with ", "
             string artists = string.Join(", ", track.Artists
                 .Take(4)
@@ -301,6 +297,17 @@ public static class TwitchHandler
             };
 
             await UploadToQueue(o);
+
+            string successResponse = Settings.Commands.First(cmd => cmd.Name == "Song Request").Response;
+            TwitchCommand cmd = Settings.Commands.First(cmd => cmd.Name == "Song Request");
+            int userReqCount = CountUserRequestsInQueue(e.UserId, e.DisplayName);
+            response = CreateSuccessResponse(
+                track: track,
+                displayName: e.DisplayName,
+                response: successResponse,
+                userRequestCount: userReqCount,
+                userLevels: user.UserLevels
+                );
             //GlobalObjects.QueueUpdateQueueWindow();
 
             if (Settings.Commands.First(command => command.Name == "Song Request").Response.Contains("{ttp}"))
@@ -1425,7 +1432,8 @@ public static class TwitchHandler
             await UploadToQueue(req);
 
             string successResponse = cmd.Response;
-            response = CreateSuccessResponse(sr, e.DisplayName, successResponse);
+            int userReqCount = CountUserRequestsInQueue(e.UserId, e.DisplayName);
+            response = CreateSuccessResponse(sr, e.DisplayName, successResponse, userReqCount, user.UserLevels);
 
             if (cmd.Response.Contains("{ttp}"))
             {
@@ -3059,7 +3067,8 @@ public static class TwitchHandler
         return template;
     }
 
-    private static string CreateSuccessResponse(FullTrack track, string displayName, string response)
+    private static string CreateSuccessResponse(FullTrack track, string displayName, string response, int userRequestCount,
+        List<int> userLevels)
     {
         string artists = "";
         string singleArtist = "";
@@ -3083,7 +3092,8 @@ public static class TwitchHandler
         response = response.Replace("{artist}", artists);
         response = response.Replace("{single_artist}", singleArtist);
         response = response.Replace("{title}", track.Name);
-        response = response.Replace("{maxreq}", "");
+        response = response.Replace("{maxreq}", GetMaxRequestsDisplayString(userLevels));
+        response = response.Replace("{userreq}", $"{userRequestCount}");
         response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
         response = response.Replace("{pos}", $"{GlobalObjects.ReqList.Count}");
         response = response.Replace("{errormsg}", "");
@@ -3092,7 +3102,8 @@ public static class TwitchHandler
         return response;
     }
 
-    private static string CreateSuccessResponse(PearSearch track, string displayName, string response)
+    private static string CreateSuccessResponse(PearSearch track, string displayName, string response, int userRequestCount,
+        List<int> userLevels)
     {
         string artists = "";
         string singleArtist = "";
@@ -3112,7 +3123,8 @@ public static class TwitchHandler
         response = response.Replace("{artist}", artists);
         response = response.Replace("{single_artist}", singleArtist);
         response = response.Replace("{title}", track.Title);
-        response = response.Replace("{maxreq}", "");
+        response = response.Replace("{maxreq}", GetMaxRequestsDisplayString(userLevels));
+        response = response.Replace("{userreq}", $"{userRequestCount}");
         response = response.Replace("{position}", $"{GlobalObjects.ReqList.Count}");
         response = response.Replace("{pos}", $"{GlobalObjects.ReqList.Count}");
         response = response.Replace("{errormsg}", "");
@@ -3347,6 +3359,9 @@ public static class TwitchHandler
 
     private static int GetMaxRequestsForUserLevels(List<int> userLevels)
     {
+        if (userLevels == null || userLevels.Count == 0)
+            return Settings.TwSrMaxReqEveryone;
+
         return userLevels
             .Select(level => (Enums.TwitchUserLevels)level)
             .Select(userLevel => userLevel switch
@@ -3362,6 +3377,32 @@ public static class TwitchHandler
                 _ => 0
             })
             .Max();
+    }
+
+    /// <summary>
+    /// Text for {maxreq} in chat. Broadcaster uses a sentinel (999) internally for “no practical limit”;
+    /// we show a symbol instead of that number.
+    /// </summary>
+    private static string GetMaxRequestsDisplayString(List<int> userLevels)
+    {
+        if (userLevels != null && userLevels.Contains((int)Enums.TwitchUserLevels.Broadcaster))
+            return "∞";
+
+        return $"{GetMaxRequestsForUserLevels(userLevels)}";
+    }
+
+    private static bool RequestItemMatchesUser(RequestObject r, string userId, string displayName)
+    {
+        if (!string.IsNullOrEmpty(r.FullRequester?.Id))
+            return !string.IsNullOrEmpty(userId) && r.FullRequester.Id == userId;
+
+        return !string.IsNullOrEmpty(displayName) &&
+               r.Requester.Equals(displayName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static int CountUserRequestsInQueue(string userId, string displayName)
+    {
+        return GlobalObjects.ReqList.Count(r => RequestItemMatchesUser(r, userId, displayName));
     }
 
     private static string GetNextSong()
@@ -3760,13 +3801,13 @@ public static class TwitchHandler
         try
         {
             // Check if the maximum queue items have been reached for the user level
-            if (MaxQueueItems(e.DisplayName, user.UserLevels))
+            if (MaxQueueItems(e.DisplayName, e.UserId, user.UserLevels))
             {
                 response = Settings.BotRespMaxReq;
                 response = response.Replace("{user}", e.DisplayName);
                 response = response.Replace("{artist}", "");
                 response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", $"{GetMaxRequestsForUserLevels(user.UserLevels)}");
+                response = response.Replace("{maxreq}", GetMaxRequestsDisplayString(user.UserLevels));
                 response = response.Replace("{errormsg}", "");
                 response = CleanFormatString(response);
                 return true;
@@ -3787,17 +3828,12 @@ public static class TwitchHandler
             s.Username.Equals(displayName, StringComparison.CurrentCultureIgnoreCase));
     }
 
-    private static bool MaxQueueItems(string requester, List<int> userLevels)
+    private static bool MaxQueueItems(string requester, string userId, List<int> userLevels)
     {
-        // Get all current requests from this user (case-insensitive)
-        List<RequestObject> userRequests = GlobalObjects.ReqList
-            .Where(x => x.Requester.Equals(requester, StringComparison.OrdinalIgnoreCase))
-            .ToList();
-
-        // Get the highest max request limit based on all user levels
+        int count = CountUserRequestsInQueue(userId, requester);
         int maxAllowed = GetMaxRequestsForUserLevels(userLevels);
 
-        return userRequests.Count >= maxAllowed;
+        return count >= maxAllowed;
     }
 
     /// <summary>Apply the move to local list to keep positions in sync.</summary>

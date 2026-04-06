@@ -1421,6 +1421,12 @@
   <data name="window_responseparams_title" xml:space="preserve">
     <value>Parametri risposta</value>
   </data>
+  <data name="window_responseparams_hint_click_to_copy" xml:space="preserve">
+    <value>Clicca un parametro per copiarlo.</value>
+  </data>
+  <data name="window_responseparams_search_watermark" xml:space="preserve">
+    <value>Cerca parametri...</value>
+  </data>
   <data name="window_settings_preview_placeholder" xml:space="preserve">
     <value>ContentControl</value>
   </data>

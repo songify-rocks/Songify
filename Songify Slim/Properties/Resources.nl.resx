@@ -1475,6 +1475,12 @@
   <data name="window_responseparams_title" xml:space="preserve">
     <value>Antwoordparameters</value>
   </data>
+  <data name="window_responseparams_hint_click_to_copy" xml:space="preserve">
+    <value>Klik op een parameter om te kopiëren.</value>
+  </data>
+  <data name="window_responseparams_search_watermark" xml:space="preserve">
+    <value>Zoek parameters...</value>
+  </data>
   <data name="window_settings_preview_placeholder" xml:space="preserve">
     <value>ContentControl</value>
   </data>

@@ -59,6 +59,7 @@ namespace Songify_Slim.UserControls
                     { "{artist}", "Rick Astley" },
                     { "{single_artist}", "Rick Astley" },
                     { "{title}", "Never Gonna Give You Up" },
+                    { "{userreq}", "1"},
                     { "{maxreq}", "5" },
                     { "{errormsg}", "Couldn't find a song matching your request." },
                     { "{maxlength}", "300" },
