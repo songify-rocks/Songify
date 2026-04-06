@@ -13,6 +13,7 @@
     Height="285"
     MinWidth="600"
     MinHeight="285"
+    Closed="MetroWindow_Closed"
     Closing="MetroWindow_Closing"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     KeyDown="MetroWindow_KeyDown"
@@ -475,6 +476,21 @@
                     SelectedValuePath="Aumid"
                     SelectionChanged="CbxWindowsMediaSession_SelectionChanged"
                     ToolTip="{DynamicResource window_main_windows_media_session_tooltip}" />
+                <Button
+                    x:Name="BtnWindowsMediaSessionRefresh"
+                    Width="28"
+                    Height="28"
+                    Margin="4,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Click="BtnWindowsMediaSessionRefresh_Click"
+                    Focusable="False"
+                    ToolTip="{DynamicResource window_main_windows_media_session_refresh_tooltip}">
+                    <iconPacks:PackIconMaterial
+                        Width="16"
+                        Height="16"
+                        Kind="Refresh" />
+                </Button>
             </StackPanel>
         </StackPanel>
 

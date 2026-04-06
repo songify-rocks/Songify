@@ -47,6 +47,7 @@ using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
+using Windows.Media.Control;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -80,6 +81,8 @@ namespace Songify_Slim.Views
         private DispatcherTimer _testModeTimer;
         private PlayerType _selectedSource;
         private bool _syncingWindowsMediaSessionCombo;
+        private GlobalSystemMediaTransportControlsSessionManager _gsmtcSessionManager;
+        private DispatcherTimer _windowsMediaSessionsDebouncedRefresh;
         private Timer _timerFetcher = new();
         private WindowConsole _consoleWindow;
         public NotifyIcon NotifyIcon = new();
@@ -126,7 +129,6 @@ namespace Songify_Slim.Views
             Timer.Start();
             DataContext = this;
         }
-
 
         public static void RegisterInStartup(bool isChecked)
         {
@@ -312,7 +314,12 @@ namespace Songify_Slim.Views
             UpdateWindowsMediaSessionComboVisibility();
             UpdateSpotifyTestModeControlsVisibility();
             if (Settings.Player == PlayerType.WindowsPlayback)
+            {
+                _ = StartWindowsMediaSessionListWatcherAsync();
                 _ = RefreshWindowsMediaSessionComboAsync();
+            }
+            else
+                StopWindowsMediaSessionListWatcher();
 
             SetFetchTimer();
 
@@ -343,6 +350,70 @@ namespace Songify_Slim.Views
             StkWindowsMediaSessions.Visibility = Settings.Player == PlayerType.WindowsPlayback
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+        }
+
+        private async Task StartWindowsMediaSessionListWatcherAsync()
+        {
+            if (_gsmtcSessionManager != null)
+                return;
+
+            try
+            {
+                _gsmtcSessionManager = await GlobalSystemMediaTransportControlsSessionManager.RequestAsync();
+                _gsmtcSessionManager.SessionsChanged += OnGsmtcSessionsChanged;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        }
+
+        private void StopWindowsMediaSessionListWatcher()
+        {
+            _windowsMediaSessionsDebouncedRefresh?.Stop();
+            if (_gsmtcSessionManager != null)
+            {
+                try
+                {
+                    _gsmtcSessionManager.SessionsChanged -= OnGsmtcSessionsChanged;
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogExc(ex);
+                }
+
+                _gsmtcSessionManager = null;
+            }
+        }
+
+        private void OnGsmtcSessionsChanged(GlobalSystemMediaTransportControlsSessionManager sender,
+            SessionsChangedEventArgs args)
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                if (Settings.Player != PlayerType.WindowsPlayback)
+                    return;
+                ScheduleDebouncedWindowsMediaSessionRefresh();
+            }));
+        }
+
+        private void ScheduleDebouncedWindowsMediaSessionRefresh()
+        {
+            if (_windowsMediaSessionsDebouncedRefresh == null)
+            {
+                _windowsMediaSessionsDebouncedRefresh = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(200)
+                };
+                _windowsMediaSessionsDebouncedRefresh.Tick += (_, _) =>
+                {
+                    _windowsMediaSessionsDebouncedRefresh.Stop();
+                    _ = RefreshWindowsMediaSessionComboAsync();
+                };
+            }
+
+            _windowsMediaSessionsDebouncedRefresh.Stop();
+            _windowsMediaSessionsDebouncedRefresh.Start();
         }
 
         private void UpdateSpotifyTestModeControlsVisibility()
@@ -428,6 +499,11 @@ namespace Songify_Slim.Views
             await RefreshWindowsMediaSessionComboAsync();
         }
 
+        private async void BtnWindowsMediaSessionRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            await RefreshWindowsMediaSessionComboAsync();
+        }
+
         private void FetchTimer(int ms)
         {
             // Check if the timer is running, if yes stop it and start new with the ms giving in the parameter
@@ -497,6 +573,11 @@ namespace Songify_Slim.Views
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            StopWindowsMediaSessionListWatcher();
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
@@ -878,7 +959,10 @@ namespace Songify_Slim.Views
             UpdateWindowsMediaSessionComboVisibility();
             UpdateSpotifyTestModeControlsVisibility();
             if (Settings.Player == PlayerType.WindowsPlayback)
+            {
+                _ = StartWindowsMediaSessionListWatcherAsync();
                 _ = RefreshWindowsMediaSessionComboAsync();
+            }
 
             // text in the bottom right
             //LblCopyright.Content = App.IsBeta ? $"Songify v{GlobalObjects.AppVersion} BETA Copyright �" : $"Songify v{GlobalObjects.AppVersion} Copyright �";
@@ -1025,20 +1109,7 @@ namespace Songify_Slim.Views
 
                 if (Settings.UpdateRequired)
                 {
-                    MessageDialogResult result = await this.ShowMessageAsync("Songify just updated",
-                        "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog by clicking on File -> Patch Notes",
-                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
-                        {
-                            AffirmativeButtonText = "Yes",
-                            NegativeButtonText = "No"
-                        });
-
-                    if (result == MessageDialogResult.Affirmative)
-                    {
-                        OpenPatchNotes();
-                    }
-
-                    Settings.BypassSpotifyFetchGate = true;
+                    OpenPatchNotes();
                     Settings.UpdateRequired = false;
                     RefreshSpotifyTestModeControlsVisibility();
                 }
@@ -1746,15 +1817,15 @@ namespace Songify_Slim.Views
                     break;
 
                 case "WebServer":
-                {
-                    if (GlobalObjects.WebServer.Run)
                     {
-                        GlobalObjects.WebServer.StopWebServer();
-                    }
-                    else GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
+                        if (GlobalObjects.WebServer.Run)
+                        {
+                            GlobalObjects.WebServer.StopWebServer();
+                        }
+                        else GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 

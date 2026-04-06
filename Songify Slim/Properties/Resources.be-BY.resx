@@ -1636,4 +1636,7 @@
   <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
     <value>(недаступна)</value>
   </data>
+  <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
+    <value>Абнавіць спіс медыясеансаў.</value>
+  </data>
 </root>

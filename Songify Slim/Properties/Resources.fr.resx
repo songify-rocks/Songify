@@ -1455,4 +1455,7 @@
   <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
     <value>(indisponible)</value>
   </data>
+  <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
+    <value>Actualiser les sessions multimédias.</value>
+  </data>
 </root>

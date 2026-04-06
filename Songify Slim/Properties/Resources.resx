@@ -1529,6 +1529,10 @@
     <value>(unavailable)</value>
     <comment>Context: Suffix when a saved session is not currently reported by the system.</comment>
   </data>
+  <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
+    <value>Refresh media sessions.</value>
+    <comment>Context: Tooltip on button to reload the list of Windows media sessions.</comment>
+  </data>
   <data name="window_history_copy_url_tooltip" xml:space="preserve">
     <value>Copy the history URL.</value>
   </data>
