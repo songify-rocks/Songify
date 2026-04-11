@@ -349,6 +349,10 @@ namespace Songify_Slim.Util.Spotify
                                 mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
                                 if (mw.TxtblockLiveoutput.Text == "Artist - Title")
                                     mw.TxtblockLiveoutput.Text = "Play some music :)";
+                                if (!Settings.BypassSpotifyFetchGate)
+                                {
+                                    mw.SetBypassNotice();
+                                }
                                 break;
 
                             case Window_Settings ws:

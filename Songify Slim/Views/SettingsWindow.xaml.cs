@@ -37,6 +37,7 @@ using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using TwitchLib.Api;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
@@ -44,12 +45,14 @@ using Windows.Media.Playlists;
 using YamlDotNet.Core.Tokens;
 using static Songify_Slim.App;
 using Application = System.Windows.Application;
+using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using Color = System.Windows.Media.Color;
 using ComboBox = System.Windows.Controls.ComboBox;
+using Control = System.Windows.Controls.Control;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Icon = System.Drawing.Icon;
@@ -2724,6 +2727,40 @@ namespace Songify_Slim.Views
         {
             if (!IsLoaded || _isSettingControls) return;
             Settings.SrForBitsKeyWord = ((TextBox)sender).Text;
+        }
+
+        public void SelectTab(string tabName, string elementName = "")
+        {
+            foreach (TabItem tab in TabCtrl.Items)
+            {
+                if (!tab.Tag.ToString().Equals(tabName, StringComparison.CurrentCultureIgnoreCase)) continue;
+                TabCtrl.SelectedItem = tab;
+                if (!string.IsNullOrEmpty(elementName))
+                {
+                    tab.ApplyTemplate(); // ensure content is loaded
+
+                    FrameworkElement element = tab.FindName(elementName) as FrameworkElement;
+
+                    element?.BringIntoView();
+
+                    if (element is StackPanel ctrl)
+                    {
+                        Task.Delay(500);
+                        Brush original = ctrl.Background;
+                        ctrl.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
+
+                        DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
+                        timer.Tick += (_, __) =>
+                        {
+                            ctrl.Background = original;
+                            timer.Stop();
+                        };
+                        timer.Start();
+                    }
+                }
+
+                break;
+            }
         }
     }
 }

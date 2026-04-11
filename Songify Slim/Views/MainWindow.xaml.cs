@@ -39,6 +39,7 @@ using Button = System.Windows.Controls.Button;
 using ImageConverter = Songify_Slim.Util.General.ImageConverter;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using System.Security;
+using System.Windows.Documents;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.APIs;
@@ -48,6 +49,7 @@ using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
 using Windows.Media.Control;
+using Cursor = System.Windows.Input.Cursor;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
@@ -90,6 +92,8 @@ namespace Songify_Slim.Views
         public string SongArtist, SongTitle;
         public List<Psa> PsAs;
         public ApiMetricsVm ApiMetrics => GlobalObjects.ApiMetrics;
+
+        private bool _forceSpotifyUpdate = false;
 
         #endregion Variables
 
@@ -548,7 +552,20 @@ namespace Songify_Slim.Views
                     // likely. We only poll when live (when overlays usually matter), during Test Mode, or if the
                     // user explicitly enables bypass in Settings.
                     if (Settings.IsLive || GlobalObjects.TestMode || Settings.BypassSpotifyFetchGate)
-                        await Sf.FetchSpotifyWeb();
+                    {
+                        await Sf.FetchSpotifyWeb(_forceSpotifyUpdate);
+                        _forceSpotifyUpdate = false;
+                    }
+                    else
+                    {
+                        await Dispatcher.InvokeAsync(() =>
+                        {
+                            GrdCover.Visibility = Visibility.Collapsed;
+
+                            SetBypassNotice();
+                            _forceSpotifyUpdate = true;
+                        });
+                    }
                     break;
 
                 case PlayerType.Pear:
@@ -567,6 +584,39 @@ namespace Songify_Slim.Views
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        public void SetBypassNotice()
+        {
+            TxtblockLiveoutput.Inlines.Clear();
+            TxtblockLiveoutput.Inlines.Add(new Run("\n"));
+
+            TxtblockLiveoutput.Inlines.Add(new Run("Spotify fetching is paused to reduce unnecessary API calls.\n\n"));
+            TxtblockLiveoutput.Inlines.Add(new Run("It will resume when:\r\n"));
+            TxtblockLiveoutput.Inlines.Add(new Run("• You are live on Twitch\r\n"));
+            TxtblockLiveoutput.Inlines.Add(new Run("• Test Mode is enabled (disables after 5 min)\r\n"));
+
+            TxtblockLiveoutput.Inlines.Add(new Run("• Fetch gating is bypassed in "));
+            Hyperlink link = new Hyperlink(new Run("Settings → Spotify"));
+
+            link.Click += (sender, args) =>
+            {
+                if (Application.Current.Windows.OfType<Window_Settings>().FirstOrDefault() is
+                    Window_Settings settingsWindow)
+                {
+                    settingsWindow.Focus();
+                    settingsWindow.Activate();
+                    settingsWindow.SelectTab("Spotify", "PnlFetchGating");
+                }
+                else
+                {
+                    Window_Settings sW = new();
+                    sW.Show();
+                    sW.SelectTab("Spotify", "PnlFetchGating");
+                }
+            };
+            TxtblockLiveoutput.Inlines.Add(link);
+            TxtblockLiveoutput.Inlines.Add(new Run("\n"));
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
@@ -1343,7 +1393,7 @@ namespace Songify_Slim.Views
 
                         double maxWidth =
                             _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear &&
-                            Settings.DownloadCover
+                            Settings.DownloadCover && Settings.BypassSpotifyFetchGate
                                 ? 500
                                 : (int)Width - 6;
 
@@ -1351,8 +1401,8 @@ namespace Songify_Slim.Views
                             ImgCover.Visibility = vis;
                         if (GrdCover.Visibility != vis)
                             GrdCover.Visibility = vis;
-                        if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
-                            TxtblockLiveoutput.MaxWidth = maxWidth;
+                        //if (Math.Abs((int)TxtblockLiveoutput.MaxWidth - maxWidth) > 0)
+                        //    TxtblockLiveoutput.MaxWidth = maxWidth;
                     }));
                 }
                 catch
@@ -1835,7 +1885,7 @@ namespace Songify_Slim.Views
             {
                 // Enable test mode
                 GlobalObjects.TestMode = true;
-
+                _forceSpotifyUpdate = true;
                 // Stop any existing timer
                 _testModeTimer?.Stop();
 
@@ -1863,6 +1913,11 @@ namespace Songify_Slim.Views
                 _testModeTimer?.Stop();
                 GlobalObjects.TestMode = false;
             }
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            Process.Start("https://github.com/songify-rocks/Songify/wiki/Spotify-fetching,-Test-Mode,-and-live-gating");
         }
     }
 }

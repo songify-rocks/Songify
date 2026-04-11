@@ -384,7 +384,6 @@
                     Click="BtnWebServerUrl_Click"
                     Header="{DynamicResource menu_view_webserver_url}" />
             </MenuItem>
-
         </Menu>
         <StackPanel
             Grid.Row="0"
@@ -437,7 +436,7 @@
                 Margin="0,4,0,0"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal"
-                Visibility="Collapsed">
+                Visibility="Visible">
                 <controls:ToggleSwitch
                     x:Name="TglTestMode"
                     MinWidth="0"
@@ -447,11 +446,15 @@
                     Content="Test Mode"
                     ContentDirection="LeftToRight"
                     Toggled="TglTestMode_OnToggled" />
-                <TextBlock
+                <Button
+                    Width="10"
+                    MinWidth="0"
                     Margin="8,0"
+                    Padding="0"
                     VerticalAlignment="Center"
-                    Text="?"
-                    TextDecorations="Underline"
+                    Click="ButtonBase_OnClick"
+                    Content="?"
+                    Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                     ToolTip="To help combat Spotify Rate Limits, Spotify fetching is now limited to either being live on Twitch or enabled Test Mode (disables after 5 minutes)." />
             </StackPanel>
             <StackPanel
@@ -507,7 +510,7 @@
                 Width="{Binding ElementName=MainWindow, Path=ActualWidth}"
                 Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
                 Header="{DynamicResource menu_notifications}"
-                IsOpen="False"
+                IsOpen="false"
                 Position="Right">
                 <controls:Flyout.HeaderTemplate>
                     <DataTemplate>
@@ -612,9 +615,8 @@
                 VerticalAlignment="Stretch">
                 <TextBlock
                     x:Name="TxtblockLiveoutput"
-                    MaxWidth="500"
                     Padding="10"
-                    HorizontalAlignment="Left"
+                    HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     d:Text="{DynamicResource common_now_playing_placeholder}"
                     SnapsToDevicePixels="True"

@@ -74,7 +74,10 @@
             x:Name="TabCtrl"
             Margin="10,0,10,0"
             TabStripPlacement="Left">
-            <TabItem d:Header="{DynamicResource window_settings_tab_system}" Header="{DynamicResource window_settings_tab_system}">
+            <TabItem
+                d:Header="{DynamicResource window_settings_tab_system}"
+                Header="{DynamicResource window_settings_tab_system}"
+                Tag="System">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -370,7 +373,10 @@
                     </ScrollViewer>
                 </Border>
             </TabItem>
-            <TabItem d:Header="{DynamicResource window_settings_tab_output}" Header="{DynamicResource window_settings_tab_output}">
+            <TabItem
+                d:Header="{DynamicResource window_settings_tab_output}"
+                Header="{DynamicResource window_settings_tab_output}"
+                Tag="Output">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -757,7 +763,8 @@
             <TabItem
                 x:Name="TabItemTwitch"
                 d:Header="{DynamicResource window_settings_tab_integration}"
-                Header="{DynamicResource window_settings_tab_integration}">
+                Header="{DynamicResource window_settings_tab_integration}"
+                Tag="Twitch">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -1276,6 +1283,7 @@
                 Padding="20,0,0,0"
                 d:Header="{DynamicResource window_settings_tab_rewards}"
                 Header="{DynamicResource window_settings_tab_rewards}"
+                Tag="TwitchRewards"
                 Visibility="Visible">
                 <Border
                     Margin="10,0,0,0"
@@ -1494,6 +1502,7 @@
                 Padding="20,0,0,0"
                 d:Header="Polls"
                 Header="Polls"
+                Tag="TwitchPolls"
                 Visibility="Visible">
                 <Border
                     Margin="10,0,0,0"
@@ -1653,6 +1662,7 @@
                 x:Name="TabItemTwitchSr"
                 Padding="20,0,0,0"
                 Header="{DynamicResource window_settings_tab_songrequest}"
+                Tag="TwitchSongRequest"
                 ToolTip="{DynamicResource window_settings_tab_song_requests}"
                 Visibility="Visible">
                 <Border
@@ -2386,7 +2396,8 @@
                 x:Name="TabItemTwitchBotCommands"
                 Padding="20,0,0,0"
                 d:Header="{DynamicResource window_botresponses_tab_commands}"
-                Header="{DynamicResource window_botresponses_tab_commands}">
+                Header="{DynamicResource window_botresponses_tab_commands}"
+                Tag="TwitchCommands">
                 <Border
                     x:Name="BorderCommands"
                     Margin="10,0,0,0"
@@ -2428,7 +2439,8 @@
             <TabItem
                 Padding="20,0,0,0"
                 d:Header="{DynamicResource window_botresponses_tab_responses}"
-                Header="{DynamicResource window_botresponses_tab_responses}">
+                Header="{DynamicResource window_botresponses_tab_responses}"
+                Tag="TwitchResponses">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -2479,7 +2491,7 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="{DynamicResource window_settings_tab_spotify}">
+            <TabItem Header="{DynamicResource window_settings_tab_spotify}" Tag="Spotify">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -2694,6 +2706,7 @@
                             ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                             Value="1" />
                         <StackPanel
+                            x:Name="PnlFetchGating"
                             Grid.Row="8"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
@@ -2717,7 +2730,7 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem Header="{DynamicResource window_settings_tab_youtube}">
+            <TabItem Header="{DynamicResource window_settings_tab_youtube}" Tag="Youtube">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -2769,7 +2782,10 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem d:Header="{DynamicResource window_settings_tab_webserver}" Header="{DynamicResource window_settings_tab_webserver}">
+            <TabItem
+                d:Header="{DynamicResource window_settings_tab_webserver}"
+                Header="{DynamicResource window_settings_tab_webserver}"
+                Tag="WebServer">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
@@ -2836,7 +2852,10 @@
                     </Grid>
                 </Border>
             </TabItem>
-            <TabItem d:Header="{DynamicResource window_settings_tab_config}" Header="{DynamicResource window_settings_tab_config}">
+            <TabItem
+                d:Header="{DynamicResource window_settings_tab_config}"
+                Header="{DynamicResource window_settings_tab_config}"
+                Tag="Config">
                 <Border
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"

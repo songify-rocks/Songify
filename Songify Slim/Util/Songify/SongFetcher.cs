@@ -410,7 +410,7 @@ namespace Songify_Slim.Util.Songify
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
 
-        public async Task FetchSpotifyWeb()
+        public async Task FetchSpotifyWeb(bool forceUpdate = false)
         {
             // If the spotify object hast been created (successfully authed)
             //if (_updating)
@@ -441,7 +441,7 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
-                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null) || (songInfo.SongId == null && !string.IsNullOrEmpty(songInfo.Title)))
+                if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null) || (songInfo.SongId == null && !string.IsNullOrEmpty(songInfo.Title)) || forceUpdate)
                 {
                     if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
                     {
