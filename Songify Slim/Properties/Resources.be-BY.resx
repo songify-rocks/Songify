@@ -1628,21 +1628,21 @@
     <value>Ключавое слова Bits (Запыт будзе спрацоўваць толькі ў тым выпадку, калі гэта ключавое слова ёсць у паведамленні Bits)</value>
   </data>
   <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
-    <value>Абыход стробавання ў рэжыме рэальнага часу/тэставання</value>
+    <value>Абыход абмежаванняў рэжым рэальнага часу/тэставага</value>
   </data>
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
-    <value>Калі ўключана, Songify атрымлівае прайграванне Spotify, нават калі вы не вядзеце прамую трансляцыю і тэставы рэжым выключаны. Гэта можа павялічыць выкарыстанне Spotify API і рызыку абмежавання хуткасці.</value>
+    <value>Калі ўключана, Songify атрымлівае прайграванне Spotify, нават калі не ўключана прамая трансляцыя і тэставы рэжым выключаны. Гэта можа павялічыць ужыванне Spotify API і рызыку выйсці за ліміт запытаў.</value>
   </data>
   <data name="window_main_windows_media_session_automatic" xml:space="preserve">
     <value>Аўтаматычна (бягучы сеанс)</value>
   </data>
   <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
-    <value>Выберыце, медыясеанс якой праграмы чытаць, калі актыўныя некалькі праграм.</value>
+    <value>Выберыце, медыя-сеанс якой праграмы чытаць, калі актыўна некалькі.</value>
   </data>
   <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
     <value>(недаступна)</value>
   </data>
   <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
-    <value>Абнавіць спіс медыясеансаў.</value>
+    <value>Абнавіць спіс медыя-сеансаў.</value>
   </data>
 </root>
