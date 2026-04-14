@@ -1898,12 +1898,6 @@ public static class TwitchHandler
 
     private static async Task HandleSkipCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
     {
-        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
-            return;
-
-        if (_skipCooldown)
-            return;
-
         int count = 0;
         string name = "";
 
@@ -1925,6 +1919,12 @@ public static class TwitchHandler
                 cmdParams.UserLevels.Add(-1);
             }
         }
+
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
+
+        if (_skipCooldown)
+            return;
 
         Application.Current.Dispatcher.Invoke(() =>
         {
