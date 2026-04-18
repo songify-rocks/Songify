@@ -40,6 +40,14 @@ public static class Enums
         Websocket
     }
 
+    /// <summary>Which song-request path WebSocket actions (<c>sr_enable</c> / <c>sr_disable</c>) should affect.</summary>
+    public enum SongRequestToggleScope
+    {
+        Both,
+        Reward,
+        Command
+    }
+
     public enum CommandType
     {
         [Description("Song Request")]

@@ -73,6 +73,7 @@ namespace Songify_Slim.Util.Songify
 
         private PearSong currentSong = null;
         private TrackInfo tI = null;
+
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
         private string _lastPearQueueCurrentId;
@@ -1204,8 +1205,30 @@ namespace Songify_Slim.Util.Songify
             return currentSongOutput;
         }
 
+        /// <summary>Rebuilds and broadcasts the <c>/ws/data</c> payload (e.g. after song request settings change).</summary>
+        public static async Task RefreshWebServerPayloadAsync()
+        {
+            TrackInfo track = GlobalObjects.CurrentSong;
+            if (track == null)
+            {
+                track = new TrackInfo
+                {
+                    Albums = new List<Image>(),
+                    Artists = string.Empty,
+                    Title = string.Empty,
+                    SongId = string.Empty,
+                    Url = string.Empty
+                };
+            }
+
+            await UpdateWebServerResponse(track);
+        }
+
         private static async Task UpdateWebServerResponse(TrackInfo track)
         {
+            if (track.Albums == null)
+                track.Albums = new List<Image>();
+
             // Normalize album image URLs
             foreach (Image album in track.Albums)
             {
@@ -1254,11 +1277,20 @@ namespace Songify_Slim.Util.Songify
                 Requester = requester
             };
 
+            bool chatSongRequests = Settings.Commands
+                .FirstOrDefault(c => c.CommandType == Enums.CommandType.SongRequest)?.IsEnabled ?? false;
+            var songRequests = new
+            {
+                chat = chatSongRequests,
+                reward = Settings.TwSrReward
+            };
+
             var queueData = new
             {
                 Count = GlobalObjects.ReqList.Count,
                 Requests = GlobalObjects.ReqList,
-                Tracks = GlobalObjects.QueueTracks
+                Tracks = GlobalObjects.QueueTracks,
+                songRequests
             };
 
             var payload = new

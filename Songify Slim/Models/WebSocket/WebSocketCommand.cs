@@ -30,6 +30,13 @@ namespace Songify_Slim.Models.WebSocket
     /// {
     ///     "action": "skip"
     /// }
+    ///
+    /// Song requests (enable / disable; optional scope defaults to both):
+    /// {
+    ///     "action": "sr_enable",
+    ///     "data": { "scope": "both" }
+    /// }
+    /// Aliases: sr_open (same as sr_enable), sr_close (same as sr_disable).
     /// </remarks>
     public class WebSocketCommand
     {

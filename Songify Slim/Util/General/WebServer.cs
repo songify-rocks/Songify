@@ -73,7 +73,64 @@ namespace Songify_Slim.Util.General
             ["play"] = HandlePlayPauseAsync,
             ["stop_sr_reward"] = HandleStopSrRewardAsync,
             ["play_playlist"] = PlayPlaylist,
+            ["sr_enable"] = HandleSrEnableAsync,
+            ["sr_disable"] = HandleSrDisableAsync,
+            ["sr_open"] = HandleSrEnableAsync,
+            ["sr_close"] = HandleSrDisableAsync
         };
+
+        private static bool TryParseSongRequestToggleScope(WebSocketCommand command,
+            out Enums.SongRequestToggleScope scope, out string parseError)
+        {
+            scope = Enums.SongRequestToggleScope.Both;
+            parseError = null;
+            if (command.Data == null)
+                return true;
+
+            SrScopeData data;
+            try
+            {
+                data = command.Data.ToObject<SrScopeData>();
+            }
+            catch (JsonException)
+            {
+                parseError = "Invalid data for song request command.";
+                return false;
+            }
+
+            if (data == null || string.IsNullOrWhiteSpace(data.Scope))
+                return true;
+
+            switch (data.Scope.Trim().ToLowerInvariant())
+            {
+                case "both":
+                    scope = Enums.SongRequestToggleScope.Both;
+                    return true;
+                case "reward":
+                    scope = Enums.SongRequestToggleScope.Reward;
+                    return true;
+                case "command":
+                    scope = Enums.SongRequestToggleScope.Command;
+                    return true;
+                default:
+                    parseError = $"Unknown scope \"{data.Scope}\". Use both, reward, or command.";
+                    return false;
+            }
+        }
+
+        private static async Task<string> HandleSrEnableAsync(WebSocketCommand command)
+        {
+            if (!TryParseSongRequestToggleScope(command, out Enums.SongRequestToggleScope scope, out string parseError))
+                return parseError;
+            return await TwitchHandler.SetSongRequestStateAsync(true, scope);
+        }
+
+        private static async Task<string> HandleSrDisableAsync(WebSocketCommand command)
+        {
+            if (!TryParseSongRequestToggleScope(command, out Enums.SongRequestToggleScope scope, out string parseError))
+                return parseError;
+            return await TwitchHandler.SetSongRequestStateAsync(false, scope);
+        }
 
         // Abstraction for player-specific ops
         private interface IPlayerOps

@@ -13,6 +13,7 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
@@ -2063,7 +2064,7 @@ public static class TwitchHandler
         {
             if (await SpotifyApiHandler.AddToPlaylist(GlobalObjects.CurrentSong.SongId))
             {
-                await SendChatMessage($"The Song \"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}\" is already in the playlist.");
+                await SendChatMessage($"There was an error adding the song to the playlist.");
                 return;
             }
 
@@ -2328,56 +2329,99 @@ public static class TwitchHandler
             return;
         try
         {
-            //Toggle SR Reward
-            Settings.TwSrReward = !Settings.TwSrReward;
-            try
-            {
-                await TwitchApiHelper.EnableRewards(Settings.TwRewardId, Settings.TwSrReward);
-                TwitchCommand command = Settings.Commands.First(twitchCommand =>
-                    twitchCommand.CommandType == Enums.CommandType.SongRequest);
-                command.IsEnabled = Settings.TwSrReward;
-                Settings.UpdateCommand(command);
+            bool enabled = !Settings.TwSrReward;
+            string status = await SetSongRequestStateAsync(enabled, Enums.SongRequestToggleScope.Both);
+            if (status.StartsWith("No SongRequest", StringComparison.Ordinal) ||
+                status.StartsWith("Failed", StringComparison.Ordinal))
+                return;
 
-                // Re-apply UI settings
-                await Application.Current.Dispatcher.Invoke(async () =>
-                {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is not Window_Settings settingsWindow) continue;
-                        await settingsWindow.LoadCommands();
-                    }
-                });
-
-                string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
-                {
-                    User = message.ChatterUserName,
-                    Artist = null,
-                    SingleArtist = null,
-                    Title = null,
-                    MaxReq = $"{Settings.TwSrMaxReq}",
-                    ErrorMsg = null,
-                    MaxLength = $"{Settings.MaxSongLength}",
-                    Votes = $"{SkipVotes.Count}/{Settings.BotCmdSkipVoteCount}",
-                    Song = null,
-                    Req = GlobalObjects.Requester,
-                    Url = null,
-                    PlaylistName = null,
-                    PlaylistUrl = null,
-                    Cd = Settings.TwSrCooldown.ToString(),
-                    State = Settings.TwSrReward ? "enabled" : "disabled"
-                }, cmd.Response);
-                SendOrAnnounceMessage(response, cmd);
-            }
-            catch (Exception e)
+            string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
             {
-                Console.WriteLine(e);
-                throw;
-            }
+                User = message.ChatterUserName,
+                Artist = null,
+                SingleArtist = null,
+                Title = null,
+                MaxReq = $"{Settings.TwSrMaxReq}",
+                ErrorMsg = null,
+                MaxLength = $"{Settings.MaxSongLength}",
+                Votes = $"{SkipVotes.Count}/{Settings.BotCmdSkipVoteCount}",
+                Song = null,
+                Req = GlobalObjects.Requester,
+                Url = null,
+                PlaylistName = null,
+                PlaylistUrl = null,
+                Cd = Settings.TwSrCooldown.ToString(),
+                State = enabled ? "enabled" : "disabled"
+            }, cmd.Response);
+            SendOrAnnounceMessage(response, cmd);
         }
         catch
         {
             // ignored
         }
+    }
+
+    /// <summary>Sets song request availability for chat command, channel rewards, or both (same coupling as <c>!togglesr</c> for <see cref="Enums.SongRequestToggleScope.Both"/>).</summary>
+    public static async Task<string> SetSongRequestStateAsync(bool enabled, Enums.SongRequestToggleScope scope)
+    {
+        try
+        {
+            TwitchCommand songRequestCmd =
+                Settings.Commands.FirstOrDefault(c => c.CommandType == Enums.CommandType.SongRequest);
+            if (songRequestCmd == null)
+                return "No SongRequest command is configured.";
+
+            switch (scope)
+            {
+                case Enums.SongRequestToggleScope.Both:
+                    Settings.TwSrReward = enabled;
+                    await TwitchApiHelper.EnableRewards(Settings.TwRewardId, enabled);
+                    Settings.TwSrCommand = enabled;
+                    songRequestCmd.IsEnabled = enabled;
+                    Settings.UpdateCommand(songRequestCmd);
+                    break;
+
+                case Enums.SongRequestToggleScope.Reward:
+                    Settings.TwSrReward = enabled;
+                    await TwitchApiHelper.EnableRewards(Settings.TwRewardId, enabled);
+                    break;
+
+                case Enums.SongRequestToggleScope.Command:
+                    Settings.TwSrCommand = enabled;
+                    songRequestCmd.IsEnabled = enabled;
+                    Settings.UpdateCommand(songRequestCmd);
+                    break;
+
+                default:
+                    return "Unknown song request scope.";
+            }
+
+            await Application.Current.Dispatcher.Invoke(async () =>
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is not Window_Settings settingsWindow) continue;
+                    await settingsWindow.LoadCommands();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Logger.LogExc(e);
+            return "Failed to update song request state.";
+        }
+
+        await SongFetcher.RefreshWebServerPayloadAsync();
+        return scope switch
+        {
+            Enums.SongRequestToggleScope.Both =>
+                enabled ? "Song requests enabled (chat + reward)." : "Song requests disabled (chat + reward).",
+            Enums.SongRequestToggleScope.Reward =>
+                enabled ? "Song request rewards enabled." : "Song request rewards disabled.",
+            Enums.SongRequestToggleScope.Command =>
+                enabled ? "Song request chat command enabled." : "Song request chat command disabled.",
+            _ => "Song request state updated."
+        };
     }
 
     // ReSharper disable once UnusedParameter.Local

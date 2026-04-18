@@ -166,6 +166,7 @@
     <Compile Include="Models\Twitch\TwitchChatAccount.cs" />
     <Compile Include="Models\Twitch\TwitchPollSettings.cs" />
     <Compile Include="Models\WebSocket\QueueAddData.cs" />
+    <Compile Include="Models\WebSocket\SrScopeData.cs" />
     <Compile Include="Models\Queue\QueueItem.cs" />
     <Compile Include="Models\Twitch\SimpleTwitchUser.cs" />
     <Compile Include="Models\Twitch\TwitchCommand.cs" />

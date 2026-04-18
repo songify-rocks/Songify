@@ -94,36 +94,144 @@
             </Grid>
         </TabItem>
         <TabItem x:Name="TiMetrics">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Button
-                    x:Name="BtnToGraph"
-                    Grid.Row="0"
-                    HorizontalAlignment="Right"
-                    Click="BtnToGraph_OnClick"
-                    Content="{DynamicResource window_console_graph}" />
-                <DataGrid
-                    Grid.Row="1"
-                    Margin="8"
-                    AutoGenerateColumns="False"
-                    HeadersVisibility="Column"
-                    IsReadOnly="True"
-                    ItemsSource="{Binding Rows}">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Key}"
-                            Header="{DynamicResource window_console_endpoint}" />
-                        <DataGridTextColumn
-                            Width="120"
-                            Binding="{Binding RequestsPerMinute}"
-                            Header="{DynamicResource window_console_requests_per_min}" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+            <TabControl>
+                <TabItem Header="{DynamicResource window_console_subtab_live}">
+                    <Grid Margin="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Button
+                            x:Name="BtnToGraph"
+                            Grid.Row="0"
+                            HorizontalAlignment="Right"
+                            Click="BtnToGraph_OnClick"
+                            Content="{DynamicResource window_console_graph}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="4,2,4,2"
+                            FontSize="11"
+                            Opacity="0.85"
+                            Text="{DynamicResource window_console_live_rpm_section}"
+                            TextWrapping="Wrap" />
+                        <DataGrid
+                            Grid.Row="2"
+                            Margin="0,4,0,0"
+                            AutoGenerateColumns="False"
+                            HeadersVisibility="Column"
+                            HorizontalScrollBarVisibility="Auto"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding Rows}"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="*"
+                                    MinWidth="60"
+                                    Binding="{Binding Key}"
+                                    Header="{DynamicResource window_console_endpoint}" />
+                                <DataGridTextColumn
+                                    Width="72"
+                                    Binding="{Binding RequestsPerMinute}"
+                                    Header="{DynamicResource window_console_requests_per_min}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{DynamicResource window_console_subtab_daily}">
+                    <Grid Margin="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Margin="0,0,0,4"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Margin="0,0,6,0"
+                                Text="{DynamicResource window_console_daily_day}" />
+                            <ComboBox
+                                MinWidth="110"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding DailyDayOptions}"
+                                SelectedItem="{Binding SelectedDailyDayKey, Mode=TwoWay}" />
+                        </StackPanel>
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="0,0,0,4"
+                            FontSize="11"
+                            Opacity="0.85"
+                            Text="{DynamicResource window_console_daily_success_section}"
+                            TextWrapping="Wrap" />
+                        <DataGrid
+                            Grid.Row="2"
+                            AutoGenerateColumns="False"
+                            HeadersVisibility="Column"
+                            HorizontalScrollBarVisibility="Auto"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding DailySuccessRows}"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="*"
+                                    MinWidth="60"
+                                    Binding="{Binding Key}"
+                                    Header="{DynamicResource window_console_endpoint}" />
+                                <DataGridTextColumn
+                                    Width="72"
+                                    Binding="{Binding SuccessfulCalls}"
+                                    Header="{DynamicResource window_console_successful_calls}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="{DynamicResource window_console_subtab_429}">
+                    <Grid Margin="4">
+                        <DataGrid
+                            AutoGenerateColumns="False"
+                            HeadersVisibility="Column"
+                            HorizontalScrollBarVisibility="Auto"
+                            IsReadOnly="True"
+                            ItemsSource="{Binding DailyRateLimitRows}"
+                            VerticalScrollBarVisibility="Auto">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn
+                                    Width="110"
+                                    Binding="{Binding TimeLocal}"
+                                    Header="{DynamicResource window_console_time}" />
+                                <DataGridTextColumn
+                                    Width="*"
+                                    MinWidth="48"
+                                    Binding="{Binding Key}"
+                                    Header="{DynamicResource window_console_endpoint}" />
+                                <DataGridTextColumn
+                                    Width="56"
+                                    Binding="{Binding RetryAfterSeconds}"
+                                    Header="{DynamicResource window_console_retry_after}" />
+                                <DataGridTextColumn
+                                    Width="56"
+                                    Binding="{Binding SuccessfulTotalAtEvent}"
+                                    Header="{DynamicResource window_console_total_at_event}" />
+                                <DataGridTextColumn
+                                    Width="56"
+                                    Binding="{Binding SuccessfulForKeyAtEvent}"
+                                    Header="{DynamicResource window_console_key_at_event}" />
+                                <DataGridTextColumn
+                                    Width="48"
+                                    Binding="{Binding RollingRpmAtEvent}"
+                                    Header="{DynamicResource window_console_rolling_rpm}" />
+                                <DataGridTextColumn
+                                    Width="52"
+                                    Binding="{Binding LikelyDailyQuota}"
+                                    Header="{DynamicResource window_console_daily_quota_hint}" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </TabItem>
         <TabItem x:Name="TiGraph">
             <Grid>

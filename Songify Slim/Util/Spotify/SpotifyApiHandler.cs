@@ -801,50 +801,6 @@ namespace Songify_Slim.Util.Spotify
                 return true;
             }
 
-            //try
-            //{
-            //    // No playlist configured -> save to library
-            //    if (string.IsNullOrEmpty(Settings.SpotifyPlaylistId) ||
-            //        Settings.SpotifyPlaylistId == "-1")
-            //    {
-            //        await Client.Library.SaveTracks(
-            //            new LibrarySaveTracksRequest(new List<string> { trackId })
-            //        );
-            //        return false;
-            //    }
-
-            //    // Make sure cache is filled once
-            //    await EnsurePlaylistCacheAsync();
-
-            //    lock (_playlistLock)
-            //    {
-            //        if (_playlistTrackIds.Contains(trackId))
-            //        {
-            //            // Already in playlist
-            //            return true;
-            //        }
-            //    }
-
-            //    // Not in playlist -> add
-            //    PlaylistAddItemsRequest request = new(new List<string> { "spotify:track:" + trackId });
-
-            //    await ApiCallMeter.RunAsync("Playlists.AddItems",
-            //        () => Client.Playlists.AddItems(Settings.SpotifyPlaylistId, request),
-            //        softLimitPerminute);
-
-            //    // Update cache
-            //    lock (_playlistLock)
-            //    {
-            //        _playlistTrackIds.Add(trackId);
-            //    }
-
-            //    return false;
-            //}
-            //catch (Exception ex)
-            //{
-            //    Logger.Error(LogSource.Spotify, "Error adding song to playlist", ex);
-            //    return true;
-            //}
             return true;
         }
 
