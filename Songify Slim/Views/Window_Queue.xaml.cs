@@ -451,7 +451,7 @@ namespace Songify_Slim.Views
             // This deletes the selected requestobject
             if (DgvReqlist.SelectedItem == null)
                 return;
-            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            RequestObject req = (RequestObject)DgvReqlist.SelectedItem;
             GlobalObjects.ReqList.Remove(req);
         }
     }

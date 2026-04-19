@@ -2870,7 +2870,8 @@
                             VerticalAlignment="Center"
                             d:Content="{x:Static local:Resources.window_settings_webserver_open_website}"
                             Click="BtnWebserverOpenUrl_OnClick"
-                            Content="{DynamicResource window_settings_webserver_open_website}" />
+                            Content="{DynamicResource window_settings_webserver_open_website}"
+                            ToolTip="Track JSON: root URL — WebSocket tester: /ws-docs" />
                     </Grid>
                 </Border>
             </TabItem>

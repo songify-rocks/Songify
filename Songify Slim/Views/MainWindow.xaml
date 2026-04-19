@@ -401,7 +401,8 @@
                 <MenuItem
                     d:Header="{x:Static local:Resources.menu_view_webserver_url}"
                     Click="BtnWebServerUrl_Click"
-                    Header="{DynamicResource menu_view_webserver_url}" />
+                    Header="{DynamicResource menu_view_webserver_url}"
+                    ToolTip="Track JSON: http://localhost:PORT/ — WebSocket tester: http://localhost:PORT/ws-docs (replace PORT with your server port)." />
             </MenuItem>
         </Menu>
         <StackPanel

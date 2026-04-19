@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Net.WebSockets;
@@ -78,6 +79,28 @@ namespace Songify_Slim.Util.General
             ["sr_open"] = HandleSrEnableAsync,
             ["sr_close"] = HandleSrDisableAsync
         };
+
+        private static readonly Lazy<byte[]> WebSocketDocsHtmlBytes = new Lazy<byte[]>(LoadWebSocketDocsHtmlBytes);
+
+        static WebServer()
+        {
+            WebSocketCommandCatalog.AssertCoversCommandMap(CommandMap.Keys);
+        }
+
+        private static byte[] LoadWebSocketDocsHtmlBytes()
+        {
+            const string resourceName = "Songify_Slim.Resources.WebSocketDocs.html";
+            using Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+            if (stream == null)
+            {
+                return Encoding.UTF8.GetBytes(
+                    "<!DOCTYPE html><html><body><p>Missing embedded resource " + resourceName + ".</p></body></html>");
+            }
+
+            using MemoryStream ms = new MemoryStream();
+            stream.CopyTo(ms);
+            return ms.ToArray();
+        }
 
         private static bool TryParseSongRequestToggleScope(WebSocketCommand command,
             out Enums.SongRequestToggleScope scope, out string parseError)
@@ -724,20 +747,46 @@ namespace Songify_Slim.Util.General
 
         private void ProcessHttpRequest(HttpListenerContext context)
         {
-            if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
-                return;
-            // Convert the response string to a byte array.
-            byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.ApiResponse);
+            string rawPath = context.Request.Url.AbsolutePath ?? "/";
+            string path = rawPath.TrimEnd('/');
+            if (path.Length == 0)
+                path = "/";
 
-            // Get the response output stream and write the response to it.
+            if (string.Equals(path, "/ws-docs", StringComparison.OrdinalIgnoreCase))
+            {
+                WriteHttpResponse(context, WebSocketDocsHtmlBytes.Value, "text/html; charset=utf-8", 200);
+                return;
+            }
+
+            if (string.Equals(path, "/ws-commands.json", StringComparison.OrdinalIgnoreCase))
+            {
+                byte[] json = Encoding.UTF8.GetBytes(WebSocketCommandCatalog.ToJson());
+                WriteHttpResponse(context, json, "application/json; charset=utf-8", 200);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
+            {
+                byte[] err = Encoding.UTF8.GetBytes("{\"error\":\"Payload not available yet.\"}");
+                WriteHttpResponse(context, err, "application/json; charset=utf-8", 503);
+                return;
+            }
+
+            byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.ApiResponse);
+            WriteHttpResponse(context, responseBytes, "application/json; charset=utf-8", 200);
+        }
+
+        private static void WriteHttpResponse(HttpListenerContext context, byte[] body, string contentType, int statusCode)
+        {
             HttpListenerResponse response = context.Response;
-            response.ContentLength64 = responseBytes.Length;
+            response.StatusCode = statusCode;
+            response.ContentLength64 = body.Length;
             response.Headers.Add("Access-Control-Allow-Origin", "*");
-            response.Headers.Add("Access-Control-Allow-Methods", "POST, GET");
-            response.ContentType = "application/json; charset=utf-8";
+            response.Headers.Add("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            response.ContentType = contentType;
             response.ContentEncoding = Encoding.UTF8;
             using Stream output = response.OutputStream;
-            output.Write(responseBytes, 0, responseBytes.Length);
+            output.Write(body, 0, body.Length);
         }
     }
 }

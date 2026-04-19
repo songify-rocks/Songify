@@ -380,53 +380,28 @@ public static class TwitchHandler
                         return "That song is already in the queue ";
                     }
 
-                    // Populate metadata so matching/reordering stays consistent with other Pear request paths.
-                    PearSearch sr;
-                    try
-                    {
-                        sr = string.IsNullOrEmpty(Settings.YoutubeApiKey)
-                            ? await SongifyApi.GetYoutubeData(videoId)
-                            : await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(LogSource.Pear, "Error fetching YouTube metadata for websocket request", ex);
-                        sr = null;
-                    }
-
-                    string title = !string.IsNullOrWhiteSpace(sr?.Title)
-                        ? sr.Title
-                        : await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
-
-                    string artists = sr?.Artists is { Count: > 0 }
-                        ? string.Join(", ", sr.Artists.Take(1))
-                        : "";
-
-                    string length = sr?.Duration ?? "";
-
-                    string thumbnail = !string.IsNullOrWhiteSpace(sr?.ThumbnailUrl)
-                        ? sr.ThumbnailUrl
-                        : $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
+                    string title = await WebTitleFetcher.GetWebsiteTitleAsync($"https://www.youtube.com/watch?v={videoId}");
+                    string thumbnail = $"https://i.ytimg.com/vi/{videoId}/hqdefault.jpg";
 
                     RequestObject req = new()
                     {
                         Uuid = Settings.Uuid,
                         Trackid = videoId,
                         PlayerType = nameof(Enums.RequestPlayerType.Youtube),
-                        Artist = artists,
+                        Artist = "",
                         Title = title,
-                        Length = length,
+                        Length = "",
                         Requester = requester,
                         Played = 0,
                         Albumcover = thumbnail
                     };
-                    GlobalObjects.ReqList.Add(req);
 
                     bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
                     if (ok)
                     {
                         await WaitForSongInQueueAsync(videoId, TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(150));
                         await EnsureOrderAsync();
+                        GlobalObjects.ReqList.Add(req);
                     }
                     else
                         return "That song is already in the queue ";

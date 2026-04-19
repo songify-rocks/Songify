@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebSocket API — Songify</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* Scalar-inspired tokens (standalone page; not loading @scalar/api-reference) */
+    .dark-mode {
+      --scalar-background-1: #1a1a1a;
+      --scalar-background-2: #252525;
+      --scalar-background-3: #2f2f2f;
+      --scalar-color-1: rgba(255, 255, 255, 0.9);
+      --scalar-color-2: rgba(255, 255, 255, 0.55);
+      --scalar-color-3: rgba(255, 255, 255, 0.35);
+      --scalar-color-accent: #a78bfa;
+      --scalar-color-accent-muted: rgba(167, 139, 250, 0.15);
+      --scalar-border-color: rgba(255, 255, 255, 0.08);
+      --scalar-font: "Inter", system-ui, -apple-system, sans-serif;
+      --scalar-font-code: "JetBrains Mono", ui-monospace, Consolas, monospace;
+      --scalar-radius: 8px;
+      --scalar-radius-lg: 12px;
+      --scalar-header-h: 52px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--scalar-font);
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--scalar-color-1);
+      background: var(--scalar-background-1);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .scalar-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: var(--scalar-header-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: var(--scalar-background-2);
+      border-bottom: 1px solid var(--scalar-border-color);
+    }
+    .scalar-header__brand {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .scalar-header__title {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+    .scalar-header__subtitle {
+      font-size: 13px;
+      color: var(--scalar-color-2);
+      font-weight: 500;
+    }
+    .scalar-header__badge {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--scalar-color-accent);
+      background: var(--scalar-color-accent-muted);
+      border: 1px solid rgba(167, 139, 250, 0.35);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .scalar-layout {
+      display: flex;
+      height: calc(100vh - var(--scalar-header-h));
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .scalar-sidebar {
+      width: 280px;
+      min-width: 240px;
+      flex-shrink: 0;
+      overflow-y: auto;
+      border-right: 1px solid var(--scalar-border-color);
+      background: var(--scalar-background-1);
+      padding: 16px 0 24px;
+    }
+    .nav-group h3 {
+      margin: 20px 16px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--scalar-color-3);
+    }
+    .nav-group:first-child h3 { margin-top: 0; }
+    .nav-group ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      padding: 8px 16px 8px 14px;
+      margin: 0 8px;
+      border: none;
+      border-radius: var(--scalar-radius);
+      background: transparent;
+      color: var(--scalar-color-2);
+      font-family: var(--scalar-font-code);
+      font-size: 13px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, color 0.12s, border-color 0.12s;
+    }
+    .nav-item:hover {
+      background: var(--scalar-background-2);
+      color: var(--scalar-color-1);
+    }
+    .nav-item.active {
+      background: var(--scalar-background-2);
+      color: var(--scalar-color-1);
+      border-left-color: var(--scalar-color-accent);
+    }
+    .nav-item .method-pill {
+      flex-shrink: 0;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--scalar-font);
+      letter-spacing: 0.02em;
+      color: #1a1a1a;
+      background: linear-gradient(135deg, #c4b5fd 0%, #a78bfa 100%);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .scalar-main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px 48px;
+      background: var(--scalar-background-1);
+    }
+
+    .scalar-empty {
+      max-width: 560px;
+      color: var(--scalar-color-2);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .scalar-empty code {
+      font-family: var(--scalar-font-code);
+      font-size: 12px;
+      color: var(--scalar-color-accent);
+      background: var(--scalar-background-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .operation-block {
+      max-width: 800px;
+    }
+    .operation-block[hidden] { display: none !important; }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--scalar-color-3);
+      margin-bottom: 12px;
+    }
+    .breadcrumb span { color: var(--scalar-color-2); }
+
+    .operation-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 12px;
+    }
+    .operation-title h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-family: var(--scalar-font-code);
+    }
+    .operation-desc {
+      color: var(--scalar-color-2);
+      font-size: 15px;
+      margin: 0 0 20px;
+      line-height: 1.55;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--scalar-background-3);
+      color: var(--scalar-color-2);
+      border: 1px solid var(--scalar-border-color);
+    }
+    .tag--warn {
+      color: #fcd34d;
+      border-color: rgba(252, 211, 77, 0.35);
+      background: rgba(252, 211, 77, 0.08);
+    }
+
+    .scalar-section {
+      margin-bottom: 28px;
+    }
+    .scalar-section h2 {
+      margin: 0 0 10px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--scalar-color-3);
+    }
+
+    .code-card {
+      background: var(--scalar-background-2);
+      border: 1px solid var(--scalar-border-color);
+      border-radius: var(--scalar-radius-lg);
+      overflow: hidden;
+    }
+    .code-card__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--scalar-background-3);
+      border-bottom: 1px solid var(--scalar-border-color);
+      font-size: 11px;
+      color: var(--scalar-color-3);
+      font-family: var(--scalar-font-code);
+    }
+    .code-card pre {
+      margin: 0;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: var(--scalar-font-code);
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #e2e8f0;
+    }
+
+    .btn {
+      font-family: var(--scalar-font);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--scalar-radius);
+      border: 1px solid var(--scalar-border-color);
+      cursor: pointer;
+      transition: opacity 0.12s, transform 0.08s;
+    }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn--primary {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+      color: #fff;
+      border-color: transparent;
+    }
+    .btn--ghost {
+      background: var(--scalar-background-3);
+      color: var(--scalar-color-1);
+    }
+    .btn--sm {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--scalar-color-3);
+      margin-bottom: 6px;
+    }
+    .field-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 14px;
+    }
+    .text-input {
+      font-family: var(--scalar-font-code);
+      font-size: 13px;
+      padding: 10px 12px;
+      border-radius: var(--scalar-radius);
+      border: 1px solid var(--scalar-border-color);
+      background: var(--scalar-background-2);
+      color: var(--scalar-color-1);
+      min-width: 200px;
+    }
+    .text-input:focus {
+      outline: none;
+      border-color: rgba(167, 139, 250, 0.5);
+      box-shadow: 0 0 0 3px var(--scalar-color-accent-muted);
+    }
+
+    textarea.payload {
+      width: 100%;
+      min-height: 140px;
+      margin-top: 8px;
+      padding: 14px 16px;
+      border-radius: var(--scalar-radius-lg);
+      border: 1px solid var(--scalar-border-color);
+      background: #121212;
+      color: #cbd5e1;
+      font-family: var(--scalar-font-code);
+      font-size: 12.5px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+    textarea.payload:focus {
+      outline: none;
+      border-color: rgba(167, 139, 250, 0.45);
+    }
+
+    .log-panel {
+      margin-top: 12px;
+      border-radius: var(--scalar-radius-lg);
+      border: 1px solid var(--scalar-border-color);
+      background: #121212;
+      height: 200px;
+      overflow-y: auto;
+      padding: 12px 14px;
+      font-family: var(--scalar-font-code);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+    .log-line { margin-bottom: 8px; color: #94a3b8; word-break: break-all; }
+    .log-line.err { color: #fca5a5; }
+    .log-line.ok { color: #86efac; }
+
+    .try-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 8px;
+    }
+    @media (max-width: 960px) {
+      .scalar-layout { flex-direction: column; height: auto; min-height: calc(100vh - var(--scalar-header-h)); }
+      .scalar-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--scalar-border-color);
+        max-height: 240px;
+      }
+      .try-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="scalar-header">
+    <div class="scalar-header__brand">
+      <span class="scalar-header__title">Songify</span>
+      <span class="scalar-header__subtitle">WebSocket API</span>
+    </div>
+    <span class="scalar-header__badge">Local</span>
+  </header>
+
+  <div class="scalar-layout">
+    <aside class="scalar-sidebar" id="sidebar">
+      <div style="padding:0 16px 12px;color:var(--scalar-color-3);font-size:12px;">Loading…</div>
+    </aside>
+
+    <main class="scalar-main">
+      <div class="scalar-empty" id="emptyState">
+        Select an operation from the sidebar. Each message is a JSON text frame with <code>action</code> and optional <code>data</code>.
+        Path <code>/ws/data</code> is for server → client broadcasts; commands work on any path (default <code>/ws</code>).
+      </div>
+
+      <div class="operation-block" id="operationBlock" hidden>
+        <div class="breadcrumb">WebSocket <span>/</span> <span id="bcGroup">—</span></div>
+        <div class="operation-title">
+          <span class="method-pill" style="font-size:11px;padding:4px 8px;">WS</span>
+          <h1 id="opTitle">action</h1>
+        </div>
+        <p class="operation-desc" id="opDesc"></p>
+        <div class="tag-row" id="tagRow"></div>
+
+        <div class="scalar-section">
+          <h2>Example</h2>
+          <div class="code-card">
+            <div class="code-card__bar">
+              <span>application/json</span>
+              <button type="button" class="btn btn--primary btn--sm" id="btnLoadExample">Use example</button>
+            </div>
+            <pre id="opExample"></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="scalar-section" style="margin-top:32px;padding-top:24px;border-top:1px solid var(--scalar-border-color);">
+        <h2 style="font-size:13px;color:var(--scalar-color-1);letter-spacing:0;text-transform:none;margin-bottom:4px;">Try request</h2>
+        <p style="margin:0 0 16px;color:var(--scalar-color-2);font-size:13px;">Same host as this page — upgrade to WebSocket on the path below.</p>
+
+        <div class="field-row">
+          <div style="flex:1;min-width:160px;max-width:320px;">
+            <label class="field-label" for="wsPath">Path</label>
+            <input class="text-input" type="text" id="wsPath" value="/ws" spellcheck="false" style="width:100%;" />
+          </div>
+          <div class="field-row" style="margin:0;">
+            <button type="button" class="btn btn--primary" id="btnConnect">Connect</button>
+            <button type="button" class="btn btn--ghost" id="btnDisconnect" disabled>Disconnect</button>
+            <span id="wsStatus" style="font-size:13px;color:var(--scalar-color-3);padding-left:4px;">Disconnected</span>
+          </div>
+        </div>
+
+        <label class="field-label" for="payload">Message body</label>
+        <textarea class="payload" id="payload" spellcheck="false">{"action":"skip"}</textarea>
+        <div class="field-row" style="margin-top:12px;">
+          <button type="button" class="btn btn--primary" id="btnSend" disabled>Send message</button>
+        </div>
+
+        <label class="field-label" style="margin-top:16px;">Response log</label>
+        <div class="log-panel" id="log"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var ws = null;
+      var logEl = document.getElementById('log');
+      var payloadEl = document.getElementById('payload');
+      var btnConnect = document.getElementById('btnConnect');
+      var btnDisconnect = document.getElementById('btnDisconnect');
+      var btnSend = document.getElementById('btnSend');
+      var wsPath = document.getElementById('wsPath');
+      var wsStatus = document.getElementById('wsStatus');
+      var sidebarEl = document.getElementById('sidebar');
+      var emptyState = document.getElementById('emptyState');
+      var operationBlock = document.getElementById('operationBlock');
+      var bcGroup = document.getElementById('bcGroup');
+      var opTitle = document.getElementById('opTitle');
+      var opDesc = document.getElementById('opDesc');
+      var tagRow = document.getElementById('tagRow');
+      var opExample = document.getElementById('opExample');
+      var btnLoadExample = document.getElementById('btnLoadExample');
+      var selectedCommand = null;
+
+      function log(msg, cls) {
+        var line = document.createElement('div');
+        line.className = 'log-line' + (cls ? ' ' + cls : '');
+        line.textContent = new Date().toISOString().slice(11, 23) + ' ' + msg;
+        logEl.appendChild(line);
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function wsUrl() {
+        var p = (wsPath.value || '/ws').trim();
+        if (!p.startsWith('/')) p = '/' + p;
+        var proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+        return proto + '//' + location.host + p;
+      }
+
+      function setConnected(c) {
+        btnConnect.disabled = c;
+        btnDisconnect.disabled = !c;
+        btnSend.disabled = !c;
+        wsStatus.textContent = c ? 'Connected' : 'Disconnected';
+        wsStatus.style.color = c ? '#86efac' : 'var(--scalar-color-3)';
+      }
+
+      function escapeHtml(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function formatExample(json) {
+        if (!json) return '';
+        try { return JSON.stringify(JSON.parse(json), null, 2); } catch (e) { return json; }
+      }
+
+      function selectCommand(c, btnEl) {
+        selectedCommand = c;
+        document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); });
+        if (btnEl) btnEl.classList.add('active');
+        emptyState.hidden = true;
+        operationBlock.hidden = false;
+        bcGroup.textContent = c.group || 'other';
+        opTitle.textContent = c.action;
+        opDesc.textContent = c.description || '';
+        opExample.textContent = formatExample(c.exampleJson || '{}');
+        tagRow.innerHTML = '';
+        if (c.aliases && c.aliases.length) {
+          var t = document.createElement('span');
+          t.className = 'tag';
+          t.textContent = 'Aliases: ' + c.aliases.join(', ');
+          tagRow.appendChild(t);
+        }
+        if (c.dataRequired) {
+          var w = document.createElement('span');
+          w.className = 'tag tag--warn';
+          w.textContent = 'data required';
+          tagRow.appendChild(w);
+        }
+      }
+
+      btnLoadExample.onclick = function () {
+        if (selectedCommand && selectedCommand.exampleJson)
+          payloadEl.value = formatExample(selectedCommand.exampleJson);
+      };
+
+      btnConnect.onclick = function () {
+        if (ws && ws.readyState === WebSocket.OPEN) return;
+        try {
+          ws = new WebSocket(wsUrl());
+        } catch (e) {
+          log('Connect error: ' + e, 'err');
+          return;
+        }
+        ws.onopen = function () { log('Opened ' + wsUrl(), 'ok'); setConnected(true); };
+        ws.onclose = function (ev) { log('Closed code=' + ev.code + ' reason=' + (ev.reason || ''), ''); setConnected(false); ws = null; };
+        ws.onerror = function () { log('WebSocket error', 'err'); };
+        ws.onmessage = function (ev) { log('← ' + (typeof ev.data === 'string' ? ev.data : '[binary]'), 'ok'); };
+      };
+
+      btnDisconnect.onclick = function () {
+        if (ws) { ws.close(); ws = null; }
+        setConnected(false);
+      };
+
+      btnSend.onclick = function () {
+        if (!ws || ws.readyState !== WebSocket.OPEN) return;
+        var raw = payloadEl.value.trim();
+        try { JSON.parse(raw); } catch (e) { log('Invalid JSON: ' + e, 'err'); return; }
+        ws.send(raw);
+        log('→ ' + raw, '');
+      };
+
+      function renderCommands(data) {
+        if (!data || !data.commands) {
+          sidebarEl.innerHTML = '<div style="padding:0 16px;color:var(--scalar-color-3);">No commands.</div>';
+          return;
+        }
+        var byGroup = {};
+        data.commands.forEach(function (c) {
+          var g = c.group || 'other';
+          if (!byGroup[g]) byGroup[g] = [];
+          byGroup[g].push(c);
+        });
+        sidebarEl.innerHTML = '';
+        Object.keys(byGroup).sort().forEach(function (g) {
+          var section = document.createElement('section');
+          section.className = 'nav-group';
+          var h = document.createElement('h3');
+          h.textContent = g;
+          section.appendChild(h);
+          var ul = document.createElement('ul');
+          byGroup[g].forEach(function (c) {
+            var li = document.createElement('li');
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'nav-item';
+            btn.innerHTML = '<span class="method-pill">WS</span><span>' + escapeHtml(c.action) + '</span>';
+            btn.onclick = function () { selectCommand(c, btn); };
+            li.appendChild(btn);
+            ul.appendChild(li);
+          });
+          section.appendChild(ul);
+          sidebarEl.appendChild(section);
+        });
+        var first = data.commands[0];
+        if (first) {
+          var firstBtn = sidebarEl.querySelector('.nav-item');
+          selectCommand(first, firstBtn);
+        }
+      }
+
+      fetch('ws-commands.json').then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }).then(function (data) {
+        renderCommands(data);
+      }).catch(function (e) {
+        sidebarEl.innerHTML = '<div style="padding:0 16px;color:#fca5a5;font-size:13px;">Failed to load catalog: ' + escapeHtml(String(e)) + '</div>';
+        log('Catalog load failed: ' + e, 'err');
+      });
+    })();
+  </script>
+</body>
+</html>
