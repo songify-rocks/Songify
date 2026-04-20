@@ -47,99 +47,102 @@ Each message contains the full current state:
 
 ```json
 {
-  "UserInfo": {
-    "TwitchUser": {
-      "Id": "string",
-      "Login": "string",
-      "BroadcasterType": "string"
-    },
-    "SpotifyUser": {
-      "Id": "string",
-      "DisplayName": "string",
-      "Product": "string"
-    }
-  },
-  "SongifyInfo": {
-    "Version": "string",
-    "Beta": "boolean"
-  },
-  "Track": {
-    "Data": {
-      "Artists": "string",
-      "Title": "string",
-      "Albums": [
-        {
-          "Height": "integer",
-          "Width": "integer",
-          "Url": "string"
-        }
+   "UserInfo":{
+      "TwitchUser":{
+         "Id":"string",
+         "Login":"string",
+         "BroadcasterType":"string"
+      },
+      "SpotifyUser":{
+         "Id":"string",
+         "DisplayName":"string",
+         "Product":"string"
+      }
+   },
+   "SongifyInfo":{
+      "Version":"string",
+      "Beta":"boolean"
+   },
+   "Track":{
+      "Data":{
+         "Artists":"string",
+         "Title":"string",
+         "Albums":[
+            {
+               "Height":"integer",
+               "Width":"integer",
+               "Url":"string"
+            }
+         ],
+         "SongId":"string",
+         "DurationMs":"integer",
+         "IsPlaying":"boolean",
+         "Url":"string",
+         "DurationPercentage":"number",
+         "DurationTotal":"integer",
+         "Progress":"integer",
+         "Playlist":"string | null",
+         "FullArtists":[
+            {
+               "ExternalUrls":{
+                  "spotify":"string"
+               },
+               "Href":"string",
+               "Id":"string",
+               "Name":"string",
+               "Type":"string",
+               "Uri":"string"
+            }
+         ]
+      },
+      "CanvasUrl":"string",
+      "IsInLikedPlaylist":"boolean",
+      "Requester":{
+         "Name":"string",
+         "ProfilePicture":"string"
+      }
+   },
+   "Queue":{
+      "Count":"integer",
+      "Requests":[
+         {
+            "queueid":"integer",
+            "uuid":"string",
+            "trackid":"string",
+            "artist":"string",
+            "title":"string",
+            "length":"string",
+            "requester":"string",
+            "albumcover":"string",
+            "playerType":"string | null",
+            "IsLiked":"boolean",
+            "FullRequester":{
+               "Id":"string",
+               "DisplayName":"string",
+               "ProfileImageUrl":"string"
+            }
+         }
       ],
-      "SongId": "string",
-      "DurationMs": "integer",
-      "IsPlaying": "boolean",
-      "Url": "string",
-      "DurationPercentage": "number",
-      "DurationTotal": "integer",
-      "Progress": "integer",
-      "Playlist": "string | null",
-      "FullArtists": [
-        {
-          "ExternalUrls": {
-            "spotify": "string"
-          },
-          "Href": "string",
-          "Id": "string",
-          "Name": "string",
-          "Type": "string",
-          "Uri": "string"
-        }
-      ]
-    },
-    "CanvasUrl": "string",
-    "IsInLikedPlaylist": "boolean",
-    "Requester": {
-      "Name": "string",
-      "ProfilePicture": "string"
-    }
-  },
-  "Queue": {
-    "Count": "integer",
-    "Requests": [
-      {
-        "queueid": "integer",
-        "uuid": "string",
-        "trackid": "string",
-        "artist": "string",
-        "title": "string",
-        "length": "string",
-        "requester": "string",
-        "albumcover": "string",
-        "playerType": "string | null",
-        "IsLiked": "boolean",
-        "FullRequester": {
-          "Id": "string",
-          "DisplayName": "string",
-          "ProfileImageUrl": "string"
-        }
+      "Tracks":[
+         {
+            "queueid":"integer",
+            "uuid":"string",
+            "trackid":"string",
+            "artist":"string",
+            "title":"string",
+            "length":"string",
+            "requester":"string",
+            "albumcover":"string",
+            "playerType":"string | null",
+            "IsLiked":"boolean",
+            "FullRequester":"object | null"
+         }
+      ],
+      "songRequests":{
+         "chat":"boolean",
+         "reward":"boolean"
       }
-    ],
-    "Tracks": [
-      {
-        "queueid": "integer",
-        "uuid": "string",
-        "trackid": "string",
-        "artist": "string",
-        "title": "string",
-        "length": "string",
-        "requester": "string",
-        "albumcover": "string",
-        "playerType": "string | null",
-        "IsLiked": "boolean",
-        "FullRequester": "object | null"
-      }
-    ]
-  }
-}
+   }
 ```
 
 ## Behavior
@@ -316,3 +319,102 @@ Decreases volume by 5%.
   "action": "vol_down"
 }
 ```
+---
+
+### Enable / Disable Song Requests
+
+#### Enable - `sr_enable` (same payloads work for alias `sr_open`)
+
+```json
+{"action": "sr_enable"}
+```
+
+```json
+{"action": "sr_enable", "data": {}}
+```
+
+```json
+{"action": "sr_enable", "data": {"scope": "both"}}
+```
+
+```json
+{"action": "sr_enable", "data": {"scope": "reward"}}
+```
+
+```json
+{"action": "sr_enable", "data": {"scope": "command"}}
+```
+
+Alias examples (identical behavior to `sr_enable`):
+
+```json
+{"action": "sr_open"}
+```
+
+```json
+{"action": "sr_open", "data": {}}
+```
+
+```json
+{"action": "sr_open", "data": {"scope": "both"}}
+```
+
+```json
+{"action": "sr_open", "data": {"scope": "reward"}}
+```
+
+```json
+{"action": "sr_open", "data": {"scope": "command"}}
+```
+
+#### Disable - `sr_disable` (same payloads work for alias `sr_close`)
+
+```json
+{"action": "sr_disable"}
+```
+
+```json
+{"action": "sr_disable", "data": {}}
+```
+
+```json
+{"action": "sr_disable", "data": {"scope": "both"}}
+```
+
+```json
+{"action": "sr_disable", "data": {"scope": "reward"}}
+```
+
+```json
+{"action": "sr_disable", "data": {"scope": "command"}}
+```
+
+Alias examples (identical behavior to `sr_disable`):
+
+```json
+{"action": "sr_close"}
+```
+
+```json
+{"action": "sr_close", "data": {}}
+```
+
+```json
+{"action": "sr_close", "data": {"scope": "both"}}
+```
+
+```json
+{"action": "sr_close", "data": {"scope": "reward"}}
+```
+
+```json
+{"action": "sr_close", "data": {"scope": "command"}}
+```
+
+| Scope        | Meaning                                      |
+|---------------|----------------------------------------------|
+| `chat`   | Turns the Song Request command on/off              |
+| `reward`  | Turns the Song Request reward on/off              |
+| `both`     | Turns both on/off      |
+
+Optional body defaults to **`both`** if omitted or if `data` is missing:
