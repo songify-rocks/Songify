@@ -30,7 +30,10 @@ public static class Enums
         BrowserCompanion,
 
         [Description("Pear Desktop (Formerly Yotube Music th-ch)")]
-        Pear
+        Pear,
+
+        [Description("Qobuz")]
+        Qobuz
     }
 
     public enum SongRequestSource

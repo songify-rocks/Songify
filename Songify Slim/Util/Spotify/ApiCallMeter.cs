@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -118,15 +119,33 @@ public static class ApiCallMeter
                 }
 
                 string rateLimitDetails = FormatApiExceptionDetails(ex);
-                if (retrySeconds > 300)
+                try
                 {
-                    Logger.Log(LogLevel.Error, LogSource.Spotify,
-                        $"Spotify daily quota exceeded. Retry after {TimeSpan.FromSeconds(retrySeconds):hh:mm:ss}. {rateLimitDetails}");
+                    if (retrySeconds > 300)
+                    {
+                        TimeSpan cooldown = TimeSpan.FromSeconds(retrySeconds);
+                        string spanText = cooldown.ToString("c", CultureInfo.InvariantCulture);
+                        Logger.Log(LogLevel.Error, LogSource.Spotify,
+                            "Spotify daily quota exceeded. Retry after " + retrySeconds + "s (" + spanText + "). "
+                            + rateLimitDetails);
+                    }
+                    else
+                    {
+                        Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                            $"Spotify rate limit hit for '{key}'. Global cooldown for {retrySeconds}s. {rateLimitDetails}");
+                    }
                 }
-                else
+                catch (Exception logEx)
                 {
-                    Logger.Log(LogLevel.Warning, LogSource.Spotify,
-                        $"Spotify rate limit hit for '{key}'. Global cooldown for {retrySeconds}s. {rateLimitDetails}");
+                    try
+                    {
+                        Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                            "Spotify rate limit (cooldown " + retrySeconds + "s); logging details failed: " + logEx.Message);
+                    }
+                    catch
+                    {
+                        // Avoid breaking the rate-limit loop if logging fails.
+                    }
                 }
 
                 // Loop continues and all requests will respect the cooldown

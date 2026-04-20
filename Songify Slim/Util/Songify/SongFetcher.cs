@@ -53,6 +53,9 @@ namespace Songify_Slim.Util.Songify
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
+        private const char WindowsMediaSessionRecordSeparator = '\u001e';
+        private const string WindowsMediaSessionNoAumidPrefix = "\u0001noaumid\u001e";
+
         private YoutubeData currentYoutubeData = new();
         private int fetchCounter = 0;
 
@@ -88,7 +91,7 @@ namespace Songify_Slim.Util.Songify
             TrackInfo trackinfo = null;
             Process[] processes = Process.GetProcessesByName(player);
             foreach (Process process in processes)
-                if (process.ProcessName == player && !string.IsNullOrEmpty(process.MainWindowTitle))
+                if (string.Equals(process.ProcessName, player, StringComparison.CurrentCultureIgnoreCase) && !string.IsNullOrEmpty(process.MainWindowTitle))
                 {
                     // If the process name is "Spotify" and the window title is not empty
                     string wintitle = process.MainWindowTitle;
@@ -96,7 +99,7 @@ namespace Songify_Slim.Util.Songify
 
                     switch (player)
                     {
-                        case "Spotify":
+                        case "spotify":
                             // Checks if the title is Spotify Premium or Spotify Free in which case we don't want to fetch anything
                             if (wintitle != "Spotify" && wintitle != "Spotify Premium" && wintitle != "Spotify Free" &&
                                 wintitle != "Drag")
@@ -213,6 +216,25 @@ namespace Songify_Slim.Util.Songify
 
                             trackinfo = new TrackInfo { Artists = artist, Title = title };
                             break;
+
+                        case "qobuz":
+                            {
+                                dashIndex = wintitle.IndexOf(" - ", StringComparison.Ordinal);
+                                if (dashIndex != -1)
+                                {
+                                    title = wintitle.Substring(0, dashIndex).Trim();
+                                    dashIndex += 3;
+                                    artist = wintitle.Substring(dashIndex, wintitle.Length - dashIndex).Trim();
+                                }
+                                else
+                                {
+                                    artist = wintitle;
+                                    title = "";
+                                }
+                                trackinfo = new TrackInfo { Artists = artist, Title = title, IsPlaying = true };
+
+                                break;
+                            }
                     }
                 }
 

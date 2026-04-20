@@ -433,6 +433,7 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 Logger.Debug(LogSource.Spotify, "GetSongInfo checkpoint 1: before API call");
+                // One CTS: same token cancels ApiCallMeter waits and the SDK call (not nested sources).
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
                 playback = await ApiCallMeter.RunAsync(
                     "Player.GetCurrentPlayback",

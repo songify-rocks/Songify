@@ -49,6 +49,7 @@ using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
 using Windows.Media.Control;
+using Songify_Slim.Models.Pear;
 using Cursor = System.Windows.Input.Cursor;
 
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
@@ -533,6 +534,10 @@ namespace Songify_Slim.Views
                 case PlayerType.BrowserCompanion:
 
                     await Sf.FetchYoutubeData();
+                    break;
+
+                case PlayerType.Qobuz:
+                    await Sf.FetchDesktopPlayer("qobuz");
                     break;
 
                 case PlayerType.Vlc:
@@ -1431,6 +1436,7 @@ namespace Songify_Slim.Views
                         case PlayerType.WindowsPlayback:
                         case PlayerType.FooBar2000:
                         case PlayerType.Vlc:
+                        case PlayerType.Qobuz:
                         case PlayerType.Pear:
                             _timerFetcher.Interval = 1000;
                             //enable = false;
@@ -1501,6 +1507,7 @@ namespace Songify_Slim.Views
                 case PlayerType.Vlc:
                 case PlayerType.FooBar2000:
                 case PlayerType.Pear:
+                case PlayerType.Qobuz:
                     FetchTimer(1000);
                     break;
 
